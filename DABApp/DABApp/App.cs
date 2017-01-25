@@ -1,14 +1,15 @@
-﻿using Xamarin.Forms;
+﻿using System;
+using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class App : Application
+	public class App : Application
 	{
+		public static MasterDetailPage masterDetailPage;
+		
 		public App()
 		{
-			InitializeComponent();
-
-			MainPage = new DABAppPage();
+			MainPage = new DabRootPage();
 		}
 
 		protected override void OnStart()
