@@ -18,11 +18,11 @@ namespace DABApp
 				TargetType = typeof(DabChannelsPage)
 			});
 
-			//this.Add(new MenuItem()
-			//{
-			//	Title = "Leads",
-			//	TargetType = typeof(LeadsPage)
-			//});
+			this.Add(new MenuItem()
+			{
+				Title = "About",
+				TargetType = typeof(DabAboutPage)
+			});
 
 			//this.Add(new MenuItem()
 			//{
