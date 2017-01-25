@@ -11,5 +11,9 @@ namespace DABApp
 		{
 			InitializeComponent();
 		}
+
+		void OnEpisodes(object o, EventArgs e) {
+			Navigation.PushAsync(new DabEpisodesPage());
+		}
 	}
 }

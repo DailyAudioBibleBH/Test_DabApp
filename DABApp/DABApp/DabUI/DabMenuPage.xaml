@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabMenuPage"
+		Padding="0, 40, 0, 0" Icon="ic_menu_white.png" Title="Menu" BackgroundColor="Red">
+	<ContentPage.Content>
+		<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="Red">
+			<ListView x:Name="listView" VerticalOptions="FillAndExpand" SeparatorVisibility="None" BackgroundColor="Red">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ImageCell Text="{Binding Title}" ImageSource="{Binding IconSource}" />
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>
