@@ -10,10 +10,15 @@ namespace DABApp
 		public DabChannelsPage()
 		{
 			InitializeComponent();
+			DabViewHelper.InitDabForm(this);
 		}
 
 		void OnEpisodes(object o, EventArgs e) {
 			Navigation.PushAsync(new DabEpisodesPage());
+		}
+
+		void OnMenu(object o, EventArgs e) {
+			MessagingCenter.Send<DabChannelsPage>(this, "DrawerMenu");
 		}
 	}
 }

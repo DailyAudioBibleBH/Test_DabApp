@@ -1,9 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" BackgroundColor="Black">
-	<ContentPage.Content>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
+		xmlns:local="clr-namespace:DABApp;assembly=DABApp" BackgroundColor="Black">
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Text="Menu" Clicked="OnMenu" Order="Primary" />
+	</ContentPage.ToolbarItems>
+	<ContentView>
+		<ContentPresenter>
 		<StackLayout>
 			<Label Text="Channels" TextColor="White"/>
 			<Button Text="Episodes" TextColor="White" Clicked="OnEpisodes"/>
 		</StackLayout>
-	</ContentPage.Content>
+			</ContentPresenter>
+	</ContentView>
 </ContentPage>
