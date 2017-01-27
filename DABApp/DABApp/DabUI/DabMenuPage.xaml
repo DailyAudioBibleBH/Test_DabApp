@@ -2,7 +2,6 @@
 <t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabMenuPage"
 		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" BackgroundColor="Red">
 		<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="Red" Padding="30">
-			<Label/>
 			<Button Text="Channels" Clicked="OnChannels" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
 			<Button Text="About" Clicked="OnAbout" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
 		</StackLayout>
