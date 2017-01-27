@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using SlideOverKit;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabChannelsPage : ContentPage
+	public partial class DabChannelsPage : MenuContainerPage
 	{
 		public DabChannelsPage()
 		{
@@ -18,7 +18,7 @@ namespace DABApp
 		}
 
 		void OnMenu(object o, EventArgs e) {
-			MessagingCenter.Send<DabChannelsPage>(this, "DrawerMenu");
+			this.ShowMenu();
 		}
 	}
 }

@@ -14,6 +14,8 @@ namespace DABApp.iOS
 		{
 			global::Xamarin.Forms.Forms.Init();
 
+			SlideOverKit.iOS.SlideOverKit.Init();
+
 			LoadApplication(new App());
 
 			return base.FinishedLaunching(app, options);

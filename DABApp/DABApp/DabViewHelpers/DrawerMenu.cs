@@ -6,6 +6,8 @@ namespace DABApp
 {
 	public class DrawerMenu : Grid
 	{
+		MenuListView listView;
+
 		public DrawerMenu()
 		{
 			WidthRequest = 300;
@@ -19,20 +21,20 @@ namespace DABApp
 				RowSpacing = 25;
 
 				var content = new StackLayout();
-				var listView = new MenuListView();
+				listView = new MenuListView();
 				content.Children.Add(listView);
 				Children.Add(content, 1, 1);
 
-				MessagingCenter.Subscribe<DabChannelsPage>(this, "DrawerMenu", async (sender) =>
+			MessagingCenter.Subscribe<DabChannelsPage>(this, "DrawerMenu", async (sender) =>
+			{
+				if (this.TranslationX == Application.Current.MainPage.Width)
 				{
-					if (this.TranslationX == Application.Current.MainPage.Width)
-					{
-						await this.TranslateTo(0, 0, 250, Easing.Linear);
-					}
-					else {
-						await this.TranslateTo(Application.Current.MainPage.Width, 0, 250, Easing.Linear);
-					}
-				});
+					await this.TranslateTo(0, 0, 250, Easing.Linear);
+				}
+				else {
+					await this.TranslateTo(Application.Current.MainPage.Width, 0, 250, Easing.Linear);
+				}
+			});
 		}
 	}
 }
