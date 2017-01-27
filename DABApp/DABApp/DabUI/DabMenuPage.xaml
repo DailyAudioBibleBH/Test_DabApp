@@ -1,13 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabMenuPage"
-		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" Padding="0, 40, 0, 0" BackgroundColor="Red">
-		<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="Red">
-			<ListView x:Name="listView" VerticalOptions="FillAndExpand" SeparatorVisibility="None" BackgroundColor="Red" ItemTapped="OnBase">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<ImageCell Text="{Binding Title}" ImageSource="{Binding IconSource}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" BackgroundColor="Red">
+		<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="Red" Padding="30">
+			<Label/>
+			<Button Text="Channels" Clicked="OnChannels" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
+			<Button Text="About" Clicked="OnAbout" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
 		</StackLayout>
 </t:SlideMenuView>

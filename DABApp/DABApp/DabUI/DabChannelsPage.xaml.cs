@@ -17,8 +17,8 @@ namespace DABApp
 			Navigation.PushAsync(new DabEpisodesPage());
 		}
 
-		//void OnMenu(object o, EventArgs e) {
-		//	this.ShowMenu();
+		//protected override void OnAppering():base{
+		//	base.OnAppearing();
 		//}
 	}
 }

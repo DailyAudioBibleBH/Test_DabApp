@@ -11,6 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
+			NavigationPage.SetHasBackButton(this, false);
 		}
 	}
 }
