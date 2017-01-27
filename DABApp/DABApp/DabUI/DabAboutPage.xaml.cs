@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using SlideOverKit;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabAboutPage : ContentPage
+	public partial class DabAboutPage : MenuContainerPage
 	{
 		public DabAboutPage()
 		{
 			InitializeComponent();
+			DabViewHelper.InitDabForm(this);
 		}
 	}
 }

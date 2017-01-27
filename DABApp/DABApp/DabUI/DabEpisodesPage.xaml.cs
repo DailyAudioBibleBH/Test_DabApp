@@ -13,8 +13,8 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 		}
 
-		void OnMenu(object o, EventArgs e) {
-			this.ShowMenu();
-		}
+		//void OnMenu(object o, EventArgs e) {
+		//	this.ShowMenu();
+		//}
 	}
 }
