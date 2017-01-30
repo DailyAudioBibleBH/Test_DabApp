@@ -16,6 +16,7 @@ namespace DABApp
 			this.IsFullScreen = true;
 			this.WidthRequest = 250;
 			this.MenuOrientations = MenuOrientation.RightToLeft;
+			this.BackgroundViewColor = Color.Transparent;
 			//listView.ItemsSource = new MenuListData();
 		}
 

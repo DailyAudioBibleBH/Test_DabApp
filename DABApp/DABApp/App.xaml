@@ -3,6 +3,16 @@
 		xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<Application.Resources>
 		<ResourceDictionary>
+			<ControlTemplate x:Key="PlayerPageTemplate">
+				<StackLayout x:Name="stackFooterContent" Orientation="Horizontal" VerticalOptions="End" HeightRequest="50" IsVisible="{x:Static local:AudioPlayer.Current.IsLoaded}">
+					<!--<RelativeLayout HorizontalOptions="Start" WidthRequest="75" VerticalOptions="FillAndExpand">
+						<Button x:Name="Play" Text="Play" Clicked="OnPlay" IsVisible="{}" IsEnabled="{}"/>
+						<Button x:Name="Pause" Text="Pause" Clicked="OnPause" IsVisible="{}" IsEnabled="{}"/>
+					</RelativeLayout>-->
+					<Button HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPaused"/>
+					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+				</StackLayout>
+			</ControlTemplate>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

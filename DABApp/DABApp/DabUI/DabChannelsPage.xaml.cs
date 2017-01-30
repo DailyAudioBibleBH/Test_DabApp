@@ -17,9 +17,17 @@ namespace DABApp
 			Navigation.PushAsync(new DabEpisodesPage());
 		}
 
+		void OnPlayer(object o, EventArgs e) {
+			this.ShowMenu();
+		}
+
 		protected override void OnDisappearing(){
 			base.OnDisappearing();
 			this.HideMenu();
+		}
+
+		void OnPodcast(object o, EventArgs e) {
+			Navigation.PushAsync(new DabPlayerView());
 		}
 	}
 }

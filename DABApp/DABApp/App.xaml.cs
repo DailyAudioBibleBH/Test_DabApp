@@ -31,5 +31,9 @@ namespace DABApp
 		{
 			// Handle when your app resumes
 		}
+
+		void OnPlayPause(object o, EventArgs e) {
+			AudioPlayer.Current.IsPlaying = !AudioPlayer.Current.IsPlaying;
+		}
 	}
 }

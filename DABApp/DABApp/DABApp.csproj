@@ -46,8 +46,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DabViewHelpers\DrawerMenu.cs" />
     <Compile Include="DabViewHelpers\DabViewHelper.cs" />
+    <Compile Include="DabUI\DabPlayerView.xaml.cs">
+      <DependentUpon>DabPlayerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabApi\GlobalResources.cs" />
+    <Compile Include="DabViewHelpers\AudioPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -69,6 +73,7 @@
   <ItemGroup>
     <Folder Include="DabUI\" />
     <Folder Include="DabViewHelpers\" />
+    <Folder Include="DabApi\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">
@@ -84,6 +89,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="App.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabPlayerView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
