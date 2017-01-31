@@ -15,7 +15,7 @@ namespace DABApp
 		{
 		}
 
-		private bool _IsLoaded = false;
+		private bool _IsLoaded = true;
 		private bool _IsPlaying = false;
 
 		//property for whether or not a file is loaded (and whether to display the player bar)

@@ -37,8 +37,9 @@ namespace DABApp
 			//PlayPause.Text = "Pause";
 		}
 
-		//void OnPodcast(object o, EventArgs e) { 
-		//	Application.Current.MainPage
-		//}
+		void OnPodcast(object o, EventArgs e) {
+			NavigationPage page = (NavigationPage)Application.Current.MainPage;
+			page.PushAsync(new DabPlayerView());
+		}
 	}
 }

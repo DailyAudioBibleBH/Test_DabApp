@@ -6,7 +6,7 @@
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<StackLayout x:Name="stackFooterContent" Orientation="Horizontal" VerticalOptions="End" HeightRequest="50" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsLoaded}">
 					<Button x:Name="PlayPause" Text="Play" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
-					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
 				</StackLayout>
 			</ControlTemplate>
 			<Style TargetType="ContentView">
