@@ -15,6 +15,7 @@ namespace DABApp
 				BarTextColor = Color.White,
 				BarBackgroundColor = Color.Black
 			};
+			GlobalResources.Player = DependencyService.Get<IAudio>();
 		}
 
 		protected override void OnStart()
@@ -35,7 +36,7 @@ namespace DABApp
 		void OnPlayPause(object o, EventArgs e) {
 			AudioPlayer.Instance.IsPlaying = !AudioPlayer.Instance.IsPlaying;
 			//DependencyService.Get<IAudio>().PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-			DependencyService.Get<IAudio>().PlayAudioFile("sample.mp3");
+			GlobalResources.Player.PlayAudioFile("sample.mp3");
 		}
 
 		void OnPodcast(object o, EventArgs e) {
