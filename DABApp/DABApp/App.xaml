@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" 
-		xmlns:local="clr-namespace:DABApp;assembly=DABApp" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
+		xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<Application.Resources>
 		<ResourceDictionary>
 			<ControlTemplate x:Key="PlayerPageTemplate">
-				<StackLayout x:Name="stackFooterContent" Orientation="Horizontal" VerticalOptions="End" HeightRequest="50" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsLoaded}">
+				<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="75" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsLoaded}">
+				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="50">
 					<Button x:Name="PlayPause" Text="Play" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
 					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
 				</StackLayout>
+					</StackLayout>
 			</ControlTemplate>
 			<Style TargetType="ContentView">
 				<Setter Property="ControlTemplate" Value="{StaticResource PlayerPageTemplate}"/>

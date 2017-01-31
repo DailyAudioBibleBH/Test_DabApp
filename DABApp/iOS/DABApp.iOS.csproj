@@ -107,6 +107,12 @@
     <Reference Include="SlideOverKit.iOS">
       <HintPath>..\packages\SlideOverKit.2.1.4\lib\Xamarin.iOS10\SlideOverKit.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="Plugin.MediaManager.Abstractions">
+      <HintPath>..\packages\Plugin.MediaManager.0.1.3\lib\Xamarin.iOS10\Plugin.MediaManager.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.MediaManager">
+      <HintPath>..\packages\Plugin.MediaManager.0.1.3\lib\Xamarin.iOS10\Plugin.MediaManager.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -120,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="DabAudio\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -132,6 +139,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="DabAudio\AudioService.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\ic_menu_white.png" />
