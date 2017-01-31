@@ -2,5 +2,8 @@
 <t:MenuContainerPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
 		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
 	<t:MenuContainerPage.Content>
+		<StackLayout>
+			<ContentView VerticalOptions="EndAndExpand"/>
+		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>

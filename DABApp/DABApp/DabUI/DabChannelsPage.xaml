@@ -6,7 +6,7 @@
 			<Label Text="Channels" TextColor="White"/>
 			<Button Text="Episodes" TextColor="White" Clicked="OnEpisodes"/>
 			<Button Text="Player" Clicked="OnPlayer"/>
-			<ContentView x:Name="container" VerticalOptions="EndAndExpand" ControlTemplate="{StaticResource PlayerPageTemplate}"/>
+			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>

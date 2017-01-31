@@ -4,6 +4,7 @@
 	<t:MenuContainerPage.Content>
 		<StackLayout>
 			<Label Text="About"/>
+			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>

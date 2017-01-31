@@ -33,7 +33,12 @@ namespace DABApp
 		}
 
 		void OnPlayPause(object o, EventArgs e) {
-			AudioPlayer.Current.IsPlaying = !AudioPlayer.Current.IsPlaying;
+			AudioPlayer.Instance.IsPlaying = !AudioPlayer.Instance.IsPlaying;
+			//PlayPause.Text = "Pause";
 		}
+
+		//void OnPodcast(object o, EventArgs e) { 
+		//	Application.Current.MainPage
+		//}
 	}
 }
