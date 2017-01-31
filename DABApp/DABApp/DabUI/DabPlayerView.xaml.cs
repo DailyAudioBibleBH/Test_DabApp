@@ -10,6 +10,7 @@ namespace DABApp
 		public DabPlayerView()
 		{
 			InitializeComponent();
+			DabViewHelper.InitDabForm(this);
 		}
 	}
 }

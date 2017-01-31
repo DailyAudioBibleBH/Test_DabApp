@@ -25,14 +25,14 @@ namespace DABApp
 		}
 
 		void OnAbout(object o, EventArgs e) {
+			Navigation.PushAsync(new DabAboutPage());
 			var existingPages = Navigation.NavigationStack.ToList();
 			foreach (var page in existingPages) {
-				if (page != existingPages[0])
+				if (page != existingPages[0] && page != existingPages.Last())
 				{
 					Navigation.RemovePage(page);
 				}
 			}
-			Navigation.PushAsync(new DabAboutPage());
 		}
 
 		//void OnBase(object o, ItemTappedEventArgs e) {
