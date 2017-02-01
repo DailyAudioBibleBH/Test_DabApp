@@ -1,9 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <t:MenuContainerPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
-		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerView">
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerView" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<t:MenuContainerPage.Content>
-		<StackLayout>
+		<StackLayout Padding="20" Spacing="20">
 			<Label Text="Player"/>
+			<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
+			<StackLayout Orientation="Horizontal">
+				<Label x:Name="CurrentTime" Text="0.00" HorizontalOptions="StartAndExpand"/>
+				<Label x:Name="RemainingTime" Text="-0.00" HorizontalOptions="EndAndExpand"/>
+			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>

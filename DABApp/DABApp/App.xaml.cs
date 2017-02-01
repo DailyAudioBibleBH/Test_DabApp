@@ -16,6 +16,7 @@ namespace DABApp
 				BarBackgroundColor = Color.Black
 			};
 			GlobalResources.Player = DependencyService.Get<IAudio>();
+			GlobalResources.Player.SetAudioFile("sample.mp3");
 		}
 
 		protected override void OnStart()
@@ -47,8 +48,9 @@ namespace DABApp
 				}
 			}
 			else {
-					//GlobalResources.Player.PlayAudioFile("sample.mp3");
-				GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				GlobalResources.Player.SetAudioFile("sample.mp3");
+				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				GlobalResources.Player.Play();
 				AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 		}

@@ -16,13 +16,12 @@ namespace DABApp.Droid
 		{
 		}
 
-		public void PlayAudioFile(string fileName)
+		public void SetAudioFile(string fileName)
 		{
 			player = new MediaPlayer();
 			var fd = global::Android.App.Application.Context.Assets.OpenFd(fileName);
 			player.Prepared += (s, e) =>
 			{
-				player.Start();
 				IsLoaded = true;
 			};
 			player.Completion += (s, e) =>
@@ -47,6 +46,14 @@ namespace DABApp.Droid
 
 		public bool IsPlaying() {
 			return player.IsPlaying;
+		}
+
+		public double CurrentTime() {
+			return player.CurrentPosition;
+		}
+
+		public double RemainingTime() {
+			return player.CurrentPosition - player.Duration;
 		}
 	}
 }

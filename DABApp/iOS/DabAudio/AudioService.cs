@@ -18,7 +18,7 @@ namespace DABApp.iOS
 		{
 		}
 
-		public void PlayAudioFile(string fileName)
+		public void SetAudioFile(string fileName)
 		{
 			if (fileName.Contains("http://"))
 			{
@@ -38,7 +38,6 @@ namespace DABApp.iOS
 				_player = null;
 				IsLoaded = false;
 			};
-			_player.Play();
 			IsLoaded = true;
 		}
 
@@ -56,6 +55,14 @@ namespace DABApp.iOS
 
 		public bool IsPlaying() {
 			return _player.Playing;
+		}
+
+		public double CurrentTime() {
+			return _player.CurrentTime;
+		}
+
+		public double RemainingTime() {
+			return _player.CurrentTime - _player.Duration;
 		}
 	}
 }
