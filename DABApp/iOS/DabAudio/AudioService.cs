@@ -22,10 +22,9 @@ namespace DABApp.iOS
 		{
 			if (fileName.Contains("http://"))
 			{
-
 				NSUrl url = NSUrl.FromString(fileName);
-				var player = AVPlayer.FromUrl(url);
-				player.Play();
+				NSData data = NSData.FromUrl(url);
+				_player = AVAudioPlayer.FromData(data);
 			}
 			else
 			{
@@ -33,14 +32,14 @@ namespace DABApp.iOS
 				(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
 				var url = NSUrl.FromString(sFilePath);
 				_player = AVAudioPlayer.FromUrl(url);
-				_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
-				{
-					_player = null;
-					IsLoaded = false;
-				};
-				_player.Play();
-				IsLoaded = true;
 			}
+			_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
+			{
+				_player = null;
+				IsLoaded = false;
+			};
+			_player.Play();
+			IsLoaded = true;
 		}
 
 		public void Play() {

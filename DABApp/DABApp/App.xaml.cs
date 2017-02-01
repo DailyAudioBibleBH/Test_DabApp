@@ -34,7 +34,6 @@ namespace DABApp
 		}
 
 		void OnPlayPause(object o, EventArgs e) {
-			//DependencyService.Get<IAudio>().PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 			if (GlobalResources.Player.IsInitialized())
 			{
 				if (GlobalResources.Player.IsPlaying())
@@ -48,7 +47,8 @@ namespace DABApp
 				}
 			}
 			else {
-					GlobalResources.Player.PlayAudioFile("sample.mp3");
+					//GlobalResources.Player.PlayAudioFile("sample.mp3");
+				GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 		}
