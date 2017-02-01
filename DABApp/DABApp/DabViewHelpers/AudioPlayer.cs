@@ -17,6 +17,7 @@ namespace DABApp
 
 		private bool _IsLoaded = true;
 		private bool _IsPlaying = false;
+		private string _PlayButtonText = "Play";
 
 		//property for whether or not a file is loaded (and whether to display the player bar)
 		public bool IsLoaded
@@ -42,6 +43,16 @@ namespace DABApp
 			{
 				_IsPlaying = value;
 				OnPropertyChanged("IsPlaying");
+			}
+		}
+
+		public string PlayButtonText { 
+			get {
+				return _PlayButtonText;
+			}
+			set {
+				_PlayButtonText = value;
+				OnPropertyChanged("PlayButtonText");
 			}
 		}
 

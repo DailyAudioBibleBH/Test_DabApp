@@ -12,6 +12,7 @@ namespace DABApp.iOS
 	public class AudioService: IAudio
 	{
 		public static AVAudioPlayer _player;
+		public static bool IsLoaded;
 
 		public AudioService()
 		{
@@ -23,8 +24,8 @@ namespace DABApp.iOS
 			{
 
 				NSUrl url = NSUrl.FromString(fileName);
-				var _player = AVPlayer.FromUrl(url);
-				_player.Play();
+				var player = AVPlayer.FromUrl(url);
+				player.Play();
 			}
 			else
 			{
@@ -35,9 +36,27 @@ namespace DABApp.iOS
 				_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
 				{
 					_player = null;
+					IsLoaded = false;
 				};
 				_player.Play();
+				IsLoaded = true;
 			}
+		}
+
+		public void Play() {
+			_player.Play();
+		}
+
+		public void Pause() {
+			_player.Pause();
+		}
+
+		public bool IsInitialized() {
+			return IsLoaded;
+		}
+
+		public bool IsPlaying() {
+			return _player.Playing;
 		}
 	}
 }
