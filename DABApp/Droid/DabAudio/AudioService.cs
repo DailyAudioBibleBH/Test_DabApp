@@ -55,5 +55,9 @@ namespace DABApp.Droid
 		public double RemainingTime() {
 			return player.CurrentPosition - player.Duration;
 		}
+
+		public double TotalTime() {
+			return player.Duration;
+		}
 	}
 }

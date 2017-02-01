@@ -64,5 +64,9 @@ namespace DABApp.iOS
 		public double RemainingTime() {
 			return _player.CurrentTime - _player.Duration;
 		}
+
+		public double TotalTime() {
+			return _player.Duration;
+		}
 	}
 }

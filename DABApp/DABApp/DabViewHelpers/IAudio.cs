@@ -10,5 +10,6 @@ namespace DABApp
 		bool IsPlaying();
 		double CurrentTime();
 		double RemainingTime();
+		double TotalTime();
 	}
 }

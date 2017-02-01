@@ -44,6 +44,7 @@ namespace DABApp
 				}
 				else {
 					GlobalResources.Player.Play();
+					ProgressBinding();
 					AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 			}
@@ -51,6 +52,7 @@ namespace DABApp
 				GlobalResources.Player.SetAudioFile("sample.mp3");
 				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				GlobalResources.Player.Play();
+				ProgressBinding();
 				AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 		}
@@ -58,6 +60,22 @@ namespace DABApp
 		void OnPodcast(object o, EventArgs e) {
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			page.PushAsync(new DabPlayerView());
+		}
+
+		void ProgressBinding() {
+			Device.StartTimer(new TimeSpan(0, 0, 1), () =>
+			{
+				if (GlobalResources.Player.IsInitialized())
+				{
+					AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime() / GlobalResources.Player.TotalTime());
+					return GlobalResources.Player.IsPlaying();
+				}
+				else {
+					AudioPlayer.Instance.Progress = 0;
+					AudioPlayer.Instance.PlayButtonText = "Play";
+					return GlobalResources.Player.IsInitialized();
+				}
+			});
 		}
 	}
 }

@@ -5,10 +5,11 @@
 		<ResourceDictionary>
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="70" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsLoaded}">
-				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="35">
+				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="40">
 					<Button x:Name="PlayPause" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
 					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
 				</StackLayout>
+					<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30"/>
 					</StackLayout>
 			</ControlTemplate>
 			<Style TargetType="ContentView">
