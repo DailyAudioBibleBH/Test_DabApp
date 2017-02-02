@@ -4,10 +4,15 @@
 	<t:MenuContainerPage.Content>
 		<StackLayout Padding="20" Spacing="20">
 			<Label Text="Player"/>
-			<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
+			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" Maximum="10" Value="0"/>
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="CurrentTime" Text="0.00" HorizontalOptions="StartAndExpand"/>
 				<Label x:Name="RemainingTime" Text="-0.00" HorizontalOptions="EndAndExpand"/>
+			</StackLayout>
+			<StackLayout Orientation="Horizontal">
+				<Button Text="Back 30" Clicked="OnBack30" HorizontalOptions="StartAndExpand"/>
+				<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
+				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>

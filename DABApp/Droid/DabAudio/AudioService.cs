@@ -40,24 +40,28 @@ namespace DABApp.Droid
 			player.Pause();
 		}
 
-		public bool IsInitialized() {
-			return IsLoaded;
+		public void SeekTo(int seconds) {
+			player.SeekTo(seconds * 1000);
 		}
 
-		public bool IsPlaying() {
-			return player.IsPlaying;
+		public bool IsInitialized {
+			get { return IsLoaded;}
 		}
 
-		public double CurrentTime() {
-			return player.CurrentPosition;
+		public bool IsPlaying {
+			get { return player.IsPlaying;}
 		}
 
-		public double RemainingTime() {
-			return player.CurrentPosition - player.Duration;
+		public double CurrentTime {
+			get { return player.CurrentPosition;}
 		}
 
-		public double TotalTime() {
-			return player.Duration;
+		public double RemainingTime {
+			get { return (player.CurrentPosition - player.Duration);}
+		}
+
+		public double TotalTime {
+			get { return player.Duration;}
 		}
 	}
 }

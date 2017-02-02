@@ -6,10 +6,11 @@ namespace DABApp
 		void SetAudioFile(string FileName);
 		void Pause();
 		void Play();
-		bool IsInitialized();
-		bool IsPlaying();
-		double CurrentTime();
-		double RemainingTime();
-		double TotalTime();
+		void SeekTo(int seconds);
+		bool IsInitialized { get;}
+		bool IsPlaying { get;}
+		double CurrentTime { get;}
+		double RemainingTime { get;}
+		double TotalTime { get;}
 	}
 }

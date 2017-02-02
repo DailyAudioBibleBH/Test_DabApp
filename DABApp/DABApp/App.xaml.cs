@@ -35,9 +35,9 @@ namespace DABApp
 		}
 
 		void OnPlayPause(object o, EventArgs e) {
-			if (GlobalResources.Player.IsInitialized())
+			if (GlobalResources.Player.IsInitialized)
 			{
-				if (GlobalResources.Player.IsPlaying())
+				if (GlobalResources.Player.IsPlaying)
 				{
 					GlobalResources.Player.Pause();
 					AudioPlayer.Instance.PlayButtonText = "Play";
@@ -65,15 +65,15 @@ namespace DABApp
 		void ProgressBinding() {
 			Device.StartTimer(new TimeSpan(0, 0, 1), () =>
 			{
-				if (GlobalResources.Player.IsInitialized())
+				if (GlobalResources.Player.IsInitialized)
 				{
-					AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime() / GlobalResources.Player.TotalTime());
-					return GlobalResources.Player.IsPlaying();
+					AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime / GlobalResources.Player.TotalTime);
+					return GlobalResources.Player.IsPlaying;
 				}
 				else {
 					AudioPlayer.Instance.Progress = 0;
 					AudioPlayer.Instance.PlayButtonText = "Play";
-					return GlobalResources.Player.IsInitialized();
+					return GlobalResources.Player.IsInitialized;
 				}
 			});
 		}

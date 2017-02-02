@@ -49,24 +49,29 @@ namespace DABApp.iOS
 			_player.Pause();
 		}
 
-		public bool IsInitialized() {
-			return IsLoaded;
+		public void SeekTo(int seconds) {
+			_player.CurrentTime += seconds;
 		}
 
-		public bool IsPlaying() {
-			return _player.Playing;
+		public bool IsInitialized {
+			get { return IsLoaded;}
 		}
 
-		public double CurrentTime() {
-			return _player.CurrentTime;
+		public bool IsPlaying {
+			get { return _player.Playing;}
 		}
 
-		public double RemainingTime() {
-			return _player.CurrentTime - _player.Duration;
+		public double CurrentTime {
+			get { return _player.CurrentTime;}
 		}
 
-		public double TotalTime() {
-			return _player.Duration;
+		public double RemainingTime
+		{
+			get {return (_player.CurrentTime - _player.Duration);}
+		}
+
+		public double TotalTime {
+			get { return _player.Duration;}
 		}
 	}
 }

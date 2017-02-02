@@ -14,14 +14,13 @@ namespace DABApp
 		{
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
-			Stopwatch stopwatch = new Stopwatch();
 			TimeBinding();
 		}
 
 		void OnPlay(object o, EventArgs e) {
-			if (player.IsInitialized())
+			if (player.IsInitialized)
 			{
-				if (player.IsPlaying())
+				if (player.IsPlaying)
 				{
 					player.Pause();
 					TimeBinding();
@@ -41,18 +40,41 @@ namespace DABApp
 			}
 		}
 
+		void OnBack30(object o, EventArgs e) {
+			SeekTo(-5);
+		}
+
+		void OnForward30(object o, EventArgs e) {
+			SeekTo(5);
+		}
+
 		void TimeBinding() { 
-			Device.StartTimer(new TimeSpan(0, 0, 0, 1, 0), () =>
+			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () =>
 			{
-				if (player.IsInitialized())
+				if (player.IsInitialized)
 				{
-					CurrentTime.Text = player.CurrentTime().ToString("##.##");
+					SeekBar.Maximum = player.TotalTime;
+					SeekBar.Value = player.CurrentTime;
+					CurrentTime.Text = player.CurrentTime.ToString("##.##");
 					//var remaining = TimeSpan.FromMilliseconds(player.RemainingTime());
-					RemainingTime.Text = player.RemainingTime().ToString("##.##");//string.Format("{0:D2}:{1:D2}:{2:D2}", remaining.Hours, remaining.Minutes, remaining.Seconds);
-					return player.IsPlaying();
+					RemainingTime.Text = player.RemainingTime.ToString("##.##");//string.Format("{0:D2}:{1:D2}:{2:D2}", remaining.Hours, remaining.Minutes, remaining.Seconds);
+					return player.IsPlaying;
 				}
-				else return player.IsInitialized();
+				else return player.IsInitialized;
 			});
+		}
+
+		void SeekTo(int seconds) { 
+			if (player.IsInitialized)
+			{
+				player.SeekTo(seconds);
+				TimeBinding();
+			}
+			else {
+				player.SetAudioFile("sample.mp3");
+				player.SeekTo(seconds);
+				TimeBinding();
+			}
 		}
 	}
 }
