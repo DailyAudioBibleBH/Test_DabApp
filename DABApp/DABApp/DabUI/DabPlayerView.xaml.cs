@@ -33,7 +33,8 @@ namespace DABApp
 				}
 			}
 			else {
-				AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+				AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				AudioPlayer.Instance.Player.Play();
 				AudioPlayer.Instance.PlayButtonText = "Pause";
@@ -88,7 +89,8 @@ namespace DABApp
 				}
 			}
 			else {
-				AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+				AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 				AudioPlayer.Instance.Player.SeekTo(seconds);
 				//TimeBinding();
 			}
