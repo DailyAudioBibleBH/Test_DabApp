@@ -44,6 +44,11 @@ namespace DABApp.Droid
 			player.SeekTo(seconds * 1000);
 		}
 
+		public void Skip(int seconds)
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool IsInitialized {
 			get { return IsLoaded;}
 		}

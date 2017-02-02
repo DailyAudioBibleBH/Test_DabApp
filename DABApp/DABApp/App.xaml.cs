@@ -15,8 +15,9 @@ namespace DABApp
 				BarTextColor = Color.White,
 				BarBackgroundColor = Color.Black
 			};
-			GlobalResources.Player = DependencyService.Get<IAudio>();
-			GlobalResources.Player.SetAudioFile("sample.mp3");
+			AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+			//GlobalResources.Player = DependencyService.Get<IAudio>();
+			//GlobalResources.Player.SetAudioFile("sample.mp3");
 		}
 
 		protected override void OnStart()
@@ -35,24 +36,25 @@ namespace DABApp
 		}
 
 		void OnPlayPause(object o, EventArgs e) {
-			if (GlobalResources.Player.IsInitialized)
+			
+			if (AudioPlayer.Instance.Player.IsInitialized)
 			{
-				if (GlobalResources.Player.IsPlaying)
+				if (AudioPlayer.Instance.Player.IsPlaying)
 				{
-					GlobalResources.Player.Pause();
+					AudioPlayer.Instance.Player.Pause();
 					AudioPlayer.Instance.PlayButtonText = "Play";
 				}
 				else {
-					GlobalResources.Player.Play();
-					ProgressBinding();
+					AudioPlayer.Instance.Player.Play();
+					//ProgressBinding();
 					AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 			}
 			else {
-				GlobalResources.Player.SetAudioFile("sample.mp3");
+				AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				GlobalResources.Player.Play();
-				ProgressBinding();
+				AudioPlayer.Instance.Player.Play();
+				//ProgressBinding();
 				AudioPlayer.Instance.PlayButtonText = "Pause";
 				}
 		}
@@ -62,20 +64,20 @@ namespace DABApp
 			page.PushAsync(new DabPlayerView());
 		}
 
-		void ProgressBinding() {
-			Device.StartTimer(new TimeSpan(0, 0, 1), () =>
-			{
-				if (GlobalResources.Player.IsInitialized)
-				{
-					AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime / GlobalResources.Player.TotalTime);
-					return GlobalResources.Player.IsPlaying;
-				}
-				else {
-					AudioPlayer.Instance.Progress = 0;
-					AudioPlayer.Instance.PlayButtonText = "Play";
-					return GlobalResources.Player.IsInitialized;
-				}
-			});
-		}
+		//void ProgressBinding() {
+		//	Device.StartTimer(new TimeSpan(0, 0, 1), () =>
+		//	{
+		//		if (GlobalResources.Player.IsInitialized)
+		//		{
+		//			AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime / GlobalResources.Player.TotalTime);
+		//			return GlobalResources.Player.IsPlaying;
+		//		}
+		//		else {
+		//			AudioPlayer.Instance.Progress = 0;
+		//			AudioPlayer.Instance.PlayButtonText = "Play";
+		//			return GlobalResources.Player.IsInitialized;
+		//		}
+		//	});
+		//}
 	}
 }

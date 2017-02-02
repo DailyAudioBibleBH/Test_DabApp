@@ -6,7 +6,7 @@ namespace DABApp
 {
 	public static class GlobalResources
 	{
-		public static bool IsPlaying { get; set; }
-		public static IAudio Player { get; set;}
+		//public static bool IsPlaying { get; set; }
+		//public static IAudio Player { get; set;}
 	}
 }

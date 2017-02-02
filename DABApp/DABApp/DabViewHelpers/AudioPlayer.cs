@@ -2,129 +2,182 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Xamarin.Forms;
 
 namespace DABApp
 {
 	public class AudioPlayer : INotifyPropertyChanged
 	{
+		private IAudio _player;
+		private bool _IsInitialized = false;
+		private bool _IsPlaying = false;
+		private string _PlayButtonText = "Play";
+		private double _CurrentTime = 0;
+		private double _TotalTime = 0;
+
+
 		// Singleton for use throughout the app
-		public static AudioPlayer Instance { get; private set;}
-		static AudioPlayer() { Instance = new AudioPlayer();}
+		public static AudioPlayer Instance { get; private set; }
+		static AudioPlayer()
+		{
+			Instance = new AudioPlayer();
+		}
+
 		//Don't allow creation of the class elsewhere in the app.
 		private AudioPlayer()
 		{
+			//Create a player object 
+			_player = DependencyService.Get<IAudio>();
+
+			Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+						{
+							//Update current time
+							if (_CurrentTime != _player.CurrentTime)
+							{
+								CurrentTime = _player.CurrentTime;
+							}
+
+							if (_TotalTime != _player.TotalTime)
+							{
+								TotalTime = _player.TotalTime;
+							}
+
+							if (_IsPlaying != Player.IsPlaying)
+							{
+								_IsPlaying = Player.IsPlaying;
+							}
+
+							if (_IsInitialized != Player.IsInitialized)
+							{
+								IsInitialized = Player.IsInitialized;
+							}
+							return true;
+						}
+						);
 		}
 
-		private bool _IsLoaded = true;
-		private bool _IsPlaying = false;
-		private string _PlayButtonText = "Play";
-		private double _Progress = 0;
-		private double _CurrentTime = 0;
-		private double _RemainingTime = 0;
-		private double _TotalTime = 0;
 
-		//property for whether or not a file is loaded (and whether to display the player bar)
-		public bool IsLoaded
+		//Reference to the player
+		public IAudio Player
 		{
 			get
 			{
-				return _IsLoaded;
-			}
-			set
-			{
-				SetValue(ref _IsLoaded, value);
+				return _player;
 			}
 		}
 
-		//property for whether a file is being played or not
-		public bool IsPlaying
+
+	//property for whether or not a file is loaded (and whether to display the player bar)
+	public bool IsInitialized
+	{
+		get
 		{
-			get
-			{
-				return _IsPlaying;
-			}
+			return Player.IsInitialized;
+		}
+		set
+		{
+			_IsInitialized = value;
+			OnPropertyChanged("IsInitialized");
+		}
+	}
+
+
+	//property for whether a file is being played or not
+	public bool IsPlaying
+	{
+		get
+		{
+			return _player.IsPlaying;
+		}
 			set
 			{
 				_IsPlaying = value;
 				OnPropertyChanged("IsPlaying");
 			}
-		}
-
-		public string PlayButtonText { 
-			get {
-				return _PlayButtonText;
-			}
-			set {
-				_PlayButtonText = value;
-				OnPropertyChanged("PlayButtonText");
-			}
-		}
-
-		public double Progress { 
-			get {
-				return _Progress;
-			}
-			set {
-				_Progress = value;
-				OnPropertyChanged("Progress");
-			}
-		}
-
-		public double CurrentTime
-		{
-			get
-			{
-				return _CurrentTime;
-			}
-			set
-			{
-				_CurrentTime = value;
-				OnPropertyChanged("CurrentTime");
-			}
-		}
-
-		public double RemainingTime
-		{
-			get
-			{
-				return _RemainingTime;
-			}
-			set
-			{
-				_RemainingTime= value;
-				OnPropertyChanged("RemainingTime");
-			}
-		}
-
-		public double TotalTime
-		{
-			get
-			{
-				return _TotalTime;
-			}
-			set
-			{
-				_TotalTime = value;
-				OnPropertyChanged("TotalTime");
-			}
-		}
-		protected void SetValue<T>(ref T field, T value,
-			[CallerMemberName]string propertyName = null)
-		{
-			if (!EqualityComparer<T>.Default.Equals(field, value))
-			{
-				field = value;
-				OnPropertyChanged(propertyName);
-			}
-		}
-
-		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
-		{
-			var handler = PropertyChanged;
-			if (handler != null)
-				handler(this, new PropertyChangedEventArgs(propertyName));
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
+
+	//Title of the audio file
+	public string PlayButtonText
+	{
+		get
+		{
+			return _PlayButtonText;
+		}
+		set
+		{
+			_PlayButtonText = value;
+			OnPropertyChanged("PlayButtonText");
+		}
+	}
+
+	public double CurrentTime
+	{
+		get
+		{
+			return _CurrentTime;
+		}
+		set
+		{
+				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime))
+				{
+					Player.SeekTo(Convert.ToInt32(value));
+				}
+			_CurrentTime = value;
+			OnPropertyChanged("CurrentTime");
+			OnPropertyChanged("RemainingTime");
+		}
+	}
+
+	public double RemainingTime
+	{
+		get
+		{
+			return _TotalTime - _CurrentTime;
+		}
+	}
+
+	public double TotalTime
+	{
+		get
+		{
+			return _TotalTime;
+		}
+		set
+		{
+			_TotalTime = value;
+			OnPropertyChanged("TotalTime");
+		}
+	}
+
+	public void SeekTo(int seconds)
+	{
+		_player.SeekTo(seconds);
+		//Update the current time
+		CurrentTime = seconds;
+	}
+
+		public void Skip(int seconds)
+		{
+
+			_player.Skip(seconds);
+			//Update the current time
+			CurrentTime = seconds;
+		}
+
+
+
+	public void SetAudioFile(string FileName)
+	{
+		_player.SetAudioFile(FileName);
+	}
+
+	protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+	{
+		var handler = PropertyChanged;
+		if (handler != null)
+			handler(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	public event PropertyChangedEventHandler PropertyChanged;
+}
 }

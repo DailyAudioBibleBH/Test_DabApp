@@ -38,6 +38,7 @@ namespace DABApp.iOS
 				_player = null;
 				IsLoaded = false;
 			};
+
 			IsLoaded = true;
 		}
 
@@ -50,6 +51,11 @@ namespace DABApp.iOS
 		}
 
 		public void SeekTo(int seconds) {
+			_player.CurrentTime = seconds;
+		}
+
+		public void Skip(int seconds)
+		{
 			_player.CurrentTime += seconds;
 		}
 

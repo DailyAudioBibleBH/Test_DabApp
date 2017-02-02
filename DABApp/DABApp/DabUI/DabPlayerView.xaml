@@ -4,11 +4,13 @@
 	<t:MenuContainerPage.Content>
 		<StackLayout Padding="20" Spacing="20">
 			<Label Text="Player"/>
-			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" Maximum="10" 
-					Value="{Binding Position}" BindingContext="local: PlayerViewModel" ValueChanged="OnSeek"/>
+			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
+					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
+					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"
+				BindingContext="local: PlayerViewModel" />
 			<StackLayout Orientation="Horizontal">
-				<Label x:Name="CurrentTime" Text="0.00" HorizontalOptions="StartAndExpand"/>
-				<Label x:Name="RemainingTime" Text="-0.00" HorizontalOptions="EndAndExpand"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" HorizontalOptions="StartAndExpand"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal">
 				<Button Text="Back 30" Clicked="OnBack30" HorizontalOptions="StartAndExpand"/>
