@@ -4,7 +4,8 @@
 	<t:MenuContainerPage.Content>
 		<StackLayout Padding="20" Spacing="20">
 			<Label Text="Player"/>
-			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" Maximum="10" Value="0"/>
+			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" Maximum="10" 
+					Value="{Binding Position}" BindingContext="local: PlayerViewModel" ValueChanged="OnSeek"/>
 			<StackLayout Orientation="Horizontal">
 				<Label x:Name="CurrentTime" Text="0.00" HorizontalOptions="StartAndExpand"/>
 				<Label x:Name="RemainingTime" Text="-0.00" HorizontalOptions="EndAndExpand"/>

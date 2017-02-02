@@ -19,6 +19,9 @@ namespace DABApp
 		private bool _IsPlaying = false;
 		private string _PlayButtonText = "Play";
 		private double _Progress = 0;
+		private double _CurrentTime = 0;
+		private double _RemainingTime = 0;
+		private double _TotalTime = 0;
 
 		//property for whether or not a file is loaded (and whether to display the player bar)
 		public bool IsLoaded
@@ -67,6 +70,44 @@ namespace DABApp
 			}
 		}
 
+		public double CurrentTime
+		{
+			get
+			{
+				return _CurrentTime;
+			}
+			set
+			{
+				_CurrentTime = value;
+				OnPropertyChanged("CurrentTime");
+			}
+		}
+
+		public double RemainingTime
+		{
+			get
+			{
+				return _RemainingTime;
+			}
+			set
+			{
+				_RemainingTime= value;
+				OnPropertyChanged("RemainingTime");
+			}
+		}
+
+		public double TotalTime
+		{
+			get
+			{
+				return _TotalTime;
+			}
+			set
+			{
+				_TotalTime = value;
+				OnPropertyChanged("TotalTime");
+			}
+		}
 		protected void SetValue<T>(ref T field, T value,
 			[CallerMemberName]string propertyName = null)
 		{

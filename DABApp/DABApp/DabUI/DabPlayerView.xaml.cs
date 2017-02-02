@@ -48,16 +48,22 @@ namespace DABApp
 			SeekTo(5);
 		}
 
+		void OnSeek(object o, ValueChangedEventArgs e) {
+			player.Pause();
+			SeekTo(Convert.ToInt32(e.NewValue));
+		}
+
 		void TimeBinding() { 
-			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () =>
+			Device.StartTimer(new TimeSpan(0, 0, 0, 1, 0), () =>
 			{
 				if (player.IsInitialized)
 				{
 					SeekBar.Maximum = player.TotalTime;
-					SeekBar.Value = player.CurrentTime;
 					CurrentTime.Text = player.CurrentTime.ToString("##.##");
+					SeekBar.Value = player.CurrentTime;
 					//var remaining = TimeSpan.FromMilliseconds(player.RemainingTime());
-					RemainingTime.Text = player.RemainingTime.ToString("##.##");//string.Format("{0:D2}:{1:D2}:{2:D2}", remaining.Hours, remaining.Minutes, remaining.Seconds);
+					RemainingTime.Text = player.RemainingTime.ToString("##.##");
+					//string.Format("{0:D2}:{1:D2}:{2:D2}", remaining.Hours, remaining.Minutes, remaining.Seconds);
 					return player.IsPlaying;
 				}
 				else return player.IsInitialized;
