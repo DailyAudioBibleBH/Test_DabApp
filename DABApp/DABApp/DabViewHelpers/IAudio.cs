@@ -11,7 +11,7 @@ namespace DABApp
 		bool IsInitialized { get;}
 		bool IsPlaying { get;}
 		double CurrentTime { get;}
-		double RemainingTime { get;}
+		//double RemainingTime { get;}
 		double TotalTime { get;}
 
 	}

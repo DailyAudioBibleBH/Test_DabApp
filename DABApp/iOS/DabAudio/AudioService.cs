@@ -5,13 +5,14 @@ using DABApp.iOS;
 using System.IO;
 using Foundation;
 using AVFoundation;
+using CoreMedia;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
 {
 	public class AudioService: IAudio
 	{
-		public static AVAudioPlayer _player;
+		public static AVPlayer _player;
 		public static bool IsLoaded;
 
 		public AudioService()
@@ -23,22 +24,20 @@ namespace DABApp.iOS
 			if (fileName.Contains("http://"))
 			{
 				NSUrl url = NSUrl.FromString(fileName);
-				NSData data = NSData.FromUrl(url);
-				_player = AVAudioPlayer.FromData(data);
+				_player = AVPlayer.FromUrl(url);
 			}
 			else
 			{
 				string sFilePath = NSBundle.MainBundle.PathForResource
 				(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
-				var url = NSUrl.FromString(sFilePath);
-				_player = AVAudioPlayer.FromUrl(url);
+				var url = NSUrl.FromFilename(sFilePath);
+				_player = AVPlayer.FromUrl(url);
 			}
-			_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
-			{
-				_player = null;
-				IsLoaded = false;
-			};
-
+			//_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
+			//{
+			//	_player = null;
+			//	IsLoaded = false;
+			//};
 			IsLoaded = true;
 		}
 
@@ -51,12 +50,13 @@ namespace DABApp.iOS
 		}
 
 		public void SeekTo(int seconds) {
-			_player.CurrentTime = seconds;
+			_player.Seek(new CMTime(seconds, 1), CMTime.Zero, CMTime.Zero);
 		}
 
 		public void Skip(int seconds)
 		{
-			_player.CurrentTime += seconds;
+			int seekTime = Convert.ToInt32(_player.CurrentTime.Seconds) + seconds;
+			_player.Seek(new CMTime(seekTime, 1), CMTime.Zero, CMTime.Zero);
 		}
 
 		public bool IsInitialized {
@@ -64,20 +64,26 @@ namespace DABApp.iOS
 		}
 
 		public bool IsPlaying {
-			get { return _player.Playing;}
+			get {
+				if (_player.Rate != 0 && _player.Error == null)
+				{
+					return true;
+				}
+				else return false;
+			}
 		}
 
 		public double CurrentTime {
-			get { return _player.CurrentTime;}
+			get { return _player.CurrentTime.Seconds;}
 		}
 
-		public double RemainingTime
-		{
-			get {return (_player.CurrentTime - _player.Duration);}
-		}
+		//public double RemainingTime
+		//{
+		//	get {return (_player.CurrentTime.Seconds - _player.CurrentItem.Duration.Seconds);}
+		//}
 
 		public double TotalTime {
-			get { return _player.Duration;}
+			get { return _player.CurrentItem.Duration.Seconds;}
 		}
 	}
 }
