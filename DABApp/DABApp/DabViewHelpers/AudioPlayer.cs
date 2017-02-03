@@ -127,7 +127,7 @@ namespace DABApp
 		}
 		set
 		{
-				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime))
+				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime) && value != 1)
 				{
 					Player.SeekTo(Convert.ToInt32(value));
 				}

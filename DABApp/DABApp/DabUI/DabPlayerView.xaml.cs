@@ -13,6 +13,7 @@ namespace DABApp
 		public DabPlayerView()
 		{
 			InitializeComponent();
+			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
 			DabViewHelper.InitDabForm(this);
 			//TimeBinding();
 		}
@@ -71,30 +72,30 @@ namespace DABApp
 		//	});
 		//}
 
-		void SeekTo(int seconds) { 
-			if (AudioPlayer.Instance.Player.IsInitialized)
-			{
-				bool didPause = false;
-				if (AudioPlayer.Instance.Player.IsPlaying)
-				{
-					AudioPlayer.Instance.Player.Pause();
-					didPause = true;
-				}
-				Debug.WriteLine("Seeking {0}", seconds.ToString());
-				AudioPlayer.Instance.Player.SeekTo(seconds);
+		//void SeekTo(int seconds) { 
+		//	if (AudioPlayer.Instance.Player.IsInitialized)
+		//	{
+		//		bool didPause = false;
+		//		if (AudioPlayer.Instance.Player.IsPlaying)
+		//		{
+		//			AudioPlayer.Instance.Player.Pause();
+		//			didPause = true;
+		//		}
+		//		Debug.WriteLine("Seeking {0}", seconds.ToString());
+		//		AudioPlayer.Instance.Player.SeekTo(seconds);
 			
-				if (didPause)
-				{
-					AudioPlayer.Instance.Player.Play();
-				}
-			}
-			else {
-				AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
-				AudioPlayer.Instance.Player.SeekTo(seconds);
-				//TimeBinding();
-			}
-		}
+		//		if (didPause)
+		//		{
+		//			AudioPlayer.Instance.Player.Play();
+		//		}
+		//	}
+		//	else {
+		//		AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+		//		//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+		//		AudioPlayer.Instance.Player.SeekTo(seconds);
+		//		//TimeBinding();
+		//	}
+		//}
 
 		void OnAudioOutput(object o, EventArgs e) {
 			DisplayActionSheet(null, "Cancel", null, null);

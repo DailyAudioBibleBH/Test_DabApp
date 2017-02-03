@@ -6,8 +6,7 @@
 			<Label Text="Player"/>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
-					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"
-				BindingContext="local: PlayerViewModel" />
+					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
 			<StackLayout Orientation="Horizontal">
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" HorizontalOptions="StartAndExpand"/>
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
