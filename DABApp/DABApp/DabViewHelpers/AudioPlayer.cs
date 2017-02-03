@@ -13,7 +13,7 @@ namespace DABApp
 		private bool _IsPlaying = false;
 		private string _PlayButtonText = "Play";
 		private double _CurrentTime = 0;
-		private double _TotalTime = 0;
+		private double _TotalTime = 1;
 
 
 		// Singleton for use throughout the app
@@ -31,25 +31,34 @@ namespace DABApp
 
 			Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
 						{
-							//Update current time
-							if (_CurrentTime != _player.CurrentTime)
+							if (_player.IsInitialized)
 							{
-								CurrentTime = _player.CurrentTime;
-							}
+								//Update current time
+								if (_CurrentTime != _player.CurrentTime)
+								{
+									CurrentTime = _player.CurrentTime;
+								}
 
-							if (_TotalTime != _player.TotalTime)
-							{
-								TotalTime = _player.TotalTime;
-							}
+								if (_TotalTime != _player.TotalTime)
+								{
+									TotalTime = _player.TotalTime;
+								}
 
-							if (_IsPlaying != Player.IsPlaying)
-							{
-								_IsPlaying = Player.IsPlaying;
-							}
+								if (_IsPlaying != Player.IsPlaying)
+								{
+									_IsPlaying = Player.IsPlaying;
+								}
 
-							if (_IsInitialized != Player.IsInitialized)
-							{
-								IsInitialized = Player.IsInitialized;
+								if (_IsInitialized != Player.IsInitialized)
+								{
+									IsInitialized = Player.IsInitialized;
+								}
+							}
+							else {
+								_CurrentTime = 0;
+								_TotalTime = 1;
+								_IsInitialized = false;
+								_IsPlaying = false;
 							}
 							return true;
 						}
@@ -125,6 +134,7 @@ namespace DABApp
 			_CurrentTime = value;
 			OnPropertyChanged("CurrentTime");
 			OnPropertyChanged("RemainingTime");
+				OnPropertyChanged("Progress");
 		}
 	}
 
@@ -148,6 +158,13 @@ namespace DABApp
 			OnPropertyChanged("TotalTime");
 		}
 	}
+
+		public double Progress 
+		{ 
+			get {
+				return _CurrentTime / _TotalTime;
+			}
+		}
 
 	public void SeekTo(int seconds)
 	{

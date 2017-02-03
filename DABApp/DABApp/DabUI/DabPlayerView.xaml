@@ -17,6 +17,9 @@
 				<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
+			<StackLayout Orientation="Horizontal">
+				<Button Text="Audio Output" Clicked="OnAudioOutput" HorizontalOptions="StartAndExpand"/>
+			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>
