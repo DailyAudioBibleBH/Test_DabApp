@@ -6,6 +6,7 @@
 			<Label Text="Channels" TextColor="White"/>
 			<Button Text="Episodes" TextColor="White" Clicked="OnEpisodes"/>
 			<Button Text="Player" Clicked="OnPlayer"/>
+			<Button Text="Test" Clicked="OnTest"/>
 			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>

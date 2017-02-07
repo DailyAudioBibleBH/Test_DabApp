@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SlideOverKit;
@@ -97,8 +97,5 @@ namespace DABApp
 		//	}
 		//}
 
-		//void OnAudioOutput(object o, EventArgs e) {
-		//	DisplayActionSheet(null, "Cancel", null, AudioPlayer.Instance.CurrentOutputs.ToArray());
-		//}
 	}
 }

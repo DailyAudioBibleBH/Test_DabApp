@@ -142,7 +142,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="DabAudio\AudioService.cs" />
-    <Compile Include="DabAudio\OutputViewRenderer.cs" />
+    <Compile Include="DabAudio\iosAudioOutputViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\ic_menu_white.png" />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xamarin.Forms;
 using DABApp;
 using DABApp.iOS;
@@ -141,5 +141,6 @@ namespace DABApp.iOS
 		public double TotalTime {
 			get { return _player.CurrentItem.Duration.Seconds;}
 		}
+
 	}
 }

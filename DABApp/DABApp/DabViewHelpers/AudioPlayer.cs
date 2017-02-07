@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -158,6 +158,7 @@ namespace DABApp
 			OnPropertyChanged("TotalTime");
 		}
 	}
+
 
 		public double Progress 
 		{ 
