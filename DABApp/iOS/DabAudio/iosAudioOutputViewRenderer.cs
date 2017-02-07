@@ -13,6 +13,7 @@ namespace DABApp.iOS
 	public class iosAudioOutputViewRenderer: ViewRenderer<AudioOutputView, UIView>
 	{
 		MPVolumeView view;
+		UILabel label;
 
 		public iosAudioOutputViewRenderer()
 		{
@@ -31,6 +32,10 @@ namespace DABApp.iOS
 					ShowsVolumeSlider = false,
 					
 				};
+				//label = new UILabel()
+				//{
+				//	Text = "Hello World."
+				//};
 				SetNativeControl(view);
 			}
 

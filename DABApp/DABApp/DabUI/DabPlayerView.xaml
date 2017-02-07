@@ -20,7 +20,7 @@
 			<StackLayout Orientation="Horizontal">
 				<Button Text="Audio Output" Clicked="OnAudioOutput" HorizontalOptions="Start"/>
 			</StackLayout>
-							<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
+			<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
 
 		</StackLayout>
 	</t:MenuContainerPage.Content>
