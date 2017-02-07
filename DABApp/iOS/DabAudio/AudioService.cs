@@ -19,8 +19,10 @@ namespace DABApp.iOS
 	{
 		public static AVPlayer _player;
 		public static bool IsLoaded;
+		MPNowPlayingInfo np;
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
+		float seekRate = 10.0f;
 
 		public AudioService()
 		{
@@ -38,6 +40,7 @@ namespace DABApp.iOS
 				if (TaskId != 0) {
 					UIApplication.SharedApplication.EndBackgroundTask(TaskId);
 					TaskId = 0;
+					SetNowPlayingInfo();
 				}
 			});
 
@@ -72,6 +75,44 @@ namespace DABApp.iOS
 		{
 			int seekTime = Convert.ToInt32(_player.CurrentTime.Seconds) + seconds;
 			_player.Seek(new CMTime(seekTime, 1), CMTime.Zero, CMTime.Zero);
+		}
+
+		public void RemoteControlReceived(UIEvent theEvent) 
+		{
+			np = new MPNowPlayingInfo();
+			switch (theEvent.Subtype) {
+				case UIEventSubtype.RemoteControlPause:
+					Pause();
+					break;
+				case UIEventSubtype.RemoteControlPlay:
+					Play();
+					break;
+				case UIEventSubtype.RemoteControlBeginSeekingForward:
+					_player.Rate = seekRate;
+					np.PlaybackRate = seekRate;
+					break;
+				case UIEventSubtype.RemoteControlEndSeekingForward:
+					_player.Rate = 1.0f;
+					np.PlaybackRate = 1.0f;
+					break;
+				case UIEventSubtype.RemoteControlBeginSeekingBackward:
+					_player.Rate = -seekRate;
+					np.PlaybackRate = -seekRate;
+					break;
+				case UIEventSubtype.RemoteControlEndSeekingBackward:
+					_player.Rate = 1.0f;
+					np.PlaybackRate = 1.0f;
+					break;
+			}
+			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
+			SetNowPlayingInfo();
+		}
+
+		void SetNowPlayingInfo() { 
+			np = new MPNowPlayingInfo();
+			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
+			np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
+			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
 
 		public bool IsInitialized {
