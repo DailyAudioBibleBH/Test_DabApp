@@ -18,9 +18,10 @@
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal">
-				<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
 				<Button Text="Audio Output" Clicked="OnAudioOutput" HorizontalOptions="Start"/>
 			</StackLayout>
+							<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
+
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>

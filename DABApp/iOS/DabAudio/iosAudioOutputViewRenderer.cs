@@ -28,7 +28,8 @@ namespace DABApp.iOS
 				view = new MPVolumeView()
 				{
 					ShowsRouteButton = true,
-					ShowsVolumeSlider = false	
+					ShowsVolumeSlider = false,
+					
 				};
 				SetNativeControl(view);
 			}
@@ -36,12 +37,16 @@ namespace DABApp.iOS
 			if (e.OldElement != null)
 			{
 				// Unsubscribe
+
 			}
 			if (e.NewElement != null)
 			{
 				// Subscribe
+
 			}
 		}
+
+		
 
 	}
 }
