@@ -70,12 +70,5 @@ namespace DABApp.Droid
 			get { return player.Duration;}
 		}
 
-		public List<string> CurrentOutputs
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
 	}
 }

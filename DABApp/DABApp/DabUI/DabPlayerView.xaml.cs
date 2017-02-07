@@ -97,8 +97,5 @@ namespace DABApp
 		//	}
 		//}
 
-		void OnAudioOutput(object o, EventArgs e) {
-			DisplayActionSheet(null, "Cancel", null, AudioPlayer.Instance.CurrentOutputs.ToArray());
-		}
 	}
 }

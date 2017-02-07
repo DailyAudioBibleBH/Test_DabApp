@@ -17,7 +17,6 @@ namespace DABApp.iOS
 		public static AVPlayer _player;
 		public static bool IsLoaded;
 		public static AVAudioSession session = AVAudioSession.SharedInstance();
-		public static List<string> currentOutputs = new List<string>();
 
 		public AudioService()
 		{
@@ -90,16 +89,5 @@ namespace DABApp.iOS
 			get { return _player.CurrentItem.Duration.Seconds;}
 		}
 
-		public List<string> CurrentOutputs { 
-			get {
-				foreach (var output in session.CurrentRoute.Outputs) {
-					if (!currentOutputs.Contains(output.PortName))
-					{
-						currentOutputs.Add(output.PortName);
-					}
-				}
-				return currentOutputs;
-			}
-		}
 	}
 }
