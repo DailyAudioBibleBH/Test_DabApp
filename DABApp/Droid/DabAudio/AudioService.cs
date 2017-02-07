@@ -3,6 +3,7 @@ using DABApp.Droid;
 using Xamarin.Forms;
 using Android.Media;
 using Android.Content.Res;
+using System.Collections.Generic;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -67,6 +68,14 @@ namespace DABApp.Droid
 
 		public double TotalTime {
 			get { return player.Duration;}
+		}
+
+		public List<string> CurrentOutputs
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
 		}
 	}
 }
