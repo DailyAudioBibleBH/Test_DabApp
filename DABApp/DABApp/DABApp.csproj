@@ -53,7 +53,7 @@
     <Compile Include="DabApi\GlobalResources.cs" />
     <Compile Include="DabViewHelpers\AudioPlayer.cs" />
     <Compile Include="DabViewHelpers\IAudio.cs" />
-    <Compile Include="DabViewHelpers\Controls\OutputView.cs" />
+    <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
