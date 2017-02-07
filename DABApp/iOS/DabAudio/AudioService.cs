@@ -9,6 +9,8 @@ using CoreMedia;
 using System.Collections.Generic;
 using System.Linq;
 using AudioToolbox;
+using UIKit;
+using MediaPlayer;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
@@ -17,6 +19,8 @@ namespace DABApp.iOS
 	{
 		public static AVPlayer _player;
 		public static bool IsLoaded;
+		AVAudioSession session = AVAudioSession.SharedInstance();
+		NSError error;
 
 		public AudioService()
 		{
@@ -24,6 +28,19 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName)
 		{
+			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
+			session.SetActive(true);
+			UIApplication.SharedApplication.BeginReceivingRemoteControlEvents();
+
+			nint TaskId = 0;
+			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
+			{
+				if (TaskId != 0) {
+					UIApplication.SharedApplication.EndBackgroundTask(TaskId);
+					TaskId = 0;
+				}
+			});
+
 			if (fileName.Contains("http://"))
 			{
 				NSUrl url = NSUrl.FromString(fileName);
@@ -36,11 +53,6 @@ namespace DABApp.iOS
 				var url = NSUrl.FromFilename(sFilePath);
 				_player = AVPlayer.FromUrl(url);
 			}
-			//_player.FinishedPlaying += (object sender, AVStatusEventArgs e) =>
-			//{
-			//	_player = null;
-			//	IsLoaded = false;
-			//};
 			IsLoaded = true;
 		}
 
