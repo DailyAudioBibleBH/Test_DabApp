@@ -159,12 +159,6 @@ namespace DABApp
 		}
 	}
 
-		public List<string> CurrentOutputs { 
-			get {
-				return Player.CurrentOutputs;
-			}
-		}
-
 		public double Progress 
 		{ 
 			get {

@@ -53,6 +53,7 @@
     <Compile Include="DabApi\GlobalResources.cs" />
     <Compile Include="DabViewHelpers\AudioPlayer.cs" />
     <Compile Include="DabViewHelpers\IAudio.cs" />
+    <Compile Include="DabViewHelpers\Controls\OutputView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -81,6 +82,7 @@
     <Folder Include="DabUI\" />
     <Folder Include="DabViewHelpers\" />
     <Folder Include="DabApi\" />
+    <Folder Include="DabViewHelpers\Controls\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">

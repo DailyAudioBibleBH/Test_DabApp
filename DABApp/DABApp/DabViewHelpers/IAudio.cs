@@ -15,6 +15,5 @@ namespace DABApp
 		double CurrentTime { get;}
 		//double RemainingTime { get;}
 		double TotalTime { get;}
-		List<string> CurrentOutputs { get;}
 	}
 }

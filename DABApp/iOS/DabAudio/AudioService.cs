@@ -8,6 +8,7 @@ using AVFoundation;
 using CoreMedia;
 using System.Collections.Generic;
 using System.Linq;
+using AudioToolbox;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
@@ -16,8 +17,6 @@ namespace DABApp.iOS
 	{
 		public static AVPlayer _player;
 		public static bool IsLoaded;
-		public static AVAudioSession session = AVAudioSession.SharedInstance();
-		public static List<string> currentOutputs = new List<string>();
 
 		public AudioService()
 		{
@@ -88,18 +87,6 @@ namespace DABApp.iOS
 
 		public double TotalTime {
 			get { return _player.CurrentItem.Duration.Seconds;}
-		}
-
-		public List<string> CurrentOutputs { 
-			get {
-				foreach (var output in session.CurrentRoute.Outputs) {
-					if (!currentOutputs.Contains(output.PortName))
-					{
-						currentOutputs.Add(output.PortName);
-					}
-				}
-				return currentOutputs;
-			}
 		}
 	}
 }
