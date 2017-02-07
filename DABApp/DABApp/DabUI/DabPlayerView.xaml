@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <t:MenuContainerPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerView" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
-		xmlns:iosUI="clr-namespace:UIKit;assembly=Xamarin.iOS;targetPlatform=iOS"
-		xmlns:iosMP="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
 		>
 	<t:MenuContainerPage.Content>
-		<StackLayout Padding="20" Spacing="20">
+		<StackLayout Padding="20" Spacing="20" BackgroundColor="Red">
 			<Label Text="Player"/>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
@@ -18,10 +16,10 @@
 				<Button Text="Back 30" Clicked="OnBack30" HorizontalOptions="StartAndExpand"/>
 				<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
-
 			</StackLayout>
 			<StackLayout Orientation="Horizontal">
-				<Button Text="Audio Output" Clicked="OnAudioOutput" HorizontalOptions="StartAndExpand"/>
+				<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
+				<Button Text="Audio Output" Clicked="OnAudioOutput" HorizontalOptions="Start"/>
 			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>

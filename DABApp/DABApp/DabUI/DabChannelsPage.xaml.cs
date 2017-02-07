@@ -21,6 +21,11 @@ namespace DABApp
 			this.ShowMenu();
 		}
 
+		void OnTest(object o, EventArgs e)
+		{
+			Navigation.PushAsync(new DabTestPage());
+		}
+
 		protected override void OnDisappearing(){
 			base.OnDisappearing();
 			this.HideMenu();
