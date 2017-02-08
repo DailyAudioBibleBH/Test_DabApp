@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabChannelsPage : MenuContainerPage
+	public partial class DabChannelsPage : HomePage
 	{
 		public DabChannelsPage()
 		{
@@ -18,7 +18,7 @@ namespace DABApp
 		}
 
 		void OnPlayer(object o, EventArgs e) {
-			this.ShowMenu();
+			ShowMenu();
 		}
 
 		void OnTest(object o, EventArgs e)
@@ -28,7 +28,7 @@ namespace DABApp
 
 		protected override void OnDisappearing(){
 			base.OnDisappearing();
-			this.HideMenu();
+			HideMenu();
 		}
 
 		void OnPodcast(object o, EventArgs e) {

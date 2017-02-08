@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<t:MenuContainerPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
+<local:HomePage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
 		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DabApp;assembly=DabApp" BackgroundColor="Black">
-	<t:MenuContainerPage.Content>
+	<local:HomePage.Content>
 		<StackLayout>
 			<Label Text="Channels" TextColor="White"/>
 			<Button Text="Episodes" TextColor="White" Clicked="OnEpisodes"/>
@@ -9,5 +9,5 @@
 			<Button Text="Test" Clicked="OnTest"/>
 			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
-	</t:MenuContainerPage.Content>
-</t:MenuContainerPage>
+	</local:HomePage.Content>
+</local:HomePage>

@@ -129,6 +129,7 @@
   <ItemGroup>
     <Folder Include="Resources\" />
     <Folder Include="DabAudio\" />
+    <Folder Include="CustomRenderers\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -143,6 +144,7 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="DabAudio\iosAudioOutputViewRenderer.cs" />
+    <Compile Include="CustomRenderers\HomePageRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\ic_menu_white.png" />

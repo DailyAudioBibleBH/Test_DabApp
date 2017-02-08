@@ -23,16 +23,21 @@ namespace DABApp.iOS
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
 		float seekRate = 10.0f;
+		public static AudioService Instance { get; private set;}
 
 		public AudioService()
 		{
+		}
+
+		static AudioService() 
+		{
+			Instance = new AudioService();
 		}
 
 		public void SetAudioFile(string fileName)
 		{
 			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
 			session.SetActive(true);
-			UIApplication.SharedApplication.BeginReceivingRemoteControlEvents();
 
 			nint TaskId = 0;
 			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
@@ -109,9 +114,8 @@ namespace DABApp.iOS
 		}
 
 		void SetNowPlayingInfo() { 
-			np = new MPNowPlayingInfo();
-			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
 			np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
+			np.Title = "Does This Appear?";
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
 

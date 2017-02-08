@@ -54,6 +54,7 @@
     <Compile Include="DabViewHelpers\AudioPlayer.cs" />
     <Compile Include="DabViewHelpers\IAudio.cs" />
     <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
+    <Compile Include="DabViewHelpers\Controls\HomePage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

@@ -13,12 +13,24 @@ namespace DABApp
 			page.SlideMenu = new DabMenuPage();
 			var menuButton = new ToolbarItem();
 			menuButton.Icon = "ic_menu_white.png";
-			menuButton.Clicked += (sender, e) => {
+			menuButton.Clicked += (sender, e) =>
+			{
 				page.ShowMenu();
 			};
 			page.ToolbarItems.Add(menuButton);
 		}
 
-
+		public static void InitDabForm(HomePage page) { 
+			NavigationPage.SetBackButtonTitle(page, "");
+			page.Title = "DAILY AUDIO BIBLE";
+			page.SlideMenu = new DabMenuPage();
+			var menuButton = new ToolbarItem();
+			menuButton.Icon = "ic_menu_white.png";
+			menuButton.Clicked += (sender, e) =>
+			{
+				page.ShowMenu();
+			};
+			page.ToolbarItems.Add(menuButton);
+		}
 	}
 }
