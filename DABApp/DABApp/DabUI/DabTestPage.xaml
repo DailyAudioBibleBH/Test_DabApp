@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTestPage" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTestPage" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<ContentPage.Content>
 		<StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" BackgroundColor="Red">
 			<!--<StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand" VerticalOptions="FillAndExpand">-->
@@ -7,4 +7,4 @@
 			<!--</StackLayout>-->
 		</StackLayout>
 	</ContentPage.Content>
-</ContentPage>
+</local:DabBaseContentPage>

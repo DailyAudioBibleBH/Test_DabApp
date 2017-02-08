@@ -55,6 +55,10 @@
     <Compile Include="DabViewHelpers\IAudio.cs" />
     <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
     <Compile Include="DabViewHelpers\Controls\HomePage.cs" />
+    <Compile Include="DabUI\BaseUI\DabBaseContentPage.cs" />
+    <Compile Include="DabUI\BaseUI\DabMenuView.xaml.cs">
+      <DependentUpon>DabMenuView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -84,6 +88,7 @@
     <Folder Include="DabViewHelpers\" />
     <Folder Include="DabApi\" />
     <Folder Include="DabViewHelpers\Controls\" />
+    <Folder Include="DabUI\BaseUI\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">
@@ -105,6 +110,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabTestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
