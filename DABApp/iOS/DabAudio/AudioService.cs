@@ -20,8 +20,10 @@ namespace DABApp.iOS
 		public static AVPlayer _player;
 		public static bool IsLoaded;
 		MPNowPlayingInfo np;
+		MPRemoteCommandCenter commandCenter = MPRemoteCommandCenter.Shared;
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
+		double skipInterval = 5;
 		float seekRate = 10.0f;
 		public static AudioService Instance { get; private set;}
 
@@ -36,6 +38,7 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName)
 		{
+			
 			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
 			session.SetActive(true);
 
@@ -61,6 +64,10 @@ namespace DABApp.iOS
 				var url = NSUrl.FromFilename(sFilePath);
 				_player = AVPlayer.FromUrl(url);
 			}
+			np = new MPNowPlayingInfo();
+			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
+			SetNowPlayingInfo();
+			SetCommandCenter();
 			IsLoaded = true;
 		}
 
@@ -117,6 +124,43 @@ namespace DABApp.iOS
 			np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
 			np.Title = "Does This Appear?";
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
+		}
+
+		void SetCommandCenter() {
+			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
+			skipForward.Enabled = true;
+			skipForward.AddTarget(RemoteSkip);
+			skipForward.PreferredIntervals = new double[1] { skipInterval};
+			MPSkipIntervalCommand skipBackward = commandCenter.SkipBackwardCommand;
+			skipBackward.Enabled = true;
+			skipBackward.AddTarget(RemoteSkip);
+			skipBackward.PreferredIntervals = new double[1] { -skipInterval};
+			MPRemoteCommand pauseCommand = commandCenter.PauseCommand;
+			pauseCommand.Enabled = true;
+			pauseCommand.AddTarget(RemotePlayOrPause);
+			MPRemoteCommand playCommand = commandCenter.PlayCommand;
+			playCommand.Enabled = true;
+			playCommand.AddTarget(RemotePlayOrPause);
+		}
+
+		MPRemoteCommandHandlerStatus RemotePlayOrPause(MPRemoteCommandEvent arg)
+		{
+			if (IsPlaying)
+			{
+				Pause();
+			}
+			else Play();
+			return MPRemoteCommandHandlerStatus.Success;
+		}
+
+		MPRemoteCommandHandlerStatus RemoteSkip(MPRemoteCommandEvent arg) {
+			if (arg.Command == commandCenter.SkipBackwardCommand) {
+				Skip((int)-skipInterval);
+			}
+			if (arg.Command == commandCenter.SkipForwardCommand) {
+				Skip((int)skipInterval);
+			}
+			return MPRemoteCommandHandlerStatus.Success;
 		}
 
 		public bool IsInitialized {
