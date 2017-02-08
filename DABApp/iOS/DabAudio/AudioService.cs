@@ -64,9 +64,6 @@ namespace DABApp.iOS
 				var url = NSUrl.FromFilename(sFilePath);
 				_player = AVPlayer.FromUrl(url);
 			}
-			np = new MPNowPlayingInfo();
-			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
-			SetNowPlayingInfo();
 			SetCommandCenter();
 			IsLoaded = true;
 		}
@@ -127,6 +124,8 @@ namespace DABApp.iOS
 		}
 
 		void SetCommandCenter() {
+			np = new MPNowPlayingInfo();
+
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
 			skipForward.AddTarget(RemoteSkip);
@@ -141,6 +140,17 @@ namespace DABApp.iOS
 			MPRemoteCommand playCommand = commandCenter.PlayCommand;
 			playCommand.Enabled = true;
 			playCommand.AddTarget(RemotePlayOrPause);
+
+			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () =>
+				{
+					if (np.ElapsedPlaybackTime != CurrentTime)
+					{
+						np.ElapsedPlaybackTime = CurrentTime;
+					}
+					SetNowPlayingInfo();
+					return true;
+			});
+
 		}
 
 		MPRemoteCommandHandlerStatus RemotePlayOrPause(MPRemoteCommandEvent arg)

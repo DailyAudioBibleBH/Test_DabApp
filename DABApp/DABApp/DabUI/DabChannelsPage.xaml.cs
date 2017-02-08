@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabChannelsPage : HomePage
+	public partial class DabChannelsPage : MenuContainerPage
 	{
 		public DabChannelsPage()
 		{
