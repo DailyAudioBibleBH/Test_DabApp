@@ -117,8 +117,17 @@ namespace DABApp.iOS
 			SetNowPlayingInfo();
 		}
 
-		void SetNowPlayingInfo() { 
-			np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
+		void SetNowPlayingInfo() 
+		{
+			//np = new MPNowPlayingInfo();
+			if (np.ElapsedPlaybackTime != _player.CurrentTime.Seconds)
+			{
+				np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
+			}
+			if (np.PlaybackDuration != _player.CurrentItem.Duration.Seconds)
+			{
+				np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
+			}
 			np.Title = "Does This Appear?";
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
@@ -143,10 +152,6 @@ namespace DABApp.iOS
 
 			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () =>
 				{
-					if (np.ElapsedPlaybackTime != CurrentTime)
-					{
-						np.ElapsedPlaybackTime = CurrentTime;
-					}
 					SetNowPlayingInfo();
 					return true;
 			});
@@ -158,8 +163,12 @@ namespace DABApp.iOS
 			if (IsPlaying)
 			{
 				Pause();
+				np.PlaybackRate = 0f;
 			}
-			else Play();
+			else { 
+				Play();
+				np.PlaybackRate = 1.0f;
+			}
 			return MPRemoteCommandHandlerStatus.Success;
 		}
 
