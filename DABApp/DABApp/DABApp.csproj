@@ -123,10 +123,7 @@
     <EmbeddedResource Include="DabUI\DabPlayerView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml">
-    <EmbeddedResource Include="DabUI\DabTestPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml" />
     <EmbeddedResource Include="DabUI\BaseUI\DabPlayerBar.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
