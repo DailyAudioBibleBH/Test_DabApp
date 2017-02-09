@@ -4,7 +4,7 @@
 		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
 		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<t:MenuContainerPage.Content>
-		<StackLayout x:Name="Container" BackgroundColor="Red" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+		<StackLayout x:Name="Container" BackgroundColor="Red" VerticalOptions="FillAndExpand">
 			<StackLayout Padding="20" Spacing="20">
 			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
 				<controls:SegmentedControl.Children>
@@ -31,8 +31,7 @@
 				</StackLayout>
 			<ScrollView x:Name="Read" IsVisible="false" VerticalOptions="FillAndExpand" BackgroundColor="Black" HeightRequest="1200">
 			<StackLayout BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-				<Label Text="Passage Name" TextColor="White"/>
-				<Label Text="Passage Text" TextColor="White"/>
+				<local:HtmlLabel x:Name="HLabel" TextColor="White"/>
 			</StackLayout>
 				</ScrollView>
 			<StackLayout x:Name="Journal" IsVisible="false" BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
