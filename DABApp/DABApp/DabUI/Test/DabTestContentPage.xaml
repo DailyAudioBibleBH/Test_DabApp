@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTestContentPage" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
+	<ContentPage.Content>
+		<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="#DDDDDD">
+			<Label Text="Hello World" FontSize="Large" />
+			<Label Text="Hello world. This is a page inherited from DabBaseContentPage with custom content" FontSize="Micro" />
+			<Button Text="OpenAnotherPage" Clicked="Handle_Clicked"/>
+			<Button Text="Load Audio File" Clicked="Handle_LoadAudioFile"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>

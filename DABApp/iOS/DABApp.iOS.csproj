@@ -151,6 +151,8 @@
     <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="DabAudio\iosAudioOutputViewRenderer.cs" />
     <Compile Include="CustomRenderers\HomePageRenderer.cs" />
+    <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
+    <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +162,9 @@
     <BundleResource Include="Resources\ic_settings_white_2x.png" />
     <BundleResource Include="Resources\ic_settings_white_3x.png" />
     <BundleResource Include="Resources\sample.mp3" />
+    <BundleResource Include="Resources\ic_attach_money_white_2x.png" />
+    <BundleResource Include="Resources\ic_attach_money_white_3x.png" />
+    <BundleResource Include="Resources\ic_attach_money_white.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\ic_settings_white.png" />

@@ -55,6 +55,16 @@
     <Compile Include="DabViewHelpers\IAudio.cs" />
     <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
     <Compile Include="DabViewHelpers\Controls\HomePage.cs" />
+    <Compile Include="DabUI\BaseUI\DabBaseContentPage.cs" />
+    <Compile Include="DabUI\BaseUI\DabMenuView.xaml.cs">
+      <DependentUpon>DabMenuView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\BaseUI\DabPlayerBar.xaml.cs">
+      <DependentUpon>DabPlayerBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\Test\DabTestContentPage.xaml.cs">
+      <DependentUpon>DabTestContentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DabViewHelpers\Controls\HtmlLabel.cs" />
     <Compile Include="DabUI\DabSettingsPage.xaml.cs">
       <DependentUpon>DabSettingsPage.xaml</DependentUpon>
@@ -91,6 +101,8 @@
     <Folder Include="DabViewHelpers\" />
     <Folder Include="DabApi\" />
     <Folder Include="DabViewHelpers\Controls\" />
+    <Folder Include="DabUI\BaseUI\" />
+    <Folder Include="DabUI\Test\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">
@@ -111,7 +123,14 @@
     <EmbeddedResource Include="DabUI\DabPlayerView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml">
     <EmbeddedResource Include="DabUI\DabTestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\BaseUI\DabPlayerBar.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\Test\DabTestContentPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabSettingsPage.xaml">

@@ -23,7 +23,7 @@ namespace DABApp
 
 		void OnTest(object o, EventArgs e)
 		{
-			Navigation.PushAsync(new DabTestPage());
+			Navigation.PushAsync(new DabTestContentPage());
 		}
 
 		protected override void OnDisappearing(){
