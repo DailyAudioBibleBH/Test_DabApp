@@ -56,6 +56,9 @@
     <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
     <Compile Include="DabViewHelpers\Controls\HomePage.cs" />
     <Compile Include="DabViewHelpers\Controls\HtmlLabel.cs" />
+    <Compile Include="DabUI\DabSettingsPage.xaml.cs">
+      <DependentUpon>DabSettingsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -109,6 +112,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabTestPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabSettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
