@@ -10,7 +10,7 @@ namespace DABApp
 		public App()
 		{
 			InitializeComponent();
-			MainPage = new NavigationPage(new DabTestContentPage());
+			MainPage = new NavigationPage(new DabChannelsPage());
 			//MainPage = new NavigationPage(new DabChannelsPage())
 			//{
 			//	BarTextColor = Color.White,
@@ -61,7 +61,7 @@ namespace DABApp
 
 		void OnPodcast(object o, EventArgs e) {
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			page.PushAsync(new DabPlayerView());
+			page.PushAsync(new DabPlayerPage());
 
 		}
 

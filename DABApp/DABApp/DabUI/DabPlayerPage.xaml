@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<t:MenuContainerPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
-		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerView" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
+<local:DabBaseContentPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
+		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerPage" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
 		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
 		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<t:MenuContainerPage.Content>
@@ -47,4 +47,4 @@
 			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
-</t:MenuContainerPage>
+</local:DabBaseContentPage>

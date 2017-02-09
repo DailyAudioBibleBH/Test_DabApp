@@ -40,16 +40,10 @@
     <Compile Include="DabUI\DabEpisodesPage.xaml.cs">
       <DependentUpon>DabEpisodesPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DabUI\DabMenuPage.xaml.cs">
-      <DependentUpon>DabMenuPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\DabViewHelper.cs" />
-    <Compile Include="DabUI\DabPlayerView.xaml.cs">
-      <DependentUpon>DabPlayerView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DabApi\GlobalResources.cs" />
     <Compile Include="DabViewHelpers\AudioPlayer.cs" />
     <Compile Include="DabViewHelpers\IAudio.cs" />
@@ -68,6 +62,9 @@
     <Compile Include="DabViewHelpers\Controls\HtmlLabel.cs" />
     <Compile Include="DabUI\DabSettingsPage.xaml.cs">
       <DependentUpon>DabSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabPlayerPage.xaml.cs">
+      <DependentUpon>DabPlayerPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -114,13 +111,7 @@
     <EmbeddedResource Include="DabUI\DabEpisodesPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\DabMenuPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Include="App.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\DabPlayerView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml" />
@@ -131,6 +122,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabSettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabPlayerPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

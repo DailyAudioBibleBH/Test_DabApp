@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<t:MenuContainerPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
-		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DabApp;assembly=DabApp" BackgroundColor="Black">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
+		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;" BackgroundColor="Black">
 	<t:MenuContainerPage.Content>
 		<StackLayout>
 			<Label Text="Channels" TextColor="White"/>
@@ -10,4 +10,4 @@
 			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
-</t:MenuContainerPage>
+</local:DabBaseContentPage>

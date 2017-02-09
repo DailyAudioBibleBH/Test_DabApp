@@ -41,7 +41,7 @@ namespace DABApp
 		void OnShowPlayer(object o, EventArgs e)
 		{
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			page.PushAsync(new DabPlayerView());
+			page.PushAsync(new DabPlayerPage());
 
 		}
 

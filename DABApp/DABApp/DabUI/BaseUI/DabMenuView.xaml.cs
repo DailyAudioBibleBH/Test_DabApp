@@ -40,6 +40,17 @@ namespace DABApp
 		void OnAbout(object o, EventArgs e)
 		{
 			Navigation.PushAsync(new DabAboutPage());
+			RemovePages();
+		}
+
+		void OnSettings(object o, EventArgs e)
+		{
+			Navigation.PushAsync(new DabSettingsPage());
+			RemovePages();
+		}
+
+		void RemovePages()
+		{
 			var existingPages = Navigation.NavigationStack.ToList();
 			foreach (var page in existingPages)
 			{
