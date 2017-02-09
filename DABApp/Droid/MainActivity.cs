@@ -7,6 +7,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using SegmentedControl.FormsPlugin.Android;
 
 namespace DABApp.Droid
 {
@@ -21,6 +22,8 @@ namespace DABApp.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
+
+			SegmentedControlRenderer.Init();
 
 			LoadApplication(new App());
 		}

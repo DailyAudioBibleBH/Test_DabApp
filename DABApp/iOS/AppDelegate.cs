@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Foundation;
+using SegmentedControl.FormsPlugin.iOS;
 using UIKit;
 
 namespace DABApp.iOS
@@ -14,6 +15,8 @@ namespace DABApp.iOS
 			global::Xamarin.Forms.Forms.Init();
 
 			SlideOverKit.iOS.SlideOverKit.Init();
+
+			SegmentedControlRenderer.Init();
 
 			LoadApplication(new App());
 

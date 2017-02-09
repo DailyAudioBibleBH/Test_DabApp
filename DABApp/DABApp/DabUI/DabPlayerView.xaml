@@ -1,9 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <t:MenuContainerPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerView" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
-		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
+		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
+		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<t:MenuContainerPage.Content>
-		<StackLayout Padding="20" Spacing="20" BackgroundColor="Red">
+		<StackLayout x:Name="Container" BackgroundColor="Red" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+			<StackLayout Padding="20" Spacing="20">
+			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
+				<controls:SegmentedControl.Children>
+					<controls:SegmentedControlOption Text="Listen"/>
+					<controls:SegmentedControlOption Text="Read"/>
+					<controls:SegmentedControlOption Text="Journal"/>
+				</controls:SegmentedControl.Children>
+			</controls:SegmentedControl>
+				</StackLayout>
+			<StackLayout x:Name="Listen" IsVisible="true" BackgroundColor="Red" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 			<Label Text="Player"/>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
@@ -17,7 +28,24 @@
 				<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
-			<local:AudioOutputView HorizontalOptions="StartAndExpand"/>
+				</StackLayout>
+			<ScrollView x:Name="Read" IsVisible="false" VerticalOptions="FillAndExpand" BackgroundColor="Black" HeightRequest="1200">
+			<StackLayout BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<Label Text="Passage Name" TextColor="White"/>
+				<Label Text="Passage Text" TextColor="White"/>
+			</StackLayout>
+				</ScrollView>
+			<StackLayout x:Name="Journal" IsVisible="false" BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<Label Text="Date" TextColor="White"/>
+				<Entry Placeholder="Your text here." TextColor="White"/>
+			</StackLayout>
+			<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="70" IsVisible="false">
+				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="40">
+					<Button x:Name="PlayPause" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
+					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
+				</StackLayout>
+					<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30"/>
+			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </t:MenuContainerPage>
