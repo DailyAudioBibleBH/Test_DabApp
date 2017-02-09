@@ -8,18 +8,9 @@ namespace DABApp
 	{
 		public DabBaseContentPage()
 		{
-			//Content = new StackLayout
-			//{
-			//	Children = {
-			//		new Label { Text = "This is a DabBaseContentPage. Your custom content should go here." }
-			//	}
-			//};
 
 			//Default Page properties
 			this.Title = "Daily Audio Bible";
-			//this.BackgroundColor = Color.FromHex("#333333");
-
-
 
 			//Control template (adds the player bar)
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];

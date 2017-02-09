@@ -6,8 +6,6 @@
 			<Label Text="Hello world. This is a page inherited from DabBaseContentPage with custom content" FontSize="Micro" />
 			<Button Text="OpenAnotherPage" Clicked="Handle_Clicked"/>
 			<Button Text="Load Audio File" Clicked="Handle_LoadAudioFile"/>
-			
-			
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
