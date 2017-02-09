@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerBar" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
+	<ContentView.Content>
+		<StackLayout>
+			<Label Text="Player bar will appear below when loaded." FontSize="Micro" HorizontalOptions="CenterAndExpand" TextColor="Red" />
+			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End" HeightRequest="70" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}">
+				<StackLayout Orientation="Horizontal" HeightRequest="40"  HorizontalOptions="FillAndExpand">
+					<Button Text="Show Player" FontSize="Micro" Clicked="OnShowPlayer" />
+					<Button x:Name="PlayPause" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause" />
+					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnShowPlayer" />
+					<Button Text="Share" FontSize="Micro" Clicked="OnShare" />
+				</StackLayout>
+				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30" />
+				<local:AudioOutputView />
+			</StackLayout>
+		</StackLayout>
+	</ContentView.Content>
+</ContentView>

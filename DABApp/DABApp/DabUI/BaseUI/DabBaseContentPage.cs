@@ -11,28 +11,50 @@ namespace DABApp
 			//Content = new StackLayout
 			//{
 			//	Children = {
-			//		new Label { Text = "This is a DabBaseContentPage. Your content should go here." }
+			//		new Label { Text = "This is a DabBaseContentPage. Your custom content should go here." }
 			//	}
 			//};
 
 			//Default Page properties
 			this.Title = "Daily Audio Bible";
+			//this.BackgroundColor = Color.FromHex("#333333");
 
-			//Navigation
+
+
+			//Control template (adds the player bar)
+			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
+			this.ControlTemplate = playerBarTemplate;
+
+			//Navigation properties
 			NavigationPage.SetBackButtonTitle(this, "");
 
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
-			//Slide Menu Button
+
+			//Menu Button
 			var menuButton = new ToolbarItem();
-			menuButton.Text = "menu";
-			//menuButton.Icon = "ic_menu_white.png";
+			//menuButton.Text = "menu";
+			menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
+			menuButton.Icon = "ic_menu_white.png";
 			menuButton.Clicked += (sender, e) =>
 			{
 				this.ShowMenu();
 			};
 			this.ToolbarItems.Add(menuButton);
+
+			//Give button on the right (priority 1)
+			var giveButton = new ToolbarItem();
+			//giveButton.Text = "give";
+			giveButton.Icon = "ic_attach_money_white.png";
+			giveButton.Priority = 0; //default
+			giveButton.Clicked += (sender, e) =>
+				{
+					this.DisplayAlert("Give", "Thanks for giving!", "OK");
+				};
+			this.ToolbarItems.Add(giveButton);
+
 		}
+
 	}
 }
 

@@ -59,6 +59,12 @@
     <Compile Include="DabUI\BaseUI\DabMenuView.xaml.cs">
       <DependentUpon>DabMenuView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\BaseUI\DabPlayerBar.xaml.cs">
+      <DependentUpon>DabPlayerBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\Test\DabTestContentPage.xaml.cs">
+      <DependentUpon>DabTestContentPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -89,6 +95,7 @@
     <Folder Include="DabApi\" />
     <Folder Include="DabViewHelpers\Controls\" />
     <Folder Include="DabUI\BaseUI\" />
+    <Folder Include="DabUI\Test\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">
@@ -109,10 +116,13 @@
     <EmbeddedResource Include="DabUI\DabPlayerView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\DabTestPage.xaml">
+    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\BaseUI\DabMenuView.xaml">
+    <EmbeddedResource Include="DabUI\BaseUI\DabPlayerBar.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\Test\DabTestContentPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

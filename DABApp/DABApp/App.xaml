@@ -1,20 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" 
-		xmlns:local="clr-namespace:DABApp;assembly=DABApp">
+<Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<Application.Resources>
 		<ResourceDictionary>
+
+			<!--Theme Values-->
+			<Color x:Key="backgroundColor">#552222</Color>
+			<Color x:Key="textColor">#DDDDDD</Color>
+
+			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
-				<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="70" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsLoaded}">
-				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="40">
-					<Button x:Name="PlayPause" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
-					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
+				<StackLayout VerticalOptions="FillAndExpand">
+					<ScrollView VerticalOptions="FillAndExpand">
+						<ContentPresenter VerticalOptions="FillAndExpand" />
+					</ScrollView>
+					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
-					<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30"/>
-					</StackLayout>
 			</ControlTemplate>
-			<Style TargetType="ContentView">
-				<Setter Property="ControlTemplate" Value="{StaticResource PlayerPageTemplate}"/>
-			</Style>
+
+			<!--Theme Styles-->
+			<Style x:Key="labelStyle" TargetType="Label">
+            	<Setter Property="TextColor" Value="{DynamicResource textColor}" />
+        	</Style>
+
+        	<Style x:Key="backgroundStyle" TargetType="VisualElement">
+           		<Setter Property="BackgroundColor" Value="{DynamicResource backgroundColor}" />
+        	</Style>
+
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

@@ -10,7 +10,7 @@ namespace DABApp
 		public App()
 		{
 			InitializeComponent();
-			MainPage = new NavigationPage(new DabTestPage());
+			MainPage = new NavigationPage(new DabTestContentPage());
 			//MainPage = new NavigationPage(new DabChannelsPage())
 			//{
 			//	BarTextColor = Color.White,
