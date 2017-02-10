@@ -4,6 +4,7 @@ using System.Linq;
 using Foundation;
 using SegmentedControl.FormsPlugin.iOS;
 using UIKit;
+using UserNotifications;
 
 namespace DABApp.iOS
 {
@@ -18,12 +19,96 @@ namespace DABApp.iOS
 
 			SegmentedControlRenderer.Init();
 
-			var settings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Alert | UIUserNotificationType.Badge, null);
-			UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+			if (options != null) {
+				// check for a local notification
+				if (options.ContainsKey(UIApplication.LaunchOptionsLocalNotificationKey))
+				{
+
+					UILocalNotification localNotification = options[UIApplication.LaunchOptionsLocalNotificationKey] as UILocalNotification;
+					if (localNotification != null)
+					{
+
+						new UIAlertView(localNotification.AlertAction, localNotification.AlertBody, null, "OK", null).Show();
+						// reset our badge
+						UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+					}
+				}
+				//check for a remote notification
+				if (options.ContainsKey(UIApplication.LaunchOptionsRemoteNotificationKey))
+				{
+
+					NSDictionary remoteNotification = options[UIApplication.LaunchOptionsRemoteNotificationKey] as NSDictionary;
+					if (remoteNotification != null)
+					{
+						//new UIAlertView(remoteNotification.AlertAction, remoteNotification.AlertBody, null, "OK", null).Show();
+					}
+				}
+			}
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			{
+				var notificationSettings = UIUserNotificationSettings.GetSettingsForTypes(
+											   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound, null
+										   );
+
+				app.RegisterUserNotificationSettings(notificationSettings);
+				app.RegisterForRemoteNotifications();
+			}
+			else {
+				//==== register for remote notifications and get the device token
+				// set what kind of notification types we want
+				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge;
+				// register for remote notifications
+				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+			}
 
 			LoadApplication(new App());
 
+			UILocalNotification notification = new UILocalNotification();
+			var fireDate = DateTime.Now.AddSeconds(30);
+			notification.FireDate = (NSDate)fireDate;
+			notification.AlertAction = "View Alert";
+			notification.AlertBody = "Your 30 second alert has fired!";
+			notification.ApplicationIconBadgeNumber = 1;
+			notification.SoundName = UILocalNotification.DefaultSoundName;
+			UIApplication.SharedApplication.ScheduleLocalNotification(notification);
+
 			return base.FinishedLaunching(app, options);
+		}
+
+		public override void ReceivedLocalNotification(UIApplication application, UILocalNotification notification)
+		{
+			// show an alert
+			new UIAlertView(notification.AlertAction, notification.AlertBody, null, "OK", null).Show();
+
+			// reset our badge
+			UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
+		}
+
+		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+		{
+
+		}
+
+		/// <summary>
+		/// The iOS will call the APNS in the background and issue a device token to the device. when that's
+		/// accomplished, this method will be called.
+		///
+		/// Note: the device token can change, so this needs to register with your server application everytime
+		/// this method is invoked, or at a minimum, cache the last token and check for a change.
+		/// </summary>
+		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+		{
+			deviceToken = deviceToken.ToString();
+		}
+
+		/// <summary>
+		/// Registering for push notifications can fail, for instance, if the device doesn't have network access.
+		///
+		/// In this case, this method will be called.
+		/// </summary>
+		public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+		{
+			new UIAlertView("Error registering push notifications", error.LocalizedDescription, null, "OK", null).Show();
 		}
 	}
 }
