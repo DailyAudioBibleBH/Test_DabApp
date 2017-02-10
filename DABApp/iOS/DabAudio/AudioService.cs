@@ -23,7 +23,7 @@ namespace DABApp.iOS
 		MPRemoteCommandCenter commandCenter = MPRemoteCommandCenter.Shared;
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
-		double skipInterval = 5;
+		double skipInterval = 30;
 		float seekRate = 10.0f;
 		public static AudioService Instance { get; private set;}
 

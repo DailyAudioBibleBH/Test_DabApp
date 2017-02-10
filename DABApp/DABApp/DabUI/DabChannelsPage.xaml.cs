@@ -30,5 +30,9 @@ namespace DABApp
 			base.OnDisappearing();
 			HideMenu();
 		}
+
+		void OnBrowse(object o, EventArgs e) {
+			Navigation.PushAsync(new DabBrowserPage());
+		}
 	}
 }

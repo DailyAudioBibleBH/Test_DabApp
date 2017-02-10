@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabBrowserPage"
+		xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout>
+			<StackLayout Orientation="Horizontal">
+				<Button Text="Back" Clicked="OnBack" HorizontalOptions="StartAndExpand"/>
+				<Button Text="Open in Browser" Clicked="OnBrowser" HorizontalOptions="CenterAndExpand"/>
+				<Button Text="Forward" Clicked="OnForward" HorizontalOptions="EndAndExpand"/>
+			</StackLayout>
+			<WebView x:Name="Browser" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>

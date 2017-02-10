@@ -18,6 +18,9 @@ namespace DABApp.iOS
 
 			SegmentedControlRenderer.Init();
 
+			var settings = UIUserNotificationSettings.GetSettingsForTypes(UIUserNotificationType.Alert | UIUserNotificationType.Badge, null);
+			UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+
 			LoadApplication(new App());
 
 			return base.FinishedLaunching(app, options);

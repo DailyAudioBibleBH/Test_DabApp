@@ -45,12 +45,12 @@ namespace DABApp
 
 		void OnBack30(object o, EventArgs e)
 		{
-			AudioPlayer.Instance.Player.Skip(-5);
+			AudioPlayer.Instance.Player.Skip(-30);
 		}
 
 		void OnForward30(object o, EventArgs e)
 		{
-			AudioPlayer.Instance.Player.Skip(5);
+			AudioPlayer.Instance.Player.Skip(30);
 		}
 
 		void Handle_ValueChanged(object sender, System.EventArgs e)

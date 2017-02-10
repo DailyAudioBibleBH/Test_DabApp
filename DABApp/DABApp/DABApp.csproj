@@ -66,6 +66,9 @@
     <Compile Include="DabUI\DabPlayerPage.xaml.cs">
       <DependentUpon>DabPlayerPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabBrowserPage.xaml.cs">
+      <DependentUpon>DabBrowserPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -125,6 +128,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabPlayerPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabBrowserPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

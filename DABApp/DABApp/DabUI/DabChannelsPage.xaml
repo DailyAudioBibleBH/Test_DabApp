@@ -7,6 +7,7 @@
 			<Button Text="Episodes" TextColor="White" Clicked="OnEpisodes"/>
 			<Button Text="Player" Clicked="OnPlayer"/>
 			<Button Text="Test" Clicked="OnTest"/>
+			<Button Text="Browse" Clicked="OnBrowse"/>
 			<ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>

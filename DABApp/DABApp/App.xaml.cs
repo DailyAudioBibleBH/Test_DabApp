@@ -16,7 +16,7 @@ namespace DABApp
 			//	BarTextColor = Color.White,
 			//	BarBackgroundColor = Color.Black
 			//};
-			//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+			AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 			////AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 		}
 
