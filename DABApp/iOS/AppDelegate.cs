@@ -63,14 +63,15 @@ namespace DABApp.iOS
 
 			LoadApplication(new App());
 
-			UILocalNotification notification = new UILocalNotification();
-			var fireDate = DateTime.Now.AddSeconds(30);
-			notification.FireDate = (NSDate)fireDate;
-			notification.AlertAction = "View Alert";
-			notification.AlertBody = "Your 30 second alert has fired!";
-			notification.ApplicationIconBadgeNumber = 1;
-			notification.SoundName = UILocalNotification.DefaultSoundName;
-			UIApplication.SharedApplication.ScheduleLocalNotification(notification);
+			//used this to test local notifications and notifications in general.  Uncomment the code below to see a notification 30s after the app loads.
+			//UILocalNotification notification = new UILocalNotification();
+			//var fireDate = DateTime.Now.AddSeconds(30);
+			//notification.FireDate = (NSDate)fireDate;
+			//notification.AlertAction = "View Alert";
+			//notification.AlertBody = "Your 30 second alert has fired!";
+			//notification.ApplicationIconBadgeNumber = 1;
+			//notification.SoundName = UILocalNotification.DefaultSoundName;
+			//UIApplication.SharedApplication.ScheduleLocalNotification(notification);
 
 			return base.FinishedLaunching(app, options);
 		}
