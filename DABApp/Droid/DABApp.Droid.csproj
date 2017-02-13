@@ -99,6 +99,18 @@
     <Reference Include="SegmentedControl.FormsPlugin.Android">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.2.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Gcm">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Gcm.25.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Gcm.dll</HintPath>
+    </Reference>
+    <Reference Include="PushNotification.Plugin.Abstractions">
+      <HintPath>..\packages\Xam.Plugin.PushNotification.1.2.4\lib\MonoAndroid10\PushNotification.Plugin.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="PushNotification.Plugin">
+      <HintPath>..\packages\Xam.Plugin.PushNotification.1.2.4\lib\MonoAndroid10\PushNotification.Plugin.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -118,6 +130,7 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="packages.config" />
+    <None Include="PushNotificationStarted.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
@@ -127,6 +140,15 @@
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
+    <AndroidResource Include="..\iOS\Resources\ic_menu_white.png">
+      <Link>Resources\drawable\ic_menu_white.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\iOS\Resources\ic_settings_white.png">
+      <Link>Resources\drawable\ic_settings_white.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="..\iOS\Resources\ic_attach_money_white.png">
+      <Link>Resources\drawable\ic_attach_money_white.png</Link>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

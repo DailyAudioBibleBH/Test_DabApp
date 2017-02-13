@@ -20,7 +20,6 @@ namespace DABApp.Droid
 		public void SetAudioFile(string fileName)
 		{
 			player = new MediaPlayer();
-			var fd = global::Android.App.Application.Context.Assets.OpenFd(fileName);
 			player.Prepared += (s, e) =>
 			{
 				IsLoaded = true;
@@ -29,7 +28,14 @@ namespace DABApp.Droid
 			{
 				IsLoaded = false;
 			};
-			player.SetDataSource(fd.FileDescriptor, fd.StartOffset, fd.Length);
+			if (fileName.Contains("http"))
+			{
+				player.SetDataSource(fileName);
+			}
+			else {
+				var fd = global::Android.App.Application.Context.Assets.OpenFd(fileName);
+				player.SetDataSource(fd.FileDescriptor, fd.StartOffset, fd.Length);
+			}
 			player.Prepare();
 		}
 
