@@ -8,6 +8,7 @@
 	<permission android:name="dailyaudiobible.dabapp.permission.C2D_MESSAGE"
 		android:protectionLevel="signature"/>
 	<application android:label="DABApp">
+		<receiver android:name="dailyaudiobible.dabapp.AlarmReceiver" ></receiver>
 		<receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
 			<intent-filter>
 				<action android:name="com.google.android.c2dm.intent.RECEIVE"/>

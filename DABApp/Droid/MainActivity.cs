@@ -15,7 +15,8 @@ using Android.Util;
 
 namespace DABApp.Droid
 {
-	
+
+
 	[Activity(Label = "DABApp.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
@@ -30,8 +31,7 @@ namespace DABApp.Droid
 
 			SegmentedControlRenderer.Init();
 
-			CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
-			CrossPushNotification.Current.Register();
+			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
 			LoadApplication(new App());
 		}

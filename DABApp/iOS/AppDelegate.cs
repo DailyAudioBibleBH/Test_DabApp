@@ -21,7 +21,6 @@ namespace DABApp.iOS
 			SegmentedControlRenderer.Init();
 
 			CrossPushNotification.Initialize<CrossPushNotificationListener>();
-			CrossPushNotification.Current.Register();
 
 			LoadApplication(new App());
 

@@ -53,7 +53,7 @@ namespace DABApp.Droid
 
 		public void Skip(int seconds)
 		{
-			throw new NotImplementedException();
+			player.SeekTo((Convert.ToInt32(CurrentTime) + seconds) * 1000);
 		}
 
 		public bool IsInitialized {
@@ -65,15 +65,15 @@ namespace DABApp.Droid
 		}
 
 		public double CurrentTime {
-			get { return player.CurrentPosition;}
+			get { return player.CurrentPosition/1000;}
 		}
 
 		public double RemainingTime {
-			get { return (player.CurrentPosition - player.Duration);}
+			get { return (player.CurrentPosition - player.Duration)/1000;}
 		}
 
 		public double TotalTime {
-			get { return player.Duration;}
+			get { return player.Duration/1000;}
 		}
 
 	}

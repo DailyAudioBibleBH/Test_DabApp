@@ -124,6 +124,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
+    <Compile Include="DABApp.cs" />
+    <Compile Include="CustomRenderers\PlayerSeekBarRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

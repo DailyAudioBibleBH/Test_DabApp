@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PushNotification.Plugin;
 using Xamarin.Forms;
 
 
@@ -16,13 +17,13 @@ namespace DABApp
 			//	BarTextColor = Color.White,
 			//	BarBackgroundColor = Color.Black
 			//};
-			AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-			//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+			//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+			AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 		}
 
 		protected override void OnStart()
 		{
-			// Handle when your app starts
+			CrossPushNotification.Current.Register();
 		}
 
 		protected override void OnSleep()
@@ -51,8 +52,8 @@ namespace DABApp
 				}
 			}
 			else {
-				AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
+				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 				AudioPlayer.Instance.Player.Play();
 				//ProgressBinding();
 				AudioPlayer.Instance.PlayButtonText = "Pause";

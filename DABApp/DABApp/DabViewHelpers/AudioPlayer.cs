@@ -129,7 +129,13 @@ namespace DABApp
 		{
 				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime) && value != 1)
 				{
-					Player.SeekTo(Convert.ToInt32(value));
+					if (Device.OS == TargetPlatform.iOS)
+					{
+						Player.SeekTo(Convert.ToInt32(value));
+					}
+					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 3) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 3)) {
+						Player.SeekTo(Convert.ToInt32(value));
+					}
 				}
 			_CurrentTime = value;
 			OnPropertyChanged("CurrentTime");
