@@ -70,7 +70,7 @@
       <DependentUpon>DabBrowserPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\CrossPushNotificationListener.cs" />
-    <Compile Include="DabViewHelpers\Controls\PlayerSeekBar.cs" />
+    <Compile Include="DabViewHelpers\ItemsStack.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

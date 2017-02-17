@@ -8,8 +8,14 @@ namespace DABApp
 {
 	public partial class DabMenuView : SlideMenuView
 	{
+		List<string> pages;
+
 		public DabMenuView()
 		{
+			pages = new List<string>();
+			pages.Add("About");
+			pages.Add("Settings");
+
 			InitializeComponent();
 
 			// You must set IsFullScreen in this case, 
@@ -28,6 +34,7 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = Color.FromHex("#DDEEEEEE"); //DD = Alpha, EEEEEE = Light Gray
+			pageList.ItemsSource = pages;
 		}
 
 		//Menu Actions
