@@ -5,13 +5,7 @@
 		<Button Text="Channels" Clicked="OnChannels" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="About" Clicked="OnAbout" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="Settings" Clicked="OnSettings" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
-		<local:ItemsStack x:Name="pageList">
-			<local:ItemsStack.ItemTemplate>
-				<DataTemplate>
-					<Button Text="{Binding pages}" HorizontalOptions="Start" TextColor="White" FontSize="Large"/>
-				</DataTemplate>
-			</local:ItemsStack.ItemTemplate>
-		</local:ItemsStack>
+		<local:NonScrollingListView x:Name="pageList" BackgroundColor="Transparent"/>
 		<StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand">
 			<Button Text="Image" HorizontalOptions="Start" VerticalOptions="End"/>
 			<Button Text="Your Name" HorizontalOptions="Start" TextColor="White" VerticalOptions="End"/>

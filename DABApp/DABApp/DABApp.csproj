@@ -32,8 +32,6 @@
     <Compile Include="DabUI\DabChannelsPage.xaml.cs">
       <DependentUpon>DabChannelsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DabViewHelpers\MenuListView.cs" />
-    <Compile Include="DabViewHelpers\MenuListData.cs" />
     <Compile Include="DabUI\DabAboutPage.xaml.cs">
       <DependentUpon>DabAboutPage.xaml</DependentUpon>
     </Compile>
@@ -48,7 +46,6 @@
     <Compile Include="DabViewHelpers\AudioPlayer.cs" />
     <Compile Include="DabViewHelpers\IAudio.cs" />
     <Compile Include="DabViewHelpers\Controls\AudioOutputView.cs" />
-    <Compile Include="DabViewHelpers\Controls\HomePage.cs" />
     <Compile Include="DabUI\BaseUI\DabBaseContentPage.cs" />
     <Compile Include="DabUI\BaseUI\DabMenuView.xaml.cs">
       <DependentUpon>DabMenuView.xaml</DependentUpon>
@@ -70,7 +67,7 @@
       <DependentUpon>DabBrowserPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\CrossPushNotificationListener.cs" />
-    <Compile Include="DabViewHelpers\ItemsStack.cs" />
+    <Compile Include="DabViewHelpers\Controls\NonScrollingListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

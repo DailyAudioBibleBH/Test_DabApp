@@ -125,7 +125,7 @@
     <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
     <Compile Include="DABApp.cs" />
-    <Compile Include="CustomRenderers\PlayerSeekBarRenderer.cs" />
+    <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
