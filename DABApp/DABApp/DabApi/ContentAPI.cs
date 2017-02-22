@@ -52,20 +52,9 @@ namespace DABApp
 			}
 		}
 
-		public static void ParseContent(string jsonOut, string updated) {
-			var content = ContentConfig.Instance;
-			var data = new Data();
-			var blocktext = new Blocktext();
-			data.updated = updated;
-			content.data = data;
-			blocktext.appInfo = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).blocktext.appInfo;
-			blocktext.login = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).blocktext.login;
-			blocktext.resetPassword = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).blocktext.resetPassword;
-			blocktext.signUp = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).blocktext.signUp;
-			blocktext.termsAndConditions = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).blocktext.termsAndConditions;
-			content.blocktext = blocktext;
-			content.nav = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).nav;
-			content.views = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).views;
+		public static void ParseContent(string jsonOut, string updated)
+		{
+			ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
 		}
 	}
 }

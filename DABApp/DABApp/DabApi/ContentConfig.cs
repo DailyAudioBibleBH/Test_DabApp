@@ -77,7 +77,7 @@ namespace DABApp
 		public List<Nav> nav { get; set; }
 		public Blocktext blocktext { get; set; }
 		public List<View> views { get; set; }
-		public static ContentConfig Instance { get; private set;}
+		public static ContentConfig Instance { get; set;}
 		static ContentConfig() {
 			Instance = new ContentConfig();
 		}
