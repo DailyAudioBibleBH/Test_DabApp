@@ -138,6 +138,7 @@
     <Folder Include="DabUI\BaseUI\" />
     <Folder Include="DabUI\Test\" />
     <Folder Include="DabData\" />
+    <Folder Include="DabData\Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">

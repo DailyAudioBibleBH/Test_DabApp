@@ -12,17 +12,12 @@ namespace DABApp
 		{
 			InitializeComponent();
 			MainPage = new NavigationPage(new DabChannelsPage());
-			//MainPage = new NavigationPage(new DabChannelsPage())
-			//{
-			//	BarTextColor = Color.White,
-			//	BarBackgroundColor = Color.Black
-			//};
-			//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 			AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 		}
 
-		protected override void OnStart()
+		protected async override void OnStart()
 		{
+			await ContentAPI.CheckContent();
 			CrossPushNotification.Current.Register();
 		}
 
