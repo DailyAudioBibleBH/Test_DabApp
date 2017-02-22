@@ -30,11 +30,12 @@ namespace DABApp
 			// You must set BackgroundColor, 
 			// and you cannot put another layout with background color cover the whole View
 			// otherwise, it cannot be dragged on Android
-			this.BackgroundColor = Color.White; //This is actually overridden by the menu view XAML
+			//this.BackgroundColor = Color.White; //This is actually overridden by the menu view XAML
 
 			// This is shadow view color, you can set a transparent color
-			this.BackgroundViewColor = Color.FromHex("#DDEEEEEE"); //DD = Alpha, EEEEEE = Light Gray
+			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
 			pageList.ItemsSource = pages;
+			pageList2.ItemsSource = pages;
 		}
 
 		//Menu Actions

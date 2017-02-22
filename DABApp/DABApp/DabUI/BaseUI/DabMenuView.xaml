@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:t="clr-namespace:SlideOverKit" 
 		x:Class="DABApp.DabMenuView" xmlns:local="clr-namespace:DABApp;">
-	<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="Red" Padding="30" HeightRequest="1000">
-		<Button Text="Channels" Clicked="OnChannels" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
-		<Button Text="About" Clicked="OnAbout" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
-		<Button Text="Settings" Clicked="OnSettings" TextColor="White" HorizontalOptions="Start" FontSize="Large"/>
-		<local:NonScrollingListView x:Name="pageList" BackgroundColor="Transparent"/>
+	<StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0" BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
+		<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
+		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
+		<Button Text="Settings" Clicked="OnSettings" HorizontalOptions="Start" FontSize="Large"/>
+		<local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" />
+		<ListView x:Name="pageList2" BackgroundColor="Transparent" />
 		<StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand">
 			<Button Text="Image" HorizontalOptions="Start" VerticalOptions="End"/>
-			<Button Text="Your Name" HorizontalOptions="Start" TextColor="White" VerticalOptions="End"/>
+			<Button Text="Your Name" HorizontalOptions="Start" VerticalOptions="End"/>
 			<Button Image="ic_settings_white.png" HorizontalOptions="EndAndExpand" VerticalOptions="End"/>
 		</StackLayout>
 	</StackLayout>

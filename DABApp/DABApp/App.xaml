@@ -2,11 +2,21 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<Application.Resources>
 		<ResourceDictionary>
-
 			<!--Theme Values-->
-			<Color x:Key="backgroundColor">#552222</Color>
-			<Color x:Key="textColor">#DDDDDD</Color>
-
+			<Color x:Key="PageBackgroundColor">#292929</Color>
+			<!--Color provided by LUTD for page backgrounds: #292929-->
+			<Color x:Key="InputBackgroundColor">#444444</Color>
+			<!--Color provided by LUTD for input background: #444444-->
+			<Color x:Key="TextColor">#FFFFFF</Color>
+			<!--Color provided by LUTD for normal text throughout the app: #FFFFFF-->
+			<Color x:Key="SecondaryTextColor">#AFAFAF</Color>
+			<!--Color provided by LUTD for secondary text color: #AFAFAF-->
+			<Color x:Key="HighlightColor">#D5272E</Color>
+			<!--Color provided by LUTD for highlights and important buttons: #D5272E-->
+			<Color x:Key="NavBarBackgroundColor">#444444</Color>
+			<!--Color provided by LUTD for nav bar background: #444444-->
+			<Color x:Key="SlideMenuBackgroundColor">#D5272E</Color>
+			<!--Color provided by LUTD for slider menu: #D5272E-->
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<StackLayout VerticalOptions="FillAndExpand">
@@ -16,16 +26,52 @@
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
 			</ControlTemplate>
-
 			<!--Theme Styles-->
+			<!--Content Page-->
+			<Style x:Key="pageStyle" TargetType="ContentPage">
+				<Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+			</Style>
+			<Style BasedOn="{StaticResource pageStyle}" TargetType="ContentPage" ApplyToDerivedTypes="true" />
+			<!--Label-->
 			<Style x:Key="labelStyle" TargetType="Label">
-            	<Setter Property="TextColor" Value="{DynamicResource textColor}" />
-        	</Style>
-
-        	<Style x:Key="backgroundStyle" TargetType="VisualElement">
-           		<Setter Property="BackgroundColor" Value="{DynamicResource backgroundColor}" />
-        	</Style>
-
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+			</Style>
+			<Style BasedOn="{StaticResource labelStyle}" TargetType="Label" ApplyToDerivedTypes="true" />
+			<!--Secondary Label-->
+			<Style x:Key="secondaryLabelStyle" TargetType="Label">
+				<Setter Property="TextColor" Value="{DynamicResource SecondaryTextColor}" />
+			</Style>
+			<!--Entry-->
+			<Style x:Key="entryStyle" TargetType="Entry">
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
+			</Style>
+			<Style BasedOn="{StaticResource entryStyle}" TargetType="Entry" ApplyToDerivedTypes="true" />
+			<!--Button-->
+			<Style x:Key="buttonStyle" TargetType="Button">
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BorderRadius" Value="3" />
+				<Setter Property="BorderWidth" Value="1" />
+			</Style>
+			<Style BasedOn="{StaticResource buttonStyle}" TargetType="Button" ApplyToDerivedTypes="true" />
+			<!--Highlighted Button-->
+			<Style x:Key="highlightedButtonStyle" TargetType="Button">
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
+			</Style>
+			<!--ListView-->
+			<Style x:Key="listviewStyle" TargetType="ListView">
+				<Setter Property="SeparatorColor" Value="Transparent" />
+			</Style>
+			<Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
+			<!--TextCell-->
+			<Style x:Key="textcellStyle" TargetType="TextCell">
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="DetailColor" Value="{DynamicResource SecondaryTextColor}" />
+			</Style>
+			<Style BasedOn="{StaticResource textcellStyle}" TargetType="TextCell" ApplyToDerivedTypes="true" />
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
