@@ -10,6 +10,10 @@ namespace DABApp
 		public DabTestContentPage()
 		{
 			InitializeComponent();
+			List<string> l = new List<string>();
+			l.Add("hello");
+			l.Add("world");
+			lvTest.ItemsSource = l;
 		}
 
 		void Handle_Clicked(object sender, System.EventArgs e)

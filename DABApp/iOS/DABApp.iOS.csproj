@@ -163,6 +163,7 @@
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
+    <Compile Include="CustomRenderers\DabTextCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\ic_menu_white.png" />

@@ -8,6 +8,7 @@
 			<Label Text="Hello world. This is a page inherited from DabBaseContentPage with custom content" FontSize="Micro" />
 			<Button Text="Primary Button - New Page" FontSize="Small" Clicked="Handle_Clicked" Style="{StaticResource highlightedButtonStyle}"/>
 			<Button Text="Normal Button - Load Audio File" FontSize="Micro" Clicked="Handle_LoadAudioFile"/>
+			<ListView  x:Name="lvTest"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

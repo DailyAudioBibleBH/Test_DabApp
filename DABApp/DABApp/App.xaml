@@ -64,6 +64,7 @@
 			<!--ListView-->
 			<Style x:Key="listviewStyle" TargetType="ListView">
 				<Setter Property="SeparatorColor" Value="Transparent" />
+				<Setter Property="BackgroundColor" Value="Transparent"/>
 			</Style>
 			<Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
 			<!--TextCell-->
