@@ -66,5 +66,13 @@ namespace DABApp
 				}
 			}
 		}
+
+		void OnItemTapped(object o, ItemTappedEventArgs e) {
+			var item = (Nav)e.Item;
+			switch(item.view.ToUpper()){ 
+				case "Channels":
+				break;
+			}
+		}
 	}
 }

@@ -76,6 +76,9 @@
     <Compile Include="DabUI\DabNetworkUnavailablePage.xaml.cs">
       <DependentUpon>DabNetworkUnavailablePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\BaseUI\DabContentView.xaml.cs">
+      <DependentUpon>DabContentView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -173,6 +176,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabNetworkUnavailablePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\BaseUI\DabContentView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

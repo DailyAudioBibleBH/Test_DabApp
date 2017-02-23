@@ -5,7 +5,8 @@
 		<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="Settings" Clicked="OnSettings" HorizontalOptions="Start" FontSize="Large"/>
-		<local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}">
+		<local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}"
+				ItemTapped="OnItemSelected">
 			<local:NonScrollingListView.ItemTemplate>
 				<DataTemplate>
 					<TextCell Text="{Binding title}"/>
