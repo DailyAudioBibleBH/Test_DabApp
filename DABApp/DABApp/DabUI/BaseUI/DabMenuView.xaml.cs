@@ -34,7 +34,6 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-			pageList.ItemsSource = pages;
 		}
 
 		//Menu Actions
