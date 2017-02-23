@@ -2,7 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerBar" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<ContentView.Content>
 		<StackLayout>
-			<Label Text="Player bar will appear below when loaded." FontSize="Micro" HorizontalOptions="CenterAndExpand" TextColor="Red" />
+			<Label Text="Player bar will appear below when loaded." FontSize="Micro" HorizontalOptions="CenterAndExpand" />
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End" HeightRequest="70" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}">
 				<StackLayout Orientation="Horizontal" HeightRequest="40"  HorizontalOptions="FillAndExpand">
 					<Button Text="Show Player" FontSize="Micro" Clicked="OnShowPlayer" />

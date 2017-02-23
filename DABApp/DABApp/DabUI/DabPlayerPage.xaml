@@ -4,7 +4,7 @@
 		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
 		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<t:MenuContainerPage.Content>
-		<StackLayout x:Name="Container" BackgroundColor="Red" VerticalOptions="FillAndExpand">
+		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand">
 			<StackLayout Padding="20" Spacing="20">
 			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
 				<controls:SegmentedControl.Children>
@@ -14,7 +14,7 @@
 				</controls:SegmentedControl.Children>
 			</controls:SegmentedControl>
 				</StackLayout>
-			<StackLayout x:Name="Listen" IsVisible="true" BackgroundColor="Red" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+			<StackLayout x:Name="Listen" IsVisible="true"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 			<Label Text="Player"/>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
@@ -29,14 +29,14 @@
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 				</StackLayout>
-			<ScrollView x:Name="Read" IsVisible="false" VerticalOptions="FillAndExpand" BackgroundColor="Black" HeightRequest="1200">
-			<StackLayout BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-				<local:HtmlLabel x:Name="HLabel" TextColor="White"/>
+			<ScrollView x:Name="Read" IsVisible="false" VerticalOptions="FillAndExpand"  HeightRequest="1200">
+			<StackLayout VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<local:HtmlLabel x:Name="HLabel" />
 			</StackLayout>
 				</ScrollView>
-			<StackLayout x:Name="Journal" IsVisible="false" BackgroundColor="Black" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-				<Label Text="Date" TextColor="White"/>
-				<Entry Placeholder="Your text here." TextColor="White"/>
+			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<Label Text="Date" />
+				<Entry Placeholder="Your text here."/>
 			</StackLayout>
 			<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="70" IsVisible="false">
 				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="40">

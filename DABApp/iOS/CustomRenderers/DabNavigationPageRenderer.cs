@@ -24,9 +24,9 @@ namespace DABApp.iOS
 			base.ViewDidLoad();
 
 			//Customize the navigation bar 
-			this.NavigationBar.TintColor = UIColor.White;
-			this.NavigationBar.BarTintColor = UIColor.DarkGray;
-			this.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
+			this.NavigationBar.TintColor = ((Color)App.Current.Resources["TextColor"]).ToUIColor();
+			this.NavigationBar.BarTintColor = ((Color)App.Current.Resources["NavBarBackgroundColor"]).ToUIColor();
+			this.NavigationBar.BarStyle = UIBarStyle.BlackOpaque;
 
 		}
 

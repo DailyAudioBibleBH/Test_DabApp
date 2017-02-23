@@ -58,14 +58,14 @@ namespace DABApp
 			switch (SegControl.SelectedSegment)
 			{
 				case 0:
-					Container.BackgroundColor = Color.Red;
+					Container.BackgroundColor = Color.Purple;
 					Read.IsVisible = false;
 					Journal.IsVisible = false;
 					stackFooterContent.IsVisible = false;
 					Listen.IsVisible = true;
 					break;
 				case 1:
-					Container.BackgroundColor = Color.Black;
+					Container.BackgroundColor = Color.Green;
 					Listen.IsVisible = false;
 					Journal.IsVisible = false;
 					if (AudioPlayer.Instance.IsInitialized)
@@ -75,7 +75,7 @@ namespace DABApp
 					Read.IsVisible = true;
 					break;
 				case 2:
-					Container.BackgroundColor = Color.Black;
+					Container.BackgroundColor = Color.Yellow;
 					Read.IsVisible = false;
 					Listen.IsVisible = false;
 					if (AudioPlayer.Instance.IsInitialized)
