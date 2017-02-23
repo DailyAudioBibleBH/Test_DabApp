@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabNetworkUnavailablePage"
+		xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout Padding="20" Spacing="20">
+			<Label Text="The API cannot be contacted at this time.  Please check your network and/or internet connection and try again." HorizontalTextAlignment="Center"
+				HorizontalOptions="Center" VerticalOptions="EndAndExpand"/>
+			<Button x:Name="TryAgain" Text="Try Again" Clicked="OnTryAgain" HorizontalOptions="Center" VerticalOptions="StartAndExpand"/>
+			<Label x:Name="Message" Text="Still not connected this may be a problem on our end sorry." HorizontalTextAlignment="Center" HorizontalOptions="Center" IsVisible="false"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>

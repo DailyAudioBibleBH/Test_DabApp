@@ -10,10 +10,15 @@ namespace DABApp
 	{
 		public App()
 		{
-			CheckContent();
 			InitializeComponent();
-			MainPage = new NavigationPage(new DabChannelsPage());
-			AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
+			if (ContentAPI.CheckContent())
+			{
+				MainPage = new NavigationPage(new DabChannelsPage());
+			}
+			else {
+				MainPage = new DabNetworkUnavailablePage();
+			}
+			//AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 		}
 
 		protected override void OnStart()
@@ -59,10 +64,6 @@ namespace DABApp
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			page.PushAsync(new DabPlayerPage());
 
-		}
-
-		async void CheckContent() { 
-			await ContentAPI.CheckContent();
 		}
 
 		//void ProgressBinding() {

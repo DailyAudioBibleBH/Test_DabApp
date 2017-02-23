@@ -13,17 +13,12 @@ namespace DABApp
 		private static int SynchTimeout = 10000;
 
 
-		public static async Task<bool> CheckContent() {
+		public static bool CheckContent() {
 			var settings = db.Table<dbSettings>().FirstOrDefault();
 			try{
 				var client = new System.Net.Http.HttpClient();
-				var PreResult = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content");
-				if (!(await Task.WhenAny(PreResult, Task.Delay(SynchTimeout)) == PreResult))
-				{
-					throw new Exception();
-				}
-				var result = await PreResult;
-				string jsonOut = await result.Content.ReadAsStringAsync();
+				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content").Result;
+				string jsonOut = result.Content.ReadAsStringAsync().Result;
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (settings == null)
 				{
@@ -47,8 +42,14 @@ namespace DABApp
 				return true;
 			}
 			catch (Exception e) {
-				ParseContent(settings.Value, settings.Key);
-				return false;
+				if (settings == null)
+				{
+					return false;
+				}
+				else {
+					ParseContent(settings.Value, settings.Key);
+					return true;
+				}
 			}
 		}
 
