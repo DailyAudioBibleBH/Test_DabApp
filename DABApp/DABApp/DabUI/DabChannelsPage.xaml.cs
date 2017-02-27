@@ -32,7 +32,7 @@ namespace DABApp
 		}
 
 		void OnBrowse(object o, EventArgs e) {
-			Navigation.PushAsync(new DabBrowserPage());
+			Navigation.PushAsync(new DabBrowserPage("http://c2itconsulting.net/"));
 		}
 	}
 }

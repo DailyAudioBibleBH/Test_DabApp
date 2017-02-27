@@ -7,12 +7,13 @@ namespace DABApp
 {
 	public partial class DabBrowserPage : DabBaseContentPage
 	{
-		string url = "http://c2itconsulting.net/";
+		string uri;
 
-		public DabBrowserPage()
+		public DabBrowserPage(string url)
 		{
 			InitializeComponent();
 			Browser.Source = url;
+			uri = url;
 		}
 
 		void OnBack(object o, EventArgs e) {
@@ -29,7 +30,7 @@ namespace DABApp
 		}
 
 		void OnBrowser(object o, EventArgs e) {
-			Device.OpenUri(new Uri(url));
+			Device.OpenUri(new Uri(uri));
 		}
 	}
 }

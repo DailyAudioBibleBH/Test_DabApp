@@ -5,19 +5,19 @@
 		<StackLayout Padding="0" Spacing="0">
 			<RelativeLayout>
 				<Image x:Name="banner"/>
-				<StackLayout>
-					<Label Text="{Binding title}"/>
+				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="Center"/>
 				</StackLayout>
 			</RelativeLayout>
-			<local:NonScrollingListView ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
+			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<TextCell Text="{Binding title}"/>
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<local:HtmlLabel Text="{Binding content}"/>
-			<local:NonScrollingListView ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
+			<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
+			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<TextCell Text="{Binding linkText}"/>
