@@ -68,10 +68,15 @@ namespace DABApp
 		}
 
 		void OnItemTapped(object o, ItemTappedEventArgs e) {
-			var item = (Nav)e.Item;
-			switch(item.view.ToUpper()){ 
-				case "Channels":
-				break;
+			Nav item = (Nav)e.Item;
+			if (item.view == 56)
+			{
+				Navigation.PopToRootAsync();
+			}
+			else {
+				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
+				Navigation.PushAsync(new DabContentView(view));
+				RemovePages();
 			}
 		}
 	}

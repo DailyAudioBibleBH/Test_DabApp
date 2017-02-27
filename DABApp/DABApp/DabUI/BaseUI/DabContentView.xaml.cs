@@ -19,5 +19,15 @@ namespace DABApp
 				banner.Source = contentView.banner.urlTablet;
 			}
 		}
+
+		void OnChildTapped(object o, ItemTappedEventArgs e) {
+			var item = (View)e.Item;
+			Navigation.PushAsync(new DabContentView(item));
+		}
+
+		void OnLinkTapped(object o, ItemTappedEventArgs e) {
+			var item = (Link)e.Item;
+			Device.OpenUri(new Uri(item.link));
+		}
 	}
 }

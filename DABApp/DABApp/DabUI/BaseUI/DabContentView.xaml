@@ -1,21 +1,29 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
-		<StackLayout>
+		<StackLayout Padding="0" Spacing="0">
 			<RelativeLayout>
 				<Image x:Name="banner"/>
 				<StackLayout>
 					<Label Text="{Binding title}"/>
 				</StackLayout>
-				<local:NonScrollingListView ItemsSource="{Binding children}">
-					<local:NonScrollingListView.ItemTemplate>
-						<DataTemplate>
-							<TextCell Text="{Binding title}"/>
-						</DataTemplate>
-					</local:NonScrollingListView.ItemTemplate>
-				</local:NonScrollingListView>
 			</RelativeLayout>
+			<local:NonScrollingListView ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<TextCell Text="{Binding title}"/>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
+			<local:HtmlLabel Text="{Binding content}"/>
+			<local:NonScrollingListView ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<TextCell Text="{Binding linkText}"/>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
