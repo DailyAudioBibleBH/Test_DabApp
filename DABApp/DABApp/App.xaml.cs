@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using PushNotification.Plugin;
 using Xamarin.Forms;
-
+using DLToolkit.Forms.Controls;
 
 namespace DABApp
 {
@@ -11,6 +11,9 @@ namespace DABApp
 		public App()
 		{
 			InitializeComponent();
+
+			FlowListView.Init();
+
 			if (ContentAPI.CheckContent())
 			{
 				MainPage = new NavigationPage(new DabChannelsPage());
