@@ -11,7 +11,7 @@ namespace DABApp
 
 			//Default Page properties
 			this.Title = "DAILY AUDIO BIBLE";
-			this.Padding = new Thickness(10, 10); //Add some padding around all page controls
+			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
 
 			//Control template (adds the player bar)
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];

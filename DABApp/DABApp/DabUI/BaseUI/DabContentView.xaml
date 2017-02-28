@@ -2,11 +2,11 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
-		<StackLayout Padding="0" Spacing="0">
-			<RelativeLayout>
-				<Image x:Name="banner"/>
-				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
-					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="Center"/>
+		<StackLayout>
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
 				</StackLayout>
 			</RelativeLayout>
 			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
