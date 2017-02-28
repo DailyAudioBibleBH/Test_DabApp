@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -7,10 +8,23 @@ namespace DABApp
 {
 	public partial class DabChannelsPage : DabBaseContentPage
 	{
+		View ChannelView;
+
 		public DabChannelsPage()
 		{
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
+			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
+			BindingContext = ChannelView;
+			Header.Text = ChannelView.banner.content;
+			if (Device.Idiom == TargetIdiom.Phone)
+			{
+				banner.Source = ChannelView.banner.urlPhone;
+			}
+			else 
+			{
+				banner.Source = ChannelView.banner.urlTablet;
+			}
 		}
 
 		void OnEpisodes(object o, EventArgs e) {
