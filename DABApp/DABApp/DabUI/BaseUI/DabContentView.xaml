@@ -16,7 +16,9 @@
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
+			<StackLayout Padding="10">
+				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
+			</StackLayout>
 			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
