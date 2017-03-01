@@ -16,14 +16,14 @@
 					<Button Text="Listen Now" Clicked="OnPlayer"/>
 				</StackLayout>
 			</RelativeLayout>
-			<StackLayout Padding="15" Spacing="10">
+			<StackLayout Padding="10" Spacing="10">
 				<Label Text="{Binding title}"/>
-			<flv:FlowListView FlowColumnCount="2" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="false"
-					FlowItemTapped="OnChannel" RowHeight="100">
+			<flv:FlowListView FlowColumnCount="2" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true"
+					FlowItemTapped="OnChannel" RowHeight="175">
 				<flv:FlowListView.FlowColumnTemplate>
 					<DataTemplate>
-						<StackLayout>
-							<Image Aspect="AspectFit" Source="{Binding images.thumbnail}"/>
+						<StackLayout Padding="5" Spacing="5">
+							<Image Aspect="AspectFill" Source="{Binding images.thumbnail}"/>
 							<Label Text="{Binding title}"/>
 						</StackLayout>
 					</DataTemplate>
