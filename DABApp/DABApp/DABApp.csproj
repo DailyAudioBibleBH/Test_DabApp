@@ -81,6 +81,9 @@
     </Compile>
     <Compile Include="DabApi\AuthenticationAPI.cs" />
     <Compile Include="DabApi\APIToken.cs" />
+    <Compile Include="DabUI\DabSignUpPage.xaml.cs">
+      <DependentUpon>DabSignUpPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -184,6 +187,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabLoginPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabSignUpPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

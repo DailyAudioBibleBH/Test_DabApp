@@ -10,6 +10,7 @@ namespace DABApp
 		public DabLoginPage()
 		{
 			InitializeComponent();
+			NavigationPage.SetHasNavigationBar(this, false);
 		}
 
 		async void OnLogin(object o, EventArgs e) {
@@ -20,6 +21,10 @@ namespace DABApp
 			else {
 				DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
 			}
+		}
+
+		void OnSignUp(object o, EventArgs e) {
+			Navigation.PushAsync(new DabSignUpPage());
 		}
 	}
 }
