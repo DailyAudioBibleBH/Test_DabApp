@@ -26,6 +26,13 @@
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
 			</ControlTemplate>
+			<!--Player Bar ControlTemplate WITHOUT ScrollView-->
+			<ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
+				<StackLayout VerticalOptions="FillAndExpand">
+					<ContentPresenter VerticalOptions="FillAndExpand" />
+					<local:DabPlayerBar VerticalOptions="End" />
+				</StackLayout>
+			</ControlTemplate>
 			<!--Theme Styles-->
 			<!--Content Page-->
 			<Style x:Key="pageStyle" TargetType="ContentPage">
