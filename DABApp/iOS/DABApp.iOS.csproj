@@ -29,7 +29,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
+    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -84,7 +84,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
+    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -188,18 +188,16 @@
     <Compile Include="CustomRenderers\DabTextCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <BundleResource Include="Resources\sample.mp3" />
     <BundleResource Include="Resources\ic_menu_white.png" />
     <BundleResource Include="Resources\ic_menu_white_2x.png" />
     <BundleResource Include="Resources\ic_menu_white_3x.png" />
     <BundleResource Include="Resources\ic_settings_white_2x.png" />
     <BundleResource Include="Resources\ic_settings_white_3x.png" />
-    <BundleResource Include="Resources\sample.mp3" />
     <BundleResource Include="Resources\ic_attach_money_white_2x.png" />
     <BundleResource Include="Resources\ic_attach_money_white_3x.png" />
     <BundleResource Include="Resources\ic_attach_money_white.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\ic_settings_white.png" />
+    <BundleResource Include="Resources\ic_settings_white.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />

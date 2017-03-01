@@ -14,6 +14,12 @@ namespace DABApp
 		public DabChannelsPage()
 		{
 			InitializeComponent();
+
+			//Choose a different control template to disable built in scroll view
+			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			this.ControlTemplate = playerBarTemplate;
+
+
 			DabViewHelper.InitDabForm(this);
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			BindingContext = ChannelView;
@@ -26,6 +32,13 @@ namespace DABApp
 			{
 				banner.Source = ChannelView.banner.urlTablet;
 			}
+
+			bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
+			{
+				//resize the banner image to match the banner content container's height
+				banner.HeightRequest = bannerContentContainer.Height;
+			};
+
 		}
 
 		void OnEpisodes(object o, EventArgs e) {

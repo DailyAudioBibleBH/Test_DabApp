@@ -1,34 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" 
-		xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;"
-	xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
 	<t:MenuContainerPage.Content>
 		<StackLayout>
-			<!--<Button Text="Episodes" Clicked="OnEpisodes"/>
-			<Button Text="Player" Clicked="OnPlayer"/>
-			<Button Text="Test" Clicked="OnTest" Style="{StaticResource highlightedButtonStyle}"/>
-			<Button Text="Browse" Clicked="OnBrowse"/>
-			<ContentView VerticalOptions="EndAndExpand"/>-->
-			<RelativeLayout HeightRequest="260">
-				<Image x:Name="banner" Aspect="AspectFill"/>
-				<StackLayout Padding="15" Spacing="10" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
-					<local:HtmlLabel x:Name="bannerContent"/>
-					<Button Text="Listen Now" Clicked="OnPlayer"/>
+			<RelativeLayout>
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
+				<StackLayout x:Name="bannerContentContainer" Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+					<local:HtmlLabel x:Name="bannerContent" />
+					<Button Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" />
 				</StackLayout>
 			</RelativeLayout>
 			<StackLayout Padding="10" Spacing="10">
-				<Label Text="{Binding title}"/>
-			<flv:FlowListView FlowColumnCount="2" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true"
-					FlowItemTapped="OnChannel" RowHeight="175">
-				<flv:FlowListView.FlowColumnTemplate>
-					<DataTemplate>
-						<StackLayout Padding="5" Spacing="5">
-							<Image Aspect="AspectFill" Source="{Binding images.thumbnail}"/>
-							<Label Text="{Binding title}"/>
-						</StackLayout>
-					</DataTemplate>
-				</flv:FlowListView.FlowColumnTemplate>
-			</flv:FlowListView>
+				<Label Text="{Binding title}" />
+				<flv:FlowListView FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
+					<flv:FlowListView.FlowColumnTemplate>
+						<DataTemplate>
+							<StackLayout Padding="5" Spacing="5">
+								<Image Aspect="AspectFit" Source="{Binding images.thumbnail}" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}" />
+								<Label Text="{Binding title}" />
+							</StackLayout>
+						</DataTemplate>
+					</flv:FlowListView.FlowColumnTemplate>
+				</flv:FlowListView>
 			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
