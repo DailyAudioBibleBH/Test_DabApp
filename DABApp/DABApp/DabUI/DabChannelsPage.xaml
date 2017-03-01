@@ -9,21 +9,21 @@
 			<Button Text="Test" Clicked="OnTest" Style="{StaticResource highlightedButtonStyle}"/>
 			<Button Text="Browse" Clicked="OnBrowse"/>
 			<ContentView VerticalOptions="EndAndExpand"/>-->
-			<RelativeLayout HeightRequest="260">
-				<Image x:Name="banner" Aspect="AspectFill"/>
-				<StackLayout Padding="15" Spacing="10" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+			<RelativeLayout>
+				<Image x:Name="banner" Aspect="AspectFit" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+				<StackLayout Padding="15" Spacing="10" BackgroundColor="Blue" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent"/>
 					<Button Text="Listen Now" Clicked="OnPlayer"/>
 				</StackLayout>
 			</RelativeLayout>
 			<StackLayout Padding="10" Spacing="10">
 				<Label Text="{Binding title}"/>
-			<flv:FlowListView FlowColumnCount="2" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true"
-					FlowItemTapped="OnChannel" RowHeight="175">
+			<flv:FlowListView FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" 
+					FlowItemTapped="OnChannel" HasUnevenRows="true" >
 				<flv:FlowListView.FlowColumnTemplate>
 					<DataTemplate>
 						<StackLayout Padding="5" Spacing="5">
-							<Image Aspect="AspectFill" Source="{Binding images.thumbnail}"/>
+							<Image Aspect="AspectFit" Source="{Binding images.thumbnail}" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}" />
 							<Label Text="{Binding title}"/>
 						</StackLayout>
 					</DataTemplate>
