@@ -32,9 +32,6 @@
     <Compile Include="DabUI\DabChannelsPage.xaml.cs">
       <DependentUpon>DabChannelsPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DabUI\DabAboutPage.xaml.cs">
-      <DependentUpon>DabAboutPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DabUI\DabEpisodesPage.xaml.cs">
       <DependentUpon>DabEpisodesPage.xaml</DependentUpon>
     </Compile>
@@ -79,6 +76,11 @@
     <Compile Include="DabUI\BaseUI\DabContentView.xaml.cs">
       <DependentUpon>DabContentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabLoginPage.xaml.cs">
+      <DependentUpon>DabLoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabApi\AuthenticationAPI.cs" />
+    <Compile Include="DabApi\APIToken.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -153,9 +155,6 @@
     <EmbeddedResource Include="DabUI\DabChannelsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\DabAboutPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabEpisodesPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -182,6 +181,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\BaseUI\DabContentView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabLoginPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

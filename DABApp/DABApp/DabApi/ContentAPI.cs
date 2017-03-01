@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SQLite;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace DABApp
 {
@@ -14,46 +15,52 @@ namespace DABApp
 
 
 		public static bool CheckContent() {
-			var settings = db.Table<dbSettings>().FirstOrDefault();
+			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
+			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
 			try{
 				var client = new System.Net.Http.HttpClient();
 				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString()).Result; //Appended the GUID to avoid caching.
 				string jsonOut = result.Content.ReadAsStringAsync().Result;
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
-				if (settings == null)
+				if (ContentSettings == null || DataSettings == null)
 				{
-					settings = new dbSettings();
-					settings.Key = updated;
-					settings.Value = jsonOut;
-					db.Insert(settings);
-					ParseContent(jsonOut, updated);
+					ContentSettings = new dbSettings();
+					ContentSettings.Key = "ContentJSON";
+					ContentSettings.Value = jsonOut;
+					DataSettings = new dbSettings();
+					DataSettings.Key = "data";
+					DataSettings.Value = updated;
+					db.Insert(ContentSettings);
+					db.Insert(DataSettings);
+
+					ParseContent(jsonOut);
 				}
 				else {
-					if (settings.Key == updated)
+					if (DataSettings.Value == updated)
 					{
-						ParseContent(settings.Value, settings.Key);
+						ParseContent(ContentSettings.Value);
 					}
 					else {
-						settings.Key = updated;
-						settings.Value = jsonOut;
-						ParseContent(jsonOut, updated);
+						DataSettings.Value = updated;
+						ContentSettings.Value = jsonOut;
+						ParseContent(jsonOut);
 					}
 				}
 				return true;
 			}
 			catch (Exception e) {
-				if (settings == null)
+				if (ContentSettings == null)
 				{
 					return false;
 				}
 				else {
-					ParseContent(settings.Value, settings.Key);
+					ParseContent(ContentSettings.Value);
 					return true;
 				}
 			}
 		}
 
-		public static void ParseContent(string jsonOut, string updated)
+		public static void ParseContent(string jsonOut)
 		{
 			ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
 		}

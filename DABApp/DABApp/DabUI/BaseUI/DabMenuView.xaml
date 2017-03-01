@@ -2,7 +2,10 @@
 <t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:t="clr-namespace:SlideOverKit" 
 		x:Class="DABApp.DabMenuView" xmlns:local="clr-namespace:DABApp;">
 	<StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0" BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
-		<local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}" VerticalOptions="StartAndExpand"
+		<!--<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
+		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
+		<Button Text="Settings" Clicked="OnSettings" HorizontalOptions="Start" FontSize="Large"/>-->
+		<local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}"
 				ItemTapped="OnItemTapped">
 			<local:NonScrollingListView.ItemTemplate>
 				<DataTemplate>
@@ -18,4 +21,3 @@
 		</StackLayout>
 	</StackLayout>
 </t:SlideMenuView>
-

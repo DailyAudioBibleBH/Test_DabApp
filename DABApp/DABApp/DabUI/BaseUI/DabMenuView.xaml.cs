@@ -38,16 +38,10 @@ namespace DABApp
 
 		//Menu Actions
 
-		void OnChannels(object o, EventArgs e)
-		{
-			Navigation.PopToRootAsync();
-		}
-
-		void OnAbout(object o, EventArgs e)
-		{
-			Navigation.PushAsync(new DabAboutPage());
-			RemovePages();
-		}
+		//void OnChannels(object o, EventArgs e)
+		//{
+		//	Navigation.PopToRootAsync();
+		//}
 
 		void OnSettings(object o, EventArgs e)
 		{
