@@ -10,6 +10,7 @@
 				</DataTemplate>
 			</local:NonScrollingListView.ItemTemplate>
 		</local:NonScrollingListView>
+		<BoxView HeightRequest="1" HorizontalOptions="FillAndExpand"  BackgroundColor="{StaticResource TextColor}"/>
 		<StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand">
 			<Label Text="[Avatar]" HorizontalOptions="Start" VerticalOptions="Center"/>
 			<Label Text="[User Name]" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
@@ -17,3 +18,4 @@
 		</StackLayout>
 	</StackLayout>
 </t:SlideMenuView>
+
