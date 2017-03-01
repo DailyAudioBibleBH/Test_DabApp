@@ -9,7 +9,7 @@
 				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
 				<StackLayout x:Name="bannerContentContainer" Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent"/>
-					<Button Text="Listen Now" Clicked="OnPlayer"/>
+					<Button Text="Listen Now" Clicked="OnPlayer"  WidthRequest="250" HorizontalOptions="Start" />
 				</StackLayout>
 			</RelativeLayout>
 			<StackLayout Padding="10" Spacing="10">

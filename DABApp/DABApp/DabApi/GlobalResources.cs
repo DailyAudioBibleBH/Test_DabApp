@@ -36,5 +36,7 @@ namespace DABApp
 				return (App.Current.MainPage.Width  / FlowListViewColumns) - knownPadding;
 			}
 		}
+
+	
 	}
 }
