@@ -26,6 +26,13 @@ namespace DABApp
 			{
 				banner.Source = ChannelView.banner.urlTablet;
 			}
+
+			bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
+			{
+				//resize the banner image to match the banner content container's height
+				banner.HeightRequest = bannerContentContainer.Height;
+			};
+
 		}
 
 		void OnEpisodes(object o, EventArgs e) {

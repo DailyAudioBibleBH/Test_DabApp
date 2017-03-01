@@ -4,14 +4,10 @@
 	xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
 	<t:MenuContainerPage.Content>
 		<StackLayout>
-			<!--<Button Text="Episodes" Clicked="OnEpisodes"/>
-			<Button Text="Player" Clicked="OnPlayer"/>
-			<Button Text="Test" Clicked="OnTest" Style="{StaticResource highlightedButtonStyle}"/>
-			<Button Text="Browse" Clicked="OnBrowse"/>
-			<ContentView VerticalOptions="EndAndExpand"/>-->
+
 			<RelativeLayout>
-				<Image x:Name="banner" Aspect="AspectFit" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
-				<StackLayout Padding="15" Spacing="10" BackgroundColor="Blue" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+				<StackLayout x:Name="bannerContentContainer" Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent"/>
 					<Button Text="Listen Now" Clicked="OnPlayer"/>
 				</StackLayout>
