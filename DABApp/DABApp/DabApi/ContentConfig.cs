@@ -11,7 +11,7 @@ namespace DABApp
 	public class Nav
 	{
 		public string title { get; set; }
-		public string view { get; set; }
+		public int view { get; set; }
 	}
 
 	public class Blocktext

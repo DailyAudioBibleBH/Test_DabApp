@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
+		xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout>
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+				</StackLayout>
+			</RelativeLayout>
+			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<TextCell Text="{Binding title}"/>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
+			<StackLayout Padding="10">
+				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
+			</StackLayout>
+			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<TextCell Text="{Binding linkText}"/>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>
