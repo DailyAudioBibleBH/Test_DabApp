@@ -43,11 +43,11 @@ namespace DABApp
 		//	Navigation.PopToRootAsync();
 		//}
 
-		//void OnSettings(object o, EventArgs e)
-		//{
-		//	Navigation.PushAsync(new DabSettingsPage());
-		//	RemovePages();
-		//}
+		void OnSettings(object o, EventArgs e)
+		{
+			Navigation.PushAsync(new DabSettingsPage());
+			RemovePages();
+		}
 
 		void RemovePages()
 		{

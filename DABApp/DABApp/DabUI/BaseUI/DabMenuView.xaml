@@ -18,10 +18,6 @@
 			<Label Text="[Avatar]" HorizontalOptions="Start" VerticalOptions="Center"/>
 			<Label Text="[User Name]" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
 			<Button Image="ic_settings_white.png" HorizontalOptions="End" Clicked="OnSettings" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
-		<StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand">
-			<Button Text="Image" HorizontalOptions="Start" VerticalOptions="End"/>
-			<Button Text="Your Name" HorizontalOptions="Start" VerticalOptions="End"/>
-			<Button Image="ic_settings_white.png" HorizontalOptions="EndAndExpand" VerticalOptions="End"/>
 		</StackLayout>
 	</StackLayout>
 </t:SlideMenuView>
