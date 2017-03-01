@@ -15,7 +15,11 @@
 					<flv:FlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="5" Spacing="5">
-								<Image Aspect="AspectFit" Source="{Binding images.thumbnail}" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}" />
+								<Image Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
+									<Image.Source>
+										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
+									</Image.Source>
+								</Image>
 								<Label Text="{Binding title}" />
 							</StackLayout>
 						</DataTemplate>

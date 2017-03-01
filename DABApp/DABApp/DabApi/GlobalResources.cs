@@ -9,6 +9,8 @@ namespace DABApp
 		//public static bool IsPlaying { get; set; }
 		//public static IAudio Player { get; set;}
 
+		public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
+
 		public static int FlowListViewColumns
 		{
 			//Returns the number of columnts to use in a FlowListView
