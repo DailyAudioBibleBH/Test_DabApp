@@ -61,6 +61,12 @@
 				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
 				<Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
 			</Style>
+			<!--Image Button-->
+			<Style x:Key="imageButtonStyle" TargetType="Button">
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BorderColor" Value="Transparent" />
+				<Setter Property="BorderWidth" Value="0" />
+			</Style>
 			<!--ListView-->
 			<Style x:Key="listviewStyle" TargetType="ListView">
 				<Setter Property="SeparatorColor" Value="Transparent" />
