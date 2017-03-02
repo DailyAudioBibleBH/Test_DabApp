@@ -39,4 +39,18 @@ namespace DABApp
 			user_password = password;
 		}
 	}
+
+	public class ResetEmailInfo { 
+		public string user_email { get; set;}
+		public ResetEmailInfo(string email) {
+			user_email = email;
+		}
+	}
+
+	public class LogOutInfo { 
+		public string auth_token { get; set;}
+		public LogOutInfo(string token) {
+			auth_token = token;
+		}
+	}
 }

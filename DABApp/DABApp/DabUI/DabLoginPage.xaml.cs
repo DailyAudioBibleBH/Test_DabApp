@@ -10,7 +10,12 @@ namespace DABApp
 		public DabLoginPage()
 		{
 			InitializeComponent();
+			GlobalResources.LogInPageExists = true;
 			NavigationPage.SetHasNavigationBar(this, false);
+			var email = GlobalResources.GetUserEmail();
+			if (!string.IsNullOrEmpty(email)) {
+				Email.Text = email;
+			}
 		}
 
 		async void OnLogin(object o, EventArgs e) {
@@ -25,6 +30,10 @@ namespace DABApp
 
 		void OnSignUp(object o, EventArgs e) {
 			Navigation.PushAsync(new DabSignUpPage());
+		}
+
+		void OnForgot(object o, EventArgs e) {
+			Navigation.PushAsync(new DabResetPasswordPage());
 		}
 	}
 }

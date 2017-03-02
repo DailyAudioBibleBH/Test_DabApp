@@ -34,6 +34,7 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
+			UserName.Text = GlobalResources.GetUserName();
 		}
 
 		//Menu Actions
@@ -72,6 +73,10 @@ namespace DABApp
 				Navigation.PushAsync(new DabContentView(view));
 				RemovePages();
 			}
+		}
+
+		void OnLogOut(object o, EventArgs e) { 
+			
 		}
 	}
 }

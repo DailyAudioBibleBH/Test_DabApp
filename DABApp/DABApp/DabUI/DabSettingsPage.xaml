@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabSettingsPage"
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
 	<t:MenuContainerPage.Content>
-		<StackLayout>
-			<Button Text="Acount"/>
+		<StackLayout Padding="10" Spacing="10">
+			<Button Text="Log Out" Clicked="OnLogOut"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

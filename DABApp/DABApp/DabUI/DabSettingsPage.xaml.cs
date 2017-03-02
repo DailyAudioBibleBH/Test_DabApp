@@ -13,5 +13,22 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			NavigationPage.SetHasBackButton(this, false);
 		}
+
+		async void OnLogOut(object o, EventArgs e) {
+			if (await AuthenticationAPI.LogOut())
+			{
+				if (GlobalResources.LogInPageExists)
+				{
+					Navigation.PopModalAsync();
+				}
+				else
+				{
+					Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+				}
+			}
+			else {
+				DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+			}
+		}
 	}
 }

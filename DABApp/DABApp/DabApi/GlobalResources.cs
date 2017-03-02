@@ -1,6 +1,8 @@
 ﻿using System;
 using Xamarin.Forms;
 using SlideOverKit;
+using SQLite;
+using System.Linq;
 
 namespace DABApp
 {
@@ -10,6 +12,8 @@ namespace DABApp
 		//public static IAudio Player { get; set;}
 
 		public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
+
+		static SQLiteConnection db = DabData.database;
 
 		public static int FlowListViewColumns
 		{
@@ -39,6 +43,29 @@ namespace DABApp
 			}
 		}
 
-	
+		public static string GetUserEmail() {
+			dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+			if (EmailSettings == null)
+			{
+				return null;
+			}
+			else {
+				return EmailSettings.Value;
+			}
+		}
+
+		public static string GetUserName() {
+			dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+			dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+			if (FirstNameSettings == null || LastNameSettings == null)
+			{
+				return null;
+			}
+			else {
+				return FirstNameSettings.Value + " " + LastNameSettings.Value;
+			}
+		}
+
+		public static bool LogInPageExists { get; set;}
 	}
 }
