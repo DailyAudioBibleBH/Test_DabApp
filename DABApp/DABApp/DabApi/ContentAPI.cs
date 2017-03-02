@@ -19,7 +19,7 @@ namespace DABApp
 			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
 			try{
 				var client = new System.Net.Http.HttpClient();
-				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content").Result;
+				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString()).Result; //Appended the GUID to avoid caching.
 				string jsonOut = result.Content.ReadAsStringAsync().Result;
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (ContentSettings == null || DataSettings == null)

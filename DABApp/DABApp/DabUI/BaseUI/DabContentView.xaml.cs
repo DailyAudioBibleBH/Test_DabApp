@@ -20,13 +20,14 @@ namespace DABApp
 			if (contentView.links == null) {
 				Links.IsVisible = false;
 			}
-			if (Device.Idiom == TargetIdiom.Phone)
+
+			banner.Source = new UriImageSource
 			{
-				banner.Source = contentView.banner.urlPhone;
-			}
-			else{
-				banner.Source = contentView.banner.urlTablet;
-			}
+				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
+				CacheValidity = GlobalResources.ImageCacheValidity
+			};
+
+
 		}
 
 		void OnChildTapped(object o, ItemTappedEventArgs e) {

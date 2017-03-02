@@ -24,14 +24,14 @@ namespace DABApp
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
-			if (Device.Idiom == TargetIdiom.Phone)
+
+			banner.Source = new UriImageSource
 			{
-				banner.Source = ChannelView.banner.urlPhone;
-			}
-			else 
-			{
-				banner.Source = ChannelView.banner.urlTablet;
-			}
+				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? ChannelView.banner.urlPhone : ChannelView.banner.urlTablet)),
+				CacheValidity = GlobalResources.ImageCacheValidity
+			};
+
+
 
 			bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
 			{
