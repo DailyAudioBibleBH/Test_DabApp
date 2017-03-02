@@ -28,12 +28,13 @@ namespace DABApp
 				});
 				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", credentials);
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				APIToken token = JsonConvert.DeserializeObject<APIToken>(JsonOut);
-				if (token.code == "login_error")
+				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+				APIToken token = container.token;
+				if (container.code == "login_error")
 				{
 					throw new Exception();
 				}
-				if (TokenSettings == null)
+				if (TokenSettings == null || EmailSettings == null)
 				{
 					CreateSettings(token);
 				}
@@ -75,8 +76,9 @@ namespace DABApp
 				StringContent content = new StringContent(String.Format("user_email={0}, user_first_name={1}, user_last_name={2}, user_password={3}", email, firstName, lastName, password));
 				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				APIToken token = JsonConvert.DeserializeObject<APIToken>(JsonOut);
-				if (token.code == "rest_forbidden") {
+				APITokenContainer contanier = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+				APIToken token = contanier.token;
+				if (contanier.code == "rest_forbidden") {
 					throw new Exception();
 				}
 				if (TokenSettings == null)
@@ -113,9 +115,17 @@ namespace DABApp
 			FirstNameSettings.Key = "FirstName";
 			FirstNameSettings.Value = token.user_first_name;
 			var LastNameSettings = new dbSettings();
-			db.Insert(TokenSettings);
+			LastNameSettings.Key = "LastName";
+			LastNameSettings.Value = token.user_last_name;
+			var AvatarSettings = new dbSettings();
+			AvatarSettings.Key = "Avatar";
+			AvatarSettings.Value = token.user_avatar;
+			db.InsertOrReplace(TokenSettings);
 			db.InsertOrReplace(ExpirationSettings);
 			db.InsertOrReplace(EmailSettings);
+			db.InsertOrReplace(FirstNameSettings);
+			db.InsertOrReplace(LastNameSettings);
+			db.InsertOrReplace(AvatarSettings);
 		}
 	}
 }
