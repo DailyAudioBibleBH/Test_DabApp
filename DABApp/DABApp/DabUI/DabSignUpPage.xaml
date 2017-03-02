@@ -9,9 +9,13 @@
 			<Label Text="Last Name" FontSize="Micro"/>
 			<Entry x:Name="LastName"/>
 			<Label Text="Email Address" FontSize="Micro"/>
-			<Entry x:Name="Email"/>
+			<Entry x:Name="Email" Keyboard="Email"/>
 			<Label Text="Password" FontSize="Micro"/>
-			<Entry x:Name="Password"/>
+			<Entry x:Name="Password" IsPassword="true"/>
+			<StackLayout Orientation="Horizontal">
+				<Switch x:Name="Agreement"/>
+				<Button Text="Terms of Service Agreement" TextColor="Red" Clicked="OnTerms"/>
+			</StackLayout>
 			<Button Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp"/>
 		</StackLayout>
 	</ContentPage.Content>

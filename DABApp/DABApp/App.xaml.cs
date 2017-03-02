@@ -16,7 +16,13 @@ namespace DABApp
 
 			if (ContentAPI.CheckContent())
 			{
-				MainPage = new NavigationPage(new DabLoginPage());
+				if (AuthenticationAPI.CheckToken()) {
+					MainPage = new NavigationPage(new DabChannelsPage());
+				}
+				else
+				{
+					MainPage = new NavigationPage(new DabLoginPage());
+				}
 			}
 			else {
 				MainPage = new DabNetworkUnavailablePage();

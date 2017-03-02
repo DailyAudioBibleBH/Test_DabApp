@@ -11,6 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
+			this.ToolbarItems.Clear();
 		}
 
 		async void OnSignUp(object o, EventArgs e) {
@@ -21,6 +22,10 @@ namespace DABApp
 			else {
 				DisplayAlert("Error", "Something broke", "OK");
 			}
+		}
+
+		void OnTerms(object o, EventArgs e) {
+			Navigation.PushAsync(new DabTermsAndConditionsPage());
 		}
 	}
 }

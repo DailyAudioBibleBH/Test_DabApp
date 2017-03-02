@@ -56,8 +56,11 @@ namespace DABApp
 
 		public static bool CheckToken() {
 			var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
-			DateTime expirationDate = Convert.ToDateTime(expiration);
-			if (expiration == null || expirationDate <= DateTime.Now) {
+			if (expiration == null) {
+				return false;
+			}
+			DateTime expirationDate = DateTime.Parse(expiration.Value);
+			if (expirationDate <= DateTime.Now) {
 				return false;
 			}
 			return true;
@@ -73,8 +76,13 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				HttpClient client = new HttpClient();
-				StringContent content = new StringContent(String.Format("user_email={0}, user_first_name={1}, user_last_name={2}, user_password={3}", email, firstName, lastName, password));
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
+				var credentials = new FormUrlEncodedContent(new[] {
+					new KeyValuePair<string, string>("user_email", email),
+					new KeyValuePair<string, string>("user_first_name", firstName),
+					new KeyValuePair<string, string>("user_last_name", lastName),
+					new KeyValuePair<string, string>("user_password", password)
+				});				
+				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", credentials);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer contanier = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = contanier.token;
