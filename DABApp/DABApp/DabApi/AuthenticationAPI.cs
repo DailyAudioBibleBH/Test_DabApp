@@ -22,11 +22,10 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				HttpClient client = new HttpClient();
-				var credentials = new FormUrlEncodedContent(new[] {
-					new KeyValuePair<string, string>("user_email", email),
-					new KeyValuePair<string, string>("user_password", password)
-				});
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", credentials);
+				var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
@@ -76,13 +75,10 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				HttpClient client = new HttpClient();
-				var credentials = new FormUrlEncodedContent(new[] {
-					new KeyValuePair<string, string>("user_email", email),
-					new KeyValuePair<string, string>("user_first_name", firstName),
-					new KeyValuePair<string, string>("user_last_name", lastName),
-					new KeyValuePair<string, string>("user_password", password)
-				});				
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", credentials);
+				var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer contanier = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = contanier.token;
