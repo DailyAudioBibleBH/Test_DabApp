@@ -19,7 +19,6 @@ namespace DABApp
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			this.ControlTemplate = playerBarTemplate;
 
-
 			DabViewHelper.InitDabForm(this);
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			BindingContext = ChannelView;
@@ -31,14 +30,19 @@ namespace DABApp
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
 
-
-
 			bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
 			{
 				//resize the banner image to match the banner content container's height
 				banner.HeightRequest = bannerContentContainer.Height;
 			};
 
+			Device.StartTimer(TimeSpan.FromMinutes(1), () => {
+				if (!AuthenticationAPI.CheckToken(-1))
+				{
+					AuthenticationAPI.ExchangeToken();
+				}
+				return true;
+			});
 		}
 
 		void OnEpisodes(object o, EventArgs e) {

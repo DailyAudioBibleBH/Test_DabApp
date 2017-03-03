@@ -29,6 +29,7 @@ namespace DABApp
 			}
 			else {
 				await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+				LogOut.IsEnabled = true;
 			}
 		}
 

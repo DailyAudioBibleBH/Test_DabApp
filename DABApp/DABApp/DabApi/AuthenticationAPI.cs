@@ -46,7 +46,7 @@ namespace DABApp
 					LastNameSettings.Value = token.user_last_name;
 					AvatarSettings.Value = token.user_avatar;
 					IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-					settings = new dbSettings[] { TokenSettings, ExpirationSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+					settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
 					db.UpdateAll(settings, true);
 				}
 				return true;
@@ -56,13 +56,13 @@ namespace DABApp
 			}
 		}
 
-		public static bool CheckToken() {
+		public static bool CheckToken(int days = 0) {
 			var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
 			if (expiration == null) {
 				return false;
 			}
 			DateTime expirationDate = DateTime.Parse(expiration.Value);
-			if (expirationDate <= DateTime.Now) {
+			if (expirationDate <= DateTime.Now.AddDays(days)) {
 				return false;
 			}
 			return true;
@@ -100,7 +100,8 @@ namespace DABApp
 					FirstNameSettings.Value = token.user_first_name;
 					LastNameSettings.Value = token.user_last_name;
 					AvatarSettings.Value = token.user_avatar;
-					db.UpdateAll(new dbSettings[] { TokenSettings, ExpirationSettings, FirstNameSettings, LastNameSettings, AvatarSettings }, true);
+					IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+					db.UpdateAll(settings, true);
 				}
 				return true;
 			}
@@ -142,10 +143,38 @@ namespace DABApp
 					throw new Exception();
 				}
 				ExpirationSettings.Value = DateTime.MinValue.ToString();
+				db.Update(ExpirationSettings);
 				return true;
 			}
 			catch (Exception e) {
 				return false;
+			}
+		}
+
+		public static async void ExchangeToken() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+				dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/exchangetoken", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+				APIToken token = container.token;
+				if (container.token == null) {
+					throw new Exception();
+				}
+				TokenSettings.Value = token.value;
+				ExpirationSettings.Value = token.expires;
+				db.Update(TokenSettings);
+				db.Update(ExpirationSettings);
+			}
+			catch (Exception e) { 
+				
 			}
 		}
 

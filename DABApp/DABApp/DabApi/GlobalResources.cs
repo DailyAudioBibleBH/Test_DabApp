@@ -47,7 +47,7 @@ namespace DABApp
 			dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
 			if (EmailSettings == null)
 			{
-				return null;
+				return "";
 			}
 			else {
 				return EmailSettings.Value;
@@ -59,7 +59,7 @@ namespace DABApp
 			dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 			if (FirstNameSettings == null || LastNameSettings == null)
 			{
-				return null;
+				return "";
 			}
 			else {
 				return FirstNameSettings.Value + " " + LastNameSettings.Value;
