@@ -45,10 +45,6 @@ namespace DABApp
 			});
 		}
 
-		void OnEpisodes(object o, EventArgs e) {
-			Navigation.PushAsync(new DabEpisodesPage());
-		}
-
 		void OnPlayer(object o, EventArgs e) {
 			Navigation.PushAsync(new DabPlayerPage());
 		}
@@ -69,6 +65,7 @@ namespace DABApp
 
 		void OnChannel(object o, ItemTappedEventArgs e) {
 			var resource = (Resource)e.Item;
+			Navigation.PushAsync(new DabEpisodesPage(resource));
 		}
 	}
 }

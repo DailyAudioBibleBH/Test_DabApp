@@ -7,7 +7,7 @@ namespace DABApp
 {
 	public partial class DabEpisodesPage : DabBaseContentPage
 	{
-		public DabEpisodesPage()
+		public DabEpisodesPage(Resource resource)
 		{
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
