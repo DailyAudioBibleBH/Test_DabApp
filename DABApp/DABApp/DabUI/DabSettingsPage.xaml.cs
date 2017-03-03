@@ -15,6 +15,7 @@ namespace DABApp
 		}
 
 		async void OnLogOut(object o, EventArgs e) {
+			LogOut.IsEnabled = false;
 			if (await AuthenticationAPI.LogOut())
 			{
 				if (GlobalResources.LogInPageExists)
@@ -27,8 +28,18 @@ namespace DABApp
 				}
 			}
 			else {
-				DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+				await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
 			}
+		}
+
+		void OnAppInfo(object o, EventArgs e) {
+			Navigation.PushAsync(new DabAppInfoPage());
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			LogOut.IsEnabled = true;
 		}
 	}
 }

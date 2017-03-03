@@ -7,7 +7,7 @@
 			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email"/>
 			<Label Text="Password" FontSize="Micro" VerticalOptions="Center"/>
 			<Entry x:Name="Password" VerticalOptions="Center" IsPassword="true"/>
-			<Button Text="Log in" Clicked="OnLogin" VerticalOptions="Center" Style="{StaticResource highlightedButtonStyle}"/>
+			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" VerticalOptions="Center" Style="{StaticResource highlightedButtonStyle}"/>
 			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot"/>
 			<Button Text="Don't have an account? Sign up!" VerticalOptions="EndAndExpand" Clicked="OnSignUp"/>
 		</StackLayout>

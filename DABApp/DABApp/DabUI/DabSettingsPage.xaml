@@ -3,7 +3,9 @@
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
 	<t:MenuContainerPage.Content>
 		<StackLayout Padding="10" Spacing="10">
-			<Button Text="Log Out" Clicked="OnLogOut"/>
+			<Label Text="Settings"/>
+			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
+			<Button Text="App Info" Clicked="OnAppInfo"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

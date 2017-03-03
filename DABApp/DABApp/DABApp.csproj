@@ -90,6 +90,9 @@
     <Compile Include="DabUI\DabResetPasswordPage.xaml.cs">
       <DependentUpon>DabResetPasswordPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabAppInfoPage.xaml.cs">
+      <DependentUpon>DabAppInfoPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -202,6 +205,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabResetPasswordPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabAppInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

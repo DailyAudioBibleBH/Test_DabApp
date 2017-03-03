@@ -45,6 +45,9 @@ namespace DABApp
 					FirstNameSettings.Value = token.user_first_name;
 					LastNameSettings.Value = token.user_last_name;
 					AvatarSettings.Value = token.user_avatar;
+					IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
+					settings = new dbSettings[] { TokenSettings, ExpirationSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+					db.UpdateAll(settings, true);
 				}
 				return true;
 			}
@@ -97,6 +100,7 @@ namespace DABApp
 					FirstNameSettings.Value = token.user_first_name;
 					LastNameSettings.Value = token.user_last_name;
 					AvatarSettings.Value = token.user_avatar;
+					db.UpdateAll(new dbSettings[] { TokenSettings, ExpirationSettings, FirstNameSettings, LastNameSettings, AvatarSettings }, true);
 				}
 				return true;
 			}

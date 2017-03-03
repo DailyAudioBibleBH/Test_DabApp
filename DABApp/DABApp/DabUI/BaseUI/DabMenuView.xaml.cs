@@ -74,9 +74,5 @@ namespace DABApp
 				RemovePages();
 			}
 		}
-
-		void OnLogOut(object o, EventArgs e) { 
-			
-		}
 	}
 }

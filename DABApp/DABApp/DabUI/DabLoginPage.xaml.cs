@@ -19,12 +19,14 @@ namespace DABApp
 		}
 
 		async void OnLogin(object o, EventArgs e) {
+			Login.IsEnabled = false;
 			if (await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text))
 			{
 				Navigation.PushModalAsync(new NavigationPage(new DabChannelsPage()));
 			}
 			else {
-				DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
+				await DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
+				Login.IsEnabled = true;
 			}
 		}
 
@@ -34,6 +36,12 @@ namespace DABApp
 
 		void OnForgot(object o, EventArgs e) {
 			Navigation.PushAsync(new DabResetPasswordPage());
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			Login.IsEnabled = true;
 		}
 	}
 }
