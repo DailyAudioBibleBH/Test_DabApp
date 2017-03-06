@@ -33,6 +33,8 @@ namespace DABApp.Droid
 
 			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
+			SQLite_Droid.Assets = this.Assets;
+
 			LoadApplication(new App());
 		}
 	}
