@@ -14,9 +14,9 @@
 			<Entry x:Name="Password" IsPassword="true"/>
 			<StackLayout Orientation="Horizontal">
 				<Switch x:Name="Agreement"/>
-				<Button Text="Terms of Service Agreement" TextColor="Red" Clicked="OnTerms"/>
+				<local:HtmlLabel x:Name="Terms" VerticalOptions="StartAndExpand"/>
 			</StackLayout>
-			<Button Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp"/>
+			<Button Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
