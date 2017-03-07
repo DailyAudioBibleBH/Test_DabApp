@@ -154,6 +154,7 @@
     <Compile Include="DABApp.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DabData\SQLite_Droid.cs" />
+    <Compile Include="SplashScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -181,9 +182,9 @@
     <AndroidResource Include="..\iOS\Resources\LoginLogo10x.png">
       <Link>Resources\drawable\LoginLogo10x.png</Link>
     </AndroidResource>
-    <AndroidResource Include="..\iOS\Resources\AppIcon20x.png">
-      <Link>Resources\drawable\AppIcon20x.png</Link>
-    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\splash_screen.xml" />
+    <AndroidResource Include="Resources\drawable\AppIcon10x.png" />
+    <AndroidResource Include="Resources\drawable\AppIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
