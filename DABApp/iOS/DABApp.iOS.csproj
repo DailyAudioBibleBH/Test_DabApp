@@ -160,6 +160,22 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\29.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\58.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\87.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\120.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\180.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\40.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\50.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\100.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\72.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\144.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\76.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\152.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\167.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\57.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png" />
     <ImageAsset Include="Assets.xcassets\LaunchImage-1.launchimage\Contents.json" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +217,10 @@
     <BundleResource Include="Resources\ic_settings_white.png" />
     <BundleResource Include="Resources\LoginLogo10x.png" />
     <BundleResource Include="Resources\AppIcon20x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ITunesArtwork Include="iTunesArtwork" />
+    <ITunesArtwork Include="iTunesArtwork%402x" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.3.180\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />
