@@ -60,6 +60,7 @@
 				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
 				<Setter Property="BorderRadius" Value="3" />
 				<Setter Property="BorderWidth" Value="1" />
+				<Setter Property="BackgroundColor" Value="Transparent" />
 			</Style>
 			<Style BasedOn="{StaticResource buttonStyle}" TargetType="Button" ApplyToDerivedTypes="true" />
 			<!--Highlighted Button-->
