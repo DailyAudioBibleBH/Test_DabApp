@@ -2,7 +2,10 @@
 using Android.Content.Res;
 using System.IO;
 using SQLite;
+using DABApp.Droid;
+using Xamarin.Forms;
 
+[assembly:Dependency(typeof(SQLite_Droid))]
 namespace DABApp.Droid
 {
 	public class SQLite_Droid: ISQLite

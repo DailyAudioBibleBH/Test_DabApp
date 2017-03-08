@@ -154,6 +154,9 @@
     <Compile Include="DABApp.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DabData\SQLite_Droid.cs" />
+    <Compile Include="SplashScreen.cs" />
+    <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
+    <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -163,7 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
-    <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\drawable\icon.png" />
     <AndroidResource Include="Resources\drawable-hdpi\icon.png" />
@@ -179,6 +181,14 @@
       <Link>Resources\drawable\ic_attach_money_white.png</Link>
     </AndroidResource>
     <AndroidResource Include="Resources\drawable\app_icon.png" />
+    <AndroidResource Include="..\iOS\Resources\LoginLogo10x.png">
+      <Link>Resources\drawable\LoginLogo10x.png</Link>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\splash_screen.xml" />
+    <AndroidResource Include="Resources\drawable\AppIcon10x.png" />
+    <AndroidResource Include="Resources\drawable\AppIcon.png" />
+    <AndroidResource Include="Resources\layout\Toolbar.axml" />
+    <AndroidResource Include="Resources\values\ids.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

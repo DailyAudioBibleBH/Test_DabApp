@@ -12,18 +12,19 @@ using PushNotification.Plugin;
 using Android.Gms.Gcm.Iid;
 using Android.Gms.Gcm;
 using Android.Util;
+using Android.Support.V7;
 
 namespace DABApp.Droid
 {
 
 
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity(Label = "DABApp.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
-			ToolbarResource = Resource.Layout.Toolbar;
+			//ToolbarResource = Resource.Layout.Toolbar;
 
 			base.OnCreate(bundle);
 

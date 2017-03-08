@@ -22,6 +22,8 @@ namespace DABApp.Droid
 
 			AppContext = this.ApplicationContext;
 
+			SQLite_Droid.Assets = this.Assets;
+
 			//TODO: Initialize CrossPushNotification Plugin
 			//TODO: Replace string parameter with your Android SENDER ID
 			//TODO: Specify the listener class implementing IPushNotificationListener interface in the Initialize generic

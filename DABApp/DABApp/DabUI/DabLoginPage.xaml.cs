@@ -16,6 +16,10 @@ namespace DABApp
 			if (!string.IsNullOrEmpty(email)) {
 				Email.Text = email;
 			}
+			if (Device.Idiom == TargetIdiom.Phone) {
+				Logo.WidthRequest = 250;
+				Logo.Aspect = Aspect.AspectFit;
+			}
 		}
 
 		async void OnLogin(object o, EventArgs e) {

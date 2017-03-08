@@ -29,7 +29,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
+    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -176,6 +176,7 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\57.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png" />
+    <ImageAsset Include="Assets.xcassets\LaunchImage-1.launchimage\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -214,6 +215,8 @@
     <BundleResource Include="Resources\ic_attach_money_white_3x.png" />
     <BundleResource Include="Resources\ic_attach_money_white.png" />
     <BundleResource Include="Resources\ic_settings_white.png" />
+    <BundleResource Include="Resources\LoginLogo10x.png" />
+    <BundleResource Include="Resources\AppIcon20x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
