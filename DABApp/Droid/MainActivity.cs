@@ -12,6 +12,7 @@ using PushNotification.Plugin;
 using Android.Gms.Gcm.Iid;
 using Android.Gms.Gcm;
 using Android.Util;
+using Android.Support.V7;
 
 namespace DABApp.Droid
 {
@@ -23,7 +24,7 @@ namespace DABApp.Droid
 		protected override void OnCreate(Bundle bundle)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
-			ToolbarResource = Resource.Layout.Toolbar;
+			//ToolbarResource = Resource.Layout.Toolbar;
 
 			base.OnCreate(bundle);
 
