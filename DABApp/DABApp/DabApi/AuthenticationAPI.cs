@@ -72,7 +72,7 @@ namespace DABApp
 			return true;
 		}
 
-		public static async Task<bool> CreateNewMember(string firstName, string lastName, string email, string password) {
+		public static async Task<int> CreateNewMember(string firstName, string lastName, string email, string password) {
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
@@ -91,7 +91,7 @@ namespace DABApp
 				APITokenContainer contanier = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = contanier.token;
 				if (contanier.code == "rest_forbidden") {
-					throw new Exception();
+					return 1;
 				}
 				if (TokenSettings == null)
 				{
@@ -107,10 +107,14 @@ namespace DABApp
 					IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
 					db.UpdateAll(settings, true);
 				}
-				return true;
+				return 0;
 			}
 			catch (Exception e) {
-				return false;
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return 2;
+				}
+				else return 3;
 			}
 		}
 

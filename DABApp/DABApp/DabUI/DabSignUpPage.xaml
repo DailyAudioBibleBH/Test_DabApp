@@ -13,10 +13,10 @@
 			<Label Text="Password" FontSize="Micro"/>
 			<Entry x:Name="Password" IsPassword="true"/>
 			<StackLayout Orientation="Horizontal">
-				<Switch x:Name="Agreement"/>
-				<local:HtmlLabel x:Name="Terms" VerticalOptions="StartAndExpand"/>
+				<Switch x:Name="Agreement" VerticalOptions="Start"/>
+				<local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>
 			</StackLayout>
-			<Button Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
+			<Button x:Name="SignUp" Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
