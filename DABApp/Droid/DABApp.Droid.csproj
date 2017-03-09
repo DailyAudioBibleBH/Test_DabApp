@@ -180,6 +180,7 @@
     <AndroidResource Include="..\iOS\Resources\ic_attach_money_white.png">
       <Link>Resources\drawable\ic_attach_money_white.png</Link>
     </AndroidResource>
+    <AndroidResource Include="Resources\drawable\app_icon.png" />
     <AndroidResource Include="..\iOS\Resources\LoginLogo10x.png">
       <Link>Resources\drawable\LoginLogo10x.png</Link>
     </AndroidResource>
