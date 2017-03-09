@@ -64,7 +64,7 @@ namespace DABApp
 
 		void OnItemTapped(object o, ItemTappedEventArgs e) {
 			Nav item = (Nav)e.Item;
-			if (item.view == 56)
+			if (item.title == "Channels")
 			{
 				Navigation.PopToRootAsync();
 			}

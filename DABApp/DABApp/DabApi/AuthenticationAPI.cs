@@ -12,7 +12,7 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
-		public static async Task<bool> ValidateLogin(string email, string password) {
+		public static async Task<int> ValidateLogin(string email, string password) {
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
@@ -31,7 +31,7 @@ namespace DABApp
 				APIToken token = container.token;
 				if (container.code == "login_error")
 				{
-					throw new Exception();
+					return 1;
 				}
 				if (TokenSettings == null || EmailSettings == null)
 				{
@@ -49,10 +49,14 @@ namespace DABApp
 					settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
 					db.UpdateAll(settings, true);
 				}
-				return true;
+				return 0;
 			}
 			catch (Exception e) {
-				return false;
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return 2;
+				}
+				else return 3;
 			}
 		}
 

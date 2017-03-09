@@ -186,8 +186,8 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\drawable\AppIcon10x.png" />
     <AndroidResource Include="Resources\drawable\AppIcon.png" />
-    <AndroidResource Include="Resources\layout\Toolbar.axml" />
     <AndroidResource Include="Resources\values\ids.xml" />
+    <AndroidResource Include="Resources\layout\Toolbar.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

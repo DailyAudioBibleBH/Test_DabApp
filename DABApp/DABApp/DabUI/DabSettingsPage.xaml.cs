@@ -18,18 +18,10 @@ namespace DABApp
 			LogOut.IsEnabled = false;
 			if (await AuthenticationAPI.LogOut())
 			{
-				if (GlobalResources.LogInPageExists)
-				{
-					Navigation.PopModalAsync();
-				}
-				else
-				{
-					Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
-				}
+				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
 			}
 			else {
 				await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
-				LogOut.IsEnabled = true;
 			}
 		}
 

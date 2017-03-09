@@ -12,7 +12,7 @@
 			<Frame Padding="15" BackgroundColor="Transparent"/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<Frame Padding="15" BackgroundColor="Transparent"/>
-			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot"/>
+			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot" BorderColor="Transparent"/>
 			<Button Text="Don't have an account? Sign up!" VerticalOptions="EndAndExpand" Clicked="OnSignUp"/>
 		</StackLayout>
 	</ContentPage.Content>
