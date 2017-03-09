@@ -21,8 +21,10 @@ namespace DABApp.iOS
 		public override UIKit.UITableViewCell GetCell(Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv)
 		{
 			UITableViewCell cell = base.GetCell(item, reusableCell, tv);
+			UIFont font = cell.TextLabel.Font;
 
 			cell.TextLabel.TextColor = ((Color)App.Current.Resources["TextColor"]).ToUIColor();
+			cell.TextLabel.Font = font.WithSize(25.0f);
 			cell.DetailTextLabel.TextColor = ((Color)App.Current.Resources["SecondaryTextColor"]).ToUIColor();
 			cell.SelectedBackgroundView = new UIView
 			{
