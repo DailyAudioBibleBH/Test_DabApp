@@ -14,6 +14,7 @@ namespace DABApp
 			InitializeComponent();
 			Browser.Source = url;
 			uri = url;
+			Url.Text = url;
 		}
 
 		void OnBack(object o, EventArgs e) {
@@ -31,6 +32,14 @@ namespace DABApp
 
 		void OnBrowser(object o, EventArgs e) {
 			Device.OpenUri(new Uri(uri));
+		}
+
+		void OnNavigated(object sender, WebNavigatedEventArgs e) { 
+			Url.Text = e.Url;
+		}
+
+		void OnGo(object o, EventArgs e) {
+			Browser.Source = Url.Text;
 		}
 	}
 }
