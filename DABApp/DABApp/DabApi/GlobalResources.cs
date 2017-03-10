@@ -71,7 +71,7 @@ namespace DABApp
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				if (AvatarSettings == null)
 				{
-					return null;
+					return "";
 				}
 				else return AvatarSettings.Value;
 			}

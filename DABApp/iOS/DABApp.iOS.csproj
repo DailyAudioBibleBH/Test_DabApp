@@ -219,6 +219,9 @@
     <BundleResource Include="Resources\ic_settings_white.png" />
     <BundleResource Include="Resources\LoginLogo10x.png" />
     <BundleResource Include="Resources\AppIcon20x.png" />
+    <BundleResource Include="Resources\ic_arrow_forward_white.png" />
+    <BundleResource Include="Resources\ic_arrow_back_white.png" />
+    <BundleResource Include="Resources\ic_open_in_browser_white.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

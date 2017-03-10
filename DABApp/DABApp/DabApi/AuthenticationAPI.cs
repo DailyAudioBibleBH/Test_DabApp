@@ -65,6 +65,7 @@ namespace DABApp
 			if (expiration == null) {
 				return false;
 			}
+			if (expiration.Value == null) return false;
 			DateTime expirationDate = DateTime.Parse(expiration.Value);
 			if (expirationDate <= DateTime.Now.AddDays(days)) {
 				return false;

@@ -191,6 +191,9 @@
     <AndroidResource Include="Resources\drawable\AppIcon.png" />
     <AndroidResource Include="Resources\values\ids.xml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_back_white_24dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_forward_white_24dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_open_in_browser_white_24dp.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

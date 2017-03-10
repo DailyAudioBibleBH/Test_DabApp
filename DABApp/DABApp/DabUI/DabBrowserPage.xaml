@@ -3,13 +3,11 @@
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout>
-			<StackLayout Padding="10" Spacing="5" Orientation="Horizontal">
-				<Label x:Name="Url" HorizontalOptions="StartAndExpand"/>
-			</StackLayout>
-			<StackLayout Orientation="Horizontal">
-				<Button Text="Back" Clicked="OnBack" HorizontalOptions="StartAndExpand"/>
-				<Button Text="Open in Browser" Clicked="OnBrowser" HorizontalOptions="CenterAndExpand"/>
-				<Button Text="Forward" Clicked="OnForward" HorizontalOptions="EndAndExpand"/>
+			<StackLayout Padding="5" Orientation="Horizontal">
+				<Button Image="ic_arrow_back_white.png" Clicked="OnBack" HorizontalOptions="Start" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
+				<Button Image="ic_arrow_forward_white.png" Clicked="OnForward" HorizontalOptions="Start" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
+				<Label x:Name="Url" HorizontalOptions="Fill" VerticalOptions="Center" LineBreakMode="MiddleTruncation" FontSize="Micro"/>
+				<Button Image="ic_open_in_browser_white.png" Clicked="OnBrowser" HorizontalOptions="End" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
 			</StackLayout>
 			<WebView x:Name="Browser" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Navigated="OnNavigated"/>
 		</StackLayout>
