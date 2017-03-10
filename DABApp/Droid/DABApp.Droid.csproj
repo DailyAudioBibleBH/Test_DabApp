@@ -157,6 +157,7 @@
     <Compile Include="SplashScreen.cs" />
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
+    <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

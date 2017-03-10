@@ -203,6 +203,7 @@
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DabData\SQLite_iOS.cs" />
     <Compile Include="CustomRenderers\DabTextCellRenderer.cs" />
+    <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
