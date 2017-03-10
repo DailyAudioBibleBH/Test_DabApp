@@ -87,6 +87,13 @@
 				<Setter Property="DetailColor" Value="{DynamicResource SecondaryTextColor}" />
 			</Style>
 			<Style BasedOn="{StaticResource textcellStyle}" TargetType="TextCell" ApplyToDerivedTypes="true" />
+			<Style x:Key="frameStyle" TargetType="Frame">
+				<Setter Property="OutlineColor" Value="Transparent"/>
+				<Setter Property="Padding" Value="15"/>
+				<Setter Property="BackgroundColor" Value="Transparent"/>
+				<Setter Property="HasShadow" Value="false"/>
+			</Style>
+			<Style BasedOn="{StaticResource frameStyle}" TargetType="Frame" ApplyToDerivedTypes="true"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
