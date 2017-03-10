@@ -66,6 +66,17 @@ namespace DABApp
 			}
 		}
 
+		public static string UserAvatar { 
+			get {
+				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+				if (AvatarSettings == null)
+				{
+					return null;
+				}
+				else return AvatarSettings.Value;
+			}
+		}
+
 		public static bool LogInPageExists { get; set;}
 	}
 }

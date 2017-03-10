@@ -93,6 +93,7 @@
     <Compile Include="DabUI\DabAppInfoPage.xaml.cs">
       <DependentUpon>DabAppInfoPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabViewHelpers\Controls\ImageCircle.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

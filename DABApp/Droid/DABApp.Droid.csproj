@@ -158,6 +158,7 @@
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
+    <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
