@@ -3,10 +3,10 @@
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout>
-			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="105" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
 				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand"/>
+					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
 				</StackLayout>
 			</RelativeLayout>
 			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
@@ -19,10 +19,24 @@
 			<StackLayout Padding="10">
 				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 			</StackLayout>
-			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped">
+			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped" RowHeight="150" SeparatorVisibility="Default" SeparatorColor="Black">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
-						<TextCell Text="{Binding linkText}"/>
+						<ViewCell>
+							<ViewCell.View>
+								<StackLayout Padding="20">
+									<Image Aspect="AspectFill">
+										<Image.Source>
+											<UriImageSource x:Name="linkSource" Uri="{Binding urlPhone}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
+										</Image.Source>
+									</Image>
+									<StackLayout Orientation="Horizontal" Padding="10">
+										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand"/>
+										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand"/>
+									</StackLayout>
+								</StackLayout>
+							</ViewCell.View>
+						</ViewCell>
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>

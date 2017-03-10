@@ -26,8 +26,6 @@ namespace DABApp
 				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
-
-
 		}
 
 		void OnChildTapped(object o, ItemTappedEventArgs e) {
@@ -38,6 +36,12 @@ namespace DABApp
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {
 			var item = (Link)e.Item;
 			Navigation.PushAsync(new DabBrowserPage(item.link));
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			Links.SelectedItem = null;
 		}
 	}
 }
