@@ -25,7 +25,7 @@
 			</StackLayout>
 			<StackLayout Orientation="Horizontal">
 				<Button Text="Back 30" Clicked="OnBack30" HorizontalOptions="StartAndExpand"/>
-				<Button Text="Play" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
+				<Button Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 				</StackLayout>
