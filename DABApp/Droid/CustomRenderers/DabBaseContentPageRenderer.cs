@@ -61,7 +61,7 @@ namespace DABApp.Droid
 			}
 
 			var itemsInfo = contentPage.ToolbarItems;
-			var MenuItem = itemsInfo.Single(x => x.Priority == 1);
+			//var MenuItem = itemsInfo.Single(x => x.Priority == 1);
 			var MenuButton = new Android.Widget.ImageButton(this.Context);
 			MenuButton.SetImageResource(Resource.Drawable.ic_menu_white);
 			MenuButton.Id = Resource.Id.MenuButton;

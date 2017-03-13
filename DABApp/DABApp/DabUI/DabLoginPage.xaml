@@ -12,7 +12,10 @@
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot" BorderColor="Transparent"/>
-			<Button Text="Don't have an account? Sign up!" VerticalOptions="EndAndExpand" Clicked="OnSignUp"/>
+			<!--<Frame OutlineColor="#333333" VerticalOptions="EndAndExpand">-->
+				<local:HtmlLabel x:Name="SignUp" VerticalOptions="End" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
+			<!--</Frame>-->
+			<!--<Button Text="Don't have an account? Sign up!" VerticalOptions="End" Clicked="OnSignUp" BorderWidth="2" BorderColor="#333333"/>-->
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

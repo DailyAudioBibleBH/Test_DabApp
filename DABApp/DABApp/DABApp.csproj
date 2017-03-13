@@ -94,6 +94,9 @@
       <DependentUpon>DabAppInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\Controls\ImageCircle.cs" />
+    <Compile Include="DabUI\DabPrayerWallPage.xaml.cs">
+      <DependentUpon>DabPrayerWallPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -209,6 +212,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabAppInfoPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabPrayerWallPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

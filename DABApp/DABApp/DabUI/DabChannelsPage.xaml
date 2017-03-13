@@ -20,7 +20,9 @@
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
 									</Image.Source>
 								</Image>
-								<Label Text="{Binding title}" />
+								<StackLayout Orientation="Horizontal" Padding="5">
+									<Label Text="{Binding title}" />
+								</StackLayout>
 							</StackLayout>
 						</DataTemplate>
 					</flv:FlowListView.FlowColumnTemplate>

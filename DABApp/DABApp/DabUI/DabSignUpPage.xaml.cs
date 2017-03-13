@@ -11,7 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
-			this.ToolbarItems.Clear();
+			ToolbarItems.Clear();
 			var tapper = new TapGestureRecognizer();
 			tapper.NumberOfTapsRequired = 1;
 			tapper.Tapped += (sender, e) => {
@@ -25,21 +25,26 @@ namespace DABApp
 			SignUp.IsEnabled = false;
 			if (SignUpValidation())
 			{
-				switch (await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text))
+				string authentication = await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
+				if (string.IsNullOrEmpty(authentication))
 				{
-					case 0:
-						Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-						Navigation.PopToRootAsync();
-						break;
-					case 1:
-						DisplayAlert("Email invalid", "Sorry, but there is currently a user with same email already registered in the system.", "OK");
-						break;
-					case 2:
-						DisplayAlert("Http Request Timed out", "Please check your internet connection if problem persists it may be something wrong on our end", "OK");
-						break;
-					case 3:
-						DisplayAlert("OH NO!", "Something went wrong", "OK");
-						break;
+					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+					Navigation.PopToRootAsync();
+				}
+				else{
+					if (authentication.Contains("API"))
+					{
+						await DisplayAlert("Server Error", authentication, "OK");
+					}
+					else {
+						if (authentication.Contains("Http"))
+						{
+							await DisplayAlert(authentication, "Unable to contact the server.", "OK");
+						}
+						else {
+							await DisplayAlert("App side Error", authentication, "OK");
+						}
+					}
 				}
 			}
 			SignUp.IsEnabled = true;
