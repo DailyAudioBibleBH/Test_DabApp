@@ -78,8 +78,16 @@ namespace DABApp
 			}
 			else {
 				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
-				Navigation.PushAsync(new DabContentView(view));
-				RemovePages();
+				if (item.title == "Prayer Wall")
+				{
+					Navigation.PushAsync(new DabPrayerWallPage(view));
+					RemovePages();
+				}
+				else
+				{
+					Navigation.PushAsync(new DabContentView(view));
+					RemovePages();
+				}
 			}
 		}
 	}
