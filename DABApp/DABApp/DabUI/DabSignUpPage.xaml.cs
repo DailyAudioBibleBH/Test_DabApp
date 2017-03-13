@@ -11,7 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
-			this.ToolbarItems.Clear();
+			ToolbarItems.Clear();
 			var tapper = new TapGestureRecognizer();
 			tapper.NumberOfTapsRequired = 1;
 			tapper.Tapped += (sender, e) => {

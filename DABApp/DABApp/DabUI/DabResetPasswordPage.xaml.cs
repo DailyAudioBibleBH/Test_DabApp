@@ -11,6 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
+			ToolbarItems.Clear();
 		}
 
 		async void OnReset(object o, EventArgs e) {

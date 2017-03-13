@@ -11,7 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			GlobalResources.LogInPageExists = true;
-			NavigationPage.SetHasNavigationBar(this, false);
+			ToolbarItems.Clear();
 			var email = GlobalResources.GetUserEmail();
 			if (!string.IsNullOrEmpty(email)) {
 				Email.Text = email;
@@ -20,6 +20,14 @@ namespace DABApp
 				Logo.WidthRequest = 250;
 				Logo.Aspect = Aspect.AspectFit;
 			}
+			var tapper = new TapGestureRecognizer();
+			tapper.NumberOfTapsRequired = 1;
+			tapper.Tapped += (sender, e) =>
+			{
+				Navigation.PushAsync(new DabSignUpPage());
+			};
+			SignUp.GestureRecognizers.Add(tapper);
+			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <span style='color: #ff0000'>Sign Up</span></div>";
 		}
 
 		async void OnLogin(object o, EventArgs e) {
