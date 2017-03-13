@@ -133,7 +133,7 @@ namespace DABApp
 				return container.message;
 			}
 			catch (Exception e) {
-				return null;
+				return "The following exception was caught: " + e.Message;
 			}
 		}
 

@@ -14,12 +14,13 @@ namespace DABApp
 		}
 
 		async void OnReset(object o, EventArgs e) {
+			ResetPassword.IsEnabled = false;
 			if (Email.Text == Confirmation.Text)
 			{
 				string message = await AuthenticationAPI.ResetPassword(Email.Text);
-				if (string.IsNullOrEmpty(message))
+				if (message.Contains("exception"))
 				{
-					await DisplayAlert("Oh no.", "Something broke, Sorry", "OK");
+					await DisplayAlert("Error", message, "OK");
 				}
 				else {
 					await DisplayAlert("App side code successfully run", message, "OK");
@@ -29,6 +30,7 @@ namespace DABApp
 			else {
 				await DisplayAlert("Confimation Email does not match Email!", "Make sure your email matches with the confirmation email.", "OK");
 			}
+			ResetPassword.IsEnabled = true;
 		}
 	}
 }
