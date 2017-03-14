@@ -27,7 +27,7 @@ namespace DABApp
 				Navigation.PushAsync(new DabSignUpPage());
 			};
 			SignUp.GestureRecognizers.Add(tapper);
-			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <span style='color: #ff0000'>Sign Up</span></div>";
+			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
 		}
 
 		async void OnLogin(object o, EventArgs e) {
