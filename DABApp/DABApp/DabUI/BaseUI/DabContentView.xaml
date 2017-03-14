@@ -30,9 +30,9 @@
 											<UriImageSource x:Name="linkSource" Uri="{Binding urlPhone}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 										</Image.Source>
 									</Image>
-									<StackLayout Orientation="Horizontal" Padding="10">
+									<StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="#222222">
 										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand"/>
-										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand"/>
+										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}"/>
 									</StackLayout>
 								</StackLayout>
 							</ViewCell.View>

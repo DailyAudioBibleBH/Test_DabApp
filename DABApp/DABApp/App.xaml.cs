@@ -27,7 +27,6 @@ namespace DABApp
 			else {
 				MainPage = new DabNetworkUnavailablePage();
 			}
-			//AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 		}
 
 		protected override void OnStart()
