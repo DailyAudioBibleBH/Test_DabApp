@@ -11,4 +11,6 @@ namespace DABApp
 			page.Title = "DAILY AUDIO BIBLE";
 		}
 	}
+
+	public class DabViewCell { }
 }

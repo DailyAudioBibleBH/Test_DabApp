@@ -9,7 +9,11 @@
 				ItemTapped="OnItemTapped">
 			<local:NonScrollingListView.ItemTemplate>
 				<DataTemplate>
-					<TextCell Text="{Binding title}"/>
+					<ViewCell>
+						<StackLayout Padding="10" Spacing="5">
+							<Label Text="{Binding title}" FontSize="20"/>
+						</StackLayout>
+					</ViewCell>
 				</DataTemplate>
 			</local:NonScrollingListView.ItemTemplate>
 		</local:NonScrollingListView>

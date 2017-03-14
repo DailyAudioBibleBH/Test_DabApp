@@ -21,7 +21,8 @@ namespace DABApp
 				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
 			}
 			else {
-				await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+				//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using DABApp;
 using DABApp.iOS;
 using UIKit;
 using Xamarin.Forms;
@@ -15,7 +16,7 @@ namespace DABApp.iOS
 
 			cell.SelectedBackgroundView = new UIView
 			{
-				BackgroundColor = UIColor.FromRGB(51,51,51)
+				BackgroundColor = UIColor.Black.ColorWithAlpha(.1F)
 			};
 
 			return cell;

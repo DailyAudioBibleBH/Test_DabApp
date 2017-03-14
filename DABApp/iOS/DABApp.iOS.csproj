@@ -223,6 +223,7 @@
     <BundleResource Include="Resources\ic_arrow_forward_white.png" />
     <BundleResource Include="Resources\ic_arrow_back_white.png" />
     <BundleResource Include="Resources\ic_open_in_browser_white.png" />
+    <BundleResource Include="Resources\ic_chevron_right_white_2x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

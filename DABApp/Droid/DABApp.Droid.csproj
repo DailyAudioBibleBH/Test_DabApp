@@ -191,9 +191,13 @@
     <AndroidResource Include="Resources\drawable\AppIcon.png" />
     <AndroidResource Include="Resources\values\ids.xml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
-    <AndroidResource Include="Resources\drawable\ic_arrow_back_white_24dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_arrow_forward_white_24dp.png" />
-    <AndroidResource Include="Resources\drawable\ic_open_in_browser_white_24dp.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_back_white.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_forward_white.png" />
+    <AndroidResource Include="Resources\drawable\ic_open_in_browser_white.png" />
+    <AndroidResource Include="Resources\drawable\ic_chevron_right_white_2x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\app_icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\app_icon.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\app_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

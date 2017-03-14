@@ -3,7 +3,7 @@
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout>
-			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start" BackgroundColor="Blue">
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
@@ -12,11 +12,18 @@
 			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
-						<TextCell Text="{Binding title}"/>
+						<ViewCell>
+							<ViewCell.View>
+								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal">
+									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand"/>
+									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								</StackLayout>
+							</ViewCell.View>
+						</ViewCell>
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<StackLayout x:Name="ContentContainer" Padding="10" BackgroundColor="Red">
+			<StackLayout x:Name="ContentContainer" Padding="10">
 				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 			</StackLayout>
 			<ListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped" SeparatorVisibility="Default" SeparatorColor="Black" HasUnevenRows="true">

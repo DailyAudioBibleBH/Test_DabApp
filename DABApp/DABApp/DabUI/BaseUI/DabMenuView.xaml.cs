@@ -89,6 +89,7 @@ namespace DABApp
 					RemovePages();
 				}
 			}
+			pageList.SelectedItem = null;
 		}
 	}
 }
