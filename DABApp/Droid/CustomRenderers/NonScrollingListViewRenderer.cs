@@ -9,6 +9,8 @@ namespace DABApp.Droid
 {
 	public class NonScrollingListViewRenderer: ListViewRenderer
 	{
+		
+
 		public override bool DispatchTouchEvent(Android.Views.MotionEvent e)
 		{
 			if (e.Action == Android.Views.MotionEventActions.Move) {

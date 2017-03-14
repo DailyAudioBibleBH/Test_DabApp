@@ -14,11 +14,10 @@ namespace DABApp.Droid
 		{
 			base.OnElementChanged(e);
 
-			Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
-			//if (Control != null)
-			//{
-			//	Control.TextFormatted = Html.FromHtml(Element.Text);
-			//}
+			if (Element.Text != null)
+			{
+				Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
+			}
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -27,10 +26,10 @@ namespace DABApp.Droid
 
 			if (e.PropertyName == Label.TextProperty.PropertyName)
 			{
-				Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
-				//if (Control != null) {
-				//	Control.TextFormatted = Html.FromHtml(Element.Text);
-				//}
+				if (Element.Text != null)
+				{
+					Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
+				}
 			}
 		}
 	}

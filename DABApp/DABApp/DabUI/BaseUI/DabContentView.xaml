@@ -3,8 +3,8 @@
 		xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout>
-			<RelativeLayout x:Name="bannerContainer" HeightRequest="105" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
-				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start" BackgroundColor="Blue">
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<Label Text="{Binding title}" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
 				</StackLayout>
@@ -16,11 +16,11 @@
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<StackLayout Padding="10">
+			<StackLayout x:Name="ContentContainer" Padding="10" BackgroundColor="Red">
 				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 			</StackLayout>
-			<local:NonScrollingListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped" RowHeight="150" SeparatorVisibility="Default" SeparatorColor="Black">
-				<local:NonScrollingListView.ItemTemplate>
+			<ListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped" SeparatorVisibility="Default" SeparatorColor="Black" HasUnevenRows="true">
+				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
@@ -38,8 +38,8 @@
 							</ViewCell.View>
 						</ViewCell>
 					</DataTemplate>
-				</local:NonScrollingListView.ItemTemplate>
-			</local:NonScrollingListView>
+				</ListView.ItemTemplate>
+			</ListView>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

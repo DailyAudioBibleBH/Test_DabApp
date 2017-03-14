@@ -29,7 +29,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
+    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -205,6 +205,7 @@
     <Compile Include="CustomRenderers\DabTextCellRenderer.cs" />
     <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
     <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
+    <Compile Include="CustomRenderers\DabViewCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

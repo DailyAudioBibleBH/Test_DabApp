@@ -1,0 +1,24 @@
+﻿using System;
+using DABApp.iOS;
+using UIKit;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.iOS;
+
+[assembly:ExportRenderer(typeof(ViewCell), typeof(DabViewCellRenderer))]
+namespace DABApp.iOS
+{
+	public class DabViewCellRenderer: ViewCellRenderer
+	{
+		public override UIKit.UITableViewCell GetCell(Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv)
+		{
+			var cell = base.GetCell(item, reusableCell, tv);
+
+			cell.SelectedBackgroundView = new UIView
+			{
+				BackgroundColor = UIColor.FromRGB(51,51,51)
+			};
+
+			return cell;
+		}
+	}
+}

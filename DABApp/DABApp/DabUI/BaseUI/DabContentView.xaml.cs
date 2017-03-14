@@ -16,9 +16,15 @@ namespace DABApp
 			}
 			if (string.IsNullOrEmpty(contentView.content)) {
 				Content.IsVisible = false;
+				ContentContainer.IsVisible = false;
 			}
-			if (contentView.links == null) {
+			if (contentView.links == null)
+			{
 				Links.IsVisible = false;
+			}
+			else { 
+				ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+				this.ControlTemplate = playerBarTemplate;
 			}
 
 			banner.Source = new UriImageSource

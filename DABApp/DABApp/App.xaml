@@ -75,6 +75,7 @@
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
 				<Setter Property="BorderColor" Value="Transparent" />
 				<Setter Property="BorderWidth" Value="0" />
+				<Setter Property="BackgroundColor" Value="Transparent"/>
 			</Style>
 			<!--ListView-->
 			<Style x:Key="listviewStyle" TargetType="ListView">
@@ -95,6 +96,11 @@
 				<Setter Property="HasShadow" Value="false"/>
 			</Style>
 			<Style BasedOn="{StaticResource frameStyle}" TargetType="Frame" ApplyToDerivedTypes="true"/>
+			<Style x:Key="NavStyle" TargetType="NavigationPage">
+				<Setter Property="BackgroundColor" Value="#292929"/>
+				<Setter Property="BarBackgroundColor" Value="#444444"/>
+			</Style>
+			<Style BasedOn="{StaticResource NavStyle}" TargetType="NavigationPage" ApplyToDerivedTypes="true"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
