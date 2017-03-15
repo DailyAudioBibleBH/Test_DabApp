@@ -156,6 +156,9 @@ namespace DABApp
 				return true;
 			}
 			catch (Exception e) {
+				dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
+				ExpirationSettings.Value = DateTime.MinValue.ToString();
+				db.Update(ExpirationSettings);
 				return false;
 			}
 		}
