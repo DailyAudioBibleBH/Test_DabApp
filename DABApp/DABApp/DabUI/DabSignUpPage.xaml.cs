@@ -32,7 +32,7 @@ namespace DABApp
 					Navigation.PopToRootAsync();
 				}
 				else{
-					if (authentication.Contains("API"))
+					if (authentication.Contains("server"))
 					{
 						await DisplayAlert("Server Error", authentication, "OK");
 					}

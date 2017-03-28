@@ -91,7 +91,7 @@ namespace DABApp
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
-				if (container.code == "rest_forbidden") {
+				if (container.code == "rest_forbidden" || container.code == "add_member_error") {
 					return "The following error was thrown by the server: " + container.message;
 				}
 				if (TokenSettings == null)
