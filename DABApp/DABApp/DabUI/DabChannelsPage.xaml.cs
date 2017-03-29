@@ -23,6 +23,8 @@ namespace DABApp
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
+			var resource = ChannelView.resources[0];
+			PlayerFeedAPI.GetEpisodes(resource.feedUrl, resource.title);
 
 			banner.Source = new UriImageSource
 			{

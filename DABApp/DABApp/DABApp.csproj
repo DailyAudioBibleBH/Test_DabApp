@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="DabData\dbEpisodes.cs" />
     <Compile Include="DabData\dbLoggedEvents.cs" />
+    <Compile Include="DabApi\PlayerFeedAPI.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

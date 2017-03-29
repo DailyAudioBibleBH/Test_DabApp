@@ -22,6 +22,7 @@ namespace DABApp
 		static void initDatabase() {
 			_database = DependencyService.Get<ISQLite>().GetConnection(ResetDatabaseOnStart);
 			_database.CreateTable<dbSettings>();
+			_database.CreateTable<dbEpisodes>();
 		}
 	}
 }
