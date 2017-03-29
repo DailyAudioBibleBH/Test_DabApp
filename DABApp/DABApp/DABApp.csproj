@@ -98,6 +98,7 @@
       <DependentUpon>DabPrayerWallPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabData\dbEpisodes.cs" />
+    <Compile Include="DabData\dbLoggedEvents.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
