@@ -24,7 +24,7 @@ namespace DABApp
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
 			var resource = ChannelView.resources[0];
-			PlayerFeedAPI.GetEpisodes(resource.feedUrl, resource.title);
+			PlayerFeedAPI.GetEpisodes(resource);
 
 			banner.Source = new UriImageSource
 			{
@@ -67,6 +67,7 @@ namespace DABApp
 
 		void OnChannel(object o, ItemTappedEventArgs e) {
 			var resource = (Resource)e.Item;
+			PlayerFeedAPI.GetEpisodes(resource);
 			Navigation.PushAsync(new DabEpisodesPage(resource));
 		}
 	}

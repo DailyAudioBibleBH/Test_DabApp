@@ -16,7 +16,7 @@ namespace DABApp
 		[Indexed]
 		public int PubDay { get; set;}
 		[Indexed]
-		public int PubMonth { get; set;}
+		public string PubMonth { get; set;}
 		[Indexed]
 		public int PubYear { get; set;}
 		public string url { get; set;}

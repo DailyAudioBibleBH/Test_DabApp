@@ -12,22 +12,28 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
-		public static string GetEpisodes(string feedUrl, string Title) {
+		public static string GetEpisodes(Resource resource) {
 			try
 			{
 				var client = new HttpClient();
-				var result = client.GetAsync(feedUrl).Result;
+				var result = client.GetAsync(resource.feedUrl).Result;
 				string jsonOut = result.Content.ReadAsStringAsync().Result;
 				var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
 				if (Episodes == null) {
 					return "Server Error";
 				}
-				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == Title).ToList();
-				var tobeAdded = Episodes.Except(existingEpisodes).ToList();
-				var tobeDeleted = existingEpisodes.Except(Episodes).ToList();
-				db.InsertAll(tobeAdded);
-				foreach (var old in tobeDeleted) {
-					db.Delete(old);
+				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
+				var existingEpisodeIds = existingEpisodes.Select(x => x.id);
+				var newEpisodeIds = Episodes.Select(x => x.id);
+				foreach (var e in Episodes) {
+					if (!existingEpisodeIds.Contains(e.id)) {
+						db.Insert(e);
+					}
+				}
+				foreach (var old in existingEpisodes) {
+					if (!newEpisodeIds.Contains(old.id)) {
+						db.Delete(old);
+					}
 				}
 				return "OK";
 			}

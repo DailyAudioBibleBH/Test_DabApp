@@ -16,7 +16,6 @@ namespace DABApp
 
 			if (ContentAPI.CheckContent())
 			{
-				PlayerFeedAPI.CheckChannels();
 				if (AuthenticationAPI.CheckToken()) {
 					MainPage = new NavigationPage(new DabChannelsPage());
 				}
