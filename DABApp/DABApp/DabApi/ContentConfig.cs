@@ -38,6 +38,7 @@ namespace DABApp
 		public Images images { get; set; }
 		public string feedUrl { get; set; }
 		public string type { get; set; }
+		public bool availableOffline { get; set; } = false;
 	}
 
 	public class Banner
