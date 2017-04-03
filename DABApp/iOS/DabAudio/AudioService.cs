@@ -52,7 +52,7 @@ namespace DABApp.iOS
 				}
 			});
 
-			if (fileName.Contains("http://"))
+			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
 				NSUrl url = NSUrl.FromString(fileName);
 				_player = AVPlayer.FromUrl(url);
@@ -206,7 +206,7 @@ namespace DABApp.iOS
 		//}
 
 		public double TotalTime {
-			get { return _player.CurrentItem.Duration.Seconds;}
+			get {return _player.CurrentItem.Duration.Seconds;}
 		}
 
 	}

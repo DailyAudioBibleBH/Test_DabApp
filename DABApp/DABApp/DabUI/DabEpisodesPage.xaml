@@ -13,8 +13,8 @@
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Large"/>
 				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center"/>
 			</StackLayout>
-			<ListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true">
-				<ListView.ItemTemplate>
+			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode">
+				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<StackLayout Padding="10" Spacing="5">
@@ -26,8 +26,8 @@
 							</StackLayout>
 						</ViewCell>
 					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

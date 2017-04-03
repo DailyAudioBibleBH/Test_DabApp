@@ -16,5 +16,12 @@ namespace DABApp
 			bannerImage.Source = resource.images.backgroundPhone;
 			bannerContent.Text = resource.title;
 		}
+
+		public void OnEpisode(object o, ItemTappedEventArgs e) 
+		{
+			var chosen = (dbEpisodes)e.Item;
+			AudioPlayer.Instance.SetAudioFile(chosen.url);
+			Navigation.PushAsync(new DabPlayerPage(chosen));
+		}
 	}
 }

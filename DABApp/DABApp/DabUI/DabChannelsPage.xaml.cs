@@ -34,7 +34,8 @@ namespace DABApp
 			else
 			{
 				bannerContentContainer.IsVisible = true;
-				bannerContent.Text = episode.description;
+				var oldText = bannerContent.Text;
+				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
 			}
 
 			banner.Source = new UriImageSource
@@ -59,6 +60,7 @@ namespace DABApp
 		}
 
 		void OnPlayer(object o, EventArgs e) {
+			AudioPlayer.Instance.Player.SetAudioFile(episode.url);
 			Navigation.PushAsync(new DabPlayerPage(episode));
 		}
 

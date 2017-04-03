@@ -34,12 +34,12 @@ namespace DABApp
 							if (_player.IsInitialized)
 							{
 								//Update current time
-								if (_CurrentTime != _player.CurrentTime)
+								if (_CurrentTime != _player.CurrentTime && _CurrentTime >=0)
 								{
 									CurrentTime = _player.CurrentTime;
 								}
 
-								if (_TotalTime != _player.TotalTime)
+								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
 								{
 									TotalTime = _player.TotalTime;
 								}
