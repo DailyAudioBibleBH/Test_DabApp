@@ -70,7 +70,7 @@ namespace DABApp
 
 		void OnPodcast(object o, EventArgs e) {
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			page.PushAsync(new DabPlayerPage());
+			page.PushAsync(new DabPlayerPage(new dbEpisodes()));
 
 		}
 

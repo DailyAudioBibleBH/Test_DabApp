@@ -10,6 +10,7 @@ namespace DABApp
 	public partial class DabChannelsPage : DabBaseContentPage
 	{
 		View ChannelView;
+		dbEpisodes episode;
 
 		public DabChannelsPage()
 		{
@@ -25,6 +26,16 @@ namespace DABApp
 			bannerContent.Text = ChannelView.banner.content;
 			var resource = ChannelView.resources[0];
 			PlayerFeedAPI.GetEpisodes(resource);
+			episode = PlayerFeedAPI.GetMostRecentEpisode(resource);
+			if (episode == null)
+			{
+				bannerContentContainer.IsVisible = false;
+			}
+			else
+			{
+				bannerContentContainer.IsVisible = true;
+				bannerContent.Text = episode.description;
+			}
 
 			banner.Source = new UriImageSource
 			{
@@ -48,7 +59,7 @@ namespace DABApp
 		}
 
 		void OnPlayer(object o, EventArgs e) {
-			Navigation.PushAsync(new DabPlayerPage());
+			Navigation.PushAsync(new DabPlayerPage(episode));
 		}
 
 		void OnTest(object o, EventArgs e)

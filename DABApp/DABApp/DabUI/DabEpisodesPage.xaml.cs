@@ -11,10 +11,10 @@ namespace DABApp
 		{
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
+			var Episodes = PlayerFeedAPI.GetEpisodeList(resource);
+			EpisodeList.ItemsSource = Episodes;
+			bannerImage.Source = resource.images.backgroundPhone;
+			bannerContent.Text = resource.title;
 		}
-
-		//void OnMenu(object o, EventArgs e) {
-		//	this.ShowMenu();
-		//}
 	}
 }

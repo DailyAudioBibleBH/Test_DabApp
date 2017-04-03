@@ -12,6 +12,11 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
+		public static List<dbEpisodes> GetEpisodeList(Resource resource) {
+			GetEpisodes(resource);
+			return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToList();
+		}
+
 		public static string GetEpisodes(Resource resource) {
 			try
 			{
@@ -39,8 +44,14 @@ namespace DABApp
 			}
 			catch (Exception e)
 			{
-				return e.Message;	
+				return e.Message;
 			}
+		}
+
+		public static dbEpisodes GetMostRecentEpisode(Resource resource) 
+		{
+			var episode = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).FirstOrDefault();
+			return episode;
 		}
 	}
 }
