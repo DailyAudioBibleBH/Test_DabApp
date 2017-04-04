@@ -2,14 +2,15 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
 	<t:MenuContainerPage.Content>
-		<StackLayout>
+		<StackLayout Padding="10" Spacing="5">
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 				<Image x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<Label x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
 				</StackLayout>
 			</RelativeLayout>
-			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
+			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="White"/>
+			<StackLayout Orientation="Horizontal">
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Large"/>
 				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
@@ -17,7 +18,7 @@
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<StackLayout Padding="10" Spacing="5">
+							<StackLayout>
 								<StackLayout Orientation="Horizontal">
 									<Label Text="{Binding PubMonth}" FontSize="Large" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>
