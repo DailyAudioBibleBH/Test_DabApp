@@ -183,6 +183,7 @@
     <Folder Include="DabAudio\" />
     <Folder Include="CustomRenderers\" />
     <Folder Include="DabData\" />
+    <Folder Include="Effects\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -206,6 +207,7 @@
     <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
     <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
     <Compile Include="CustomRenderers\DabViewCellRenderer.cs" />
+    <Compile Include="Effects\DabPickerEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

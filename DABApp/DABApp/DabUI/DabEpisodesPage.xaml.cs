@@ -18,9 +18,10 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			Episodes = PlayerFeedAPI.GetEpisodeList(resource);
 			//EpisodeList.ItemsSource = Episodes;
-			bannerImage.Source = resource.images.backgroundPhone;
+			bannerImage.Source = resource.images.bannerPhone;
 			bannerContent.Text = resource.title;
 			Offline.IsToggled = resource.availableOffline;
+			Months.Effects.Add(Effect.Resolve("DabEffects.DabPickerEffect"));
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
 			foreach (var month in months) {
 				Months.Items.Add(month);

@@ -2,29 +2,39 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
 	<t:MenuContainerPage.Content>
-		<StackLayout Padding="10" Spacing="5">
+		<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 				<Image x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-					<Label x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
+					<local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
 				</StackLayout>
 			</RelativeLayout>
-			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="White"/>
-			<StackLayout Orientation="Horizontal">
-				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Large"/>
+			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="Gray" />
+			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
+				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Large" TextColor="Gray"/>
 				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
 			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<StackLayout>
-								<StackLayout Orientation="Horizontal">
+							<Grid Padding="10,10,10,10">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
 									<Label Text="{Binding PubMonth}" FontSize="Large" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>
+									<Button x:Name="Download" IsVisible="{Binding !is_downloaded}" WidthRequest="50" BackgroundColor="Gray"/>
 								</StackLayout>
-								<Label Text="{Binding description}" FontSize="Small"/>
-							</StackLayout>
+								<Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" TextColor="Gray"/>
+								<Image BackgroundColor="Red" IsVisible="{Binding !is_listened_to}" Grid.RowSpan="2" Grid.Column="1" WidthRequest="10"/>
+							</Grid>
 						</ViewCell>
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
