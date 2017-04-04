@@ -4,7 +4,9 @@
 		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
 		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<t:MenuContainerPage.Content>
-		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand">
+		<RelativeLayout x:Name="ListenContainer">
+				<Image x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 			<StackLayout Padding="20" Spacing="20">
 			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
 				<controls:SegmentedControl.Children>
@@ -46,5 +48,6 @@
 					<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30"/>
 			</StackLayout>
 		</StackLayout>
+		</RelativeLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
