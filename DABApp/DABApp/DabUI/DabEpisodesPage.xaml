@@ -11,7 +11,7 @@
 			</RelativeLayout>
 			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Large"/>
-				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center"/>
+				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
 			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode">
 				<local:NonScrollingListView.ItemTemplate>
