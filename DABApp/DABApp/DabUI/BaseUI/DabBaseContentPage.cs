@@ -36,8 +36,8 @@ namespace DABApp
 
 			//Give button on the right (priority 1)
 			var giveButton = new ToolbarItem();
-			//giveButton.Text = "give";
-			giveButton.Icon = "ic_attach_money_white.png";
+			giveButton.Text = "Give";
+			//giveButton.Icon = "ic_attach_money_white.png";
 			giveButton.Priority = 0; //default
 			giveButton.Clicked += (sender, e) =>
 				{

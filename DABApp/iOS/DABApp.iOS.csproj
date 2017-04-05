@@ -29,7 +29,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
+    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -84,7 +84,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>477e44d0-f340-4118-989a-1d34f1312a64</CodesignProvision>
+    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -208,6 +208,8 @@
     <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
     <Compile Include="CustomRenderers\DabViewCellRenderer.cs" />
     <Compile Include="Effects\DabPickerEffect.cs" />
+    <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
+    <Compile Include="CustomRenderers\DabSwitchRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
@@ -226,6 +228,12 @@
     <BundleResource Include="Resources\ic_arrow_back_white.png" />
     <BundleResource Include="Resources\ic_open_in_browser_white.png" />
     <BundleResource Include="Resources\ic_chevron_right_white_2x.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_down_white_2x.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_down_white_3x.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_down_white.png" />
+    <BundleResource Include="Resources\ic_cloud_download_white_2x.png" />
+    <BundleResource Include="Resources\ic_cloud_download_white_3x.png" />
+    <BundleResource Include="Resources\ic_cloud_download_white.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

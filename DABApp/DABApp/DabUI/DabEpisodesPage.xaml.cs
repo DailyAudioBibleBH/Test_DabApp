@@ -21,7 +21,6 @@ namespace DABApp
 			bannerImage.Source = resource.images.bannerPhone;
 			bannerContent.Text = resource.title;
 			Offline.IsToggled = resource.availableOffline;
-			Months.Effects.Add(Effect.Resolve("DabEffects.DabPickerEffect"));
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
 			foreach (var month in months) {
 				Months.Items.Add(month);
@@ -33,6 +32,7 @@ namespace DABApp
 		public void OnEpisode(object o, ItemTappedEventArgs e) 
 		{
 			var chosen = (dbEpisodes)e.Item;
+			EpisodeList.SelectedItem = null;
 			AudioPlayer.Instance.SetAudioFile(chosen.url);
 			Navigation.PushAsync(new DabPlayerPage(chosen));
 			EpisodeList.SelectedItem = null;
