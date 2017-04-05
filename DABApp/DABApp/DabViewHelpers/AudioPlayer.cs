@@ -14,7 +14,7 @@ namespace DABApp
 		private string _PlayButtonText = "Play";
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
-
+		private bool _ShowPlayerBar = false;
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -53,6 +53,14 @@ namespace DABApp
 								{
 									IsInitialized = Player.IsInitialized;
 								}
+								if (showPlayerBar)
+								{
+									_ShowPlayerBar = IsInitialized;
+								}
+								else {
+									_ShowPlayerBar = showPlayerBar;
+					}
+								
 							}
 							else {
 								_CurrentTime = 0;
@@ -172,6 +180,17 @@ namespace DABApp
 				return _CurrentTime / _TotalTime;
 			}
 		}
+
+		public bool ShowPlayerBar { 
+			get {
+					return _ShowPlayerBar;
+			}
+			set {
+				_ShowPlayerBar = value;
+				OnPropertyChanged("ShowPlayerBar");
+			}
+		}
+		public bool showPlayerBar { get; set; } = true;
 
 	public void SeekTo(int seconds)
 	{

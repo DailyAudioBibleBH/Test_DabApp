@@ -6,7 +6,7 @@
 	<t:MenuContainerPage.Content>
 		<RelativeLayout x:Name="ListenContainer">
 				<Image x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
-		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 			<StackLayout Padding="20" Spacing="20">
 			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
 				<controls:SegmentedControl.Children>
@@ -17,15 +17,19 @@
 			</controls:SegmentedControl>
 				</StackLayout>
 			<StackLayout x:Name="Listen" IsVisible="true"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-			<Label Text="Player"/>
-			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0"  
+					<StackLayout VerticalOptions="CenterAndExpand">
+						<Label x:Name="Date" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30"/>
+						<Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
+						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium"/>
+					</StackLayout>
+			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
-			<StackLayout Orientation="Horizontal">
+			<StackLayout Orientation="Horizontal" VerticalOptions="Start">
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" HorizontalOptions="StartAndExpand"/>
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
-			<StackLayout Orientation="Horizontal">
+			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
 				<Button Text="Back 30" Clicked="OnBack30" HorizontalOptions="StartAndExpand"/>
 				<Button Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" Clicked="OnPlay" HorizontalOptions="CenterAndExpand"/>
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
@@ -39,13 +43,6 @@
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="Date" />
 				<Entry Placeholder="Your text here."/>
-			</StackLayout>
-			<StackLayout x:Name="stackFooterContent" VerticalOptions="End" HeightRequest="70" IsVisible="false">
-				<StackLayout Orientation="Horizontal" VerticalOptions="End" HeightRequest="40">
-					<Button x:Name="PlayPause" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause"/>
-					<Button x:Name="PodcastTitle" Text="Podcast Title" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnPodcast"/>
-				</StackLayout>
-					<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30"/>
 			</StackLayout>
 		</StackLayout>
 		</RelativeLayout>

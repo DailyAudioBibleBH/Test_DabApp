@@ -35,6 +35,7 @@ namespace DABApp
 			var chosen = (dbEpisodes)e.Item;
 			AudioPlayer.Instance.SetAudioFile(chosen.url);
 			Navigation.PushAsync(new DabPlayerPage(chosen));
+			EpisodeList.SelectedItem = null;
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e) {
