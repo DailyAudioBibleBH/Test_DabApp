@@ -19,7 +19,7 @@
 			<StackLayout x:Name="Listen" IsVisible="true"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 					<StackLayout VerticalOptions="CenterAndExpand">
 						<Label x:Name="Date" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30"/>
-						<Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
+						<Label Text="{Binding channel_title}" Style="{StaticResource secondaryLabelStyle}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
 						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium"/>
 					</StackLayout>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
@@ -35,11 +35,7 @@
 				<Button Text="Forward 30" Clicked="OnForward30" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 				</StackLayout>
-			<ScrollView x:Name="Read" IsVisible="false" VerticalOptions="FillAndExpand"  HeightRequest="1200">
-			<StackLayout VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-				<local:HtmlLabel x:Name="HLabel" />
-			</StackLayout>
-				</ScrollView>
+				<WebView Source="{Binding read_link}" x:Name="Read" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="Date" />
 				<Entry Placeholder="Your text here."/>
