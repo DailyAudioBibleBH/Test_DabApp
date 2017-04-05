@@ -47,5 +47,9 @@
 	<string>com.dailyaudiobible.dabapp</string>
 	<key>CFBundleName</key>
 	<string>DAB</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 </dict>
 </plist>
