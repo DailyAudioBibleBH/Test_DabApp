@@ -24,7 +24,7 @@ namespace DABApp
 			backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
 			BackgroundImage.Source = backgroundImage;
 			BindingContext = episode;
-			Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
+			//Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 		}
 
@@ -119,6 +119,10 @@ namespace DABApp
 		void OnPodcast(object o, EventArgs e)
 		{
 			SegControl.SelectTab(0);
+		}
+
+		void OnSaveJournal(object o, EventArgs e) { 
+			
 		}
 	}
 }
