@@ -209,7 +209,6 @@
     <Compile Include="CustomRenderers\DabViewCellRenderer.cs" />
     <Compile Include="Effects\DabPickerEffect.cs" />
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
-    <Compile Include="CustomRenderers\DabButtonRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
