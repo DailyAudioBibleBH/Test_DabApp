@@ -17,7 +17,7 @@ namespace DABApp.iOS
 			base.OnElementChanged(e);
 
 			//Set the font size
-			Control.Font = UIFont.SystemFontOfSize((nfloat)Device.GetNamedSize(NamedSize.Large, typeof(Picker)));
+			Control.Font = UIFont.SystemFontOfSize((nfloat)Device.GetNamedSize(NamedSize.Medium, typeof(Picker)));
 
 			//Set custom padding
 			Control.LeftView = new UIView(new CGRect(0, 0, 10, 0));

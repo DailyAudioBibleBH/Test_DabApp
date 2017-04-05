@@ -32,6 +32,7 @@ namespace DABApp
 		public void OnEpisode(object o, ItemTappedEventArgs e) 
 		{
 			var chosen = (dbEpisodes)e.Item;
+			EpisodeList.SelectedItem = null;
 			AudioPlayer.Instance.SetAudioFile(chosen.url);
 			Navigation.PushAsync(new DabPlayerPage(chosen));
 		}
