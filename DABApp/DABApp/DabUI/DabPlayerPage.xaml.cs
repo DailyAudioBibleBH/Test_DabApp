@@ -36,12 +36,12 @@ namespace DABApp
 				{
 					AudioPlayer.Instance.Player.Pause();
 					//TimeBinding();
-					AudioPlayer.Instance.PlayButtonText = "Play";
+					AudioPlayer.Instance.PlayButtonText = "ic_play_circle_outline_white_3x.png";
 				}
 				else {
 					AudioPlayer.Instance.Player.Play();
 					//TimeBinding();
-					AudioPlayer.Instance.PlayButtonText = "Pause";
+					AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
 				}
 			}
 			else {
@@ -49,7 +49,7 @@ namespace DABApp
 				AudioPlayer.Instance.Player.SetAudioFile(Episode.url);
 				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				AudioPlayer.Instance.Player.Play();
-				AudioPlayer.Instance.PlayButtonText = "Pause";
+				AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
 			}
 		}
 
@@ -99,12 +99,12 @@ namespace DABApp
 				if (AudioPlayer.Instance.Player.IsPlaying)
 				{
 					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonText = "Play";
+					AudioPlayer.Instance.PlayButtonText = "ic_play_circle_outline_white_3x.png";
 				}
 				else {
 					AudioPlayer.Instance.Player.Play();
 					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonText = "Pause";
+					AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
 				}
 			}
 			else {
@@ -112,7 +112,7 @@ namespace DABApp
 				AudioPlayer.Instance.Player.SetAudioFile("@"+Episode.url);
 				AudioPlayer.Instance.Player.Play();
 				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonText = "Pause";
+				AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
 			}
 		}
 

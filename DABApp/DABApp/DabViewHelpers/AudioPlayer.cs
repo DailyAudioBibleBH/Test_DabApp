@@ -11,7 +11,7 @@ namespace DABApp
 		private IAudio _player;
 		private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
-		private string _PlayButtonText = "Play";
+		private string _PlayButtonText = "ic_play_circle_outline_white_3x.png";
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private bool _ShowPlayerBar = false;
