@@ -38,7 +38,7 @@
 				<WebView Source="{Binding read_link}" x:Name="Read" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="{Binding title}" />
-				<Editor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" Completed="OnSaveJournal"/>
+				<Editor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" Completed="OnSaveJournal" HeightRequest="250"/>
 			</StackLayout>
 		</StackLayout>
 		</RelativeLayout>
