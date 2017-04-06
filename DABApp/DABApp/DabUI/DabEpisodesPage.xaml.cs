@@ -33,7 +33,10 @@ namespace DABApp
 		{
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
-			AudioPlayer.Instance.SetAudioFile(chosen.url);
+			if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
+			{
+				AudioPlayer.Instance.SetAudioFile(chosen);
+			}
 			Navigation.PushAsync(new DabPlayerPage(chosen));
 			EpisodeList.SelectedItem = null;
 

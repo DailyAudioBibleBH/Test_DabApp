@@ -29,7 +29,7 @@ namespace DABApp
 				}
 			}
 			else {
-				AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 				AudioPlayer.Instance.Player.Play();
 				//ProgressBinding();
@@ -41,7 +41,8 @@ namespace DABApp
 		void OnShowPlayer(object o, EventArgs e)
 		{
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			page.PushAsync(new DabPlayerPage(new dbEpisodes()));
+			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+			page.PushAsync(new DabPlayerPage(currentEpisode));
 
 		}
 

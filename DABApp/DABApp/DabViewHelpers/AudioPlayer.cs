@@ -11,10 +11,11 @@ namespace DABApp
 		private IAudio _player;
 		private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
-		private string _PlayButtonText = "ic_play_circle_outline_white_3x.png";
+		private string _PlayButtonText = "ic_play_circle_outline_white.png";
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private bool _ShowPlayerBar = false;
+		private string _CurrentEpisodeTitle;
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -26,6 +27,10 @@ namespace DABApp
 		//Don't allow creation of the class elsewhere in the app.
 		private AudioPlayer()
 		{
+			if (Device.OS == TargetPlatform.iOS)
+			{
+				_PlayButtonText = "ic_play_circle_outline_white_3x.png";
+			}
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
 
@@ -34,7 +39,7 @@ namespace DABApp
 							if (_player.IsInitialized)
 							{
 								//Update current time
-								if (_CurrentTime != _player.CurrentTime && _CurrentTime >=0)
+								if (_CurrentTime != _player.CurrentTime && _CurrentTime >= 0)
 								{
 									CurrentTime = _player.CurrentTime;
 								}
@@ -53,13 +58,14 @@ namespace DABApp
 								{
 									IsInitialized = Player.IsInitialized;
 								}
-								if (showPlayerBar)
-								{
-									_ShowPlayerBar = IsInitialized;
-								}
-								else {
-									_ShowPlayerBar = showPlayerBar;
-					}
+
+					//			if (_IsPlaying)
+					//			{
+					//				PlayButtonText = "ic_pause_circle_outline_white.png";
+					//			}
+					//			else {
+					//				PlayButtonText = "ic_play_circle_outline_white.png";
+					//}
 								
 							}
 							else {
@@ -181,18 +187,16 @@ namespace DABApp
 			}
 		}
 
-		public bool ShowPlayerBar { 
-			get {
-					return _ShowPlayerBar;
-			}
+		public int CurrentEpisodeId { get; set; } = 0;
+		public string CurrentEpisodeTitle { 
+			get { return _CurrentEpisodeTitle;} 
 			set {
-				_ShowPlayerBar = value;
-				OnPropertyChanged("ShowPlayerBar");
+				_CurrentEpisodeTitle = value;
+				OnPropertyChanged("CurrentEpisodeTitle");
 			}
 		}
-		public bool showPlayerBar { get; set; } = true;
 
-	public void SeekTo(int seconds)
+		public void SeekTo(int seconds)
 	{
 		_player.SeekTo(seconds);
 		//Update the current time
@@ -209,9 +213,11 @@ namespace DABApp
 
 
 
-	public void SetAudioFile(string FileName)
+	public void SetAudioFile(dbEpisodes episode)
 	{
-		_player.SetAudioFile(FileName);
+		Instance.CurrentEpisodeId = episode.id;
+		Instance.CurrentEpisodeTitle = episode.title;
+		_player.SetAudioFile(episode.url);
 	}
 
 	protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
@@ -222,5 +228,11 @@ namespace DABApp
 	}
 
 	public event PropertyChangedEventHandler PropertyChanged;
+
+		public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
+
+		private static void NotifyStaticPropertyChanged(string propertyName) {
+			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+		}
 }
 }

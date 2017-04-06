@@ -30,9 +30,9 @@
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
-				<Button Image="ic_replay_30_white_2x.png" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
+				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
 				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
-				<Button Image="ic_forward_30_white_2x.png" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}"/>
+				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}"/>
 			</StackLayout>
 				</StackLayout>
 				<WebView Source="{Binding read_link}" x:Name="Read" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>

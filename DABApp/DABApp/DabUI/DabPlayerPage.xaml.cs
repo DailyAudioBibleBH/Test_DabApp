@@ -12,13 +12,17 @@ namespace DABApp
 		//IAudio player = GlobalResources.Player;
 		dbEpisodes Episode;
 		string backgroundImage;
+		string playImage;
+		string pauseImage;
+		string forwardImage;
+		string backwardImage;
 
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
 
 			Episode = episode;
-			AudioPlayer.Instance.ShowPlayerBar = false;
+			//AudioPlayer.Instance.ShowPlayerBar = false;
 			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
 			DabViewHelper.InitDabForm(this);
 			backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
@@ -26,6 +30,25 @@ namespace DABApp
 			BindingContext = episode;
 			//Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			if (Device.OS == TargetPlatform.iOS) {
+				playImage = "ic_play_circle_outline_white_3x.png";
+				pauseImage = "ic_pause_circle_outline_white_3x.png";
+				forwardImage = "ic_forward_30_white_2x.png";
+				backwardImage = "ic_replay_30_white_2x.png";
+			}
+			else{
+				playImage = "ic_play_circle_outline_white.png";
+				pauseImage = "ic_pause_circle_outline_white.png";
+				forwardImage = "ic_forward_30_white.png";
+				backwardImage = "ic_replay_30_white.png";
+			}
+			backwardButton.Image = backwardImage;
+			forwardButton.Image = forwardImage;
+			if (AudioPlayer.Instance.IsPlaying)
+			{
+				AudioPlayer.Instance.PlayButtonText = pauseImage;
+			}
+			else AudioPlayer.Instance.PlayButtonText = playImage;
 		}
 
 		void OnPlay(object o, EventArgs e)
@@ -36,20 +59,20 @@ namespace DABApp
 				{
 					AudioPlayer.Instance.Player.Pause();
 					//TimeBinding();
-					AudioPlayer.Instance.PlayButtonText = "ic_play_circle_outline_white_3x.png";
+					AudioPlayer.Instance.PlayButtonText = playImage;
 				}
 				else {
 					AudioPlayer.Instance.Player.Play();
 					//TimeBinding();
-					AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
+					AudioPlayer.Instance.PlayButtonText = pauseImage;
 				}
 			}
 			else {
 				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				AudioPlayer.Instance.Player.SetAudioFile(Episode.url);
+				AudioPlayer.Instance.SetAudioFile(Episode);
 				//GlobalResources.Player.PlayAudioFile("http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 				AudioPlayer.Instance.Player.Play();
-				AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
+				AudioPlayer.Instance.PlayButtonText = pauseImage;
 			}
 		}
 
@@ -70,51 +93,51 @@ namespace DABApp
 				case 0:
 					Read.IsVisible = false;
 					Journal.IsVisible = false;
-					AudioPlayer.Instance.showPlayerBar = false;
+					//AudioPlayer.Instance.showPlayerBar = false;
 					Listen.IsVisible = true;
 					BackgroundImage.IsVisible = true;
 					break;
 				case 1:
 					Listen.IsVisible = false;
 					Journal.IsVisible = false;
-					AudioPlayer.Instance.showPlayerBar = true;
+					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					BackgroundImage.IsVisible = false;
 					break;
 				case 2:
 					Read.IsVisible = false;
 					Listen.IsVisible = false;
-					AudioPlayer.Instance.showPlayerBar = true;
+					//AudioPlayer.Instance.showPlayerBar = true;
 					Journal.IsVisible = true;
 					BackgroundImage.IsVisible = false;
 					break;
 			}
 		}
 
-		void OnPlayPause(object o, EventArgs e)
-		{
+		//void OnPlayPause(object o, EventArgs e)
+		//{
 
-			if (AudioPlayer.Instance.Player.IsInitialized)
-			{
-				if (AudioPlayer.Instance.Player.IsPlaying)
-				{
-					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonText = "ic_play_circle_outline_white_3x.png";
-				}
-				else {
-					AudioPlayer.Instance.Player.Play();
-					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
-				}
-			}
-			else {
-				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				AudioPlayer.Instance.Player.SetAudioFile("@"+Episode.url);
-				AudioPlayer.Instance.Player.Play();
-				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline_white_3x.png";
-			}
-		}
+		//	if (AudioPlayer.Instance.Player.IsInitialized)
+		//	{
+		//		if (AudioPlayer.Instance.Player.IsPlaying)
+		//		{
+		//			AudioPlayer.Instance.Player.Pause();
+		//			AudioPlayer.Instance.PlayButtonText = playImage;
+		//		}
+		//		else {
+		//			AudioPlayer.Instance.Player.Play();
+		//			//ProgressBinding();
+		//			AudioPlayer.Instance.PlayButtonText = pauseImage;
+		//		}
+		//	}
+		//	else {
+		//		//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+		//		AudioPlayer.Instance.Player.SetAudioFile("@"+Episode.url);
+		//		AudioPlayer.Instance.Player.Play();
+		//		//ProgressBinding();
+		//		AudioPlayer.Instance.PlayButtonText = pauseImage;
+		//	}
+		//}
 
 		void OnPodcast(object o, EventArgs e)
 		{

@@ -53,5 +53,9 @@ namespace DABApp
 			var episode = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).FirstOrDefault();
 			return episode;
 		}
+
+		public static dbEpisodes GetEpisode(int id) {
+			return db.Table<dbEpisodes>().Single(x => x.id == id);
+		}
 	}
 }
