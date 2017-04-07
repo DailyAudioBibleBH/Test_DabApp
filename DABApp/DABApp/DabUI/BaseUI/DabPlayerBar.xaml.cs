@@ -20,12 +20,12 @@ namespace DABApp
 				if (AudioPlayer.Instance.Player.IsPlaying)
 				{
 					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonText = "ic_play_circle_outline.png";
+					AudioPlayer.Instance.PlayButtonImage = "ic_play_circle_outline.png";
 				}
 				else {
 					AudioPlayer.Instance.Player.Play();
 					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline.png";
+					AudioPlayer.Instance.PlayButtonImage = "ic_pause_circle_outline.png";
 				}
 			}
 			else {
@@ -33,7 +33,7 @@ namespace DABApp
 				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
 				AudioPlayer.Instance.Player.Play();
 				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonText = "ic_pause_circle_outline.png";
+				AudioPlayer.Instance.PlayButtonImage = "ic_pause_circle_outline.png";
 			}
 		}
 

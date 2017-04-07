@@ -51,12 +51,12 @@ namespace DABApp
 				if (AudioPlayer.Instance.Player.IsPlaying)
 				{
 					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonText = "Play";
+					AudioPlayer.Instance.PlayButtonImage = "Play";
 				}
 				else {
 					AudioPlayer.Instance.Player.Play();
 					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonText = "Pause";
+					AudioPlayer.Instance.PlayButtonImage = "Pause";
 				}
 			}
 			else {
@@ -64,7 +64,7 @@ namespace DABApp
 				AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
 				AudioPlayer.Instance.Player.Play();
 				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonText = "Pause";
+				AudioPlayer.Instance.PlayButtonImage = "Pause";
 				}
 		}
 
@@ -84,7 +84,7 @@ namespace DABApp
 		//		}
 		//		else {
 		//			AudioPlayer.Instance.Progress = 0;
-		//			AudioPlayer.Instance.PlayButtonText = "Play";
+		//			AudioPlayer.Instance.PlayButtonImage = "Play";
 		//			return GlobalResources.Player.IsInitialized;
 		//		}
 		//	});

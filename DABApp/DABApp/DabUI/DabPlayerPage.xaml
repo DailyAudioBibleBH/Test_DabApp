@@ -31,7 +31,7 @@
 			</StackLayout>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
 				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
-				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonText}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
+				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonImage}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}"/>
 			</StackLayout>
 				</StackLayout>

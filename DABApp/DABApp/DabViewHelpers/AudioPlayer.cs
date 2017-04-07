@@ -11,7 +11,7 @@ namespace DABApp
 		private IAudio _player;
 		private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
-		private string _PlayButtonText = "ic_play_circle_outline_white.png";
+		private string _PlayButtonImage = "ic_play_circle_outline_white.png";
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private bool _ShowPlayerBar = false;
@@ -29,7 +29,7 @@ namespace DABApp
 		{
 			if (Device.OS == TargetPlatform.iOS)
 			{
-				_PlayButtonText = "ic_play_circle_outline_white_3x.png";
+				_PlayButtonImage = "ic_play_circle_outline_white.png";
 			}
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
@@ -61,10 +61,10 @@ namespace DABApp
 
 					//			if (_IsPlaying)
 					//			{
-					//				PlayButtonText = "ic_pause_circle_outline_white.png";
+					//				PlayButtonImage = "ic_pause_circle_outline_white.png";
 					//			}
 					//			else {
-					//				PlayButtonText = "ic_play_circle_outline_white.png";
+					//				PlayButtonImage = "ic_play_circle_outline_white.png";
 					//}
 								
 							}
@@ -120,16 +120,16 @@ namespace DABApp
 	}
 
 	//Title of the audio file
-	public string PlayButtonText
+	public string PlayButtonImage
 	{
 		get
 		{
-			return _PlayButtonText;
+			return _PlayButtonImage;
 		}
 		set
 		{
-			_PlayButtonText = value;
-			OnPropertyChanged("PlayButtonText");
+			_PlayButtonImage = value;
+			OnPropertyChanged("PlayButtonImage");
 		}
 	}
 
