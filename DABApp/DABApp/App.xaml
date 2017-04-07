@@ -19,7 +19,7 @@
 			<!--Color provided by LUTD for slider menu: #D5272E-->
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
-				<StackLayout VerticalOptions="FillAndExpand">
+				<StackLayout VerticalOptions="FillAndExpand" Spacing="0">
 					<ScrollView VerticalOptions="FillAndExpand">
 						<ContentPresenter VerticalOptions="FillAndExpand" />
 					</ScrollView>
@@ -28,7 +28,7 @@
 			</ControlTemplate>
 			<!--Player Bar ControlTemplate WITHOUT ScrollView-->
 			<ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
-				<StackLayout VerticalOptions="FillAndExpand">
+				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" >
 					<ContentPresenter VerticalOptions="FillAndExpand" />
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>

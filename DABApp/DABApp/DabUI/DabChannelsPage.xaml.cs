@@ -16,9 +16,9 @@ namespace DABApp
 		{
 			InitializeComponent();
 
-			//Choose a different control template to disable built in scroll view
-			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
-			this.ControlTemplate = playerBarTemplate;
+			////Choose a different control template to disable built in scroll view
+			//ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			//this.ControlTemplate = playerBarTemplate;
 
 			DabViewHelper.InitDabForm(this);
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);

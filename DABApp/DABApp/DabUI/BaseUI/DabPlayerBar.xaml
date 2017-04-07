@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerBar" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<ContentView.Content>
-		<StackLayout>
+		<StackLayout  Padding="0" Spacing="0" >
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End"  IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}"  Padding="0" Spacing="0">
 				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End"   />
-				<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10" Padding="0"	>
+				<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10" Padding="2"	>
 					<Button Image="ic_keyboard_arrow_up_white.png"  Clicked="OnShowPlayer" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
 					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}"  Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
 					<StackLayout x:Name="stackPodcastTitle" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Spacing="0" Padding="0">
