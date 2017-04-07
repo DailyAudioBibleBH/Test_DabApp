@@ -15,7 +15,7 @@ using MediaPlayer;
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
 {
-	public class AudioService: IAudio
+	public class AudioService : IAudio
 	{
 		public static AVPlayer _player;
 		public static bool IsLoaded;
@@ -25,27 +25,28 @@ namespace DABApp.iOS
 		NSError error;
 		double skipInterval = 30;
 		float seekRate = 10.0f;
-		public static AudioService Instance { get; private set;}
+		public static AudioService Instance { get; private set; }
 
 		public AudioService()
 		{
 		}
 
-		static AudioService() 
+		static AudioService()
 		{
 			Instance = new AudioService();
 		}
 
 		public void SetAudioFile(string fileName)
 		{
-			
+
 			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
 			session.SetActive(true);
 
 			nint TaskId = 0;
 			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
 			{
-				if (TaskId != 0) {
+				if (TaskId != 0)
+				{
 					UIApplication.SharedApplication.EndBackgroundTask(TaskId);
 					TaskId = 0;
 					SetNowPlayingInfo();
@@ -68,15 +69,18 @@ namespace DABApp.iOS
 			IsLoaded = true;
 		}
 
-		public void Play() {
+		public void Play()
+		{
 			_player.Play();
 		}
 
-		public void Pause() {
+		public void Pause()
+		{
 			_player.Pause();
 		}
 
-		public void SeekTo(int seconds) {
+		public void SeekTo(int seconds)
+		{
 			_player.Seek(new CMTime(seconds, 1), CMTime.Zero, CMTime.Zero);
 		}
 
@@ -86,10 +90,11 @@ namespace DABApp.iOS
 			_player.Seek(new CMTime(seekTime, 1), CMTime.Zero, CMTime.Zero);
 		}
 
-		public void RemoteControlReceived(UIEvent theEvent) 
+		public void RemoteControlReceived(UIEvent theEvent)
 		{
 			np = new MPNowPlayingInfo();
-			switch (theEvent.Subtype) {
+			switch (theEvent.Subtype)
+			{
 				case UIEventSubtype.RemoteControlPause:
 					Pause();
 					break;
@@ -117,7 +122,7 @@ namespace DABApp.iOS
 			SetNowPlayingInfo();
 		}
 
-		void SetNowPlayingInfo() 
+		void SetNowPlayingInfo()
 		{
 			//np = new MPNowPlayingInfo();
 			if (np.ElapsedPlaybackTime != _player.CurrentTime.Seconds)
@@ -132,17 +137,18 @@ namespace DABApp.iOS
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
 
-		void SetCommandCenter() {
+		void SetCommandCenter()
+		{
 			np = new MPNowPlayingInfo();
 
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
 			skipForward.AddTarget(RemoteSkip);
-			skipForward.PreferredIntervals = new double[1] { skipInterval};
+			skipForward.PreferredIntervals = new double[1] { skipInterval };
 			MPSkipIntervalCommand skipBackward = commandCenter.SkipBackwardCommand;
 			skipBackward.Enabled = true;
 			skipBackward.AddTarget(RemoteSkip);
-			skipBackward.PreferredIntervals = new double[1] { -skipInterval};
+			skipBackward.PreferredIntervals = new double[1] { -skipInterval };
 			MPRemoteCommand pauseCommand = commandCenter.PauseCommand;
 			pauseCommand.Enabled = true;
 			pauseCommand.AddTarget(RemotePlayOrPause);
@@ -154,7 +160,7 @@ namespace DABApp.iOS
 				{
 					SetNowPlayingInfo();
 					return true;
-			});
+				});
 
 		}
 
@@ -165,48 +171,82 @@ namespace DABApp.iOS
 				Pause();
 				np.PlaybackRate = 0f;
 			}
-			else { 
+			else {
 				Play();
 				np.PlaybackRate = 1.0f;
 			}
 			return MPRemoteCommandHandlerStatus.Success;
 		}
 
-		MPRemoteCommandHandlerStatus RemoteSkip(MPRemoteCommandEvent arg) {
-			if (arg.Command == commandCenter.SkipBackwardCommand) {
+		MPRemoteCommandHandlerStatus RemoteSkip(MPRemoteCommandEvent arg)
+		{
+			if (arg.Command == commandCenter.SkipBackwardCommand)
+			{
 				Skip((int)-skipInterval);
 			}
-			if (arg.Command == commandCenter.SkipForwardCommand) {
+			if (arg.Command == commandCenter.SkipForwardCommand)
+			{
 				Skip((int)skipInterval);
 			}
 			return MPRemoteCommandHandlerStatus.Success;
 		}
 
-		public bool IsInitialized {
-			get { return IsLoaded;}
+		public bool IsInitialized
+		{
+			get { return IsLoaded; }
 		}
 
-		public bool IsPlaying {
-			get {
-				if (_player.Rate != 0 && _player.Error == null)
+		public bool IsPlaying
+		{
+			get
+			{
+				if (_player != null)
 				{
-					return true;
+					if (_player.Rate != 0 && _player.Error == null)
+					{
+						return true;
+					}
+					else {
+						return false;
+					}
 				}
-				else return false;
+				else {
+					return false;
+				}
 			}
 		}
 
-		public double CurrentTime {
-			get { return _player.CurrentTime.Seconds;}
+		public double CurrentTime
+		{
+			get
+			{
+				if (_player != null)
+				{
+
+					return _player.CurrentTime.Seconds;
+				}
+				else
+				{
+					return 0;
+				}
+			}
 		}
 
-		//public double RemainingTime
-		//{
-		//	get {return (_player.CurrentTime.Seconds - _player.CurrentItem.Duration.Seconds);}
-		//}
 
-		public double TotalTime {
-			get {return _player.CurrentItem.Duration.Seconds;}
+		public double TotalTime
+		{
+			get
+			{
+
+				if (_player != null)
+				{
+					return _player.CurrentItem.Duration.Seconds;
+				}
+				else
+				{
+					return 0;
+				}
+			}
 		}
 
 	}

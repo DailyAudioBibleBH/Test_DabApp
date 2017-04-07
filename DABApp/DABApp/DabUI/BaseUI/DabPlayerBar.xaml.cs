@@ -15,25 +15,18 @@ namespace DABApp
 		void OnPlayPause(object o, EventArgs e)
 		{
 
-			if (AudioPlayer.Instance.Player.IsInitialized)
+			if (AudioPlayer.Instance.IsInitialized)
 			{
-				if (AudioPlayer.Instance.Player.IsPlaying)
+				if (AudioPlayer.Instance.IsPlaying)
 				{
-					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonImage = "ic_play_circle_outline.png";
+					AudioPlayer.Instance.Pause();
 				}
 				else {
-					AudioPlayer.Instance.Player.Play();
-					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonImage = "ic_pause_circle_outline.png";
+					AudioPlayer.Instance.Play();
 				}
 			}
 			else {
-				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				//AudioPlayer.Instance.Player.SetAudioFile("sample.mp3");
-				AudioPlayer.Instance.Player.Play();
-				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonImage = "ic_pause_circle_outline.png";
+				AudioPlayer.Instance.Play();
 			}
 		}
 

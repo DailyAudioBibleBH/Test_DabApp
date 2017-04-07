@@ -6,7 +6,7 @@
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End" HeightRequest="70" IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}">
 				<StackLayout Orientation="Horizontal" HeightRequest="40"  HorizontalOptions="FillAndExpand">
 					<Button Text="Show Player" FontSize="Micro" Clicked="OnShowPlayer" />
-					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayButtonImage}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}"/>
+					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}"/>
 					<Button x:Name="PodcastTitle" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnShowPlayer" />
 					<Button Text="Share" FontSize="Micro" Clicked="OnShare" />
 				</StackLayout>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using PushNotification.Plugin;
 using Xamarin.Forms;
@@ -46,25 +46,19 @@ namespace DABApp
 
 		void OnPlayPause(object o, EventArgs e) {
 			
-			if (AudioPlayer.Instance.Player.IsInitialized)
+			if (AudioPlayer.Instance.IsInitialized)
 			{
-				if (AudioPlayer.Instance.Player.IsPlaying)
+				if (AudioPlayer.Instance.IsPlaying)
 				{
-					AudioPlayer.Instance.Player.Pause();
-					AudioPlayer.Instance.PlayButtonImage = "Play";
+					AudioPlayer.Instance.Pause();
 				}
 				else {
-					AudioPlayer.Instance.Player.Play();
-					//ProgressBinding();
-					AudioPlayer.Instance.PlayButtonImage = "Pause";
+					AudioPlayer.Instance.Play();
 				}
 			}
 			else {
-				//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-				AudioPlayer.Instance.Player.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
-				AudioPlayer.Instance.Player.Play();
-				//ProgressBinding();
-				AudioPlayer.Instance.PlayButtonImage = "Pause";
+				AudioPlayer.Instance.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
+				AudioPlayer.Instance.Play();
 				}
 		}
 
@@ -84,7 +78,7 @@ namespace DABApp
 		//		}
 		//		else {
 		//			AudioPlayer.Instance.Progress = 0;
-		//			AudioPlayer.Instance.PlayButtonImage = "Play";
+		//			AudioPlayer.Instance.PlayPauseButtonImage = "Play";
 		//			return GlobalResources.Player.IsInitialized;
 		//		}
 		//	});

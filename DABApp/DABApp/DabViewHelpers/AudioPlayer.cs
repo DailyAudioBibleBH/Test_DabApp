@@ -11,7 +11,6 @@ namespace DABApp
 		private IAudio _player;
 		private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
-		private string _PlayButtonImage = "ic_play_circle_outline_white.png";
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private bool _ShowPlayerBar = false;
@@ -27,13 +26,10 @@ namespace DABApp
 		//Don't allow creation of the class elsewhere in the app.
 		private AudioPlayer()
 		{
-			if (Device.OS == TargetPlatform.iOS)
-			{
-				_PlayButtonImage = "ic_play_circle_outline_white.png";
-			}
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
 
+			// Start a timer to get time information from the player
 			Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
 						{
 							if (_player.IsInitialized)
@@ -52,21 +48,13 @@ namespace DABApp
 								if (_IsPlaying != Player.IsPlaying)
 								{
 									_IsPlaying = Player.IsPlaying;
+									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
 								if (_IsInitialized != Player.IsInitialized)
 								{
 									IsInitialized = Player.IsInitialized;
 								}
-
-					//			if (_IsPlaying)
-					//			{
-					//				PlayButtonImage = "ic_pause_circle_outline_white.png";
-					//			}
-					//			else {
-					//				PlayButtonImage = "ic_play_circle_outline_white.png";
-					//}
-								
 							}
 							else {
 								_CurrentTime = 0;
@@ -81,7 +69,7 @@ namespace DABApp
 
 
 		//Reference to the player
-		public IAudio Player
+		private IAudio Player
 		{
 			get
 			{
@@ -90,118 +78,154 @@ namespace DABApp
 		}
 
 
-	//property for whether or not a file is loaded (and whether to display the player bar)
-	public bool IsInitialized
-	{
-		get
+		//property for whether or not a file is loaded (and whether to display the player bar)
+		public bool IsInitialized
 		{
-			return Player.IsInitialized;
+			get
+			{
+				return Player.IsInitialized;
+			}
+			set
+			{
+				_IsInitialized = value;
+				OnPropertyChanged("IsInitialized");
+			}
 		}
-		set
+		//Set Audio File
+		public void SetAudioFile(string FileName)
 		{
-			_IsInitialized = value;
-			OnPropertyChanged("IsInitialized");
+			_player.SetAudioFile(FileName);
 		}
-	}
 
 
-	//property for whether a file is being played or not
-	public bool IsPlaying
-	{
-		get
+		public string PlayPauseButtonImage
 		{
-			return _player.IsPlaying;
+			get
+			{
+				if (IsPlaying)
+				{
+					//Pause
+					return "ic_pause_circle_outline.png";
+				}
+				else {
+					//Play
+					return "ic_play_circle_outline_white.png";
+				}
+			} 
+			set
+			{
+				throw new Exception("You can't set this directly.");
+			}
 		}
+
+		//Play
+		public void Play()
+		{
+			if (!IsPlaying)
+			{
+				_player.Play();
+				OnPropertyChanged("PlayPauseButtonImage");
+			}
+		}
+
+		//Pause
+		public void Pause()
+		{
+			if (IsPlaying)
+			{
+				_player.Pause();
+				OnPropertyChanged("PlayPauseButtonImage");
+			}
+		}
+
+
+		//property for whether a file is being played or not
+		public bool IsPlaying
+		{
+			get
+			{
+				return _player.IsPlaying;
+			}
 			set
 			{
 				_IsPlaying = value;
 				OnPropertyChanged("IsPlaying");
 			}
-	}
+		}
 
-	//Title of the audio file
-	public string PlayButtonImage
-	{
-		get
+		public double CurrentTime
 		{
-			return _PlayButtonImage;
-		}
-		set
-		{
-			_PlayButtonImage = value;
-			OnPropertyChanged("PlayButtonImage");
-		}
-	}
-
-	public double CurrentTime
-	{
-		get
-		{
-			return _CurrentTime;
-		}
-		set
-		{
+			get
+			{
+				return _CurrentTime;
+			}
+			set
+			{
 				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime) && value != 1)
 				{
 					if (Device.OS == TargetPlatform.iOS)
 					{
 						Player.SeekTo(Convert.ToInt32(value));
 					}
-					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 3) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 3)) {
+					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 3) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 3))
+					{
 						Player.SeekTo(Convert.ToInt32(value));
 					}
 				}
-			_CurrentTime = value;
-			OnPropertyChanged("CurrentTime");
-			OnPropertyChanged("RemainingTime");
+				_CurrentTime = value;
+				OnPropertyChanged("CurrentTime");
+				OnPropertyChanged("RemainingTime");
 				OnPropertyChanged("Progress");
+			}
 		}
-	}
 
-	public double RemainingTime
-	{
-		get
+		public double RemainingTime
 		{
-			return _TotalTime - _CurrentTime;
+			get
+			{
+				return _TotalTime - _CurrentTime;
+			}
 		}
-	}
 
-	public double TotalTime
-	{
-		get
+		public double TotalTime
 		{
-			return _TotalTime;
+			get
+			{
+				return _TotalTime;
+			}
+			set
+			{
+				_TotalTime = value;
+				OnPropertyChanged("TotalTime");
+			}
 		}
-		set
+
+
+		public double Progress
 		{
-			_TotalTime = value;
-			OnPropertyChanged("TotalTime");
-		}
-	}
-
-
-		public double Progress 
-		{ 
-			get {
+			get
+			{
 				return _CurrentTime / _TotalTime;
 			}
 		}
 
 		public int CurrentEpisodeId { get; set; } = 0;
-		public string CurrentEpisodeTitle { 
-			get { return _CurrentEpisodeTitle;} 
-			set {
+		public string CurrentEpisodeTitle
+		{
+			get { return _CurrentEpisodeTitle; }
+			set
+			{
 				_CurrentEpisodeTitle = value;
 				OnPropertyChanged("CurrentEpisodeTitle");
 			}
 		}
 
 		public void SeekTo(int seconds)
-	{
-		_player.SeekTo(seconds);
-		//Update the current time
-		CurrentTime = seconds;
-	}
+		{
+			_player.SeekTo(seconds);
+			//Update the current time
+			CurrentTime = seconds;
+		}
 
 		public void Skip(int seconds)
 		{
@@ -213,26 +237,27 @@ namespace DABApp
 
 
 
-	public void SetAudioFile(dbEpisodes episode)
-	{
-		Instance.CurrentEpisodeId = episode.id;
-		Instance.CurrentEpisodeTitle = episode.title;
-		_player.SetAudioFile(episode.url);
-	}
+		public void SetAudioFile(dbEpisodes episode)
+		{
+			Instance.CurrentEpisodeId = episode.id;
+			Instance.CurrentEpisodeTitle = episode.title;
+			_player.SetAudioFile(episode.url);
+		}
 
-	protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
-	{
-		var handler = PropertyChanged;
-		if (handler != null)
-			handler(this, new PropertyChangedEventArgs(propertyName));
-	}
+		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null)
+				handler(this, new PropertyChangedEventArgs(propertyName));
+		}
 
-	public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
 
-		private static void NotifyStaticPropertyChanged(string propertyName) {
+		private static void NotifyStaticPropertyChanged(string propertyName)
+		{
 			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
 		}
-}
+	}
 }
