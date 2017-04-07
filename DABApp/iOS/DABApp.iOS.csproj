@@ -232,6 +232,18 @@
     <BundleResource Include="Resources\ic_pause_circle_outline_white_3x.png" />
     <BundleResource Include="Resources\ic_pause_circle_outline_white.png" />
     <BundleResource Include="Resources\ic_play_circle_outline_white.png" />
+    <BundleResource Include="Resources\ic_share_white_2x.png" />
+    <BundleResource Include="Resources\ic_share_white_3x.png" />
+    <BundleResource Include="Resources\ic_share_white.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_up_white_2x.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_up_white_3x.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_up_white.png" />
+    <BundleResource Include="Resources\ic_forward_10_white_2x.png" />
+    <BundleResource Include="Resources\ic_forward_10_white_3x.png" />
+    <BundleResource Include="Resources\ic_forward_10_white.png" />
+    <BundleResource Include="Resources\ic_replay_10_white_2x.png" />
+    <BundleResource Include="Resources\ic_replay_10_white_3x.png" />
+    <BundleResource Include="Resources\ic_replay_10_white.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
