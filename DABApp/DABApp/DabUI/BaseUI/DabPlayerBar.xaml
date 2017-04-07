@@ -7,7 +7,10 @@
 				<StackLayout Orientation="Horizontal" HeightRequest="40"  HorizontalOptions="FillAndExpand">
 					<Button Text="Show Player" FontSize="Micro" Clicked="OnShowPlayer" />
 					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}" HorizontalOptions="Start" WidthRequest="75" Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}"/>
-					<Button x:Name="PodcastTitle" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Clicked="OnShowPlayer" />
+					<StackLayout x:Name="stackPodcastTitle">
+						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Small" VerticalOptions="FillAndExpand" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Micro" LineBreakMode="TailTruncation" Style="{StaticResource secondaryLabelStyle}"/>
+					</StackLayout>
 					<Button Text="Share" FontSize="Micro" Clicked="OnShare" />
 				</StackLayout>
 				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End" HeightRequest="30" />

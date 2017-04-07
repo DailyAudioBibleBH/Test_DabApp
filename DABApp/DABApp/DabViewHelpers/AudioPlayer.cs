@@ -105,7 +105,7 @@ namespace DABApp
 				if (IsPlaying)
 				{
 					//Pause
-					return "ic_pause_circle_outline.png";
+					return "ic_pause_circle_outline_white.png";
 				}
 				else {
 					//Play

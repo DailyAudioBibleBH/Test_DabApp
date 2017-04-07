@@ -9,6 +9,17 @@ namespace DABApp
 		public DabPlayerBar()
 		{
 			InitializeComponent();
+
+
+			//Add a tap recognizer for the podcast tit
+			var tapShowEpisode = new TapGestureRecognizer();
+			tapShowEpisode.NumberOfTapsRequired = 1;
+			tapShowEpisode.Tapped += (sender, e) =>
+			{
+				OnShowPlayer(sender, e);
+			};
+			stackPlayerBar.GestureRecognizers.Add(tapShowEpisode);
+
 		}
 
 		//Play - Pause

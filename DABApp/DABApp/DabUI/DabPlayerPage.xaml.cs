@@ -28,16 +28,6 @@ namespace DABApp
 			BindingContext = episode;
 			//Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
-			if (Device.OS == TargetPlatform.iOS) {
-				forwardImage = "ic_forward_30_white_2x.png";
-				backwardImage = "ic_replay_30_white_2x.png";
-			}
-			else{
-				forwardImage = "ic_forward_30_white.png";
-				backwardImage = "ic_replay_30_white.png";
-			}
-			backwardButton.Image = backwardImage;
-			forwardButton.Image = forwardImage;
 		}
 
 		void OnPlay(object o, EventArgs e)
