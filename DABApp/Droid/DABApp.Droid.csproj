@@ -198,10 +198,11 @@
     <AndroidResource Include="Resources\drawable-hdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\app_icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white_24dp.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white_24dp.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_replay_30_white_24dp.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white_24dp.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_replay_30_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_done_white.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

@@ -245,6 +245,7 @@
     <BundleResource Include="Resources\ic_replay_10_white_2x.png" />
     <BundleResource Include="Resources\ic_replay_10_white_3x.png" />
     <BundleResource Include="Resources\ic_replay_10_white.png" />
+    <BundleResource Include="Resources\ic_done_white.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

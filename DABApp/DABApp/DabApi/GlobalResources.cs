@@ -78,5 +78,7 @@ namespace DABApp
 		}
 
 		public static bool LogInPageExists { get; set;}
+		public static bool DeleteEpisodesAfterListening { get; set;}
+		public static string DurationPicked { get; set;}
 	}
 }

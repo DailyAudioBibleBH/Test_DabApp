@@ -2,5 +2,25 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabOfflineEpisodeManagementPage"
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label Text="Offline Episode Duration" Style="{StaticResource secondaryLabelStyle}"/>
+			<local:NonScrollingListView x:Name="Durations" ItemTapped="OnDurationPicked" HeightRequest="0">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Orientation="Horizontal">
+								<Label Text="{Binding duration}" VerticalOptions="Center" FontSize="Large"/>
+								<Image IsVisible="{Binding Selected}" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
+			<Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." Style="{StaticResource secondaryLabelStyle}"/>
+			<StackLayout Orientation="Horizontal">
+				<Label Text="Delete episodes after listening"/>
+				<Switch Toggled="OnDeleteAfterListening" HorizontalOptions="EndAndExpand" IsToggled="{Binding Source={x:Static local:OfflineEpisodeSettings.Instance}, Path=DeleteAfterListening}"/>
+			</StackLayout>
+		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

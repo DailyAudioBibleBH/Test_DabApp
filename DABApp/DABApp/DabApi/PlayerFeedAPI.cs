@@ -57,5 +57,31 @@ namespace DABApp
 		public static dbEpisodes GetEpisode(int id) {
 			return db.Table<dbEpisodes>().Single(x => x.id == id);
 		}
+
+		public static void CheckOfflineEpisodeSettings() {
+			var offlineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "OfflineEpisodes");
+			if (offlineSettings == null)
+			{
+				offlineSettings = new dbSettings();
+				offlineSettings.Key = "OfflineEpisodes";
+				OfflineEpisodeSettings settings = new OfflineEpisodeSettings();
+				settings.Duration = "One Week";
+				settings.DeleteAfterListening = false;
+				var jsonSettings = JsonConvert.SerializeObject(settings);
+				offlineSettings.Value = jsonSettings;
+				db.Insert(offlineSettings);
+			}
+			else
+			{
+				var current = offlineSettings.Value;
+				OfflineEpisodeSettings.Instance = JsonConvert.DeserializeObject<OfflineEpisodeSettings>(current);
+			}
+		}
+
+		public static void UpdateOfflineEpisodeSettings() {
+			var offlineSettings = db.Table<dbSettings>().Single(x => x.Key == "OfflineEpisodes");
+			offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
+			db.Update(offlineSettings);
+		}
 	}
 }

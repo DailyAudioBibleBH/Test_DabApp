@@ -48,6 +48,7 @@ namespace DABApp
 						ParseContent(jsonOut);
 					}
 				}
+				PlayerFeedAPI.CheckOfflineEpisodeSettings();
 				return true;
 			}
 			catch (Exception e) {
