@@ -35,5 +35,13 @@ namespace DABApp
 			base.OnDisappearing();
 			LogOut.IsEnabled = true;
 		}
+
+		void OnOfflineManagement(object o, EventArgs e) {
+			Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
+		}
+
+		void OnResetListenedTo(object o, EventArgs e) {
+			Navigation.PushAsync(new DabResetListenedToStatusPage());
+		}
 	}
 }

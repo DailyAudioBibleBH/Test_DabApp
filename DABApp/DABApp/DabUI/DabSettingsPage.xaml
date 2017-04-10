@@ -6,6 +6,8 @@
 			<Label Text="Settings"/>
 			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
 			<Button Text="App Info" Clicked="OnAppInfo"/>
+			<Button Text="Offline Episodes Management" Clicked="OnOfflineManagement"/>
+			<Button Text="Reset listened to status" Clicked="OnResetListenedTo"/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

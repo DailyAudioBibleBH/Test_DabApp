@@ -100,6 +100,12 @@
     <Compile Include="DabData\dbEpisodes.cs" />
     <Compile Include="DabData\dbLoggedEvents.cs" />
     <Compile Include="DabApi\PlayerFeedAPI.cs" />
+    <Compile Include="DabUI\DabOfflineEpisodeManagementPage.xaml.cs">
+      <DependentUpon>DabOfflineEpisodeManagementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabResetListenedToStatusPage.xaml.cs">
+      <DependentUpon>DabResetListenedToStatusPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -218,6 +224,12 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabPrayerWallPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabOfflineEpisodeManagementPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabResetListenedToStatusPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
