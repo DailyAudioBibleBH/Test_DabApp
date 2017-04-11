@@ -12,8 +12,6 @@ namespace DABApp
 		//IAudio player = GlobalResources.Player;
 		dbEpisodes Episode;
 		string backgroundImage;
-		string forwardImage;
-		string backwardImage;
 
 		public DabPlayerPage(dbEpisodes episode)
 		{

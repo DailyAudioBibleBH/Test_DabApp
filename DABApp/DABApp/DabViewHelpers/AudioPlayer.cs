@@ -118,6 +118,27 @@ namespace DABApp
 			}
 		}
 
+		public string PlayPauseButtonImageBig
+		{
+			get
+			{
+				if (IsPlaying)
+				{
+					//Pause
+					return "ic_pause_circle_outline_white_2x.png";
+				}
+				else
+				{
+					//Play
+					return "ic_play_circle_outline_white_2x.png";
+				}
+			}
+			set
+			{
+				throw new Exception("You can't set this directly.");
+			}
+		}
+
 		//Play
 		public void Play()
 		{
@@ -125,6 +146,7 @@ namespace DABApp
 			{
 				_player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
+				OnPropertyChanged("PlayPauseButtonImageBig");
 			}
 		}
 
@@ -135,6 +157,7 @@ namespace DABApp
 			{
 				_player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
+				OnPropertyChanged("PlayPauseButtonImageBig");
 			}
 		}
 
@@ -232,7 +255,7 @@ namespace DABApp
 
 			_player.Skip(seconds);
 			//Update the current time
-			CurrentTime = seconds;
+			//CurrentTime = seconds;
 		}
 
 
