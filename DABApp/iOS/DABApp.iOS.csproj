@@ -176,6 +176,7 @@
     <Folder Include="CustomRenderers\" />
     <Folder Include="DabData\" />
     <Folder Include="Effects\" />
+    <Folder Include="DabApi\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -203,6 +204,7 @@
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabSwitchRenderer.cs" />
     <Compile Include="CustomRenderers\DabProgressBarRenderer.cs" />
+    <Compile Include="DabApi\FileManagement_iOS.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

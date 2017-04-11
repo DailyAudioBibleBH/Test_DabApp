@@ -29,7 +29,7 @@ namespace DABApp
 		public string channel_description { get; set;}
 		public bool is_downloaded { get; set; } = false;
 		public string file_name { get; set;}
-		public string is_listened_to { get; set;}
+		public bool is_listened_to { get; set; } = false;
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
 	}

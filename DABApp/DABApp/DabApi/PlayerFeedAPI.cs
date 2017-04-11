@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
 using SQLite;
+using System.Net;
+using System.IO;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace DABApp
 {
@@ -40,7 +43,13 @@ namespace DABApp
 						db.Delete(old);
 					}
 				}
-				return "OK";
+				if (DownloadEpisodes().Result)
+				{
+					return "OK";
+				}
+				else {
+					throw new Exception(); 
+				}
 			}
 			catch (Exception e)
 			{
@@ -82,6 +91,45 @@ namespace DABApp
 			var offlineSettings = db.Table<dbSettings>().Single(x => x.Key == "OfflineEpisodes");
 			offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
 			db.Update(offlineSettings);
+		}
+
+		public static async Task<bool> DownloadEpisodes() {
+			bool value = false;
+			DateTime cutoffTime = new DateTime();
+			switch (OfflineEpisodeSettings.Instance.Duration) { 
+				case "One Day":
+					cutoffTime = DateTime.Now.AddDays(-1);
+					break;
+				case "Two Days":
+					cutoffTime = DateTime.Now.AddDays(-2);
+					break;
+				case "Three Days":
+					cutoffTime = DateTime.Now.AddDays(-3);
+					break;
+				case "One Week":
+					cutoffTime = DateTime.Now.AddDays(-7);
+					break;
+				case "One Month":
+					cutoffTime = DateTime.Now.AddMonths(-1);
+					break;
+			}
+			var Episodes = db.Table<dbEpisodes>().Where(x => !x.is_downloaded && x.PubDate > cutoffTime && !x.is_listened_to).ToList();
+			foreach (var episode in Episodes) {
+				try
+				{
+					if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+					{
+						episode.is_downloaded = true;
+						db.Update(episode);
+						value = true;
+					}
+					else throw new Exception();
+				}
+				catch (Exception e) {
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

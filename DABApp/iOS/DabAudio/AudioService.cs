@@ -60,6 +60,8 @@ namespace DABApp.iOS
 			}
 			else
 			{
+				var doc = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+				fileName = Path.Combine(doc, fileName);
 				string sFilePath = NSBundle.MainBundle.PathForResource
 				(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
 				var url = NSUrl.FromFilename(sFilePath);

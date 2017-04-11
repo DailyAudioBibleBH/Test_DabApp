@@ -264,7 +264,14 @@ namespace DABApp
 		{
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
-			_player.SetAudioFile(episode.url);
+			if (episode.is_downloaded) 
+			{
+				_player.SetAudioFile($"{episode.id}.mp4");
+			}
+			else
+			{
+				_player.SetAudioFile(episode.url);
+			}
 		}
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)

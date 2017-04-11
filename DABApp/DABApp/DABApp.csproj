@@ -107,6 +107,7 @@
       <DependentUpon>DabResetListenedToStatusPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\Preset.cs" />
+    <Compile Include="DabApi\IFileManagement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
