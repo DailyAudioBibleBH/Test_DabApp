@@ -31,7 +31,7 @@
 									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start"/>
 <!--									<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>
--->									<Image IsVisible="{Binding !is_downloaded}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
+-->									<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
 								</StackLayout>
 								<Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
 								<local:ImageCircle BackgroundColor="{DynamicResource HighlightColor}" IsVisible="{Binding !is_listened_to}" Grid.RowSpan="2" Grid.Column="1" WidthRequest="10" HeightRequest="10" VerticalOptions="Center"/>

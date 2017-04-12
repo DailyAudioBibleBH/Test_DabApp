@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using SQLite;
 
 namespace DABApp
@@ -32,5 +34,31 @@ namespace DABApp
 		public bool is_listened_to { get; set; } = false;
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
+
+		[Ignore]
+		public bool downloadVisible { 
+			get {
+				return !is_downloaded;
+			}
+			set {
+				is_downloaded = !value;
+				OnPropertyChanged("downloadVisible");
+			}
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) { 
+			var handler = PropertyChanged;
+			if (handler != null)
+				handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
+
+		private static void NotifyStaticPropertyChanged(string propertyName)
+		{
+			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }
