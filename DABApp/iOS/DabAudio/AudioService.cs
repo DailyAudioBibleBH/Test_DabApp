@@ -60,11 +60,11 @@ namespace DABApp.iOS
 			}
 			else
 			{
-				var doc = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				fileName = Path.Combine(doc, fileName);
-				string sFilePath = NSBundle.MainBundle.PathForResource
-				(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
-				var url = NSUrl.FromFilename(sFilePath);
+				//string sFilePath = NSBundle.MainBundle.PathForResource
+				//(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
+				var url = NSUrl.FromFilename(fileName);
 				_player = AVPlayer.FromUrl(url);
 			}
 			SetCommandCenter();

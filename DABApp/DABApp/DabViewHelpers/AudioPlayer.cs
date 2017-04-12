@@ -97,6 +97,20 @@ namespace DABApp
 			_player.SetAudioFile(FileName);
 		}
 
+		public void SetAudioFile(dbEpisodes episode)
+		{
+			Instance.CurrentEpisodeId = episode.id;
+			Instance.CurrentEpisodeTitle = episode.title;
+			if (episode.is_downloaded)
+			{
+				_player.SetAudioFile($"{episode.id}.mp4");
+			}
+			else
+			{
+				_player.SetAudioFile(episode.url);
+			}
+		}
+
 
 		public string PlayPauseButtonImage
 		{
@@ -256,22 +270,6 @@ namespace DABApp
 			_player.Skip(seconds);
 			//Update the current time
 			//CurrentTime = seconds;
-		}
-
-
-
-		public void SetAudioFile(dbEpisodes episode)
-		{
-			Instance.CurrentEpisodeId = episode.id;
-			Instance.CurrentEpisodeTitle = episode.title;
-			if (episode.is_downloaded) 
-			{
-				_player.SetAudioFile($"{episode.id}.mp4");
-			}
-			else
-			{
-				_player.SetAudioFile(episode.url);
-			}
 		}
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)

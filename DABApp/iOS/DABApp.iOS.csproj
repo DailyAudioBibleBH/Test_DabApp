@@ -27,7 +27,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>b43f4d43-86bf-46b9-b00c-2579a33bc423</CodesignProvision>
+    <CodesignProvision>DAB App</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -204,7 +204,7 @@
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabSwitchRenderer.cs" />
     <Compile Include="CustomRenderers\DabProgressBarRenderer.cs" />
-    <Compile Include="DabApi\FileManagement_iOS.cs" />
+    <Compile Include="DabApi\FileManagement.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

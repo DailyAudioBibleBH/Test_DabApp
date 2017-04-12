@@ -38,18 +38,21 @@ namespace DABApp
 						db.Insert(e);
 					}
 				}
-				foreach (var old in existingEpisodes) {
-					if (!newEpisodeIds.Contains(old.id)) {
+				foreach (var old in existingEpisodes)
+				{
+					if (!newEpisodeIds.Contains(old.id))
+					{
 						db.Delete(old);
 					}
 				}
-				if (DownloadEpisodes().Result)
+				Task.Run( async () =>
 				{
-					return "OK";
-				}
-				else {
-					throw new Exception(); 
-				}
+					await DownloadEpisodes();
+				});
+				return "OK";
+				//else {
+				//	throw new Exception(); 
+				//}
 			}
 			catch (Exception e)
 			{
