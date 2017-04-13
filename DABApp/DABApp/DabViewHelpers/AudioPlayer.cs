@@ -55,6 +55,10 @@ namespace DABApp
 								{
 									IsInitialized = Player.IsInitialized;
 								}
+
+								if (_TotalTime == _CurrentTime) {
+									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);	
+								}
 							}
 							else {
 								_CurrentTime = 0;

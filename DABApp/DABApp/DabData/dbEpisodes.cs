@@ -46,6 +46,17 @@ namespace DABApp
 			}
 		}
 
+		[Ignore]
+		public bool listenedToVisible { 
+			get {
+				return !is_listened_to;
+			}
+			set{
+				is_listened_to = !value;
+				OnPropertyChanged("listenedToVisible");
+			}
+		}
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null) { 
