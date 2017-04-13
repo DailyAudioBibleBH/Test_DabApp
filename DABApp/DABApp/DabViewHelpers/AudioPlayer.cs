@@ -15,6 +15,7 @@ namespace DABApp
 		private double _TotalTime = 1;
 		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
+		private string _CurrentTimeString = "00:00";
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -38,6 +39,14 @@ namespace DABApp
 								if (_CurrentTime != _player.CurrentTime && _CurrentTime >= 0)
 								{
 									CurrentTime = _player.CurrentTime;
+									var c = TimeSpan.FromSeconds(_player.CurrentTime);
+									if (c.Hours == 0)
+									{
+										CurrentTimeString = $"{c.Minutes:D2}:{c.Seconds:D2}";
+									}
+									else {
+										CurrentTimeString = $"{c.Hours:D2}:{c.Minutes:D2}:{c.Seconds:D2}";
+									}
 								}
 
 								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
@@ -220,11 +229,28 @@ namespace DABApp
 			}
 		}
 
-		public double RemainingTime
+		public string CurrentTimeString { 
+			get {
+				return _CurrentTimeString;
+			}
+			set {
+				_CurrentTimeString = value;
+				OnPropertyChanged("CurrentTimeString");
+			}
+		}
+
+		public string RemainingTime
 		{
 			get
 			{
-				return _TotalTime - _CurrentTime;
+				var r = TimeSpan.FromSeconds(_TotalTime - _CurrentTime);
+				if (r.Hours == 0)
+				{
+					return $"{r.Minutes:D2}:{r.Seconds:D2}";
+				}
+				else { 
+					return $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
+				}
 			}
 		}
 

@@ -77,7 +77,7 @@ namespace DABApp
 				offlineSettings = new dbSettings();
 				offlineSettings.Key = "OfflineEpisodes";
 				OfflineEpisodeSettings settings = new OfflineEpisodeSettings();
-				settings.Duration = "One Week";
+				settings.Duration = "One Day";
 				settings.DeleteAfterListening = false;
 				var jsonSettings = JsonConvert.SerializeObject(settings);
 				offlineSettings.Value = jsonSettings;

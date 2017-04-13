@@ -38,10 +38,10 @@ namespace DABApp
 		[Ignore]
 		public bool downloadVisible { 
 			get {
-				return !is_downloaded;
+				return is_downloaded;
 			}
 			set {
-				is_downloaded = !value;
+				is_downloaded = value;
 				OnPropertyChanged("downloadVisible");
 			}
 		}
