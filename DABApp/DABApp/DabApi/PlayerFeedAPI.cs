@@ -15,9 +15,9 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
-		public static List<dbEpisodes> GetEpisodeList(Resource resource) {
+		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
 			GetEpisodes(resource);
-			return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToList();
+			return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
 		}
 
 		public static string GetEpisodes(Resource resource) {
@@ -137,10 +137,36 @@ namespace DABApp
 			return true;
 		}
 
+		public static void DeleteChannelEpisodes(Resource resource) {
+			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
+			foreach (var episode in Episodes) {
+				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+				{
+					episode.is_downloaded = false;
+					db.Update(episode);
+				}
+				else {
+					throw new Exception();
+				}
+			}
+		}
+
 		public static void UpdateEpisodeProperty(int episodeId) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
 			episode.is_listened_to = true;
 			db.Update(episode);
+		}
+
+		public static void CleanUpEpisodes() {
+			var episodes = db.Table<dbEpisodes>().Where(x => x.is_downloaded && x.is_listened_to).ToList();
+			foreach (var episode in episodes)
+			{
+				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+				{
+					episode.is_downloaded = false;
+					db.Update(episode);
+				}
+			}
 		}
 	}
 }

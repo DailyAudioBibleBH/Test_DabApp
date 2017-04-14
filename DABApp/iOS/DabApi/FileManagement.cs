@@ -28,5 +28,19 @@ namespace DABApp.iOS
 				return false;
 			}
 		}
+
+		public bool DeleteEpisode(string episodeId) {
+			try
+			{
+				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				var fileName = Path.Combine(doc, $"{episodeId}.mp4");
+				File.Delete(fileName);
+				return true;
+			}
+			catch (Exception e)
+			{
+				return false;
+			}
+		}
 	}
 }

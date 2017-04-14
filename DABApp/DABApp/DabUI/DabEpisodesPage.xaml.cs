@@ -10,7 +10,7 @@ namespace DABApp
 	public partial class DabEpisodesPage : DabBaseContentPage
 	{
 		Resource _resource;
-		List<dbEpisodes> Episodes;
+		IEnumerable<dbEpisodes> Episodes;
 
 		public DabEpisodesPage(Resource resource)
 		{
@@ -27,7 +27,11 @@ namespace DABApp
 				Months.Items.Add(month);
 			}
 			Months.SelectedIndex = 0;
-			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			Device.StartTimer( TimeSpan.FromSeconds(5),() =>
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				return true;
+			});
 		}
 
 		public void OnEpisode(object o, ItemTappedEventArgs e) 
@@ -46,7 +50,13 @@ namespace DABApp
 		public void OnOffline(object o, ToggledEventArgs e) {
 			_resource.availableOffline = e.Value;
 			ContentAPI.UpdateOffline(e.Value, _resource.id);
-			Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes();});
+			if (e.Value)
+			{
+				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+			}
+			else {
+				PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+			}
 		}
 
 		public void OnMonthSelected(object o, EventArgs e) {
