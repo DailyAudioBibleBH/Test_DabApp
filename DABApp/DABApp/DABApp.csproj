@@ -108,6 +108,9 @@
     </Compile>
     <Compile Include="DabViewHelpers\Preset.cs" />
     <Compile Include="DabApi\IFileManagement.cs" />
+    <Compile Include="DabUI\DabTabletPage.xaml.cs">
+      <DependentUpon>DabTabletPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -232,6 +235,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabResetListenedToStatusPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabTabletPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

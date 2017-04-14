@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -45,6 +46,7 @@ namespace DABApp
 		public void OnOffline(object o, ToggledEventArgs e) {
 			_resource.availableOffline = e.Value;
 			ContentAPI.UpdateOffline(e.Value, _resource.id);
+			Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes();});
 		}
 
 		public void OnMonthSelected(object o, EventArgs e) {

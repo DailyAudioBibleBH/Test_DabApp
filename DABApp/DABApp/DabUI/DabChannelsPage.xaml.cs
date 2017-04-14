@@ -81,7 +81,14 @@ namespace DABApp
 		void OnChannel(object o, ItemTappedEventArgs e) {
 			var resource = (Resource)e.Item;
 			PlayerFeedAPI.GetEpisodes(resource);
-			Navigation.PushAsync(new DabEpisodesPage(resource));
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Navigation.PushAsync(new DabTabletPage(resource));
+			}
+			else
+			{
+				Navigation.PushAsync(new DabEpisodesPage(resource));
+			}
 		}
 	}
 }

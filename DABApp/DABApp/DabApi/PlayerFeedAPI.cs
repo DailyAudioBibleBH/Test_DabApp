@@ -97,7 +97,7 @@ namespace DABApp
 		}
 
 		public static async Task<bool> DownloadEpisodes() {
-			bool value = false;
+			var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
 			DateTime cutoffTime = new DateTime();
 			switch (OfflineEpisodeSettings.Instance.Duration) { 
 				case "One Day":
@@ -116,15 +116,17 @@ namespace DABApp
 					cutoffTime = DateTime.Now.AddMonths(-1);
 					break;
 			}
-			var Episodes = db.Table<dbEpisodes>().Where(x => !x.is_downloaded && x.PubDate > cutoffTime && !x.is_listened_to).ToList();
-			foreach (var episode in Episodes) {
+			var Episodes = from episode in db.Table<dbEpisodes>()
+						   join channel in OfflineChannels on episode.channel_title equals channel.title
+						   where !episode.is_downloaded && episode.PubDate > cutoffTime && !episode.is_listened_to
+						   select episode;
+			foreach (var episode in Episodes.ToList()) {
 				try
 				{
 					if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
 					{
 						episode.is_downloaded = true;
 						db.Update(episode);
-						value = true;
 					}
 					else throw new Exception();
 				}

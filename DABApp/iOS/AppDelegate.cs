@@ -5,6 +5,7 @@ using DLToolkit.Forms.Controls;
 using Foundation;
 using PushNotification.Plugin;
 using SegmentedControl.FormsPlugin.iOS;
+using SQLite;
 using UIKit;
 using UserNotifications;
 
@@ -15,6 +16,11 @@ namespace DABApp.iOS
 	{
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
+			SQLitePCL.Batteries.Init();
+			SQLitePCL.raw.sqlite3_shutdown();
+			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
+			SQLitePCL.raw.sqlite3_initialize();
+
 			global::Xamarin.Forms.Forms.Init();
 
 			SlideOverKit.iOS.SlideOverKit.Init();
