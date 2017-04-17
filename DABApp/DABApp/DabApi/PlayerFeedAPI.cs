@@ -118,7 +118,8 @@ namespace DABApp
 			}
 			var Episodes = from episode in db.Table<dbEpisodes>()
 						   join channel in OfflineChannels on episode.channel_title equals channel.title
-						   where !episode.is_downloaded && episode.PubDate > cutoffTime && !episode.is_listened_to
+						   where !episode.is_downloaded && episode.PubDate > cutoffTime 
+			                                 && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to)
 						   select episode;
 			foreach (var episode in Episodes.ToList()) {
 				try
@@ -158,7 +159,28 @@ namespace DABApp
 		}
 
 		public static void CleanUpEpisodes() {
-			var episodes = db.Table<dbEpisodes>().Where(x => x.is_downloaded && x.is_listened_to).ToList();
+			DateTime cutoffTime = new DateTime();
+			switch (OfflineEpisodeSettings.Instance.Duration) { 
+				case "One Day":
+					cutoffTime = DateTime.Now.AddDays(-1);
+					break;
+				case "Two Days":
+					cutoffTime = DateTime.Now.AddDays(-2);
+					break;
+				case "Three Days":
+					cutoffTime = DateTime.Now.AddDays(-3);
+					break;
+				case "One Week":
+					cutoffTime = DateTime.Now.AddDays(-7);
+					break;
+				case "One Month":
+					cutoffTime = DateTime.Now.AddMonths(-1);
+					break;
+			}
+			var episodes = from x in db.Table<dbEpisodes>()
+				           where x.is_downloaded && x.PubDate < cutoffTime
+			                           && (x.PubDate < cutoffTime ||(!OfflineEpisodeSettings.Instance.DeleteAfterListening || x.is_listened_to))
+			               select x; 
 			foreach (var episode in episodes)
 			{
 				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))

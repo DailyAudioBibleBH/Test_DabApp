@@ -34,5 +34,11 @@ namespace DABApp
 			OfflineEpisodeSettings.Instance.Duration = pre.duration;
 			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			PlayerFeedAPI.CleanUpEpisodes();
+		}
 	}
 }
