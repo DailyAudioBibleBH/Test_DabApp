@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTabletPage"
-	xmlns:local="clr-namespace:DABApp;">
+	xmlns:local="clr-namespace:DABApp;" xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
 	<ContentPage.Content>
-		<Grid>
+		<Grid RowSpacing="0" ColumnSpacing="0">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="2*"/>
@@ -11,11 +11,94 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="3*"/>
 			</Grid.ColumnDefinitions>
-			<StackLayout Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="Red">
+			<StackLayout Grid.Row="0" Grid.ColumnSpan="2">
+				<RelativeLayout>
+					<Image x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+					<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+					<StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
+						<Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30"/>
+						<Label Text="{Binding channel_title}" Style="{StaticResource secondaryLabelStyle}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
+						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium"/>
+					</StackLayout>
+			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
+					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
+					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
+			<StackLayout Orientation="Horizontal" VerticalOptions="Start">
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTimeString}" HorizontalOptions="CenterAndExpand"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="CenterAndExpand"/>
 			</StackLayout>
-			<StackLayout Grid.Row="1" Grid.Column="0" BackgroundColor="Blue">
+			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
+				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
+				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
 			</StackLayout>
-			<StackLayout Grid.Row="1" Grid.Column="1" BackgroundColor="Green">
+					</StackLayout>
+				</RelativeLayout>
+			</StackLayout>
+			<StackLayout Grid.Row="1" Grid.Column="0" Padding="10">
+				<Label FontSize="Medium" Text="Channels" Style="{StaticResource secondaryLabelStyle}" />
+				<local:NonScrollingListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel">
+					<local:NonScrollingListView.ItemTemplate>
+						<DataTemplate>
+							<ViewCell>
+								<StackLayout Padding="10">
+									<Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center"/>
+								</StackLayout>
+							</ViewCell>
+						</DataTemplate>
+					</local:NonScrollingListView.ItemTemplate>
+				</local:NonScrollingListView>
+			</StackLayout>
+			<StackLayout Grid.Row="1" Grid.Column="1">
+				<StackLayout Padding="20" Spacing="10">
+					<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
+						<controls:SegmentedControl.Children>
+							<controls:SegmentedControlOption Text="Archive"/>
+							<controls:SegmentedControlOption Text="Read"/>
+							<controls:SegmentedControlOption Text="Journal"/>
+						</controls:SegmentedControl.Children>
+					</controls:SegmentedControl>
+				</StackLayout>
+				<ScrollView>
+				<StackLayout x:Name="Archive" IsVisible="true" Padding="20" Spacing="20">
+			<StackLayout Orientation="Horizontal">
+				<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="100" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
+				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
+				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
+			</StackLayout>
+			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode">
+				<local:NonScrollingListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<Grid Padding="10,10,10,10">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
+									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start"/>
+									<!--<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
+									<Label Text="{Binding PubDay}" FontSize="Large"/>-->
+							<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
+								</StackLayout>
+								<Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
+								<local:ImageCircle BackgroundColor="{DynamicResource HighlightColor}" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="1" WidthRequest="10" HeightRequest="10" VerticalOptions="Center"/>
+							</Grid>
+						</ViewCell>
+					</DataTemplate>
+				</local:NonScrollingListView.ItemTemplate>
+			</local:NonScrollingListView>
+			</StackLayout>
+			</ScrollView>
+				<WebView x:Name="Read" IsVisible="false" Source="{Binding read_link}"/>
+				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+					<Label Text="{Binding title}"/>
+					<Editor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" HeightRequest="750"/>
+				</StackLayout>
 			</StackLayout>
 		</Grid>
 	</ContentPage.Content>
