@@ -78,5 +78,17 @@ namespace DABApp
 			}
 			return true;
 		}
+
+		void OnFirstNameCompleted(object o, EventArgs e) {
+			LastName.Focus();
+		}
+
+		void OnLastNameCompleted(object o, EventArgs e) {
+			Email.Focus();
+		}
+
+		void OnEmailCompleted(object o, EventArgs e) {
+			Password.Focus();
+		}
 	}
 }

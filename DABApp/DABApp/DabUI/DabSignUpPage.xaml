@@ -5,13 +5,13 @@
 		<StackLayout Padding="10" Spacing="10">
 			<local:HtmlLabel Text="{Binding signUp}"/>
 			<Label Text="First Name" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="FirstName"/>
+			<local:DarkKeyboardEntry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
 			<Label Text="Last Name" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="LastName"/>
+			<local:DarkKeyboardEntry x:Name="LastName" Completed="OnLastNameCompleted"/>
 			<Label Text="Email Address" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="Email" Keyboard="Email"/>
+			<local:DarkKeyboardEntry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
 			<Label Text="Password" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="Password" IsPassword="true"/>
+			<local:DarkKeyboardEntry x:Name="Password" IsPassword="true" Completed="OnSignUp"/>
 			<StackLayout Orientation="Horizontal">
 				<Switch x:Name="Agreement" VerticalOptions="Start"/>
 				<local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>

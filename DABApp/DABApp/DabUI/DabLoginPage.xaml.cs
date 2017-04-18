@@ -86,5 +86,10 @@ namespace DABApp
 			base.OnDisappearing();
 			Login.IsEnabled = true;
 		}
+
+		void OnCompleted(object sender, System.EventArgs e)
+		{
+			Password.Focus();
+		}
 	}
 }
