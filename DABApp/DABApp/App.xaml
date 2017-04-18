@@ -30,7 +30,6 @@
 			<ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
 				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" >
 					<ContentPresenter VerticalOptions="FillAndExpand" />
-					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
 			</ControlTemplate>
 			<!--Theme Styles-->
