@@ -98,7 +98,7 @@
 				<WebView x:Name="Read" IsVisible="false" Source="{Binding read_link}" HeightRequest="750"/>
 				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
 					<Label Text="{Binding title}"/>
-					<Editor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" HeightRequest="750"/>
+					<local:DarkKeyboardEditor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" HeightRequest="750"/>
 				</StackLayout>
 			</StackLayout>
 		</Grid>

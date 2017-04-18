@@ -6,9 +6,9 @@
 			<Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png"/>
 			<Frame/>
 			<Label Text="Email" FontSize="Micro" VerticalOptions="End"/>
-			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email"/>
+			<local:DarkKeyboardEntry x:Name="Email" VerticalOptions="Center" Keyboard="Email"/>
 			<Label Text="Password" FontSize="Micro" VerticalOptions="Center"/>
-			<Entry x:Name="Password" VerticalOptions="Center" IsPassword="true"/>
+			<local:DarkKeyboardEntry x:Name="Password" VerticalOptions="Center" IsPassword="true"/>
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot" BorderColor="Transparent"/>
