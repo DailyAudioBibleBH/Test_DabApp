@@ -205,6 +205,7 @@
     <Compile Include="CustomRenderers\DabSwitchRenderer.cs" />
     <Compile Include="CustomRenderers\DabProgressBarRenderer.cs" />
     <Compile Include="DabApi\FileManagement.cs" />
+    <Compile Include="CustomRenderers\NonScrollingFlowListViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

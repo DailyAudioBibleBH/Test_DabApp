@@ -11,8 +11,8 @@
 			</RelativeLayout>
 			<StackLayout Padding="10" Spacing="10">
 				<Label Text="{Binding title}" />
-				<flv:FlowListView FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
-					<flv:FlowListView.FlowColumnTemplate>
+				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand" HeightRequest="1010">
+					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="5" Spacing="5">
 								<Image Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
@@ -25,8 +25,8 @@
 								</StackLayout>
 							</StackLayout>
 						</DataTemplate>
-					</flv:FlowListView.FlowColumnTemplate>
-				</flv:FlowListView>
+					</local:NonScrollingFlowListView.FlowColumnTemplate>
+				</local:NonScrollingFlowListView>
 			</StackLayout>
 		</StackLayout>
 	</t:MenuContainerPage.Content>

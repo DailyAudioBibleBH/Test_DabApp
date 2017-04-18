@@ -111,6 +111,7 @@
     <Compile Include="DabUI\DabTabletPage.xaml.cs">
       <DependentUpon>DabTabletPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabViewHelpers\Controls\NonScrollingFlowListView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
