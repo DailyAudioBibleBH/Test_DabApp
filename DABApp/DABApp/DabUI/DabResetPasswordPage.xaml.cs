@@ -33,5 +33,9 @@ namespace DABApp
 			}
 			ResetPassword.IsEnabled = true;
 		}
+
+		void OnCompleted(object o, EventArgs e) {
+			Confirmation.Focus();
+		}
 	}
 }

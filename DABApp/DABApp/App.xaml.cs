@@ -27,6 +27,7 @@ namespace DABApp
 			else {
 				MainPage = new DabNetworkUnavailablePage();
 			}
+			MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
 		}
 
 		protected override void OnStart()
