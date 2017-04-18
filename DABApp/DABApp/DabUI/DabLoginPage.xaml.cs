@@ -41,7 +41,7 @@ namespace DABApp
 					await DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
 					break;
 				case 2:
-					await DisplayAlert("Request Timed Out", "We are sorry this is most likely a problem on our end.", "OK");
+					await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
 					break;
 				case 3:
 					await DisplayAlert("OH NO!", "Something wen't wrong!", "OK");

@@ -39,7 +39,7 @@ namespace DABApp
 					else {
 						if (authentication.Contains("Http"))
 						{
-							await DisplayAlert(authentication, "Unable to contact the server.", "OK");
+							await DisplayAlert(authentication, "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
 						}
 						else {
 							await DisplayAlert("App side Error", authentication, "OK");
