@@ -10,7 +10,7 @@ namespace DABApp
 		{
 
 			//Default Page properties
-			this.Title = "DAILY AUDIO BIBLE";
+			NavigationPage.SetTitleIcon(this, "navbarlogo_2x");
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
 
 			//Control template (adds the player bar)
