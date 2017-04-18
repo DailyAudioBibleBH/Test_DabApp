@@ -7,7 +7,7 @@
 			<!--Color provided by LUTD for page backgrounds: #292929-->
 			<Color x:Key="InputBackgroundColor">#444444</Color>
 			<!--Color provided by LUTD for input background: #444444-->
-			<Color x:Key="TextColor">#FFFFFF</Color>
+			<Color x:Key="TextColor">#CBCBCB</Color>
 			<!--Color provided by LUTD for normal text throughout the app: #FFFFFF-->
 			<Color x:Key="SecondaryTextColor">#AFAFAF</Color>
 			<!--Color provided by LUTD for secondary text color: #AFAFAF-->
