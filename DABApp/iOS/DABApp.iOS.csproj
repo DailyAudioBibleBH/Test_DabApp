@@ -208,6 +208,7 @@
     <Compile Include="CustomRenderers\NonScrollingFlowListViewRenderer.cs" />
     <Compile Include="CustomRenderers\DarkKeyboardEntryRenderer.cs" />
     <Compile Include="CustomRenderers\DarkKeyboardEditorRenderer.cs" />
+    <Compile Include="CustomRenderers\ButtonDisabledTextColorRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

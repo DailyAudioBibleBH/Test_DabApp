@@ -31,13 +31,13 @@
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
-								<StackLayout Padding="20">
+								<StackLayout Padding="20" Spacing="0">
 									<Image Aspect="AspectFill">
 										<Image.Source>
 											<UriImageSource x:Name="linkSource" Uri="{Binding urlPhone}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 										</Image.Source>
 									</Image>
-									<StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="#222222">
+									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="#222222">
 										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand"/>
 										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}"/>
 									</StackLayout>
