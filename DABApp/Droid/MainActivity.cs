@@ -13,6 +13,7 @@ using Android.Gms.Gcm.Iid;
 using Android.Gms.Gcm;
 using Android.Util;
 using Android.Support.V7;
+using FFImageLoading.Forms.Droid;
 
 namespace DABApp.Droid
 {
@@ -25,6 +26,8 @@ namespace DABApp.Droid
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
+
+			CachedImageRenderer.Init();
 
 			base.OnCreate(bundle);
 

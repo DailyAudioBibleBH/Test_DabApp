@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using FFImageLoading;
+using Xamarin.Forms;
 
 namespace DABApp
 {
@@ -70,6 +73,15 @@ namespace DABApp
 				else return true;
 			}
 		}
+		public bool HasNoGraphic { 
+			get {
+				if (type == "image")
+				{
+					return false;
+				}
+				else return true;
+			}
+		}
 	}
 
 	public class View
@@ -94,6 +106,52 @@ namespace DABApp
 		public static ContentConfig Instance { get; set;}
 		static ContentConfig() {
 			Instance = new ContentConfig();
+		}
+
+		public async void cachImages() 
+		{ 
+			var channelView = Instance.views.Single(x => x.title == "Channels");
+			var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
+			try
+			{
+				foreach (var v in views) {
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownloadOnlyAsync();
+					}
+					else {
+						await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownloadOnlyAsync();
+					}
+				}
+				foreach (var r in channelView.resources)
+				{
+					var image = r.images;
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						await ImageService.Instance.LoadUrl(image.backgroundTablet).DownloadOnlyAsync();
+					}
+					else
+					{
+						await ImageService.Instance.LoadUrl(image.backgroundPhone).DownloadOnlyAsync();
+					}
+					await ImageService.Instance.LoadUrl(image.bannerPhone).DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl(image.thumbnail).DownloadOnlyAsync();
+				}
+				foreach (var i in initiativeView.links) {
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						await ImageService.Instance.LoadUrl(i.urlTablet).DownloadOnlyAsync();
+					}
+					else
+					{
+						await ImageService.Instance.LoadUrl(i.urlPhone).DownloadOnlyAsync();
+
+					}
+				}
+			}
+			catch (Exception e) { 
+				
+			}
 		}
 	}
 }

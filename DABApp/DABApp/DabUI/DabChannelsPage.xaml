@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView"
+	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<t:MenuContainerPage.Content>
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContentContainer">
-				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
+				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
 				<StackLayout Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent"/>
 					<Button Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" />
@@ -15,11 +16,11 @@
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="5" Spacing="5">
-								<Image Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
-									<Image.Source>
+								<ff:CachedImage Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
+									<ff:CachedImage.Source>
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
-									</Image.Source>
-								</Image>
+									</ff:CachedImage.Source>
+								</ff:CachedImage>
 								<StackLayout Orientation="Horizontal" Padding="5">
 									<Label Text="{Binding title}" />
 								</StackLayout>

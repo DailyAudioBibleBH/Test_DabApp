@@ -1,6 +1,7 @@
 ﻿using System;
 using SlideOverKit;
 using Xamarin.Forms;
+using FFImageLoading.Forms;
 
 namespace DABApp
 {

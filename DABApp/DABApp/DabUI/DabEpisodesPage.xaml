@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
-		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit">
+		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<t:MenuContainerPage.Content>
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-				<Image x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+				<ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
 				</StackLayout>

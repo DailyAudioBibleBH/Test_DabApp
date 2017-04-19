@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DLToolkit.Forms.Controls;
+using FFImageLoading.Forms.Touch;
 using Foundation;
 using PushNotification.Plugin;
 using SegmentedControl.FormsPlugin.iOS;
@@ -20,6 +21,8 @@ namespace DABApp.iOS
 			SQLitePCL.raw.sqlite3_shutdown();
 			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
 			SQLitePCL.raw.sqlite3_initialize();
+
+			CachedImageRenderer.Init();
 
 			global::Xamarin.Forms.Forms.Init();
 

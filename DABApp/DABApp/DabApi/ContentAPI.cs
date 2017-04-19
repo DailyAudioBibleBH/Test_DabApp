@@ -67,6 +67,7 @@ namespace DABApp
 		{
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
 			ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
+			ContentConfig.Instance.cachImages();
 			if (OfflineSettings == null)
 			{
 				OfflineSettings = new dbSettings();
