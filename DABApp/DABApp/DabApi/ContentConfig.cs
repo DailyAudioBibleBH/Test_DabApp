@@ -59,6 +59,17 @@ namespace DABApp
 		public string urlTablet { get; set; }
 		public string link { get; set; }
 		public string linkText { get; set; }
+		public bool HasGraphic
+		{
+			get
+			{
+				if (type == "text")
+				{
+					return false;
+				}
+				else return true;
+			}
+		}
 	}
 
 	public class View
