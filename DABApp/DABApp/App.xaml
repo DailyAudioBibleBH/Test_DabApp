@@ -107,6 +107,10 @@
 				<Setter Property="BarBackgroundColor" Value="#444444"/>
 			</Style>
 			<Style BasedOn="{StaticResource NavStyle}" TargetType="NavigationPage" ApplyToDerivedTypes="true"/>
+			<Style x:Key="NonScrollingListViewStyle" TargetType="ListView">
+				<Setter Property="BackgroundColor" Value="#222222"/>
+				<Setter Property="SeparatorVisibility" Value="Default"/>
+			</Style>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

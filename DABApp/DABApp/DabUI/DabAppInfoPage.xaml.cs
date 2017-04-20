@@ -11,6 +11,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
+			VersionNumber.Text = $"Version Number:{}";
 		}
 	}
 }
