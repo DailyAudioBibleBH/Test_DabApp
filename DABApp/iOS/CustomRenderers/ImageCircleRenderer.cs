@@ -3,23 +3,24 @@ using System.ComponentModel;
 using System.Diagnostics;
 using DABApp;
 using DABApp.iOS;
+using FFImageLoading.Forms.Touch;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly:ExportRenderer(typeof(ImageCircle), typeof(ImageCircleRenderer))]
 namespace DABApp.iOS
 {
-	public class ImageCircleRenderer: ImageRenderer
+	public class ImageCircleRenderer: CachedImageRenderer
 	{
-		protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
-		{
-			base.OnElementChanged(e);
+		//protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
+		//{
+		//	base.OnElementChanged(e);
 
-			if (e.OldElement != null || Element == null)
-				return;
+		//	if (e.OldElement != null || Element == null)
+		//		return;
 
-			CreateCircle();
-		}
+		//	CreateCircle();
+		//}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{

@@ -148,6 +148,13 @@ namespace DABApp
 
 					}
 				}
+				if (GlobalResources.UserAvatar == null)
+				{
+					await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownloadOnlyAsync();
+				}
+				else {
+					await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownloadOnlyAsync();
+				}
 			}
 			catch (Exception e) { 
 				
