@@ -8,12 +8,14 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace DABApp
 {
 	public class PlayerFeedAPI
 	{
 		static SQLiteConnection db = DabData.database;
+		static bool DownloadIsRunning = false;
 
 		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
 			GetEpisodes(resource);
@@ -97,45 +99,65 @@ namespace DABApp
 		}
 
 		public static async Task<bool> DownloadEpisodes() {
-			var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
-			DateTime cutoffTime = new DateTime();
-			switch (OfflineEpisodeSettings.Instance.Duration) { 
-				case "One Day":
-					cutoffTime = DateTime.Now.AddDays(-1);
-					break;
-				case "Two Days":
-					cutoffTime = DateTime.Now.AddDays(-2);
-					break;
-				case "Three Days":
-					cutoffTime = DateTime.Now.AddDays(-3);
-					break;
-				case "One Week":
-					cutoffTime = DateTime.Now.AddDays(-7);
-					break;
-				case "One Month":
-					cutoffTime = DateTime.Now.AddMonths(-1);
-					break;
-			}
-			var Episodes = from episode in db.Table<dbEpisodes>()
-						   join channel in OfflineChannels on episode.channel_title equals channel.title
-						   where !episode.is_downloaded && episode.PubDate > cutoffTime 
-			                                 && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to)
-						   select episode;
-			foreach (var episode in Episodes.ToList()) {
-				try
+
+			if (!DownloadIsRunning)
+			{
+				DownloadIsRunning = true;
+				var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
+				DateTime cutoffTime = new DateTime();
+				switch (OfflineEpisodeSettings.Instance.Duration)
 				{
-					if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+					case "One Day":
+						cutoffTime = DateTime.Now.AddDays(-1);
+						break;
+					case "Two Days":
+						cutoffTime = DateTime.Now.AddDays(-2);
+						break;
+					case "Three Days":
+						cutoffTime = DateTime.Now.AddDays(-3);
+						break;
+					case "One Week":
+						cutoffTime = DateTime.Now.AddDays(-7);
+						break;
+					case "One Month":
+						cutoffTime = DateTime.Now.AddMonths(-1);
+						break;
+				}
+
+				//Get episodes to download
+				var EpisodesToDownload = from channel in OfflineChannels
+										 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
+										 where !episode.is_downloaded //not downloaded
+									  && episode.PubDate > cutoffTime //new enough to be downloaded
+									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to) //not listened to or system not set to delete listened to episodes
+										 select episode;
+
+				foreach (var episode in EpisodesToDownload.ToList())
+				{
+					try
 					{
-						episode.is_downloaded = true;
-						db.Update(episode);
+						Debug.WriteLine("Starting to download episode {0} ({1})...", episode.id, episode.url);
+						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+						{
+							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
+							episode.is_downloaded = true;
+							db.Update(episode);
+						}
+						else throw new Exception();
 					}
-					else throw new Exception();
+					catch (Exception e)
+					{
+						Debug.WriteLine("Error while downloading episode {0} ({1}): {2}", episode.id, episode.url, e.ToString());
+						return false;
+					}
 				}
-				catch (Exception e) {
-					return false;
-				}
+				DownloadIsRunning = false;
+				return true;
 			}
-			return true;
+			else {
+				//download is already running
+				return true;
+			}
 		}
 
 		public static void DeleteChannelEpisodes(Resource resource) {
