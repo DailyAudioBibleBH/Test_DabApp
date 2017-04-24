@@ -10,19 +10,19 @@
 					<Button Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" />
 				</StackLayout>
 			</RelativeLayout>
-			<StackLayout Padding="10" Spacing="10">
+			<StackLayout Padding="10">
 				<Label Text="{Binding title}" />
 				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand" HeightRequest="1010">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
-							<StackLayout Padding="5" Spacing="5">
+							<StackLayout Padding="5">
 								<ff:CachedImage Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
 									<ff:CachedImage.Source>
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
 									</ff:CachedImage.Source>
 								</ff:CachedImage>
-								<StackLayout Orientation="Horizontal" Padding="5">
-									<Label Text="{Binding title}" />
+								<StackLayout Orientation="Horizontal" Padding="5" Spacing="0">
+									<Label Text="{Binding title}"/>
 								</StackLayout>
 							</StackLayout>
 						</DataTemplate>

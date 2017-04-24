@@ -11,8 +11,13 @@ namespace DABApp
 		{
 			InitializeComponent();
 			this.BindingContext = contentView;
-			if (contentView.children == null) {
+			if (contentView.children == null)
+			{
 				Children.IsVisible = false;
+			}
+			else {
+				var length = 25 * contentView.children.Count;
+				Children.HeightRequest = length;
 			}
 			if (string.IsNullOrEmpty(contentView.content)) {
 				Content.IsVisible = false;
@@ -32,11 +37,13 @@ namespace DABApp
 				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
+			//BannerTitle.Text = $"<h1 style=\"font-size:28px\">{contentView.title}</h1>";
 		}
 
 		void OnChildTapped(object o, ItemTappedEventArgs e) {
 			var item = (View)e.Item;
 			Navigation.PushAsync(new DabContentView(item));
+			Children.SelectedItem = null;
 		}
 
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {

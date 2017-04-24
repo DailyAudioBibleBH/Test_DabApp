@@ -157,6 +157,12 @@
     <Reference Include="FFImageLoading.Forms.Touch">
       <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.9\lib\Xamarin.iOS10\FFImageLoading.Forms.Touch.dll</HintPath>
     </Reference>
+    <Reference Include="Version.Plugin.Abstractions">
+      <HintPath>..\packages\Xam.Plugin.Version.1.0.0.0\lib\Xamarin.iOS10\Version.Plugin.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Version.Plugin">
+      <HintPath>..\packages\Xam.Plugin.Version.1.0.0.0\lib\Xamarin.iOS10\Version.Plugin.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -270,7 +276,6 @@
     <BundleResource Include="Resources\ic_forward_30_white_2x.png" />
     <BundleResource Include="Resources\ic_forward_30_white_3x.png" />
     <BundleResource Include="Resources\navbarlogo_2x.png" />
-    <BundleResource Include="Resources\navbarlogo.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

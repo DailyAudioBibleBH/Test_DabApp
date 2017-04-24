@@ -4,6 +4,7 @@
 	<ContentPage.Content>
 		<StackLayout Padding="15" Spacing="15">
 			<local:HtmlLabel Text="{Binding appInfo}"/>
+			<Label x:Name="VersionNumber"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
