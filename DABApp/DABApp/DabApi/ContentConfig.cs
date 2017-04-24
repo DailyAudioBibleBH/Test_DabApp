@@ -82,6 +82,15 @@ namespace DABApp
 				else return true;
 			}
 		}
+		public string PhoneOrTab { 
+			get {
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					return urlTablet;
+				}
+				else return urlPhone;
+			}
+		}
 	}
 
 	public class View

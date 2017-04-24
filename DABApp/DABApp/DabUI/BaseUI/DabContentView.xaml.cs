@@ -11,6 +11,14 @@ namespace DABApp
 		{
 			InitializeComponent();
 			this.BindingContext = contentView;
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Links.RowHeight = 300;
+			}
+			else
+			{
+				Links.RowHeight = 150;
+			}
 			if (contentView.children == null)
 			{
 				Children.IsVisible = false;
