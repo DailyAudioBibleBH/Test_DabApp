@@ -64,8 +64,7 @@ namespace DABApp
 		}
 
 		public static void ParseContent(string jsonOut)
-		{
-			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+		{			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
 			ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
 			ContentConfig.Instance.cachImages();
 			if (OfflineSettings == null)
