@@ -154,6 +154,7 @@ namespace DABApp
 						return false;
 					}
 				}
+				Debug.WriteLine("Downloads complete!");
 				DownloadIsRunning = false;
 				return true;
 			}
@@ -233,6 +234,7 @@ namespace DABApp
 						Debug.WriteLine("Unable to delete episode {0}", episode.id);
 					}
 				}
+				Debug.WriteLine("Cleanup complete.");
 				CleanupIsRunning = false;
 			}
 			else
