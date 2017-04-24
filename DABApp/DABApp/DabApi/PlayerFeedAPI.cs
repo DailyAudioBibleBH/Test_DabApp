@@ -133,11 +133,13 @@ namespace DABApp
 									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to) //not listened to or system not set to delete listened to episodes
 										 select episode;
 
+				int ix = 0;
 				foreach (var episode in EpisodesToDownload.ToList())
 				{
+					ix++;
 					try
 					{
-						Debug.WriteLine("Starting to download episode {0} ({1})...", episode.id, episode.url);
+						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, EpisodesToDownload.Count(), episode.url);
 						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
