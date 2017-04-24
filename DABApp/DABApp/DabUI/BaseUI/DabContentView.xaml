@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
-		xmlns:local="clr-namespace:DABApp;" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+		xmlns:local="clr-namespace:DABApp;" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
 	<ContentPage.Content>
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
@@ -26,8 +26,8 @@
 			<StackLayout x:Name="ContentContainer" Padding="10">
 				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 			</StackLayout>
-			<ListView x:Name="Links" ItemsSource="{Binding links}" ItemTapped="OnLinkTapped" SeparatorVisibility="None" SeparatorColor="Black" HasUnevenRows="true">
-				<ListView.ItemTemplate>
+			<flv:FlowListView x:Name="Links" FlowItemsSource="{Binding links}" FlowColumnCount="1" FlowUseAbsoluteLayoutInternally="true" HasUnevenRows="true">
+				<flv:FlowListView.FlowColumnTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
@@ -48,8 +48,8 @@
 							</ViewCell.View>
 						</ViewCell>
 					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+				</flv:FlowListView.FlowColumnTemplate>
+			</flv:FlowListView>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
