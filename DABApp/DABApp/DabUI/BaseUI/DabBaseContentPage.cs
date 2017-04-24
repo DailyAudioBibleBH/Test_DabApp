@@ -11,7 +11,7 @@ namespace DABApp
 		{
 
 			//Default Page properties
-			NavigationPage.SetTitleIcon(this, "navbarlogo_2x");
+			NavigationPage.SetTitleIcon(this, "navbarlogo.png");
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
 
 			//Control template (adds the player bar)

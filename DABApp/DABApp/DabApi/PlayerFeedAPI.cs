@@ -8,12 +8,15 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using System.Diagnostics;
 
 namespace DABApp
 {
 	public class PlayerFeedAPI
 	{
 		static SQLiteConnection db = DabData.database;
+		static bool DownloadIsRunning = false;
+		static bool CleanupIsRunning = false;
 
 		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
 			GetEpisodes(resource);
@@ -97,45 +100,67 @@ namespace DABApp
 		}
 
 		public static async Task<bool> DownloadEpisodes() {
-			var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
-			DateTime cutoffTime = new DateTime();
-			switch (OfflineEpisodeSettings.Instance.Duration) { 
-				case "One Day":
-					cutoffTime = DateTime.Now.AddDays(-1);
-					break;
-				case "Two Days":
-					cutoffTime = DateTime.Now.AddDays(-2);
-					break;
-				case "Three Days":
-					cutoffTime = DateTime.Now.AddDays(-3);
-					break;
-				case "One Week":
-					cutoffTime = DateTime.Now.AddDays(-7);
-					break;
-				case "One Month":
-					cutoffTime = DateTime.Now.AddMonths(-1);
-					break;
-			}
-			var Episodes = from episode in db.Table<dbEpisodes>()
-						   join channel in OfflineChannels on episode.channel_title equals channel.title
-						   where !episode.is_downloaded && episode.PubDate > cutoffTime 
-			                                 && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to)
-						   select episode;
-			foreach (var episode in Episodes.ToList()) {
-				try
+
+			if (!DownloadIsRunning)
+			{
+				DownloadIsRunning = true;
+				var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
+				DateTime cutoffTime = new DateTime();
+				switch (OfflineEpisodeSettings.Instance.Duration)
 				{
-					if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+					case "One Day":
+						cutoffTime = DateTime.Now.AddDays(-1);
+						break;
+					case "Two Days":
+						cutoffTime = DateTime.Now.AddDays(-2);
+						break;
+					case "Three Days":
+						cutoffTime = DateTime.Now.AddDays(-3);
+						break;
+					case "One Week":
+						cutoffTime = DateTime.Now.AddDays(-7);
+						break;
+					case "One Month":
+						cutoffTime = DateTime.Now.AddMonths(-1);
+						break;
+				}
+
+				//Get episodes to download
+				var EpisodesToDownload = from channel in OfflineChannels
+										 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
+										 where !episode.is_downloaded //not downloaded
+									  && episode.PubDate > cutoffTime //new enough to be downloaded
+									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to) //not listened to or system not set to delete listened to episodes
+										 select episode;
+
+				int ix = 0;
+				foreach (var episode in EpisodesToDownload.ToList())
+				{
+					ix++;
+					try
 					{
-						episode.is_downloaded = true;
-						db.Update(episode);
+						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, EpisodesToDownload.Count(), episode.url);
+						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+						{
+							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
+							episode.is_downloaded = true;
+							db.Update(episode);
+						}
+						else throw new Exception();
 					}
-					else throw new Exception();
+					catch (Exception e)
+					{
+						Debug.WriteLine("Error while downloading episode {0} ({1}): {2}", episode.id, episode.url, e.ToString());
+						return false;
+					}
 				}
-				catch (Exception e) {
-					return false;
-				}
+				DownloadIsRunning = false;
+				return true;
 			}
-			return true;
+			else {
+				//download is already running
+				return true;
+			}
 		}
 
 		public static void DeleteChannelEpisodes(Resource resource) {
@@ -159,35 +184,62 @@ namespace DABApp
 		}
 
 		public static void CleanUpEpisodes() {
-			DateTime cutoffTime = new DateTime();
-			switch (OfflineEpisodeSettings.Instance.Duration) { 
-				case "One Day":
-					cutoffTime = DateTime.Now.AddDays(-1);
-					break;
-				case "Two Days":
-					cutoffTime = DateTime.Now.AddDays(-2);
-					break;
-				case "Three Days":
-					cutoffTime = DateTime.Now.AddDays(-3);
-					break;
-				case "One Week":
-					cutoffTime = DateTime.Now.AddDays(-7);
-					break;
-				case "One Month":
-					cutoffTime = DateTime.Now.AddMonths(-1);
-					break;
-			}
-			var episodes = from x in db.Table<dbEpisodes>()
-				           where x.is_downloaded && x.PubDate < cutoffTime
-			                           && (x.PubDate < cutoffTime ||(!OfflineEpisodeSettings.Instance.DeleteAfterListening || x.is_listened_to))
-			               select x; 
-			foreach (var episode in episodes)
+			if (!CleanupIsRunning)
 			{
-				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+				CleanupIsRunning = true;
+				DateTime cutoffTime = new DateTime();
+				switch (OfflineEpisodeSettings.Instance.Duration)
 				{
-					episode.is_downloaded = false;
-					db.Update(episode);
+					case "One Day":
+						cutoffTime = DateTime.Now.AddDays(-1);
+						break;
+					case "Two Days":
+						cutoffTime = DateTime.Now.AddDays(-2);
+						break;
+					case "Three Days":
+						cutoffTime = DateTime.Now.AddDays(-3);
+						break;
+					case "One Week":
+						cutoffTime = DateTime.Now.AddDays(-7);
+						break;
+					case "One Month":
+						cutoffTime = DateTime.Now.AddMonths(-1);
+						break;
 				}
+				Debug.WriteLine("Cleaning up episodes...");
+				var episodesToDelete = from x in db.Table<dbEpisodes>()
+									   where x.is_downloaded  //downloaded episodes
+												&& x.PubDate < cutoffTime //pubDate is before cut off time
+												&& (!OfflineEpisodeSettings.Instance.DeleteAfterListening //not flagged to delete after listening
+														||
+														(OfflineEpisodeSettings.Instance.DeleteAfterListening || x.is_listened_to)) //flagged to delete after listening and listened to
+									   select x;
+				Debug.WriteLine("Cleaning up {0} episodes...", episodesToDelete.Count());
+				foreach (var episode in episodesToDelete)
+				{
+					Debug.WriteLine("Cleaning up episode {0} ({1})...", episode.id, episode.url);
+					try
+					{
+						if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+						{
+							Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
+							episode.is_downloaded = false;
+							db.Update(episode);
+						}
+
+					}
+					catch (Exception ex)
+					{
+						Debug.WriteLine("Unable to delete episode {0}", episode.id);
+					}
+				}
+				CleanupIsRunning = false;
+			}
+			else
+			{
+				Debug.WriteLine("Cleanup already running...");
+				//cleanup already running
+
 			}
 		}
 	}
