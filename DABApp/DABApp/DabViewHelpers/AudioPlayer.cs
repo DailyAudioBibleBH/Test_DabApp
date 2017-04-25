@@ -66,7 +66,8 @@ namespace DABApp
 								}
 
 								if (_TotalTime == _CurrentTime) {
-									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);	
+									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
+									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Stop", Convert.ToDecimal(TotalTime));
 								}
 							}
 							else {
@@ -174,6 +175,7 @@ namespace DABApp
 				_player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
+				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Play", Convert.ToDecimal(CurrentTime));
 			}
 		}
 
@@ -185,6 +187,7 @@ namespace DABApp
 				_player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
+				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Pause", Convert.ToDecimal(CurrentTime));
 			}
 		}
 

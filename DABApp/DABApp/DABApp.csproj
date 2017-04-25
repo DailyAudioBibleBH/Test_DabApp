@@ -113,6 +113,8 @@
     </Compile>
     <Compile Include="DabViewHelpers\Controls\NonScrollingFlowListView.cs" />
     <Compile Include="DabViewHelpers\Controls\DarkKeyboardEntry.cs" />
+    <Compile Include="DabData\dbPlayerActions.cs" />
+    <Compile Include="DabData\Helpers\PlayerActionHeplers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

@@ -217,5 +217,51 @@ namespace DABApp
 			db.InsertOrReplace(LastNameSettings);
 			db.InsertOrReplace(AvatarSettings);
 		}
+
+		public static void CreateNewActionLog(int episodeId, string actionType, decimal playTime) 
+		{
+			var actionLog = new dbPlayerActions();
+			actionLog.ActionDateTime = DateTime.Now;
+			actionLog.entity_type = "episode";
+			actionLog.EpisodeId = episodeId;
+			actionLog.PlayerTime = playTime;
+			actionLog.ActionType = actionType;
+			var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+			if (user != null) {
+				actionLog.UserEmail = user.Value;
+			}
+			db.Insert(actionLog);
+		}
+
+		public static void PostActionLogs() {
+			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+			var actions = db.Table<dbPlayerActions>().ToList();
+			if (actions.Count > 0) {
+				try
+				{
+					LoggedEvents events = new LoggedEvents();
+					HttpClient client = new HttpClient();
+					client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+					events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
+					var JsonIn = JsonConvert.SerializeObject(events);
+					var content = new StringContent(JsonIn);
+					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+					var result = client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/logevents", content).Result;
+					string JsonOut = result.Content.ReadAsStringAsync().Result;
+					if (JsonOut != "1")
+					{
+						throw new Exception();
+					}
+					foreach (var action in actions)
+					{
+						db.Delete(action);
+					}
+				}
+				catch (Exception e) 
+				{
+					//It's bad if the program lands here.
+				}
+			}
+		}
 	}
 }
