@@ -10,11 +10,9 @@
 				</StackLayout>
 			</RelativeLayout>
 			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" Style="{StaticResource NonScrollingListViewStyle}">
-			<!--<local:NonScrollingListView.FooterTemplate>
-				<DataTemplate>
-					<StackLayout VerticalOptions="FillAndExpand"/>
-				</DataTemplate>
-			</local:NonScrollingListView.FooterTemplate>-->
+			<ListView.Footer>
+				<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="#292929"/>
+			</ListView.Footer>
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>

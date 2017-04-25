@@ -32,6 +32,12 @@
 					<ContentPresenter VerticalOptions="FillAndExpand" />
 				</StackLayout>
 			</ControlTemplate>
+			<ControlTemplate x:Key="OtherPlayerPageTemplateWithoutScrolling">
+				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" >
+					<ContentPresenter VerticalOptions="FillAndExpand" />
+					<local:DabPlayerBar VerticalOptions="End" />
+				</StackLayout>
+			</ControlTemplate>
 			<!--Theme Styles-->
 			<!--Content Page-->
 			<Style x:Key="pageStyle" TargetType="ContentPage">

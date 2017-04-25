@@ -7,9 +7,11 @@ namespace DABApp
 {
 	public partial class DabOfflineEpisodeManagementPage : DabBaseContentPage
 	{
+
 		public DabOfflineEpisodeManagementPage()
 		{
 			InitializeComponent();
+			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			DabViewHelper.InitDabForm(this);
 			List<Preset> durations = new List<Preset>() { new Preset("One Day", false), new Preset("Two Days", false), new Preset("Three Days", false), new Preset("One Week", false), new Preset("One Month", false) };
 			foreach (Preset preset in durations) {
@@ -39,6 +41,12 @@ namespace DABApp
 		{
 			base.OnDisappearing();
 			PlayerFeedAPI.CleanUpEpisodes();
+		}
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			FooterWrapper.HeightRequest = this.Height;
 		}
 	}
 }

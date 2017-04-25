@@ -2,13 +2,26 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabOfflineEpisodeManagementPage"
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
-		<StackLayout Padding="10" Spacing="10">
-			<Label Text="Offline Episode Duration" Style="{StaticResource secondaryLabelStyle}"/>
-			<local:NonScrollingListView x:Name="Durations" ItemTapped="OnDurationPicked" HeightRequest="0">
+		<StackLayout Padding="0" Spacing="10">
+			<local:NonScrollingListView x:Name="Durations" ItemTapped="OnDurationPicked" Style="{StaticResource NonScrollingListViewStyle}">
+				<ListView.Header>
+					<StackLayout Padding="10" BackgroundColor="#292929">
+						<Label Text="Offline Episode Duration" Style="{StaticResource secondaryLabelStyle}"/>
+					</StackLayout>
+				</ListView.Header>
+				<ListView.Footer>
+						<StackLayout BackgroundColor="#292929" Padding="10" VerticalOptions="StartAndExpand" x:Name="FooterWrapper">
+							<Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." Style="{StaticResource secondaryLabelStyle}"/>
+							<StackLayout Orientation="Horizontal">
+								<Label Text="Delete episodes after listening" VerticalOptions="Center"/>
+								<Switch Toggled="OnDeleteAfterListening" HorizontalOptions="EndAndExpand" IsToggled="{Binding Source={x:Static local:OfflineEpisodeSettings.Instance}, Path=DeleteAfterListening}"/>
+							</StackLayout>
+						</StackLayout>
+				</ListView.Footer>
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<StackLayout Orientation="Horizontal">
+							<StackLayout Orientation="Horizontal" Padding="10">
 								<Label Text="{Binding duration}" VerticalOptions="Center" FontSize="Large"/>
 								<Image IsVisible="{Binding Selected}" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
@@ -16,11 +29,11 @@
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." Style="{StaticResource secondaryLabelStyle}"/>
+			<!--<Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." Style="{StaticResource secondaryLabelStyle}"/>
 			<StackLayout Orientation="Horizontal">
 				<Label Text="Delete episodes after listening"/>
 				<Switch Toggled="OnDeleteAfterListening" HorizontalOptions="EndAndExpand" IsToggled="{Binding Source={x:Static local:OfflineEpisodeSettings.Instance}, Path=DeleteAfterListening}"/>
-			</StackLayout>
+			</StackLayout>-->
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
