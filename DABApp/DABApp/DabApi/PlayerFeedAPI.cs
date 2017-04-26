@@ -86,6 +86,7 @@ namespace DABApp
 				var jsonSettings = JsonConvert.SerializeObject(settings);
 				offlineSettings.Value = jsonSettings;
 				db.Insert(offlineSettings);
+				OfflineEpisodeSettings.Instance = settings;
 			}
 			else
 			{

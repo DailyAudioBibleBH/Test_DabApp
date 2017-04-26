@@ -2,10 +2,11 @@
 <local:DabBaseContentPage xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns="http://xamarin.com/schemas/2014/forms" 
 		xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerPage" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
 		xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" 
-		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions">
+		xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+		xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<t:MenuContainerPage.Content>
 		<RelativeLayout x:Name="ListenContainer">
-			<Image x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
+			<ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
 		<StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 			<StackLayout Padding="20" Spacing="20">
 			<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
