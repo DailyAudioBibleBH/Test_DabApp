@@ -86,7 +86,7 @@ namespace DABApp
 		public static void UpdateOffline(bool offline, int ResourceId) {
 			var OfflineSettings = db.Table<dbSettings>().Single(x => x.Key == "AvailableOffline");
 			var jsonArray = JArray.Parse(OfflineSettings.Value);
-			if (offline)
+			if (offline || !jsonArray.Contains(ResourceId))
 			{
 				jsonArray.Add(ResourceId);
 			}

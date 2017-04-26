@@ -218,7 +218,7 @@ namespace DABApp
 			db.InsertOrReplace(AvatarSettings);
 		}
 
-		public static void CreateNewActionLog(int episodeId, string actionType, decimal playTime) 
+		public static void CreateNewActionLog(int episodeId, string actionType, double playTime) 
 		{
 			var actionLog = new dbPlayerActions();
 			actionLog.ActionDateTime = DateTime.Now;
@@ -260,6 +260,47 @@ namespace DABApp
 				catch (Exception e) 
 				{
 					//It's bad if the program lands here.
+				}
+			}
+		}
+
+		public static bool GetMemberData(){
+			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+			dbSettings EmailSettings = db.Table<dbSettings>().Single(x => x.Key == "Email");
+			try
+			{
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = client.GetAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data").Result;
+				string JsonOut = result.Content.ReadAsStringAsync().Result;
+				MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+				if (container.code == "rest_forbidden")
+				{
+					throw new Exception();
+				}
+				else {
+					SaveMemberData(container.listened_episodes);
+				}
+				return true;
+			}
+			catch (Exception e) {
+				return false;
+			}
+		}
+
+		static void SaveMemberData(List<dbEpisodes> episodes) {
+			foreach (dbEpisodes episode in episodes) {
+				var saved = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episode.id);
+				if (saved == null)
+				{
+					db.Insert(episode);
+				}
+				else {
+					saved.stop_time = episode.stop_time;
+					db.Update(saved);
 				}
 			}
 		}

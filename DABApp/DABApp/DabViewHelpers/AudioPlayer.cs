@@ -67,7 +67,8 @@ namespace DABApp
 
 								if (_TotalTime == _CurrentTime) {
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
-									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Stop", Convert.ToDecimal(TotalTime));
+									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Stop", TotalTime);
+									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0);
 								}
 							}
 							else {
@@ -113,6 +114,9 @@ namespace DABApp
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
+			if (_player.IsPlaying) {
+				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime);
+			}
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
 			if (episode.is_downloaded)
@@ -123,6 +127,7 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url);
 			}
+			CurrentTime = episode.stop_time;
 		}
 
 
@@ -175,7 +180,7 @@ namespace DABApp
 				_player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Play", Convert.ToDecimal(CurrentTime));
+				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Play", CurrentTime);
 			}
 		}
 
@@ -187,7 +192,8 @@ namespace DABApp
 				_player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Pause", Convert.ToDecimal(CurrentTime));
+				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "Pause", CurrentTime);
+				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime);
 			}
 		}
 

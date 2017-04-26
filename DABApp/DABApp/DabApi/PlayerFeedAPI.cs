@@ -52,6 +52,7 @@ namespace DABApp
 				{
 					await DownloadEpisodes();
 				});
+				var check = AuthenticationAPI.GetMemberData();
 				return "OK";
 				//else {
 				//	throw new Exception(); 
@@ -243,6 +244,12 @@ namespace DABApp
 				//cleanup already running
 
 			}
+		}
+
+		public static void UpdateStopTime(int CurrentEpisodeId, double NewStopTime) {
+			var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
+			episode.stop_time = NewStopTime;
+			db.Update(episode);
 		}
 	}
 }

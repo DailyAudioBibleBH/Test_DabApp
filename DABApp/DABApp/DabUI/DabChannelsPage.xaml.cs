@@ -57,6 +57,7 @@ namespace DABApp
 				}
 				PlayerFeedAPI.CleanUpEpisodes();
 				AuthenticationAPI.PostActionLogs();
+				var check = AuthenticationAPI.GetMemberData();
 				return true;
 			});
 		}

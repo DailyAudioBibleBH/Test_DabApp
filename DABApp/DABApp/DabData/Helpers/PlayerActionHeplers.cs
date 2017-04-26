@@ -41,4 +41,10 @@ namespace DABApp
 	public class LoggedEvents { 
 		public List<PlayerEpisodeAction> data { get; set;}
 	}
+
+	public class MemberData { 
+		public string code { get; set; }
+		public string message { get; set; }
+		public List<dbEpisodes> listened_episodes { get; set;}
+	}
 }
