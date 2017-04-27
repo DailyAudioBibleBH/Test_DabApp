@@ -276,6 +276,7 @@
     <BundleResource Include="Resources\ic_forward_30_white_2x.png" />
     <BundleResource Include="Resources\ic_forward_30_white_3x.png" />
     <BundleResource Include="Resources\navbarlogo_2x.png" />
+    <BundleResource Include="Resources\navbarlogo.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
