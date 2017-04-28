@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FFImageLoading;
 using Xamarin.Forms;
 
@@ -35,7 +36,7 @@ namespace DABApp
 		public string backgroundTablet { get; set; }
 	}
 
-	public class Resource
+	public class Resource: INotifyPropertyChanged
 	{
 		public int id { get; set;}
 		public string title { get; set; }
@@ -44,6 +45,33 @@ namespace DABApp
 		public string feedUrl { get; set; }
 		public string type { get; set; }
 		public bool availableOffline { get; set; } = false;
+
+		private bool _IsNotSelected = true;
+		public bool IsNotSelected { 
+			get {
+				return _IsNotSelected;
+			}
+			set {
+				_IsNotSelected = value;
+				OnPropertyChanged("IsNotSelected");
+			}
+		}
+
+		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+		{
+			var handler = PropertyChanged;
+			if (handler != null)
+			handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
+
+		private static void NotifyStaticPropertyChanged(string propertyName)
+		{
+			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 
 	public class Banner

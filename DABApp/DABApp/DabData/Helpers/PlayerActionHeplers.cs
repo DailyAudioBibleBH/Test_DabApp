@@ -13,19 +13,15 @@ namespace DABApp
 
 		public static List<PlayerEpisodeAction> ParsePlayerActions(List<dbPlayerActions> actions) {
 			List<PlayerEpisodeAction> result = new List<PlayerEpisodeAction>();
-			var grouped = actions.GroupBy(x => x.EpisodeId).ToList();
-			foreach (var episode in grouped) {
+			foreach (var log in actions) {
 				PlayerEpisodeAction action = new PlayerEpisodeAction();
-				var first = episode.First();
-				action.entity_id = first.EpisodeId.ToString();
-				action.entity_datetime = first.ActionDateTime.ToString();
-				action.entity_type = first.entity_type;
-				foreach (var log in episode) {
-					var subaction = new PlayerAction();
-					subaction.action = log.ActionType;
-					subaction.playertime = log.PlayerTime.ToString();
-					action.entity_data.Add(subaction);
-				}
+				action.entity_id = log.EpisodeId.ToString();
+				action.entity_datetime = $"{log.ActionDateTime.DayOfWeek.ToString()} {log.ActionDateTime.ToLocalTime().ToString()}";
+				action.entity_type = log.entity_type;
+				var subaction = new PlayerAction();
+				subaction.action = log.ActionType;
+				subaction.playertime = log.PlayerTime.ToString();
+				action.entity_data.Add(subaction);
 				result.Add(action);
 			}
 			return result;

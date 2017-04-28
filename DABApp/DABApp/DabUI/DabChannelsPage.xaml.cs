@@ -4,6 +4,7 @@ using System.Linq;
 using SlideOverKit;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
+using FFImageLoading;
 
 namespace DABApp
 {
@@ -82,6 +83,8 @@ namespace DABApp
 		}
 
 		void OnChannel(object o, ItemTappedEventArgs e) {
+			var selected = (Resource)e.Item;
+			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
 			PlayerFeedAPI.GetEpisodes(resource);
 			if (Device.Idiom == TargetIdiom.Tablet)
@@ -91,6 +94,20 @@ namespace DABApp
 			else
 			{
 				Navigation.PushAsync(new DabEpisodesPage(resource));
+			}
+			selected.IsNotSelected = true;
+		}
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				ImageService.Instance.LoadUrl(ChannelView.banner.urlTablet).DownloadOnlyAsync();
+			}
+			else
+			{
+				ImageService.Instance.LoadUrl(ChannelView.banner.urlPhone).DownloadOnlyAsync();
 			}
 		}
 	}

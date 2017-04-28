@@ -15,7 +15,7 @@
 				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand" HeightRequest="1010">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
-							<StackLayout Padding="5">
+							<StackLayout Padding="5" IsVisible="{Binding IsNotSelected}">
 								<ff:CachedImage Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
 									<ff:CachedImage.Source>
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
