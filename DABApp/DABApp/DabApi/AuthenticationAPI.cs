@@ -236,7 +236,7 @@ namespace DABApp
 		public static void PostActionLogs() {
 			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
 			var actions = db.Table<dbPlayerActions>().ToList();
-			if (actions.Count > 0) {
+ 			if (actions.Count > 0) {
 				try
 				{
 					LoggedEvents events = new LoggedEvents();

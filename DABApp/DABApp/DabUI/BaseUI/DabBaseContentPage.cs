@@ -7,8 +7,8 @@ namespace DABApp
 {
 	public class DabBaseContentPage : MenuContainerPage
 	{
-		public ActivityIndicator activity { get; set;}
-		public StackLayout activityHolder { get; set;}
+		//public ActivityIndicator activity { get; set;}
+		//public StackLayout activityHolder { get; set;}
 
 		public DabBaseContentPage()
 		{
@@ -24,12 +24,12 @@ namespace DABApp
 			//{
 			//	Opacity = 0.5,
 			//	BackgroundColor = Color.Gray,
-			//	IsVisible = false
+			//	IsVisible = true
 			//};
 			//activity = new ActivityIndicator()
 			//{
 			//	IsRunning = true,
-			//	IsVisible = false,
+			//	IsVisible = true,
 			//	VerticalOptions = LayoutOptions.CenterAndExpand,
 			//	HorizontalOptions = LayoutOptions.CenterAndExpand,
 			//	Color = Color.White

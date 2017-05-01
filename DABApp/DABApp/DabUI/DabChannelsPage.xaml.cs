@@ -83,8 +83,10 @@ namespace DABApp
 		}
 
 		void OnChannel(object o, ItemTappedEventArgs e) {
-			//activity.IsVisible = true;
-			//activityHolder.IsVisible = true;
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var selected = (Resource)e.Item;
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
@@ -98,8 +100,8 @@ namespace DABApp
 				Navigation.PushAsync(new DabEpisodesPage(resource));
 			}
 			selected.IsNotSelected = true;
-			//activity.IsVisible = false;
-			//activityHolder.IsVisible = false;
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		//protected override void OnAppearing()

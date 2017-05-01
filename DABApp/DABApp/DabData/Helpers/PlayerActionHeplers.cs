@@ -9,7 +9,7 @@ namespace DABApp
 		public string entity_datetime { get; set;}
 		public string entity_type { get; set;}
 		public string entity_id { get; set;}
-		public List<PlayerAction> entity_data { get; set; } = new List<PlayerAction>();
+		public PlayerAction entity_data { get; set; }
 
 		public static List<PlayerEpisodeAction> ParsePlayerActions(List<dbPlayerActions> actions) {
 			List<PlayerEpisodeAction> result = new List<PlayerEpisodeAction>();
@@ -18,10 +18,9 @@ namespace DABApp
 				action.entity_id = log.EpisodeId.ToString();
 				action.entity_datetime = $"{log.ActionDateTime.DayOfWeek.ToString()} {log.ActionDateTime.ToLocalTime().ToString()}";
 				action.entity_type = log.entity_type;
-				var subaction = new PlayerAction();
-				subaction.action = log.ActionType;
-				subaction.playertime = log.PlayerTime.ToString();
-				action.entity_data.Add(subaction);
+				action.entity_data = new PlayerAction();
+				action.entity_data.action = log.ActionType;
+				action.entity_data.playertime = log.PlayerTime.ToString();
 				result.Add(action);
 			}
 			return result;

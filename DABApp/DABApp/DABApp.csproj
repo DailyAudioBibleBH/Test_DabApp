@@ -115,6 +115,7 @@
     <Compile Include="DabViewHelpers\Controls\DarkKeyboardEntry.cs" />
     <Compile Include="DabData\dbPlayerActions.cs" />
     <Compile Include="DabData\Helpers\PlayerActionHeplers.cs" />
+    <Compile Include="DabViewHelpers\ControlTemplateAccess.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

@@ -19,12 +19,25 @@
 			<!--Color provided by LUTD for slider menu: #D5272E-->
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
+				<RelativeLayout>
 				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
 					<ScrollView VerticalOptions="FillAndExpand">
 						<ContentPresenter VerticalOptions="FillAndExpand" />
 					</ScrollView>
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
+				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
+								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
+								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
+								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
+								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+								</StackLayout>
+				<ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
+								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
+								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
+								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>
+				</RelativeLayout>
 			</ControlTemplate>
 			<!--Player Bar ControlTemplate WITHOUT ScrollView-->
 			<ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
