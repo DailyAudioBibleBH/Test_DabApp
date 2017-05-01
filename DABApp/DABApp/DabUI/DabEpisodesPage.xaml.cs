@@ -36,6 +36,8 @@ namespace DABApp
 
 		public void OnEpisode(object o, ItemTappedEventArgs e) 
 		{
+			//activityHolder.IsVisible = true;
+			//activity.IsVisible = true;
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
 			if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
@@ -44,7 +46,8 @@ namespace DABApp
 			}
 			Navigation.PushAsync(new DabPlayerPage(chosen));
 			EpisodeList.SelectedItem = null;
-
+			//activityHolder.IsVisible = false;
+			//activity.IsVisible = false;
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e) {

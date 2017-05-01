@@ -29,7 +29,7 @@
 			<StackLayout x:Name="ContentContainer" Padding="10">
 				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 			</StackLayout>
-			<ListView x:Name="Links" ItemsSource="{Binding links}" HasUnevenRows="true">
+			<ListView x:Name="Links" ItemsSource="{Binding links}" HasUnevenRows="true" ItemTapped="OnLinkTapped">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>

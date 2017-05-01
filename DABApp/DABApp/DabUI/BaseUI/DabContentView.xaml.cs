@@ -11,13 +11,19 @@ namespace DABApp
 		{
 			InitializeComponent();
 			this.BindingContext = contentView;
-			if (Device.Idiom == TargetIdiom.Tablet)
+			if (contentView.title == "Initiatives")
 			{
-				Links.RowHeight = 300;
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					Links.RowHeight = 300;
+				}
+				else
+				{
+					Links.RowHeight = 150;
+				}
 			}
-			else
-			{
-				Links.RowHeight = 150;
+			else {
+				Links.RowHeight = 0;
 			}
 			if (contentView.children == null)
 			{
@@ -36,7 +42,7 @@ namespace DABApp
 				Links.IsVisible = false;
 			}
 			else { 
-				ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+				ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 				this.ControlTemplate = playerBarTemplate;
 			}
 

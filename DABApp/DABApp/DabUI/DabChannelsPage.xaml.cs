@@ -83,6 +83,8 @@ namespace DABApp
 		}
 
 		void OnChannel(object o, ItemTappedEventArgs e) {
+			//activity.IsVisible = true;
+			//activityHolder.IsVisible = true;
 			var selected = (Resource)e.Item;
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
@@ -96,19 +98,21 @@ namespace DABApp
 				Navigation.PushAsync(new DabEpisodesPage(resource));
 			}
 			selected.IsNotSelected = true;
+			//activity.IsVisible = false;
+			//activityHolder.IsVisible = false;
 		}
 
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			if (Device.Idiom == TargetIdiom.Tablet)
-			{
-				ImageService.Instance.LoadUrl(ChannelView.banner.urlTablet).DownloadOnlyAsync();
-			}
-			else
-			{
-				ImageService.Instance.LoadUrl(ChannelView.banner.urlPhone).DownloadOnlyAsync();
-			}
-		}
+		//protected override void OnAppearing()
+		//{
+		//	base.OnAppearing();
+		//	if (Device.Idiom == TargetIdiom.Tablet)
+		//	{
+		//		ImageService.Instance.LoadUrl(ChannelView.banner.urlTablet).DownloadOnlyAsync();
+		//	}
+		//	else
+		//	{
+		//		ImageService.Instance.LoadUrl(ChannelView.banner.urlPhone).DownloadOnlyAsync();
+		//	}
+		//}
 	}
 }

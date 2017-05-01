@@ -18,7 +18,7 @@
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<Grid Padding="10,10,10,10">
+							<Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="*"/>

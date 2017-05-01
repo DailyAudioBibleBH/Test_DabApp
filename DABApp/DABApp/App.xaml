@@ -19,7 +19,7 @@
 			<!--Color provided by LUTD for slider menu: #D5272E-->
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
-				<StackLayout VerticalOptions="FillAndExpand" Spacing="0">
+				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
 					<ScrollView VerticalOptions="FillAndExpand">
 						<ContentPresenter VerticalOptions="FillAndExpand" />
 					</ScrollView>
