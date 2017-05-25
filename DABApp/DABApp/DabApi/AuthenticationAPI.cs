@@ -12,7 +12,7 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
-		public static async Task<string> ValidateLogin(string email, string password) {
+		public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false) {
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
@@ -21,35 +21,62 @@ namespace DABApp
 				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
-				HttpClient client = new HttpClient();
-				var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
-				var content = new StringContent(JsonIn);
-				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", content);
-				string JsonOut = await result.Content.ReadAsStringAsync();
-				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-				APIToken token = container.token;
-				if (container.code == "login_error")
-				{
-					return container.message;
-				}
-				if (TokenSettings == null || EmailSettings == null)
-				{
-					CreateSettings(token);
+				if (IsGuest) {
+					if (EmailSettings == null)
+					{
+						APIToken Empty = new APIToken();
+						Empty.user_avatar = "";
+						Empty.user_email = "";
+						Empty.user_first_name = "Guest";
+						Empty.user_last_name = "Guest";
+						Empty.value = "";
+						Empty.expires = DateTime.Now.ToString();
+						CreateSettings(Empty);
+					}
+					else {
+						TokenSettings.Value = "";
+						ExpirationSettings.Value = DateTime.Now.ToString();
+						FirstNameSettings.Value = "Guest";
+						LastNameSettings.Value = "Guest";
+						AvatarSettings.Value = "";
+						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
+						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+						db.UpdateAll(settings, true);
+					}
+					return "IsGuest";
 				}
 				else
 				{
-					TokenSettings.Value = token.value;
-					ExpirationSettings.Value = token.expires;
-					EmailSettings.Value = token.user_email;
-					FirstNameSettings.Value = token.user_first_name;
-					LastNameSettings.Value = token.user_last_name;
-					AvatarSettings.Value = token.user_avatar;
-					IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-					settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-					db.UpdateAll(settings, true);
+					HttpClient client = new HttpClient();
+					var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
+					var content = new StringContent(JsonIn);
+					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+					var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", content);
+					string JsonOut = await result.Content.ReadAsStringAsync();
+					APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+					APIToken token = container.token;
+					if (container.code == "login_error")
+					{
+						return container.message;
+					}
+					if (TokenSettings == null || EmailSettings == null)
+					{
+						CreateSettings(token);
+					}
+					else
+					{
+						TokenSettings.Value = token.value;
+						ExpirationSettings.Value = token.expires;
+						EmailSettings.Value = token.user_email;
+						FirstNameSettings.Value = token.user_first_name;
+						LastNameSettings.Value = token.user_last_name;
+						AvatarSettings.Value = token.user_avatar;
+						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
+						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+						db.UpdateAll(settings, true);
+					}
+					return container.message;
 				}
-				return container.message;
 			}
 			catch (Exception e) {
 				if (e.GetType() == typeof(HttpRequestException))

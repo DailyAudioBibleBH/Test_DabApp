@@ -11,7 +11,10 @@
 			<local:DarkKeyboardEntry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin"/>
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
-			<Button Text="Forgot Password?" VerticalOptions="StartAndExpand" Clicked="OnForgot" BorderColor="Transparent"/>
+			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+				<Button Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
+				<Button Text="Log in as Guest" Clicked="OnGuestLogin" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
+			</StackLayout>
 			<!--<Frame OutlineColor="#333333" VerticalOptions="EndAndExpand">-->
 				<local:HtmlLabel x:Name="SignUp" VerticalOptions="End" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
 			<!--</Frame>-->

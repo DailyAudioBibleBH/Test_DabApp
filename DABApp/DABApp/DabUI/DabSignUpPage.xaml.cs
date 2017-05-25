@@ -30,6 +30,7 @@ namespace DABApp
 				{
 					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 					Navigation.PopToRootAsync();
+					GlobalResources.IsGuestLogin = false;
 				}
 				else{
 					if (authentication.Contains("server"))

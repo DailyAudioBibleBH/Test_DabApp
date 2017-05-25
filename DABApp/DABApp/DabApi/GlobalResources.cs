@@ -66,8 +66,10 @@ namespace DABApp
 			}
 		}
 
-		public static string UserAvatar { 
-			get {
+		public static string UserAvatar
+		{
+			get
+			{
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				if (AvatarSettings == null)
 				{
@@ -77,6 +79,7 @@ namespace DABApp
 			}
 		}
 
+		public static bool IsGuestLogin { get; set;}
 		public static bool LogInPageExists { get; set;}
 		public static bool DeleteEpisodesAfterListening { get; set;}
 		public static string DurationPicked { get; set;}

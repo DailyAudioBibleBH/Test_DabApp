@@ -21,7 +21,7 @@ namespace DABApp
 			RelativeLayout container = new RelativeLayout();
 			ControlTemplate = playerBarTemplate;
 			//activityHolder = new StackLayout()
-			//{
+			//
 			//	Opacity = 0.5,
 			//	BackgroundColor = Color.Gray,
 			//	IsVisible = true

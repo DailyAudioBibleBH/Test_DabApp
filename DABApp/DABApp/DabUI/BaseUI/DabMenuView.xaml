@@ -24,6 +24,7 @@
 					<UriImageSource x:Name="AvatarSource" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 				</local:ImageCircle.Source>
 			</local:ImageCircle>
+			<Button x:Name="SignUp" Text="Sign up >>" IsVisible="false" BorderColor="Transparent"/>
 			<Label x:Name="UserName" Text="[User Name]" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
 			<Button Image="ic_settings_white.png" HorizontalOptions="End" Clicked="OnSettings" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
 		</StackLayout>

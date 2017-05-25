@@ -52,6 +52,7 @@ namespace DABApp
 			{
 				Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 				await Navigation.PopToRootAsync();
+				GlobalResources.IsGuestLogin = false;
 			}
 			else 
 			{
@@ -79,6 +80,13 @@ namespace DABApp
 
 		void OnForgot(object o, EventArgs e) {
 			Navigation.PushAsync(new DabResetPasswordPage());
+		}
+
+		async void OnGuestLogin(object o, EventArgs e) {
+			GlobalResources.IsGuestLogin = true;
+			await AuthenticationAPI.ValidateLogin("Guest", "", true);
+			Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+			await Navigation.PopToRootAsync();
 		}
 
 		protected override void OnDisappearing()

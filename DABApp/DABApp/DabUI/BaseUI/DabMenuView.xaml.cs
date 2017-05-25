@@ -34,14 +34,22 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-			UserName.Text = GlobalResources.GetUserName();
-			if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
-			{
-				AvatarSource.Uri = new Uri("http://placehold.it/10x10");
+			if (GlobalResources.IsGuestLogin) {
+				UserName.IsVisible = false;
+				Avatar.IsVisible = false;
+				SignUp.IsVisible = true;
 			}
 			else
 			{
-				AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
+				UserName.Text = GlobalResources.GetUserName();
+				if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
+				{
+					AvatarSource.Uri = new Uri("http://placehold.it/10x10");
+				}
+				else
+				{
+					AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
+				}
 			}
 		}
 
