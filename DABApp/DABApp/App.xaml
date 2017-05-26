@@ -92,7 +92,7 @@
 			<!--Highlighted Button-->
 			<Style x:Key="highlightedButtonStyle" TargetType="Button">
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="BorderColor" Value="{DynamicResource HighlightColor}" />
 				<Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
 			</Style>
 			<!--Image Button-->

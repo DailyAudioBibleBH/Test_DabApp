@@ -260,10 +260,16 @@ namespace DABApp
 				var result = client.GetAsync(ReadLink).Result;
 				var JsonOut = result.Content.ReadAsStringAsync().Result;
 				var content = JsonConvert.DeserializeObject<Reading>(JsonOut);
-				if (content == null) {
-					throw new Exception();
+				if (content == null)
+				{
+					throw new Exception("This reading could not be found.");
 				}
 				return content;
+			}
+			catch (HttpRequestException re) {
+				var reading = new Reading();
+				reading.title = re.Message;
+				return reading;
 			}
 			catch (Exception e) {
 				var reading = new Reading();

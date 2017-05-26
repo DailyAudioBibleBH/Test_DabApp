@@ -29,7 +29,18 @@ namespace DABApp
 			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
 			ReadTitle.Text = reading.title;
 			ReadText.Text = reading.text;
-			ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+			if (reading.excerpts != null)
+			{
+				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+			}
+			var tapper = new TapGestureRecognizer();
+			tapper.NumberOfTapsRequired = 1;
+			tapper.Tapped += (sender, e) =>
+			{
+				Navigation.PushModalAsync(new NavigationPage(new DabSignUpPage()));
+			};
+			SignUp.GestureRecognizers.Add(tapper);
+			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
 		}
 
 		void OnPlay(object o, EventArgs e)
@@ -66,14 +77,27 @@ namespace DABApp
 			{
 				case 0:
 					Read.IsVisible = false;
-					Journal.IsVisible = false;
+					if (GlobalResources.IsGuestLogin)
+					{
+						LoginJournal.IsVisible = false;
+					}
+					else
+					{
+						Journal.IsVisible = false;
+					}
 					//AudioPlayer.Instance.showPlayerBar = false;
 					Listen.IsVisible = true;
 					BackgroundImage.IsVisible = true;
 					break;
 				case 1:
 					Listen.IsVisible = false;
-					Journal.IsVisible = false;
+					if (GlobalResources.IsGuestLogin) {
+						LoginJournal.IsVisible = false;
+					}
+					else
+					{
+						Journal.IsVisible = false;
+					}
 					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					BackgroundImage.IsVisible = false;
@@ -82,7 +106,14 @@ namespace DABApp
 					Read.IsVisible = false;
 					Listen.IsVisible = false;
 					//AudioPlayer.Instance.showPlayerBar = true;
-					Journal.IsVisible = true;
+					if (GlobalResources.IsGuestLogin)
+					{
+						LoginJournal.IsVisible = true;
+					}
+					else
+					{
+						Journal.IsVisible = true;
+					}
 					BackgroundImage.IsVisible = false;
 					break;
 			}
@@ -120,6 +151,12 @@ namespace DABApp
 
 		void OnSaveJournal(object o, EventArgs e) { 
 			
+		}
+
+		void OnLogin(object o, EventArgs e) {
+			Login.IsEnabled = false;
+			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+			Login.IsEnabled = true;
 		}
 	}
 }

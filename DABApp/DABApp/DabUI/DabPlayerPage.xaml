@@ -47,6 +47,12 @@
 				<Label Text="{Binding title}" />
 				<local:DarkKeyboardEditor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" Completed="OnSaveJournal" HeightRequest="250"/>
 			</StackLayout>
+			<StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold"/>
+				<Label Text="Create an account and join us each day as we read through the bible every year." FontSize="Medium"/>
+				<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
+				<local:HtmlLabel x:Name="SignUp" HorizontalOptions="CenterAndExpand"/>
+			</StackLayout>
 		</StackLayout>
 		</RelativeLayout>
 	</t:MenuContainerPage.Content>
