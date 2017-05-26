@@ -33,14 +33,6 @@ namespace DABApp
 			{
 				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
 			}
-			var tapper = new TapGestureRecognizer();
-			tapper.NumberOfTapsRequired = 1;
-			tapper.Tapped += (sender, e) =>
-			{
-				Navigation.PushModalAsync(new NavigationPage(new DabSignUpPage()));
-			};
-			SignUp.GestureRecognizers.Add(tapper);
-			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
 		}
 
 		void OnPlay(object o, EventArgs e)
