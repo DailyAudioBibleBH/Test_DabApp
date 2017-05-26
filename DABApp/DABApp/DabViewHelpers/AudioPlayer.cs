@@ -197,6 +197,9 @@ namespace DABApp
 			}
 		}
 
+		public void Unload(){
+			_player.Unload();
+		}
 
 		//property for whether a file is being played or not
 		public bool IsPlaying

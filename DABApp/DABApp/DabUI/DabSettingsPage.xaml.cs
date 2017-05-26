@@ -25,6 +25,8 @@ namespace DABApp
 
 		async void OnLogOut(object o, EventArgs e) {
 			LogOut.IsEnabled = false;
+			AudioPlayer.Instance.Pause();
+			AudioPlayer.Instance.Unload();
 			if (await AuthenticationAPI.LogOut())
 			{
 				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));

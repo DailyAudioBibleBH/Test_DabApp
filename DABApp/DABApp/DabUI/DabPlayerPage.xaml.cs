@@ -147,6 +147,8 @@ namespace DABApp
 
 		void OnLogin(object o, EventArgs e) {
 			Login.IsEnabled = false;
+			AudioPlayer.Instance.Pause();
+			AudioPlayer.Instance.Unload();
 			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
 			Login.IsEnabled = true;
 		}

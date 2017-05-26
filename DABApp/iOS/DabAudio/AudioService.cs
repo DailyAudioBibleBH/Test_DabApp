@@ -193,6 +193,11 @@ namespace DABApp.iOS
 			return MPRemoteCommandHandlerStatus.Success;
 		}
 
+		public void Unload()
+		{
+			IsLoaded = false;
+		}
+
 		public bool IsInitialized
 		{
 			get { return IsLoaded; }
@@ -250,6 +255,5 @@ namespace DABApp.iOS
 				}
 			}
 		}
-
 	}
 }

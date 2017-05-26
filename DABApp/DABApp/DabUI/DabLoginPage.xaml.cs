@@ -93,7 +93,10 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			AudioPlayer.Instance.IsInitialized = false;
+			if (AudioPlayer.Instance.IsPlaying) {
+				AudioPlayer.Instance.Pause();
+			}
+			AudioPlayer.Instance.Unload();
 		}
 
 		protected override void OnDisappearing()

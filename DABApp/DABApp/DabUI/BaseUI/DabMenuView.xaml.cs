@@ -55,7 +55,9 @@ namespace DABApp
 
 		void OnSignUp(object o, EventArgs e) {
 			SignUp.IsEnabled = false;
-				//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+			//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+			AudioPlayer.Instance.Pause();
+			AudioPlayer.Instance.Unload();
 			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
 			SignUp.IsEnabled = true;
 		}
