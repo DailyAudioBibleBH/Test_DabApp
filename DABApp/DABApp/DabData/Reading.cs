@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DABApp
+{
+	public class Reading
+	{
+		public string title { get; set;}
+		public string link { get; set; }
+		public string text { get; set;}
+		public List<string> excerpts { get; set;}
+		public int id { get; set;}
+	}
+}

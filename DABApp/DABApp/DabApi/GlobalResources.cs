@@ -3,10 +3,12 @@ using Xamarin.Forms;
 using SlideOverKit;
 using SQLite;
 using System.Linq;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DABApp
 {
-	public static class GlobalResources
+	public class GlobalResources
 	{
 		//public static bool IsPlaying { get; set; }
 		//public static IAudio Player { get; set;}

@@ -252,5 +252,24 @@ namespace DABApp
 			episode.stop_time = NewStopTime;
 			db.Update(episode);
 		}
+
+		public static Reading GetReading(string ReadLink) {
+			try
+			{
+				HttpClient client = new HttpClient();
+				var result = client.GetAsync(ReadLink).Result;
+				var JsonOut = result.Content.ReadAsStringAsync().Result;
+				var content = JsonConvert.DeserializeObject<Reading>(JsonOut);
+				if (content == null) {
+					throw new Exception();
+				}
+				return content;
+			}
+			catch (Exception e) {
+				var reading = new Reading();
+				reading.title = e.Message;
+				return reading;
+			}
+		} 
 	}
 }

@@ -26,6 +26,10 @@ namespace DABApp
 			BindingContext = episode;
 			//Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
+			ReadTitle.Text = reading.title;
+			ReadText.Text = reading.text;
+			ReadExcerpts.Text = String.Join(", ", reading.excerpts);
 		}
 
 		void OnPlay(object o, EventArgs e)

@@ -13,7 +13,7 @@ namespace DABApp
 			GlobalResources.LogInPageExists = true;
 			ToolbarItems.Clear();
 			var email = GlobalResources.GetUserEmail();
-			if (!string.IsNullOrEmpty(email)) {
+			if (email != "Guest" && !String.IsNullOrEmpty(email)){
 				Email.Text = email;
 			}
 			if (Device.Idiom == TargetIdiom.Phone) {
@@ -83,16 +83,24 @@ namespace DABApp
 		}
 
 		async void OnGuestLogin(object o, EventArgs e) {
+			GuestLogin.IsEnabled = false;
 			GlobalResources.IsGuestLogin = true;
 			await AuthenticationAPI.ValidateLogin("Guest", "", true);
 			Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 			await Navigation.PopToRootAsync();
 		}
 
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			AudioPlayer.Instance.IsInitialized = false;
+		}
+
 		protected override void OnDisappearing()
 		{
 			base.OnDisappearing();
 			Login.IsEnabled = true;
+			GuestLogin.IsEnabled = true;
 		}
 
 		void OnCompleted(object sender, System.EventArgs e)

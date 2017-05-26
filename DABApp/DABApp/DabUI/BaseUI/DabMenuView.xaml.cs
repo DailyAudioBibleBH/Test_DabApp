@@ -34,7 +34,7 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-			if (GlobalResources.IsGuestLogin) {
+			if (GlobalResources.GetUserEmail() == "Guest") {
 				UserName.IsVisible = false;
 				Avatar.IsVisible = false;
 				SignUp.IsVisible = true;
@@ -51,6 +51,13 @@ namespace DABApp
 					AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
 				}
 			}
+		}
+
+		void OnSignUp(object o, EventArgs e) {
+			SignUp.IsEnabled = false;
+				//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
+			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+			SignUp.IsEnabled = true;
 		}
 
 		//Menu Actions

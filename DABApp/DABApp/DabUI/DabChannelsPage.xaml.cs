@@ -57,8 +57,11 @@ namespace DABApp
 					AuthenticationAPI.ExchangeToken();
 				}
 				PlayerFeedAPI.CleanUpEpisodes();
-				AuthenticationAPI.PostActionLogs();
-				var check = AuthenticationAPI.GetMemberData();
+				if (GlobalResources.GetUserName() != "Guest Guest")
+				{
+					AuthenticationAPI.PostActionLogs();
+					var check = AuthenticationAPI.GetMemberData();
+				}
 				return true;
 			});
 		}

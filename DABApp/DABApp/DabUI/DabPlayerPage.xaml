@@ -36,7 +36,13 @@
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
 			</StackLayout>
 				</StackLayout>
-				<WebView Source="{Binding read_link}" x:Name="Read" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+			<StackLayout x:Name="Read" IsVisible="false" Padding="20">
+					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
+					<Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Medium"/>
+					<ScrollView>
+					<local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand"/>
+					</ScrollView>
+			</StackLayout>
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="{Binding title}" />
 				<local:DarkKeyboardEditor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" Completed="OnSaveJournal" HeightRequest="250"/>

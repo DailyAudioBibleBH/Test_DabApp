@@ -26,18 +26,19 @@ namespace DABApp
 					{
 						APIToken Empty = new APIToken();
 						Empty.user_avatar = "";
-						Empty.user_email = "";
-						Empty.user_first_name = "Guest";
-						Empty.user_last_name = "Guest";
+						Empty.user_email = "Guest";
+						Empty.user_first_name = "";
+						Empty.user_last_name = "";
 						Empty.value = "";
 						Empty.expires = DateTime.Now.ToString();
 						CreateSettings(Empty);
 					}
 					else {
 						TokenSettings.Value = "";
+						EmailSettings.Value = "Guest";
 						ExpirationSettings.Value = DateTime.Now.ToString();
-						FirstNameSettings.Value = "Guest";
-						LastNameSettings.Value = "Guest";
+						FirstNameSettings.Value = "";
+						LastNameSettings.Value = "";
 						AvatarSettings.Value = "";
 						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
 						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
