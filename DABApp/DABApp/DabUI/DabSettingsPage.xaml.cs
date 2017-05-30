@@ -12,7 +12,7 @@ namespace DABApp
 			InitializeComponent();
 			DabViewHelper.InitDabForm(this);
 			NavigationPage.SetHasBackButton(this, false);
-			if (GlobalResources.IsGuestLogin)
+			if (GuestStatus.Current.IsGuestLogin)
 			{
 				OfflineManagement.IsVisible = false;
 				ResetListenedStatus.IsVisible = false;

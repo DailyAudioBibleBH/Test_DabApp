@@ -7,9 +7,12 @@ namespace DABApp
 {
 	public partial class DabSignUpPage : DabBaseContentPage
 	{
-		public DabSignUpPage()
+		bool _fromPlayer;
+
+		public DabSignUpPage(bool fromPlayer = false)
 		{
 			InitializeComponent();
+			_fromPlayer = fromPlayer;
 			BindingContext = ContentConfig.Instance.blocktext;
 			ToolbarItems.Clear();
 			var tapper = new TapGestureRecognizer();
@@ -28,9 +31,16 @@ namespace DABApp
 				string authentication = await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (string.IsNullOrEmpty(authentication))
 				{
-					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-					Navigation.PopToRootAsync();
-					GlobalResources.IsGuestLogin = false;
+					if (_fromPlayer)
+					{
+						Navigation.PopModalAsync();
+					}
+					else
+					{
+						Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+						Navigation.PopToRootAsync();
+					}
+					GuestStatus.Current.IsGuestLogin = false;
 				}
 				else{
 					if (authentication.Contains("server"))

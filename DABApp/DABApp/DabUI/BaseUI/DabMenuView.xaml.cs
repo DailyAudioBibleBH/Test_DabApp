@@ -34,23 +34,7 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-			if (GlobalResources.GetUserEmail() == "Guest") {
-				UserName.IsVisible = false;
-				Avatar.IsVisible = false;
-				SignUp.IsVisible = true;
-			}
-			else
-			{
-				UserName.Text = GlobalResources.GetUserName();
-				if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
-				{
-					AvatarSource.Uri = new Uri("http://placehold.it/10x10");
-				}
-				else
-				{
-					AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
-				}
-			}
+				ChangeAvatar();
 		}
 
 		void OnSignUp(object o, EventArgs e) {
@@ -107,6 +91,27 @@ namespace DABApp
 				}
 			}
 			pageList.SelectedItem = null;
+		}
+
+		public void ChangeAvatar() { 
+			if (GuestStatus.Current.IsGuestLogin)
+				{
+					UserName.IsVisible = false;
+					Avatar.IsVisible = false;
+					SignUp.IsVisible = true;
+				}
+				else
+				{
+					UserName.Text = GlobalResources.GetUserName();
+					if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
+					{
+						AvatarSource.Uri = new Uri("http://placehold.it/10x10");
+					}
+					else
+					{
+						AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
+					}
+				}
 		}
 	}
 }

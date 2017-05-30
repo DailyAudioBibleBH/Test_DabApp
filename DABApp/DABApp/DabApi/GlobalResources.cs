@@ -57,15 +57,16 @@ namespace DABApp
 		}
 
 		public static string GetUserName() {
-			dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-			dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-			if (FirstNameSettings == null || LastNameSettings == null)
-			{
-				return "";
-			}
-			else {
-				return FirstNameSettings.Value + " " + LastNameSettings.Value;
-			}
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				if (FirstNameSettings == null || LastNameSettings == null)
+				{
+					return "";
+				}
+				else
+				{
+					return FirstNameSettings.Value + " " + LastNameSettings.Value;
+				}
 		}
 
 		public static string UserAvatar
@@ -81,9 +82,37 @@ namespace DABApp
 			}
 		}
 
-		public static bool IsGuestLogin { get; set;}
 		public static bool LogInPageExists { get; set;}
 		public static bool DeleteEpisodesAfterListening { get; set;}
 		public static string DurationPicked { get; set;}
+	}
+
+	public class GuestStatus : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
+		bool _IsGuestLogin = false;
+
+		public static GuestStatus Current { get; private set; }
+
+		static GuestStatus() {
+			Current = new GuestStatus();
+		}
+
+		public bool IsGuestLogin { 
+			get {
+				return _IsGuestLogin;
+			}
+			set {
+				_IsGuestLogin = value;
+				OnPropertyChanged("IsGuestLogin");
+			}
+		}
+
+		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)	
+		{
+			var handler = PropertyChanged;
+			if (handler != null)
+				handler(this, new PropertyChangedEventArgs(propertyName));
+		}
 	}
 }

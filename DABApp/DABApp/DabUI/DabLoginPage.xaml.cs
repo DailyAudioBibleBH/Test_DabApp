@@ -7,9 +7,12 @@ namespace DABApp
 {
 	public partial class DabLoginPage : DabBaseContentPage
 	{
-		public DabLoginPage()
+		bool _fromPlayer;
+
+		public DabLoginPage(bool fromPlayer = false)
 		{
 			InitializeComponent();
+			_fromPlayer = fromPlayer;
 			GlobalResources.LogInPageExists = true;
 			ToolbarItems.Clear();
 			var email = GlobalResources.GetUserEmail();
@@ -50,9 +53,17 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == null)
 			{
-				Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-				await Navigation.PopToRootAsync();
-				GlobalResources.IsGuestLogin = false;
+				if (_fromPlayer)
+				{
+					Navigation.PopModalAsync();
+				}
+				else
+				{
+					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+					await Navigation.PopToRootAsync();
+				}
+				GuestStatus.Current.IsGuestLogin = false;
+
 			}
 			else 
 			{
@@ -75,7 +86,7 @@ namespace DABApp
 		}
 
 		void OnSignUp(object o, EventArgs e) {
-			Navigation.PushAsync(new DabSignUpPage());
+			Navigation.PushAsync(new DabSignUpPage(_fromPlayer));
 		}
 
 		void OnForgot(object o, EventArgs e) {
@@ -84,10 +95,17 @@ namespace DABApp
 
 		async void OnGuestLogin(object o, EventArgs e) {
 			GuestLogin.IsEnabled = false;
-			GlobalResources.IsGuestLogin = true;
+			GuestStatus.Current.IsGuestLogin = true;
 			await AuthenticationAPI.ValidateLogin("Guest", "", true);
-			Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-			await Navigation.PopToRootAsync();
+			if (_fromPlayer)
+			{
+				await Navigation.PopModalAsync();
+			}
+			else
+			{
+				Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+				await Navigation.PopToRootAsync();
+			}
 		}
 
 		protected override void OnAppearing()

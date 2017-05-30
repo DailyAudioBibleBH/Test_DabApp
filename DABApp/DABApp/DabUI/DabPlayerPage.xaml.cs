@@ -12,11 +12,12 @@ namespace DABApp
 		//IAudio player = GlobalResources.Player;
 		dbEpisodes Episode;
 		string backgroundImage;
+		bool IsGuest;
 
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
-
+			IsGuest = GuestStatus.Current.IsGuestLogin;
 			Episode = episode;
 			//AudioPlayer.Instance.ShowPlayerBar = false;
 			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
@@ -69,7 +70,7 @@ namespace DABApp
 			{
 				case 0:
 					Read.IsVisible = false;
-					if (GlobalResources.IsGuestLogin)
+					if (GuestStatus.Current.IsGuestLogin)
 					{
 						LoginJournal.IsVisible = false;
 					}
@@ -83,7 +84,7 @@ namespace DABApp
 					break;
 				case 1:
 					Listen.IsVisible = false;
-					if (GlobalResources.IsGuestLogin) {
+					if (GuestStatus.Current.IsGuestLogin) {
 						LoginJournal.IsVisible = false;
 					}
 					else
@@ -98,7 +99,7 @@ namespace DABApp
 					Read.IsVisible = false;
 					Listen.IsVisible = false;
 					//AudioPlayer.Instance.showPlayerBar = true;
-					if (GlobalResources.IsGuestLogin)
+					if (GuestStatus.Current.IsGuestLogin)
 					{
 						LoginJournal.IsVisible = true;
 					}
@@ -149,8 +150,26 @@ namespace DABApp
 			Login.IsEnabled = false;
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
-			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage(true)));
 			Login.IsEnabled = true;
+		}
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			if (LoginJournal.IsVisible || Journal.IsVisible) {
+				if (GuestStatus.Current.IsGuestLogin)
+				{
+					LoginJournal.IsVisible = true;
+					Journal.IsVisible = false;
+				}
+				else {
+					LoginJournal.IsVisible = false;
+					Journal.IsVisible = true;
+				}
+			}
+			(base.SlideMenu as DabMenuView).ChangeAvatar();
+			//base.SlideMenu = new DabMenuView();
 		}
 	}
 }
