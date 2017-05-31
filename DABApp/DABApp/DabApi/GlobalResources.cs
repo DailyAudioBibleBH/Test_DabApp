@@ -41,32 +41,35 @@ namespace DABApp
 			get
 			{
 				double knownPadding = 30;
-				return (App.Current.MainPage.Width  / FlowListViewColumns) - knownPadding;
+				return (App.Current.MainPage.Width / FlowListViewColumns) - knownPadding;
 			}
 		}
 
-		public static string GetUserEmail() {
+		public static string GetUserEmail()
+		{
 			dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
 			if (EmailSettings == null)
 			{
 				return "";
 			}
-			else {
+			else
+			{
 				return EmailSettings.Value;
 			}
 		}
 
-		public static string GetUserName() {
-				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-				if (FirstNameSettings == null || LastNameSettings == null)
-				{
-					return "";
-				}
-				else
-				{
-					return FirstNameSettings.Value + " " + LastNameSettings.Value;
-				}
+		public static string GetUserName()
+		{
+			dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+			dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+			if (FirstNameSettings == null || LastNameSettings == null)
+			{
+				return "";
+			}
+			else
+			{
+				return FirstNameSettings.Value + " " + LastNameSettings.Value;
+			}
 		}
 
 		public static string UserAvatar
@@ -82,37 +85,18 @@ namespace DABApp
 			}
 		}
 
-		public static bool LogInPageExists { get; set;}
-		public static bool DeleteEpisodesAfterListening { get; set;}
-		public static string DurationPicked { get; set;}
+		public static string GetUserAvatar() { 
+			dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+			if (AvatarSettings == null)
+			{
+				return "";
+			}
+			else return AvatarSettings.Value;
+		}
+
+		public static bool LogInPageExists { get; set; }
+		public static bool DeleteEpisodesAfterListening { get; set; }
+		public static string DurationPicked { get; set; }
 	}
 
-	public class GuestStatus : INotifyPropertyChanged
-	{
-		public event PropertyChangedEventHandler PropertyChanged;
-		bool _IsGuestLogin = false;
-
-		public static GuestStatus Current { get; private set; }
-
-		static GuestStatus() {
-			Current = new GuestStatus();
-		}
-
-		public bool IsGuestLogin { 
-			get {
-				return _IsGuestLogin;
-			}
-			set {
-				_IsGuestLogin = value;
-				OnPropertyChanged("IsGuestLogin");
-			}
-		}
-
-		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)	
-		{
-			var handler = PropertyChanged;
-			if (handler != null)
-				handler(this, new PropertyChangedEventArgs(propertyName));
-		}
-	}
 }

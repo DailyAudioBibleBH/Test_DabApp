@@ -56,6 +56,11 @@ namespace DABApp.Droid
 			player.SeekTo((Convert.ToInt32(CurrentTime) + seconds) * 1000);
 		}
 
+		public void Unload()
+		{
+			throw new NotImplementedException();
+		}
+
 		public bool IsInitialized {
 			get { return IsLoaded;}
 		}

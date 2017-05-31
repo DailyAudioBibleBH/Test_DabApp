@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:t="clr-namespace:SlideOverKit" 
 		x:Class="DABApp.DabMenuView" xmlns:local="clr-namespace:DABApp;">
+	<t:SlideMenuView.Resources>
+		<ResourceDictionary>
+			<local:NegateBooleanConverter x:Key="inverter"/>
+		</ResourceDictionary>
+	</t:SlideMenuView.Resources>
 	<StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0" BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
 		<!--<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
@@ -19,13 +24,13 @@
 		</local:NonScrollingListView>
 		<BoxView HeightRequest="1" HorizontalOptions="FillAndExpand"  BackgroundColor="{StaticResource TextColor}"/>
 		<StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand" Padding="10">
-			<local:ImageCircle x:Name="Avatar" Aspect="AspectFit" HorizontalOptions="Start" VerticalOptions="Center" HeightRequest="35">
+			<local:ImageCircle x:Name="Avatar" Aspect="AspectFit" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" HorizontalOptions="Start" VerticalOptions="Center" HeightRequest="35">
 				<local:ImageCircle.Source>
-					<UriImageSource x:Name="AvatarSource" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
+					<UriImageSource x:Name="AvatarSource" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" Uri="{Binding Source={x:Static local:GuestStatus.Current}, Path=AvatarUrl}"/>
 				</local:ImageCircle.Source>
 			</local:ImageCircle>
-			<Button x:Name="SignUp" Text="Sign up >>" Clicked="OnSignUp" IsVisible="false" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
-			<Label x:Name="UserName" Text="[User Name]" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+			<Button x:Name="SignUp" Text="Sign up >>" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
+			<Label x:Name="UserName" Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
 			<Button Image="ic_settings_white.png" HorizontalOptions="End" Clicked="OnSettings" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center"/>
 		</StackLayout>
 	</StackLayout>

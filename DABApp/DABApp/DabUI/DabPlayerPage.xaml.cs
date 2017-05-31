@@ -168,7 +168,7 @@ namespace DABApp
 					Journal.IsVisible = true;
 				}
 			}
-			(base.SlideMenu as DabMenuView).ChangeAvatar();
+			//(base.SlideMenu as DabMenuView).ChangeAvatar();
 			//base.SlideMenu = new DabMenuView();
 		}
 	}

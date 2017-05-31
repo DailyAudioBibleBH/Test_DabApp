@@ -22,7 +22,6 @@ namespace DABApp
 			// otherwise you need to set HeightRequest, 
 			// just like the QuickInnerMenu sample
 			this.IsFullScreen = true;
-
 			// You must set WidthRequest in this case
 			this.WidthRequest = 250;
 			this.MenuOrientations = MenuOrientation.LeftToRight;
@@ -34,7 +33,7 @@ namespace DABApp
 
 			// This is shadow view color, you can set a transparent color
 			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-				ChangeAvatar();
+			//ChangeAvatar();
 		}
 
 		void OnSignUp(object o, EventArgs e) {
@@ -93,25 +92,25 @@ namespace DABApp
 			pageList.SelectedItem = null;
 		}
 
-		public void ChangeAvatar() { 
-			if (GuestStatus.Current.IsGuestLogin)
-				{
-					UserName.IsVisible = false;
-					Avatar.IsVisible = false;
-					SignUp.IsVisible = true;
-				}
-				else
-				{
-					UserName.Text = GlobalResources.GetUserName();
-					if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
-					{
-						AvatarSource.Uri = new Uri("http://placehold.it/10x10");
-					}
-					else
-					{
-						AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
-					}
-				}
-		}
+		//public void ChangeAvatar() { 
+		//	if (GuestStatus.Current.IsGuestLogin)
+		//		{
+		//			UserName.IsVisible = false;
+		//			Avatar.IsVisible = false;
+		//			SignUp.IsVisible = true;
+		//		}
+		//		else
+		//		{
+		//			UserName.Text = GlobalResources.GetUserName();
+		//			if (string.IsNullOrEmpty(GlobalResources.UserAvatar))
+		//			{
+		//				AvatarSource.Uri = new Uri("http://placehold.it/10x10");
+		//			}
+		//			else
+		//			{
+		//				AvatarSource.Uri = new Uri(GlobalResources.UserAvatar);
+		//			}
+		//		}
+		//}
 	}
 }
