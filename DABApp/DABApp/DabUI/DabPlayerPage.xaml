@@ -39,6 +39,7 @@
 			<StackLayout x:Name="Read" IsVisible="false" Padding="20">
 					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
 					<Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Medium"/>
+					<Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read."/>
 					<ScrollView>
 					<local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand"/>
 					</ScrollView>

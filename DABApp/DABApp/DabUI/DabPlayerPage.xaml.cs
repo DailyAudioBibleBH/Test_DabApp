@@ -30,6 +30,11 @@ namespace DABApp
 			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
 			ReadTitle.Text = reading.title;
 			ReadText.Text = reading.text;
+			if (reading.IsAlt)
+			{
+				AltWarning.IsVisible = true;
+			}
+			else AltWarning.IsVisible = false;
 			if (reading.excerpts != null)
 			{
 				ReadExcerpts.Text = String.Join(", ", reading.excerpts);

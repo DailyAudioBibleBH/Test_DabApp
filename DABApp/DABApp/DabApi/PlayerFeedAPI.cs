@@ -264,6 +264,9 @@ namespace DABApp
 				{
 					throw new Exception("This reading could not be found.");
 				}
+				if (content.link != ReadLink) {
+					content.IsAlt = true;
+				}
 				return content;
 			}
 			catch (HttpRequestException re) {
