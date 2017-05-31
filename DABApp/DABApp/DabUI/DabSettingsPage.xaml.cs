@@ -14,10 +14,12 @@ namespace DABApp
 			NavigationPage.SetHasBackButton(this, false);
 			if (GuestStatus.Current.IsGuestLogin)
 			{
+				LogOut.IsVisible = false;
 				OfflineManagement.IsVisible = false;
 				ResetListenedStatus.IsVisible = false;
 			}
 			else {
+				LogOut.IsVisible = true;
 				OfflineManagement.IsVisible = true;
 				ResetListenedStatus.IsVisible = true;
 			}
