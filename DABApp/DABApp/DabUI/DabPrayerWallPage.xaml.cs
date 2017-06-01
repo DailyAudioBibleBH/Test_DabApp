@@ -17,12 +17,12 @@ namespace DABApp
 			base.OnAppearing();
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				LoginPrayerWall.IsVisible = true;
-				PrayerWall.IsVisible = false;
+				Login.IsVisible = true;
+				Post.IsVisible = false;
 			}
 			else {
-				LoginPrayerWall.IsVisible = false;
-				PrayerWall.IsVisible = true;
+				Login.IsVisible = false;
+				Post.IsVisible = true;
 			}
 		}
 
@@ -32,6 +32,10 @@ namespace DABApp
 			AudioPlayer.Instance.Unload();
 			Navigation.PushModalAsync(new DabLoginPage(true));
 			Login.IsEnabled = true;
+		}
+
+		void OnPost(object o, EventArgs e) { 
+			
 		}
 	}
 }
