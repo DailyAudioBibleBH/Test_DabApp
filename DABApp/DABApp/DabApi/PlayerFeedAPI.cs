@@ -260,9 +260,9 @@ namespace DABApp
 				var result = client.GetAsync(ReadLink).Result;
 				var JsonOut = result.Content.ReadAsStringAsync().Result;
 				var content = JsonConvert.DeserializeObject<Reading>(JsonOut);
-				if (content == null)
+				if (content.message != null)
 				{
-					throw new Exception("This reading could not be found.");
+					throw new Exception(content.message);
 				}
 				if (content.link != ReadLink) {
 					content.IsAlt = true;
@@ -276,7 +276,19 @@ namespace DABApp
 			}
 			catch (Exception e) {
 				var reading = new Reading();
-				reading.title = e.Message;
+				if (e.InnerException != null)
+				{
+
+					if (e.InnerException.GetType() == typeof(HttpRequestException))
+					{
+						reading.title = "Due to copyright issues we cannot display read along text without an internet connection.  Please check your internet connection and try again.";
+					}
+					else reading.title = e.InnerException.Message;
+				}
+				else
+				{
+					reading.title = e.Message;
+				}
 				return reading;
 			}
 		} 

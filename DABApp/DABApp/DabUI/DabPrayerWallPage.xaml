@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPrayerWallPage" 
-	xmlns:local="clr-namespace:DABApp;">
+	xmlns:local="clr-namespace:DABApp;" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<ContentPage.Content>
+		<StackLayout>
+			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+					<Label Text="Prayer Wall" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30"/>
+				</StackLayout>
+			</RelativeLayout>
+		<StackLayout x:Name="LoginPrayerWall" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+				<Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold"/>
+				<Label Text="Create an account and join us each day as we read through the bible every year." FontSize="Medium"/>
+				<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
+			</StackLayout>
+		<StackLayout x:Name="PrayerWall" IsVisible="true" VerticalOptions="FillAndExpand">
+		</StackLayout>
+		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

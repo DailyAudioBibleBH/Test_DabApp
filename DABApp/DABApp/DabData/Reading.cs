@@ -11,5 +11,6 @@ namespace DABApp
 		public List<string> excerpts { get; set;}
 		public int id { get; set;}
 		public bool IsAlt { get; set; } = false;
+		public string message { get; set; } = null;
 	}
 }
