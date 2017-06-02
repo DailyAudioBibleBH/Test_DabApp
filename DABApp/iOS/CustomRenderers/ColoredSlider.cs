@@ -16,8 +16,8 @@ namespace DABApp.iOS
 			if (e.NewElement == null) return;
 
 			if (Control != null) {
-				Control.MinimumTrackTintColor = UIColor.FromRGB(213, 39, 46);
-				Control.MaximumTrackTintColor = UIColor.FromRGB(213, 39, 46);
+				Control.MinimumTrackTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
+				Control.MaximumTrackTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
 			}
 		}
 	}
