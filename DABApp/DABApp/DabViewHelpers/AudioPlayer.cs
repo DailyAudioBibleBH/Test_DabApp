@@ -36,7 +36,7 @@ namespace DABApp
 							if (_player.IsInitialized)
 							{
 								//Update current time
-								if (_CurrentTime != _player.CurrentTime && _CurrentTime >= 0)
+								if (_CurrentTime != _player.CurrentTime)
 								{
 									CurrentTime = _player.CurrentTime;
 									var c = TimeSpan.FromSeconds(_player.CurrentTime);
