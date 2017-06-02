@@ -57,6 +57,7 @@ namespace DABApp
 								if (_IsPlaying != Player.IsPlaying)
 								{
 									_IsPlaying = Player.IsPlaying;
+									OnPropertyChanged("PlayPauseButtonImageBig");
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
@@ -251,18 +252,11 @@ namespace DABApp
 			}
 		}
 
-		public string RemainingTime
+		public double RemainingTime
 		{
 			get
 			{
-				var r = TimeSpan.FromSeconds(_TotalTime - _CurrentTime);
-				if (r.Hours == 0)
-				{
-					return $"{r.Minutes:D2}:{r.Seconds:D2}";
-				}
-				else { 
-					return $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
-				}
+				return TotalTime - CurrentTime;
 			}
 		}
 
