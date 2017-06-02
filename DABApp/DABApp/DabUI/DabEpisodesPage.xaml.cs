@@ -40,10 +40,10 @@ namespace DABApp
 			//activity.IsVisible = true;
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
-			if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
-			{
-				AudioPlayer.Instance.SetAudioFile(chosen);
-			}
+			//if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
+			//{
+			//	AudioPlayer.Instance.SetAudioFile(chosen);
+			//}
 			Navigation.PushAsync(new DabPlayerPage(chosen));
 			EpisodeList.SelectedItem = null;
 			//activityHolder.IsVisible = false;

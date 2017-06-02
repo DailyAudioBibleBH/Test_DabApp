@@ -67,7 +67,7 @@ namespace DABApp
 		}
 
 		void OnPlayer(object o, EventArgs e) {
-			AudioPlayer.Instance.SetAudioFile(episode);
+			//AudioPlayer.Instance.SetAudioFile(episode);
 			Navigation.PushAsync(new DabPlayerPage(episode));
 		}
 

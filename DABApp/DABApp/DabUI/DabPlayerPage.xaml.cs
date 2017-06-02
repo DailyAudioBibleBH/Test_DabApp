@@ -17,6 +17,12 @@ namespace DABApp
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
+			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
+				SeekBar.IsVisible = false;
+				TimeStrings.IsVisible = false;
+				PlayerControls.IsVisible = false;
+				Initializer.IsVisible = true;
+			}
 			IsGuest = GuestStatus.Current.IsGuestLogin;
 			Episode = episode;
 			//AudioPlayer.Instance.ShowPlayerBar = false;
@@ -175,6 +181,19 @@ namespace DABApp
 			}
 			//(base.SlideMenu as DabMenuView).ChangeAvatar();
 			//base.SlideMenu = new DabMenuView();
+		}
+
+		void OnInitialized(object o, EventArgs e) {
+			Initializer.IsVisible = false;
+			if (AudioPlayer.Instance.IsInitialized)
+			{
+				AudioPlayer.Instance.Pause();
+			}
+			AudioPlayer.Instance.SetAudioFile(Episode);
+			AudioPlayer.Instance.Play();
+			SeekBar.IsVisible = true;
+			TimeStrings.IsVisible = true;
+			PlayerControls.IsVisible = true;
 		}
 	}
 }

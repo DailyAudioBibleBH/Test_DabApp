@@ -26,15 +26,16 @@
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
-			<StackLayout Orientation="Horizontal" VerticalOptions="Start">
+			<StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTimeString}" HorizontalOptions="StartAndExpand"/>
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
-			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="PlayerControls">
 				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
 				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
 			</StackLayout>
+					<Button x:Name="Initializer" Clicked="OnInitialized" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
 				</StackLayout>
 			<StackLayout x:Name="Read" IsVisible="false" Padding="20">
 					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
