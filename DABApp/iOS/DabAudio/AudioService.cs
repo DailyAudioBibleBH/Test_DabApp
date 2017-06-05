@@ -11,6 +11,8 @@ using System.Linq;
 using AudioToolbox;
 using UIKit;
 using MediaPlayer;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
@@ -26,6 +28,7 @@ namespace DABApp.iOS
 		double skipInterval = 30;
 		float seekRate = 10.0f;
 		public static AudioService Instance { get; private set; }
+		dbEpisodes CurrentEpisode;
 
 		public AudioService()
 		{
@@ -36,12 +39,11 @@ namespace DABApp.iOS
 			Instance = new AudioService();
 		}
 
-		public void SetAudioFile(string fileName)
+		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
-
+			CurrentEpisode = episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
 			session.SetActive(true);
-
 			nint TaskId = 0;
 			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
 			{
@@ -120,11 +122,12 @@ namespace DABApp.iOS
 					np.PlaybackRate = 1.0f;
 					break;
 			}
+			np.Title = CurrentEpisode.title;
 			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
 			SetNowPlayingInfo();
 		}
 
-		void SetNowPlayingInfo()
+		async void SetNowPlayingInfo()
 		{
 			//np = new MPNowPlayingInfo();
 			if (np.ElapsedPlaybackTime != _player.CurrentTime.Seconds)
@@ -135,14 +138,22 @@ namespace DABApp.iOS
 			{
 				np.PlaybackDuration = _player.CurrentItem.Duration.Seconds;
 			}
-			np.Title = "Does This Appear?";
+			np.Title = CurrentEpisode.title;
+			//np.Artwork = new MPMediaItemArtwork(await LoadImage(ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == CurrentEpisode.channel_title).images.thumbnail));
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
 
-		void SetCommandCenter()
+		async Task<UIImage> LoadImage(string imageUrl) {
+			var client = new HttpClient();
+			Task<byte[]> contentsTask = client.GetByteArrayAsync(imageUrl);
+			var contents = await contentsTask;
+			return UIImage.LoadFromData(NSData.FromArray(contents));
+		}
+
+		async void SetCommandCenter()
 		{
 			np = new MPNowPlayingInfo();
-
+			np.Artwork = new MPMediaItemArtwork(await LoadImage(ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == CurrentEpisode.channel_title).images.thumbnail));
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
 			skipForward.AddTarget(RemoteSkip);

@@ -5,7 +5,7 @@ namespace DABApp
 {
 	public interface IAudio
 	{
-		void SetAudioFile(string FileName);
+		void SetAudioFile(string FileName, dbEpisodes episode);
 		void Pause();
 		void Play();
 		void SeekTo(int seconds); //Go to a specific point in the audio file

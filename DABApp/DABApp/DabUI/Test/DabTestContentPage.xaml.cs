@@ -23,7 +23,7 @@ namespace DABApp
 
 		void Handle_LoadAudioFile(object sender, System.EventArgs e)
 		{
-			AudioPlayer.Instance.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
+			//AudioPlayer.Instance.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
 		}
 	}
 }

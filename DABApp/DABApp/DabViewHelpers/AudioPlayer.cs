@@ -38,6 +38,9 @@ namespace DABApp
 								//Update current time
 								if (_CurrentTime != _player.CurrentTime)
 								{
+									if (_CurrentTime < 0) {
+										_CurrentTime = 0;
+									}
 									CurrentTime = _player.CurrentTime;
 									var c = TimeSpan.FromSeconds(_player.CurrentTime);
 									if (c.Hours == 0)
@@ -110,7 +113,7 @@ namespace DABApp
 		//Set Audio File
 		public void SetAudioFile(string FileName)
 		{
-			_player.SetAudioFile(FileName);
+			_player.SetAudioFile(FileName, new dbEpisodes());
 		}
 
 		public void SetAudioFile(dbEpisodes episode)
@@ -122,11 +125,11 @@ namespace DABApp
 			Instance.CurrentEpisodeTitle = episode.title;
 			if (episode.is_downloaded)
 			{
-				_player.SetAudioFile($"{episode.id}.mp4");
+				_player.SetAudioFile($"{episode.id}.mp4", episode);
 			}
 			else
 			{
-				_player.SetAudioFile(episode.url);
+				_player.SetAudioFile(episode.url, episode);
 			}
 			CurrentTime = episode.stop_time;
 		}
