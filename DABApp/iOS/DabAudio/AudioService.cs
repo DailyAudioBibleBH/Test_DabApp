@@ -179,12 +179,12 @@ namespace DABApp.iOS
 
 		MPRemoteCommandHandlerStatus RemotePlayOrPause(MPRemoteCommandEvent arg)
 		{
-			if (IsPlaying)
+			if (arg.Command == commandCenter.PauseCommand)
 			{
 				Pause();
 				np.PlaybackRate = 0f;
 			}
-			else {
+			if(arg.Command == commandCenter.PlayCommand) {
 				Play();
 				np.PlaybackRate = 1.0f;
 			}
