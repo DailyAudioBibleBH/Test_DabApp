@@ -13,6 +13,7 @@ namespace DABApp
 		private bool _IsPlaying = false;
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
+		private double _RemainingTime = 1;
 		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
 		private string _CurrentTimeString = "00:00";
@@ -42,21 +43,16 @@ namespace DABApp
 										_CurrentTime = 0;
 									}
 									CurrentTime = _player.CurrentTime;
-									var c = TimeSpan.FromSeconds(_player.CurrentTime);
-									if (c.Hours == 0)
-									{
-										CurrentTimeString = $"{c.Minutes:D2}:{c.Seconds:D2}";
-									}
-									else {
-										CurrentTimeString = $"{c.Hours:D2}:{c.Minutes:D2}:{c.Seconds:D2}";
+									if (!Double.IsNaN(_player.TotalTime)) { 
+										RemainingTime = _player.TotalTime - _player.CurrentTime;
 									}
 								}
 
 								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
 								{
 									TotalTime = _player.TotalTime;
+									RemainingTime = _player.TotalTime - _player.CurrentTime;
 								}
-
 								if (_IsPlaying != Player.IsPlaying)
 								{
 									_IsPlaying = Player.IsPlaying;
@@ -72,7 +68,7 @@ namespace DABApp
 								if (_TotalTime == _CurrentTime) {
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
 									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0);
+									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, 0);
 								}
 							}
 							else {
@@ -119,7 +115,7 @@ namespace DABApp
 		public void SetAudioFile(dbEpisodes episode)
 		{
 			if (_player.IsPlaying) {
-				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime);
+				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
 			}
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
@@ -132,6 +128,7 @@ namespace DABApp
 				_player.SetAudioFile(episode.url, episode);
 			}
 			CurrentTime = episode.stop_time;
+			RemainingTime = episode.remaining_time;
 		}
 
 
@@ -197,7 +194,7 @@ namespace DABApp
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", CurrentTime);
-				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime);
+				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
 			}
 		}
 
@@ -259,7 +256,11 @@ namespace DABApp
 		{
 			get
 			{
-				return TotalTime - CurrentTime;
+				return _RemainingTime;
+			}
+			set {
+				_RemainingTime = value;
+				OnPropertyChanged("RemainingTime");
 			}
 		}
 

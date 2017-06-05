@@ -247,9 +247,10 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateStopTime(int CurrentEpisodeId, double NewStopTime) {
+		public static void UpdateStopTime(int CurrentEpisodeId, double NewStopTime, double NewRemainingTime) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
 			episode.stop_time = NewStopTime;
+			episode.remaining_time = NewRemainingTime;
 			db.Update(episode);
 		}
 
