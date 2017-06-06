@@ -42,7 +42,7 @@ namespace DABApp.iOS
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
 			CurrentEpisode = episode;
-			session.SetCategory(AVAudioSession.CategoryPlayback, out error);
+			session.SetCategory(AVAudioSessionCategory.Playback, AVAudioSessionCategoryOptions.AllowBluetooth);
 			session.SetActive(true);
 			nint TaskId = 0;
 			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
@@ -125,6 +125,15 @@ namespace DABApp.iOS
 			np.Title = CurrentEpisode.title;
 			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
 			SetNowPlayingInfo();
+		}
+
+		public List<string> GetAvailableOutputs() {
+			var outputs = session.CurrentRoute.Outputs;
+			List<string> s = new List<string>();
+			foreach (var output in outputs) {
+				s.Add(output.PortName);
+			}
+			return s;
 		}
 
 		async void SetNowPlayingInfo()

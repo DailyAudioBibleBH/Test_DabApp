@@ -17,7 +17,8 @@ namespace DABApp
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var r = TimeSpan.FromSeconds((double)value);
+			var m = TimeSpan.FromSeconds((double)value);
+			var r = new TimeSpan(m.Days, m.Hours, m.Minutes, m.Seconds, 0);
             if(r.Hours == 0)
 			{
 				return $"{r.Minutes:D2}:{r.Seconds:D2}";

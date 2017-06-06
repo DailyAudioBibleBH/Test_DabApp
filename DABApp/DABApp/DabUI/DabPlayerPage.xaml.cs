@@ -195,5 +195,9 @@ namespace DABApp
 			TimeStrings.IsVisible = true;
 			PlayerControls.IsVisible = true;
 		}
+
+		void OnOutput(object o, EventArgs e) {
+			AudioPlayer.Instance.GetOutputs();
+		}
 	}
 }

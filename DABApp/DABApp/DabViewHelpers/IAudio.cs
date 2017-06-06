@@ -16,5 +16,6 @@ namespace DABApp
 		//double RemainingTime { get;}
 		double TotalTime { get;}
 		void Unload();
+		List<string> GetAvailableOutputs();
 	}
 }

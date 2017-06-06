@@ -13,7 +13,7 @@ namespace DABApp
 		private bool _IsPlaying = false;
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
-		private double _RemainingTime = 1;
+		private string _RemainingTime = "1:00";
 		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
 		private string _CurrentTimeString = "00:00";
@@ -43,15 +43,23 @@ namespace DABApp
 										_CurrentTime = 0;
 									}
 									CurrentTime = _player.CurrentTime;
-									if (!Double.IsNaN(_player.TotalTime)) { 
-										RemainingTime = _player.TotalTime - _player.CurrentTime;
+									if (!Double.IsNaN(_player.TotalTime)) {
+										var t = TimeSpan.FromSeconds(TotalTime);
+										var c = TimeSpan.FromSeconds(CurrentTime);
+										var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
+						            if(r.Hours == 0)
+									{
+										RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
+									}
+									else { 
+									 RemainingTime = $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
+									}
 									}
 								}
 
 								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
 								{
 									TotalTime = _player.TotalTime;
-									RemainingTime = _player.TotalTime - _player.CurrentTime;
 								}
 								if (_IsPlaying != Player.IsPlaying)
 								{
@@ -68,7 +76,7 @@ namespace DABApp
 								if (_TotalTime == _CurrentTime) {
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
 									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, 0);
+									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, "0:00");
 								}
 							}
 							else {
@@ -252,7 +260,7 @@ namespace DABApp
 			}
 		}
 
-		public double RemainingTime
+		public string RemainingTime
 		{
 			get
 			{
@@ -310,6 +318,10 @@ namespace DABApp
 			_player.Skip(seconds);
 			//Update the current time
 			//CurrentTime = seconds;
+		}
+
+		public void GetOutputs() {
+			_player.GetAvailableOutputs();
 		}
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)

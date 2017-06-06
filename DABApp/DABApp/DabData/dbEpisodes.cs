@@ -34,7 +34,7 @@ namespace DABApp
 		public bool is_listened_to { get; set; } = false;
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
-		public double remaining_time { get; set; } = 0;
+		public string remaining_time { get; set; } = "01:00";
 
 		[Ignore]
 		public bool downloadVisible { 

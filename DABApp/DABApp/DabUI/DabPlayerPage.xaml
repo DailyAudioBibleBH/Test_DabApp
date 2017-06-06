@@ -33,7 +33,7 @@
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
 			<StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand"/>
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime, Converter={StaticResource stringer}}" HorizontalOptions="EndAndExpand"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="PlayerControls">
 				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
