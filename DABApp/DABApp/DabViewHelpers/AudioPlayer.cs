@@ -238,7 +238,7 @@ namespace DABApp
 					{
 						Player.SeekTo(Convert.ToInt32(value));
 					}
-					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 3) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 3))
+					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 5) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 5))
 					{
 						Player.SeekTo(Convert.ToInt32(value));
 					}
@@ -321,7 +321,7 @@ namespace DABApp
 		}
 
 		public void GetOutputs() {
-			_player.GetAvailableOutputs();
+			_player.SwitchOutputs();
 		}
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)

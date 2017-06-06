@@ -41,6 +41,7 @@
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
 			</StackLayout>
 					<Button x:Name="Initializer" Clicked="OnInitialized" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
+					<ios:MPVolumeView/>
 				</StackLayout>
 			<StackLayout x:Name="Read" IsVisible="false" Padding="20">
 					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
