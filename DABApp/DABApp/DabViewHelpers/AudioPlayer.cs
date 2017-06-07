@@ -13,7 +13,7 @@ namespace DABApp
 		private bool _IsPlaying = false;
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
-		private string _RemainingTime = "1:00";
+		private string _RemainingTime = "01:00";
 		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
 		private string _CurrentTimeString = "00:00";
@@ -60,6 +60,16 @@ namespace DABApp
 								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
 								{
 									TotalTime = _player.TotalTime;
+									var t = TimeSpan.FromSeconds(TotalTime);
+									var c = TimeSpan.FromSeconds(CurrentTime);
+									var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
+						            if(r.Hours == 0)
+									{
+										RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
+									}
+									else { 
+									 RemainingTime = $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
+									}
 								}
 								if (_IsPlaying != Player.IsPlaying)
 								{
