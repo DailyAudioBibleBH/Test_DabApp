@@ -118,6 +118,7 @@
     <Compile Include="DabViewHelpers\ControlTemplateAccess.cs" />
     <Compile Include="DabData\Reading.cs" />
     <Compile Include="DabApi\GuestStatus.cs" />
+    <Compile Include="DabViewHelpers\Controls\IShareable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

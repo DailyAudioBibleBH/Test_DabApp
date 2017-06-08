@@ -17,7 +17,7 @@ namespace DABApp.Droid
 		{
 		}
 
-		public void SetAudioFile(string fileName)
+		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
 			player = new MediaPlayer();
 			player.Prepared += (s, e) =>
@@ -57,6 +57,11 @@ namespace DABApp.Droid
 		}
 
 		public void Unload()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SwitchOutputs()
 		{
 			throw new NotImplementedException();
 		}

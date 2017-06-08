@@ -53,8 +53,8 @@ namespace DABApp
 		//Show share dialog
 		void OnShare(object o, EventArgs e)
 		{
-			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			page.DisplayAlert("Share episode", "This button will share this episode.", "OK");
+			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(currentEpisode.channel_code, currentEpisode.id.ToString());
 		}
 	}
 }

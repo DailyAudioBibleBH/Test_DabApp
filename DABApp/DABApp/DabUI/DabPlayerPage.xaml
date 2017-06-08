@@ -36,12 +36,11 @@
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="PlayerControls">
-				<StackLayout HorizontalOptions="StartAndExpand" WidthRequest="25" VerticalOptions="CenterAndExpand">
-					<ios:MPVolumeView ShowsVolumeSlider="false"/>
-				</StackLayout>
+				<local:AudioOutputView VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" WidthRequest="40"/>
 				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
 				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
+				<Button x:Name="Share" Clicked="OnShare" HorizontalOptions="EndAndExpand" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
 			</StackLayout>
 					<Button x:Name="Initializer" Clicked="OnInitialized" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
 				</StackLayout>

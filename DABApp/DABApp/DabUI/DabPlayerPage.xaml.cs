@@ -196,8 +196,8 @@ namespace DABApp
 			PlayerControls.IsVisible = true;
 		}
 
-		void OnOutput(object o, EventArgs e) {
-			AudioPlayer.Instance.GetOutputs();
+		void OnShare(object o, EventArgs e) {
+			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.channel_code, Episode.id.ToString());
 		}
 	}
 }

@@ -136,5 +136,9 @@ namespace DABApp
 				AudioPlayer.Instance.Play();
 			}
 		}
+
+		void OnShare(object o, EventArgs e) { 
+			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.channel_code, episode.id.ToString());
+		}
 	}
 }

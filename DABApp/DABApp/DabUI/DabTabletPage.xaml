@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTabletPage"
 	xmlns:local="clr-namespace:DABApp;" xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
-	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+	xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
 	<ContentPage.Content>
 		<Grid RowSpacing="0" ColumnSpacing="0">
 			<Grid.RowDefinitions>
@@ -29,11 +30,14 @@
 				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="CenterAndExpand"/>
 			</StackLayout>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+				<StackLayout HorizontalOptions="StartAndExpand" WidthRequest="" VerticalOptions="CenterAndExpand">
+					<local:AudioOutputView/>
+				</StackLayout>
 				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
 				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
 				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
+				<Button x:Name="Share" Clicked="OnShare" HorizontalOptions="EndAndExpand" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
 			</StackLayout>
-
 					</StackLayout>
 				</RelativeLayout>
 			</StackLayout>

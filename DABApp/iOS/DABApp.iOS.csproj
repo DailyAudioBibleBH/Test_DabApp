@@ -198,6 +198,7 @@
     <Folder Include="DabData\" />
     <Folder Include="Effects\" />
     <Folder Include="DabApi\" />
+    <Folder Include="DependencyServices\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -231,6 +232,8 @@
     <Compile Include="CustomRenderers\DarkKeyboardEditorRenderer.cs" />
     <Compile Include="CustomRenderers\ButtonDisabledTextColorRenderer.cs" />
     <Compile Include="CustomRenderers\ColoredSlider.cs" />
+    <Compile Include="CustomRenderers\ColoredMpVolumeView.cs" />
+    <Compile Include="DependencyServices\ShareIntent.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
@@ -278,6 +281,9 @@
     <BundleResource Include="Resources\ic_forward_30_white_3x.png" />
     <BundleResource Include="Resources\navbarlogo_2x.png" />
     <BundleResource Include="Resources\navbarlogo.png" />
+    <BundleResource Include="Resources\ic_airplay_white_48pt.png" />
+    <BundleResource Include="Resources\ic_airplay_white_48pt_2x.png" />
+    <BundleResource Include="Resources\ic_airplay_white_48pt_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

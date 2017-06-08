@@ -25,6 +25,7 @@ namespace DABApp.iOS
 			CachedImageRenderer.Init();
 
 			global::Xamarin.Forms.Forms.Init();
+			Xamarin.Forms.DependencyService.Register<ShareIntent>();
 
 			SlideOverKit.iOS.SlideOverKit.Init();
 
