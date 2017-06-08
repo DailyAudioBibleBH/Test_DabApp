@@ -257,6 +257,9 @@ namespace DABApp
 		public static Reading GetReading(string ReadLink) {
 			try
 			{
+				if (String.IsNullOrEmpty(ReadLink)) {
+					throw new Exception();
+				}
 				HttpClient client = new HttpClient();
 				var result = client.GetAsync(ReadLink).Result;
 				var JsonOut = result.Content.ReadAsStringAsync().Result;
@@ -288,7 +291,14 @@ namespace DABApp
 				}
 				else
 				{
-					reading.title = e.Message;
+					if (String.IsNullOrEmpty(ReadLink))
+					{
+						reading.title = "We're sorry, but text to read-along with this episode has not been set up.";
+					}
+					else
+					{
+						reading.title = "We're sorry but an error was encountered while loading the text that goes with this episode.";
+					}
 				}
 				return reading;
 			}
