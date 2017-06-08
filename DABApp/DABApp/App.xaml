@@ -66,6 +66,10 @@
 			<Style x:Key="secondaryLabelStyle" TargetType="Label">
 				<Setter Property="TextColor" Value="{DynamicResource SecondaryTextColor}" />
 			</Style>
+			<!--Player Label-->
+			<Style x:Key="playerLabelStyle" TargetType="Label">
+				<Setter Property="TextColor" Value="White"/>
+			</Style>
 			<!--Entry-->
 			<Style x:Key="entryStyle" TargetType="Entry">
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />

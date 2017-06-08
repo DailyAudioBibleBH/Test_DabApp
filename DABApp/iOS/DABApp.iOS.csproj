@@ -281,9 +281,9 @@
     <BundleResource Include="Resources\ic_forward_30_white_3x.png" />
     <BundleResource Include="Resources\navbarlogo_2x.png" />
     <BundleResource Include="Resources\navbarlogo.png" />
-    <BundleResource Include="Resources\ic_airplay_white_48pt.png" />
-    <BundleResource Include="Resources\ic_airplay_white_48pt_2x.png" />
-    <BundleResource Include="Resources\ic_airplay_white_48pt_3x.png" />
+    <BundleResource Include="Resources\ic_airplay_white.png" />
+    <BundleResource Include="Resources\ic_airplay_white_2x.png" />
+    <BundleResource Include="Resources\ic_airplay_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

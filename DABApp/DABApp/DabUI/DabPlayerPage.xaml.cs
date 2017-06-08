@@ -20,7 +20,12 @@ namespace DABApp
 			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
-				PlayerControls.IsVisible = false;
+				PlayerControls.VerticalOptions = LayoutOptions.CenterAndExpand;
+				Output.IsVisible = false;
+				PlayPause.IsVisible = false;
+				backwardButton.IsVisible = false;
+				forwardButton.IsVisible = false;
+				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
 			IsGuest = GuestStatus.Current.IsGuestLogin;
@@ -193,7 +198,12 @@ namespace DABApp
 			AudioPlayer.Instance.Play();
 			SeekBar.IsVisible = true;
 			TimeStrings.IsVisible = true;
-			PlayerControls.IsVisible = true;
+			PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
+			Output.IsVisible = true;
+			PlayPause.IsVisible = true;
+			backwardButton.IsVisible = true;
+			forwardButton.IsVisible = true;
+			Share.IsVisible = true;
 		}
 
 		void OnShare(object o, EventArgs e) {

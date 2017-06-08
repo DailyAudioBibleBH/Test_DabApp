@@ -24,25 +24,35 @@
 				</StackLayout>
 			<StackLayout x:Name="Listen" IsVisible="true"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 					<StackLayout VerticalOptions="CenterAndExpand">
-						<Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30"/>
-						<Label Text="{Binding channel_title}" Style="{StaticResource secondaryLabelStyle}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
-						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium"/>
+						<Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+						<Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro"/>
+						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 					</StackLayout>
 			<Slider x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
 			<StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand"/>
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}"/>
 			</StackLayout>
-			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="PlayerControls">
-				<local:AudioOutputView VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand" WidthRequest="40"/>
-				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
-				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
-				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
-				<Button x:Name="Share" Clicked="OnShare" HorizontalOptions="EndAndExpand" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
-			</StackLayout>
-					<Button x:Name="Initializer" Clicked="OnInitialized" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
+			<Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
+				<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="17*"/>
+							<ColumnDefinition Width="17*"/>
+							<ColumnDefinition Width="32*"/>
+							<ColumnDefinition Width="17*"/>
+							<ColumnDefinition Width="17*"/>
+						</Grid.ColumnDefinitions>
+				<local:AudioOutputView x:Name="Output" WidthRequest="35" Grid.Row="0" Grid.Column="0"/>
+				<Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png" Grid.Row="0" Grid.Column="1"/>
+				<Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png" Grid.Row="0" Grid.Column="3"/>
+				<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4"/>
+			</Grid>
 				</StackLayout>
 			<StackLayout x:Name="Read" IsVisible="false" Padding="20">
 					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
