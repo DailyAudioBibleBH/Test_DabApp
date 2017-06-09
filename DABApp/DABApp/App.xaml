@@ -13,10 +13,11 @@
 			<!--Color provided by LUTD for secondary text color: #AFAFAF-->
 			<Color x:Key="HighlightColor">#D5272E</Color>
 			<!--Color provided by LUTD for highlights and important buttons: #D5272E-->
-			<Color x:Key="NavBarBackgroundColor">#444444</Color>
+			<Color x:Key="NavBarBackgroundColor">#383838</Color>
 			<!--Color provided by LUTD for nav bar background: #444444-->
 			<Color x:Key="SlideMenuBackgroundColor">#D5272E</Color>
 			<!--Color provided by LUTD for slider menu: #D5272E-->
+			<Color x:Key="NonScrollingListViewColor">#222222</Color>
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<RelativeLayout>
@@ -126,12 +127,12 @@
 			</Style>
 			<Style BasedOn="{StaticResource frameStyle}" TargetType="Frame" ApplyToDerivedTypes="true"/>
 			<Style x:Key="NavStyle" TargetType="NavigationPage">
-				<Setter Property="BackgroundColor" Value="#292929"/>
-				<Setter Property="BarBackgroundColor" Value="#444444"/>
+				<Setter Property="BackgroundColor" Value="{DynamicResource NavBarBackgroundColor}"/>
+				<Setter Property="BarBackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
 			</Style>
 			<Style BasedOn="{StaticResource NavStyle}" TargetType="NavigationPage" ApplyToDerivedTypes="true"/>
 			<Style x:Key="NonScrollingListViewStyle" TargetType="ListView">
-				<Setter Property="BackgroundColor" Value="#222222"/>
+				<Setter Property="BackgroundColor" Value="{DynamicResource NonScrollingListViewColor}"/>
 				<Setter Property="SeparatorVisibility" Value="Default"/>
 			</Style>
 		</ResourceDictionary>
