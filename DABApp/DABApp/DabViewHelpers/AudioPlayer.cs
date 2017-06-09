@@ -16,6 +16,7 @@ namespace DABApp
 		private string _RemainingTime = "01:00";
 		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
+		private string _CurrentChannelTitle;
 		private string _CurrentTimeString = "00:00";
 
 		// Singleton for use throughout the app
@@ -137,6 +138,7 @@ namespace DABApp
 			}
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
+			Instance.CurrentChannelTitle = episode.channel_title;
 			if (episode.is_downloaded)
 			{
 				_player.SetAudioFile($"{episode.id}.mp4", episode);
@@ -312,6 +314,14 @@ namespace DABApp
 			{
 				_CurrentEpisodeTitle = value;
 				OnPropertyChanged("CurrentEpisodeTitle");
+			}
+		}
+
+		public string CurrentChannelTitle { 
+			get { return _CurrentChannelTitle;}
+			set {
+				_CurrentChannelTitle = value;
+				OnPropertyChanged("CurrentChannelTitle");
 			}
 		}
 

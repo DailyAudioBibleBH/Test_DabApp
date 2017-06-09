@@ -9,11 +9,10 @@
 					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}"  Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
 					<StackLayout x:Name="stackPodcastTitle" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Spacing="0" Padding="0">
 						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Small" VerticalOptions="FillAndExpand" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
-						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Micro" LineBreakMode="TailTruncation" Style="{StaticResource secondaryLabelStyle}"/>
+						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentChannelTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Micro" LineBreakMode="TailTruncation" Style="{StaticResource secondaryLabelStyle}"/>
 					</StackLayout>
 					<Button Image="ic_share_white.png" Clicked="OnShare"  Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
-<!--				<local:AudioOutputView />
--->				</StackLayout>
+				</StackLayout>
 			</StackLayout>
 		</StackLayout>
 	</ContentView.Content>

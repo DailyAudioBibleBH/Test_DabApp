@@ -13,7 +13,7 @@ namespace DABApp
 		string backgroundImage;
 		dbEpisodes episode;
 
-		public DabTabletPage(Resource resource)
+		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
 			_resource = resource;
@@ -28,16 +28,23 @@ namespace DABApp
 				Months.Items.Add(month);
 			}
 			Months.SelectedIndex = 0;
-			Device.StartTimer( TimeSpan.FromSeconds(5),() =>
-			{
+			//Device.StartTimer( TimeSpan.FromSeconds(5),() =>
+			//{
 				Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			if (Episode != null)
+			{
+				episode = Episode;
+			}
+			else
+			{
 				episode = Episodes.First();
+			}
 				PlayerLabels.BindingContext = episode;
 				Read.BindingContext = episode;
 				Journal.BindingContext = episode;
-				return true;
-			});
+			//	return true;
+			//});
 
 		}
 

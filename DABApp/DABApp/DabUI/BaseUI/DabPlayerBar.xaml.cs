@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -46,7 +47,15 @@ namespace DABApp
 		{
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
-			page.PushAsync(new DabPlayerPage(currentEpisode));
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
+				page.PushAsync(new DabTabletPage(channel, currentEpisode));
+			}
+			else
+			{
+				page.PushAsync(new DabPlayerPage(currentEpisode));
+			}
 		}
 
 		//Show share dialog
