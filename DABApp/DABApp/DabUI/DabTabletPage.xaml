@@ -3,6 +3,11 @@
 	xmlns:local="clr-namespace:DABApp;" xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
 	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
 	xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
+	<local:DabBaseContentPage.Resources>
+		<ResourceDictionary>
+			<local:StringConverter x:Key="stringer"/>
+		</ResourceDictionary>
+	</local:DabBaseContentPage.Resources>
 	<ContentPage.Content>
 		<Grid RowSpacing="0" ColumnSpacing="0">
 			<Grid.RowDefinitions>
@@ -18,28 +23,37 @@
 					<ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"/>
 					<StackLayout Padding="20" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
-						<Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30"/>
-						<Label Text="{Binding channel_title}" Style="{StaticResource secondaryLabelStyle}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
-						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium"/>
+						<Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+						<Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" TextColor="Gray"/>
+						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 					</StackLayout>
 			<Slider x:Name="SeekBar" Minimum="0" VerticalOptions="Start"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
-			<StackLayout Orientation="Horizontal" VerticalOptions="Start">
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTimeString}" HorizontalOptions="CenterAndExpand"/>
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="CenterAndExpand"/>
+			<StackLayout Orientation="Horizontal" VerticalOptions="Start" x:Name="TimeStrings">
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}"/>
 			</StackLayout>
-			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
-				<StackLayout HorizontalOptions="StartAndExpand" WidthRequest="" VerticalOptions="CenterAndExpand">
-					<local:AudioOutputView/>
-				</StackLayout>
-				<Button x:Name="backwardButton" Clicked="OnBack30" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png"/>
-				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" HorizontalOptions="CenterAndExpand"/>
-				<Button x:Name="forwardButton" Clicked="OnForward30" HorizontalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png"/>
-				<Button x:Name="Share" Clicked="OnShare" HorizontalOptions="EndAndExpand" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}"/>
-			</StackLayout>
+			<Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
+						<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="17*"/>
+								<ColumnDefinition Width="17*"/>
+								<ColumnDefinition Width="32*"/>
+								<ColumnDefinition Width="17*"/>
+								<ColumnDefinition Width="17*"/>
+							</Grid.ColumnDefinitions>
+				<local:AudioOutputView WidthRequest="35"/>
+				<Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png" Grid.Row="0" Grid.Column="1"/>
+				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png" Grid.Row="0" Grid.Column="3"/>
+				<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4"/>
+			</Grid>
 					</StackLayout>
 				</RelativeLayout>
+				<local:AudioOutputView WidthRequest="35"/>
 			</StackLayout>
 			<StackLayout Grid.Row="1" Grid.Column="0" Padding="10">
 				<Label FontSize="Medium" Text="Channels" Style="{StaticResource secondaryLabelStyle}" />
