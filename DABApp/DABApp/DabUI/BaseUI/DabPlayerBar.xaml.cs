@@ -47,7 +47,6 @@ namespace DABApp
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
 			page.PushAsync(new DabPlayerPage(currentEpisode));
-
 		}
 
 		//Show share dialog

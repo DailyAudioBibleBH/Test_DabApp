@@ -9,7 +9,6 @@
 			<Button Text="App Info" Clicked="OnAppInfo"/>
 			<Button x:Name="OfflineManagement" Text="Offline Episodes Management" Clicked="OnOfflineManagement"/>
 			<Button x:Name="ResetListenedStatus" Text="Reset listened to status" Clicked="OnResetListenedTo"/>
-			<ios:MPVolumeView/>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
