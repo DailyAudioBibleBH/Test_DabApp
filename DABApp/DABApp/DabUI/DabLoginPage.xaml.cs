@@ -12,6 +12,7 @@ namespace DABApp
 		public DabLoginPage(bool fromPlayer = false)
 		{
 			InitializeComponent();
+			NavigationPage.SetHasNavigationBar(this, false);
 			_fromPlayer = fromPlayer;
 			GlobalResources.LogInPageExists = true;
 			ToolbarItems.Clear();
