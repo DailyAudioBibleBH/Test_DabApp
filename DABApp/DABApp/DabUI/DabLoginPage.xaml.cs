@@ -31,6 +31,9 @@ namespace DABApp
 			};
 			SignUp.GestureRecognizers.Add(tapper);
 			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				Container.Padding = 100;
+			}
 		}
 
 		async void OnLogin(object o, EventArgs e) {
