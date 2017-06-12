@@ -5,7 +5,7 @@
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContentContainer">
 				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
-				<StackLayout Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
+				<StackLayout x:Name="bannerStack" Padding="15" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent"/>
 					<Button Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" />
 				</StackLayout>
@@ -13,7 +13,7 @@
 			<StackLayout Padding="10">
 				<Label Text="{Binding title}" />
 				<!--<RelativeLayout>-->
-				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand" HeightRequest="1010">
+				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="5" IsVisible="{Binding IsNotSelected}">

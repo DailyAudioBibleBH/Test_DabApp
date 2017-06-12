@@ -37,7 +37,19 @@ namespace DABApp
 				bannerContentContainer.IsVisible = true;
 				var oldText = bannerContent.Text;
 				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					bannerContentContainer.HeightRequest = 350;
+					bannerStack.Padding = 65;
+				}
 			}
+
+			var remainder = ChannelView.resources.Count() % GlobalResources.FlowListViewColumns;
+			var number = ChannelView.resources.Count() / GlobalResources.FlowListViewColumns;
+			if (remainder != 0) {
+				number += 1;
+			}
+			ChannelsList.HeightRequest = number * (GlobalResources.ThumbnailImageHeight + 60);
 
 			banner.Source = new UriImageSource
 			{
