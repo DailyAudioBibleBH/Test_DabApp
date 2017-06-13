@@ -41,7 +41,17 @@ namespace DABApp
 			get
 			{
 				double knownPadding = 30;
-				return (App.Current.MainPage.Width / FlowListViewColumns) - knownPadding;
+				if (App.Current.MainPage != null)
+				{
+					return (App.Current.MainPage.Width / FlowListViewColumns) - knownPadding;
+				}
+				else {
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						return 212;
+					}
+					else return 180;
+				}
 			}
 		}
 

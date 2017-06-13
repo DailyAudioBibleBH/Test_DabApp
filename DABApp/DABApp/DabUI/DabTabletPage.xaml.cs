@@ -40,9 +40,20 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
-				PlayerLabels.BindingContext = episode;
-				Read.BindingContext = episode;
-				Journal.BindingContext = episode;
+			PlayerLabels.BindingContext = episode;
+			Journal.BindingContext = episode;
+			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
+			ReadTitle.Text = reading.title;
+			ReadText.Text = reading.text;
+			if (reading.IsAlt)
+			{
+				AltWarning.IsVisible = true;
+			}
+			else AltWarning.IsVisible = false;
+			if (reading.excerpts != null)
+			{
+				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+			}
 			//	return true;
 			//});
 
@@ -53,6 +64,11 @@ namespace DABApp
 			switch (SegControl.SelectedSegment)
 			{
 				case 0:
+					if (GuestStatus.Current.IsGuestLogin)
+					{
+						LoginJournal.IsVisible = false;
+					}
+					else {Journal.IsVisible = false; }
 					Read.IsVisible = false;
 					Journal.IsVisible = false;
 					//AudioPlayer.Instance.showPlayerBar = false;
@@ -60,7 +76,14 @@ namespace DABApp
 					break;
 				case 1:
 					Archive.IsVisible = false;
-					Journal.IsVisible = false;
+					if (GuestStatus.Current.IsGuestLogin)
+					{
+						LoginJournal.IsVisible = false;
+					}
+					else
+					{
+						Journal.IsVisible = false;
+					}
 					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					break;
@@ -68,7 +91,14 @@ namespace DABApp
 					Read.IsVisible = false;
 					Archive.IsVisible = false;
 					//AudioPlayer.Instance.showPlayerBar = true;
-					Journal.IsVisible = true;
+					if (GuestStatus.Current.IsGuestLogin)
+					{
+						LoginJournal.IsVisible = true;
+					}
+					else
+					{
+						Journal.IsVisible = true;
+					}
 					break;
 			}
 		}
@@ -146,6 +176,31 @@ namespace DABApp
 
 		void OnShare(object o, EventArgs e) { 
 			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.channel_code, episode.id.ToString());
+		}
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			if (LoginJournal.IsVisible || Journal.IsVisible) {
+				if (GuestStatus.Current.IsGuestLogin)
+				{
+					LoginJournal.IsVisible = true;
+					Journal.IsVisible = false;
+				}
+				else {
+					LoginJournal.IsVisible = false;
+					Journal.IsVisible = true;
+				}
+			}
+		}
+
+		void OnLogin(object o, EventArgs e)
+		{
+			Login.IsEnabled = false;
+			AudioPlayer.Instance.Pause();
+			AudioPlayer.Instance.Unload();
+			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage(true)));
+			Login.IsEnabled = true;
 		}
 	}
 }

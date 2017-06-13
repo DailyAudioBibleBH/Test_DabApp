@@ -107,6 +107,13 @@
 				<Setter Property="BorderWidth" Value="0" />
 				<Setter Property="BackgroundColor" Value="Transparent"/>
 			</Style>
+			<Style x:Key="listenNowButtonStyle" TargetType="Button">
+				<Setter Property="BorderColor" Value="White"/>
+				<Setter Property="BackgroundColor" Value="Transparent"/>
+				<Setter Property="TextColor" Value="White"/>
+				<Setter Property="BorderWidth" Value="1"/>
+				<Setter Property="BorderRadius" Value="3"/>
+			</Style>
 			<!--ListView-->
 			<Style x:Key="listviewStyle" TargetType="ListView">
 				<Setter Property="SeparatorColor" Value="Transparent" />

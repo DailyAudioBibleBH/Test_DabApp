@@ -11,14 +11,14 @@
 			</RelativeLayout>
 			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" Style="{StaticResource NonScrollingListViewStyle}" HasUnevenRows="true">
 			<ListView.Footer>
-				<StackLayout VerticalOptions="FillAndExpand" BackgroundColor="#292929"/>
+				<StackLayout VerticalOptions="FillAndExpand"/>
 			</ListView.Footer>
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
-								<StackLayout Padding="10" Spacing="5" Margin="10, 50, 10, 50" Orientation="Horizontal">
-									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}"/>
+								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal">
+									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
 									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
 							</ViewCell.View>
