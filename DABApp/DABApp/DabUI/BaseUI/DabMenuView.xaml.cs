@@ -54,7 +54,14 @@ namespace DABApp
 
 		void OnSettings(object o, EventArgs e)
 		{
-			Navigation.PushAsync(new DabSettingsPage());
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Navigation.PushAsync(new DabTabletSettingsPage());
+			}
+			else
+			{
+				Navigation.PushAsync(new DabSettingsPage());
+			}
 			RemovePages();
 		}
 

@@ -6,7 +6,7 @@
 		<StackLayout Padding="10" Spacing="10">
 			<Label Text="Settings"/>
 			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
-			<Button Text="App Info" Clicked="OnAppInfo"/>
+			<Button x:Name="appInfo" Text="App Info" Clicked="OnAppInfo"/>
 			<Button x:Name="OfflineManagement" Text="Offline Episodes Management" Clicked="OnOfflineManagement"/>
 			<Button x:Name="ResetListenedStatus" Text="Reset listened to status" Clicked="OnResetListenedTo"/>
 		</StackLayout>
