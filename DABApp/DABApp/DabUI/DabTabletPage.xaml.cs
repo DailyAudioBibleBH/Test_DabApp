@@ -43,6 +43,27 @@ namespace DABApp
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
+			if (episode == null)
+			{
+				SeekBar.IsVisible = false;
+				TimeStrings.IsVisible = false;
+				Output.IsVisible = false;
+				PlayPause.IsVisible = false;
+				backwardButton.IsVisible = false;
+				forwardButton.IsVisible = false;
+				Share.IsVisible = false;
+				Initializer.IsVisible = true;
+			}
+			else if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) { 
+				SeekBar.IsVisible = false;
+				TimeStrings.IsVisible = false;
+				Output.IsVisible = false;
+				PlayPause.IsVisible = false;
+				backwardButton.IsVisible = false;
+				forwardButton.IsVisible = false;
+				Share.IsVisible = false;
+				Initializer.IsVisible = true;
+			}
 			//	return true;
 			//});
 
@@ -95,12 +116,28 @@ namespace DABApp
 		public void OnEpisode(object o, ItemTappedEventArgs e)
 		{
 			episode = (dbEpisodes)e.Item;
-			EpisodeList.SelectedItem = null;
 			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 			{
-				AudioPlayer.Instance.SetAudioFile(episode);
-				PlayerLabels.BindingContext = episode;
+				SeekBar.IsVisible = false;
+				TimeStrings.IsVisible = false;
+				Output.IsVisible = false;
+				PlayPause.IsVisible = false;
+				backwardButton.IsVisible = false;
+				forwardButton.IsVisible = false;
+				Share.IsVisible = false;
+				Initializer.IsVisible = true;
 			}
+			else { 
+				SeekBar.IsVisible = true;
+				TimeStrings.IsVisible = true;
+				Output.IsVisible = true;
+				PlayPause.IsVisible = true;
+				backwardButton.IsVisible = true;
+				forwardButton.IsVisible = true;
+				Share.IsVisible = true;
+				Initializer.IsVisible = false;
+			}
+			PlayerLabels.BindingContext = episode;
 			EpisodeList.SelectedItem = null;
 			SetReading();
 		}
@@ -131,9 +168,29 @@ namespace DABApp
 			EpisodeList.ItemsSource = Episodes;
 			BackgroundImage.Source = backgroundImage;
 			episode = Episodes.First();
-			AudioPlayer.Instance.SetAudioFile(episode);
 			PlayerLabels.BindingContext = episode;
 			SetReading();
+			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+			{
+				SeekBar.IsVisible = false;
+				TimeStrings.IsVisible = false;
+				Output.IsVisible = false;
+				PlayPause.IsVisible = false;
+				backwardButton.IsVisible = false;
+				forwardButton.IsVisible = false;
+				Share.IsVisible = false;
+				Initializer.IsVisible = true;
+			}
+			else { 
+				SeekBar.IsVisible = true;
+				TimeStrings.IsVisible = true;
+				Output.IsVisible = true;
+				PlayPause.IsVisible = true;
+				backwardButton.IsVisible = true;
+				forwardButton.IsVisible = true;
+				Share.IsVisible = true;
+				Initializer.IsVisible = false;
+			}
 		}
 
 		void OnBack30(object o, EventArgs e)
@@ -209,6 +266,24 @@ namespace DABApp
 				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
 			}
 			else ReadExcerpts.Text = "";
+		}
+
+		void OnInitialized(object o, EventArgs e)
+		{
+			Initializer.IsVisible = false;
+			if (AudioPlayer.Instance.IsInitialized)
+			{
+				AudioPlayer.Instance.Pause();
+			}
+			AudioPlayer.Instance.SetAudioFile(episode);
+			AudioPlayer.Instance.Play();
+			SeekBar.IsVisible = true;
+			TimeStrings.IsVisible = true;
+			Output.IsVisible = true;
+			PlayPause.IsVisible = true;
+			backwardButton.IsVisible = true;
+			forwardButton.IsVisible = true;
+			Share.IsVisible = true;
 		}
 	}
 }

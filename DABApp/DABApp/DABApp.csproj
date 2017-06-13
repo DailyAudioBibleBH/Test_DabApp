@@ -119,6 +119,10 @@
     <Compile Include="DabData\Reading.cs" />
     <Compile Include="DabApi\GuestStatus.cs" />
     <Compile Include="DabViewHelpers\Controls\IShareable.cs" />
+    <Compile Include="DabUI\BaseUI\MasterDetailMenuPage.cs" />
+    <Compile Include="DabUI\DabTabletSettingsPage.xaml.cs">
+      <DependentUpon>DabTabletSettingsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -261,6 +265,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabTabletPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabTabletSettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

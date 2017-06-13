@@ -38,9 +38,10 @@
 								<ColumnDefinition Width="17*"/>
 								<ColumnDefinition Width="17*"/>
 							</Grid.ColumnDefinitions>
-				<local:AudioOutputView WidthRequest="35" Grid.Row="0" Grid.Column="0"/>
+				<local:AudioOutputView x:Name="Output" WidthRequest="35" Grid.Row="0" Grid.Column="0"/>
 				<Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png" Grid.Row="0" Grid.Column="1"/>
-				<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
 				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png" Grid.Row="0" Grid.Column="3"/>
 				<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4"/>
 			</Grid>
