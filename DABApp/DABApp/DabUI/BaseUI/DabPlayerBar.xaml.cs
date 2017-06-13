@@ -45,6 +45,8 @@ namespace DABApp
 		//Show Player Page
 		void OnShowPlayer(object o, EventArgs e)
 		{
+			PlayerButton.IsEnabled = false;
+			stackPodcastTitle.IsEnabled = false;
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
 			if (Device.Idiom == TargetIdiom.Tablet)
@@ -56,6 +58,8 @@ namespace DABApp
 			{
 				page.PushAsync(new DabPlayerPage(currentEpisode));
 			}
+			stackPodcastTitle.IsEnabled = true;
+			PlayerButton.IsEnabled = true;
 		}
 
 		//Show share dialog

@@ -49,7 +49,7 @@ namespace DABApp
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(GlobalResources.GetUserAvatar()))
+				if (string.IsNullOrEmpty(GlobalResources.GetUserAvatar()))
 				{
 					return _AvatarUrl;
 				}

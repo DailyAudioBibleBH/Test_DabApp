@@ -75,6 +75,8 @@ namespace DABApp
 						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
 						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
 						db.UpdateAll(settings, true);
+						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
+						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
 					return container.message;
 				}
@@ -135,6 +137,8 @@ namespace DABApp
 					AvatarSettings.Value = token.user_avatar;
 					IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
 					db.UpdateAll(settings, true);
+					//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
+					GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 				}
 				return "";
 			}
@@ -244,6 +248,7 @@ namespace DABApp
 			db.InsertOrReplace(FirstNameSettings);
 			db.InsertOrReplace(LastNameSettings);
 			db.InsertOrReplace(AvatarSettings);
+			GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 		}
 
 		public static void CreateNewActionLog(int episodeId, string actionType, double playTime) 

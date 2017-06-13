@@ -42,18 +42,7 @@ namespace DABApp
 			}
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
-			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
-			ReadTitle.Text = reading.title;
-			ReadText.Text = reading.text;
-			if (reading.IsAlt)
-			{
-				AltWarning.IsVisible = true;
-			}
-			else AltWarning.IsVisible = false;
-			if (reading.excerpts != null)
-			{
-				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
-			}
+			SetReading();
 			//	return true;
 			//});
 
@@ -113,6 +102,7 @@ namespace DABApp
 				PlayerLabels.BindingContext = episode;
 			}
 			EpisodeList.SelectedItem = null;
+			SetReading();
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e)
@@ -142,6 +132,8 @@ namespace DABApp
 			BackgroundImage.Source = backgroundImage;
 			episode = Episodes.First();
 			AudioPlayer.Instance.SetAudioFile(episode);
+			PlayerLabels.BindingContext = episode;
+			SetReading();
 		}
 
 		void OnBack30(object o, EventArgs e)
@@ -201,6 +193,22 @@ namespace DABApp
 			AudioPlayer.Instance.Unload();
 			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage(true)));
 			Login.IsEnabled = true;
+		}
+
+		void SetReading() { 
+			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
+			ReadTitle.Text = reading.title;
+			ReadText.Text = reading.text;
+			if (reading.IsAlt)
+			{
+				AltWarning.IsVisible = true;
+			}
+			else AltWarning.IsVisible = false;
+			if (reading.excerpts != null)
+			{
+				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+			}
+			else ReadExcerpts.Text = "";
 		}
 	}
 }
