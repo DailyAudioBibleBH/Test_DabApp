@@ -120,6 +120,10 @@
 				<Setter Property="BackgroundColor" Value="Transparent"/>
 			</Style>
 			<Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
+			<Style x:Key="tableviewStyle" TargetType="TableView">
+				<Setter Property="BackgroundColor" Value="Transparent"/>
+			</Style>
+			<Style BasedOn="{StaticResource tableviewStyle}" TargetType="TableView" ApplyToDerivedTypes="true"/>
 			<!--TextCell-->
 			<Style x:Key="textcellStyle" TargetType="TextCell">
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />

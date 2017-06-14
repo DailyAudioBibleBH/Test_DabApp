@@ -20,8 +20,9 @@ namespace DABApp
 			//AppInfoPage.ControlTemplate = playerBarTemplate;
 			AppInfoPage.ToolbarItems.Clear();
 			//SettingsPage.ToolbarItems.Clear();
-			SettingsPage.listening.ItemTapped += OnListening;
-			SettingsPage.other.ItemTapped += OnOther;
+			SettingsPage.offline.Tapped += OnOffline;
+			SettingsPage.reset.Tapped += OnReset;
+			SettingsPage.appInfo.Tapped += OnAppInfo;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -46,23 +47,25 @@ namespace DABApp
 			}
 		}
 
-		void OnOther(object o, ItemTappedEventArgs e) {
-			var pre = e.Item as Preset;
-			switch (pre.duration) {
-				case "App info":
-					var AppInfo = new DabAppInfoPage();
-					this.Detail = AppInfo;
-					AppInfo.ToolbarItems.Clear();
-					Remove();
-					break;
-			}
+		void OnAppInfo(object o, EventArgs e) {
+			var AppInfo = new DabAppInfoPage();
+			Detail = AppInfo;
+			AppInfo.ToolbarItems.Clear();
+			Remove();
 		}
 
-		void OnReset(object o, EventArgs e) {
-			var ResetPage = new DabResetListenedToStatusPage();
-			this.Detail = ResetPage;
-			ResetPage.ToolbarItems.Clear();
-			//ResetPage.ControlTemplate = playerBarTemplate;
+		void OnReset(object o, EventArgs e)
+		{	
+			var Reset = new DabResetListenedToStatusPage();
+			Detail = Reset;
+			Reset.ToolbarItems.Clear();
+			Remove();
+		}
+
+		void OnOffline(object o, EventArgs e) {
+			var Offline = new DabOfflineEpisodeManagementPage();
+			Detail = Offline;
+			Offline.ToolbarItems.Clear();
 			Remove();
 		}
 

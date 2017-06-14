@@ -6,40 +6,32 @@
 		<StackLayout Padding="10" Spacing="10">
 			<Label Text="Settings"/>
 			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
-			<local:NonScrollingListView x:Name="Listening" ItemTapped="OnListening" Style="{StaticResource NonScrollingListViewStyle}">
-				<ListView.Header>
-					<StackLayout Padding="10">
-						<Label Text="Listening"/>
-					</StackLayout>
-				</ListView.Header>
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<ViewCell>
-							<StackLayout Orientation="Horizontal" Padding="10">
-								<Label Text="{Binding duration}" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white_2x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+			<TableView Intent="Settings">
+				<TableRoot>
+					<TableSection x:Name="Listening" Title="Listening">
+						<ViewCell x:Name="Offline" Tapped="OnOffline">
+							<StackLayout Orientation="Horizontal">
+								<Label Text="Offline Episodes" VerticalOptions="Center"/>
+								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</local:NonScrollingListView>
-			<local:NonScrollingListView x:Name="Other" ItemTapped="OnOther" Style="{StaticResource NonScrollingListViewStyle}" HorizontalOptions="StartAndExpand">
-				<ListView.Header>
-					<StackLayout Padding="10">
-						<Label Text="Other" />
-					</StackLayout>
-				</ListView.Header>
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<ViewCell>
-							<StackLayout Orientation="Horizontal" Padding="10">
-								<Label Text="{Binding duration}" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white_2x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+						<ViewCell x:Name="Reset" Tapped="OnReset">
+							<StackLayout Orientation="Horizontal">
+								<Label Text="Reset listened to status" VerticalOptions="Center"/>
+								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</local:NonScrollingListView>
+					</TableSection>
+					<TableSection Title="Other" x:Name="Other">
+						<ViewCell x:Name="AppInfo" Tapped="OnAppInfo">
+							<StackLayout Orientation="Horizontal">
+								<Label Text="App Info" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</TableSection>
+				</TableRoot>
+			</TableView>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
