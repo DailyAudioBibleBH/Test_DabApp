@@ -6,9 +6,40 @@
 		<StackLayout Padding="10" Spacing="10">
 			<Label Text="Settings"/>
 			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
-			<Button x:Name="appInfo" Text="App Info" Clicked="OnAppInfo"/>
-			<Button x:Name="OfflineManagement" Text="Offline Episodes Management" Clicked="OnOfflineManagement"/>
-			<Button x:Name="ResetListenedStatus" Text="Reset listened to status" Clicked="OnResetListenedTo"/>
+			<local:NonScrollingListView x:Name="Listening" ItemTapped="OnListening" Style="{StaticResource NonScrollingListViewStyle}">
+				<ListView.Header>
+					<StackLayout Padding="10">
+						<Label Text="Listening"/>
+					</StackLayout>
+				</ListView.Header>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Orientation="Horizontal" Padding="10">
+								<Label Text="{Binding duration}" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+								<Image Source="ic_chevron_right_white_2x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</local:NonScrollingListView>
+			<local:NonScrollingListView x:Name="Other" ItemTapped="OnOther" Style="{StaticResource NonScrollingListViewStyle}" HorizontalOptions="StartAndExpand">
+				<ListView.Header>
+					<StackLayout Padding="10">
+						<Label Text="Other" />
+					</StackLayout>
+				</ListView.Header>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Orientation="Horizontal" Padding="10">
+								<Label Text="{Binding duration}" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+								<Image Source="ic_chevron_right_white_2x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</local:NonScrollingListView>
 		</StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

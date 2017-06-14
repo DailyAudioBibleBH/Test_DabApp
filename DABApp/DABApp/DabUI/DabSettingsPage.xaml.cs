@@ -7,38 +7,36 @@ namespace DABApp
 {
 	public partial class DabSettingsPage : DabBaseContentPage
 	{
-		public Button AppInfo { get { return _AppInfo;} }
-		public Button Offline { get { return _Offline;} }
-		public Button Reset { get { return _Reset;} }
-		Button _AppInfo;
-		Button _Offline;
-		Button _Reset;
+		public NonScrollingListView listening { get { return _listening;} }
+		public NonScrollingListView other { get { return _other;} }
+		NonScrollingListView _listening;
+		NonScrollingListView _other;
 
 		public DabSettingsPage()
 		{
 			InitializeComponent();
-			_AppInfo = appInfo;
-			_Reset = ResetListenedStatus;
-			_Offline = OfflineManagement;
+			Listening.ItemsSource = new List<Preset> { new Preset("Offline Episodes", true), new Preset("Reset listened to status", true) };
+			Other.ItemsSource = new List<Preset> { new Preset("App info", true) };
 			DabViewHelper.InitDabForm(this);
 			NavigationPage.SetHasBackButton(this, false);
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				LogOut.IsVisible = false;
-				OfflineManagement.IsVisible = false;
-				ResetListenedStatus.IsVisible = false;
+				Listening.IsVisible = false;
 			}
 			else
 			{
 				LogOut.IsVisible = true;
-				OfflineManagement.IsVisible = true;
-				ResetListenedStatus.IsVisible = true;
+				Listening.IsVisible = true;
 			}
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 				ControlTemplate = NoPlayerBarTemplate;
 			}
+			_listening = Listening;
+			_other = Other;
+
 		}
 
 		async void OnLogOut(object o, EventArgs e)
@@ -57,31 +55,36 @@ namespace DABApp
 			}
 		}
 
-		void OnAppInfo(object o, EventArgs e)
-		{
-			if (Device.Idiom == TargetIdiom.Phone)
-			{
-				Navigation.PushAsync(new DabAppInfoPage());
-			}
-		}
-
 		protected override void OnDisappearing()
 		{
 			base.OnDisappearing();
 			LogOut.IsEnabled = true;
 		}
 
-		void OnOfflineManagement(object o, EventArgs e)
-		{
-			if (Device.Idiom == TargetIdiom.Phone)
-				Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
-		}
-
-		void OnResetListenedTo(object o, EventArgs e)
-		{
+		void OnListening(object o, ItemTappedEventArgs e) {
 			if (Device.Idiom == TargetIdiom.Phone)
 			{
-				Navigation.PushAsync(new DabResetListenedToStatusPage());
+				var pre = e.Item as Preset;
+				switch (pre.duration)
+				{
+					case "Offline Episodes":
+						Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
+						break;
+					case "Reset listened to status":
+						Navigation.PushAsync(new DabResetListenedToStatusPage());
+						break;
+				}
+			}
+		}
+
+		void OnOther(object o, ItemTappedEventArgs e) {
+			if (Device.Idiom == TargetIdiom.Phone) {
+				var pre = e.Item as Preset;
+				switch (pre.duration) { 
+					case "App info":
+						Navigation.PushAsync(new DabAppInfoPage());
+						break;
+				}
 			}
 		}
 	
