@@ -92,7 +92,14 @@ namespace DABApp
 				}
 				else
 				{
-					Navigation.PushAsync(new DabContentView(view));
+					if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
+					{
+						Navigation.PushAsync(new DabParentChildGrid(view));
+					}
+					else
+					{
+						Navigation.PushAsync(new DabContentView(view));
+					}
 					RemovePages();
 				}
 			}

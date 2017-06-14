@@ -123,6 +123,9 @@
     <Compile Include="DabUI\DabTabletSettingsPage.xaml.cs">
       <DependentUpon>DabTabletSettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabParentChildGrid.xaml.cs">
+      <DependentUpon>DabParentChildGrid.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -268,6 +271,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabTabletSettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabParentChildGrid.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
