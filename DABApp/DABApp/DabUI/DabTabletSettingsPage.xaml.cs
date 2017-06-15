@@ -14,7 +14,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
-			NavigationPage.SetTitleIcon(this, "navbarlogo.png");
+			Title = "DAILY AUDIO BIBLE";
 			this.SlideMenu = new DabMenuView();
 			SettingsPage.ControlTemplate = playerBarTemplate;
 			//AppInfoPage.ControlTemplate = playerBarTemplate;

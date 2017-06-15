@@ -51,5 +51,9 @@
 	<string>0.3</string>
 	<key>CFBundleVersion</key>
 	<string>0.3</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>FetteEngD.ttf</string>
+	</array>
 </dict>
 </plist>

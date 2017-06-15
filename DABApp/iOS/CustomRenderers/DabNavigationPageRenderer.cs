@@ -27,7 +27,10 @@ namespace DABApp.iOS
 			this.NavigationBar.TintColor = ((Color)App.Current.Resources["TextColor"]).ToUIColor();
 			this.NavigationBar.BarTintColor = ((Color)App.Current.Resources["NavBarBackgroundColor"]).ToUIColor();
 			this.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
-			
+			this.NavigationBar.TitleTextAttributes = new UIStringAttributes()
+			{
+				Font = UIFont.FromName("FetteEngD", 20)
+			};
 
 		}
 

@@ -284,6 +284,7 @@
     <BundleResource Include="Resources\ic_airplay_white.png" />
     <BundleResource Include="Resources\ic_airplay_white_2x.png" />
     <BundleResource Include="Resources\ic_airplay_white_3x.png" />
+    <BundleResource Include="Resources\FetteEngD.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

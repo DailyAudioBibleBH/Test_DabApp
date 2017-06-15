@@ -13,9 +13,8 @@ namespace DABApp
 		public DabBaseContentPage()
 		{
 			//Default Page properties
-			NavigationPage.SetTitleIcon(this, "navbarlogo.png");
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
-
+			Title = "DAILY AUDIO BIBLE";
 			//Control template (adds the player bar)
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
 			RelativeLayout container = new RelativeLayout();
