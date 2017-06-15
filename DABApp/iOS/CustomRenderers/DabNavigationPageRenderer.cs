@@ -29,7 +29,7 @@ namespace DABApp.iOS
 			this.NavigationBar.BarStyle = UIBarStyle.BlackTranslucent;
 			this.NavigationBar.TitleTextAttributes = new UIStringAttributes()
 			{
-				Font = UIFont.FromName("FetteEngD", 20)
+				Font = UIFont.FromName("FetteEngD", 25)
 			};
 
 		}
