@@ -15,7 +15,8 @@ namespace DABApp.iOS
 		{
 			base.OnElementChanged(e);
 
-			Control.ProgressTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
+			Control.ProgressTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
+			Control.TrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
 		}
 
 

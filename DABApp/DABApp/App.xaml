@@ -18,6 +18,7 @@
 			<Color x:Key="SlideMenuBackgroundColor">#D5272E</Color>
 			<!--Color provided by LUTD for slider menu: #D5272E-->
 			<Color x:Key="NonScrollingListViewColor">#222222</Color>
+			<Color x:Key="PlayerLabelColor">#ffffff</Color>
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<RelativeLayout>
@@ -69,7 +70,7 @@
 			</Style>
 			<!--Player Label-->
 			<Style x:Key="playerLabelStyle" TargetType="Label">
-				<Setter Property="TextColor" Value="White"/>
+				<Setter Property="TextColor" Value="{DynamicResource PlayerLabelColor}"/>
 			</Style>
 			<!--Entry-->
 			<Style x:Key="entryStyle" TargetType="Entry">
