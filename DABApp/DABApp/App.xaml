@@ -147,6 +147,10 @@
 				<Setter Property="BackgroundColor" Value="{DynamicResource NonScrollingListViewColor}"/>
 				<Setter Property="SeparatorVisibility" Value="Default"/>
 			</Style>
+			<Style x:Key="secondaryListViewStyle" TargetType="ListView">
+				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}"/>
+				<Setter Property="SeparatorVisibility" Value="Default"/>
+			</Style>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

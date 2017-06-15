@@ -10,6 +10,9 @@ namespace DABApp
 		public DabResetPasswordPage()
 		{
 			InitializeComponent();
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				Container.Padding = 100;
+			}
 			BindingContext = ContentConfig.Instance.blocktext;
 			ToolbarItems.Clear();
 		}

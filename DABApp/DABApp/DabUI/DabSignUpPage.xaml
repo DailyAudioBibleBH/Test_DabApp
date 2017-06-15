@@ -2,7 +2,7 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabSignUpPage"
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
-		<StackLayout Padding="10" Spacing="10">
+		<StackLayout x:Name="Container" Padding="10" Spacing="10">
 			<local:HtmlLabel Text="{Binding signUp}"/>
 			<Label Text="First Name" FontSize="Micro"/>
 			<local:DarkKeyboardEntry x:Name="FirstName" Completed="OnFirstNameCompleted"/>

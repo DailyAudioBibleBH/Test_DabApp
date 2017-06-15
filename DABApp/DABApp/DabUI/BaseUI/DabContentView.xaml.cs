@@ -11,6 +11,11 @@ namespace DABApp
 		{
 			InitializeComponent();
 			this.BindingContext = contentView;
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				bannerContainer.HeightRequest = 180;
+			}
+
 			if (contentView.title == "Initiatives")
 			{
 				if (Device.Idiom == TargetIdiom.Tablet)

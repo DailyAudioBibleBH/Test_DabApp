@@ -12,6 +12,9 @@ namespace DABApp
 		public DabSignUpPage(bool fromPlayer = false)
 		{
 			InitializeComponent();
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				Container.Padding = 100;
+			}
 			_fromPlayer = fromPlayer;
 			BindingContext = ContentConfig.Instance.blocktext;
 			ToolbarItems.Clear();
