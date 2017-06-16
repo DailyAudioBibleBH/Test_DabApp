@@ -40,8 +40,8 @@ namespace DABApp.iOS
 			var font = Control.Font;
 			var fontName = font.Name;
 			var fontSize = font.PointSize;
-			string htmlContents = $"<span style=\"font-family:'{fontName}'; color:{textColor}; font-size:{fontSize}\">{Element.Text}</span>";
-
+			string tableStyle = "table{color:white}";
+			string htmlContents = $"<span style=\"font-family:'{fontName}'; color:{textColor}; font-size:{fontSize}\"><style>{tableStyle}</style>{Element.Text}</span>";
 			var attr = new NSAttributedStringDocumentAttributes();
 			var nsError = new NSError();
 			attr.DocumentType = NSDocumentType.HTML;

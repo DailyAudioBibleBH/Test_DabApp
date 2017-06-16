@@ -11,8 +11,10 @@ namespace DABApp
 		{
 			InitializeComponent();
 			BindingContext = ContentConfig.Instance.blocktext;
-
 			this.ToolbarItems.Clear();
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				Container.Padding = 100;
+			}
 		}
 	}
 }

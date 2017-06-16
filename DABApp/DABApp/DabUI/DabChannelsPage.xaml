@@ -10,8 +10,8 @@
 					<Button Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" Style="{StaticResource listenNowButtonStyle}" />
 				</StackLayout>
 			</RelativeLayout>
-			<StackLayout Padding="10">
-				<Label Text="{Binding title}" />
+			<StackLayout Padding="0">
+				<local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
 				<!--<RelativeLayout>-->
 				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
