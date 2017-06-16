@@ -32,6 +32,7 @@ namespace DABApp
 			Episode = episode;
 			//AudioPlayer.Instance.ShowPlayerBar = false;
 			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+			SeekBar.UserInteraction += OnTouch;
 			DabViewHelper.InitDabForm(this);
 			backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
 			BackgroundImage.Source = backgroundImage;
@@ -152,6 +153,10 @@ namespace DABApp
 		//		AudioPlayer.Instance.PlayPauseButtonImage = pauseImage;
 		//	}
 		//}
+
+		void OnTouch(object o, EventArgs e) {
+			AudioPlayer.Instance.IsTouched = true;
+		}
 
 		void OnPodcast(object o, EventArgs e)
 		{

@@ -11,6 +11,7 @@ namespace DABApp
 		private IAudio _player;
 		private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
+		private bool _IsTouched = false;
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private string _RemainingTime = "01:00";
@@ -248,9 +249,13 @@ namespace DABApp
 				{
 					if (Device.OS == TargetPlatform.iOS)
 					{
-						Player.SeekTo(Convert.ToInt32(value));
+						if (IsTouched)
+						{
+							Player.SeekTo(Convert.ToInt32(value));
+							IsTouched = false;
+						}
 					}
-					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 5) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 5))
+					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 2) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 2))
 					{
 						Player.SeekTo(Convert.ToInt32(value));
 					}
@@ -322,6 +327,14 @@ namespace DABApp
 			set {
 				_CurrentChannelTitle = value;
 				OnPropertyChanged("CurrentChannelTitle");
+			}
+		}
+
+		public bool IsTouched { 
+			get { return _IsTouched;}
+			set {
+				_IsTouched = value;
+				OnPropertyChanged("IsTouched");
 			}
 		}
 

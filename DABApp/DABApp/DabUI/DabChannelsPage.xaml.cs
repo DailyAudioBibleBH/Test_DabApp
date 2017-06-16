@@ -12,6 +12,7 @@ namespace DABApp
 	{
 		View ChannelView;
 		dbEpisodes episode;
+		Resource resource;
 
 		public DabChannelsPage()
 		{
@@ -25,7 +26,7 @@ namespace DABApp
 			//ListTitle.Text = $"<h1>{ChannelView.title}</h1>";
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
-			var resource = ChannelView.resources[0];
+			resource = ChannelView.resources[0];
 			PlayerFeedAPI.GetEpisodes(resource);
 			episode = PlayerFeedAPI.GetMostRecentEpisode(resource);
 			if (episode == null)
@@ -78,9 +79,22 @@ namespace DABApp
 			});
 		}
 
-		void OnPlayer(object o, EventArgs e) {
-			//AudioPlayer.Instance.SetAudioFile(episode);
-			Navigation.PushAsync(new DabPlayerPage(episode));
+		void OnPlayer(object o, EventArgs e) 
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Navigation.PushAsync(new DabTabletPage(resource));
+			}
+			else
+			{
+				Navigation.PushAsync(new DabPlayerPage(episode));
+			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		void OnTest(object o, EventArgs e)

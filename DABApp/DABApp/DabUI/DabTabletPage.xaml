@@ -45,7 +45,7 @@
 				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png" Grid.Row="0" Grid.Column="3"/>
 				<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4"/>
 			</Grid>
-			<Slider x:Name="SeekBar" Minimum="0" VerticalOptions="StartAndExpand"
+			<local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="StartAndExpand" UserInteraction="OnTouched"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings">

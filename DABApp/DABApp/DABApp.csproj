@@ -126,6 +126,7 @@
     <Compile Include="DabUI\DabParentChildGrid.xaml.cs">
       <DependentUpon>DabParentChildGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabViewHelpers\Controls\DabSeekBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

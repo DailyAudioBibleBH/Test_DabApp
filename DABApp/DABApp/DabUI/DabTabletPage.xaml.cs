@@ -285,5 +285,9 @@ namespace DABApp
 			forwardButton.IsVisible = true;
 			Share.IsVisible = true;
 		}
+
+		void OnTouched(object o, EventArgs e) {
+			AudioPlayer.Instance.IsTouched = true;
+		}
 	}
 }
