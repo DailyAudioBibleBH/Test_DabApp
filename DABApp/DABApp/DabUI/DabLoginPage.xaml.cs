@@ -63,7 +63,9 @@ namespace DABApp
 				}
 				else
 				{
-					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+					NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+					_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+					Application.Current.MainPage = _nav;
 					await Navigation.PopToRootAsync();
 				}
 				GuestStatus.Current.IsGuestLogin = false;
@@ -107,7 +109,9 @@ namespace DABApp
 			}
 			else
 			{
-				Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+				NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+				_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+				Application.Current.MainPage = _nav;
 				await Navigation.PopToRootAsync();
 			}
 		}

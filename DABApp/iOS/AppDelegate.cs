@@ -32,6 +32,7 @@ namespace DABApp.iOS
 			SegmentedControlRenderer.Init();
 
 			CrossPushNotification.Initialize<CrossPushNotificationListener>();
+			app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
 			LoadApplication(new App());
 

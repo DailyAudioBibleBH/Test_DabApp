@@ -40,7 +40,9 @@ namespace DABApp
 					}
 					else
 					{
-						Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+						var nav = new NavigationPage(new DabChannelsPage());
+						nav.SetValue(NavigationPage.BarBackgroundColorProperty, Color.FromHex("CBCBCB"));
+						Application.Current.MainPage = nav;
 						Navigation.PopToRootAsync();
 					}
 					GuestStatus.Current.IsGuestLogin = false;

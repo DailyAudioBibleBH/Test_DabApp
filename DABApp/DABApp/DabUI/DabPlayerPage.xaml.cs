@@ -171,7 +171,9 @@ namespace DABApp
 			Login.IsEnabled = false;
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
-			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage(true)));
+			var nav = new NavigationPage(new DabLoginPage(true));
+			nav.SetValue(NavigationPage.BarBackgroundColorProperty, Color.FromHex("CBCBCB"));
+			Navigation.PushModalAsync(nav);
 			Login.IsEnabled = true;
 		}
 
