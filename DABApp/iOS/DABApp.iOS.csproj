@@ -232,7 +232,7 @@
     <Compile Include="CustomRenderers\DarkKeyboardEditorRenderer.cs" />
     <Compile Include="CustomRenderers\ButtonDisabledTextColorRenderer.cs" />
     <Compile Include="CustomRenderers\ColoredSlider.cs" />
-    <Compile Include="CustomRenderers\ColoredMpVolumeView.cs" />
+    <Compile Include="CustomRenderers\ColoredMPVolumeView.cs" />
     <Compile Include="DependencyServices\ShareIntent.cs" />
   </ItemGroup>
   <ItemGroup>
