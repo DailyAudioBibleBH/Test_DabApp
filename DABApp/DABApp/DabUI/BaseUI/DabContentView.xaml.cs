@@ -15,7 +15,6 @@ namespace DABApp
 			{
 				bannerContainer.HeightRequest = 180;
 			}
-
 			if (contentView.title == "Initiatives")
 			{
 				if (Device.Idiom == TargetIdiom.Tablet)

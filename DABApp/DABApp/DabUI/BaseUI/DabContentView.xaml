@@ -40,8 +40,8 @@
 											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 										</ff:CachedImage.Source>
 									</ff:CachedImage>
-									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="#222222" IsVisible="{Binding HasGraphic}">
-										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small"/>
+									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="{DynamicResource InputBackgroundColor}" IsVisible="{Binding HasGraphic}">
+										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
 										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
 									</StackLayout>
 									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="#222222" Spacing="0">

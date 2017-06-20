@@ -6,15 +6,15 @@
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 				<ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-					<local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large"/>
+					<local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
 				</StackLayout>
 			</RelativeLayout>
 			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
 			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
-				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
+				<Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
-			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode">
+			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource NonScrollingListViewStyle}" SeparatorColor="Black">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
@@ -28,7 +28,7 @@
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
 								<StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start"/>
+									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
 <!--									<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>
 -->									<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
