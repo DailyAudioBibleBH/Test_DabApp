@@ -69,6 +69,7 @@ namespace DABApp.iOS
 				var url = NSUrl.FromFilename(fileName);
 				_player = AVPlayer.FromUrl(url);
 			}
+			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
 			SetCommandCenter();
 			IsLoaded = true;
 		}

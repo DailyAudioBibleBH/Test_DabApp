@@ -10,10 +10,12 @@
 				</StackLayout>
 			</RelativeLayout>
 			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
+			<Frame OutlineColor="{DynamicResource InputBackgroundColor}">
 			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
 				<Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
+				</Frame>
 			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource NonScrollingListViewStyle}" SeparatorColor="Black">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
