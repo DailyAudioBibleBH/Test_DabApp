@@ -3,7 +3,57 @@
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout Padding="0" Spacing="10">
-			<local:NonScrollingListView x:Name="Durations" ItemTapped="OnDurationPicked" Style="{StaticResource NonScrollingListViewStyle}">
+			<TableView Intent="Settings">
+				<TableRoot>
+					<TableSection x:Name="Durations" Title="Offline Episode Duration">
+						<ViewCell AutomationId="OneDay" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="One Day" VerticalOptions="Center"/>
+								<Image x:Name="FirstIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell AutomationId="TwoDays" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Two Days" VerticalOptions="Center"/>
+								<Image x:Name="SecondIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell AutomationId="ThreeDays" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Three Days" VerticalOptions="Center"/>
+								<Image x:Name="ThirdIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell AutomationId="FourDays" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Four Days" VerticalOptions="Center"/>
+								<Image x:Name="FourthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell AutomationId="OneWeek" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="One Week" VerticalOptions="Center"/>
+								<Image x:Name="FifthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell AutomationId="OneMonth" Tapped="OnDurationPicked">
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="One Month" VerticalOptions="Center"/>
+								<Image x:Name="SixthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</TableSection>
+					<TableSection Title="Choose how long episodes should remain stored locally when a channel is made available offline.">
+						<ViewCell>
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Delete episodes after listening" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+								<Switch Toggled="OnDeleteAfterListening" VerticalOptions="Start" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</TableSection>
+				</TableRoot>
+			</TableView>
+			<!--<local:NonScrollingListView x:Name="Durations" ItemTapped="OnDurationPicked" Style="{StaticResource NonScrollingListViewStyle}">
 				<ListView.Header>
 					<StackLayout Padding="10" BackgroundColor="#292929">
 						<Label Text="Offline Episode Duration" Style="{StaticResource secondaryLabelStyle}"/>
@@ -28,7 +78,7 @@
 						</ViewCell>
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
-			</local:NonScrollingListView>
+			</local:NonScrollingListView>-->
 			<!--<Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." Style="{StaticResource secondaryLabelStyle}"/>
 			<StackLayout Orientation="Horizontal">
 				<Label Text="Delete episodes after listening"/>

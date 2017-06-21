@@ -15,7 +15,6 @@ namespace DABApp
 		private double _CurrentTime = 0;
 		private double _TotalTime = 1;
 		private string _RemainingTime = "01:00";
-		private bool _ShowPlayerBar = false;
 		private string _CurrentEpisodeTitle;
 		private string _CurrentChannelTitle;
 		private string _CurrentTimeString = "00:00";
