@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:local="clr-namespace:DABApp;" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView"
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:local="clr-namespace:DABApp;"
 	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
-	<t:MenuContainerPage.Content>
+	<ContentPage.Content>
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContentContainer">
 				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
@@ -13,16 +13,16 @@
 			<StackLayout Padding="15">
 				<local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
 				<!--<RelativeLayout>-->
-				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{x:Static local:GlobalResources.FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
+				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{Binding Source={x:Static local:GlobalResources.Instance}, Path=FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="10" Spacing="0" IsVisible="{Binding IsNotSelected}">
-								<ff:CachedImage Aspect="AspectFit" HeightRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}">
+								<ff:CachedImage Aspect="AspectFit" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
 									<ff:CachedImage.Source>
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
 									</ff:CachedImage.Source>
 								</ff:CachedImage>
-								<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{x:Static local:GlobalResources.ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
+								<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
 									<Label Text="{Binding title}"/>
 								</StackLayout>
 							</StackLayout>
@@ -43,5 +43,5 @@
 			</RelativeLayout>-->
 			</StackLayout>
 		</StackLayout>
-	</t:MenuContainerPage.Content>
+	</ContentPage.Content>
 </local:DabBaseContentPage>
