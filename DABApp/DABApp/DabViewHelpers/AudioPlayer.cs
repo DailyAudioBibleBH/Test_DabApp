@@ -250,11 +250,11 @@ namespace DABApp
 				{
 					if (Device.OS == TargetPlatform.iOS)
 					{
-						if (IsTouched)
-						{
+						//if (IsTouched)
+						//{
 							Player.SeekTo(Convert.ToInt32(value));
 							IsTouched = false;
-						}
+						//}
 					}
 					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 2) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 2))
 					{
