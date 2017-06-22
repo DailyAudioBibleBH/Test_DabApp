@@ -15,8 +15,8 @@ namespace DABApp.iOS
 
 			if (Control != null)
 			{
-				Control.SetTitleColor(UIColor.FromRGB(187, 187, 187), UIControlState.Focused);
-				Control.SetTitleColor(UIColor.FromRGB(187, 187, 187), UIControlState.Selected);
+				Control.SetTitleShadowColor(((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor(), UIControlState.Disabled);
+				Control.SetTitleColor(((Color)App.Current.Resources["HighlightedButtonDisabledTextColor"]).ToUIColor(), UIControlState.Disabled);
 			}
 		}
 	}

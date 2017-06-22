@@ -21,6 +21,7 @@
 					<controls:SegmentedControlOption Text="Journal"/>
 				</controls:SegmentedControl.Children>ds
 			</controls:SegmentedControl>
+					<BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}"/>
 				</StackLayout>
 			<StackLayout x:Name="Listen" IsVisible="true"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 					<StackLayout VerticalOptions="CenterAndExpand">
@@ -28,12 +29,12 @@
 						<Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro"/>
 						<Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 					</StackLayout>
-			<local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="Start"
+			<local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
 					Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}"/>
 			<StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}"/>
-				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>
+				<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>
 			</StackLayout>
 			<Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
 				<Grid.RowDefinitions>

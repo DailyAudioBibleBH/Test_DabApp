@@ -13,13 +13,27 @@ namespace DABApp
 			InitializeComponent();
 			//base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			DabViewHelper.InitDabForm(this);
-			List<Preset> durations = new List<Preset>() { new Preset("One Day", false), new Preset("Two Days", false), new Preset("Three Days", false), new Preset("One Week", false), new Preset("One Month", false) };
-			foreach (Preset preset in durations) {
-				if (preset.duration == OfflineEpisodeSettings.Instance.Duration) {
-					preset.Selected = true;
-				}
+			switch (OfflineEpisodeSettings.Instance.Duration)
+			{ 
+				case "One Day":
+					FirstIcon.IsVisible = true;
+					break;
+				case "Two Days":
+					SecondIcon.IsVisible = true;
+					break;
+				case "Three Days":
+					ThirdIcon.IsVisible = true;
+					break;
+				case "FourDays":
+					FourthIcon.IsVisible = true;
+					break;
+				case "One Week":
+					FifthIcon.IsVisible = true;
+					break;
+				case "One Month":
+					SixthIcon.IsVisible = true;
+					break;
 			}
-			Durations.ItemsSource = durations;
 		}
 
 		void OnDeleteAfterListening(object o, ToggledEventArgs e) {
@@ -28,13 +42,64 @@ namespace DABApp
 			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 
-		void OnDurationPicked(object o, ItemTappedEventArgs e) {
-			var pre = e.Item as Preset;
-			foreach (Preset preset in Durations.ItemsSource) {
-				preset.Selected = preset == pre;
+		void OnDurationPicked(object o, EventArgs e) {
+			var item = (ViewCell)o;
+			switch (item.AutomationId) { 
+				case "OneDay":
+					FirstIcon.IsVisible = true;
+					SecondIcon.IsVisible = false;
+					ThirdIcon.IsVisible = false;
+					FourthIcon.IsVisible = false;
+					FifthIcon.IsVisible = false;
+					SixthIcon.IsVisible = false;
+					OfflineEpisodeSettings.Instance.Duration = "One Day";
+					break;
+				case "TwoDays":
+					FirstIcon.IsVisible = false;
+					SecondIcon.IsVisible = true;
+					ThirdIcon.IsVisible = false;
+					FourthIcon.IsVisible = false;
+					FifthIcon.IsVisible = false;
+					SixthIcon.IsVisible = false;
+					OfflineEpisodeSettings.Instance.Duration = "Two Days";
+					break;
+				case "ThreeDays":
+					FirstIcon.IsVisible = false;
+					SecondIcon.IsVisible = false;
+					ThirdIcon.IsVisible = true;
+					FourthIcon.IsVisible = false;
+					FifthIcon.IsVisible = false;
+					SixthIcon.IsVisible = false;
+					OfflineEpisodeSettings.Instance.Duration = "Three Days";
+					break;
+				case "FourDays":
+					FirstIcon.IsVisible = false;
+					SecondIcon.IsVisible = false;
+					ThirdIcon.IsVisible = false;
+					FourthIcon.IsVisible = true;
+					FifthIcon.IsVisible = false;
+					SixthIcon.IsVisible = false;
+					OfflineEpisodeSettings.Instance.Duration = "Four Days";
+					break;
+				case "OneWeek":
+					FirstIcon.IsVisible = false;
+					SecondIcon.IsVisible = false;
+					ThirdIcon.IsVisible = false;
+					FourthIcon.IsVisible = false;
+					FifthIcon.IsVisible = true;
+					SixthIcon.IsVisible = false;
+					OfflineEpisodeSettings.Instance.Duration = "One Week";
+					break;
+				case "OneMonth":
+					FirstIcon.IsVisible = false;
+					SecondIcon.IsVisible = false;
+					ThirdIcon.IsVisible = false;
+					FourthIcon.IsVisible = false;
+					FifthIcon.IsVisible = false;
+					SixthIcon.IsVisible = true;
+					OfflineEpisodeSettings.Instance.Duration = "One Month";
+					break;
 			}
-			OfflineEpisodeSettings.Instance.Duration = pre.duration;
-			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 
 		protected override void OnDisappearing()
