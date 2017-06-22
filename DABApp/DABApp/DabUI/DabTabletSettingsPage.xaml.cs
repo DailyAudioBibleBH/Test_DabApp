@@ -23,6 +23,7 @@ namespace DABApp
 			SettingsPage.offline.Tapped += OnOffline;
 			SettingsPage.reset.Tapped += OnReset;
 			SettingsPage.appInfo.Tapped += OnAppInfo;
+			SettingsPage.profile.Tapped += OnProfile;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -66,6 +67,13 @@ namespace DABApp
 			var Offline = new DabOfflineEpisodeManagementPage();
 			Detail = Offline;
 			Offline.ToolbarItems.Clear();
+			Remove();
+		}
+
+		void OnProfile(object o, EventArgs e) {
+			var Profile = new DabProfileManagementPage();
+			Detail = Profile;
+			Profile.ToolbarItems.Clear();
 			Remove();
 		}
 

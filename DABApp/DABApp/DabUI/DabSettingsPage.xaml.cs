@@ -10,9 +10,11 @@ namespace DABApp
 		public ViewCell offline { get { return _offline;} }
 		public ViewCell reset { get { return _reset;} }
 		public ViewCell appInfo { get { return _appInfo;} }
+		public ViewCell profile { get { return _profile;} }
 		ViewCell _offline;
 		ViewCell _reset;
 		ViewCell _appInfo;
+		ViewCell _profile;
 
 		public DabSettingsPage()
 		{
@@ -22,6 +24,7 @@ namespace DABApp
 			_offline = Offline;
 			_reset = Reset;
 			_appInfo = AppInfo;
+			_profile = Profile;
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				LogOut.IsVisible = false;
@@ -80,6 +83,11 @@ namespace DABApp
 				Navigation.PushAsync(new DabAppInfoPage());
 			}
 		}
-	
+
+		void OnProfile(object o, EventArgs e) {
+			if (Device.Idiom == TargetIdiom.Phone) {
+				Navigation.PushAsync(new DabProfileManagementPage());
+			}
+		}
 	}
 }

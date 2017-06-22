@@ -127,6 +127,9 @@
       <DependentUpon>DabParentChildGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\Controls\DabSeekBar.cs" />
+    <Compile Include="DabUI\DabProfileManagementPage.xaml.cs">
+      <DependentUpon>DabProfileManagementPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -275,6 +278,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabParentChildGrid.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabProfileManagementPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

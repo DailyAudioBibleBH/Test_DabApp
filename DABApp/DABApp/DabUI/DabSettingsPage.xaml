@@ -4,11 +4,11 @@
 	xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
 	<t:MenuContainerPage.Content>
 			<StackLayout Padding="10" Spacing="10">
-				<Label Text="Settings" FontSize="Large"/>
+				<Label Text="Settings" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
 				<TableView Intent="Settings">
 					<TableRoot>
 						<TableSection x:Name="Account" Title="Account">
-							<ViewCell>
+							<ViewCell x:Name="Profile" Tapped="OnProfile">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 									<Image HorizontalOptions="Start"/>
 									<Label Text="Profile" HorizontalOptions="StartAndExpand"/>

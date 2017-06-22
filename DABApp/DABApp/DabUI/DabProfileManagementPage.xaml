@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabProfileManagementPage"
+	xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label Text="My Profile" VerticalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="First Name" FontSize="Micro"/>
+			<Entry x:Name="FirstName"/>
+			<Label Text="Last Name" FontSize="Micro"/>
+			<Entry x:Name="LastName"/>
+			<Label Text="Email Address" FontSize="Micro"/>
+			<Entry x:Name="Email"/>
+			<Label Text="Change Password" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="Current Password" FontSize="Micro"/>
+			<Entry x:Name="CurrentPassword"/>
+			<Label Text="New Password" FontSize="Micro"/>
+			<Entry x:Name="NewPassword"/>
+			<Label Text="Confirm New Password" FontSize="Micro"/>
+			<Entry x:Name="ConfirmNewPassword"/>
+			<Button Text="Save" Style="{StaticResource highlightedButtonStyle}"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>
