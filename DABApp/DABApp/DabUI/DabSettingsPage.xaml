@@ -3,13 +3,47 @@
 	xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" 
 	xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
 	<t:MenuContainerPage.Content>
-		<StackLayout Padding="0">
 			<StackLayout Padding="10" Spacing="10">
-			<Label Text="Settings"/>
-			<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
-			</StackLayout>
-			<TableView Intent="Settings">
-				<TableRoot>
+				<Label Text="Settings" FontSize="Large"/>
+				<TableView Intent="Settings">
+					<TableRoot>
+						<TableSection x:Name="Account" Title="Account">
+							<ViewCell>
+								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+									<Image HorizontalOptions="Start"/>
+									<Label Text="Profile" HorizontalOptions="StartAndExpand"/>
+									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								</StackLayout>
+							</ViewCell>
+							<ViewCell>
+								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+									<Image Source="ic_location_on_white.png" HorizontalOptions="Start"/>
+									<Label Text="Addresses" HorizontalOptions="StartAndExpand"/>
+									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								</StackLayout>
+							</ViewCell>
+							<ViewCell>
+								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+									<Image Source="ic_credit_card_white.png" HorizontalOptions="Start"/>
+									<Label Text="Wallet" HorizontalOptions="StartAndExpand"/>
+									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								</StackLayout>
+							</ViewCell>
+							<ViewCell>
+								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+									<Image HorizontalOptions="Start"/>
+									<Label Text="Donations" HorizontalOptions="StartAndExpand"/>
+									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								</StackLayout>
+							</ViewCell>
+						</TableSection>
+					<TableSection>
+						<ViewCell>
+							<StackLayout>
+				<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
+							</StackLayout>
+						</ViewCell>
+						</TableSection>
 					<TableSection x:Name="Listening" Title="Listening">
 						<ViewCell x:Name="Offline" Tapped="OnOffline">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">

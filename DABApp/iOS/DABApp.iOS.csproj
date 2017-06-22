@@ -285,6 +285,12 @@
     <BundleResource Include="Resources\ic_airplay_white_2x.png" />
     <BundleResource Include="Resources\ic_airplay_white_3x.png" />
     <BundleResource Include="Resources\FetteEngD.ttf" />
+    <BundleResource Include="Resources\ic_location_on_white.png" />
+    <BundleResource Include="Resources\ic_location_on_white_2x.png" />
+    <BundleResource Include="Resources\ic_location_on_white_3x.png" />
+    <BundleResource Include="Resources\ic_credit_card_white.png" />
+    <BundleResource Include="Resources\ic_credit_card_white_2x.png" />
+    <BundleResource Include="Resources\ic_credit_card_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
