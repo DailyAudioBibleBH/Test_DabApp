@@ -292,6 +292,25 @@ namespace DABApp
 			}
 		}
 
+		public static async Task<APIAddresses> GetAddresses() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
+				if (addresses == null) {
+					throw new Exception();
+				}
+				return addresses;
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
 		static void CreateSettings(APIToken token) 
 		{
 			var TokenSettings = new dbSettings();

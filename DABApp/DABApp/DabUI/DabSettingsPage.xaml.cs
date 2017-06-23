@@ -11,10 +11,12 @@ namespace DABApp
 		public ViewCell reset { get { return _reset;} }
 		public ViewCell appInfo { get { return _appInfo;} }
 		public ViewCell profile { get { return _profile;} }
+		public ViewCell addresses { get { return _addresses;} }
 		ViewCell _offline;
 		ViewCell _reset;
 		ViewCell _appInfo;
 		ViewCell _profile;
+		ViewCell _addresses;
 
 		public DabSettingsPage()
 		{
@@ -25,6 +27,7 @@ namespace DABApp
 			_reset = Reset;
 			_appInfo = AppInfo;
 			_profile = Profile;
+			_addresses = Addresses;
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				logOut.Clear();

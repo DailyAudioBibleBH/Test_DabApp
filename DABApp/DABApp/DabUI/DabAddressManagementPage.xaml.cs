@@ -10,15 +10,19 @@ namespace DABApp
 		public DabAddressManagementPage()
 		{
 			InitializeComponent();
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				NavigationPage.SetHasNavigationBar(this, false);
+			}
 		}
 
-		void OnBilling(object o, EventArgs e) 
+		async void OnBilling(object o, EventArgs e) 
 		{
+			var result = await AuthenticationAPI.GetAddresses();
 		}
 
 		void OnShipping(object o, EventArgs e) 
 		{
-			DisplayAlert("Shipping Functionality Absent", "This has not been implemented yet", "OK");
+            DisplayAlert("We're sorry, but you cannot update your shipping address using the mobile app at this time. Please visit dailyaudiobible.com to update your shipping address.", null, "OK");
 		}
 	}
 }

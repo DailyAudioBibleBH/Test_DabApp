@@ -24,6 +24,7 @@ namespace DABApp
 			SettingsPage.reset.Tapped += OnReset;
 			SettingsPage.appInfo.Tapped += OnAppInfo;
 			SettingsPage.profile.Tapped += OnProfile;
+			SettingsPage.addresses.Tapped += OnAddresses;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -74,6 +75,13 @@ namespace DABApp
 			var Profile = new DabProfileManagementPage();
 			Detail = Profile;
 			Profile.ToolbarItems.Clear();
+			Remove();
+		}
+
+		void OnAddresses(object o, EventArgs e) {
+			var Addresses = new DabAddressManagementPage();
+			Detail = new NavigationPage(Addresses);
+			Addresses.ToolbarItems.Clear();
 			Remove();
 		}
 
