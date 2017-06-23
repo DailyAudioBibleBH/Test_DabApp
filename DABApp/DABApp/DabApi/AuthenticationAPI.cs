@@ -217,8 +217,47 @@ namespace DABApp
 				db.Update(TokenSettings);
 				db.Update(ExpirationSettings);
 			}
-			catch (Exception e) { 
-				
+			catch (Exception e) {
+
+			}
+		}
+
+		public static async Task<string> EditMember(string email, string firstName, string lastName, string currentPassword, string newPassword, string confirmNewPassword) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+				dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+				APIToken token = container.token;
+				if (container.message != null && token == null)
+				{
+					throw new Exception(container.message);
+				}
+				TokenSettings.Value = token.value;
+				ExpirationSettings.Value = token.expires;
+				EmailSettings.Value = token.user_email;
+				FirstNameSettings.Value = token.user_first_name;
+				LastNameSettings.Value = token.user_last_name;
+				db.Update(TokenSettings);
+				db.Update(ExpirationSettings);
+				db.Update(EmailSettings);
+				db.Update(FirstNameSettings);
+				db.Update(LastNameSettings);
+				return "Success";
+			}
+			catch (Exception e) {
+				return e.Message;
 			}
 		}
 

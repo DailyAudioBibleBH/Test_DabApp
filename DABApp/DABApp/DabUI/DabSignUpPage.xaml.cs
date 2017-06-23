@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Text.RegularExpressions;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -81,6 +81,12 @@ namespace DABApp
 			{
 				DisplayAlert("Email is Required", null, "OK");
 				return false;
+			}
+			else {
+				if (!Regex.Match(Email.Text, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success) {
+					DisplayAlert("Email must be a valid email!", null, "OK");
+					return false;
+				}
 			}
 			if (string.IsNullOrWhiteSpace(Password.Text))
 			{

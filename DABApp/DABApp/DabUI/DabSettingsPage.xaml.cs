@@ -27,12 +27,9 @@ namespace DABApp
 			_profile = Profile;
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				LogOut.IsVisible = false;
+				logOut.Clear();
 				Listening.Clear();
-			}
-			else
-			{
-				LogOut.IsVisible = true;
+				Account.Clear();
 			}
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{

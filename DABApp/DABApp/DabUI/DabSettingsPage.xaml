@@ -37,7 +37,7 @@
 								</StackLayout>
 							</ViewCell>
 						</TableSection>
-					<TableSection>
+					<TableSection x:Name="logOut">
 						<ViewCell>
 							<StackLayout>
 				<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
