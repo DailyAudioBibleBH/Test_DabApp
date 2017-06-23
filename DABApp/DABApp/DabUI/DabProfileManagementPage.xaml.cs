@@ -41,6 +41,22 @@ namespace DABApp
 			Save.IsEnabled = true;
 		}
 
+		void OnFirstNameCompleted(object o, EventArgs e) {
+			LastName.Focus();
+		}
+
+		void OnLastNameCompleted(object o, EventArgs e) {
+			Email.Focus();
+		}
+
+		void OnCurrentPasswordCompleted(object o, EventArgs e) {
+			NewPassword.Focus();
+		}
+
+		void OnNewPasswordCompleted(object o, EventArgs e) {
+			ConfirmNewPassword.Focus();
+		}
+
 		bool Validation() 
 		{
 			if (!string.IsNullOrWhiteSpace(CurrentPassword.Text) || !string.IsNullOrEmpty(NewPassword.Text) || !string.IsNullOrEmpty(ConfirmNewPassword.Text)) {
