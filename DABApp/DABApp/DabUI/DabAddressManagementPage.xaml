@@ -3,19 +3,19 @@
 	<ContentPage.Content>
 		<StackLayout Padding="10" Spacing="10">
 			<Label Text="My Addresses" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
-			<TableView>
+			<TableView Intent="Settings">
 				<TableRoot>
 					<TableSection>
 						<ViewCell Tapped="OnBilling">
-							<StackLayout Orientation="Horizontal">
-								<Label Text="Billing Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Billing Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand" VerticalOptions="Center"/>
 							</StackLayout>
 						</ViewCell>
 						<ViewCell Tapped="OnShipping">
-							<StackLayout Orientation="Horizontal">
-								<Label Text="Shipping Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
+							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+								<Label Text="Shipping Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
+								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand" VerticalOptions="Center"/>
 							</StackLayout>
 						</ViewCell>
 					</TableSection>
