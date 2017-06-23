@@ -222,6 +222,37 @@ namespace DABApp
 			}
 		}
 
+		public static bool GetMember() 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile").Result;
+				string JsonOut = result.Content.ReadAsStringAsync().Result;
+				ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
+				if (info.email == null)
+				{
+					throw new Exception();
+				}
+				EmailSettings.Value = info.email;
+				FirstNameSettings.Value = info.first_Name;
+				LastNameSettings.Value = info.last_Name;
+				db.Update(EmailSettings);
+				db.Update(FirstNameSettings);
+				db.Update(LastNameSettings);
+				return true;
+			}
+			catch (Exception e) 
+			{
+				return false;
+			}
+		}
+
 		public static async Task<string> EditMember(string email, string firstName, string lastName, string currentPassword, string newPassword, string confirmNewPassword) 
 		{
 			try

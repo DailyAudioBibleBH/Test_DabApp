@@ -15,7 +15,7 @@
 									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
 							</ViewCell>
-							<ViewCell>
+							<ViewCell x:Name="Addresses" Tapped="OnAddresses">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 									<Image Source="ic_location_on_white.png" HorizontalOptions="Start"/>
 									<Label Text="Addresses" HorizontalOptions="StartAndExpand"/>

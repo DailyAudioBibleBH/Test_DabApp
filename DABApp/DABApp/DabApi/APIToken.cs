@@ -80,4 +80,10 @@ namespace DABApp
 			user_password2 = password2;
 		}
 	}
+
+	public class ProfileInfo { 
+		public string email { get; set;}
+		public string first_Name { get; set;}
+		public string last_Name { get; set;}
+	}
 }

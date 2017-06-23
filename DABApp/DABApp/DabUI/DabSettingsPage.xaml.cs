@@ -86,5 +86,11 @@ namespace DABApp
 				Navigation.PushAsync(new DabProfileManagementPage());
 			}
 		}
+
+		void OnAddresses(object o, EventArgs e) {
+			if (Device.Idiom == TargetIdiom.Phone) {
+				Navigation.PushAsync(new DabAddressManagementPage());
+			}
+		}
 	}
 }

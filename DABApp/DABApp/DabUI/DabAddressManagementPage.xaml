@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabAddressManagementPage" xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label Text="My Addresses" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
+			<TableView>
+				<TableRoot>
+					<TableSection>
+						<ViewCell Tapped="OnBilling">
+							<StackLayout Orientation="Horizontal">
+								<Label Text="Billing Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand"/>
+								<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+						<ViewCell Tapped="OnShipping">
+							<StackLayout Orientation="Horizontal">
+								<Label Text="Shipping Address" Style="{StaticResource playerLabelStyle}" HorizontalOptions="StartAndExpand"/>
+								<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
+							</StackLayout>
+						</ViewCell>
+					</TableSection>
+				</TableRoot>
+			</TableView>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>
