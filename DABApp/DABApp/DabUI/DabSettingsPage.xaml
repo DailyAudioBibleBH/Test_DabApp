@@ -22,7 +22,7 @@
 									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
 							</ViewCell>
-							<ViewCell>
+							<ViewCell x:Name="Wallet" Tapped="OnWallet">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 									<Image Source="ic_credit_card_white.png" HorizontalOptions="Start"/>
 									<Label Text="Wallet" HorizontalOptions="StartAndExpand"/>

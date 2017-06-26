@@ -311,7 +311,7 @@ namespace DABApp
 			}
 		}
 
-		public static async Task<bool> UpdateBillingAddress(Address newBilling) {
+		public static async Task<string> UpdateBillingAddress(Address newBilling) {
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
@@ -322,16 +322,32 @@ namespace DABApp
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				bool updateResult = Convert.ToBoolean(JsonOut);
-				if (updateResult)
+				if (JsonOut == "true")
 				{
-					return true;
+					return JsonOut;
 				}
-				else throw new Exception();
+				else throw new Exception(JsonOut);
 			}
 			catch (Exception e) 
 			{
-				return false;
+				return e.Message;
+			}
+		}
+
+		public static async Task<Card[]> GetWallet() 
+		{ 
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Card[] cards = JsonConvert.DeserializeObject<Card[]>(JsonOut);
+				return cards;
+			}
+			catch (Exception e) {
+				return null;
 			}
 		}
 

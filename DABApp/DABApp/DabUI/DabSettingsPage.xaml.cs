@@ -87,13 +87,20 @@ namespace DABApp
 		async void OnProfile(object o, EventArgs e) {
 			var result = await AuthenticationAPI.GetMember();
 			if (Device.Idiom == TargetIdiom.Phone) {
-				Navigation.PushAsync(new DabProfileManagementPage());
+				await Navigation.PushAsync(new DabProfileManagementPage());
 			}
 		}
 
 		void OnAddresses(object o, EventArgs e) {
 			if (Device.Idiom == TargetIdiom.Phone) {
 				Navigation.PushAsync(new DabAddressManagementPage());
+			}
+		}
+
+		async void OnWallet(object o, EventArgs e) {
+			if (Device.Idiom == TargetIdiom.Phone) {
+				var result = await AuthenticationAPI.GetWallet();
+				await Navigation.PushAsync(new DabWalletPage(result));
 			}
 		}
 	}

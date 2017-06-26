@@ -35,13 +35,13 @@ namespace DABApp
 			update.city = City.Text;
 			update.postcode = Code.Text;
 			var result = await AuthenticationAPI.UpdateBillingAddress(update);
-			if (result)
+			if (result == "true")
 			{
 				await DisplayAlert("Success", "Address successfully updated", "OK");
 				await Navigation.PopAsync();
 			}
 			else {
-				await DisplayAlert("Error", null, "OK");
+				await DisplayAlert("Error", result, "OK");
 			}
 		}
 	}

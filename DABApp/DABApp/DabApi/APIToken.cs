@@ -108,4 +108,15 @@ namespace DABApp
 		public Address billing { get; set; }
 		public Address shipping { get; set; }
 	}
+
+	public class Card
+	{
+		public string processor { get; set; }
+		public string brand { get; set; }
+		public string last4 { get; set; }
+		public int exp_month { get; set; }
+		public int exp_year { get; set; }
+		public string id { get; set; }
+		public bool Default { get; set;}
+	}
 }

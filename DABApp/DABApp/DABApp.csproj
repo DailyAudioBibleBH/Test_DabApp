@@ -136,6 +136,9 @@
     <Compile Include="DabUI\DabUpdateAddressPage.xaml.cs">
       <DependentUpon>DabUpdateAddressPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabWalletPage.xaml.cs">
+      <DependentUpon>DabWalletPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -293,6 +296,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabUpdateAddressPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabWalletPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
