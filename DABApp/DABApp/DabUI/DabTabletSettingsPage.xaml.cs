@@ -25,6 +25,7 @@ namespace DABApp
 			SettingsPage.appInfo.Tapped += OnAppInfo;
 			SettingsPage.profile.Tapped += OnProfile;
 			SettingsPage.addresses.Tapped += OnAddresses;
+			SettingsPage.wallet.Tapped += OnWallet;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -82,6 +83,14 @@ namespace DABApp
 			var Addresses = new DabAddressManagementPage();
 			Detail = new NavigationPage(Addresses);
 			Addresses.ToolbarItems.Clear();
+			Remove();
+		}
+
+		async void OnWallet(object o, EventArgs e) {
+			var result = await AuthenticationAPI.GetWallet();
+			var Wallet = new DabWalletPage(result);
+			Detail = new NavigationPage(Wallet);
+			Wallet.ToolbarItems.Clear();
 			Remove();
 		}
 
