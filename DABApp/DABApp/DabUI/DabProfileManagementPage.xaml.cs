@@ -34,13 +34,13 @@ namespace DABApp
 					NewPassword.Text = null;
 					ConfirmNewPassword.Text = null;
 					GuestStatus.Current.UserName = GlobalResources.GetUserName();
+					if (Device.Idiom == TargetIdiom.Phone) {
+						Navigation.PopAsync();
+					}
 				}
 				else {
 					DisplayAlert("An error has occured", message, "OK");
 				}
-			}
-			if (Device.Idiom == TargetIdiom.Phone) {
-				Navigation.PopAsync();
 			}
 			Save.IsEnabled = true;
 		}

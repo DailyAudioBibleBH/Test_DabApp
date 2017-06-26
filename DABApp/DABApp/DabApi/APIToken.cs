@@ -87,23 +87,10 @@ namespace DABApp
 		public string last_Name { get; set;}
 	}
 
-	public class Billing
-	{
-		public string first_name { get; set; }
-		public string last_name { get; set; }
-		public string company { get; set; }
-		public string email { get; set; }
-		public string phone { get; set; }
-		public string address_1 { get; set; }
-		public string address_2 { get; set; }
-		public string city { get; set; }
-		public string state { get; set; }
-		public string postcode { get; set; }
-		public string country { get; set; }
-	}
 
-	public class Shipping
+	public class Address
 	{
+		public bool isShipping { get; set;}
 		public string first_name { get; set; }
 		public string last_name { get; set; }
 		public string company { get; set; }
@@ -119,7 +106,7 @@ namespace DABApp
 
 	public class APIAddresses
 	{
-		public Billing billing { get; set; }
-		public Shipping shipping { get; set; }
+		public Address billing { get; set; }
+		public Address shipping { get; set; }
 	}
 }

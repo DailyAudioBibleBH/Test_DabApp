@@ -133,6 +133,9 @@
     <Compile Include="DabUI\DabAddressManagementPage.xaml.cs">
       <DependentUpon>DabAddressManagementPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabUpdateAddressPage.xaml.cs">
+      <DependentUpon>DabUpdateAddressPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -287,6 +290,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabAddressManagementPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabUpdateAddressPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

@@ -152,6 +152,11 @@
 				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}"/>
 				<Setter Property="SeparatorVisibility" Value="Default"/>
 			</Style>
+			<Style x:Key="BoxViewStyle" TargetType="BoxView">
+				<Setter Property="HeightRequest" Value="1"/>
+				<Setter Property="Color" Value="{DynamicResource InputBackgroundColor}"/>
+			</Style>
+			<Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
