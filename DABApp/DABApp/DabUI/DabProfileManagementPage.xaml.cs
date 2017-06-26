@@ -10,7 +10,6 @@ namespace DABApp
 		public DabProfileManagementPage()
 		{
 			InitializeComponent();
-			var result = AuthenticationAPI.GetMember();
 			var UserName = GlobalResources.GetUserName().Split(' ');
 			FirstName.Text = UserName[0];
 			LastName.Text = UserName[1];

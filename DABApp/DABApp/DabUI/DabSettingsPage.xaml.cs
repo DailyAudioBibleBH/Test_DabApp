@@ -84,7 +84,8 @@ namespace DABApp
 			}
 		}
 
-		void OnProfile(object o, EventArgs e) {
+		async void OnProfile(object o, EventArgs e) {
+			var result = await AuthenticationAPI.GetMember();
 			if (Device.Idiom == TargetIdiom.Phone) {
 				Navigation.PushAsync(new DabProfileManagementPage());
 			}

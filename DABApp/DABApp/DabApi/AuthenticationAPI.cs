@@ -222,7 +222,7 @@ namespace DABApp
 			}
 		}
 
-		public static bool GetMember() 
+		public static async Task<bool> GetMember() 
 		{
 			try
 			{
@@ -232,8 +232,8 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile").Result;
-				string JsonOut = result.Content.ReadAsStringAsync().Result;
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile");
+				string JsonOut = await result.Content.ReadAsStringAsync();
 				ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
 				if (info.email == null)
 				{
@@ -301,13 +301,37 @@ namespace DABApp
 				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
-				if (addresses == null) {
+				if (addresses.billing == null) {
 					throw new Exception();
 				}
 				return addresses;
 			}
 			catch (Exception e) {
 				return null;
+			}
+		}
+
+		public static async Task<bool> UpdateBillingAddress(Address newBilling) {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				var JsonIn = JsonConvert.SerializeObject(newBilling);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				bool updateResult = Convert.ToBoolean(JsonOut);
+				if (updateResult)
+				{
+					return true;
+				}
+				else throw new Exception();
+			}
+			catch (Exception e) 
+			{
+				return false;
 			}
 		}
 

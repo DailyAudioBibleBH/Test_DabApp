@@ -20,8 +20,7 @@ namespace DABApp
 			var result = await AuthenticationAPI.GetAddresses();
 			if (result != null)
 			{
-				result.billing.isShipping = false;
-				Navigation.PushAsync(new DabUpdateAddressPage(result.billing));
+				Navigation.PushAsync(new DabUpdateAddressPage(result.billing, false));
 			}
 		}
 
@@ -32,7 +31,7 @@ namespace DABApp
 			//if (result != null)
 			//{
 			//	result.shipping.isShipping = true;
-			//	Navigation.PushAsync(new DabUpdateAddressPage(result.shipping));
+			//	Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, true));
 			//}
 		}
 	}
