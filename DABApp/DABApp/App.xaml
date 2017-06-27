@@ -116,6 +116,13 @@
 				<Setter Property="BorderWidth" Value="1"/>
 				<Setter Property="BorderRadius" Value="3"/>
 			</Style>
+			<Style x:Key="deleteButtonStyle" TargetType="Button">
+				<Setter Property="BorderColor" Value="{DynamicResource HighlightColor}"/>
+				<Setter Property="TextColor" Value="{DynamicResource HighlightColor}"/>
+				<Setter Property="BorderWidth" Value="1"/>
+				<Setter Property="BorderRadius" Value="3"/>
+				<Setter Property="BackgroundColor" Value="Transparent"/>
+			</Style>
 			<!--ListView-->
 			<Style x:Key="listviewStyle" TargetType="ListView">
 				<Setter Property="SeparatorColor" Value="Transparent" />

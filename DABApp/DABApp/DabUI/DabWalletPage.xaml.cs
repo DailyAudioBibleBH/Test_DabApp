@@ -7,12 +7,16 @@ namespace DABApp
 {
 	public partial class DabWalletPage : DabBaseContentPage
 	{
+		Card[] _cards;
+
 		public DabWalletPage(Card[] cards)
 		{
 			InitializeComponent();
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+			_cards = cards;
+			int i = 0;
 			foreach (var card in cards) {
 				var image = new Image();
 				image.Source = "ic_chevron_right_white_2x.png";
@@ -33,12 +37,15 @@ namespace DABApp
 				viewCell.AutomationId = card.id;
 				viewCell.Tapped += OnCard;
 				viewCell.View = stackLayout;
+				viewCell.StyleId = i.ToString();
 				Cards.Insert(0, viewCell);
+				i++;
 			}
 		}
 
-		void OnCard(object o, EventArgs e) { 
-			
+		void OnCard(object o, EventArgs e) {
+			var view = (ViewCell)o;
+			Navigation.PushAsync(new DabCreditCardPage(_cards[Convert.ToInt32(view.StyleId)]));
 		}
 
 		void OnAdd(object o, EventArgs e) {
