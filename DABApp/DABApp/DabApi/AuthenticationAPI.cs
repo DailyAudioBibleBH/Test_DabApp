@@ -360,7 +360,7 @@ namespace DABApp
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.DeleteAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet/{CardId}");
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				if (JsonOut == "OK")
+				if (JsonOut == "true")
 				{
 					return JsonOut;
 				}

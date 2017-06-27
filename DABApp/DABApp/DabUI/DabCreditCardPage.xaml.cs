@@ -35,6 +35,7 @@ namespace DABApp
 
 		async void OnSave(object o, EventArgs e)
 		{
+			Save.IsEnabled = false;
 			var sCard = new Card
 			{
 				fullNumber = CardNumber.Text,
@@ -51,17 +52,20 @@ namespace DABApp
 			{
 				await Navigation.PopAsync();
 			}
+			Save.IsEnabled = true;
 		}
 
 		async void OnDelete(object o, EventArgs e) 
 		{
+			Delete.IsEnabled = false;
 			var result = await AuthenticationAPI.DeleteCard(_card.id);
-			if (result.Contains("Error")) {
-				DisplayAlert("Error", result, "OK");
-			}
-			else {
+			if (result.Contains("true")) {
 				await Navigation.PopAsync();
 			}
+			else {
+                DisplayAlert("Error", result, "OK");
+			}
+			Delete.IsEnabled = true;
 		}
 	}
 }

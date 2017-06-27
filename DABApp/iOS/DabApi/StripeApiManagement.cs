@@ -29,7 +29,7 @@ namespace DABApp.iOS
 			}
 		}
 
-		public async Task DeletCard(Card card)
+		public async Task DeleteCard(Card card)
 		{
 
 		}

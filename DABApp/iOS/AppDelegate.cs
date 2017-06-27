@@ -34,7 +34,7 @@ namespace DABApp.iOS
 			CrossPushNotification.Initialize<CrossPushNotificationListener>();
 			app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-			Stripe.StripeClient.DefaultPublishableKey = "";
+			Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
 
 			LoadApplication(new App());
 
