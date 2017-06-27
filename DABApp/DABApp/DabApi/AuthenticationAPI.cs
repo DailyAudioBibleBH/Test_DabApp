@@ -351,6 +351,30 @@ namespace DABApp
 			}
 		}
 
+		public static async Task<string> DeleteCard(string CardId) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.DeleteAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet/{CardId}");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut == "OK")
+				{
+					return JsonOut;
+				}
+				else 
+				{
+					throw new Exception(JsonOut);
+				}
+			}
+			catch (Exception e) 
+			{
+				return e.Message;
+			}
+		}
+
 		static void CreateSettings(APIToken token) 
 		{
 			var TokenSettings = new dbSettings();

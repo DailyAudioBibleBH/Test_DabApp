@@ -23,7 +23,7 @@ namespace DABApp.iOS
 				var token = await StripeClient.CreateToken(sCard);
 				return token.Id;
 			}
-			catch (Exception ex) 
+			catch (Exception ex)
 			{
 				return $"Error: {ex.Message}";
 			}
@@ -31,6 +31,7 @@ namespace DABApp.iOS
 
 		public async Task DeletCard(Card card)
 		{
-			
+
 		}
 	}
+}

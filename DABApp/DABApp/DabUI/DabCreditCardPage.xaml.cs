@@ -7,6 +7,8 @@ namespace DABApp
 {
 	public partial class DabCreditCardPage : DabBaseContentPage
 	{
+		Card _card;
+
 		public DabCreditCardPage(Card card = null)
 		{
 			InitializeComponent();
@@ -16,6 +18,7 @@ namespace DABApp
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			if (card != null) {
+				_card = card;
 				Title.Text = "Card Details";
 				CVC.IsVisible = false;
 				CVCLabel.IsVisible = false;
@@ -40,12 +43,25 @@ namespace DABApp
 				cvc = CVC.Text
 			};
 			var result = await DependencyService.Get<IStripe>().AddCard(sCard);
-			if (result.Contains("Error")) { 
-				
+			if (result.Contains("Error"))
+			{
+				DisplayAlert("Error", result, "OK");
 			}
-			await Navigation.PopAsync();
+			else
+			{
+				await Navigation.PopAsync();
+			}
 		}
 
-		async void OnDelete(object o, EventArgs e) { }
+		async void OnDelete(object o, EventArgs e) 
+		{
+			var result = await AuthenticationAPI.DeleteCard(_card.id);
+			if (result.Contains("Error")) {
+				DisplayAlert("Error", result, "OK");
+			}
+			else {
+				await Navigation.PopAsync();
+			}
+		}
 	}
 }
