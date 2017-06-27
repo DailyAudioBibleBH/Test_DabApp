@@ -41,8 +41,8 @@ namespace DABApp
 			
 		}
 
-		void OnAdd(object o, EventArgs e) { 
-			
+		void OnAdd(object o, EventArgs e) {
+			Navigation.PushAsync(new DabCreditCardPage());
 		}
 	}
 }
