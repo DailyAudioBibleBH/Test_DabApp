@@ -22,19 +22,26 @@ namespace DABApp
 				label.Text = $"{card.brand} **** **** **** {card.last4}";
 				label.HorizontalOptions = LayoutOptions.StartAndExpand;
 				label.VerticalOptions = LayoutOptions.Center;
+				label.TextColor = (Color)App.Current.Resources["PlayerLabelColor"];
 				var stackLayout = new StackLayout();
 				stackLayout.Orientation = StackOrientation.Horizontal;
 				stackLayout.Children.Add(label);
 				stackLayout.Children.Add(image);
+				stackLayout.Padding = 10;
+				stackLayout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
 				var viewCell = new ViewCell();
 				viewCell.AutomationId = card.id;
 				viewCell.Tapped += OnCard;
 				viewCell.View = stackLayout;
-				Cards.Add(viewCell);
+				Cards.Insert(0, viewCell);
 			}
 		}
 
 		void OnCard(object o, EventArgs e) { 
+			
+		}
+
+		void OnAdd(object o, EventArgs e) { 
 			
 		}
 	}
