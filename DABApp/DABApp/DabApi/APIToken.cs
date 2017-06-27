@@ -118,5 +118,7 @@ namespace DABApp
 		public int exp_year { get; set; }
 		public string id { get; set; }
 		public bool Default { get; set;}
+		public string fullNumber { get; set;}
+		public string cvc { get; set;}
 	}
 }

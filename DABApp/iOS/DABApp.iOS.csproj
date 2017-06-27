@@ -237,6 +237,7 @@
     <Compile Include="CustomRenderers\ColoredSlider.cs" />
     <Compile Include="CustomRenderers\ColoredMPVolumeView.cs" />
     <Compile Include="DependencyServices\ShareIntent.cs" />
+    <Compile Include="DabApi\StripeApiManagement.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

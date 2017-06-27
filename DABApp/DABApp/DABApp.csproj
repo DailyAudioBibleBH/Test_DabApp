@@ -142,6 +142,7 @@
     <Compile Include="DabUI\DabCreditCardPage.xaml.cs">
       <DependentUpon>DabCreditCardPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabApi\IStripe.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

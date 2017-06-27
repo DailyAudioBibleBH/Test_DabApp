@@ -30,10 +30,22 @@ namespace DABApp
 			}
 		}
 
-		void OnSave(object o, EventArgs e) { 
-		
+		async void OnSave(object o, EventArgs e)
+		{
+			var sCard = new Card
+			{
+				fullNumber = CardNumber.Text,
+				exp_month = Convert.ToInt32(Month.SelectedItem),
+				exp_year = Convert.ToInt32(Year.SelectedItem),
+				cvc = CVC.Text
+			};
+			var result = await DependencyService.Get<IStripe>().AddCard(sCard);
+			if (result.Contains("Error")) { 
+				
+			}
+			await Navigation.PopAsync();
 		}
 
-		void OnDelete(object o, EventArgs e) { }
+		async void OnDelete(object o, EventArgs e) { }
 	}
 }
