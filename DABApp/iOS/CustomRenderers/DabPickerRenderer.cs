@@ -35,6 +35,9 @@ namespace DABApp.iOS
 			UIImage icon = UIImage.FromFile("ic_keyboard_arrow_down_white.png");
 			icon = icon.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			Control.RightView = new UIImageView(icon);
+			if (Control.Enabled == false) {
+				Control.TextColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
+			}
 		}
 	}
 }

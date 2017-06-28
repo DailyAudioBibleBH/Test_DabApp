@@ -326,7 +326,10 @@ namespace DABApp
 				{
 					return JsonOut;
 				}
-				else throw new Exception(JsonOut);
+				else {
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message); 
+				}
 			}
 			catch (Exception e) 
 			{
@@ -366,7 +369,8 @@ namespace DABApp
 				}
 				else 
 				{
-					throw new Exception(JsonOut);
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
 				}
 			}
 			catch (Exception e) 
@@ -388,7 +392,8 @@ namespace DABApp
 				var result = await client.PostAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut.Contains("code")) {
-					throw new Exception(JsonOut);
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
 				}
 				return JsonOut;
 			}
