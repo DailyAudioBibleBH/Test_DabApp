@@ -3,13 +3,14 @@ using DABApp.iOS;
 using Xamarin.Forms;
 using Stripe;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 [assembly: Dependency(typeof(StripeApiManagement))]
 namespace DABApp.iOS
 {
 	public class StripeApiManagement : IStripe
 	{
-		public async Task<string> AddCard(Card newCard)
+		public async Task<StripeContainer> AddCard(DABApp.Card newCard)
 		{
 			var sCard = new Stripe.Card
 			{
@@ -21,17 +22,16 @@ namespace DABApp.iOS
 			try
 			{
 				var token = await StripeClient.CreateToken(sCard);
-				return token.Id;
+				var container = new StripeContainer();
+				container.card_token = token.Id;
+				return container;
 			}
 			catch (Exception ex)
 			{
-				return $"Error: {ex.Message}";
+				var container = new StripeContainer();
+				container.card_token = $"Error: {ex.Message}";
+				return container;
 			}
-		}
-
-		public async Task DeleteCard(Card card)
-		{
-
 		}
 	}
 }

@@ -121,4 +121,23 @@ namespace DABApp
 		public string fullNumber { get; set;}
 		public string cvc { get; set;}
 	}
+
+	public class StripeContainer { 
+		public string card_token { get; set;} 
+	}
+
+	//public class StripeToken { 
+	//	public StripeCard Card { get; set;}
+	//	public string Id { get; set; }
+	//	public bool LiveMode { get; set;}
+	//	public bool Used { get; set;}
+	//}
+
+	//public class StripeCard { 
+	//	public string CVC { get; set;}
+	//	public int ExpiryMonth { get; set;}
+	//	public int ExpiryYear { get; set;}
+	//	public string Id { get; set;}
+	//	public string Number { get; set; }
+	//}
 }

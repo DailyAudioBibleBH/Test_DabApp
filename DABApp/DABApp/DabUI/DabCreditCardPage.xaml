@@ -19,7 +19,7 @@
 				<Label x:Name="CVCLabel" Text="CVC" FontSize="Micro" Grid.Column="2" Grid.Row="0"/>
 				<Picker x:Name="Month" Grid.Column="0" Grid.Row="1"/>
 				<Picker x:Name="Year" Grid.Column="1" Grid.Row="1"/>
-				<Entry x:Name="CVC" Grid.Column="2" Grid.Row="1"/>
+				<Entry x:Name="CVC" Grid.Column="2" Grid.Row="1" Keyboard="Numeric"/>
 			</Grid>
 			<Button x:Name="Save" Text="Save" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 			<Label x:Name="DeleteText" Text="For compliance purposes, you may not change your credit card information on this page. To update your card information, delete the card and add a new one." FontSize="Micro" IsVisible="false"/>

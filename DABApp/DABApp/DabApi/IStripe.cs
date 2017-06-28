@@ -5,7 +5,6 @@ namespace DABApp
 {
 	public interface IStripe
 	{
-		Task<string> AddCard(Card newCard);
-		Task DeleteCard(Card card);
+		Task<StripeContainer> AddCard(DABApp.Card newCard);
 	}
 }

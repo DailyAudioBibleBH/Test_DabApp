@@ -13,7 +13,9 @@ namespace DABApp
 		{
 			InitializeComponent();
 			var months = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+			var years = new List<string>() { "2017" };
 			Month.ItemsSource = months;
+			Year.ItemsSource = years;
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
@@ -44,13 +46,20 @@ namespace DABApp
 				cvc = CVC.Text
 			};
 			var result = await DependencyService.Get<IStripe>().AddCard(sCard);
-			if (result.Contains("Error"))
+			if (result.card_token.Contains("Error"))
 			{
-				DisplayAlert("Error", result, "OK");
+				DisplayAlert("Error", result.card_token, "OK");
 			}
 			else
 			{
-				await Navigation.PopAsync();
+				var Result = await AuthenticationAPI.AddCard(result);
+				if (Result.Contains("code"))
+				{
+					await DisplayAlert("Error", Result, "OK");
+				}
+				else {
+					await Navigation.PopAsync();
+				}
 			}
 			Save.IsEnabled = true;
 		}

@@ -38,22 +38,13 @@ namespace DABApp
 			if (isInitialized)
 			{
 				var result = await AuthenticationAPI.GetWallet();
-				if (result.Length > _cards.Length)
-				{
-					var NewCards = result.Except(_cards);
-					foreach (var card in NewCards)
-					{
-						InsertCard(card);
-					}
+				ViewCell ok = (ViewCell)Cards.Last();
+				Cards.Clear();
+				Cards.Add(ok);
+				foreach (var cell in result) {
+					InsertCard(cell);
 				}
-				if (result.Length < _cards.Length)
-				{
-					var OldCards = _cards.Except(result);
-					foreach (var c in OldCards)
-					{
-						Cards.Remove(Cards.Single(x => x.AutomationId == c.id));
-					}
-				}
+				_cards = result;
 			}
 			isInitialized = true;
 		}

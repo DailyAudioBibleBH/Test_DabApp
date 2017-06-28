@@ -375,6 +375,29 @@ namespace DABApp
 			}
 		}
 
+		public static async Task<string> AddCard(StripeContainer token) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				var JsonIn = JsonConvert.SerializeObject(token);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.PostAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut.Contains("code")) {
+					throw new Exception(JsonOut);
+				}
+				return JsonOut;
+			}
+			catch (Exception e) 
+			{
+				return e.Message;
+			}
+		}
+
 		static void CreateSettings(APIToken token) 
 		{
 			var TokenSettings = new dbSettings();
