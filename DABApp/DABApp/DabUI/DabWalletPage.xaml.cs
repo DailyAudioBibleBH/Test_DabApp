@@ -37,6 +37,10 @@ namespace DABApp
 			base.OnAppearing();
 			if (isInitialized)
 			{
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
 				var result = await AuthenticationAPI.GetWallet();
 				ViewCell ok = (ViewCell)Cards.Last();
 				Cards.Clear();
@@ -45,6 +49,8 @@ namespace DABApp
 					InsertCard(cell);
 				}
 				_cards = result;
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
 			}
 			isInitialized = true;
 		}

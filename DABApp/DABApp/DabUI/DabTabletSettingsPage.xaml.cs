@@ -88,18 +88,30 @@ namespace DABApp
 		}
 
 		async void OnWallet(object o, EventArgs e) {
+			//ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(SettingsPage, "activity");
+			//StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(SettingsPage, "activityHolder");
+			//activity.IsVisible = true;
+			//activityHolder.IsVisible = true;
 			var result = await AuthenticationAPI.GetWallet();
 			var Wallet = new DabWalletPage(result);
 			Detail = new NavigationPage(Wallet);
 			Wallet.ToolbarItems.Clear();
 			Remove();
+			//activity.IsVisible = false;
+			//activityHolder.IsVisible = false;
 		}
 
 		async void OnDonations(object o, EventArgs e) {
+			//ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(SettingsPage, "activity");
+			//StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(SettingsPage, "activityHolder");
+			//activity.IsVisible = true;
+			//activityHolder.IsVisible = true;
 			var Donations = new DabManageDonationsPage();
 			Detail = new NavigationPage(Donations);
 			Donations.ToolbarItems.Clear();
 			Remove();
+			//activity.IsVisible = false;
+			//activityHolder.IsVisible = false;
 		}
 
 		void Remove() {

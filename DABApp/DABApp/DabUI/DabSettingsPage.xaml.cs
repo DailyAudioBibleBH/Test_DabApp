@@ -40,11 +40,11 @@ namespace DABApp
 				Listening.Clear();
 				Account.Clear();
 			}
-			if (Device.Idiom == TargetIdiom.Tablet)
-			{
-				ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
-				ControlTemplate = NoPlayerBarTemplate;
-			}
+			//if (Device.Idiom == TargetIdiom.Tablet)
+			//{
+			//	ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			//	ControlTemplate = NoPlayerBarTemplate;
+			//}
 
 		}
 
@@ -105,15 +105,27 @@ namespace DABApp
 
 		async void OnWallet(object o, EventArgs e) {
 			if (Device.Idiom == TargetIdiom.Phone) {
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
 				var result = await AuthenticationAPI.GetWallet();
 				await Navigation.PushAsync(new DabWalletPage(result));
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
 			}
 		}
 
 		async void OnDonations(object o, EventArgs e) {
 			if (Device.Idiom == TargetIdiom.Phone) {
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
 				var don = await AuthenticationAPI.GetDonations();
 				await Navigation.PushAsync(new DabManageDonationsPage());
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
 			}
 		}
 	}
