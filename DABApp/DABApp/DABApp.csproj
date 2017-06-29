@@ -143,6 +143,9 @@
       <DependentUpon>DabCreditCardPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabApi\IStripe.cs" />
+    <Compile Include="DabUI\DabManageDonationsPage.xaml.cs">
+      <DependentUpon>DabManageDonationsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -306,6 +309,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabCreditCardPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabManageDonationsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

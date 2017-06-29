@@ -26,6 +26,7 @@ namespace DABApp
 			SettingsPage.profile.Tapped += OnProfile;
 			SettingsPage.addresses.Tapped += OnAddresses;
 			SettingsPage.wallet.Tapped += OnWallet;
+			SettingsPage.donations.Tapped += OnDonations;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -91,6 +92,13 @@ namespace DABApp
 			var Wallet = new DabWalletPage(result);
 			Detail = new NavigationPage(Wallet);
 			Wallet.ToolbarItems.Clear();
+			Remove();
+		}
+
+		async void OnDonations(object o, EventArgs e) {
+			var Donations = new DabManageDonationsPage();
+			Detail = new NavigationPage(Donations);
+			Donations.ToolbarItems.Clear();
 			Remove();
 		}
 

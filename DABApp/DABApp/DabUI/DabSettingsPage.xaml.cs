@@ -13,12 +13,14 @@ namespace DABApp
 		public ViewCell profile { get { return _profile;} }
 		public ViewCell addresses { get { return _addresses;} }
 		public ViewCell wallet { get { return _wallet;} }
+		public ViewCell donations { get { return _donations;} }
 		ViewCell _offline;
 		ViewCell _reset;
 		ViewCell _appInfo;
 		ViewCell _profile;
 		ViewCell _addresses;
 		ViewCell _wallet;
+		ViewCell _donations;
 
 		public DabSettingsPage()
 		{
@@ -31,6 +33,7 @@ namespace DABApp
 			_profile = Profile;
 			_addresses = Addresses;
 			_wallet = Wallet;
+			_donations = Donations;
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				logOut.Clear();
@@ -104,6 +107,13 @@ namespace DABApp
 			if (Device.Idiom == TargetIdiom.Phone) {
 				var result = await AuthenticationAPI.GetWallet();
 				await Navigation.PushAsync(new DabWalletPage(result));
+			}
+		}
+
+		async void OnDonations(object o, EventArgs e) {
+			if (Device.Idiom == TargetIdiom.Phone) {
+				var don = await AuthenticationAPI.GetDonations();
+				await Navigation.PushAsync(new DabManageDonationsPage());
 			}
 		}
 	}

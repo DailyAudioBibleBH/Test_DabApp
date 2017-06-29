@@ -22,6 +22,7 @@
 			<Entry x:Name="Address2" Text="{Binding address_2}"/>
 			<Label Text="City" FontSize="Micro"/>
 			<Entry x:Name="City" Text="{Binding city}"/>
+			<!--<Label Text="State" FontSize="Micro" IsVisible="true"/>-->
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
@@ -30,9 +31,9 @@
 					<ColumnDefinition Width="*"/>
 					<ColumnDefinition Width="1.5*"/>
 				</Grid.ColumnDefinitions>
-				<StackLayout x:Name="Region" Grid.Row="0" Grid.Column="0">
-					<Label x:Name="RegionLabel" Text="State" FontSize="Micro"/>
-					<Picker x:Name="Regions" Title=" - " TextColor="{DynamicResource TextColor}"/>
+				<StackLayout x:Name="_Region" Grid.Row="0" Grid.Column="0">
+					<Label x:Name="RegionLabel" Text="State" FontSize="Micro" IsVisible="true"/>
+					<Picker x:Name="Regions" Title=" - " TextColor="{DynamicResource TextColor}" VerticalOptions="End"/>
 				</StackLayout>
 				<StackLayout Grid.Row="0" Grid.Column="1">
 					<Label x:Name="CodeLabel" Text="Zip" FontSize="Micro"/>
@@ -40,7 +41,7 @@
 				</StackLayout>
 			</Grid>
 			<Label Text="Country" FontSize="Micro"/>
-			<Picker x:Name="Country" Title=" - " TextColor="{DynamicResource TextColor}"/>
+			<Picker x:Name="Country" Title=" - " TextColor="{DynamicResource TextColor}" SelectedIndexChanged="OnCountrySelected"/>
 			<Button Text="Save" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 		</StackLayout>
 	</ContentPage.Content>

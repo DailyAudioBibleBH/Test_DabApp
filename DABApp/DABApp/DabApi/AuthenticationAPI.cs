@@ -311,6 +311,22 @@ namespace DABApp
 			}
 		}
 
+		public static async Task<Country[]> GetCountries() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/countries");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Country[] countries = JsonConvert.DeserializeObject<Country[]>(JsonOut);
+				return countries;
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
 		public static async Task<string> UpdateBillingAddress(Address newBilling) {
 			try
 			{
@@ -400,6 +416,23 @@ namespace DABApp
 			catch (Exception e) 
 			{
 				return e.Message;
+			}
+		}
+
+		public static async Task<Donation[]> GetDonations() 
+		{ 
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
+				return donations;
+			}
+			catch (Exception e) {
+				return null;
 			}
 		}
 

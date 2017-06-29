@@ -101,12 +101,30 @@ namespace DABApp
 		public string state { get; set; }
 		public string postcode { get; set; }
 		public string country { get; set; }
+		public string type { get; set;}
 	}
 
 	public class APIAddresses
 	{
 		public Address billing { get; set; }
 		public Address shipping { get; set; }
+	}
+
+	public class Country { 
+		public string countryName { get; set;}
+		public string countryCode { get; set;}
+		public string cityLabel { get; set;}
+		public bool postalCodeBeforeCity { get; set;}
+		public string postalCodeLabel { get; set;}
+		public string postalCodeKeyboard { get; set;}
+		public string regionLabel { get; set;}
+		public Region[] regions { get; set;} 
+		public bool stateRequired { get; set;}
+	}
+
+	public class Region { 
+		public string regionName { get; set;}
+		public string regionCode { get; set;}
 	}
 
 	public class Card
@@ -124,6 +142,11 @@ namespace DABApp
 
 	public class StripeContainer { 
 		public string card_token { get; set;} 
+	}
+
+	public class Donation { 
+		public string link { get; set;}
+		public string name { get; set;}
 	}
 
 	public class APIError { 

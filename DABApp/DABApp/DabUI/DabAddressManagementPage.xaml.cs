@@ -18,21 +18,21 @@ namespace DABApp
 		async void OnBilling(object o, EventArgs e) 
 		{
 			var result = await AuthenticationAPI.GetAddresses();
+			var countries = await AuthenticationAPI.GetCountries();
 			if (result != null)
 			{
-				Navigation.PushAsync(new DabUpdateAddressPage(result.billing, false));
+				Navigation.PushAsync(new DabUpdateAddressPage(result.billing, countries, false));
 			}
 		}
 
 		async void OnShipping(object o, EventArgs e) 
 		{
-			DisplayAlert("We're sorry, but you cannot update your shipping address using the mobile app at this time. Please visit dailyaudiobible.com to update your shipping address.", null, "OK");
-			//var result = await AuthenticationAPI.GetAddresses();
-			//if (result != null)
-			//{
-			//	result.shipping.isShipping = true;
-			//	Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, true));
-			//}
+			var result = await AuthenticationAPI.GetAddresses();
+			var countries = await AuthenticationAPI.GetCountries();
+			if (result != null)
+			{
+				Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, countries, true));
+			}
 		}
 	}
 }
