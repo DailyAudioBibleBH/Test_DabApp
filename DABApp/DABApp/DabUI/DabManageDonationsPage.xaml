@@ -3,7 +3,7 @@
 	<ContentPage.Content>
 		<StackLayout x:Name="Container" Padding="10" Spacing="10">
 			<Label Text="My Donations" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
-			<Button Text="Show Donation History"/>
+			<Button Text="Show Donation History" Clicked="OnHistory"/>
 			<Button Text="One-time gift"/>
 		</StackLayout>
 	</ContentPage.Content>

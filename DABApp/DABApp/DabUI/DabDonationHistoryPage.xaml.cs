@@ -11,5 +11,10 @@ namespace DABApp
 		{
 			InitializeComponent();
 		}
+
+		void OnBack(object o, EventArgs e) 
+		{
+			Navigation.PopAsync();
+		}
 	}
 }

@@ -15,6 +15,7 @@ namespace DABApp.iOS
 	[Register("AppDelegate")]
 	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
 	{
+
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			SQLitePCL.Batteries.Init();
@@ -83,6 +84,5 @@ namespace DABApp.iOS
 				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
 			}
 		}
-
 	}
 }

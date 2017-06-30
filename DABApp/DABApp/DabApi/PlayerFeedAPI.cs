@@ -302,6 +302,21 @@ namespace DABApp
 				}
 				return reading;
 			}
-		} 
+		}
+
+		public static async Task GetDonationAccessToken()
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+			}
+			catch (Exception e)
+			{
+			}
+		}
 	}
 }

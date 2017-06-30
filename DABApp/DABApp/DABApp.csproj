@@ -149,6 +149,7 @@
     <Compile Include="DabUI\DabDonationHistoryPage.xaml.cs">
       <DependentUpon>DabDonationHistoryPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabViewHelpers\IRivets.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

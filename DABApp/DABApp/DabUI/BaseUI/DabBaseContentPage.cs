@@ -2,6 +2,7 @@
 using SlideOverKit;
 using Xamarin.Forms;
 using FFImageLoading.Forms;
+using System.Threading.Tasks;
 
 namespace DABApp
 {
@@ -65,14 +66,15 @@ namespace DABApp
 			giveButton.Text = "Give";
 			//giveButton.Icon = "ic_attach_money_white.png";
 			giveButton.Priority = 0; //default
-			giveButton.Clicked += async (sender, e) =>
-			{
-				await AuthenticationAPI.GetDonationAccessToken();
-				await this.DisplayAlert("Give", "Thanks for giving!", "OK");
-			};
+			giveButton.Clicked += OnGive;
 			this.ToolbarItems.Add(giveButton);
 		}
 
+		async void OnGive(object o, EventArgs e) 
+		{
+			await PlayerFeedAPI.GetDonationAccessToken();
+			DependencyService.Get<IRivets>().NavigateTo("http://www.google.com");
+		}
 	}
 }
 

@@ -29,5 +29,10 @@ namespace DABApp
 				}
 			}
 		}
+
+		void OnHistory(object o, EventArgs e) 
+		{
+			Navigation.PushAsync(new DabDonationHistoryPage());
+		}
 	}
 }
