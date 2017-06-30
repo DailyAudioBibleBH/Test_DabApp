@@ -17,7 +17,13 @@ namespace DABApp
 
 		static SQLiteConnection db = DabData.database;
 
-		public static int FlowListViewColumns
+		public static GlobalResources Instance {get; private set;}
+
+		static GlobalResources(){
+			Instance = new GlobalResources();
+		}
+
+		public int FlowListViewColumns
 		{
 			//Returns the number of columnts to use in a FlowListView
 			get
@@ -35,7 +41,7 @@ namespace DABApp
 		}
 
 
-		public static double ThumbnailImageHeight
+		public double ThumbnailImageHeight
 		{
 			//returns the height we should use for a square thumbnail (based on the idiom and screen WIDTH)
 			get

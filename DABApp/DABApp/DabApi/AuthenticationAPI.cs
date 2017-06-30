@@ -217,8 +217,222 @@ namespace DABApp
 				db.Update(TokenSettings);
 				db.Update(ExpirationSettings);
 			}
-			catch (Exception e) { 
-				
+			catch (Exception e) {
+
+			}
+		}
+
+		public static async Task<bool> GetMember() 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
+				if (info.email == null)
+				{
+					throw new Exception();
+				}
+				EmailSettings.Value = info.email;
+				FirstNameSettings.Value = info.first_Name;
+				LastNameSettings.Value = info.last_Name;
+				db.Update(EmailSettings);
+				db.Update(FirstNameSettings);
+				db.Update(LastNameSettings);
+				return true;
+			}
+			catch (Exception e) 
+			{
+				return false;
+			}
+		}
+
+		public static async Task<string> EditMember(string email, string firstName, string lastName, string currentPassword, string newPassword, string confirmNewPassword) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+				dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+				APIToken token = container.token;
+				if (container.message != null && token == null)
+				{
+					throw new Exception(container.message);
+				}
+				TokenSettings.Value = token.value;
+				ExpirationSettings.Value = token.expires;
+				EmailSettings.Value = token.user_email;
+				FirstNameSettings.Value = token.user_first_name;
+				LastNameSettings.Value = token.user_last_name;
+				db.Update(TokenSettings);
+				db.Update(ExpirationSettings);
+				db.Update(EmailSettings);
+				db.Update(FirstNameSettings);
+				db.Update(LastNameSettings);
+				return "Success";
+			}
+			catch (Exception e) {
+				return e.Message;
+			}
+		}
+
+		public static async Task<APIAddresses> GetAddresses() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
+				if (addresses.billing == null) {
+					throw new Exception();
+				}
+				return addresses;
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		public static async Task<Country[]> GetCountries() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/countries");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Country[] countries = JsonConvert.DeserializeObject<Country[]>(JsonOut);
+				return countries;
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		public static async Task<string> UpdateBillingAddress(Address newBilling) {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				var JsonIn = JsonConvert.SerializeObject(newBilling);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut == "true")
+				{
+					return JsonOut;
+				}
+				else {
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message); 
+				}
+			}
+			catch (Exception e) 
+			{
+				return e.Message;
+			}
+		}
+
+		public static async Task<Card[]> GetWallet() 
+		{ 
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Card[] cards = JsonConvert.DeserializeObject<Card[]>(JsonOut);
+				return cards;
+			}
+			catch (Exception e) {
+				return null;
+			}
+		}
+
+		public static async Task<string> DeleteCard(string CardId) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.DeleteAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet/{CardId}");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut == "true")
+				{
+					return JsonOut;
+				}
+				else 
+				{
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
+				}
+			}
+			catch (Exception e) 
+			{
+				return e.Message;
+			}
+		}
+
+		public static async Task<string> AddCard(StripeContainer token) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				var JsonIn = JsonConvert.SerializeObject(token);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.PostAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut.Contains("code")) {
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
+				}
+				return JsonOut;
+			}
+			catch (Exception e) 
+			{
+				return e.Message;
+			}
+		}
+
+		public static async Task<Donation[]> GetDonations() 
+		{ 
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
+				return donations;
+			}
+			catch (Exception e) {
+				return null;
 			}
 		}
 

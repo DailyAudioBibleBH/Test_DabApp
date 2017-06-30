@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabProfileManagementPage"
+	xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label Text="My Profile" VerticalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="First Name" FontSize="Micro" VerticalOptions="EndAndExpand"/>
+			<Entry x:Name="FirstName" VerticalOptions="StartAndExpand" Completed="OnFirstNameCompleted"/>
+			<Label Text="Last Name" FontSize="Micro" VerticalOptions="EndAndExpand"/>
+			<Entry x:Name="LastName" VerticalOptions="StartAndExpand" Completed="OnLastNameCompleted"/>
+			<Label Text="Email Address" FontSize="Micro" VerticalOptions="EndAndExpand"/>
+			<Entry x:Name="Email" VerticalOptions="StartAndExpand" Keyboard="Email"/>
+			<Label Text="Change Password" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="Current Password" FontSize="Micro"/>
+			<Entry x:Name="CurrentPassword" IsPassword="true" Completed="OnCurrentPasswordCompleted"/>
+			<Label Text="New Password" FontSize="Micro"/>
+			<Entry x:Name="NewPassword" IsPassword="true" Completed="OnNewPasswordCompleted"/>
+			<Label Text="Confirm New Password" FontSize="Micro"/>
+			<Entry x:Name="ConfirmNewPassword" IsPassword="true" Completed="OnSave"/>
+			<Button x:Name="Save" Text="Save" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSave"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>

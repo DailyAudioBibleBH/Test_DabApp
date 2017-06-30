@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Xamarin.Forms;
+
+namespace DABApp
+{
+	public partial class DabUpdateAddressPage : DabBaseContentPage
+	{
+		bool isShipping;
+
+		public DabUpdateAddressPage(Address address, Country[] countries, bool IsShipping)
+		{
+			InitializeComponent();
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				NavigationPage.SetHasNavigationBar(this, false);
+			}
+			BindingContext = address;
+			isShipping = IsShipping;
+			if (IsShipping) {
+				EmailAndPhone.IsVisible = false;
+				Title.Text = "Shipping Address";
+			}
+			Country.ItemsSource = countries;
+			Country.ItemDisplayBinding = new Binding("countryName");
+			if (string.IsNullOrEmpty(address.country))
+			{
+				Country.SelectedItem = countries.Single(x => x.countryCode == "US");
+			}
+			else
+			{
+				Country.SelectedItem = countries.Single(x => x.countryCode == address.country);
+			}
+			Country setCountry = ((Country)Country.SelectedItem);
+			if (setCountry.regions.Length == 0)
+			{
+				_Region.IsVisible = false;
+			}
+			else _Region.IsVisible = true;
+			Regions.ItemsSource = setCountry.regions;
+			Regions.ItemDisplayBinding = new Binding("regionName");
+			RegionLabel.Text = setCountry.regionLabel;
+			if (!string.IsNullOrEmpty(address.state)) {
+				Regions.SelectedItem = setCountry.regions.Single(x => x.regionName == address.state);
+			}
+			CodeLabel.Text = setCountry.postalCodeLabel;
+		}
+
+		async void OnSave(object o, EventArgs e) {
+			var update = new Address();
+			update.first_name = FirstName.Text;
+			update.last_name = LastName.Text;
+			update.company = CompanyName.Text;
+			update.email = Email.Text;
+			update.phone = Phone.Text;
+			update.address_1 = Address1.Text;
+			update.address_2 = Address2.Text;
+			update.city = City.Text;
+			update.postcode = Code.Text;
+			update.country = ((Country)Country.SelectedItem).countryCode;
+			if (Regions.SelectedItem != null)
+			{
+				update.state = ((Region)Regions.SelectedItem).regionName;
+			}
+			if (isShipping) {
+				update.type = "shipping";
+			}
+			var result = await AuthenticationAPI.UpdateBillingAddress(update);
+			if (result == "true")
+			{
+				await DisplayAlert("Success", "Address successfully updated", "OK");
+				await Navigation.PopAsync();
+			}
+			else {
+				await DisplayAlert("Error", result, "OK");
+			}
+		}
+
+		void OnCountrySelected(object o, EventArgs e) {
+			Country newCountry = (Country)Country.SelectedItem;
+			if (newCountry.regions.Length == 0)
+			{
+				_Region.IsVisible = false;
+			}
+			else _Region.IsVisible = true;
+			Regions.ItemsSource = newCountry.regions;
+			RegionLabel.Text = newCountry.regionLabel;
+			CodeLabel.Text = newCountry.postalCodeLabel;
+		}
+	}
+}

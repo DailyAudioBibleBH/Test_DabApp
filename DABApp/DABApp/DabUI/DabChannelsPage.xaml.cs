@@ -45,12 +45,12 @@ namespace DABApp
 				}
 			}
 
-			var remainder = ChannelView.resources.Count() % GlobalResources.FlowListViewColumns;
-			var number = ChannelView.resources.Count() / GlobalResources.FlowListViewColumns;
+			var remainder = ChannelView.resources.Count() % GlobalResources.Instance.FlowListViewColumns;
+			var number = ChannelView.resources.Count() / GlobalResources.Instance.FlowListViewColumns;
 			if (remainder != 0) {
 				number += 1;
 			}
-			ChannelsList.HeightRequest = number * (GlobalResources.ThumbnailImageHeight + 60);
+			ChannelsList.HeightRequest = number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
 
 			banner.Source = new UriImageSource
 			{

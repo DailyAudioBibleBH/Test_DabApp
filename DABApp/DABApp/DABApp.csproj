@@ -127,6 +127,25 @@
       <DependentUpon>DabParentChildGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\Controls\DabSeekBar.cs" />
+    <Compile Include="DabUI\DabProfileManagementPage.xaml.cs">
+      <DependentUpon>DabProfileManagementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabAddressManagementPage.xaml.cs">
+      <DependentUpon>DabAddressManagementPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabUpdateAddressPage.xaml.cs">
+      <DependentUpon>DabUpdateAddressPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabWalletPage.xaml.cs">
+      <DependentUpon>DabWalletPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabCreditCardPage.xaml.cs">
+      <DependentUpon>DabCreditCardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabApi\IStripe.cs" />
+    <Compile Include="DabUI\DabManageDonationsPage.xaml.cs">
+      <DependentUpon>DabManageDonationsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -275,6 +294,24 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabParentChildGrid.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabProfileManagementPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabAddressManagementPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabUpdateAddressPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabWalletPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabCreditCardPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabManageDonationsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

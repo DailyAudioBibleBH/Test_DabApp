@@ -23,6 +23,10 @@ namespace DABApp
 			SettingsPage.offline.Tapped += OnOffline;
 			SettingsPage.reset.Tapped += OnReset;
 			SettingsPage.appInfo.Tapped += OnAppInfo;
+			SettingsPage.profile.Tapped += OnProfile;
+			SettingsPage.addresses.Tapped += OnAddresses;
+			SettingsPage.wallet.Tapped += OnWallet;
+			SettingsPage.donations.Tapped += OnDonations;
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -66,6 +70,35 @@ namespace DABApp
 			var Offline = new DabOfflineEpisodeManagementPage();
 			Detail = Offline;
 			Offline.ToolbarItems.Clear();
+			Remove();
+		}
+
+		void OnProfile(object o, EventArgs e) {
+			var Profile = new DabProfileManagementPage();
+			Detail = Profile;
+			Profile.ToolbarItems.Clear();
+			Remove();
+		}
+
+		void OnAddresses(object o, EventArgs e) {
+			var Addresses = new DabAddressManagementPage();
+			Detail = new NavigationPage(Addresses);
+			Addresses.ToolbarItems.Clear();
+			Remove();
+		}
+
+		async void OnWallet(object o, EventArgs e) {
+			var result = await AuthenticationAPI.GetWallet();
+			var Wallet = new DabWalletPage(result);
+			Detail = new NavigationPage(Wallet);
+			Wallet.ToolbarItems.Clear();
+			Remove();
+		}
+
+		async void OnDonations(object o, EventArgs e) {
+			var Donations = new DabManageDonationsPage();
+			Detail = new NavigationPage(Donations);
+			Donations.ToolbarItems.Clear();
 			Remove();
 		}
 
