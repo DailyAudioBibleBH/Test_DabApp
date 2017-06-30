@@ -65,10 +65,11 @@ namespace DABApp
 			giveButton.Text = "Give";
 			//giveButton.Icon = "ic_attach_money_white.png";
 			giveButton.Priority = 0; //default
-			giveButton.Clicked += (sender, e) =>
-				{
-					this.DisplayAlert("Give", "Thanks for giving!", "OK");
-				};
+			giveButton.Clicked += async (sender, e) =>
+			{
+				await AuthenticationAPI.GetDonationAccessToken();
+				await this.DisplayAlert("Give", "Thanks for giving!", "OK");
+			};
 			this.ToolbarItems.Add(giveButton);
 		}
 

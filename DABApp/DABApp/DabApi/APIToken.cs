@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace DABApp
 {
 	public class APIToken
@@ -144,9 +146,20 @@ namespace DABApp
 		public string card_token { get; set;} 
 	}
 
+	public class DonationContainer { 
+		public Donation[] data { get; set;}
+	}
+
 	public class Donation { 
+		public int id { get; set;}
 		public string link { get; set;}
 		public string name { get; set;}
+		public string description { get; set; }
+		public bool singleDonationIsActive { get; set; }
+		public string suggestedSingleDonation { get; set; }
+		public bool recurringDonationIsActive { get; set; }
+		public string suggestedRecurringDonation { get; set; }
+		public List<string> recurringIntervalOptions { get; set; }
 	}
 
 	public class APIError { 

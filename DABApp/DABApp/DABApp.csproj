@@ -146,6 +146,9 @@
     <Compile Include="DabUI\DabManageDonationsPage.xaml.cs">
       <DependentUpon>DabManageDonationsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabDonationHistoryPage.xaml.cs">
+      <DependentUpon>DabDonationHistoryPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -312,6 +315,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabManageDonationsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabDonationHistoryPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

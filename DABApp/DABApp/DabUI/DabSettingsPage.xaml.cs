@@ -123,7 +123,7 @@ namespace DABApp
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
 				var don = await AuthenticationAPI.GetDonations();
-				await Navigation.PushAsync(new DabManageDonationsPage());
+				await Navigation.PushAsync(new DabManageDonationsPage(don));
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 			}

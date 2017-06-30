@@ -428,11 +428,24 @@ namespace DABApp
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations");
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
-				return donations;
+				DonationContainer donations = JsonConvert.DeserializeObject<DonationContainer>(JsonOut);
+				return donations.data;
 			}
 			catch (Exception e) {
 				return null;
+			}
+		}
+
+		public static async Task GetDonationAccessToken() {
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/donation/request_access");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+			}
+			catch (Exception e) {
 			}
 		}
 
