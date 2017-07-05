@@ -27,7 +27,12 @@ namespace DABApp
 			}
 		}
 
-		async void OnUpdate(object o, EventArgs e) {
+		async void OnUpdate(object o, EventArgs e) 
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var card = (Card)Cards.SelectedItem;
 			putDonation send = new putDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), Next.Date.Ticks);
 			var result = await AuthenticationAPI.UpdateDonation(send);
@@ -40,13 +45,31 @@ namespace DABApp
 			{
 				await DisplayAlert("Error", result, "OK");
 			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
-		async void OnCancel(object o, EventArgs e) {
+		async void OnCancel(object o, EventArgs e) 
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
-			if (decision) { 
-				
+			if (decision) {
+				var result = await AuthenticationAPI.DeleteDonation(_campaign.id);
+				if (result == "true")
+				{
+					await DisplayAlert("Successfully Deleted Donation", null, "OK");
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", result, "OK");
+				}
 			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 	}
 }
