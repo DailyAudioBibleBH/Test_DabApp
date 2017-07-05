@@ -160,6 +160,21 @@ namespace DABApp
 		public bool recurringDonationIsActive { get; set; }
 		public string suggestedRecurringDonation { get; set; }
 		public List<string> recurringIntervalOptions { get; set; }
+		public Pro pro { get; set;}
+	}
+
+	public class Pro
+	{
+		public string status { get; set; }
+		public int amount { get; set; }
+		public string card_last_four { get; set; }
+		public int card_exp_month { get; set; }
+		public int card_exp_year { get; set; }
+		public string card_id { get; set; }
+		public string next { get; set; }
+		public string interval { get; set; }
+		public string id { get; set; }
+		public string processor { get; set; }
 	}
 
 	public class APIError { 

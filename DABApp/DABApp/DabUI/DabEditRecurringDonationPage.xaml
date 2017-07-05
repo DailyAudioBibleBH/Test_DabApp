@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEditRecurringDonationPage" xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label x:Name="Title" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="Select Card" FontSize="Micro"/>
+			<Picker x:Name="Cards"/>
+			<Label Text="Amount" FontSize="Micro"/>
+			<Entry x:Name="Amount"/>
+			<Label Text="Next Payment" FontSize="Micro"/>
+			<DatePicker x:Name="Next" BackgroundColor="{DynamicResource InputBackgroundColor}" TextColor="{DynamicResource TextColor}"/>
+			<StackLayout Orientation="Horizontal">
+				<Label Text="Status:" Style="{StaticResource playerLabelStyle}"/>
+				<Label x:Name="Status"/>
+			</StackLayout>
+			<Button Text="Update" Style="{StaticResource highlightedButtonStyle}"/>
+			<Button Text="Cancel Donation"/>
+		</StackLayout>
+	</ContentPage.Content>
+</local:DabBaseContentPage>

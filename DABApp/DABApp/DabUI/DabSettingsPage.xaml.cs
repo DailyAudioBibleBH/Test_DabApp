@@ -122,8 +122,8 @@ namespace DABApp
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
-				//var don = await AuthenticationAPI.GetDonations();
-				await Navigation.PushAsync(new DabManageDonationsPage(null));
+				var don = await AuthenticationAPI.GetDonations();
+				await Navigation.PushAsync(new DabManageDonationsPage(don));
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 			}

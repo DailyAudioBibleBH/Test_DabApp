@@ -428,8 +428,8 @@ namespace DABApp
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations");
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				DonationContainer donations = JsonConvert.DeserializeObject<DonationContainer>(JsonOut);
-				return donations.data;
+				Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
+				return donations;
 			}
 			catch (Exception e) {
 				return null;

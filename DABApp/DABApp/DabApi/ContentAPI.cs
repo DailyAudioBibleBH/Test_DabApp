@@ -51,7 +51,7 @@ namespace DABApp
 				PlayerFeedAPI.CheckOfflineEpisodeSettings();
 				return true;
 			}
-			catch (Exception e) {
+			catch (Exception) {
 				if (ContentSettings == null)
 				{
 					return false;

@@ -150,6 +150,9 @@
       <DependentUpon>DabDonationHistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\IRivets.cs" />
+    <Compile Include="DabUI\DabEditRecurringDonationPage.xaml.cs">
+      <DependentUpon>DabEditRecurringDonationPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -319,6 +322,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabDonationHistoryPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabEditRecurringDonationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
