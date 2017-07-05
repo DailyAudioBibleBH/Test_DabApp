@@ -7,9 +7,15 @@ namespace DABApp
 {
 	public partial class DabEditRecurringDonationPage : DabBaseContentPage
 	{
+		Donation _campaign;
+
 		public DabEditRecurringDonationPage(Donation campaign, Card[] cards)
 		{
 			InitializeComponent();
+			_campaign = campaign;
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				NavigationPage.SetHasNavigationBar(this, false);
+			}
 			Title.Text = campaign.name;
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding("last4");
@@ -18,6 +24,28 @@ namespace DABApp
 				Next.Date = Convert.ToDateTime(campaign.pro.next);
 				Cards.SelectedItem = cards.Single(x => x.id == campaign.pro.card_id);
 				Status.Text = campaign.pro.status;
+			}
+		}
+
+		async void OnUpdate(object o, EventArgs e) {
+			var card = (Card)Cards.SelectedItem;
+			putDonation send = new putDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), Next.Date.Ticks);
+			var result = await AuthenticationAPI.UpdateDonation(send);
+			if (result == "Success")
+			{
+				await DisplayAlert("Successfully Updated Donation", null, "OK");
+				await Navigation.PopAsync();
+			}
+			else
+			{
+				await DisplayAlert("Error", result, "OK");
+			}
+		}
+
+		async void OnCancel(object o, EventArgs e) {
+			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
+			if (decision) { 
+				
 			}
 		}
 	}

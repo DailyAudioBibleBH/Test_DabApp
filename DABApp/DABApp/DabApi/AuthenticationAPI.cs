@@ -436,6 +436,30 @@ namespace DABApp
 			}
 		}
 
+		public static async Task<string> UpdateDonation(putDonation donation) 
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				var JsonIn = JsonConvert.SerializeObject(donation);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut != "true") {
+					APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
+				}
+				return "Success";
+			}
+			catch (Exception e)
+			{
+				return e.Message;
+			}
+		}
+
 		static void CreateSettings(APIToken token) 
 		{
 			var TokenSettings = new dbSettings();

@@ -177,9 +177,21 @@ namespace DABApp
 		public string processor { get; set; }
 	}
 
+	public class putDonation { 
+		public int campaign_number { get; set;}
+		public string card_id { get; set;}
+		public int amount { get; set;}
+		public long next_date_timestamp { get; set;}
+		public putDonation(int campaign, string card, int Amount, long date) {
+			campaign_number = campaign;
+			card_id = card;
+			amount = Amount;
+			next_date_timestamp = date;
+		}
+	}
+
 	public class APIError { 
 		public string code { get; set;}
 		public string message { get; set;}
-		public string data { get; set;}
 	}
 }
