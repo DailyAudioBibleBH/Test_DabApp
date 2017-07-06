@@ -70,8 +70,8 @@ namespace DABApp
 		public string user_first_name { get; set; }
 		public string user_last_name { get; set; }
 		public string user_password_current { get; set; }
-		public string user_password1 { get; set;}
-		public string user_password2 { get; set;}
+		public string user_password1 { get; set; }
+		public string user_password2 { get; set; }
 		public EditProfileInfo(string email, string firstName, string lastName, string currentPassword, string password1, string password2)
 		{
 			user_email = email;
@@ -83,10 +83,11 @@ namespace DABApp
 		}
 	}
 
-	public class ProfileInfo { 
-		public string email { get; set;}
-		public string first_Name { get; set;}
-		public string last_Name { get; set;}
+	public class ProfileInfo
+	{
+		public string email { get; set; }
+		public string first_Name { get; set; }
+		public string last_Name { get; set; }
 	}
 
 
@@ -103,7 +104,7 @@ namespace DABApp
 		public string state { get; set; }
 		public string postcode { get; set; }
 		public string country { get; set; }
-		public string type { get; set;}
+		public string type { get; set; }
 	}
 
 	public class APIAddresses
@@ -112,21 +113,23 @@ namespace DABApp
 		public Address shipping { get; set; }
 	}
 
-	public class Country { 
-		public string countryName { get; set;}
-		public string countryCode { get; set;}
-		public string cityLabel { get; set;}
-		public bool postalCodeBeforeCity { get; set;}
-		public string postalCodeLabel { get; set;}
-		public string postalCodeKeyboard { get; set;}
-		public string regionLabel { get; set;}
-		public Region[] regions { get; set;} 
-		public bool stateRequired { get; set;}
+	public class Country
+	{
+		public string countryName { get; set; }
+		public string countryCode { get; set; }
+		public string cityLabel { get; set; }
+		public bool postalCodeBeforeCity { get; set; }
+		public string postalCodeLabel { get; set; }
+		public string postalCodeKeyboard { get; set; }
+		public string regionLabel { get; set; }
+		public Region[] regions { get; set; }
+		public bool stateRequired { get; set; }
 	}
 
-	public class Region { 
-		public string regionName { get; set;}
-		public string regionCode { get; set;}
+	public class Region
+	{
+		public string regionName { get; set; }
+		public string regionCode { get; set; }
 	}
 
 	public class Card
@@ -137,30 +140,33 @@ namespace DABApp
 		public int exp_month { get; set; }
 		public int exp_year { get; set; }
 		public string id { get; set; }
-		public bool Default { get; set;}
-		public string fullNumber { get; set;}
-		public string cvc { get; set;}
+		public bool Default { get; set; }
+		public string fullNumber { get; set; }
+		public string cvc { get; set; }
 	}
 
-	public class StripeContainer { 
-		public string card_token { get; set;} 
+	public class StripeContainer
+	{
+		public string card_token { get; set; }
 	}
 
-	public class DonationContainer { 
-		public Donation[] data { get; set;}
+	public class DonationContainer
+	{
+		public Donation[] data { get; set; }
 	}
 
-	public class Donation { 
-		public int id { get; set;}
-		public string link { get; set;}
-		public string name { get; set;}
+	public class Donation
+	{
+		public int id { get; set; }
+		public string link { get; set; }
+		public string name { get; set; }
 		public string description { get; set; }
 		public bool singleDonationIsActive { get; set; }
 		public string suggestedSingleDonation { get; set; }
 		public bool recurringDonationIsActive { get; set; }
 		public string suggestedRecurringDonation { get; set; }
 		public List<string> recurringIntervalOptions { get; set; }
-		public Pro pro { get; set;}
+		public Pro pro { get; set; }
 	}
 
 	public class Pro
@@ -177,17 +183,49 @@ namespace DABApp
 		public string processor { get; set; }
 	}
 
-	public class putDonation { 
-		public int campaign_number { get; set;}
-		public string card_id { get; set;}
-		public int amount { get; set;}
-		public long next_date_timestamp { get; set;}
-		public putDonation(int campaign, string card, int Amount, long date) {
+	public class putDonation
+	{
+		public int campaign_number { get; set; }
+		public string card_id { get; set; }
+		public int amount { get; set; }
+		public long next_date_timestamp { get; set; }
+		public putDonation(int campaign, string card, int Amount, long date)
+		{
 			campaign_number = campaign;
 			card_id = card;
 			amount = Amount;
 			next_date_timestamp = date;
 		}
+	}
+
+	public class postDonation
+	{
+		public int campaign_number { get; set; }
+		public string card_id { get; set; }
+		public int amount { get; set; }
+		public long next_date_timestamp { get; set; }
+		public string country { get; set;}
+		public string address_1 { get; set;}
+		public string address_2 { get; set;}
+		public string city { get; set;}
+		public string state { get; set;}
+		public postDonation(int campaign, string card, int Amount, long date, string Country, string address1 = null, string address2=null, string City=null, string State=null)
+		{
+			campaign_number = campaign;
+			card_id = card;
+			amount = Amount;
+			next_date_timestamp = date;
+			country = Country;
+			address_1 = address1;
+			address_2 = address2;
+			city = City;
+			state = State;
+		}	
+	}
+
+	public class DonationTokenContainer
+	{
+		public string token { get; set;}
 	}
 
 	public class APIError { 

@@ -34,8 +34,30 @@ namespace DABApp
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
 			var card = (Card)Cards.SelectedItem;
-			putDonation send = new putDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), Next.Date.Ticks);
-			var result = await AuthenticationAPI.UpdateDonation(send);
+			var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+			long unix = (long)(Next.Date - stime).TotalSeconds;
+			string result;
+			if (_campaign.pro == null)
+			{
+				var address = await AuthenticationAPI.GetAddresses();
+				var billing = address.billing;
+				string con;
+				postDonation send;
+				if (billing.country == "USA")
+				{
+					send = new postDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
+				}
+				else 
+				{
+					send = new postDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix, billing.country);
+				}
+				result = await AuthenticationAPI.AddDonation(send);
+			}
+			else
+			{
+				putDonation send = new putDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix);
+				result = await AuthenticationAPI.UpdateDonation(send);
+			}
 			if (result == "Success")
 			{
 				await DisplayAlert("Successfully Updated Donation", null, "OK");

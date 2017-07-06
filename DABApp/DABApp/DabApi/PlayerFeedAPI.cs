@@ -304,18 +304,60 @@ namespace DABApp
 			}
 		}
 
-		public static async Task GetDonationAccessToken()
+		public static async Task<string> GetDonationAccessToken()
+		{
+			try
+			{
+				//dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				var handler = new HttpClientHandler
+				{
+					AllowAutoRedirect = true,
+					UseCookies = true,
+					CookieContainer = new CookieContainer()
+				};
+				HttpClient client = new HttpClient(handler);
+				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				var cookies = handler.CookieContainer.GetCookies(new Uri("https://player.dailyaudiobible.com/donation/request_access")).Cast<Cookie>();
+				var cookie = cookies.SingleOrDefault(x => x.Name == "csrf_cookie_name");
+				if (cookie != null)
+				{
+					return cookie.Value;
+				}
+				else 
+				{
+					throw new Exception("No token recieved.");
+				}
+			}
+			catch (Exception e)
+			{
+				return e.Message;
+			}
+		}
+
+		public static async Task<string> PostDonationAccessToken(DonationTokenContainer token) 
 		{
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
-				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
-				string JsonOut = await result.Content.ReadAsStringAsync();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				string JsonIn = JsonConvert.SerializeObject(token);
+				HttpContent content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PostAsync("https://player.dailyaudiobible.com/donation/request_access", content);
+				var JsonOut = await result.Content.ReadAsStringAsync();
+				if (JsonOut != "true")
+				{
+					APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
+				}
+				return "Success";
 			}
-			catch (Exception e)
+			catch (Exception e) 
 			{
+				return e.Message;
 			}
 		}
 	}
