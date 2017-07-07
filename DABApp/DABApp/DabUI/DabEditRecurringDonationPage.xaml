@@ -13,8 +13,8 @@
 				<Label Text="Status:" Style="{StaticResource playerLabelStyle}"/>
 				<Label x:Name="Status"/>
 			</StackLayout>
-			<Button Text="Update" Style="{StaticResource highlightedButtonStyle}" Clicked="OnUpdate"/>
-			<Button Text="Cancel Donation" Clicked="OnCancel"/>
+			<Button x:Name="Update" Text="Update" Style="{StaticResource highlightedButtonStyle}" Clicked="OnUpdate"/>
+			<Button x:Name="Cancel" Text="Cancel Donation" Clicked="OnCancel"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

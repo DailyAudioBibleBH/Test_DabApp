@@ -225,7 +225,8 @@ namespace DABApp
 
 	public class DonationTokenContainer
 	{
-		public string token { get; set;}
+		public APIToken token { get; set;}
+		public string csrf_dab_token { get; set;}
 	}
 
 	public class APIError { 

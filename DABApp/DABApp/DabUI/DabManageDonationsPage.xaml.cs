@@ -30,10 +30,11 @@ namespace DABApp
 					Label recurr = new Label();
 					if (don.pro != null)
 					{
+						cTitle.Text = $"{don.name}-${don.pro.amount}/month";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
 						card.VerticalOptions = LayoutOptions.End;
-						recurr.Text = $"Recurrs: {don.pro.next}";
+						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
 					}
@@ -89,8 +90,9 @@ namespace DABApp
 					var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
 					if (don.pro != null)
 					{
+						Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
 						Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
-						Labels[2].Text = $"Recurrs: {don.pro.next}";
+						Labels[2].Text = $"Recurs: {don.pro.next}";
 						Labels[1].IsVisible = true;
 						Labels[2].IsVisible = true;
 					}

@@ -18,12 +18,19 @@ namespace DABApp
 			}
 			Title.Text = campaign.name;
 			Cards.ItemsSource = cards;
-			Cards.ItemDisplayBinding = new Binding("last4");
-			if (campaign.pro != null) {
+			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
+			if (campaign.pro != null)
+			{
 				Amount.Text = campaign.pro.amount.ToString();
 				Next.Date = Convert.ToDateTime(campaign.pro.next);
 				Cards.SelectedItem = cards.Single(x => x.id == campaign.pro.card_id);
 				Status.Text = campaign.pro.status;
+			}
+			else 
+			{
+				Update.Text = "Add";
+				Amount.Text = campaign.suggestedRecurringDonation;
+				Cancel.IsVisible = false;
 			}
 		}
 

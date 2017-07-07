@@ -336,14 +336,33 @@ namespace DABApp
 			}
 		}
 
-		public static async Task<string> PostDonationAccessToken(DonationTokenContainer token) 
+		public static async Task<string> PostDonationAccessToken(string csrf_token) 
 		{
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+				dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+				dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+				var token = new APIToken
+				{
+					value = TokenSettings.Value,
+					expires = ExpirationSettings.Value,
+					user_email = EmailSettings.Value,
+					user_first_name = FirstNameSettings.Value,
+					user_last_name = LastNameSettings.Value,
+					user_avatar = AvatarSettings.Value
+				};
+				var send = new DonationTokenContainer 
+				{ 
+					token = token,
+					csrf_dab_token = csrf_token
+				};
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				string JsonIn = JsonConvert.SerializeObject(token);
+				string JsonIn = JsonConvert.SerializeObject(send);
 				HttpContent content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				var result = await client.PostAsync("https://player.dailyaudiobible.com/donation/request_access", content);

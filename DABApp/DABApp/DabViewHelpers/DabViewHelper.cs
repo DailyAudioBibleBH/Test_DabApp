@@ -33,4 +33,18 @@ namespace DABApp
 			throw new NotImplementedException();
 		}
 	}
+
+	public class CardConverter : IValueConverter 
+	{ 
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			var card = (Card)value;
+			return $"{card.brand} ending in {card.last4}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
