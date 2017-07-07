@@ -46,7 +46,12 @@ namespace DABApp
 			CodeLabel.Text = setCountry.postalCodeLabel;
 		}
 
-		async void OnSave(object o, EventArgs e) {
+		async void OnSave(object o, EventArgs e) 
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var update = new Address();
 			update.first_name = FirstName.Text;
 			update.last_name = LastName.Text;
@@ -74,6 +79,8 @@ namespace DABApp
 			else {
 				await DisplayAlert("Error", result, "OK");
 			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		void OnCountrySelected(object o, EventArgs e) {

@@ -485,7 +485,8 @@ namespace DABApp
 			}
 		}
 
-		public static async Task<string> DeleteDonation(int id) {
+		public static async Task<string> DeleteDonation(int id) 
+		{
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
@@ -502,6 +503,24 @@ namespace DABApp
 			}
 			catch (Exception e) {
 				return e.Message;
+			}
+		}
+
+		public static async Task<DonationRecord[]> GetDonationHistory()
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				HttpClient client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations/history");
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				DonationRecord[] history = JsonConvert.DeserializeObject<DonationRecord[]>(JsonOut);
+				return history;
+			}
+			catch (Exception e)
+			{
+				return null;
 			}
 		}
 

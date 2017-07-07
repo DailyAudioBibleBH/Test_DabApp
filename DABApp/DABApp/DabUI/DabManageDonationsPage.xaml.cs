@@ -55,9 +55,10 @@ namespace DABApp
 			}
 		}
 
-		void OnHistory(object o, EventArgs e) 
+		async void OnHistory(object o, EventArgs e) 
 		{
-			Navigation.PushAsync(new DabDonationHistoryPage());
+			await AuthenticationAPI.GetDonationHistory();
+			await Navigation.PushAsync(new DabDonationHistoryPage());
 		}
 
 		async void OnRecurring(object o, EventArgs e) 

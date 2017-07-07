@@ -223,6 +223,15 @@ namespace DABApp
 		}	
 	}
 
+	public class DonationRecord 
+	{ 
+		public string date { get; set;}
+		public string campaignName { get; set;}
+		public string donationType { get; set;}
+		public string grossAmount { get; set;}
+		public string currency { get; set;}
+	}
+
 	public class DonationTokenContainer
 	{
 		public APIToken token { get; set;}
