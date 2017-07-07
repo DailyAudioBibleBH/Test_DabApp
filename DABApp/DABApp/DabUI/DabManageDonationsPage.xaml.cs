@@ -9,6 +9,7 @@ namespace DABApp
 	public partial class DabManageDonationsPage : DabBaseContentPage
 	{
 		Donation[] _donations;
+		bool isInitialized = false;
 
 		public DabManageDonationsPage(Donation[] donations)
 		{
@@ -29,7 +30,7 @@ namespace DABApp
 					Label recurr = new Label();
 					if (don.pro != null)
 					{
-						card.Text = $"Card: **** **** **** {don.pro.card_last_four}";
+						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
 						card.VerticalOptions = LayoutOptions.End;
 						recurr.Text = $"Recurrs: {don.pro.next}";
@@ -47,6 +48,7 @@ namespace DABApp
 					layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
 					layout.Padding = 10;
 					layout.Spacing = 10;
+					layout.AutomationId = don.id.ToString();
 					Container.Children.Insert(1, layout);
 				}
 			}
@@ -69,6 +71,39 @@ namespace DABApp
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
+		}
+
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
+			if (isInitialized)
+			{
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				_donations = await AuthenticationAPI.GetDonations();
+				foreach (var don in _donations)
+				{
+					StackLayout donContainer = (StackLayout)Container.Children.Single(x => x.AutomationId == don.id.ToString());
+					var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
+					if (don.pro != null)
+					{
+						Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
+						Labels[2].Text = $"Recurrs: {don.pro.next}";
+						Labels[1].IsVisible = true;
+						Labels[2].IsVisible = true;
+					}
+					else
+					{
+						Labels[1].Text = null;
+						Labels[2].Text = null;
+					}
+				}
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
+			}
+			isInitialized = true;
 		}
 	}
 }
