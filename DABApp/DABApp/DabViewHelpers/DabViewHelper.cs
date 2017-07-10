@@ -47,4 +47,20 @@ namespace DABApp
 			throw new NotImplementedException();
 		}
 	}
+
+	public class HistoryConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null;}
+
+			var history = (DonationRecord)value;
+			return $"{history.campaignName}-{history.currency}{history.grossAmount}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

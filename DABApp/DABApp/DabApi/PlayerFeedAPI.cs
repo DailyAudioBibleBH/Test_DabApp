@@ -309,21 +309,14 @@ namespace DABApp
 			try
 			{
 				//dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-				var handler = new HttpClientHandler
-				{
-					AllowAutoRedirect = true,
-					UseCookies = true,
-					CookieContainer = new CookieContainer()
-				};
-				HttpClient client = new HttpClient(handler);
+				HttpClient client = new HttpClient();
 				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
 				string JsonOut = await result.Content.ReadAsStringAsync();
-				var cookies = handler.CookieContainer.GetCookies(new Uri("https://player.dailyaudiobible.com/donation/request_access")).Cast<Cookie>();
-				var cookie = cookies.SingleOrDefault(x => x.Name == "csrf_cookie_name");
-				if (cookie != null)
+				var content = JsonConvert.DeserializeObject<GetTokenContainer>(JsonOut);
+				if (content.csrf.token_value != null)
 				{
-					return cookie.Value;
+					return content.csrf.token_value;
 				}
 				else 
 				{
@@ -367,7 +360,7 @@ namespace DABApp
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				var result = await client.PostAsync("https://player.dailyaudiobible.com/donation/request_access", content);
 				var JsonOut = await result.Content.ReadAsStringAsync();
-				if (JsonOut != "true")
+				if (!JsonOut.Contains("url"))
 				{
 					APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
 					throw new Exception(error.message);

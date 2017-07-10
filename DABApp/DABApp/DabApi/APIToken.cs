@@ -187,9 +187,9 @@ namespace DABApp
 	{
 		public int campaign_number { get; set; }
 		public string card_id { get; set; }
-		public int amount { get; set; }
+		public string amount { get; set; }
 		public long next_date_timestamp { get; set; }
-		public putDonation(int campaign, string card, int Amount, long date)
+		public putDonation(int campaign, string card, string Amount, long date)
 		{
 			campaign_number = campaign;
 			card_id = card;
@@ -202,14 +202,14 @@ namespace DABApp
 	{
 		public int campaign_number { get; set; }
 		public string card_id { get; set; }
-		public int amount { get; set; }
+		public string amount { get; set; }
 		public long next_date_timestamp { get; set; }
 		public string country { get; set;}
 		public string address_1 { get; set;}
 		public string address_2 { get; set;}
 		public string city { get; set;}
 		public string state { get; set;}
-		public postDonation(int campaign, string card, int Amount, long date, string Country, string address1 = null, string address2=null, string City=null, string State=null)
+		public postDonation(int campaign, string card, string Amount, long date, string Country, string address1 = null, string address2=null, string City=null, string State=null)
 		{
 			campaign_number = campaign;
 			card_id = card;
@@ -236,6 +236,17 @@ namespace DABApp
 	{
 		public APIToken token { get; set;}
 		public string csrf_dab_token { get; set;}
+	}
+
+	public class GetTokenContainer 
+	{ 
+		public GetToken csrf { get; set;}
+	}
+
+	public class GetToken 
+	{ 
+		public string token_name { get; set;}
+		public string token_value { get; set;}
 	}
 
 	public class APIError { 

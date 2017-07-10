@@ -48,21 +48,20 @@ namespace DABApp
 			{
 				var address = await AuthenticationAPI.GetAddresses();
 				var billing = address.billing;
-				string con;
 				postDonation send;
 				if (billing.country == "USA")
 				{
-					send = new postDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
+					send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
 				}
 				else 
 				{
-					send = new postDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix, billing.country);
+					send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country);
 				}
 				result = await AuthenticationAPI.AddDonation(send);
 			}
 			else
 			{
-				putDonation send = new putDonation(_campaign.id, card.id, Convert.ToInt32(Amount.Text), unix);
+				putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, unix);
 				result = await AuthenticationAPI.UpdateDonation(send);
 			}
 			if (result == "Success")

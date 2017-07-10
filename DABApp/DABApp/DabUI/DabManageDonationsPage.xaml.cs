@@ -57,8 +57,15 @@ namespace DABApp
 
 		async void OnHistory(object o, EventArgs e) 
 		{
-			await AuthenticationAPI.GetDonationHistory();
-			await Navigation.PushAsync(new DabDonationHistoryPage());
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
+			DonationRecord[] history = await AuthenticationAPI.GetDonationHistory();
+			await Navigation.PushAsync(new DabDonationHistoryPage(history));
+			isInitialized = false;
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		async void OnRecurring(object o, EventArgs e) 

@@ -1,9 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabDonationHistoryPage" xmlns:local="clr-namespace:DABApp;">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<local:HistoryConverter x:Key="HistoryConverter"/>
+		</ResourceDictionary>
+	</ContentPage.Resources>
 	<ContentPage.Content>
-		<StackLayout x:Name="Container" Padding="10" Spacing="10">
+		<StackLayout x:Name="Container">
+			<!--<StackLayout Padding="10" Spacing="10">
 			<Label Text="My Donation History" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
+			</StackLayout>
+			<StackLayout Padding="10" Spacing="10">
 			<Button Text="Back to My Donations" Clicked="OnBack"/>
+			</StackLayout>-->
+			<ListView x:Name="History" HasUnevenRows="true">
+				<ListView.Header>
+					<StackLayout Padding="10" Spacing="10">
+					<Label Text="My Donation History" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
+					</StackLayout>
+				</ListView.Header>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+					<ViewCell>
+						<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
+							<Label Text="{Binding Path=., Converter={StaticResource HistoryConverter}}" Style="{StaticResource playerLabelStyle}"/>
+							<Label Text="{Binding date}" FontSize="Small"/>
+						</StackLayout>
+					</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+				<ListView.Footer>
+					<StackLayout Padding="10" Spacing="10">
+					<Button Text="Back to My Donations" Clicked="OnBack"/>
+					</StackLayout>
+				</ListView.Footer>
+			</ListView>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
