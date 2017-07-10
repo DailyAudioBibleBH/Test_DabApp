@@ -10,7 +10,11 @@ namespace DABApp
 		public DabDonationHistoryPage(DonationRecord[] history)
 		{
 			InitializeComponent();
-			base.ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
+			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
+			if (Device.Idiom == TargetIdiom.Tablet) {
+				ToolbarItems.Clear();
+				NavigationPage.SetHasNavigationBar(this, false);
+			}
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())
 			//{

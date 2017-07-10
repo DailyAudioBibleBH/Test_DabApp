@@ -204,12 +204,12 @@ namespace DABApp
 		public string card_id { get; set; }
 		public string amount { get; set; }
 		public long next_date_timestamp { get; set; }
-		public string country { get; set;}
-		public string address_1 { get; set;}
-		public string address_2 { get; set;}
-		public string city { get; set;}
-		public string state { get; set;}
-		public postDonation(int campaign, string card, string Amount, long date, string Country, string address1 = null, string address2=null, string City=null, string State=null)
+		public string country { get; set; }
+		public string address_1 { get; set; }
+		public string address_2 { get; set; }
+		public string city { get; set; }
+		public string state { get; set; }
+		public postDonation(int campaign, string card, string Amount, long date, string Country, string address1 = null, string address2 = null, string City = null, string State = null)
 		{
 			campaign_number = campaign;
 			card_id = card;
@@ -220,33 +220,38 @@ namespace DABApp
 			address_2 = address2;
 			city = City;
 			state = State;
-		}	
+		}
 	}
 
-	public class DonationRecord 
-	{ 
-		public string date { get; set;}
-		public string campaignName { get; set;}
-		public string donationType { get; set;}
-		public string grossAmount { get; set;}
-		public string currency { get; set;}
+	public class DonationRecord
+	{
+		public string date { get; set; }
+		public string campaignName { get; set; }
+		public string donationType { get; set; }
+		public string grossAmount { get; set; }
+		public string currency { get; set; }
 	}
 
 	public class DonationTokenContainer
 	{
-		public APIToken token { get; set;}
-		public string csrf_dab_token { get; set;}
+		public APIToken token { get; set; }
+		public string csrf_dab_token { get; set; }
 	}
 
-	public class GetTokenContainer 
-	{ 
-		public GetToken csrf { get; set;}
+	public class GetTokenContainer
+	{
+		public GetToken csrf { get; set; }
 	}
 
-	public class GetToken 
-	{ 
-		public string token_name { get; set;}
-		public string token_value { get; set;}
+	public class GetToken
+	{
+		public string token_name { get; set; }
+		public string token_value { get; set; }
+	}
+
+	public class RequestedUrl
+	{
+		public string url { get; set;}
 	}
 
 	public class APIError { 

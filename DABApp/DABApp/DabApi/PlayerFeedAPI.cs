@@ -304,32 +304,7 @@ namespace DABApp
 			}
 		}
 
-		public static async Task<string> GetDonationAccessToken()
-		{
-			try
-			{
-				//dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-				HttpClient client = new HttpClient();
-				//client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
-				string JsonOut = await result.Content.ReadAsStringAsync();
-				var content = JsonConvert.DeserializeObject<GetTokenContainer>(JsonOut);
-				if (content.csrf.token_value != null)
-				{
-					return content.csrf.token_value;
-				}
-				else 
-				{
-					throw new Exception("No token recieved.");
-				}
-			}
-			catch (Exception e)
-			{
-				return e.Message;
-			}
-		}
-
-		public static async Task<string> PostDonationAccessToken(string csrf_token) 
+		public static async Task<string> PostDonationAccessToken() 
 		{
 			try
 			{
@@ -348,12 +323,15 @@ namespace DABApp
 					user_last_name = LastNameSettings.Value,
 					user_avatar = AvatarSettings.Value
 				};
-				var send = new DonationTokenContainer 
-				{ 
-					token = token,
-					csrf_dab_token = csrf_token
-				};
 				HttpClient client = new HttpClient();
+				var tres = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
+				var tok = await tres.Content.ReadAsStringAsync();
+				var en = JsonConvert.DeserializeObject<GetTokenContainer>(tok);
+				var send = new DonationTokenContainer
+				{
+					token = token,
+					csrf_dab_token = en.csrf.token_value
+				};
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				string JsonIn = JsonConvert.SerializeObject(send);
 				HttpContent content = new StringContent(JsonIn);
@@ -365,7 +343,8 @@ namespace DABApp
 					APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
 					throw new Exception(error.message);
 				}
-				return "Success";
+				var cont = JsonConvert.DeserializeObject<RequestedUrl>(JsonOut);
+				return cont.url;
 			}
 			catch (Exception e) 
 			{

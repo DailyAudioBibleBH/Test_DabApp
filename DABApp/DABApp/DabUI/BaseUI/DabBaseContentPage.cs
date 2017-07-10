@@ -72,9 +72,8 @@ namespace DABApp
 
 		async void OnGive(object o, EventArgs e) 
 		{
-			var token = await PlayerFeedAPI.GetDonationAccessToken();
-			var url = await PlayerFeedAPI.PostDonationAccessToken(token);
-			//DependencyService.Get<IRivets>().NavigateTo(url);
+			var url = await PlayerFeedAPI.PostDonationAccessToken();
+			DependencyService.Get<IRivets>().NavigateTo(url);
 		}
 	}
 }
