@@ -53,14 +53,16 @@ namespace DABApp
 			LogOut.IsEnabled = false;
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
+			var nav = new NavigationPage(new DabLoginPage());
+			nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
 			if (await AuthenticationAPI.LogOut())
 			{
-				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+				Navigation.PushModalAsync(nav);
 			}
 			else
 			{
 				//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
-				Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+				Navigation.PushModalAsync(nav);
 			}
 		}
 

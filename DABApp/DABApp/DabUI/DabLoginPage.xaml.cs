@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -59,23 +59,51 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == null)
 			{
-					if (_fromPlayer)
+				if (_fromPlayer)
+				{
+					Navigation.PopModalAsync();
+				}
+				else
+				{
+					if (_fromDonation)
 					{
-						Navigation.PopModalAsync();
+						var dons = await AuthenticationAPI.GetDonations();
+						if (dons.Length == 1)
+						{
+							var url = await PlayerFeedAPI.PostDonationAccessToken();
+							if (url.Contains("http://"))
+							{
+								DependencyService.Get<IRivets>().NavigateTo(url);
+							}
+							else
+							{
+								await DisplayAlert("Error", url, "OK");
+							}
+							NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+							_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+							Application.Current.MainPage = _nav;
+							Navigation.PopToRootAsync();
+						}
+						else
+						{
+							NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
+							_navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+							Application.Current.MainPage = _navs;
+							await Navigation.PopToRootAsync();
+							//NavigationPage nav = new NavigationPage(new DabManageDonationsPage(dons));
+							//nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+							//await Navigation.PushModalAsync(nav);
+						}
 					}
 					else
 					{
-						if (_fromDonation)
-						{
-							var url = await PlayerFeedAPI.PostDonationAccessToken();
-							DependencyService.Get<IRivets>().NavigateTo(url);
-						}
 						NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-						_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+						_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
 						Application.Current.MainPage = _nav;
-						await Navigation.PopToRootAsync();
+						Navigation.PopToRootAsync();
 					}
-					GuestStatus.Current.IsGuestLogin = false;
+				}
+				GuestStatus.Current.IsGuestLogin = false;
 			}
 			else 
 			{
@@ -86,7 +114,7 @@ namespace DABApp
 						await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
 					}
 					else { 
-						await DisplayAlert("OH NO!", result, "OK");
+						await DisplayAlert("Error", result, "OK");
 					}
 				}
 				else

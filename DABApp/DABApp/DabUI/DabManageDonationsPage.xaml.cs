@@ -10,11 +10,13 @@ namespace DABApp
 	{
 		Donation[] _donations;
 		bool isInitialized = false;
+		bool _fromLogin;
 
-		public DabManageDonationsPage(Donation[] donations)
+		public DabManageDonationsPage(Donation[] donations, bool fromLogin = false)
 		{
 			InitializeComponent();
 			_donations = donations;
+			_fromLogin = fromLogin;
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
@@ -111,6 +113,9 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
+			if (_fromLogin) {
+				Navigation.InsertPageBefore(new DabChannelsPage(), this);
+			}
 			if (isInitialized)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");

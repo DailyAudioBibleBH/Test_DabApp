@@ -38,19 +38,45 @@ namespace DABApp
 				{
 						if (_fromPlayer)
 						{
-							Navigation.PopModalAsync();
+							await Navigation.PopModalAsync();
 						}
 						else
 						{
-							if (_fromDonation)
+						if (_fromDonation)
+						{
+							var dons = await AuthenticationAPI.GetDonations();
+							if (dons.Length == 1)
 							{
 								var url = await PlayerFeedAPI.PostDonationAccessToken();
-								DependencyService.Get<IRivets>().NavigateTo(url);
+								if (url.Contains("http://"))
+								{
+									DependencyService.Get<IRivets>().NavigateTo(url);
+								}
+								else
+								{
+									await DisplayAlert("Error", url, "OK");
+								}
+
+								var nav = new NavigationPage(new DabChannelsPage());
+								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
+								Application.Current.MainPage = nav;
+								await Navigation.PopToRootAsync();
 							}
+							else
+							{
+								var nav = new NavigationPage(new DabManageDonationsPage(dons, true));
+								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
+								Application.Current.MainPage = nav;
+								await Navigation.PopToRootAsync();
+							}
+						}
+						else 
+						{ 
 							var nav = new NavigationPage(new DabChannelsPage());
-							nav.SetValue(NavigationPage.BarBackgroundColorProperty, Color.FromHex("CBCBCB"));
+							nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 							Application.Current.MainPage = nav;
-							Navigation.PopToRootAsync();
+							await Navigation.PopToRootAsync();
+						}
 						}
 						GuestStatus.Current.IsGuestLogin = false;
 				}

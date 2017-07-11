@@ -84,8 +84,20 @@ namespace DABApp
 			}
 			else
 			{
-				var url = await PlayerFeedAPI.PostDonationAccessToken();
-				DependencyService.Get<IRivets>().NavigateTo(url);
+				var dons = await AuthenticationAPI.GetDonations();
+				if (dons.Length == 1)
+				{
+					var url = await PlayerFeedAPI.PostDonationAccessToken();
+					if (url.Contains("http://"))
+					{
+						DependencyService.Get<IRivets>().NavigateTo(url);
+					}
+					else
+					{
+						await DisplayAlert("Error", url, "OK");
+					}
+				}
+				else await Navigation.PushAsync(new DabManageDonationsPage(dons));
 			}
 		}
 	}
