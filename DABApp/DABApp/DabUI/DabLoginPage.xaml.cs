@@ -8,12 +8,14 @@ namespace DABApp
 	public partial class DabLoginPage : DabBaseContentPage
 	{
 		bool _fromPlayer;
+		bool _fromDonation;
 
-		public DabLoginPage(bool fromPlayer = false)
+		public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
 		{
 			InitializeComponent();
 			NavigationPage.SetHasNavigationBar(this, false);
 			_fromPlayer = fromPlayer;
+			_fromDonation = fromDonation;
 			GlobalResources.LogInPageExists = true;
 			ToolbarItems.Clear();
 			var email = GlobalResources.GetUserEmail();
@@ -57,19 +59,23 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == null)
 			{
-				if (_fromPlayer)
-				{
-					Navigation.PopModalAsync();
-				}
-				else
-				{
-					NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-					_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-					Application.Current.MainPage = _nav;
-					await Navigation.PopToRootAsync();
-				}
-				GuestStatus.Current.IsGuestLogin = false;
-
+					if (_fromPlayer)
+					{
+						Navigation.PopModalAsync();
+					}
+					else
+					{
+						if (_fromDonation)
+						{
+							var url = await PlayerFeedAPI.PostDonationAccessToken();
+							DependencyService.Get<IRivets>().NavigateTo(url);
+						}
+						NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+						_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+						Application.Current.MainPage = _nav;
+						await Navigation.PopToRootAsync();
+					}
+					GuestStatus.Current.IsGuestLogin = false;
 			}
 			else 
 			{
@@ -92,7 +98,7 @@ namespace DABApp
 		}
 
 		void OnSignUp(object o, EventArgs e) {
-			Navigation.PushAsync(new DabSignUpPage(_fromPlayer));
+			Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
 		}
 
 		void OnForgot(object o, EventArgs e) {

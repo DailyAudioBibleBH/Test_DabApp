@@ -13,6 +13,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			_campaign = campaign;
+			Next.MinimumDate = DateTime.Now.AddDays(1);
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
@@ -36,45 +37,45 @@ namespace DABApp
 
 		async void OnUpdate(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
-			var card = (Card)Cards.SelectedItem;
-			var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-			long unix = (long)(Next.Date - stime).TotalSeconds;
-			string result;
-			if (_campaign.pro == null)
-			{
-				var address = await AuthenticationAPI.GetAddresses();
-				var billing = address.billing;
-				postDonation send;
-				if (billing.country == "USA")
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				var card = (Card)Cards.SelectedItem;
+				var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+				long unix = (long)(Next.Date - stime).TotalSeconds;
+				string result;
+				if (_campaign.pro == null)
 				{
-					send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
+					var address = await AuthenticationAPI.GetAddresses();
+					var billing = address.billing;
+					postDonation send;
+					if (billing.country == "USA")
+					{
+						send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
+					}
+					else
+					{
+						send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country);
+					}
+					result = await AuthenticationAPI.AddDonation(send);
 				}
-				else 
+				else
 				{
-					send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country);
+					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, unix);
+					result = await AuthenticationAPI.UpdateDonation(send);
 				}
-				result = await AuthenticationAPI.AddDonation(send);
-			}
-			else
-			{
-				putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, unix);
-				result = await AuthenticationAPI.UpdateDonation(send);
-			}
-			if (result == "Success")
-			{
-				await DisplayAlert("Successfully Updated Donation", null, "OK");
-				await Navigation.PopAsync();
-			}
-			else
-			{
-				await DisplayAlert("Error", result, "OK");
-			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+				if (result == "Success")
+				{
+					await DisplayAlert("Successfully Updated Donation", null, "OK");
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", result, "OK");
+				}
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
 		}
 
 		async void OnCancel(object o, EventArgs e) 

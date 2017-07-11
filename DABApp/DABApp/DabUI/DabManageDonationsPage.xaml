@@ -7,7 +7,6 @@
 			</StackLayout>
 			<StackLayout Padding="10" Spacing="10">
 			<Button Text="Show Donation History" Clicked="OnHistory"/>
-			<Button Text="One-time gift"/>
 			</StackLayout>
 		</StackLayout>
 	</ContentPage.Content>

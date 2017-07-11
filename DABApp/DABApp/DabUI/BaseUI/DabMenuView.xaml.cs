@@ -41,7 +41,9 @@ namespace DABApp
 			//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
-			Navigation.PushModalAsync(new NavigationPage(new DabLoginPage()));
+			var nav = new NavigationPage(new DabLoginPage());
+			nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+			Navigation.PushModalAsync(nav);
 			SignUp.IsEnabled = true;
 		}
 

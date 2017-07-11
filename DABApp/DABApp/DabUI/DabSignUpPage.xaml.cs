@@ -8,14 +8,16 @@ namespace DABApp
 	public partial class DabSignUpPage : DabBaseContentPage
 	{
 		bool _fromPlayer;
+		bool _fromDonation;
 
-		public DabSignUpPage(bool fromPlayer = false)
+		public DabSignUpPage(bool fromPlayer = false, bool fromDonation = false)
 		{
 			InitializeComponent();
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				Container.Padding = 100;
 			}
 			_fromPlayer = fromPlayer;
+			_fromDonation = fromDonation;
 			BindingContext = ContentConfig.Instance.blocktext;
 			ToolbarItems.Clear();
 			var tapper = new TapGestureRecognizer();
@@ -34,18 +36,23 @@ namespace DABApp
 				string authentication = await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (string.IsNullOrEmpty(authentication))
 				{
-					if (_fromPlayer)
-					{
-						Navigation.PopModalAsync();
-					}
-					else
-					{
-						var nav = new NavigationPage(new DabChannelsPage());
-						nav.SetValue(NavigationPage.BarBackgroundColorProperty, Color.FromHex("CBCBCB"));
-						Application.Current.MainPage = nav;
-						Navigation.PopToRootAsync();
-					}
-					GuestStatus.Current.IsGuestLogin = false;
+						if (_fromPlayer)
+						{
+							Navigation.PopModalAsync();
+						}
+						else
+						{
+							if (_fromDonation)
+							{
+								var url = await PlayerFeedAPI.PostDonationAccessToken();
+								DependencyService.Get<IRivets>().NavigateTo(url);
+							}
+							var nav = new NavigationPage(new DabChannelsPage());
+							nav.SetValue(NavigationPage.BarBackgroundColorProperty, Color.FromHex("CBCBCB"));
+							Application.Current.MainPage = nav;
+							Navigation.PopToRootAsync();
+						}
+						GuestStatus.Current.IsGuestLogin = false;
 				}
 				else{
 					if (authentication.Contains("server"))

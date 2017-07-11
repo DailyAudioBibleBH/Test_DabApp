@@ -23,6 +23,10 @@ namespace DABApp
 				foreach (var don in donations.Reverse())
 				{
 					StackLayout layout = new StackLayout();
+					StackLayout buttons = new StackLayout();
+					buttons.Orientation = StackOrientation.Horizontal;
+					Button monthly = new Button();
+					Button once = new Button();
 					Label cTitle = new Label();
 					cTitle.Text = $"{don.name}-${don.suggestedRecurringDonation}/month";
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
@@ -37,15 +41,25 @@ namespace DABApp
 						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
+						monthly.Text = "Edit Monthly";
+						monthly.Clicked += OnRecurring;
+						monthly.WidthRequest = 150;
+						monthly.AutomationId = don.id.ToString();
+						once.Text = "One-time gift";
+						buttons.Children.Add(monthly);
 					}
-					Button button = new Button();
-					button.Text = "Edit Monthly";
-					button.Clicked += OnRecurring;
-					button.AutomationId = don.id.ToString();
+					else 
+					{
+						once.Text = "Give";
+						once.HorizontalOptions = LayoutOptions.StartAndExpand;
+					}
+					once.WidthRequest = 150;
+					once.Clicked += OnGive;
+					buttons.Children.Add(once);
 					layout.Children.Add(cTitle);
 					layout.Children.Add(card);
 					layout.Children.Add(recurr);
-					layout.Children.Add(button);
+					layout.Children.Add(buttons);
 					layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
 					layout.Padding = 10;
 					layout.Spacing = 10;
@@ -78,6 +92,18 @@ namespace DABApp
 			Card[] cards = await AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.id.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
+		}
+
+		async void OnGive(object o, EventArgs e) 
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
+			var url = await PlayerFeedAPI.PostDonationAccessToken();
+			DependencyService.Get<IRivets>().NavigateTo(url);
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}

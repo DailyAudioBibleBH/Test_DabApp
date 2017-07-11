@@ -72,8 +72,21 @@ namespace DABApp
 
 		async void OnGive(object o, EventArgs e) 
 		{
-			var url = await PlayerFeedAPI.PostDonationAccessToken();
-			DependencyService.Get<IRivets>().NavigateTo(url);
+			if (GuestStatus.Current.IsGuestLogin)
+			{
+				var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+				if (choice) 
+				{
+					var nav = new NavigationPage(new DabLoginPage(false, true));
+					nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+					await Navigation.PushModalAsync(nav);
+				}
+			}
+			else
+			{
+				var url = await PlayerFeedAPI.PostDonationAccessToken();
+				DependencyService.Get<IRivets>().NavigateTo(url);
+			}
 		}
 	}
 }
