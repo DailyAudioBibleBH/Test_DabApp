@@ -73,6 +73,10 @@
 			<Style x:Key="playerLabelStyle" TargetType="Label">
 				<Setter Property="TextColor" Value="{DynamicResource PlayerLabelColor}"/>
 			</Style>
+			<Style x:Key="warningLabelStyle" TargetType="Label">
+				<Setter Property="TextColor" Value="{DynamicResource HighlightColor}"/>
+				<Setter Property="FontSize" Value="Micro"/>
+			</Style>
 			<!--Entry-->
 			<Style x:Key="entryStyle" TargetType="Entry">
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />

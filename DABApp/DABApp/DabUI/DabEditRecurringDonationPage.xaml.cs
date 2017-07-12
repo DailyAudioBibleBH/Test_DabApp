@@ -37,6 +37,9 @@ namespace DABApp
 
 		async void OnUpdate(object o, EventArgs e) 
 		{
+			if (Validation())
+			{
+				AmountWarning.IsVisible = false;
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 				activity.IsVisible = true;
@@ -76,6 +79,11 @@ namespace DABApp
 				}
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
+			}
+			else 
+			{
+				AmountWarning.IsVisible = true;
+			}
 		}
 
 		async void OnCancel(object o, EventArgs e) 
@@ -99,6 +107,18 @@ namespace DABApp
 			}
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
+		}
+
+		bool Validation() 
+		{
+			if (Amount.Text.Contains("."))
+			{
+				return false;
+			}
+			else 
+			{
+				return true;
+			}
 		}
 	}
 }

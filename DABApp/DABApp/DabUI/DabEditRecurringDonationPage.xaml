@@ -7,9 +7,9 @@
 			<Picker x:Name="Cards"/>
 			<Label Text="Amount" FontSize="Micro"/>
 			<Entry x:Name="Amount" Keyboard="Numeric"/>
+			<Label x:Name="AmountWarning" Text="Payment amount must be a whole number." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<Label Text="Next Payment" FontSize="Micro"/>
 			<DatePicker x:Name="Next" BackgroundColor="{DynamicResource InputBackgroundColor}" TextColor="{DynamicResource TextColor}"/>
-			<Label Text="Next payment must be "/>
 			<StackLayout Orientation="Horizontal">
 				<Label Text="Status:" Style="{StaticResource playerLabelStyle}"/>
 				<Label x:Name="Status"/>
