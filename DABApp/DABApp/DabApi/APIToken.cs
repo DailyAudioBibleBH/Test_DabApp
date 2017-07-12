@@ -236,6 +236,8 @@ namespace DABApp
 	{
 		public APIToken token { get; set; }
 		public string csrf_dab_token { get; set; }
+		public string campaign_id { get; set;}
+		public string redirect_url { get; set; } = "dab://";
 	}
 
 	public class GetTokenContainer

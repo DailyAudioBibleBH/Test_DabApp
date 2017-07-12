@@ -48,39 +48,44 @@ namespace DABApp
 
 		async void OnSave(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
-			var update = new Address();
-			update.first_name = FirstName.Text;
-			update.last_name = LastName.Text;
-			update.company = CompanyName.Text;
-			update.email = Email.Text;
-			update.phone = Phone.Text;
-			update.address_1 = Address1.Text;
-			update.address_2 = Address2.Text;
-			update.city = City.Text;
-			update.postcode = Code.Text;
-			update.country = ((Country)Country.SelectedItem).countryCode;
-			if (Regions.SelectedItem != null)
+			if (Validation())
 			{
-				update.state = ((Region)Regions.SelectedItem).regionName;
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				var update = new Address();
+				update.first_name = FirstName.Text;
+				update.last_name = LastName.Text;
+				update.company = CompanyName.Text;
+				update.email = Email.Text;
+				update.phone = Phone.Text;
+				update.address_1 = Address1.Text;
+				update.address_2 = Address2.Text;
+				update.city = City.Text;
+				update.postcode = Code.Text;
+				update.country = ((Country)Country.SelectedItem).countryCode;
+				if (Regions.SelectedItem != null)
+				{
+					update.state = ((Region)Regions.SelectedItem).regionName;
+				}
+				if (isShipping)
+				{
+					update.type = "shipping";
+				}
+				var result = await AuthenticationAPI.UpdateBillingAddress(update);
+				if (result == "true")
+				{
+					await DisplayAlert("Success", "Address successfully updated", "OK");
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", result, "OK");
+				}
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
 			}
-			if (isShipping) {
-				update.type = "shipping";
-			}
-			var result = await AuthenticationAPI.UpdateBillingAddress(update);
-			if (result == "true")
-			{
-				await DisplayAlert("Success", "Address successfully updated", "OK");
-				await Navigation.PopAsync();
-			}
-			else {
-				await DisplayAlert("Error", result, "OK");
-			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
 		}
 
 		void OnCountrySelected(object o, EventArgs e) {
@@ -93,6 +98,63 @@ namespace DABApp
 			Regions.ItemsSource = newCountry.regions;
 			RegionLabel.Text = newCountry.regionLabel;
 			CodeLabel.Text = newCountry.postalCodeLabel;
+		}
+
+		bool Validation() 
+		{
+			bool result = true;
+			if (string.IsNullOrEmpty(FirstName.Text)) {
+				result = false;
+				FirstNameWarning.IsVisible = true;
+			}
+			if (string.IsNullOrEmpty(LastName.Text)) 
+			{
+				result = false;
+				LastNameWarning.IsVisible = true;
+			}
+			if (Country.SelectedItem != null)
+			{
+				Country selected = (Country)Country.SelectedItem;
+				if (selected.countryCode == "US")
+				{
+					if (string.IsNullOrEmpty(Address1.Text))
+					{
+						result = false;
+						AddressWarning.IsVisible = true;
+					}
+					if (string.IsNullOrEmpty(City.Text))
+					{
+						result = false;
+						CityWarning.IsVisible = true;
+					}
+					if (Regions.SelectedItem == null)
+					{
+						result = false;
+						RegionWarning.IsVisible = true;
+					}
+					if (string.IsNullOrEmpty(Code.Text)) 
+					{
+						result = false;
+						CodeWarning.IsVisible = true;
+					}
+				}
+			}
+			else 
+			{
+				CountryWarning.IsVisible = true;
+				result = false;
+			}
+			if (result) 
+			{
+				FirstNameWarning.IsVisible = false;
+				LastNameWarning.IsVisible = false;
+				CountryWarning.IsVisible = false;
+				AddressWarning.IsVisible = false;
+				CityWarning.IsVisible = false;
+				CodeWarning.IsVisible = false;
+				RegionWarning.IsVisible = false;
+			}
+			return result;
 		}
 	}
 }

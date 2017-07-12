@@ -5,8 +5,10 @@
 			<Label x:Name="Title" Text="Billing Address" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
 			<Label Text="First Name" FontSize="Micro"/>
 			<Entry x:Name="FirstName" Text="{Binding first_name}"/>
+			<Label x:Name="FirstNameWarning" Text="First Name is required." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<Label Text="Last Name" FontSize="Micro"/>
 			<Entry x:Name="LastName" Text="{Binding last_name}"/>
+			<Label x:Name="LastNameWarning" Text="Last Name is required." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<Label Text="Company Name" FontSize="Micro"/>
 			<Entry x:Name="CompanyName" Text="{Binding company}"/>
 			<BoxView HorizontalOptions="FillAndExpand"/>
@@ -19,9 +21,11 @@
 			</StackLayout>
 			<Label Text="Address" FontSize="Micro"/>
 			<Entry x:Name="Address1" Text="{Binding address_1}"/>
+			<Label x:Name="AddressWarning" Text="Address is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<Entry x:Name="Address2" Text="{Binding address_2}"/>
 			<Label Text="City" FontSize="Micro"/>
 			<Entry x:Name="City" Text="{Binding city}"/>
+			<Label x:Name="CityWarning" Text="City is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<!--<Label Text="State" FontSize="Micro" IsVisible="true"/>-->
 			<Grid>
 				<Grid.RowDefinitions>
@@ -34,14 +38,17 @@
 				<StackLayout x:Name="_Region" Grid.Row="0" Grid.Column="0">
 					<Label x:Name="RegionLabel" Text="State" FontSize="Micro" IsVisible="true"/>
 					<Picker x:Name="Regions" Title=" - " TextColor="{DynamicResource TextColor}" VerticalOptions="End"/>
+					<Label x:Name="RegionWarning" Text="Region is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 				</StackLayout>
 				<StackLayout Grid.Row="0" Grid.Column="1">
 					<Label x:Name="CodeLabel" Text="Zip" FontSize="Micro"/>
 					<Entry x:Name="Code" Text="{Binding postcode}"/>
+					<Label x:Name="CodeWarning" Text="Zip code is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 				</StackLayout>
 			</Grid>
 			<Label Text="Country" FontSize="Micro"/>
 			<Picker x:Name="Country" Title=" - " TextColor="{DynamicResource TextColor}" SelectedIndexChanged="OnCountrySelected"/>
+			<Label x:Name="CountryWarning" Text="Country field is required." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 			<Button Text="Save" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 		</StackLayout>
 	</ContentPage.Content>

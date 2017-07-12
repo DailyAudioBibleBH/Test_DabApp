@@ -304,7 +304,7 @@ namespace DABApp
 			}
 		}
 
-		public static async Task<string> PostDonationAccessToken() 
+		public static async Task<string> PostDonationAccessToken(string campaignId = "1") 
 		{
 			try
 			{
@@ -330,7 +330,8 @@ namespace DABApp
 				var send = new DonationTokenContainer
 				{
 					token = token,
-					csrf_dab_token = en.csrf.token_value
+					csrf_dab_token = en.csrf.token_value,
+					campaign_id = campaignId
 				};
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				string JsonIn = JsonConvert.SerializeObject(send);

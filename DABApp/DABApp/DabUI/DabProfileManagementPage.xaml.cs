@@ -24,7 +24,7 @@ namespace DABApp
 				var message = await AuthenticationAPI.EditMember(Email.Text, FirstName.Text, LastName.Text, CurrentPassword.Text, NewPassword.Text, ConfirmNewPassword.Text);
 				if (message == "Success")
 				{
-					DisplayAlert(message, "User profile information has been updated", "OK");
+					await DisplayAlert(message, "User profile information has been updated", "OK");
 					Email.Text = GlobalResources.GetUserEmail();
 					var UserName = GlobalResources.GetUserName().Split(' ');
 					FirstName.Text = UserName[0];
@@ -34,11 +34,11 @@ namespace DABApp
 					ConfirmNewPassword.Text = null;
 					GuestStatus.Current.UserName = GlobalResources.GetUserName();
 					if (Device.Idiom == TargetIdiom.Phone) {
-						Navigation.PopAsync();
+						await Navigation.PopAsync();
 					}
 				}
 				else {
-					DisplayAlert("An error has occured", message, "OK");
+					await DisplayAlert("An error has occured", message, "OK");
 				}
 			}
 			Save.IsEnabled = true;

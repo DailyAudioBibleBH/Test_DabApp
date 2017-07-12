@@ -93,10 +93,16 @@ namespace DABApp
 		}
 
 		async void OnProfile(object o, EventArgs e) {
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var result = await AuthenticationAPI.GetMember();
 			if (Device.Idiom == TargetIdiom.Phone) {
 				await Navigation.PushAsync(new DabProfileManagementPage());
 			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		void OnAddresses(object o, EventArgs e) {

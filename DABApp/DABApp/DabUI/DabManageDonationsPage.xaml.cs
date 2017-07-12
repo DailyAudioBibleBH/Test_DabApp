@@ -56,6 +56,7 @@ namespace DABApp
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
 					}
 					once.WidthRequest = 150;
+					once.AutomationId = don.id.ToString();
 					once.Clicked += OnGive;
 					buttons.Children.Add(once);
 					layout.Children.Add(cTitle);
@@ -104,7 +105,8 @@ namespace DABApp
 			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
-			var url = await PlayerFeedAPI.PostDonationAccessToken();
+			Button chosen = (Button)o;
+			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
 			DependencyService.Get<IRivets>().NavigateTo(url);
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;

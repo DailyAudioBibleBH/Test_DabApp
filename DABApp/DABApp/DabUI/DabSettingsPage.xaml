@@ -10,7 +10,7 @@
 						<TableSection x:Name="Account" Title="Account">
 							<ViewCell x:Name="Profile" Tapped="OnProfile">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image HorizontalOptions="Start"/>
+									<Image Source="ic_person_white.png" HorizontalOptions="Start"/>
 									<Label Text="Profile" HorizontalOptions="StartAndExpand"/>
 									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
@@ -31,7 +31,7 @@
 							</ViewCell>
 							<ViewCell x:Name="Donations" Tapped="OnDonations">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image HorizontalOptions="Start"/>
+									<Image Source="ic_favorite_white.png" HorizontalOptions="Start"/>
 									<Label Text="Donations" HorizontalOptions="StartAndExpand"/>
 									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
