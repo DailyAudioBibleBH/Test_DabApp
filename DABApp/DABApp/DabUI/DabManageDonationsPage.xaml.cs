@@ -20,6 +20,9 @@ namespace DABApp
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{
+				OnAppearing();
+			});
 			if (donations != null)
 			{
 				foreach (var don in donations.Reverse())
@@ -34,6 +37,10 @@ namespace DABApp
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
 					Label card = new Label();
 					Label recurr = new Label();
+					monthly.Text = "Edit Monthly";
+					monthly.Clicked += OnRecurring;
+					monthly.WidthRequest = 150;
+					monthly.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
 						cTitle.Text = $"{don.name}-${don.pro.amount}/month";
@@ -43,21 +50,20 @@ namespace DABApp
 						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
-						monthly.Text = "Edit Monthly";
-						monthly.Clicked += OnRecurring;
-						monthly.WidthRequest = 150;
-						monthly.AutomationId = don.id.ToString();
+						monthly.IsVisible = true;
 						once.Text = "One-time gift";
 						buttons.Children.Add(monthly);
 					}
 					else 
 					{
+						monthly.IsVisible = false;
 						once.Text = "Give";
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
 					}
 					once.WidthRequest = 150;
 					once.AutomationId = don.id.ToString();
 					once.Clicked += OnGive;
+					buttons.Children.Add(monthly);
 					buttons.Children.Add(once);
 					layout.Children.Add(cTitle);
 					layout.Children.Add(card);
@@ -129,6 +135,8 @@ namespace DABApp
 				{
 					StackLayout donContainer = (StackLayout)Container.Children.Single(x => x.AutomationId == don.id.ToString());
 					var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
+					var ButtonContainer = donContainer.Children.Single(x => x.GetType() == typeof(StackLayout)) as StackLayout;
+					var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
 					if (don.pro != null)
 					{
 						Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
@@ -136,11 +144,17 @@ namespace DABApp
 						Labels[2].Text = $"Recurs: {don.pro.next}";
 						Labels[1].IsVisible = true;
 						Labels[2].IsVisible = true;
+						Labels[1].FontSize = 14;
+						Labels[2].FontSize = 14;
+						Buttons[0].IsVisible = true;
+						Buttons[1].Text = "One-time gift";
 					}
 					else
 					{
 						Labels[1].Text = null;
 						Labels[2].Text = null;
+						Buttons[0].IsVisible = false;
+						Buttons[1].Text = "Give";
 					}
 				}
 				activity.IsVisible = false;

@@ -9,6 +9,7 @@ using SegmentedControl.FormsPlugin.iOS;
 using SQLite;
 using UIKit;
 using UserNotifications;
+using Xamarin.Forms;
 
 namespace DABApp.iOS
 {
@@ -83,6 +84,12 @@ namespace DABApp.iOS
 			{
 				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
 			}
+		}
+
+		public override void OnActivated(UIApplication uiApplication)
+		{
+			base.OnActivated(uiApplication);
+			MessagingCenter.Send<string>("Refresh", "Refresh");
 		}
 	}
 }
