@@ -57,7 +57,7 @@ namespace DABApp
 			//		break;
 			//}
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
-			if (result == null)
+			if (result == "Success")
 			{
 				if (_fromPlayer)
 				{

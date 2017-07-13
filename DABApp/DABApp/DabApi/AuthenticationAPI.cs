@@ -78,7 +78,7 @@ namespace DABApp
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
-					return container.message[0];
+					return "Success";
 				}
 			}
 			catch (Exception e) {
