@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -13,13 +13,18 @@ namespace DABApp
 		{
 			InitializeComponent();
 			var months = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-			var years = new List<string>() { "2017" };
 			Month.ItemsSource = months;
+			int start;
+			if (card != null) start = 2010;
+			else start = DateTime.Now.Year;
+			int end = (DateTime.Now.Year - start) + 50;
+			List<string> years = Enumerable.Range(start, end).Select(x => x.ToString()).ToList();
 			Year.ItemsSource = years;
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			if (card != null) {
+			if (card != null)
+			{
 				_card = card;
 				Title.Text = "Card Details";
 				CVC.IsVisible = false;
@@ -32,6 +37,7 @@ namespace DABApp
 				Month.IsEnabled = false;
 				Month.SelectedItem = card.exp_month.ToString();
 				Year.IsEnabled = false;
+				Year.SelectedItem = card.exp_year.ToString();
 			}
 		}
 
