@@ -25,7 +25,7 @@ namespace DABApp
 			var countries = await AuthenticationAPI.GetCountries();
 			if (result != null)
 			{
-				Navigation.PushAsync(new DabUpdateAddressPage(result.billing, countries, false));
+				await Navigation.PushAsync(new DabUpdateAddressPage(result.billing, countries, false));
 			}
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
@@ -41,7 +41,7 @@ namespace DABApp
 			var countries = await AuthenticationAPI.GetCountries();
 			if (result != null)
 			{
-				Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, countries, true));
+				await Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, countries, true));
 			}
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;

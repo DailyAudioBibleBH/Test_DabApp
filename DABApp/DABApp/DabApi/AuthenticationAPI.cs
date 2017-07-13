@@ -58,7 +58,7 @@ namespace DABApp
 					APIToken token = container.token;
 					if (container.code == "login_error")
 					{
-						return container.message;
+						return container.message[0];
 					}
 					if (TokenSettings == null || EmailSettings == null)
 					{
@@ -78,7 +78,7 @@ namespace DABApp
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
-					return container.message;
+					return container.message[0];
 				}
 			}
 			catch (Exception e) {
@@ -162,7 +162,7 @@ namespace DABApp
 				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/resetpassword", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-				return container.message;
+				return container.message[0];
 			}
 			catch (Exception e) {
 				return "The following exception was caught: " + e.Message;
@@ -273,7 +273,7 @@ namespace DABApp
 				APIToken token = container.token;
 				if (container.message != null && token == null)
 				{
-					throw new Exception(container.message);
+					throw new Exception(container.message[0]);
 				}
 				TokenSettings.Value = token.value;
 				ExpirationSettings.Value = token.expires;

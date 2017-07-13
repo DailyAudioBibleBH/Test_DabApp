@@ -17,7 +17,7 @@ namespace DABApp
 	{
 		public APIToken token { get; set; }
 		public string code { get; set; }
-		public string message { get; set; }
+		public List<string> message { get; set; }
 	}
 
 	public class LoginInfo

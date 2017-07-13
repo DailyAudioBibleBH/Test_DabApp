@@ -40,9 +40,7 @@ namespace DABApp
 			Regions.ItemsSource = setCountry.regions;
 			Regions.ItemDisplayBinding = new Binding("regionName");
 			RegionLabel.Text = setCountry.regionLabel;
-			if (!string.IsNullOrEmpty(address.state)) {
-				Regions.SelectedItem = setCountry.regions.Single(x => x.regionName == address.state);
-			}
+			Regions.SelectedItem = setCountry.regions.SingleOrDefault(x => x.regionName == address.state);
 			CodeLabel.Text = setCountry.postalCodeLabel;
 		}
 
