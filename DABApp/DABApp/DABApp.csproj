@@ -153,6 +153,27 @@
     <Compile Include="DabUI\DabEditRecurringDonationPage.xaml.cs">
       <DependentUpon>DabEditRecurringDonationPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DabUI\DabForumPhoneTopicList.xaml.cs">
+      <DependentUpon>DabForumPhoneTopicList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumTabletTopicPage.xaml.cs">
+      <DependentUpon>DabForumTabletTopicPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumPhoneTopicDetails.xaml.cs">
+      <DependentUpon>DabForumPhoneTopicDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumCreateTopic.xaml.cs">
+      <DependentUpon>DabForumCreateTopic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumCreateReply.xaml.cs">
+      <DependentUpon>DabForumCreateReply.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumTopicListView.xaml.cs">
+      <DependentUpon>DabForumTopicListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DabUI\DabForumTopicDetailsView.xaml.cs">
+      <DependentUpon>DabForumTopicDetailsView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">
@@ -325,6 +346,27 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabEditRecurringDonationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumPhoneTopicList.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumTabletTopicPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumPhoneTopicDetails.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumCreateTopic.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumCreateReply.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumTopicListView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DabUI\DabForumTopicDetailsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
