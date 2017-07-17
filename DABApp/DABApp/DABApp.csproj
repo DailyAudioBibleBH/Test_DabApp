@@ -94,9 +94,6 @@
       <DependentUpon>DabAppInfoPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="DabViewHelpers\Controls\ImageCircle.cs" />
-    <Compile Include="DabUI\DabPrayerWallPage.xaml.cs">
-      <DependentUpon>DabPrayerWallPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DabData\dbEpisodes.cs" />
     <Compile Include="DabData\dbLoggedEvents.cs" />
     <Compile Include="DabApi\PlayerFeedAPI.cs" />
@@ -304,9 +301,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabAppInfoPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DabUI\DabPrayerWallPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabOfflineEpisodeManagementPage.xaml">

@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabForumTabletTopicPage : ContentPage
+	public partial class DabForumTabletTopicPage : DabBaseContentPage
 	{
 		public DabForumTabletTopicPage()
 		{

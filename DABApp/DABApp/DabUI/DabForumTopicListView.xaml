@@ -1,5 +1,20 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicListView">
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicListView" xmlns:local="clr-namespace:DABApp;">
 	<ContentView.Content>
+		<StackLayout>
+			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" HasUnevenRows="true">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Padding="10" Spacing="10">
+								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
+								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
+								<Label Text="{Binding Path=., Converter={StaticResource ParticipantConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
 	</ContentView.Content>
 </ContentView>

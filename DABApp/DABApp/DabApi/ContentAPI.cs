@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace DABApp
 {
@@ -98,6 +99,22 @@ namespace DABApp
 			}
 			OfflineSettings.Value = jsonArray.ToString();
 			db.Update(OfflineSettings);
+		}
+
+		public static async Task<Forum> GetForum(View view) 
+		{
+			try
+			{
+				var client = new HttpClient();
+				var result = await client.GetAsync(view.resources.First().feedUrl);
+				var JsonOut = await result.Content.ReadAsStringAsync();
+				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
+				return forum;
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
 	}
 }

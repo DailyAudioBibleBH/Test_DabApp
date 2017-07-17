@@ -79,28 +79,36 @@ namespace DABApp
 			}
 		}
 
-		void OnItemTapped(object o, ItemTappedEventArgs e) {
+		async void OnItemTapped(object o, ItemTappedEventArgs e) {
 			Nav item = (Nav)e.Item;
 			if (item.title == "Channels")
 			{
-				Navigation.PopToRootAsync();
+				await Navigation.PopToRootAsync();
 			}
 			else {
 				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
 				if (item.title == "Prayer Wall")
 				{
-					Navigation.PushAsync(new DabPrayerWallPage(view));
+					var fo = await ContentAPI.GetForum(view);
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						await Navigation.PushAsync(new DabForumTabletTopicPage());
+					}
+					else
+					{
+						await Navigation.PushAsync(new DabForumPhoneTopicList(view, fo));
+					}
 					RemovePages();
 				}
 				else
 				{
 					if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
 					{
-						Navigation.PushAsync(new DabParentChildGrid(view));
+						await Navigation.PushAsync(new DabParentChildGrid(view));
 					}
 					else
 					{
-						Navigation.PushAsync(new DabContentView(view));
+						await Navigation.PushAsync(new DabContentView(view));
 					}
 					RemovePages();
 				}

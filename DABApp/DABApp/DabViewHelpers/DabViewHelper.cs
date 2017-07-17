@@ -63,4 +63,38 @@ namespace DABApp
 			throw new NotImplementedException();
 		}
 	}
+
+	public class ParticipantConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null; }
+
+			var topic = (Topic)value;
+			return $"Voices: {topic.voiceCount}  Replies: {topic.replyCount}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+	
+		}		
+	}
+
+	public class ActivityConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null; }
+	
+			var topic = (Topic)value;
+			return $"Latest Reply {topic.lastActivity} ago";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+
+		}	
+	}
 }

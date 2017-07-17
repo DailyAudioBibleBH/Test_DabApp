@@ -198,4 +198,34 @@ namespace DABApp
 			}
 		}
 	}
+
+	public class Member
+	{
+		public string name { get; set; }
+		public string avatarUrl { get; set; }
+		public string role { get; set; }
+		public int replyCount { get; set; }
+		public int topicCount { get; set; }
+	}
+
+	public class Topic
+	{
+		public int id { get; set; }
+		public string title { get; set; }
+		public string content { get; set; }
+		public string lastActivity { get; set; }
+		public string replyCount { get; set; }
+		public string voiceCount { get; set; }
+		public string link { get; set; }
+		public Member member { get; set; }
+	}
+
+	public class Forum
+	{
+		public int id { get; set; }
+		public string title { get; set; }
+		public string link { get; set; }
+		public int topicCount { get; set; }
+		public List<Topic> topics { get; set; }
+	}
 }

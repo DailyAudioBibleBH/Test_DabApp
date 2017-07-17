@@ -168,6 +168,8 @@
 				<Setter Property="Color" Value="{DynamicResource InputBackgroundColor}"/>
 			</Style>
 			<Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true"/>
+			<local:ParticipantConverter x:Key="ParticipantConverter"/>
+			<local:ActivityConverter x:Key="ActivityConverter"/>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>
