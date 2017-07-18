@@ -1,5 +1,61 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicDetailsView">
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicDetailsView" xmlns:local="clr-namespace:DABApp;">
 	<ContentView.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<ListView x:Name="reps" HasUnevenRows="true" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}">
+				<ListView.Header>
+					<StackLayout>
+			<Label FontSize="Micro" x:Name="LastActivity" Style="{StaticResource secondaryLabelStyle}"/>
+			<Label FontSize="Large" Text="{Binding title}" Style="{StaticResource playerLabelStyle}"/>
+			<Label FontSize="Small" Text="{Binding content}"/>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Label Text="{Binding member.role}" Grid.Column="1" Grid.Row="1" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+				<local:ImageCircle Source="{Binding member.avatarUrl}" HeightRequest="35" WidthRequest="35" Grid.Column="0" Grid.RowSpan="2"/>
+				<Label Text="{Binding member.name}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+				<Label Text="{Binding Path=member, Converter={StaticResource ReplyConverter}}" Grid.Column="2" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
+				<Label Text="{Binding Path=member, Converter={StaticResource TopicConverter}}" FontSize="Micro" Grid.Column="3" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}"/>
+			</Grid>
+			<Button x:Name="rep" Text="Post a reply" FontSize="Medium" Style="{StaticResource highlightedButtonStyle}" FontAttributes="Bold"/>
+						</StackLayout>
+					</ListView.Header>
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<ViewCell>
+							<StackLayout Spacing="10">
+							<Label FontSize="Micro" Text="{Binding Path=., Converter={StaticResource TimeConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
+							<Label FontSize="Small" Text="{Binding content}"/>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<Label Text="{Binding member.role}" Grid.Column="1" Grid.Row="1" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+								<local:ImageCircle Source="{Binding member.avatarUrl}" Grid.Column="0" Grid.RowSpan="2" HeightRequest="35" WidthRequest="35"/>
+								<Label Text="{Binding member.name}" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="0" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+								<Label Text="{Binding Path=member, Converter={StaticResource ReplyConverter}}" Grid.Column="2" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
+								<Label Text="{Binding Path=member, Converter={StaticResource TopicConverter}}" FontSize="Micro" Grid.Column="3" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}"/>
+							</Grid>
+							</StackLayout>
+						</ViewCell>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</StackLayout>
 	</ContentView.Content>
 </ContentView>

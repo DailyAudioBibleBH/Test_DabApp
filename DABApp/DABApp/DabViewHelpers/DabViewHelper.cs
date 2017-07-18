@@ -97,4 +97,52 @@ namespace DABApp
 
 		}	
 	}
+
+	public class ReplyConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return null;
+			var reply = (Member)value;
+			return $"Replies:{reply.replyCount}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class TopicConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return null;
+			var topic = (Member)value;
+			return $"Topics:{topic.topicCount}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class TimeConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return null;
+			var res = (Reply)value;
+			var dateTime = System.Convert.ToDateTime(res.gmtDate);
+			string month = dateTime.ToString("MMMM");
+			string time = dateTime.TimeOfDay.ToString();
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

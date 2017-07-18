@@ -208,6 +208,14 @@ namespace DABApp
 		public int topicCount { get; set; }
 	}
 
+	public class Reply 
+	{ 
+		public int id { get; set;}
+		public string content { get; set;}
+		public string gmtDate { get; set;}
+		public Member member { get; set;}
+	}
+
 	public class Topic
 	{
 		public int id { get; set; }
@@ -218,6 +226,7 @@ namespace DABApp
 		public string voiceCount { get; set; }
 		public string link { get; set; }
 		public Member member { get; set; }
+		public List<Reply> replies { get; set;}
 	}
 
 	public class Forum

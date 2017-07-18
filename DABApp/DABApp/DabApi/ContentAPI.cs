@@ -116,5 +116,21 @@ namespace DABApp
 				return null;
 			}
 		}
+
+		public static async Task<Topic> GetTopic(Topic topic)
+		{
+			try
+			{
+				var client = new HttpClient();
+				var result = await client.GetAsync(topic.link);
+				var JsonOut = await result.Content.ReadAsStringAsync();
+				var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
+				return top;
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
 	}
 }

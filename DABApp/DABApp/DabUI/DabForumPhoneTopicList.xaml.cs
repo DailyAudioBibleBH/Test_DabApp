@@ -23,8 +23,17 @@ namespace DABApp
 		}
 
 		async void OnTopic(object o, ItemTappedEventArgs e) 
-		{ 
-			
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
+			var topic = (Topic)e.Item;
+			var result = await ContentAPI.GetTopic(topic);
+			await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
+			ContentList.topicList.SelectedItem = null;
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 		}
 	}
 }
