@@ -1,5 +1,10 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateTopic">
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateTopic" xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Entry Placeholder="Title" x:Name="title" BackgroundColor="Transparent"/>
+			<Editor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand"/>
+			<Button Text="Post prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost"/>
+		</StackLayout>
 	</ContentPage.Content>
-</ContentPage>
+</local:DabBaseContentPage>
