@@ -10,6 +10,7 @@ namespace DABApp
 	public partial class DabForumPhoneTopicDetails : DabBaseContentPage
 	{
 		bool login = false;
+		bool fromPost = false;
 		Topic _topic;
 
 		public DabForumPhoneTopicDetails(Topic topic)
@@ -20,12 +21,16 @@ namespace DABApp
 			if (topic.replies.Count > 0)
 			{
 				DetailsView.replies.ItemsSource = topic.replies;
+				var dateTime = Convert.ToDateTime(topic.replies.OrderBy(x => x.gmtDate).First().gmtDate);
+				var month = dateTime.ToString("MMMM");
+				var time = dateTime.TimeOfDay.ToString();
+				DetailsView.last.Text = $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 			}
-			else
+			else 
 			{
 				DetailsView.replies.SeparatorVisibility = SeparatorVisibility.None;
+				DetailsView.last.Text = topic.lastActivity;
 			}
-			DetailsView.last.Text = topic.lastActivity;
 			DetailsView.reply.Clicked += OnReply;
 		}
 
@@ -43,16 +48,34 @@ namespace DABApp
 			else 
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(_topic));
+				fromPost = true;
 			}
 		}
 
-		protected override void OnAppearing()
+		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
 			if (login) 
 			{
-				Navigation.PushAsync(new DabForumCreateReply(_topic));
+				await Navigation.PushAsync(new DabForumCreateReply(_topic));
 				login = false;
+			}
+			if (fromPost)
+			{
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				var result = await ContentAPI.GetTopic(_topic);
+				_topic = result;
+				DetailsView.replies.ItemsSource = _topic.replies;
+				if (_topic.replies.Count > 0) 
+				{
+					DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
+				}
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
+				fromPost = false;
 			}
 		}
 	}
