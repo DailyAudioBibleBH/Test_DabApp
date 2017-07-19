@@ -132,5 +132,29 @@ namespace DABApp
 				return null;
 			}
 		}
+
+		public static async Task<string> PostTopic(PostTopic topic)
+		{
+			try
+			{
+				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				var client = new HttpClient();
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+				var JsonIn = JsonConvert.SerializeObject(topic);
+				var content = new StringContent(JsonIn);
+				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/topics", content);
+				string JsonOut = await result.Content.ReadAsStringAsync();
+				if (!JsonOut.Contains("id")) {
+					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+					throw new Exception(error.message);
+				}
+				return JsonOut;
+			}
+			catch (Exception e)
+			{
+				return e.Message;
+			}
+		}
 	}
 }

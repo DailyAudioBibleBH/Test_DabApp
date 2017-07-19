@@ -5,11 +5,17 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabForumCreateReply : ContentPage
+	public partial class DabForumCreateReply : DabBaseContentPage
 	{
-		public DabForumCreateReply()
+		public DabForumCreateReply(Topic topic)
 		{
 			InitializeComponent();
+			BindingContext = topic;
+		}
+
+		async void OnPost(object o, EventArgs e)
+		{ 
+			
 		}
 	}
 }

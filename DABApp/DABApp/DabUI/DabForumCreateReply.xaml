@@ -1,5 +1,13 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateReply">
+<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateReply" xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
+		<StackLayout Padding="10" Spacing="10">
+			<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="{Binding content}"/>
+			<BoxView/>
+			<Editor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand"/>
+			<BoxView/>
+			<Button Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" VerticalOptions="End"/>
+		</StackLayout>
 	</ContentPage.Content>
-</ContentPage>
+</local:DabBaseContentPage>

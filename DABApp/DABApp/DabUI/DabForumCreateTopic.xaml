@@ -3,8 +3,9 @@
 	<ContentPage.Content>
 		<StackLayout Padding="10" Spacing="10">
 			<Entry Placeholder="Title" x:Name="title" BackgroundColor="Transparent"/>
-			<Editor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand"/>
-			<Button Text="Post prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost"/>
+			<BoxView/>
+			<Editor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="StartAndExpand"/>
+			<Button Text="Post prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost" VerticalOptions="End"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

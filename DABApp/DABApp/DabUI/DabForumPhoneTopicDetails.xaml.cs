@@ -10,10 +10,12 @@ namespace DABApp
 	public partial class DabForumPhoneTopicDetails : DabBaseContentPage
 	{
 		bool login = false;
+		Topic _topic;
 
 		public DabForumPhoneTopicDetails(Topic topic)
 		{
 			InitializeComponent();
+			_topic = topic;
 			DetailsView.BindingContext = topic;
 			DetailsView.replies.ItemsSource = topic.replies;
 			var dateTime = Convert.ToDateTime(topic.replies.OrderBy(x => x.gmtDate).First().gmtDate);
@@ -36,7 +38,7 @@ namespace DABApp
 			}
 			else 
 			{
-				await Navigation.PushAsync(new DabForumCreateReply());
+				await Navigation.PushAsync(new DabForumCreateReply(_topic));
 			}
 		}
 
@@ -45,7 +47,7 @@ namespace DABApp
 			base.OnAppearing();
 			if (login) 
 			{
-				Navigation.PushAsync(new DabForumCreateReply());
+				Navigation.PushAsync(new DabForumCreateReply(_topic));
 				login = false;
 			}
 		}

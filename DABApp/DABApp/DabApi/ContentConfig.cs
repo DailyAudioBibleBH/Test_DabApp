@@ -229,6 +229,19 @@ namespace DABApp
 		public List<Reply> replies { get; set;}
 	}
 
+	public class PostTopic
+	{
+		public string title { get; set; }
+		public string content { get; set; }
+		public int forumId { get; set; }
+		public PostTopic(string Title, string Content, int ForumId)
+		{
+			title = Title;
+			content = Content;
+			forumId = ForumId;
+		}
+	}
+
 	public class Forum
 	{
 		public int id { get; set; }

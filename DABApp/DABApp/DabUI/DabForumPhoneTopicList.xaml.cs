@@ -8,6 +8,7 @@ namespace DABApp
 	public partial class DabForumPhoneTopicList : DabBaseContentPage
 	{
 		bool login = false;
+		Forum _forum;
 
 		public DabForumPhoneTopicList(View view, Forum forum)
 		{
@@ -16,6 +17,7 @@ namespace DABApp
 			banner.Source = view.banner.urlPhone;
 			bannerTitle.Text = view.title;
 			ContentList.topicList.ItemsSource = forum.topics;
+			_forum = forum;
 			ContentList.topicList.ItemTapped += OnTopic;
 		}
 
@@ -31,7 +33,7 @@ namespace DABApp
 			}
 			else 
 			{
-				await Navigation.PushAsync(new DabForumCreateTopic());
+				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
 			}
 		}
 
@@ -54,7 +56,7 @@ namespace DABApp
 			base.OnAppearing();
 			if (login)
 			{
-				Navigation.PushAsync(new DabForumCreateTopic());
+				Navigation.PushAsync(new DabForumCreateTopic(_forum));
 				login = false;
 			}
 		}
