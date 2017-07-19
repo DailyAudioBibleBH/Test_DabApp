@@ -10,7 +10,6 @@
 				</StackLayout>
 			</RelativeLayout>
 			<StackLayout Padding="10" Spacing="10">
-			<Button Text="Post a prayer request" FontSize="Large" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}"/>
 			<local:DabForumTopicListView x:Name="ContentList"/>
 			</StackLayout>
 		</StackLayout>

@@ -2,6 +2,9 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicListView" xmlns:local="clr-namespace:DABApp;">
 	<ContentView.Content>
 		<StackLayout>
+			<StackLayout Padding="10" Spacing="10">
+				<Button x:Name="Post" Text="Post a prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}"/>
+			</StackLayout>
 			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" HasUnevenRows="true">
 				<ListView.ItemTemplate>
 					<DataTemplate>

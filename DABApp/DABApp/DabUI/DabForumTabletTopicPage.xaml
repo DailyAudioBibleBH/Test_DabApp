@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTabletTopicPage" xmlns:local="clr-namespace:DABApp;">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTabletTopicPage" xmlns:local="clr-namespace:DABApp;"
+	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<ContentPage.Content>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="2*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="150"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<RelativeLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+					<Label x:Name="bannerTitle" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+				</StackLayout>
+			</RelativeLayout>
+			<local:DabForumTopicListView x:Name="ContentList" Grid.Row="1" Grid.Column="0"/>
+			<local:DabForumTopicDetailsView x:Name="DetailsView" Grid.Row="1" Grid.Column="1"/>
+		</Grid>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

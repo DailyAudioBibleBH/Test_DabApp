@@ -22,6 +22,7 @@ namespace DABApp
 			_view = view;
 			ContentList.topicList.ItemsSource = _forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
+			ContentList.postButton.Clicked += OnPost;
 		}
 
 		async void OnPost(object o, EventArgs e) 

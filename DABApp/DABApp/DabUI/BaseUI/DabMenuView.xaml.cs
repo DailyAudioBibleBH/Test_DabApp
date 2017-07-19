@@ -92,7 +92,7 @@ namespace DABApp
 					var fo = await ContentAPI.GetForum(view);
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						await Navigation.PushAsync(new DabForumTabletTopicPage());
+						await Navigation.PushAsync(new DabForumTabletTopicPage(view, fo));
 					}
 					else
 					{
