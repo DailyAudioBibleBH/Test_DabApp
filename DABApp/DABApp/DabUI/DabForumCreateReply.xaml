@@ -7,7 +7,7 @@
 			<BoxView/>
 			<Editor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand"/>
 			<BoxView/>
-			<Button Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" VerticalOptions="End"/>
+			<Button x:Name="Post" Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" VerticalOptions="End"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

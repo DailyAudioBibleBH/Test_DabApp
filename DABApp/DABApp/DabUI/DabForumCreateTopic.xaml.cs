@@ -18,6 +18,7 @@ namespace DABApp
 
 		async void OnPost(object o, EventArgs e)
 		{
+			Post.IsEnabled = false;
 			var topic = new PostTopic(title.Text, Content.Text, _forum.id);
 			var result = await ContentAPI.PostTopic(topic);
 			if (result.Contains("id"))
@@ -29,6 +30,7 @@ namespace DABApp
 			{
 				await DisplayAlert("Error", result, "OK");
 			}
+			Post.IsEnabled = true;
 		}
 	}
 }

@@ -17,11 +17,15 @@ namespace DABApp
 			InitializeComponent();
 			_topic = topic;
 			DetailsView.BindingContext = topic;
-			DetailsView.replies.ItemsSource = topic.replies;
-			var dateTime = Convert.ToDateTime(topic.replies.OrderBy(x => x.gmtDate).First().gmtDate);
-			var month = dateTime.ToString("MMMM");
-			var time = dateTime.TimeOfDay.ToString();
-			DetailsView.last.Text = $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			if (topic.replies.Count > 0)
+			{
+				DetailsView.replies.ItemsSource = topic.replies;
+			}
+			else
+			{
+				DetailsView.replies.SeparatorVisibility = SeparatorVisibility.None;
+			}
+			DetailsView.last.Text = topic.lastActivity;
 			DetailsView.reply.Clicked += OnReply;
 		}
 

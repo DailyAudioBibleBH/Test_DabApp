@@ -8,7 +8,9 @@ namespace DABApp
 	public partial class DabForumPhoneTopicList : DabBaseContentPage
 	{
 		bool login = false;
+		bool fromPost = false;
 		Forum _forum;
+		View _view;
 
 		public DabForumPhoneTopicList(View view, Forum forum)
 		{
@@ -16,8 +18,9 @@ namespace DABApp
 			base.ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlPhone;
 			bannerTitle.Text = view.title;
-			ContentList.topicList.ItemsSource = forum.topics;
 			_forum = forum;
+			_view = view;
+			ContentList.topicList.ItemsSource = _forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
 		}
 
@@ -34,6 +37,7 @@ namespace DABApp
 			else 
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+				fromPost = true;
 			}
 		}
 
@@ -51,13 +55,26 @@ namespace DABApp
 			activityHolder.IsVisible = false;
 		}
 
-		protected override void OnAppearing()
+		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
 			if (login)
 			{
 				Navigation.PushAsync(new DabForumCreateTopic(_forum));
 				login = false;
+			}
+			if (fromPost)
+			{
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				var result = await ContentAPI.GetForum(_view);
+				_forum = result;
+				ContentList.topicList.ItemsSource = result.topics;
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
+				fromPost = false;
 			}
 		}
 	}

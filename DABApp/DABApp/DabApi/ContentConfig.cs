@@ -250,4 +250,15 @@ namespace DABApp
 		public int topicCount { get; set; }
 		public List<Topic> topics { get; set; }
 	}
+
+	public class PostReply
+	{ 
+		public string content { get; set;}
+		public int topicId { get; set;}
+		public PostReply(string Content, int TopicId)
+		{
+			content = Content;
+			topicId = TopicId;
+		}
+	}
 }
