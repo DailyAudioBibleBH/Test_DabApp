@@ -12,8 +12,12 @@ namespace DABApp
 		public DabForumCreateTopic(Forum forum)
 		{
 			InitializeComponent();
-			Content.HeightRequest = this.Height;
+			Content.HeightRequest = 250;
 			_forum = forum;
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Container.Padding = 100;
+			}
 		}
 
 		async void OnPost(object o, EventArgs e)
@@ -31,6 +35,16 @@ namespace DABApp
 				await DisplayAlert("Error", result, "OK");
 			}
 			Post.IsEnabled = true;
+		}
+
+		void OnTitle(object o, EventArgs e)
+		{
+			Content.Focus();
+		}
+
+		void OnContent(object o, EventArgs e)
+		{
+			OnPost(o, e);
 		}
 	}
 }

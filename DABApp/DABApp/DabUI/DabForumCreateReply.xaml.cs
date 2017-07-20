@@ -14,6 +14,10 @@ namespace DABApp
 			InitializeComponent();
 			BindingContext = topic;
 			_topic = topic;
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				Container.Padding = 100;
+			}
 		}
 
 		async void OnPost(object o, EventArgs e)
@@ -31,6 +35,21 @@ namespace DABApp
 				await DisplayAlert("Error", result, "OK");
 			}
 			Post.IsEnabled = true;
+		}
+
+		protected override bool OnBackButtonPressed()
+		{
+			if (string.IsNullOrEmpty(reply.Text))
+			{
+				return base.OnBackButtonPressed();
+			}
+			else
+			{
+				var result = DisplayAlert("Warning reply will be erased.", "Your reply is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No").Result;
+				if (result) return false;
+				else
+				return base.OnBackButtonPressed();
+			}
 		}
 	}
 }
