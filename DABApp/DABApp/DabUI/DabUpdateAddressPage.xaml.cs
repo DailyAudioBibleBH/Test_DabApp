@@ -40,7 +40,7 @@ namespace DABApp
 			Regions.ItemsSource = setCountry.regions;
 			Regions.ItemDisplayBinding = new Binding("regionName");
 			RegionLabel.Text = setCountry.regionLabel;
-			Regions.SelectedItem = setCountry.regions.SingleOrDefault(x => x.regionName == address.state);
+			Regions.SelectedItem = setCountry.regions.SingleOrDefault(x => x.regionCode == address.state);
 			CodeLabel.Text = setCountry.postalCodeLabel;
 		}
 
@@ -65,7 +65,7 @@ namespace DABApp
 				update.country = ((Country)Country.SelectedItem).countryCode;
 				if (Regions.SelectedItem != null)
 				{
-					update.state = ((Region)Regions.SelectedItem).regionName;
+					update.state = ((Region)Regions.SelectedItem).regionCode;
 				}
 				if (isShipping)
 				{
