@@ -27,6 +27,8 @@ namespace DABApp
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
 			DetailsView.reply.Clicked += OnReply;
+			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
+			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", (obj) => { OnAppearing(); });
 		}
 
 		async void OnTopic(object o, ItemTappedEventArgs e)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -23,9 +23,10 @@ namespace DABApp
 			ContentList.topicList.ItemsSource = _forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
+			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", async (obj) => { await Update(); });
 		}
 
-		async void OnPost(object o, EventArgs e) 
+		async void OnPost(object o, EventArgs e)
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
@@ -36,14 +37,14 @@ namespace DABApp
 					login = true;
 				}
 			}
-			else 
+			else
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
 				fromPost = true;
 			}
 		}
 
-		async void OnTopic(object o, ItemTappedEventArgs e) 
+		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
 			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -60,6 +61,17 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
+			await Update();
+			if (login)
+			{
+				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+				fromPost = true;
+				login = false;
+			}
+		}
+
+		async Task Update()
+		{
 			if (fromPost)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -72,12 +84,6 @@ namespace DABApp
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 				fromPost = false;
-			}
-			if (login)
-			{
-				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				fromPost = true;
-				login = false;
 			}
 		}
 	}

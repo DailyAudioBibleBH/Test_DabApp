@@ -39,17 +39,23 @@ namespace DABApp
 
 		protected override bool OnBackButtonPressed()
 		{
+			base.OnBackButtonPressed();
 			if (string.IsNullOrEmpty(reply.Text))
 			{
-				return base.OnBackButtonPressed();
+				return true;
 			}
 			else
 			{
 				var result = DisplayAlert("Warning reply will be erased.", "Your reply is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No").Result;
 				if (result) return false;
-				else
-				return base.OnBackButtonPressed();
+				else return true;
 			}
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			MessagingCenter.Send<string>("repUpdate", "repUpdate");
 		}
 	}
 }

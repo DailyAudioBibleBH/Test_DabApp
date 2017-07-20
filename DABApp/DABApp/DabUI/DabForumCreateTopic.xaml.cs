@@ -46,5 +46,11 @@ namespace DABApp
 		{
 			OnPost(o, e);
 		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			MessagingCenter.Send<string>("topUpdate", "topUpdate");
+		}
 	}
 }

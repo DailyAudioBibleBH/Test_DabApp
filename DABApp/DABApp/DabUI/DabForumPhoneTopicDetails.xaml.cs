@@ -32,6 +32,7 @@ namespace DABApp
 				DetailsView.last.Text = topic.lastActivity;
 			}
 			DetailsView.reply.Clicked += OnReply;
+			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 		}
 
 		async void OnReply(object o, EventArgs e)

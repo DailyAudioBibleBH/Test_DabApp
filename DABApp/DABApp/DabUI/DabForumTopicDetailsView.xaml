@@ -31,7 +31,7 @@
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<StackLayout Spacing="10">
+							<StackLayout Padding="10" Spacing="10">
 							<Label FontSize="Micro" Text="{Binding Path=., Converter={StaticResource TimeConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
 							<Label FontSize="Small" Text="{Binding content}"/>
 							<Grid>
