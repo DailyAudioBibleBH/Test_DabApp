@@ -55,11 +55,6 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			if (login) 
-			{
-				await Navigation.PushAsync(new DabForumCreateReply(_topic));
-				login = false;
-			}
 			if (fromPost)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -76,6 +71,12 @@ namespace DABApp
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 				fromPost = false;
+			}
+			if (login) 
+			{
+				await Navigation.PushAsync(new DabForumCreateReply(_topic));
+				login = false;
+				fromPost = true;
 			}
 		}
 	}

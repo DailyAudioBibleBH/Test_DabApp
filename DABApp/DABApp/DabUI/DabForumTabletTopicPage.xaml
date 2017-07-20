@@ -18,7 +18,7 @@
 				</StackLayout>
 			</RelativeLayout>
 			<local:DabForumTopicListView x:Name="ContentList" Grid.Row="1" Grid.Column="0"/>
-			<local:DabForumTopicDetailsView x:Name="DetailsView" Grid.Row="1" Grid.Column="1"/>
+			<local:DabForumTopicDetailsView x:Name="DetailsView" Grid.Row="1" Grid.Column="1" IsVisible="false"/>
 		</Grid>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

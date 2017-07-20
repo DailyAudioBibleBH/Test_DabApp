@@ -7,7 +7,8 @@ namespace DABApp
 {
 	public partial class DabForumTabletTopicPage : DabBaseContentPage
 	{
-		bool login = false;
+		bool loginRep = false;
+		bool loginTop = false;
 		bool fromPost = false;
 		Forum _forum;
 		Topic topic;
@@ -24,6 +25,8 @@ namespace DABApp
 			BindingContext = view;
 			ContentList.topicList.ItemsSource = forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
+			ContentList.postButton.Clicked += OnPost;
+			DetailsView.reply.Clicked += OnReply;
 		}
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
@@ -34,10 +37,85 @@ namespace DABApp
 			activityHolder.IsVisible = true;
 			topic = (Topic)e.Item;
 			DetailsView.BindingContext = topic;
+			DetailsView.IsVisible = true;
 			var result = await ContentAPI.GetTopic(topic);
 			DetailsView.replies.ItemsSource = result.replies;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
+		}
+
+		async void OnPost(object o, EventArgs e)
+		{ 
+			if (GuestStatus.Current.IsGuestLogin)
+			{
+				var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
+				if (choice)
+				{
+					await Navigation.PushModalAsync(new DabLoginPage(true));
+					loginTop = true;
+				}
+			}
+			else 
+			{
+				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+				fromPost = true;
+			}
+		}
+
+		async void OnReply(object o, EventArgs e)
+		{ 
+			if (GuestStatus.Current.IsGuestLogin)
+			{
+				var choice = await DisplayAlert("Log in required", "You must be logged in to comment on a topic.  Would you like to log in?", "Yes", "No");
+				if (choice)
+				{
+					await Navigation.PushModalAsync(new DabLoginPage(true));
+					loginRep = true;
+				}
+			}
+			else 
+			{
+				await Navigation.PushAsync(new DabForumCreateReply(topic));
+				fromPost = true;
+			}
+		}
+
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
+			if (fromPost)
+			{
+				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+				activity.IsVisible = true;
+				activityHolder.IsVisible = true;
+				if (topic != null)
+				{
+					topic = await ContentAPI.GetTopic(topic);
+					DetailsView.replies.ItemsSource = topic.replies;
+					if (topic.replies.Count > 0) 
+					{
+						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
+					}
+				}
+				_forum = await ContentAPI.GetForum(_view);
+				ContentList.topicList.ItemsSource = _forum.topics;
+				activity.IsVisible = false;
+				activityHolder.IsVisible = false;
+				fromPost = false;
+			}
+			if (loginRep) 
+			{
+				await Navigation.PushAsync(new DabForumCreateReply(topic));
+				fromPost = true;
+				loginRep = false;
+			}
+			if (loginTop)
+			{
+				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+				fromPost = true;
+				loginTop = false;
+			}
 		}
 	}
 }

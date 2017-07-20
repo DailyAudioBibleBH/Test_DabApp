@@ -33,6 +33,7 @@ namespace DABApp
 				if (choice)
 				{
 					await Navigation.PushModalAsync(new DabLoginPage(true));
+					login = true;
 				}
 			}
 			else 
@@ -59,11 +60,6 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			if (login)
-			{
-				Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				login = false;
-			}
 			if (fromPost)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -76,6 +72,12 @@ namespace DABApp
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 				fromPost = false;
+			}
+			if (login)
+			{
+				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+				fromPost = true;
+				login = false;
 			}
 		}
 	}
