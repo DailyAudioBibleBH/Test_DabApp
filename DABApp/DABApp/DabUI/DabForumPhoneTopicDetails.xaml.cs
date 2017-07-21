@@ -21,10 +21,7 @@ namespace DABApp
 			if (topic.replies.Count > 0)
 			{
 				DetailsView.replies.ItemsSource = topic.replies;
-				var dateTime = Convert.ToDateTime(topic.replies.OrderBy(x => x.gmtDate).First().gmtDate);
-				var month = dateTime.ToString("MMMM");
-				var time = dateTime.TimeOfDay.ToString();
-				DetailsView.last.Text = $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+				DetailsView.last.Text = TimeConvert();
 			}
 			else 
 			{
@@ -65,6 +62,7 @@ namespace DABApp
 				var result = await ContentAPI.GetTopic(_topic);
 				_topic = result;
 				DetailsView.replies.ItemsSource = _topic.replies;
+				DetailsView.last.Text = TimeConvert();
 				if (_topic.replies.Count > 0) 
 				{
 					DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
@@ -79,6 +77,14 @@ namespace DABApp
 				login = false;
 				fromPost = true;
 			}
+		}
+
+		string TimeConvert()
+		{ 
+			var dateTime = DateTimeOffset.Parse(_topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -40,8 +40,9 @@ namespace DABApp
 			topic = (Topic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
-			var result = await ContentAPI.GetTopic(topic);
-			DetailsView.replies.ItemsSource = result.replies;
+			topic = await ContentAPI.GetTopic(topic);
+			DetailsView.replies.ItemsSource = topic.replies;
+			DetailsView.last.Text = TimeConvert();
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}
@@ -95,6 +96,7 @@ namespace DABApp
 				{
 					topic = await ContentAPI.GetTopic(topic);
 					DetailsView.replies.ItemsSource = topic.replies;
+					DetailsView.last.Text = TimeConvert();
 					if (topic.replies.Count > 0) 
 					{
 						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
@@ -118,6 +120,14 @@ namespace DABApp
 				fromPost = true;
 				loginTop = false;
 			}
+		}
+
+		string TimeConvert()
+		{
+			var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 		}
 	}
 }

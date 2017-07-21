@@ -134,9 +134,9 @@ namespace DABApp
 		{
 			if (value == null) return null;
 			var res = (Reply)value;
-			var dateTime = System.Convert.ToDateTime(res.gmtDate);
+			var dateTime = DateTimeOffset.Parse($"{res.gmtDate} +0:00").UtcDateTime.ToLocalTime();
 			string month = dateTime.ToString("MMMM");
-			string time = dateTime.TimeOfDay.ToString();
+			string time = dateTime.ToString("t");
 			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 		}
 
