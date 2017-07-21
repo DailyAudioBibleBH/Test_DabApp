@@ -89,14 +89,14 @@ namespace DABApp
 				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
 				if (item.title == "Prayer Wall")
 				{
-					var fo = await ContentAPI.GetForum(view);
+					//var fo = await ContentAPI.GetForum(view);
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						await Navigation.PushAsync(new DabForumTabletTopicPage(view, fo));
+						await Navigation.PushAsync(new DabForumTabletTopicPage(view));
 					}
 					else
 					{
-						await Navigation.PushAsync(new DabForumPhoneTopicList(view, fo));
+						await Navigation.PushAsync(new DabForumPhoneTopicList(view));
 					}
 					RemovePages();
 				}

@@ -9,18 +9,17 @@ namespace DABApp
 	{
 		bool login = false;
 		bool fromPost = false;
+		bool unInitialized = true;
 		Forum _forum;
 		View _view;
 
-		public DabForumPhoneTopicList(View view, Forum forum)
+		public DabForumPhoneTopicList(View view)
 		{
 			InitializeComponent();
 			base.ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlPhone;
 			bannerTitle.Text = view.title;
-			_forum = forum;
 			_view = view;
-			ContentList.topicList.ItemsSource = _forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", async (obj) => { await Update(); });
@@ -72,7 +71,7 @@ namespace DABApp
 
 		async Task Update()
 		{
-			if (fromPost)
+			if (fromPost || unInitialized)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -84,6 +83,7 @@ namespace DABApp
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 				fromPost = false;
+				unInitialized = false;
 			}
 		}
 	}

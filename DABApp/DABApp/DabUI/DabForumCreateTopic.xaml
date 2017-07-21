@@ -5,7 +5,17 @@
 			<Entry Placeholder="Title" x:Name="title" BackgroundColor="Transparent" Completed="OnTitle"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}" VerticalOptions="Start"/>
 			<Editor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand"/>
-			<Button x:Name="Post" Text="Post prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost" VerticalOptions="End"/>
+			<Grid VerticalOptions="End">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
+				<Button x:Name="Post" Text="Post prayer request" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost" Grid.Row="0" Grid.Column="0"/>
+				<Button x:Name="Cancel" Text="Cancel" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
+			</Grid>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

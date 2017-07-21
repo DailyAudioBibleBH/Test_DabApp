@@ -7,7 +7,17 @@
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
 			<Editor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
-			<Button x:Name="Post" Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" VerticalOptions="End"/>
+			<Grid VerticalOptions="End">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
+				<Button x:Name="Post" Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" Grid.Row="0" Grid.Column="0"/>
+				<Button x:Name="Cancel" Text="Cancel" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
+			</Grid>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

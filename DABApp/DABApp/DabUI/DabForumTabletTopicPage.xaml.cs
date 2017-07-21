@@ -10,20 +10,19 @@ namespace DABApp
 		bool loginRep = false;
 		bool loginTop = false;
 		bool fromPost = false;
+		bool unInitialized = true;
 		Forum _forum;
 		Topic topic;
 		View _view;
 
-		public DabForumTabletTopicPage(View view, Forum forum)
+		public DabForumTabletTopicPage(View view)
 		{
 			InitializeComponent();
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlTablet;
 			bannerTitle.Text = view.title;
-			_forum = forum;
 			_view = view;
 			BindingContext = view;
-			ContentList.topicList.ItemsSource = forum.topics;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
 			DetailsView.reply.Clicked += OnReply;
@@ -86,7 +85,7 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			if (fromPost)
+			if (fromPost || unInitialized)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -97,7 +96,7 @@ namespace DABApp
 					topic = await ContentAPI.GetTopic(topic);
 					DetailsView.replies.ItemsSource = topic.replies;
 					DetailsView.last.Text = TimeConvert();
-					if (topic.replies.Count > 0) 
+					if (topic.replies.Count > 0)
 					{
 						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
 					}
@@ -107,6 +106,7 @@ namespace DABApp
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 				fromPost = false;
+				unInitialized = false;
 			}
 			if (loginRep) 
 			{

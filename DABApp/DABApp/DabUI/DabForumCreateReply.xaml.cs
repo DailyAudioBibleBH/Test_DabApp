@@ -14,6 +14,8 @@ namespace DABApp
 			InitializeComponent();
 			BindingContext = topic;
 			_topic = topic;
+			NavigationPage.SetHasBackButton(this, false);
+			base.ToolbarItems.Clear();
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				Container.Padding = 100;
@@ -37,19 +39,17 @@ namespace DABApp
 			Post.IsEnabled = true;
 		}
 
-		protected override bool OnBackButtonPressed()
+		async void OnCancel(object o, EventArgs e)
 		{
-			base.OnBackButtonPressed();
-			if (string.IsNullOrEmpty(reply.Text))
+			if (!string.IsNullOrEmpty(reply.Text))
 			{
-				return true;
+				var result = await DisplayAlert("Warning reply will be erased.", "Your reply is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No");
+				if (result)
+				{
+					await Navigation.PopAsync();
+				}
 			}
-			else
-			{
-				var result = DisplayAlert("Warning reply will be erased.", "Your reply is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No").Result;
-				if (result) return false;
-				else return true;
-			}
+			else await Navigation.PopAsync();
 		}
 
 		protected override void OnDisappearing()

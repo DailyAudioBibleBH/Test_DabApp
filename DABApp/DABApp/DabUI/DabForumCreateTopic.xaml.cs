@@ -12,6 +12,8 @@ namespace DABApp
 		public DabForumCreateTopic(Forum forum)
 		{
 			InitializeComponent();
+			NavigationPage.SetHasBackButton(this, false);
+			base.ToolbarItems.Clear();
 			Content.HeightRequest = 250;
 			_forum = forum;
 			if (Device.Idiom == TargetIdiom.Tablet)
@@ -45,6 +47,19 @@ namespace DABApp
 		void OnContent(object o, EventArgs e)
 		{
 			OnPost(o, e);
+		}
+
+		async void OnCancel(object o, EventArgs e)
+		{
+			if (!string.IsNullOrEmpty(Content.Text) || !string.IsNullOrEmpty(title.Text))
+			{
+				var result = await DisplayAlert("Warning reply will be erased.", "Your post is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No");
+				if (result)
+				{
+					await Navigation.PopAsync();
+				}
+			}
+			else await Navigation.PopAsync();
 		}
 
 		protected override void OnDisappearing()
