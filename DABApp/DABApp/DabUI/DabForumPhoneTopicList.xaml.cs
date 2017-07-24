@@ -22,6 +22,7 @@ namespace DABApp
 			_view = view;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
+			ContentList.topicList.RefreshCommand = new Command(async () => { fromPost = true; await Update(); ContentList.topicList.IsRefreshing = false;});
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", async (obj) => { await Update(); });
 		}
 
@@ -51,7 +52,14 @@ namespace DABApp
 			activityHolder.IsVisible = true;
 			var topic = (Topic)e.Item;
 			var result = await ContentAPI.GetTopic(topic);
-			await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
+			if (result == null)
+			{
+				await DisplayAlert("Error, could not recieve topic details", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
+			}
+			else
+			{
+				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
+			}
 			ContentList.topicList.SelectedItem = null;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
@@ -78,12 +86,19 @@ namespace DABApp
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
 				var result = await ContentAPI.GetForum(_view);
-				_forum = result;
-				ContentList.topicList.ItemsSource = result.topics;
+				if (result == null)
+				{
+					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
+				}
+				else
+				{
+					_forum = result;
+					ContentList.topicList.ItemsSource = result.topics;
+					fromPost = false;
+					unInitialized = false;
+				}
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
-				fromPost = false;
-				unInitialized = false;
 			}
 		}
 	}

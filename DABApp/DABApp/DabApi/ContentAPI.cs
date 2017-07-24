@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
+using System.Threading;
 
 namespace DABApp
 {
@@ -17,12 +18,14 @@ namespace DABApp
 
 
 		public static bool CheckContent() {
+			var cts = new CancellationTokenSource();
 			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
 			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
 			try{
 				var client = new System.Net.Http.HttpClient();
-				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString()).Result; //Appended the GUID to avoid caching.
+				Task.Delay(TimeSpan.FromSeconds(8), cts.Token).RunSynchronously();
+				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString(), cts.Token).Result; //Appended the GUID to avoid caching.
 				string jsonOut = result.Content.ReadAsStringAsync().Result;
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (ContentSettings == null || DataSettings == null)
@@ -106,7 +109,7 @@ namespace DABApp
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(view.resources.First().feedUrl);
+				var result = await client.GetAsync(view.resources.First().feedUrl + "?" + DateTime.Now.Ticks);
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
 				return forum;
@@ -122,7 +125,7 @@ namespace DABApp
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(topic.link);
+				var result = await client.GetAsync(topic.link + "?" + DateTime.Now.Ticks);
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
 				return top;

@@ -5,7 +5,7 @@
 			<StackLayout Padding="10" Spacing="10">
 				<Button x:Name="Post" Text="Post a prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}"/>
 			</StackLayout>
-			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" HasUnevenRows="true">
+			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>

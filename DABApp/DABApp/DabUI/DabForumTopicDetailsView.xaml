@@ -2,7 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicDetailsView" xmlns:local="clr-namespace:DABApp;">
 	<ContentView.Content>
 		<StackLayout Padding="10" Spacing="10">
-			<ListView x:Name="reps" HasUnevenRows="true" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}">
+			<ListView x:Name="reps" HasUnevenRows="true" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" IsPullToRefreshEnabled="true">
 				<ListView.Header>
 					<StackLayout>
 			<Label FontSize="Micro" x:Name="LastActivity" Style="{StaticResource secondaryLabelStyle}"/>

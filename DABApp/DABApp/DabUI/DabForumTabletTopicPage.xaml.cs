@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -26,6 +27,8 @@ namespace DABApp
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
 			DetailsView.reply.Clicked += OnReply;
+			ContentList.topicList.RefreshCommand = new Command(async () => { await Update(); ContentList.topicList.IsRefreshing = false;});
+			DetailsView.replies.RefreshCommand = new Command(async () => { await Update(); DetailsView.replies.IsRefreshing = false;});
 			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", (obj) => { OnAppearing(); });
 		}
@@ -87,26 +90,7 @@ namespace DABApp
 			base.OnAppearing();
 			if (fromPost || unInitialized)
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
-				if (topic != null)
-				{
-					topic = await ContentAPI.GetTopic(topic);
-					DetailsView.replies.ItemsSource = topic.replies;
-					DetailsView.last.Text = TimeConvert();
-					if (topic.replies.Count > 0)
-					{
-						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
-					}
-				}
-				_forum = await ContentAPI.GetForum(_view);
-				ContentList.topicList.ItemsSource = _forum.topics;
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
-				fromPost = false;
-				unInitialized = false;
+				await Update();
 			}
 			if (loginRep) 
 			{
@@ -128,6 +112,44 @@ namespace DABApp
 			var month = dateTime.ToString("MMMM");
 			var time = dateTime.ToString("t");
 			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+		}
+
+		async Task Update()
+		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
+			if (topic != null)
+			{
+				topic = await ContentAPI.GetTopic(topic);
+				if (topic == null)
+				{
+					await DisplayAlert("Error, could not recieve topic details", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
+				}
+				else
+				{
+					DetailsView.replies.ItemsSource = topic.replies;
+					DetailsView.last.Text = TimeConvert();
+					if (topic.replies.Count > 0)
+					{
+						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
+					}
+				}
+			}
+			_forum = await ContentAPI.GetForum(_view);
+			if (_forum == null)
+			{
+				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
+			}
+			else
+			{
+				ContentList.topicList.ItemsSource = _forum.topics;
+			}
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
+			fromPost = false;
+			unInitialized = false;
 		}
 	}
 }
