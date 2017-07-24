@@ -24,9 +24,14 @@ namespace DABApp
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
 			try{
 				var client = new System.Net.Http.HttpClient();
-				Task.Delay(TimeSpan.FromSeconds(8), cts.Token).RunSynchronously();
-				var result = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString(), cts.Token).Result; //Appended the GUID to avoid caching.
-				string jsonOut = result.Content.ReadAsStringAsync().Result;
+				HttpResponseMessage result;
+				string jsonOut = "";
+				Task.Run(async () =>
+			   {
+				   await Task.Delay(TimeSpan.FromSeconds(8), cts.Token);
+				   result = await client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString(), cts.Token);
+					jsonOut = await result.Content.ReadAsStringAsync();
+				}).Wait();//Appended the GUID to avoid caching.
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (ContentSettings == null || DataSettings == null)
 				{
