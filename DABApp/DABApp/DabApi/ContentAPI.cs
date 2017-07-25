@@ -117,7 +117,7 @@ namespace DABApp
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(view.resources.First().feedUrl + "?" + DateTime.Now.Ticks);
+				var result = await client.GetAsync(view.resources.First().feedUrl);
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
 				return forum;
@@ -133,7 +133,7 @@ namespace DABApp
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(topic.link + "?" + DateTime.Now.Ticks);
+				var result = await client.GetAsync(topic.link);
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
 				return top;
