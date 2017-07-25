@@ -3,8 +3,10 @@
 	xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" 
 	xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS">
 	<t:MenuContainerPage.Content>
-			<StackLayout Padding="10" Spacing="10">
+			<StackLayout Spacing="10">
+				<StackLayout Padding="10">
 				<Label Text="Settings" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
+				</StackLayout>
 				<TableView Intent="Settings">
 					<TableRoot>
 						<TableSection x:Name="Account" Title="Account">
