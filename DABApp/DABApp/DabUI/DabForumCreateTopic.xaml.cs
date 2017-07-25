@@ -25,6 +25,7 @@ namespace DABApp
 		async void OnPost(object o, EventArgs e)
 		{
 			Post.IsEnabled = false;
+			Cancel.IsEnabled = false;
 			var topic = new PostTopic(title.Text, Content.Text, _forum.id);
 			var result = await ContentAPI.PostTopic(topic);
 			if (result.Contains("id"))
@@ -37,6 +38,7 @@ namespace DABApp
 				await DisplayAlert("Error", result, "OK");
 			}
 			Post.IsEnabled = true;
+			Cancel.IsEnabled = true;
 		}
 
 		void OnTitle(object o, EventArgs e)
@@ -51,6 +53,7 @@ namespace DABApp
 
 		async void OnCancel(object o, EventArgs e)
 		{
+			Cancel.IsEnabled = false;
 			if (!string.IsNullOrEmpty(Content.Text) || !string.IsNullOrEmpty(title.Text))
 			{
 				var result = await DisplayAlert("Warning reply will be erased.", "Your post is not saved locally if you navigate away from this page you will lose your work. Is that OK?", "Yes", "No");
@@ -60,6 +63,7 @@ namespace DABApp
 				}
 			}
 			else await Navigation.PopAsync();
+			Cancel.IsEnabled = true;
 		}
 
 		protected override void OnDisappearing()

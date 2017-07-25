@@ -14,23 +14,24 @@ namespace DABApp
 	{
 		static SQLiteConnection db = DabData.database;
 
-		private static int SynchTimeout = 10000;
-
-
 		public static bool CheckContent() {
-			var cts = new CancellationTokenSource();
 			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
 			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
-			try{
+			try
+			{
 				var client = new System.Net.Http.HttpClient();
 				HttpResponseMessage result;
 				string jsonOut = "";
 				Task.Run(async () =>
-			   {
-				   await Task.Delay(TimeSpan.FromSeconds(8), cts.Token);
-				   result = await client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString(), cts.Token);
-					jsonOut = await result.Content.ReadAsStringAsync();
+				{
+					var r = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content?" + Guid.NewGuid().ToString(), HttpCompletionOption.ResponseContentRead);
+					if (await Task.WhenAny(r, Task.Delay(TimeSpan.FromSeconds(8))) == r)
+					{
+						result = await r;
+						jsonOut = await result.Content.ReadAsStringAsync();
+					}
+					else throw new Exception();
 				}).Wait();//Appended the GUID to avoid caching.
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (ContentSettings == null || DataSettings == null)
@@ -46,12 +47,14 @@ namespace DABApp
 
 					ParseContent(jsonOut);
 				}
-				else {
+				else
+				{
 					if (DataSettings.Value == updated)
 					{
 						ParseContent(ContentSettings.Value);
 					}
-					else {
+					else
+					{
 						DataSettings.Value = updated;
 						ContentSettings.Value = jsonOut;
 						ParseContent(jsonOut);
