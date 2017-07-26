@@ -159,6 +159,21 @@
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\android\Stripe.dll</HintPath>
     </Reference>
+    <Reference Include="TEditor.Abstractions">
+      <HintPath>..\packages\TEditor.1.0.1\lib\MonoAndroid10\TEditor.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TEditor">
+      <HintPath>..\packages\TEditor.1.0.1\lib\MonoAndroid10\TEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\monoandroid23\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EngineIoClientDotNet">
+      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\monoandroid10\EngineIoClientDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIoClientDotNet">
+      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\monoandroid10\SocketIoClientDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">

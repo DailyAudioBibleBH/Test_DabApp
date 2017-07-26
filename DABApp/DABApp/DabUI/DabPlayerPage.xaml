@@ -65,7 +65,9 @@
 			</StackLayout>
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="{Binding title}" />
-				<local:DarkKeyboardEditor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" Completed="OnSaveJournal" HeightRequest="250"/>
+				<ScrollView>
+					<Editor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500"/>
+				</ScrollView>
 			</StackLayout>
 			<StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold"/>

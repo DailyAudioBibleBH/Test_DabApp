@@ -166,6 +166,21 @@
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\ios-unified\Stripe.dll</HintPath>
     </Reference>
+    <Reference Include="TEditor.Abstractions">
+      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TEditor">
+      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\Xamarin.iOS10\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EngineIoClientDotNet">
+      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\xamarinios10\EngineIoClientDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIoClientDotNet">
+      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\xamarinios10\SocketIoClientDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -239,6 +254,8 @@
     <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
+    <Compile Include="DependencyServices\SocketService.cs" />
+    <Compile Include="DependencyServices\SocketHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
@@ -310,6 +327,11 @@
   <ItemGroup>
     <XamarinComponentReference Include="stripe">
       <Version>1.0.7</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="SocketIoClientDotNet">
+      <InstallationInProgress>True</InstallationInProgress>
+      <Version>0.9.13</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

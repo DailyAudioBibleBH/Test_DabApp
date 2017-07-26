@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using SlideOverKit;
 using Xamarin.Forms;
+using TEditor;
+using System.Threading.Tasks;
 
 namespace DABApp
 {
@@ -17,6 +19,7 @@ namespace DABApp
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
+			DependencyService.Get<ISocket>().Join(episode.PubDate.ToString("yyyy-M-d"));
 			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
@@ -164,10 +167,6 @@ namespace DABApp
 		void OnPodcast(object o, EventArgs e)
 		{
 			SegControl.SelectTab(0);
-		}
-
-		void OnSaveJournal(object o, EventArgs e) { 
-			
 		}
 
 		void OnLogin(object o, EventArgs e) {

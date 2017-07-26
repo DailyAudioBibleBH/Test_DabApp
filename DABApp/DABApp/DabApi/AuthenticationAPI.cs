@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SQLite;
+using Xamarin.Forms;
 
 namespace DABApp
 {
@@ -78,6 +79,7 @@ namespace DABApp
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
+					DependencyService.Get<ISocket>().Connect(TokenSettings.Value);
 					return "Success";
 				}
 			}
@@ -100,6 +102,8 @@ namespace DABApp
 			if (expirationDate <= DateTime.Now.AddDays(days)) {
 				return false;
 			}
+			var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
+			DependencyService.Get<ISocket>().Connect(token.Value);
 			return true;
 		}
 
@@ -140,6 +144,7 @@ namespace DABApp
 					//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 					GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 				}
+				DependencyService.Get<ISocket>().Connect(TokenSettings.Value);
 				return "";
 			}
 			catch (Exception e) {
