@@ -7,9 +7,9 @@ namespace DABApp
 {
 	public class JournalTracker : INotifyPropertyChanged
 	{
-		private ISocket socket;
+		public ISocket socket;
 		private string _Content;
-
+		private bool _IsConnected = false;
 
 		public static JournalTracker Current { get; private set;}
 
@@ -23,6 +23,14 @@ namespace DABApp
 			socket = DependencyService.Get<ISocket>();
 			_Content = socket.content;
 			socket.contentChanged += OnContentChanged;
+			Device.StartTimer(TimeSpan.FromMilliseconds(100), () => 
+			{
+				if (_IsConnected != socket.IsConnected)
+				{
+					IsConnected = socket.IsConnected;
+				}
+				return true;
+			});
 		}
 
 		public string Content
@@ -36,9 +44,29 @@ namespace DABApp
 			}
 		}
 
+		public bool IsConnected 
+		{
+			get {
+				return _IsConnected;
+			}
+			set {
+				_IsConnected = value;
+				OnPropertyChanged("IsConnected");
+			}
+		}
+
 		void OnContentChanged(object o, EventArgs e)
 		{
 			Content = socket.content;
+		}
+
+		public void Update(string date, string html) 
+		{
+			socket.Key(html, date);
+		}
+
+		public void Join(string date) {
+			socket.Join(date);
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

@@ -6,6 +6,7 @@
 	<local:DabBaseContentPage.Resources>
 		<ResourceDictionary>
 			<local:StringConverter x:Key="stringer"/>
+			<local:InverseConverter x:Key="inverser"/>
 		</ResourceDictionary>
 	</local:DabBaseContentPage.Resources>
 	<ContentPage.Content>
@@ -133,7 +134,10 @@
 				</StackLayout>
 				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20">
 					<Label Text="{Binding title}"/>
-					<local:DarkKeyboardEditor x:Name="JournalContent" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" TextColor="White" HeightRequest="750"/>
+					<ScrollView>
+					<Editor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged"/>
+					</ScrollView>
+					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." FontSize="Small" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
 				</StackLayout>
 			</StackLayout>
 		</Grid>
