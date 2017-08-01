@@ -16,7 +16,6 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
-			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
 			ChannelsList.SelectedItem = _resource;
@@ -42,6 +41,7 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
+			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
@@ -300,6 +300,14 @@ namespace DABApp
 			backwardButton.IsVisible = true;
 			forwardButton.IsVisible = true;
 			Share.IsVisible = true;
+		}
+
+		void OnJournalChanged(object o, EventArgs e)
+		{
+			if (JournalContent.IsFocused)
+			{
+				JournalTracker.Current.Update(episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+			}
 		}
 
 		void OnTouched(object o, EventArgs e)

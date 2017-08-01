@@ -181,6 +181,15 @@
     <Reference Include="SocketIoClientDotNet">
       <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\xamarinios10\SocketIoClientDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="MarkDownDeep.iOS">
+      <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack.NetCore">
+      <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\netstandard1.3\HtmlAgilityPack.NetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Html2Markdown">
+      <HintPath>..\packages\Html2Markdown.3.0.0.223\lib\netstandard1.4\Html2Markdown.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -332,6 +341,10 @@
     <XamarinComponentReference Include="SocketIoClientDotNet">
       <InstallationInProgress>True</InstallationInProgress>
       <Version>0.9.13</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="MarkDownDeep">
+      <Version>1.1.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

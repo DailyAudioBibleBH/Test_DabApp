@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DABApp.iOS;
+using Html2Markdown;
+using MarkdownDeep;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quobject.SocketIoClientDotNet.Client;
@@ -16,6 +18,7 @@ namespace DABApp.iOS
 		static bool joined = false;
 		static bool NotifyDis = true;
 		static bool NotifyRe = true;
+		static bool externalUpdate = true;
 		static string Token;
 		static string _date;
 		static string StoredHtml = null;
@@ -26,6 +29,17 @@ namespace DABApp.iOS
 		public event EventHandler Room_Error;
 		public event EventHandler Auth_Error;
 		public event EventHandler Join_Error;
+		static Markdown md;
+		static Converter converter;
+
+		static SocketService()
+		{
+			md = new MarkdownDeep.Markdown();
+			md.SafeMode = false;
+			md.ExtraMode = true;
+			md.MarkdownInHtml = true;
+			converter = new Converter();
+		}
 
 		public void Connect(string token)
 		{
@@ -89,27 +103,36 @@ namespace DABApp.iOS
 				socket.Emit("join", Data);
 				joined = true;
 				socket.On("update", data => {
-					var jObject = data as JToken;
-					var Date = jObject.Value<string>("date");
-					if (Date == _date)
+					if (externalUpdate)
 					{
-						content = jObject.Value<string>("content");
-						contentChanged(this, new EventArgs());
+						var jObject = data as JToken;
+						var Date = jObject.Value<string>("date");
+						if (Date == _date)
+						{
+							content = converter.Convert(jObject.Value<string>("content"));
+							contentChanged(this, new EventArgs());
+						}
 					}
+					else externalUpdate = true;
 				});
 			}
 		}
 
 		public void Key(string html, string date) 
 		{
+			var help = new SocketHelper(md.Transform(html), date, Token);
+			var Data = JObject.FromObject(help);
 			if (connected && joined)
 			{
-				var help = new SocketHelper(html, date, Token);
-				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
 				socket.Emit("key", Data);
+				externalUpdate = false;
 			}
 			else {
+				if (!joined)
+				{
+					socket.Emit("join", Data);
+				}
 				StoredHtml = html;
 			}
 		}
