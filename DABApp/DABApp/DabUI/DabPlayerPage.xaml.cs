@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using SlideOverKit;
 using Xamarin.Forms;
+using TEditor;
+using System.Threading.Tasks;
 
 namespace DABApp
 {
@@ -17,6 +19,7 @@ namespace DABApp
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
+			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
@@ -51,6 +54,12 @@ namespace DABApp
 			{
 				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
 			}
+			JournalTracker.Current.socket.Disconnect += OnDisconnect;
+			JournalTracker.Current.socket.Reconnect += OnReconnect;
+			JournalTracker.Current.socket.Reconnecting += OnReconnecting;
+			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
+			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
+			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 		}
 
 		void OnPlay(object o, EventArgs e)
@@ -166,10 +175,6 @@ namespace DABApp
 			SegControl.SelectTab(0);
 		}
 
-		void OnSaveJournal(object o, EventArgs e) { 
-			
-		}
-
 		void OnLogin(object o, EventArgs e) {
 			Login.IsEnabled = false;
 			AudioPlayer.Instance.Pause();
@@ -178,6 +183,14 @@ namespace DABApp
 			nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
 			Navigation.PushModalAsync(nav);
 			Login.IsEnabled = true;
+		}
+
+		void OnJournalChanged(object o, EventArgs e)
+		{
+			if (JournalContent.IsFocused)
+			{
+				JournalTracker.Current.Update(Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+			}
 		}
 
 		protected override void OnAppearing()
@@ -218,6 +231,54 @@ namespace DABApp
 
 		void OnShare(object o, EventArgs e) {
 			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.channel_code, Episode.id.ToString());
+		}
+
+		void OnDisconnect(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnReconnect(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+			});
+		}
+
+		void OnReconnecting(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
+			});
+		}
+
+		void OnRoom_Error(object o, EventArgs e) 
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnAuth_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnJoin_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+			});
 		}
 	}
 }

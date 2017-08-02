@@ -24,14 +24,15 @@ namespace DABApp
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-			foreach (var month in months) {
+			foreach (var month in months)
+			{
 				Months.Items.Add(month);
 			}
 			Months.SelectedIndex = 0;
 			//Device.StartTimer( TimeSpan.FromSeconds(5),() =>
 			//{
-				Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 			if (Episode != null)
 			{
 				episode = Episode;
@@ -40,6 +41,7 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
+			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
@@ -54,7 +56,8 @@ namespace DABApp
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
-			else if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) { 
+			else if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+			{
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
 				Output.IsVisible = false;
@@ -64,8 +67,12 @@ namespace DABApp
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
-			//	return true;
-			//});
+			JournalTracker.Current.socket.Disconnect += OnDisconnect;
+			JournalTracker.Current.socket.Reconnect += OnReconnect;
+			JournalTracker.Current.socket.Reconnecting += OnReconnecting;
+			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
+			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
+			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 
 		}
 
@@ -78,7 +85,7 @@ namespace DABApp
 					{
 						LoginJournal.IsVisible = false;
 					}
-					else {Journal.IsVisible = false; }
+					else { Journal.IsVisible = false; }
 					Read.IsVisible = false;
 					Journal.IsVisible = false;
 					//AudioPlayer.Instance.showPlayerBar = false;
@@ -127,7 +134,8 @@ namespace DABApp
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
-			else { 
+			else
+			{
 				SeekBar.IsVisible = true;
 				TimeStrings.IsVisible = true;
 				Output.IsVisible = true;
@@ -161,7 +169,8 @@ namespace DABApp
 			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 		}
 
-		void OnChannel(object o, EventArgs e) {
+		void OnChannel(object o, EventArgs e)
+		{
 			_resource = (Resource)ChannelsList.SelectedItem;
 			backgroundImage = _resource.images.backgroundTablet;
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
@@ -181,7 +190,8 @@ namespace DABApp
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
-			else { 
+			else
+			{
 				SeekBar.IsVisible = true;
 				TimeStrings.IsVisible = true;
 				Output.IsVisible = true;
@@ -223,20 +233,23 @@ namespace DABApp
 			}
 		}
 
-		void OnShare(object o, EventArgs e) { 
+		void OnShare(object o, EventArgs e)
+		{
 			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.channel_code, episode.id.ToString());
 		}
 
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			if (LoginJournal.IsVisible || Journal.IsVisible) {
+			if (LoginJournal.IsVisible || Journal.IsVisible)
+			{
 				if (GuestStatus.Current.IsGuestLogin)
 				{
 					LoginJournal.IsVisible = true;
 					Journal.IsVisible = false;
 				}
-				else {
+				else
+				{
 					LoginJournal.IsVisible = false;
 					Journal.IsVisible = true;
 				}
@@ -254,7 +267,8 @@ namespace DABApp
 			Login.IsEnabled = true;
 		}
 
-		void SetReading() { 
+		void SetReading()
+		{
 			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
 			ReadTitle.Text = reading.title;
 			ReadText.Text = reading.text;
@@ -288,8 +302,65 @@ namespace DABApp
 			Share.IsVisible = true;
 		}
 
-		void OnTouched(object o, EventArgs e) {
+		void OnJournalChanged(object o, EventArgs e)
+		{
+			if (JournalContent.IsFocused)
+			{
+				JournalTracker.Current.Update(episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+			}
+		}
+
+		void OnTouched(object o, EventArgs e)
+		{
 			AudioPlayer.Instance.IsTouched = true;
+		}
+
+		void OnDisconnect(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnReconnect(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+			});
+		}
+
+		void OnReconnecting(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
+			});
+		}
+
+		void OnRoom_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnAuth_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnJoin_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+			});
 		}
 	}
 }

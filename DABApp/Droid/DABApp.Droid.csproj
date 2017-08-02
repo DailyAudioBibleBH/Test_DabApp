@@ -159,6 +159,30 @@
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\android\Stripe.dll</HintPath>
     </Reference>
+    <Reference Include="TEditor.Abstractions">
+      <HintPath>..\packages\TEditor.1.0.1\lib\MonoAndroid10\TEditor.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="TEditor">
+      <HintPath>..\packages\TEditor.1.0.1\lib\MonoAndroid10\TEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\monoandroid23\WebSocket4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EngineIoClientDotNet">
+      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\monoandroid10\EngineIoClientDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIoClientDotNet">
+      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\monoandroid10\SocketIoClientDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkDownDeep.Android">
+      <HintPath>..\Components\MarkDownDeep-1.1.1\lib\android\MarkDownDeep.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack.NetCore">
+      <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\netstandard1.3\HtmlAgilityPack.NetCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Html2Markdown">
+      <HintPath>..\packages\Html2Markdown.3.0.0.223\lib\netstandard1.4\Html2Markdown.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -233,6 +257,10 @@
   <ItemGroup>
     <XamarinComponentReference Include="stripe">
       <Version>1.0.7</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="MarkDownDeep">
+      <Version>1.1.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
