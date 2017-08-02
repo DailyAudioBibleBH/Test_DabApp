@@ -103,8 +103,13 @@ namespace DABApp
 				return false;
 			}
 			var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			DependencyService.Get<ISocket>().Connect(token.Value);
 			return true;
+		}
+
+		public static void ConnectJournal() 
+		{
+			var token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+			DependencyService.Get<ISocket>().Connect(token.Value);
 		}
 
 		public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password) {
@@ -221,6 +226,7 @@ namespace DABApp
 				ExpirationSettings.Value = token.expires;
 				db.Update(TokenSettings);
 				db.Update(ExpirationSettings);
+				DependencyService.Get<ISocket>().Connect(token.value);
 			}
 			catch (Exception e) {
 
