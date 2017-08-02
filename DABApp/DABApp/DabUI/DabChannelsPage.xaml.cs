@@ -70,14 +70,6 @@ namespace DABApp
 				{
 					AuthenticationAPI.ExchangeToken();
 				}
-				else 
-				{
-					if (IsUnInitialized)
-					{
-						AuthenticationAPI.ConnectJournal();
-						IsUnInitialized = false;
-					}
-				}
 				PlayerFeedAPI.CleanUpEpisodes();
 				if (GlobalResources.GetUserName() != "Guest Guest")
 				{
@@ -86,6 +78,12 @@ namespace DABApp
 				}
 				return true;
 			});
+
+			if (IsUnInitialized)
+			{
+				AuthenticationAPI.ConnectJournal();
+				IsUnInitialized = false;
+			}
 		}
 
 		void OnPlayer(object o, EventArgs e) 
