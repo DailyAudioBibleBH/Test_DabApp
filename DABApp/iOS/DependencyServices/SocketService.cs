@@ -15,26 +15,20 @@ namespace DABApp.iOS
     public class SocketService : ISocket
     {
         Socket socket;
-        static bool connected = false;
-        static bool joined = false;
-        static bool NotifyDis = true;
-        static bool NotifyRe = true;
-        static bool externalUpdate = true;
-        static string Token;
+        static bool _connected = false;
+        static string _token;
         static string _date;
-        static string StoredHtml = null;
-        public event EventHandler contentChanged;
-        public event EventHandler Disconnect;
-        public event EventHandler Reconnect;
-        public event EventHandler Reconnecting;
-        public event EventHandler Room_Error;
-        public event EventHandler Auth_Error;
-        public event EventHandler Join_Error;
+        public string _content { get; set; }
+        public event EventHandler OnUpdate;
+        public event EventHandler OnConnect;
+        public event EventHandler OnDisconnect;
+
         static Markdown md;
         static Converter converter;
 
         static SocketService()
         {
+            //Set up markdown / HTML converters
             md = new MarkdownDeep.Markdown();
             md.SafeMode = false;
             md.ExtraMode = true;
@@ -42,64 +36,51 @@ namespace DABApp.iOS
             converter = new Converter();
         }
 
-        public void Connect(string token)
+        public SocketService()
+        {
+			socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+			socket.Connect();
+        }
+
+        public SocketService(string token)
         {
             //Connect to the server
             socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
             socket.Connect();
-            connected = true;
-            Token = token;
+            
+
+            _token = token;
 
             socket.On("connect", data =>
              {
                  Debug.WriteLine("connect:" + JsonConvert.SerializeObject((data)));
-                 connected = true;
+                 _connected = true;
+                 OnConnect(this, new EventArgs());
              });
 
             socket.On("connect_error", error =>
-			 {
-			     Debug.WriteLine("connect_error:" + JsonConvert.SerializeObject((error)));
-			 });
+             {
+                 Debug.WriteLine("connect_error:" + JsonConvert.SerializeObject((error)));
+                 _connected = false;
+             });
 
             socket.On("connect_timeout", data =>
-			{
-			    Debug.WriteLine("connect_timeout:" + JsonConvert.SerializeObject((data)));
-			});
+            {
+                Debug.WriteLine("connect_timeout:" + JsonConvert.SerializeObject((data)));
+                _connected = false;
+            });
 
             socket.On("disconnect", data =>
             {
                 Debug.WriteLine("disconnect:" + JsonConvert.SerializeObject((data)));
-                connected = false;
-                if (NotifyDis)
-                {
-                    Disconnect(data, new EventArgs());
-                    NotifyDis = false;
-                    NotifyRe = true;
-                }
+                _connected = false;
+                OnDisconnect(this, new EventArgs());
             });
+
             socket.On("reconnect", data =>
             {
                 Debug.WriteLine("reconnect:" + JsonConvert.SerializeObject((data)));
-                connected = true;
-                if (NotifyRe)
-                {
-                    Reconnect(data, new EventArgs());
-                    NotifyDis = true;
-                    NotifyRe = false;
-                }
-                if (StoredHtml != null)
-                {
-                    joined = true;
-                    Key(StoredHtml, _date);
-                    StoredHtml = null;
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(_date))
-                    {
-                        Join(_date);
-                    }
-                }
+                _connected = true;
             });
             socket.On("reconnect_attempt", data =>
             {
@@ -109,91 +90,102 @@ namespace DABApp.iOS
             socket.On("reconnecting", data =>
             {
                 Debug.WriteLine("reconnecting:" + JsonConvert.SerializeObject((data)));
-                //Reconnecting(data, new EventArgs());
             });
 
             socket.On("reconnect_error", data =>
             {
                 Debug.WriteLine("reconnect_attempt:" + JsonConvert.SerializeObject((data)));
+                _connected = false;
             });
 
             socket.On("reconnect_failed", data =>
-			{
-			    Debug.WriteLine("reconnect_failed:" + JsonConvert.SerializeObject((data)));
-			});
+            {
+                Debug.WriteLine("reconnect_failed:" + JsonConvert.SerializeObject((data)));
+                _connected = false;
+            });
 
 
             socket.On("room_error", data =>
             {
                 Debug.WriteLine("room_error:" + JsonConvert.SerializeObject((data)));
-                joined = false;
-                Room_Error(data, new EventArgs());
             });
+
             socket.On("auth_error", data =>
             {
                 Debug.WriteLine("auth_error:" + JsonConvert.SerializeObject((data)));
-                Auth_Error(data, new EventArgs());
             });
+
             socket.On("join_error", data =>
             {
                 Debug.WriteLine("join_error:" + JsonConvert.SerializeObject((data)));
-                joined = false;
-                Join_Error(data, new EventArgs());
             });
         }
 
+
+        //Join a room for a given date
         public void Join(string date)
         {
-            if (connected)
+            if (_connected)
             {
                 _date = date;
-                var help = new SocketHelper(date, Token);
+                var help = new SocketHelper(date, _token);
                 var Data = JObject.FromObject(help);
+
                 Debug.WriteLine("join:" + JsonConvert.SerializeObject((Data)));
                 socket.Emit("join", Data);
-                joined = true;
+
                 socket.On("update", data =>
                 {
                     Debug.WriteLine("update:" + JsonConvert.SerializeObject((data)));
-                    if (externalUpdate)
+                    var jObject = data as JToken;
+                    var Date = jObject.Value<string>("date");
+                    if (Date == _date)
                     {
-                        var jObject = data as JToken;
-                        var Date = jObject.Value<string>("date");
-                        if (Date == _date)
-                        {
-                            content = converter.Convert(jObject.Value<string>("content"));
-                            contentChanged(this, new EventArgs());
-                        }
+                        _content = converter.Convert(jObject.Value<string>("content"));
+                        OnUpdate(this, new EventArgs());
                     }
-                    else externalUpdate = true;
                 });
             }
         }
 
         public void Key(string html, string date)
         {
-            if (connected)
+            if (_connected)
             {
-                var help = new SocketHelper(md.Transform(html), date, Token);
+                var help = new SocketHelper(md.Transform(html), date, _token);
                 var Data = JObject.FromObject(help);
                 //Emit a Key event with the HTML to be sent
                 //socket.Emit("join", Data);
                 //Debug.WriteLine("join:" + JsonConvert.SerializeObject((Data)));
                 socket.Emit("key", Data);
                 Debug.WriteLine("key:" + JsonConvert.SerializeObject((Data)));
-                externalUpdate = false;
             }
             else
             {
-                StoredHtml = html;
+                //Not connected
             }
         }
 
-        public string content { get; set; }
+        public void Connect(string token)
+        {
+            throw new NotImplementedException();
+        }
 
         public bool IsConnected
         {
-            get { return connected; }
+            get { return _connected; }
+        }
+
+        public string content
+        {
+            get
+            {
+                return _content;
+            }
+            set
+            {
+                _content = value;
+            }
         }
     }
 }

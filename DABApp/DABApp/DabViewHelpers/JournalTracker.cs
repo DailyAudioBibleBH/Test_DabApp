@@ -5,24 +5,27 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public class JournalTracker : INotifyPropertyChanged
+	public class DabJournalTracker : INotifyPropertyChanged
 	{
 		public ISocket socket;
-		private string _Content;
-		private bool _IsConnected = false;
+		
+        private string _Content;
+		private bool _IsConnected = false; //Private connected tracker
 
-		public static JournalTracker Current { get; private set;}
+		//public static JournalTracker Current { get; private set;}
 
-		static JournalTracker()
-		{
-			Current = new JournalTracker();
-		}
+		//static JournalTracker()
+		//{
+		//	Current = new JournalTracker();
+		//}
 
-		private JournalTracker()
+		public DabJournalTracker()
 		{
 			socket = DependencyService.Get<ISocket>();
-			_Content = socket.content;
-			socket.contentChanged += OnContentChanged;
+            //_Content = socket.content;
+            socket.OnUpdate += OnReceiveContent;
+
+			//Check for a connection property change
 			Device.StartTimer(TimeSpan.FromMilliseconds(100), () => 
 			{
 				if (_IsConnected != socket.IsConnected)
@@ -55,13 +58,15 @@ namespace DABApp
 			}
 		}
 
-		void OnContentChanged(object o, EventArgs e)
+		void OnReceiveContent(object o, EventArgs e)
 		{
+            //Get updated text from the socket
 			Content = socket.content;
 		}
 
-		public void Update(string date, string html) 
+		public void SendContent(string date, string html) 
 		{
+            //Send updated text to the socket
 			socket.Key(html, date);
 		}
 
