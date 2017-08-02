@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DABApp.iOS;
 using Html2Markdown;
 using MarkdownDeep;
@@ -48,7 +49,8 @@ namespace DABApp.iOS
 			connected = true;
 			Token = token;
 			socket.On("disconnect", data => 
-			{ 
+			{
+                Debug.WriteLine("disconnect:" + JsonConvert.SerializeObject((data)));
 				connected = false;
 				if (NotifyDis)
 				{
@@ -59,6 +61,7 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnect", data =>
 			{
+                Debug.WriteLine("reconnect:" + JsonConvert.SerializeObject((data)));
 				connected = true;
 				if (NotifyRe)
 				{
@@ -81,19 +84,23 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnecting", data => 
 			{
+                Debug.WriteLine("reconnecting:" + JsonConvert.SerializeObject((data)));
 				//Reconnecting(data, new EventArgs());
 			});
 			socket.On("room_error", data => 
 			{ 
+                Debug.WriteLine("room_error:" + JsonConvert.SerializeObject((data)));
 				joined = false;
 				Room_Error(data, new EventArgs());
 			});
 			socket.On("auth_error", data => 
 			{
+                Debug.WriteLine("auth_error:" + JsonConvert.SerializeObject((data)));
 				Auth_Error(data, new EventArgs());
 			});
 			socket.On("join_error", data => 
 			{ 
+                Debug.WriteLine("join_error:" + JsonConvert.SerializeObject((data)));
 				joined = false;
 				Join_Error(data, new EventArgs());
 			});
@@ -106,10 +113,12 @@ namespace DABApp.iOS
 				_date = date;
 				var help = new SocketHelper(date, Token);
 				var Data = JObject.FromObject(help);
-				socket.Emit("join", Data);
+				Debug.WriteLine("join:" + JsonConvert.SerializeObject((Data)));
+                socket.Emit("join", Data);
 				joined = true;
 				socket.On("update", data => {
-					if (externalUpdate)
+					Debug.WriteLine("update:" + JsonConvert.SerializeObject((data)));
+                    if (externalUpdate)
 					{
 						var jObject = data as JToken;
 						var Date = jObject.Value<string>("date");
@@ -131,7 +140,9 @@ namespace DABApp.iOS
 				var help = new SocketHelper(md.Transform(html), date, Token);
 				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
+                Debug.WriteLine("join:" + JsonConvert.SerializeObject((Data)));
 				socket.Emit("key", Data);
+                Debug.WriteLine("key:" + JsonConvert.SerializeObject((Data)));
 				externalUpdate = false;
 			}
 			else {
