@@ -181,6 +181,11 @@
 				<Setter Property="Color" Value="{DynamicResource InputBackgroundColor}"/>
 			</Style>
 			<Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true"/>
+			<Style x:Key="EditorStyle" TargetType="Editor">
+				<Setter Property="BackgroundColor" Value="Transparent"/>
+				<Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+			</Style>
+			<Style BasedOn="{StaticResource EditorStyle}" TargetType="Editor" ApplyToDerivedTypes="true"/>
 			<local:ParticipantConverter x:Key="ParticipantConverter"/>
 			<local:ActivityConverter x:Key="ActivityConverter"/>
 			<local:ReplyConverter x:Key="ReplyConverter"/>

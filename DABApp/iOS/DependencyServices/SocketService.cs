@@ -72,6 +72,12 @@ namespace DABApp.iOS
 					Key(StoredHtml, _date);
 					StoredHtml = null;
 				}
+				else {
+					if (!string.IsNullOrEmpty(_date))
+					{
+						Join(_date);
+					}
+				}
 			});
 			socket.On("reconnecting", data => 
 			{
@@ -120,19 +126,15 @@ namespace DABApp.iOS
 
 		public void Key(string html, string date) 
 		{
-			var help = new SocketHelper(md.Transform(html), date, Token);
-			var Data = JObject.FromObject(help);
-			if (connected && joined)
+			if (connected)
 			{
+				var help = new SocketHelper(md.Transform(html), date, Token);
+				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
 				socket.Emit("key", Data);
 				externalUpdate = false;
 			}
 			else {
-				if (!joined)
-				{
-					socket.Emit("join", Data);
-				}
 				StoredHtml = html;
 			}
 		}
