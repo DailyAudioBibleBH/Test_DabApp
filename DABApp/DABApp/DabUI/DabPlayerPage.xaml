@@ -64,12 +64,10 @@
 					<local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand"/>
 					</ScrollView>
 			</StackLayout>
-			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
-				<Label Text="{Binding title}" />
-				<ScrollView>
-					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged"/>
-				</ScrollView>
-					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." FontSize="Small" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
+			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="5" Spacing="5">
+				<Label Text="{Binding title}"  FontSize="Micro" />
+					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}"  VerticalOptions="FillAndExpand" FontSize="Small" TextChanged="OnJournalChanged"/>
+					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." FontSize="Micro" BackgroundColor="Red" TextColor="White" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
 			</StackLayout>
 			<StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold"/>

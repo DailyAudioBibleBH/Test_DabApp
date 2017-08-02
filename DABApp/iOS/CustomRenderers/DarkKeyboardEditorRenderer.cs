@@ -16,6 +16,8 @@ namespace DABApp.iOS
 		static DarkKeyboardEditorRenderer() 
 		{
 			md = new MarkdownDeep.Markdown();
+
+            
 		}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Editor> e)
@@ -26,8 +28,17 @@ namespace DABApp.iOS
 			{
 				Control.KeyboardAppearance = UIKit.UIKeyboardAppearance.Dark;
 				//SetHtml();
+
 			}
 		}
+
+        public override void DidUpdateFocus(UIKit.UIFocusUpdateContext context, UIKit.UIFocusAnimationCoordinator coordinator)
+        {
+            base.DidUpdateFocus(context, coordinator);
+            this.Control.FlashScrollIndicators();
+        }
+
+        
 
 		//protected override void OnElementPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		//{
