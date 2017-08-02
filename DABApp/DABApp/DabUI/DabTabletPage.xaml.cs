@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -13,20 +12,11 @@ namespace DABApp
 		IEnumerable<dbEpisodes> Episodes;
 		string backgroundImage;
 		dbEpisodes episode;
-        DabJournalTracker journal;
 
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
-
-			//Setup journalling
-			journal = new DabJournalTracker();
-			journal.Join(episode.PubDate.ToString("yyyy-MM-dd"));
-			journal.socket.OnDisconnect += OnSocketDisconnect;
-			journal.socket.OnConnect += OnSocketConnect;
-			journal.socket.OnUpdate += OnSocketUpdate;
-
-            _resource = resource;
+			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
 			ChannelsList.SelectedItem = _resource;
 			backgroundImage = _resource.images.backgroundTablet;
@@ -51,7 +41,7 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
-			journal.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
@@ -77,7 +67,13 @@ namespace DABApp
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
 			}
-			
+			JournalTracker.Current.socket.Disconnect += OnDisconnect;
+			JournalTracker.Current.socket.Reconnect += OnReconnect;
+			JournalTracker.Current.socket.Reconnecting += OnReconnecting;
+			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
+			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
+			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
+
 		}
 
 		void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -310,7 +306,7 @@ namespace DABApp
 		{
 			if (JournalContent.IsFocused)
 			{
-				journal.SendContent(episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+				JournalTracker.Current.Update(episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
 			}
 		}
 
@@ -319,37 +315,52 @@ namespace DABApp
 			AudioPlayer.Instance.IsTouched = true;
 		}
 
-
-		void OnSocketDisconnect(object o, EventArgs e)
+		void OnDisconnect(object o, EventArgs e)
 		{
-			Debug.WriteLine(("OnSocketDisconnect"));
 			Device.BeginInvokeOnMainThread(() =>
 			{
 				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
 			});
 		}
 
-		void OnSocketConnect(object o, EventArgs e)
+		void OnReconnect(object o, EventArgs e)
 		{
-			Debug.WriteLine(("OnSocketConnect"));
 			Device.BeginInvokeOnMainThread(() =>
 			{
 				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
 			});
 		}
 
-		void OnSocketUpdate(object o, EventArgs e)
+		void OnReconnecting(object o, EventArgs e)
 		{
-            System.Diagnostics.Debug.WriteLine(("OnSocketUpdate"));
 			Device.BeginInvokeOnMainThread(() =>
 			{
-
+				DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
 			});
 		}
-		
 
+		void OnRoom_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+			});
+		}
 
+		void OnAuth_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+			});
+		}
+
+		void OnJoin_Error(object o, EventArgs e)
+		{
+			Device.BeginInvokeOnMainThread(() =>
+			{
+				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+			});
+		}
 	}
-
-
 }

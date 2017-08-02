@@ -103,7 +103,7 @@ namespace DABApp
 				return false;
 			}
 			var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			//DependencyService.Get<ISocket>().Connect(token.Value);
+			DependencyService.Get<ISocket>().Connect(token.Value);
 			return true;
 		}
 

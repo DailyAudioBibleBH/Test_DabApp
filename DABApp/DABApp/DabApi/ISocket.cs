@@ -3,13 +3,17 @@ namespace DABApp
 {
 	public interface ISocket
 	{
-		void Connect(string token); //connect ot the server
-		void Join(string date); //join a room
-		void Key(string html, string date); //send content to the socket
-		string content { get;} //text content form the socket
+		void Connect(string token);
+		void Join(string date);
+		void Key(string html, string date);
+		string content { get;}
 		bool IsConnected { get;}
-		event EventHandler OnUpdate;
-        event EventHandler OnConnect;
-        event EventHandler OnDisconnect;
+		event EventHandler contentChanged;
+		event EventHandler Disconnect;
+		event EventHandler Reconnect;
+		event EventHandler Reconnecting;
+		event EventHandler Room_Error;
+		event EventHandler Auth_Error;
+		event EventHandler Join_Error;
 	}
 }
