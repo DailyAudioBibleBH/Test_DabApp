@@ -137,7 +137,7 @@
 					<ScrollView>
 					<Editor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged"/>
 					</ScrollView>
-					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." FontSize="Small" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
+					<Label x:Name="JournalWarning" Text="You must be connected to the journal server in order for changes to be saved." FontSize="Small" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
 				</StackLayout>
 			</StackLayout>
 		</Grid>

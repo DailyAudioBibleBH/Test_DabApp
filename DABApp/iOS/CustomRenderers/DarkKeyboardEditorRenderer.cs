@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using DABApp;
 using DABApp.iOS;
 using Foundation;
@@ -27,8 +27,7 @@ namespace DABApp.iOS
 			if (Control != null)
 			{
 				Control.KeyboardAppearance = UIKit.UIKeyboardAppearance.Dark;
-				//SetHtml();
-
+                //SetHtml();
 			}
 		}
 
