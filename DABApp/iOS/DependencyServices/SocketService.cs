@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DABApp.iOS;
 using Html2Markdown;
 using MarkdownDeep;
@@ -13,7 +14,7 @@ namespace DABApp.iOS
 {
 	public class SocketService: ISocket
 	{
-		Socket socket;
+		static Socket socket;
 		static bool connected = false;
 		static bool joined = false;
 		static bool NotifyDis = true;
@@ -48,7 +49,8 @@ namespace DABApp.iOS
 			connected = true;
 			Token = token;
 			socket.On("disconnect", data => 
-			{ 
+			{
+				Debug.Write($"Disconnect {data} {DateTime.Now}");
 				connected = false;
 				if (NotifyDis)
 				{
@@ -59,6 +61,7 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnect", data =>
 			{
+				Debug.Write($"Reconnected {data} {DateTime.Now}");
 				connected = true;
 				if (NotifyRe)
 				{
@@ -81,22 +84,27 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnecting", data => 
 			{
+				Debug.Write($"Reconnecting {data} {DateTime.Now}");
 				//Reconnecting(data, new EventArgs());
 			});
 			socket.On("room_error", data => 
-			{ 
+			{
+				Debug.Write($"Room_error {data} {DateTime.Now}");
 				joined = false;
 				Room_Error(data, new EventArgs());
 			});
 			socket.On("auth_error", data => 
 			{
+				Debug.Write($"Auth_error {data} {DateTime.Now}");
 				Auth_Error(data, new EventArgs());
 			});
 			socket.On("join_error", data => 
-			{ 
+			{
+				Debug.Write($"Join_error {data} {DateTime.Now}");
 				joined = false;
 				Join_Error(data, new EventArgs());
 			});
+			Debug.Write($"Connected {DateTime.Now}");
 		}
 
 		public void Join(string date)
@@ -109,6 +117,7 @@ namespace DABApp.iOS
 				socket.Emit("join", Data);
 				joined = true;
 				socket.On("update", data => {
+					Debug.Write($"Update {data} {DateTime.Now}");
 					if (externalUpdate)
 					{
 						var jObject = data as JToken;
@@ -121,6 +130,7 @@ namespace DABApp.iOS
 					}
 					else externalUpdate = true;
 				});
+				Debug.Write("Join");
 			}
 		}
 
@@ -137,6 +147,7 @@ namespace DABApp.iOS
 			else {
 				StoredHtml = html;
 			}
+			Debug.Write("Key");
 		}
 
 		public string content { get; set;}

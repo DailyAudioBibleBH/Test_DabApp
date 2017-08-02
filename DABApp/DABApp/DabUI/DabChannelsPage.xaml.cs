@@ -13,6 +13,7 @@ namespace DABApp
 		View ChannelView;
 		dbEpisodes episode;
 		Resource resource;
+		static bool IsUnInitialized = true;
 
 		public DabChannelsPage()
 		{
@@ -68,6 +69,14 @@ namespace DABApp
 				if (!AuthenticationAPI.CheckToken(-1))
 				{
 					AuthenticationAPI.ExchangeToken();
+				}
+				else 
+				{
+					if (IsUnInitialized)
+					{
+						AuthenticationAPI.ConnectJournal();
+						IsUnInitialized = false;
+					}
 				}
 				PlayerFeedAPI.CleanUpEpisodes();
 				if (GlobalResources.GetUserName() != "Guest Guest")
