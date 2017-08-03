@@ -67,7 +67,7 @@
 			<StackLayout x:Name="Journal" IsVisible="false"  VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
 				<Label Text="{Binding title}" />
 				<ScrollView>
-					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged"/>
+					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit"/>
 				</ScrollView>
 					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." FontSize="Small" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
 			</StackLayout>

@@ -193,6 +193,17 @@ namespace DABApp
 			}
 		}
 
+		void OnEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = false;
+		}
+
+		void OffEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = true;
+			JournalTracker.Current.Join(Episode.PubDate.ToString("yyyy-MM-dd"));
+		}
+
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();

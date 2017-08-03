@@ -362,5 +362,16 @@ namespace DABApp
 				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
 			});
 		}
+
+		void OnEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = false;
+		}
+
+		void OffEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = true;
+			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+		}
 	}
 }

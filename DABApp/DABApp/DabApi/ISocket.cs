@@ -8,6 +8,7 @@ namespace DABApp
 		void Key(string html, string date);
 		string content { get;}
 		bool IsConnected { get;}
+		bool ExternalUpdate { get; set;}
 		event EventHandler contentChanged;
 		event EventHandler Disconnect;
 		event EventHandler Reconnect;

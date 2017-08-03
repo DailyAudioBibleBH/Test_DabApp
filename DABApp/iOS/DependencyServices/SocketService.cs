@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using DABApp.iOS;
 using Html2Markdown;
 using MarkdownDeep;
@@ -19,7 +20,6 @@ namespace DABApp.iOS
 		static bool joined = false;
 		static bool NotifyDis = true;
 		static bool NotifyRe = true;
-		static bool externalUpdate = true;
 		static string Token;
 		static string _date;
 		static string StoredHtml = null;
@@ -58,6 +58,7 @@ namespace DABApp.iOS
 					NotifyDis = false;
 					NotifyRe = true;
 				}
+				socket.Connect();
 			});
 			socket.On("reconnect", data =>
 			{
@@ -118,7 +119,7 @@ namespace DABApp.iOS
 				joined = true;
 				socket.On("update", data => {
 					Debug.Write($"Update {data} {DateTime.Now}");
-					if (externalUpdate)
+ 					if (ExternalUpdate)
 					{
 						var jObject = data as JToken;
 						var Date = jObject.Value<string>("date");
@@ -128,7 +129,6 @@ namespace DABApp.iOS
 							contentChanged(this, new EventArgs());
 						}
 					}
-					else externalUpdate = true;
 				});
 				Debug.Write("Join");
 			}
@@ -142,7 +142,7 @@ namespace DABApp.iOS
 				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
 				socket.Emit("key", Data);
-				externalUpdate = false;
+				ExternalUpdate = false;
 			}
 			else {
 				StoredHtml = html;
@@ -156,5 +156,7 @@ namespace DABApp.iOS
 		{
 			get { return connected; }
 		}
+
+		public bool ExternalUpdate { get; set; } = true;
 	}
 }
