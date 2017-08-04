@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -49,7 +49,7 @@ namespace DABApp.iOS
 			Token = token;
 			socket.On("disconnect", data => 
 			{
-				Debug.Write($"Disconnect {data} {DateTime.Now}");
+				Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
 				connected = false;
 				if (NotifyDis)
 				{
@@ -61,7 +61,7 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnect", data =>
 			{
-				Debug.Write($"Reconnected {data} {DateTime.Now}");
+				Debug.WriteLine($"Reconnected {data} {DateTime.Now}");
 				connected = true;
 				if (NotifyRe)
 				{
@@ -84,27 +84,27 @@ namespace DABApp.iOS
 			});
 			socket.On("reconnecting", data => 
 			{
-				Debug.Write($"Reconnecting {data} {DateTime.Now}");
+				Debug.WriteLine($"Reconnecting {data} {DateTime.Now}");
 				//Reconnecting(data, new EventArgs());
 			});
 			socket.On("room_error", data => 
 			{
-				Debug.Write($"Room_error {data} {DateTime.Now}");
+				Debug.WriteLine($"Room_error {data} {DateTime.Now}");
 				joined = false;
 				Room_Error(data, new EventArgs());
 			});
 			socket.On("auth_error", data => 
 			{
-				Debug.Write($"Auth_error {data} {DateTime.Now}");
+				Debug.WriteLine($"Auth_error {data} {DateTime.Now}");
 				Auth_Error(data, new EventArgs());
 			});
 			socket.On("join_error", data => 
 			{
-				Debug.Write($"Join_error {data} {DateTime.Now}");
+				Debug.WriteLine($"Join_error {data} {DateTime.Now}");
 				joined = false;
 				Join_Error(data, new EventArgs());
 			});
-			Debug.Write($"Connected {DateTime.Now}");
+			Debug.WriteLine($"Connected {DateTime.Now}");
 		}
 
 		public void Join(string date)
@@ -115,9 +115,11 @@ namespace DABApp.iOS
 				var help = new SocketHelper(date, Token);
 				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
+				Debug.WriteLine($"join {Data}");
 				joined = true;
+                socket.Off("update");
 				socket.On("update", data => {
-					Debug.Write($"Update {data} {DateTime.Now}");
+					Debug.WriteLine($"update {data}");
  					if (ExternalUpdate)
 					{
 						var jObject = data as JToken;
@@ -129,7 +131,6 @@ namespace DABApp.iOS
 						}
 					}
 				});
-				Debug.Write("Join");
 			}
 		}
 
@@ -142,13 +143,14 @@ namespace DABApp.iOS
 				if (!joined)
 				{
 					socket.Emit("join", Data);
+					Debug.WriteLine($"join {Data}");
 				}
 				socket.Emit("key", Data);
+                Debug.WriteLine($"key {Data}");
 			}
 			else {
 				StoredHtml = html;
 			}
-			Debug.Write("Key");
 		}
 
 		public string content { get; set;}
