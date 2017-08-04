@@ -63,6 +63,7 @@ namespace DABApp
 			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
+			KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
 		}
 
 		void OnPlay(object o, EventArgs e)
@@ -213,6 +214,7 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
+			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Divider.Height - 150;
 			if (LoginJournal.IsVisible || Journal.IsVisible) {
 				if (GuestStatus.Current.IsGuestLogin)
 				{
@@ -300,6 +302,12 @@ namespace DABApp
 			{
 				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
 			});
+		}
+
+		void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
+		{
+			spacer.HeightRequest = e.Visible ? e.Height : 0;
+			JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
 		}
 	}
 }

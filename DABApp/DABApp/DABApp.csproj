@@ -173,6 +173,7 @@
     </Compile>
     <Compile Include="DabApi\ISocket.cs" />
     <Compile Include="DabViewHelpers\JournalTracker.cs" />
+    <Compile Include="DabViewHelpers\KeyboardHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

@@ -265,6 +265,7 @@
     <Compile Include="DependencyServices\RivetsService.cs" />
     <Compile Include="DependencyServices\SocketService.cs" />
     <Compile Include="DependencyServices\SocketHelper.cs" />
+    <Compile Include="DependencyServices\KeyboardService.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
