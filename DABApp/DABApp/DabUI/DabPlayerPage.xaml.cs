@@ -19,7 +19,10 @@ namespace DABApp
 		public DabPlayerPage(dbEpisodes episode)
 		{
 			InitializeComponent();
-			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			if (!GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
@@ -193,6 +196,20 @@ namespace DABApp
 			}
 		}
 
+		void OnEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = false;
+		}
+
+		void OffEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = true;
+			if (!JournalTracker.Current.IsJoined)
+			{
+				JournalTracker.Current.Join(Episode.PubDate.ToString("yyyy-MM-dd"));
+			}
+		}
+
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
@@ -206,6 +223,10 @@ namespace DABApp
 					LoginJournal.IsVisible = false;
 					Journal.IsVisible = true;
 				}
+			}
+			if (!GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(Episode.PubDate.ToString("yyyy-MM-dd"));
 			}
 			//(base.SlideMenu as DabMenuView).ChangeAvatar();
 			//base.SlideMenu = new DabMenuView();

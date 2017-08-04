@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using DABApp.iOS;
 using Html2Markdown;
 using MarkdownDeep;
@@ -14,12 +15,11 @@ namespace DABApp.iOS
 {
 	public class SocketService: ISocket
 	{
-		static Socket socket;
+		static Socket socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
 		static bool connected = false;
 		static bool joined = false;
 		static bool NotifyDis = true;
 		static bool NotifyRe = true;
-		static bool externalUpdate = true;
 		static string Token;
 		static string _date;
 		static string StoredHtml = null;
@@ -44,7 +44,6 @@ namespace DABApp.iOS
 
 		public void Connect(string token)
 		{
-			socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
 			socket.Connect();
 			connected = true;
 			Token = token;
@@ -58,6 +57,7 @@ namespace DABApp.iOS
 					NotifyDis = false;
 					NotifyRe = true;
 				}
+				socket.Connect();
 			});
 			socket.On("reconnect", data =>
 			{
@@ -118,7 +118,7 @@ namespace DABApp.iOS
 				joined = true;
 				socket.On("update", data => {
 					Debug.Write($"Update {data} {DateTime.Now}");
-					if (externalUpdate)
+ 					if (ExternalUpdate)
 					{
 						var jObject = data as JToken;
 						var Date = jObject.Value<string>("date");
@@ -128,7 +128,6 @@ namespace DABApp.iOS
 							contentChanged(this, new EventArgs());
 						}
 					}
-					else externalUpdate = true;
 				});
 				Debug.Write("Join");
 			}
@@ -140,9 +139,11 @@ namespace DABApp.iOS
 			{
 				var help = new SocketHelper(md.Transform(html), date, Token);
 				var Data = JObject.FromObject(help);
-				socket.Emit("join", Data);
+				if (!joined)
+				{
+					socket.Emit("join", Data);
+				}
 				socket.Emit("key", Data);
-				externalUpdate = false;
 			}
 			else {
 				StoredHtml = html;
@@ -156,5 +157,12 @@ namespace DABApp.iOS
 		{
 			get { return connected; }
 		}
+
+		public bool IsJoined
+		{ 
+			get { return joined;}
+		}
+
+		public bool ExternalUpdate { get; set; } = true;
 	}
 }

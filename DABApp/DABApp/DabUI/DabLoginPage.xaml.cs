@@ -7,8 +7,8 @@ namespace DABApp
 {
 	public partial class DabLoginPage : DabBaseContentPage
 	{
-		bool _fromPlayer;
-		bool _fromDonation;
+		static bool _fromPlayer;
+		static bool _fromDonation;
 
 		public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
 		{
@@ -30,7 +30,7 @@ namespace DABApp
 			tapper.NumberOfTapsRequired = 1;
 			tapper.Tapped += (sender, e) =>
 			{
-				Navigation.PushAsync(new DabSignUpPage());
+				Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
 			};
 			SignUp.GestureRecognizers.Add(tapper);
 			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
@@ -59,9 +59,10 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == "Success")
 			{
+				GuestStatus.Current.IsGuestLogin = false;
 				if (_fromPlayer)
 				{
-					Navigation.PopModalAsync();
+					await Navigation.PopModalAsync();
 				}
 				else
 				{
@@ -103,7 +104,6 @@ namespace DABApp
 						Navigation.PopToRootAsync();
 					}
 				}
-				GuestStatus.Current.IsGuestLogin = false;
 			}
 			else 
 			{
@@ -123,10 +123,6 @@ namespace DABApp
 				}
 			}
 			Login.IsEnabled = true;
-		}
-
-		void OnSignUp(object o, EventArgs e) {
-			Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
 		}
 
 		void OnForgot(object o, EventArgs e) {

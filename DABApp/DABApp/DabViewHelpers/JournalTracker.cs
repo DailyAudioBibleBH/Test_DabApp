@@ -10,6 +10,7 @@ namespace DABApp
 		public ISocket socket;
 		private string _Content;
 		private bool _IsConnected = false;
+		private bool _IsJoined = false;
 
 		public static JournalTracker Current { get; private set;}
 
@@ -28,6 +29,10 @@ namespace DABApp
 				if (_IsConnected != socket.IsConnected)
 				{
 					IsConnected = socket.IsConnected;
+				}
+				if (_IsJoined != socket.IsJoined)
+				{
+					IsJoined = socket.IsJoined;
 				}
 				return true;
 			});
@@ -55,9 +60,25 @@ namespace DABApp
 			}
 		}
 
+		public bool IsJoined
+		{ 
+			get {
+				return _IsJoined;
+			}
+			set {
+				_IsJoined = value;
+				OnPropertyChanged("IsJoined");
+			}
+		}
+
 		void OnContentChanged(object o, EventArgs e)
 		{
 			Content = socket.content;
+		}
+
+		public void Connect(string token)
+		{
+			socket.Connect(token);
 		}
 
 		public void Update(string date, string html) 

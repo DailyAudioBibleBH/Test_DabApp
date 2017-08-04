@@ -36,12 +36,13 @@ namespace DABApp
 				string authentication = await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (string.IsNullOrEmpty(authentication))
 				{
-						if (_fromPlayer)
-						{
-							await Navigation.PopModalAsync();
-						}
-						else
-						{
+					GuestStatus.Current.IsGuestLogin = false;
+					if (_fromPlayer)
+					{
+						await Navigation.PopModalAsync();
+					}
+					else
+					{
 						if (_fromDonation)
 						{
 							var dons = await AuthenticationAPI.GetDonations();
@@ -70,17 +71,17 @@ namespace DABApp
 								await Navigation.PopToRootAsync();
 							}
 						}
-						else 
-						{ 
+						else
+						{
 							var nav = new NavigationPage(new DabChannelsPage());
 							nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 							Application.Current.MainPage = nav;
 							await Navigation.PopToRootAsync();
 						}
-						}
-						GuestStatus.Current.IsGuestLogin = false;
+					}
 				}
-				else{
+				else
+				{
 					if (authentication.Contains("server"))
 					{
 						await DisplayAlert("Server Error", authentication, "OK");

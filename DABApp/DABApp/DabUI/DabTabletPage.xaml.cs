@@ -41,7 +41,10 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
-			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			if (!GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
@@ -254,6 +257,10 @@ namespace DABApp
 					Journal.IsVisible = true;
 				}
 			}
+			if (episode != null && !GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 		}
 
 		void OnLogin(object o, EventArgs e)
@@ -361,6 +368,20 @@ namespace DABApp
 			{
 				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
 			});
+		}
+
+		void OnEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = false;
+		}
+
+		void OffEdit(object o, EventArgs e)
+		{
+			JournalTracker.Current.socket.ExternalUpdate = true;
+			if (!JournalTracker.Current.socket.IsJoined)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 		}
 	}
 }
