@@ -41,7 +41,10 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
-			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			if (!GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
 			SetReading();
@@ -375,7 +378,10 @@ namespace DABApp
 		void OffEdit(object o, EventArgs e)
 		{
 			JournalTracker.Current.socket.ExternalUpdate = true;
-			JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			if (!JournalTracker.Current.socket.IsJoined)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 		}
 	}
 }
