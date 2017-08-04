@@ -126,7 +126,17 @@ namespace DABApp.iOS
 						var Date = jObject.Value<string>("date");
 						if (Date == _date)
 						{
-							content = converter.Convert(jObject.Value<string>("content"));
+                            string html = jObject.Value<string>("content");
+                            //get rid of line breaks in the HTML
+                            html = html.Replace("\n", "");
+							content = converter.Convert(html);
+                            //Replace extra \n\n with \n
+                            content = content.Replace("\n\n", "\n");
+                            //trim off a leading \n
+                            if (content.StartsWith("\n"))
+                            {
+                                content = content.Substring(1);
+                            }
 							contentChanged(this, new EventArgs());
 						}
 					}
