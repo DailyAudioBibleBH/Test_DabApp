@@ -59,9 +59,10 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == "Success")
 			{
+				GuestStatus.Current.IsGuestLogin = false;
 				if (_fromPlayer)
 				{
-					Navigation.PopModalAsync();
+					await Navigation.PopModalAsync();
 				}
 				else
 				{
@@ -103,7 +104,6 @@ namespace DABApp
 						Navigation.PopToRootAsync();
 					}
 				}
-				GuestStatus.Current.IsGuestLogin = false;
 			}
 			else 
 			{

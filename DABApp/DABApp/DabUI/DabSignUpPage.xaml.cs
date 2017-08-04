@@ -36,9 +36,10 @@ namespace DABApp
 				string authentication = await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (string.IsNullOrEmpty(authentication))
 				{
+					GuestStatus.Current.IsGuestLogin = false;
 					if (_fromPlayer)
 					{
-						Navigation.PopModalAsync();
+						await Navigation.PopModalAsync();
 					}
 					else
 					{
@@ -78,7 +79,6 @@ namespace DABApp
 							await Navigation.PopToRootAsync();
 						}
 					}
-					GuestStatus.Current.IsGuestLogin = false;
 				}
 				else
 				{
