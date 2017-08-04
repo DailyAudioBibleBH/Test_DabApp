@@ -142,7 +142,6 @@ namespace DABApp.iOS
 				var Data = JObject.FromObject(help);
 				socket.Emit("join", Data);
 				socket.Emit("key", Data);
-				ExternalUpdate = false;
 			}
 			else {
 				StoredHtml = html;

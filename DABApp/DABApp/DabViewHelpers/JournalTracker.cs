@@ -60,6 +60,11 @@ namespace DABApp
 			Content = socket.content;
 		}
 
+		public void Connect(string token)
+		{
+			socket.Connect(token);
+		}
+
 		public void Update(string date, string html) 
 		{
 			socket.Key(html, date);

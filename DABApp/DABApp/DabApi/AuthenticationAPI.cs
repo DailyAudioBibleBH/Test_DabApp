@@ -79,7 +79,7 @@ namespace DABApp
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
-					DependencyService.Get<ISocket>().Connect(TokenSettings.Value);
+					JournalTracker.Current.Connect(TokenSettings.Value);
 					return "Success";
 				}
 			}
@@ -103,6 +103,9 @@ namespace DABApp
 				return false;
 			}
 			var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
+			if (!JournalTracker.Current.IsConnected) {
+				JournalTracker.Current.Connect(token.Value);
+			}
 			return true;
 		}
 
@@ -149,7 +152,7 @@ namespace DABApp
 					//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 					GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 				}
-				DependencyService.Get<ISocket>().Connect(TokenSettings.Value);
+				JournalTracker.Current.Connect(TokenSettings.Value);
 				return "";
 			}
 			catch (Exception e) {
@@ -205,7 +208,7 @@ namespace DABApp
 			}
 		}
 
-		public static async void ExchangeToken() {
+		public static async Task<bool> ExchangeToken() {
 			try
 			{
 				dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
@@ -227,9 +230,10 @@ namespace DABApp
 				db.Update(TokenSettings);
 				db.Update(ExpirationSettings);
 				DependencyService.Get<ISocket>().Connect(token.value);
+				return true;
 			}
 			catch (Exception e) {
-
+				return false;
 			}
 		}
 
@@ -579,7 +583,7 @@ namespace DABApp
 			db.Insert(actionLog);
 		}
 
-		public static void PostActionLogs() {
+		public static async Task<string> PostActionLogs() {
 			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
 			var actions = db.Table<dbPlayerActions>().ToList();
  			if (actions.Count > 0) {
@@ -592,8 +596,8 @@ namespace DABApp
 					var JsonIn = JsonConvert.SerializeObject(events);
 					var content = new StringContent(JsonIn);
 					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-					var result = client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/logevents", content).Result;
-					string JsonOut = result.Content.ReadAsStringAsync().Result;
+					var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/logevents", content);
+					string JsonOut = await result.Content.ReadAsStringAsync();
 					if (JsonOut != "1")
 					{
 						throw new Exception();
@@ -606,11 +610,13 @@ namespace DABApp
 				catch (Exception e) 
 				{
 					//It's bad if the program lands here.
+					return e.Message;
 				}
 			}
+			return "OK";
 		}
 
-		public static bool GetMemberData(){
+		public static async Task<bool> GetMemberData(){
 			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
 			dbSettings EmailSettings = db.Table<dbSettings>().Single(x => x.Key == "Email");
 			try
@@ -620,8 +626,8 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = client.GetAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data").Result;
-				string JsonOut = result.Content.ReadAsStringAsync().Result;
+				var result = await client.GetAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data");
+				string JsonOut = await result.Content.ReadAsStringAsync();
 				MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
 				if (container.code == "rest_forbidden")
 				{

@@ -5,6 +5,7 @@ using SlideOverKit;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using FFImageLoading;
+using System.Threading.Tasks;
 
 namespace DABApp
 {
@@ -68,13 +69,19 @@ namespace DABApp
 			Device.StartTimer(TimeSpan.FromMinutes(1), () => {
 				if (!AuthenticationAPI.CheckToken(-1))
 				{
-					AuthenticationAPI.ExchangeToken();
+					Task.Run(async () =>
+					{
+						await AuthenticationAPI.ExchangeToken();
+					});
 				}
 				PlayerFeedAPI.CleanUpEpisodes();
 				if (GlobalResources.GetUserName() != "Guest Guest")
 				{
-					AuthenticationAPI.PostActionLogs();
-					var check = AuthenticationAPI.GetMemberData();
+					Task.Run(async () =>
+					{
+						await AuthenticationAPI.PostActionLogs();
+						await AuthenticationAPI.GetMemberData();
+					});
 				}
 				return true;
 			});
@@ -84,6 +91,13 @@ namespace DABApp
 				AuthenticationAPI.ConnectJournal();
 				IsUnInitialized = false;
 			}
+		}
+
+		void PostLogs()
+		{
+			Task.Run(async () => {
+				await AuthenticationAPI.PostActionLogs();
+			});
 		}
 
 		void OnPlayer(object o, EventArgs e) 
