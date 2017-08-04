@@ -254,6 +254,10 @@ namespace DABApp
 					Journal.IsVisible = true;
 				}
 			}
+			if (episode != null && !GuestStatus.Current.IsGuestLogin)
+			{
+				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+			}
 		}
 
 		void OnLogin(object o, EventArgs e)

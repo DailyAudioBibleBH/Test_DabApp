@@ -9,6 +9,7 @@ namespace DABApp
 		string content { get;}
 		bool IsConnected { get;}
 		bool ExternalUpdate { get; set;}
+		bool IsJoined { get;}
 		event EventHandler contentChanged;
 		event EventHandler Disconnect;
 		event EventHandler Reconnect;

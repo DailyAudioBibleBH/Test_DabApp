@@ -15,7 +15,7 @@ namespace DABApp.iOS
 {
 	public class SocketService: ISocket
 	{
-		static Socket socket;
+		static Socket socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
 		static bool connected = false;
 		static bool joined = false;
 		static bool NotifyDis = true;
@@ -44,7 +44,6 @@ namespace DABApp.iOS
 
 		public void Connect(string token)
 		{
-			socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
 			socket.Connect();
 			connected = true;
 			Token = token;
@@ -140,7 +139,10 @@ namespace DABApp.iOS
 			{
 				var help = new SocketHelper(md.Transform(html), date, Token);
 				var Data = JObject.FromObject(help);
-				socket.Emit("join", Data);
+				if (!joined)
+				{
+					socket.Emit("join", Data);
+				}
 				socket.Emit("key", Data);
 			}
 			else {
@@ -154,6 +156,11 @@ namespace DABApp.iOS
 		public bool IsConnected 
 		{
 			get { return connected; }
+		}
+
+		public bool IsJoined
+		{ 
+			get { return joined;}
 		}
 
 		public bool ExternalUpdate { get; set; } = true;
