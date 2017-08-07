@@ -79,7 +79,7 @@
 							<controls:SegmentedControlOption Text="Journal"/>
 						</controls:SegmentedControl.Children>
 					</controls:SegmentedControl>
-					<BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}"/>
+					<BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}"/>
 					<!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
 				</StackLayout>
 				<ScrollView x:Name="Archive" IsVisible="true">
@@ -133,9 +133,10 @@
 					<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 				</StackLayout>
 				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20">
-					<Label Text="{Binding title}" FontSize="Micro"/>
+					<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro"/>
 					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit"/>
 					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
+					<BoxView x:Name="spacer" BackgroundColor="Transparent"/>
 				</StackLayout>
 			</StackLayout>
 		</Grid>

@@ -244,6 +244,7 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
+			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height - Divider.Height - 130;
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)
@@ -382,6 +383,12 @@ namespace DABApp
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			}
+		}
+
+		void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
+		{
+			spacer.HeightRequest = e.Visible ? e.Height : 0;
+			JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
 		}
 	}
 }
