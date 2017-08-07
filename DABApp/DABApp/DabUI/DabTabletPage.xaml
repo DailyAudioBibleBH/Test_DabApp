@@ -71,7 +71,7 @@
 				</ListView>
 			</StackLayout>
 			<StackLayout Grid.Row="1" Grid.Column="1">
-				<StackLayout Padding="20" Spacing="10">
+				<StackLayout Padding="20, 20, 20, 0" Spacing="10">
 					<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
 						<controls:SegmentedControl.Children>
 							<controls:SegmentedControlOption Text="Archive"/>
@@ -119,7 +119,7 @@
 			</local:NonScrollingListView>
 			</StackLayout>
 			</ScrollView>
-				<StackLayout x:Name="Read" IsVisible="false" Padding="20" VerticalOptions="StartAndExpand">
+				<StackLayout x:Name="Read" IsVisible="false" Padding="20, 0, 20, 20" VerticalOptions="StartAndExpand">
 					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
 					<Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Medium"/>
 					<Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read."/>
@@ -132,7 +132,7 @@
 					<Label Text="Create an account and join us each day as we read through the bible every year." FontSize="Medium"/>
 					<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 				</StackLayout>
-				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20">
+				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20, 0, 20, 20">
 					<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro"/>
 					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit"/>
 					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
