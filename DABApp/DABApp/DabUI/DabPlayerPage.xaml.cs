@@ -64,6 +64,12 @@ namespace DABApp
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 			KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+			var tapper = new TapGestureRecognizer();
+			tapper.Tapped += (sender, e) => 
+			{
+				Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
+			};
+			AboutFormat.GestureRecognizers.Add(tapper);
 		}
 
 		void OnPlay(object o, EventArgs e)

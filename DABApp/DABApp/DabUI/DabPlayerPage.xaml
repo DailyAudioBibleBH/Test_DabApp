@@ -59,7 +59,10 @@
                     </ScrollView>
                 </StackLayout>
                 <StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20, 0, 20, 20" Spacing="10">
-                    <Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
+					<StackLayout Orientation="Horizontal">
+                    	<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
+						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{DynamicResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
+					</StackLayout>
                     <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" />
                     <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  />
 					<BoxView x:Name="spacer" BackgroundColor="{DynamicResource PageBackgroundColor}"/>
