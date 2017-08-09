@@ -40,11 +40,13 @@ namespace DABApp
 	{
 		public readonly bool Visible;
 		public readonly float Height;
+		public readonly bool IsExternalKeyboard;
 
-		public KeyboardHelperEventArgs(bool visible, float height)
+		public KeyboardHelperEventArgs(bool visible, float height, bool isExternalKeyboard)
 		{
 			Visible = visible;
 			Height = height;
+			IsExternalKeyboard = isExternalKeyboard;
 		}
 	}
 }

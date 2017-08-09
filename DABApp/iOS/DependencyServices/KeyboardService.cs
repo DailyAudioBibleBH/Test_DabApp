@@ -2,6 +2,7 @@
 using Foundation;
 using UIKit;
 using DABApp.iOS;
+using CoreGraphics;
 
 [assembly: Xamarin.Forms.Dependency(typeof(KeyboardHelper))]
 namespace DABApp.iOS
@@ -20,13 +21,19 @@ namespace DABApp.iOS
 
 		private void OnKeyboardNotification(NSNotification notification)
 		{
+			var userInfo = notification.UserInfo;
+			var keyEnd = (NSValue)userInfo.ValueForKey(UIKeyboard.FrameEndUserInfoKey);
+			var keyBegin = (NSValue)userInfo.ValueForKey(UIKeyboard.FrameBeginUserInfoKey);
+			var diff = keyEnd.CGRectValue.Y - keyBegin.CGRectValue.Y;
+			var height = UIScreen.MainScreen.Bounds.Height;
 			var visible = notification.Name == UIKeyboard.WillShowNotification;
 			var keyboardFrame = visible
 				? UIKeyboard.FrameEndFromNotification(notification)
 				: UIKeyboard.FrameBeginFromNotification(notification);
+			var isExternal = Math.Abs(diff) == 55;
 			if (KeyboardChanged != null)
 			{
-				KeyboardChanged(this, new KeyboardHelperEventArgs(visible, (float)keyboardFrame.Height));
+				KeyboardChanged(this, new KeyboardHelperEventArgs(visible, (float)keyboardFrame.Height, isExternal));
 			}
 		}
 	}

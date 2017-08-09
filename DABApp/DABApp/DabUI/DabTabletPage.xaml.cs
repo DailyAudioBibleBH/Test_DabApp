@@ -12,6 +12,8 @@ namespace DABApp
 		IEnumerable<dbEpisodes> Episodes;
 		string backgroundImage;
 		dbEpisodes episode;
+		static double original;
+		static bool lastKeyboardStatus;
 
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
@@ -250,6 +252,7 @@ namespace DABApp
 		{
 			base.OnAppearing();
 			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
+			original = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)
@@ -395,7 +398,15 @@ namespace DABApp
 			if (JournalTracker.Current.Open)
 			{
 				spacer.HeightRequest = e.Visible ? e.Height : 0;
-				JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+				if (e.IsExternalKeyboard)
+				{
+					JournalContent.HeightRequest = original;
+				}
+				else
+				{
+					JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+				}
+				//lastKeyboardStatus = e.IsExternalKeyboard;
 			}
 		}
 	}

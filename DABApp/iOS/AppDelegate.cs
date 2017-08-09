@@ -93,5 +93,10 @@ namespace DABApp.iOS
 			base.OnActivated(uiApplication);
 			MessagingCenter.Send<string>("Refresh", "Refresh");
 		}
+
+		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
+		{
+			return UIInterfaceOrientationMask.Portrait;
+		}
 	}
 }
