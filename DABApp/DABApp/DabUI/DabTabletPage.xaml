@@ -135,7 +135,7 @@
 				<StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20, 0, 20, 20">
 					<StackLayout Orientation="Horizontal">
 					<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro"/>
-						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{DynamicResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
+						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
 					</StackLayout>
 					<local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit"/>
 					<Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"/>
