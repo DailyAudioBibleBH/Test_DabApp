@@ -392,8 +392,11 @@ namespace DABApp
 
 		void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
 		{
-			spacer.HeightRequest = e.Visible ? e.Height : 0;
-			JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+			if (JournalTracker.Current.Open)
+			{
+				spacer.HeightRequest = e.Visible ? e.Height : 0;
+				JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+			}
 		}
 	}
 }

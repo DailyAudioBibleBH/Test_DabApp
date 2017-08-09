@@ -181,6 +181,9 @@
 				<Setter Property="Color" Value="{DynamicResource InputBackgroundColor}"/>
 			</Style>
 			<Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true"/>
+			<Style x:Key="SpacerStyle" TargetType="BoxView">
+				<Setter Property="Color" Value="{DynamicResource PageBackgroundColor}"/>
+			</Style>
 			<Style x:Key="EditorStyle" TargetType="Editor">
 				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}"/>
 				<Setter Property="TextColor" Value="{DynamicResource TextColor}"/>

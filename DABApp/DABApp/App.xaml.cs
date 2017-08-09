@@ -37,12 +37,12 @@ namespace DABApp
 
 		protected override void OnSleep()
 		{
-			// Handle when your app sleeps
+			JournalTracker.Current.Open = false;
 		}
 
 		protected override void OnResume()
 		{
-			// Handle when your app resumes
+			JournalTracker.Current.Open = true;
 		}
 
 		//void OnPlayPause(object o, EventArgs e) {

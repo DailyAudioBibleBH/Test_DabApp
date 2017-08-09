@@ -90,6 +90,8 @@ namespace DABApp
 			socket.Join(date);
 		}
 
+		public bool Open { get; set; } = true;
+
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
