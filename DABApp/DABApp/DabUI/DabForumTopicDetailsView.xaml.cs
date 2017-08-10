@@ -18,6 +18,10 @@ namespace DABApp
 			reply = rep;
 			replies = reps;
 			last = LastActivity;
+			if (GuestStatus.Current.IsGuestLogin)
+			{
+				rep.Text = "Log in";
+			}
 		}
 	}
 }

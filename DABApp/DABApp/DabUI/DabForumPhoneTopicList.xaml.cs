@@ -30,12 +30,12 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
-				if (choice)
-				{
+				//var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
+				//if (choice)
+				//{
 					await Navigation.PushModalAsync(new DabLoginPage(true));
 					login = true;
-				}
+				//}
 			}
 			else
 			{
@@ -69,7 +69,7 @@ namespace DABApp
 		{
 			base.OnAppearing();
 			await Update();
-			if (login)
+			if (login && !GuestStatus.Current.IsGuestLogin)
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
 				fromPost = true;

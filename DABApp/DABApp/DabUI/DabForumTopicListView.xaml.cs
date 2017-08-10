@@ -15,6 +15,10 @@ namespace DABApp
 			topicList = TopicList;
 			postButton = Post;
 			BackgroundColor = (Color)App.Current.Resources["PageBackgroundColor"];
+			if (GuestStatus.Current.IsGuestLogin)
+			{
+				Post.Text = "Log in";
+			}
 		}
 	}
 }

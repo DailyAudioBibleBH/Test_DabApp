@@ -53,12 +53,12 @@ namespace DABApp
 		{ 
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
-				if (choice)
-				{
+				//var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
+				//if (choice)
+				//{
 					await Navigation.PushModalAsync(new DabLoginPage(true));
 					loginTop = true;
-				}
+				//}
 			}
 			else 
 			{
@@ -71,12 +71,12 @@ namespace DABApp
 		{ 
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				var choice = await DisplayAlert("Log in required", "You must be logged in to comment on a topic.  Would you like to log in?", "Yes", "No");
-				if (choice)
-				{
+				//var choice = await DisplayAlert("Log in required", "You must be logged in to comment on a topic.  Would you like to log in?", "Yes", "No");
+				//if (choice)
+				//{
 					await Navigation.PushModalAsync(new DabLoginPage(true));
 					loginRep = true;
-				}
+				//}
 			}
 			else 
 			{
@@ -92,26 +92,33 @@ namespace DABApp
 			{
 				await Update();
 			}
-			if (loginRep) 
+			if (!GuestStatus.Current.IsGuestLogin)
 			{
-				await Navigation.PushAsync(new DabForumCreateReply(topic));
-				fromPost = true;
-				loginRep = false;
-			}
-			if (loginTop)
-			{
-				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				fromPost = true;
-				loginTop = false;
+				if (loginRep)
+				{
+					await Navigation.PushAsync(new DabForumCreateReply(topic));
+					fromPost = true;
+					loginRep = false;
+				}
+				if (loginTop)
+				{
+					await Navigation.PushAsync(new DabForumCreateTopic(_forum));
+					fromPost = true;
+					loginTop = false;
+				}
 			}
 		}
 
 		string TimeConvert()
 		{
-			var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
-			var month = dateTime.ToString("MMMM");
-			var time = dateTime.ToString("t");
-			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			if (topic.replies.Count > 0)
+			{
+				var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
+				var month = dateTime.ToString("MMMM");
+				var time = dateTime.ToString("t");
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			}
+			return "";
 		}
 
 		async Task Update()
