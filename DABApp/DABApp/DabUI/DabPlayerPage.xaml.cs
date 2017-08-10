@@ -15,6 +15,7 @@ namespace DABApp
 		dbEpisodes Episode;
 		string backgroundImage;
 		bool IsGuest;
+		static double original;
 
 		public DabPlayerPage(dbEpisodes episode)
 		{
@@ -221,6 +222,7 @@ namespace DABApp
 		{
 			base.OnAppearing();
 			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Divider.Height - Journal.Padding.Bottom * 4;
+			original = Content.Height - JournalTitle.Height - SegControl.Height - Divider.Height - Journal.Padding.Bottom * 4;
 			if (LoginJournal.IsVisible || Journal.IsVisible) {
 				if (GuestStatus.Current.IsGuestLogin)
 				{
@@ -315,7 +317,14 @@ namespace DABApp
 			if (JournalTracker.Current.Open)
 			{
 				spacer.HeightRequest = e.Visible ? e.Height : 0;
-				JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+				if (e.IsExternalKeyboard)
+				{
+					JournalContent.HeightRequest = original;
+				}
+				else
+				{
+					JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : original;
+				}
 			}
 		}
 

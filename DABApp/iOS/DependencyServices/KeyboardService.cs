@@ -21,6 +21,7 @@ namespace DABApp.iOS
 
 		private void OnKeyboardNotification(NSNotification notification)
 		{
+			var standardKeyboardHeight = Xamarin.Forms.Device.Idiom == Xamarin.Forms.TargetIdiom.Phone ? 44 : 55;
 			var userInfo = notification.UserInfo;
 			var keyEnd = (NSValue)userInfo.ValueForKey(UIKeyboard.FrameEndUserInfoKey);
 			var keyBegin = (NSValue)userInfo.ValueForKey(UIKeyboard.FrameBeginUserInfoKey);
@@ -30,7 +31,7 @@ namespace DABApp.iOS
 			var keyboardFrame = visible
 				? UIKeyboard.FrameEndFromNotification(notification)
 				: UIKeyboard.FrameBeginFromNotification(notification);
-			var isExternal = Math.Abs(diff) == 55;
+			var isExternal = Math.Abs(diff) == standardKeyboardHeight || diff > standardKeyboardHeight;
 			if (KeyboardChanged != null)
 			{
 				KeyboardChanged(this, new KeyboardHelperEventArgs(visible, (float)keyboardFrame.Height, isExternal));
