@@ -79,7 +79,7 @@ namespace DABApp
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
-					JournalTracker.Current.Connect(TokenSettings.Value);
+					JournalTracker.Current.Connect(token.value);
 					return "Success";
 				}
 			}

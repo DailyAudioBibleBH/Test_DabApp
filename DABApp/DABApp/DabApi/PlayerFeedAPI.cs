@@ -49,7 +49,7 @@ namespace DABApp
 					}
 				}
 				await DownloadEpisodes();
-				var check = AuthenticationAPI.GetMemberData();
+				var check = await AuthenticationAPI.GetMemberData();
 				return "OK";
 				//else {
 				//	throw new Exception(); 
@@ -129,7 +129,7 @@ namespace DABApp
 										 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
 										 where !episode.is_downloaded //not downloaded
 									  && episode.PubDate > cutoffTime //new enough to be downloaded
-									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || !episode.is_listened_to) //not listened to or system not set to delete listened to episodes
+									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.listenedToVisible) //not listened to or system not set to delete listened to episodes
 										 select episode;
 
 				int ix = 0;
@@ -179,7 +179,7 @@ namespace DABApp
 
 		public static void UpdateEpisodeProperty(int episodeId) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
-			episode.is_listened_to = true;
+			episode.is_listened_to = "listened";
 			db.Update(episode);
 		}
 
@@ -212,7 +212,7 @@ namespace DABApp
 												&& x.PubDate < cutoffTime //pubDate is before cut off time
 												&& (!OfflineEpisodeSettings.Instance.DeleteAfterListening //not flagged to delete after listening
 														||
-														(OfflineEpisodeSettings.Instance.DeleteAfterListening || x.is_listened_to)) //flagged to delete after listening and listened to
+														(OfflineEpisodeSettings.Instance.DeleteAfterListening || x.is_listened_to == "listened")) //flagged to delete after listening and listened to
 									   select x;
 				Debug.WriteLine("Cleaning up {0} episodes...", episodesToDelete.Count());
 				foreach (var episode in episodesToDelete)

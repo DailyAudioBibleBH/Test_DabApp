@@ -7,6 +7,7 @@ namespace DABApp
 {
 	public class dbEpisodes
 	{
+		private bool isUnTouched;
 		[PrimaryKey]
 		[Indexed]
 		public int id { get; set;}
@@ -31,7 +32,7 @@ namespace DABApp
 		public string channel_description { get; set;}
 		public bool is_downloaded { get; set; } = false;
 		public string file_name { get; set;}
-		public bool is_listened_to { get; set; } = false;
+		public string is_listened_to { get; set; }
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
 		public string remaining_time { get; set; } = "01:00";
@@ -52,11 +53,38 @@ namespace DABApp
 		[Ignore]
 		public bool listenedToVisible { 
 			get {
-				return !is_listened_to;
+				return isUnTouched;
 			}
 			set{
-				is_listened_to = !value;
+				isUnTouched = is_listened_to == "listened" ? false : true;
 				OnPropertyChanged("listenedToVisible");
+			}
+		}
+
+		[Ignore]
+		public bool favoriteVisible 
+		{ 
+			get 
+			{
+				return is_favorite;
+			}
+			set 
+			{
+				is_favorite = value;
+				OnPropertyChanged("favoriteVisible");
+			}
+		}
+
+		[Ignore]
+		public bool hasJournalVisible
+		{ 
+			get 
+			{
+				return has_journal;
+			}
+			set {
+				has_journal = value;
+				OnPropertyChanged("hasJournalVisible");
 			}
 		}
 

@@ -32,8 +32,8 @@
 									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
 <!--									<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>-->
-									<Image IsVisible="{Binding is_favorite}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
-									<Image IsVisible="{Binding has_journal}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
+									<Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
+									<Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil-white.png"/>
 								<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
 								</StackLayout>
 								<Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
