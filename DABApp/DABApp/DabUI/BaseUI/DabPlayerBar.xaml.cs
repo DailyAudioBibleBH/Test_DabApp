@@ -43,20 +43,21 @@ namespace DABApp
 		}
 
 		//Show Player Page
-		void OnShowPlayer(object o, EventArgs e)
+		async void OnShowPlayer(object o, EventArgs e)
 		{
 			PlayerButton.IsEnabled = false;
 			stackPodcastTitle.IsEnabled = false;
 			NavigationPage page = (NavigationPage)Application.Current.MainPage;
 			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+			var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
-				page.PushAsync(new DabTabletPage(channel, currentEpisode));
+				await page.PushAsync(new DabTabletPage(channel, currentEpisode));
 			}
 			else
 			{
-				page.PushAsync(new DabPlayerPage(currentEpisode));
+				await page.PushAsync(new DabPlayerPage(currentEpisode, reading));
 			}
 			stackPodcastTitle.IsEnabled = true;
 			PlayerButton.IsEnabled = true;

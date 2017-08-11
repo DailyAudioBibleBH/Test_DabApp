@@ -179,10 +179,11 @@ namespace DABApp
 			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 		}
 
-		void OnChannel(object o, EventArgs e)
+		async void OnChannel(object o, EventArgs e)
 		{
 			_resource = (Resource)ChannelsList.SelectedItem;
 			backgroundImage = _resource.images.backgroundTablet;
+			await PlayerFeedAPI.GetEpisodes(_resource);
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			EpisodeList.ItemsSource = Episodes;
 			BackgroundImage.Source = backgroundImage;
@@ -283,9 +284,9 @@ namespace DABApp
 			Login.IsEnabled = true;
 		}
 
-		void SetReading()
+		async void SetReading()
 		{
-			Reading reading = PlayerFeedAPI.GetReading(episode.read_link);
+			Reading reading = await PlayerFeedAPI.GetReading(episode.read_link);
 			ReadTitle.Text = reading.title;
 			ReadText.Text = reading.text;
 			if (reading.IsAlt)

@@ -19,16 +19,16 @@ namespace DABApp
 		static bool CleanupIsRunning = false;
 
 		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
-			GetEpisodes(resource);
+			//GetEpisodes(resource);
 			return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
 		}
 
-		public static string GetEpisodes(Resource resource) {
+		public static async Task<string> GetEpisodes(Resource resource) {
 			try
 			{
 				var client = new HttpClient();
-				var result = client.GetAsync(resource.feedUrl).Result;
-				string jsonOut = result.Content.ReadAsStringAsync().Result;
+				var result = await client.GetAsync(resource.feedUrl);
+				string jsonOut = await result.Content.ReadAsStringAsync();
 				var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
 				if (Episodes == null) {
 					return "Server Error";
@@ -48,10 +48,7 @@ namespace DABApp
 						db.Delete(old);
 					}
 				}
-				Task.Run( async () =>
-				{
-					await DownloadEpisodes();
-				});
+				await DownloadEpisodes();
 				var check = AuthenticationAPI.GetMemberData();
 				return "OK";
 				//else {
@@ -254,15 +251,15 @@ namespace DABApp
 			db.Update(episode);
 		}
 
-		public static Reading GetReading(string ReadLink) {
+		public static async Task<Reading> GetReading(string ReadLink) {
 			try
 			{
 				if (String.IsNullOrEmpty(ReadLink)) {
 					throw new Exception();
 				}
 				HttpClient client = new HttpClient();
-				var result = client.GetAsync(ReadLink).Result;
-				var JsonOut = result.Content.ReadAsStringAsync().Result;
+				var result = await client.GetAsync(ReadLink);
+				var JsonOut = await result.Content.ReadAsStringAsync();
 				var content = JsonConvert.DeserializeObject<Reading>(JsonOut);
 				if (content.message != null)
 				{

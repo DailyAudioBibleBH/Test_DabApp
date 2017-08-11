@@ -13,7 +13,7 @@ namespace DABApp
 	{
 		View ChannelView;
 		dbEpisodes episode;
-		Resource resource;
+		Resource _resource;
 		static bool IsUnInitialized = true;
 
 		public DabChannelsPage()
@@ -28,9 +28,12 @@ namespace DABApp
 			//ListTitle.Text = $"<h1>{ChannelView.title}</h1>";
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
-			resource = ChannelView.resources[0];
-			PlayerFeedAPI.GetEpisodes(resource);
-			episode = PlayerFeedAPI.GetMostRecentEpisode(resource);
+			_resource = ChannelView.resources[0];
+			Task.Run(async () =>
+			{
+				await PlayerFeedAPI.GetEpisodes(_resource);
+			});
+			episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
 			if (episode == null)
 			{
 				bannerContentContainer.IsVisible = false;
@@ -87,19 +90,20 @@ namespace DABApp
 			});
 		}
 
-		void OnPlayer(object o, EventArgs e) 
+		async void OnPlayer(object o, EventArgs e) 
 		{
 			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
+			var reading = await PlayerFeedAPI.GetReading(episode.read_link);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
-				Navigation.PushAsync(new DabTabletPage(resource));
+				await Navigation.PushAsync(new DabTabletPage(_resource));
 			}
 			else
 			{
-				Navigation.PushAsync(new DabPlayerPage(episode));
+				await Navigation.PushAsync(new DabPlayerPage(episode, reading));
 			}
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
@@ -119,7 +123,7 @@ namespace DABApp
 			Navigation.PushAsync(new DabBrowserPage("http://c2itconsulting.net/"));
 		}
 
-		void OnChannel(object o, ItemTappedEventArgs e) {
+		async void OnChannel(object o, ItemTappedEventArgs e) {
 			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 			activity.IsVisible = true;
@@ -127,14 +131,14 @@ namespace DABApp
 			var selected = (Resource)e.Item;
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
-			PlayerFeedAPI.GetEpisodes(resource);
+			var episodes = await PlayerFeedAPI.GetEpisodes(resource);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
-				Navigation.PushAsync(new DabTabletPage(resource));
+				await Navigation.PushAsync(new DabTabletPage(resource));
 			}
 			else
 			{
-				Navigation.PushAsync(new DabEpisodesPage(resource));
+				await Navigation.PushAsync(new DabEpisodesPage(resource));
 			}
 			selected.IsNotSelected = true;
 			activity.IsVisible = false;

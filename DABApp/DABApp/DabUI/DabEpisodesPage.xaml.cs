@@ -34,17 +34,18 @@ namespace DABApp
 			});
 		}
 
-		public void OnEpisode(object o, ItemTappedEventArgs e) 
+		public async void OnEpisode(object o, ItemTappedEventArgs e) 
 		{
 			//activityHolder.IsVisible = true;
 			//activity.IsVisible = true;
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
+			var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
 			//if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
 			//{
 			//	AudioPlayer.Instance.SetAudioFile(chosen);
 			//}
-			Navigation.PushAsync(new DabPlayerPage(chosen));
+			await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
 			EpisodeList.SelectedItem = null;
 			//activityHolder.IsVisible = false;
 			//activity.IsVisible = false;
