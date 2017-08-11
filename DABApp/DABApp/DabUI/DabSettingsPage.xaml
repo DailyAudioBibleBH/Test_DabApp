@@ -53,12 +53,12 @@
 								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
-						<ViewCell x:Name="Reset" Tapped="OnReset">
+						<!--<ViewCell x:Name="Reset" Tapped="OnReset">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Reset listened to status" VerticalOptions="Center"/>
 								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
-						</ViewCell>
+						</ViewCell>-->
 					</TableSection>
 					<TableSection Title="Other" x:Name="Other">
 						<ViewCell x:Name="AppInfo" Tapped="OnAppInfo">

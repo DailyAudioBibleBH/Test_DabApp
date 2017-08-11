@@ -21,7 +21,7 @@ namespace DABApp
 			AppInfoPage.ToolbarItems.Clear();
 			//SettingsPage.ToolbarItems.Clear();
 			SettingsPage.offline.Tapped += OnOffline;
-			SettingsPage.reset.Tapped += OnReset;
+			//SettingsPage.reset.Tapped += OnReset;
 			SettingsPage.appInfo.Tapped += OnAppInfo;
 			SettingsPage.profile.Tapped += OnProfile;
 			SettingsPage.addresses.Tapped += OnAddresses;
@@ -34,21 +34,21 @@ namespace DABApp
 		}
 
 		void OnListening(object o, ItemTappedEventArgs e) {
-			var pre = e.Item as Preset;
-			switch (pre.duration) { 
-				case "Offline Episodes":
+			//var pre = e.Item as Preset;
+			//switch (pre.duration) { 
+			//	case "Offline Episodes":
 					var Offline = new DabOfflineEpisodeManagementPage();
 					this.Detail = Offline;
 					Offline.ToolbarItems.Clear();
 					Remove();
-					break;
-				case "Reset listened to status":
-					var Reset = new DabResetListenedToStatusPage();
-					this.Detail = Reset;
-					Reset.ToolbarItems.Clear();
-					Remove();
-					break;
-			}
+			//		break;
+			//	case "Reset listened to status":
+			//		var Reset = new DabResetListenedToStatusPage();
+			//		this.Detail = Reset;
+			//		Reset.ToolbarItems.Clear();
+			//		Remove();
+			//		break;
+			//}
 		}
 
 		void OnAppInfo(object o, EventArgs e) {

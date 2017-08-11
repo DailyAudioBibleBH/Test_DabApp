@@ -66,23 +66,10 @@ namespace DABApp
 				banner.HeightRequest = bannerContentContainer.Height;
 			};
 
+			TimedActions();
+
 			Device.StartTimer(TimeSpan.FromMinutes(1), () => {
-				if (!AuthenticationAPI.CheckToken(-1))
-				{
-					Task.Run(async () =>
-					{
-						await AuthenticationAPI.ExchangeToken();
-					});
-				}
-				PlayerFeedAPI.CleanUpEpisodes();
-				if (GlobalResources.GetUserName() != "Guest Guest")
-				{
-					Task.Run(async () =>
-					{
-						await AuthenticationAPI.PostActionLogs();
-						await AuthenticationAPI.GetMemberData();
-					});
-				}
+				TimedActions();
 				return true;
 			});
 
@@ -154,17 +141,26 @@ namespace DABApp
 			activityHolder.IsVisible = false;
 		}
 
-		//protected override void OnAppearing()
-		//{
-		//	base.OnAppearing();
-		//	if (Device.Idiom == TargetIdiom.Tablet)
-		//	{
-		//		ImageService.Instance.LoadUrl(ChannelView.banner.urlTablet).DownloadOnlyAsync();
-		//	}
-		//	else
-		//	{
-		//		ImageService.Instance.LoadUrl(ChannelView.banner.urlPhone).DownloadOnlyAsync();
-		//	}
-		//}
+		void TimedActions()
+		{ 
+			if (!AuthenticationAPI.CheckToken(-1))
+				{
+					Task.Run(async() =>
+					{
+						await AuthenticationAPI.ExchangeToken();
+					});
+				}
+				PlayerFeedAPI.CleanUpEpisodes();
+			if (GlobalResources.GetUserName() != "Guest Guest")
+			{
+				Task.Run(async () =>
+				{
+					await AuthenticationAPI.PostActionLogs();
+					await AuthenticationAPI.GetMemberData();
+				});
+			}
+		}
+
+
 	}
 }

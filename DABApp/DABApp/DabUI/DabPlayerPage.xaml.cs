@@ -34,6 +34,7 @@ namespace DABApp
 				forwardButton.IsVisible = false;
 				Share.IsVisible = false;
 				Initializer.IsVisible = true;
+				Favorite.IsVisible = false;
 			}
 			IsGuest = GuestStatus.Current.IsGuestLogin;
 			Episode = episode;
@@ -258,6 +259,7 @@ namespace DABApp
 			backwardButton.IsVisible = true;
 			forwardButton.IsVisible = true;
 			Share.IsVisible = true;
+			Favorite.IsVisible = true;
 		}
 
 		void OnShare(object o, EventArgs e) {
