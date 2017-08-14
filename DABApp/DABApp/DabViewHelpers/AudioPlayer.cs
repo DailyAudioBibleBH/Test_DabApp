@@ -76,6 +76,7 @@ namespace DABApp
 								{
 									_IsPlaying = Player.IsPlaying;
 									OnPropertyChanged("PlayPauseButtonImageBig");
+									OnPropertyChanged("PlayPauseButtonImage");
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
