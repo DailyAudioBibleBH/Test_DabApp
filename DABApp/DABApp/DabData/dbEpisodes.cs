@@ -7,7 +7,7 @@ namespace DABApp
 {
 	public class dbEpisodes
 	{
-		private bool isUnTouched;
+		private bool unTouched;
 		[PrimaryKey]
 		[Indexed]
 		public int id { get; set;}
@@ -53,10 +53,10 @@ namespace DABApp
 		[Ignore]
 		public bool listenedToVisible { 
 			get {
-				return isUnTouched;
+				return unTouched = is_listened_to == "listened" ? false : true;
 			}
 			set{
-				isUnTouched = is_listened_to == "listened" ? false : true;
+				unTouched = is_listened_to == "listened" ? false : true;
 				OnPropertyChanged("listenedToVisible");
 			}
 		}

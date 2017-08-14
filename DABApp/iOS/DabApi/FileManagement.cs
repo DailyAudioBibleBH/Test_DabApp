@@ -4,18 +4,21 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using DABApp.iOS;
+using System.Linq;
 
 [assembly: Dependency(typeof(FileManagement))]
 namespace DABApp.iOS
 {
 	public class FileManagement: IFileManagement
 	{
+
 		public async Task<bool> DownloadEpisodeAsync(string address, string episodeTitle)
 		{
 			try
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				var fileName = Path.Combine(doc, $"{episodeTitle}.mp4");
+				var ext = address.Split('.').Last();
+				var fileName = Path.Combine(doc, $"{episodeTitle}.{ext}");
 				//if (!File.Exists(fileName)) {
 				//	File.Create(fileName);
 				//}
@@ -29,11 +32,11 @@ namespace DABApp.iOS
 			}
 		}
 
-		public bool DeleteEpisode(string episodeId) {
+		public bool DeleteEpisode(string episodeId, string extension) {
 			try
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				var fileName = Path.Combine(doc, $"{episodeId}.mp4");
+				var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
 				File.Delete(fileName);
 				return true;
 			}

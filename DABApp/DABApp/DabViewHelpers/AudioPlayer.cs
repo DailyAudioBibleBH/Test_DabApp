@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 
@@ -100,8 +101,8 @@ namespace DABApp
 								_IsPlaying = false;
 							}
 							return true;
-						}
-						);
+				}
+			);
 		}
 
 
@@ -142,9 +143,10 @@ namespace DABApp
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
 			Instance.CurrentChannelTitle = episode.channel_title;
+			var ext = episode.url.Split('.').Last();
 			if (episode.is_downloaded)
 			{
-				_player.SetAudioFile($"{episode.id}.mp4", episode);
+				_player.SetAudioFile($"{episode.id.ToString()}.{ext}", episode);
 			}
 			else
 			{

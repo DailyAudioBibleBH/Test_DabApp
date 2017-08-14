@@ -24,15 +24,15 @@ namespace DABApp
 				case "Three Days":
 					ThirdIcon.IsVisible = true;
 					break;
-				case "FourDays":
-					FourthIcon.IsVisible = true;
-					break;
+				//case "FourDays":
+				//	FourthIcon.IsVisible = true;
+				//	break;
 				case "One Week":
 					FifthIcon.IsVisible = true;
 					break;
-				case "One Month":
-					SixthIcon.IsVisible = true;
-					break;
+				//case "One Month":
+				//	SixthIcon.IsVisible = true;
+				//	break;
 			}
 		}
 
@@ -49,56 +49,56 @@ namespace DABApp
 					FirstIcon.IsVisible = true;
 					SecondIcon.IsVisible = false;
 					ThirdIcon.IsVisible = false;
-					FourthIcon.IsVisible = false;
+					//FourthIcon.IsVisible = false;
 					FifthIcon.IsVisible = false;
-					SixthIcon.IsVisible = false;
+					//SixthIcon.IsVisible = false;
 					OfflineEpisodeSettings.Instance.Duration = "One Day";
 					break;
 				case "TwoDays":
 					FirstIcon.IsVisible = false;
 					SecondIcon.IsVisible = true;
 					ThirdIcon.IsVisible = false;
-					FourthIcon.IsVisible = false;
+					//FourthIcon.IsVisible = false;
 					FifthIcon.IsVisible = false;
-					SixthIcon.IsVisible = false;
+					//SixthIcon.IsVisible = false;
 					OfflineEpisodeSettings.Instance.Duration = "Two Days";
 					break;
 				case "ThreeDays":
 					FirstIcon.IsVisible = false;
 					SecondIcon.IsVisible = false;
 					ThirdIcon.IsVisible = true;
-					FourthIcon.IsVisible = false;
+					//FourthIcon.IsVisible = false;
 					FifthIcon.IsVisible = false;
-					SixthIcon.IsVisible = false;
+					//SixthIcon.IsVisible = false;
 					OfflineEpisodeSettings.Instance.Duration = "Three Days";
 					break;
-				case "FourDays":
-					FirstIcon.IsVisible = false;
-					SecondIcon.IsVisible = false;
-					ThirdIcon.IsVisible = false;
-					FourthIcon.IsVisible = true;
-					FifthIcon.IsVisible = false;
-					SixthIcon.IsVisible = false;
-					OfflineEpisodeSettings.Instance.Duration = "Four Days";
-					break;
+				//case "FourDays":
+				//	FirstIcon.IsVisible = false;
+				//	SecondIcon.IsVisible = false;
+				//	ThirdIcon.IsVisible = false;
+				//	FourthIcon.IsVisible = true;
+				//	FifthIcon.IsVisible = false;
+				//	SixthIcon.IsVisible = false;
+				//	OfflineEpisodeSettings.Instance.Duration = "Four Days";
+				//	break;
 				case "OneWeek":
 					FirstIcon.IsVisible = false;
 					SecondIcon.IsVisible = false;
 					ThirdIcon.IsVisible = false;
-					FourthIcon.IsVisible = false;
+					//FourthIcon.IsVisible = false;
 					FifthIcon.IsVisible = true;
-					SixthIcon.IsVisible = false;
+					//SixthIcon.IsVisible = false;
 					OfflineEpisodeSettings.Instance.Duration = "One Week";
 					break;
-				case "OneMonth":
-					FirstIcon.IsVisible = false;
-					SecondIcon.IsVisible = false;
-					ThirdIcon.IsVisible = false;
-					FourthIcon.IsVisible = false;
-					FifthIcon.IsVisible = false;
-					SixthIcon.IsVisible = true;
-					OfflineEpisodeSettings.Instance.Duration = "One Month";
-					break;
+				//case "OneMonth":
+				//	FirstIcon.IsVisible = false;
+				//	SecondIcon.IsVisible = false;
+				//	ThirdIcon.IsVisible = false;
+				//	//FourthIcon.IsVisible = false;
+				//	FifthIcon.IsVisible = false;
+				//	//SixthIcon.IsVisible = true;
+				//	OfflineEpisodeSettings.Instance.Duration = "One Month";
+				//	break;
 			}
 		}
 

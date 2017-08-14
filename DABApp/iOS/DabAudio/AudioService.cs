@@ -166,7 +166,14 @@ namespace DABApp.iOS
 		async void SetCommandCenter()
 		{
 			np = new MPNowPlayingInfo();
-			np.Artwork = new MPMediaItemArtwork(await LoadImage(ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == CurrentEpisode.channel_title).images.thumbnail));
+			try
+			{
+				np.Artwork = new MPMediaItemArtwork(await LoadImage(ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == CurrentEpisode.channel_title).images.thumbnail));
+			}
+			catch (Exception ex)
+			{ 
+			
+			}
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
 			skipForward.AddTarget(RemoteSkip);

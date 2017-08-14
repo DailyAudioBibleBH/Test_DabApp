@@ -24,24 +24,24 @@
 								<Image x:Name="ThirdIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
-						<ViewCell AutomationId="FourDays" Tapped="OnDurationPicked">
+						<!--<ViewCell AutomationId="FourDays" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Four Days" VerticalOptions="Center"/>
 								<Image x:Name="FourthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
-						</ViewCell>
+						</ViewCell>-->
 						<ViewCell AutomationId="OneWeek" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="One Week" VerticalOptions="Center"/>
 								<Image x:Name="FifthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
-						<ViewCell AutomationId="OneMonth" Tapped="OnDurationPicked">
+						<!--<ViewCell AutomationId="OneMonth" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="One Month" VerticalOptions="Center"/>
 								<Image x:Name="SixthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
-						</ViewCell>
+						</ViewCell>-->
 					</TableSection>
 					<TableSection Title="Choose how long episodes should remain stored locally when a channel is made available offline.">
 						<ViewCell>

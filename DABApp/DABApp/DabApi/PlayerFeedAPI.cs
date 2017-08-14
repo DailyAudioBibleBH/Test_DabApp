@@ -119,9 +119,9 @@ namespace DABApp
 					case "One Week":
 						cutoffTime = DateTime.Now.AddDays(-7);
 						break;
-					case "One Month":
-						cutoffTime = DateTime.Now.AddMonths(-1);
-						break;
+					//case "One Month":
+					//	cutoffTime = DateTime.Now.AddMonths(-1);
+					//	break;
 				}
 
 				//Get episodes to download
@@ -166,7 +166,8 @@ namespace DABApp
 		public static void DeleteChannelEpisodes(Resource resource) {
 			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
 			foreach (var episode in Episodes) {
-				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+				var ext = episode.url.Split('.').Last();
+				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
 				{
 					episode.is_downloaded = false;
 					db.Update(episode);
@@ -202,9 +203,9 @@ namespace DABApp
 					case "One Week":
 						cutoffTime = DateTime.Now.AddDays(-7);
 						break;
-					case "One Month":
-						cutoffTime = DateTime.Now.AddMonths(-1);
-						break;
+					//case "One Month":
+					//	cutoffTime = DateTime.Now.AddMonths(-1);
+					//	break;
 				}
 				Debug.WriteLine("Cleaning up episodes...");
 				var episodesToDelete = from x in db.Table<dbEpisodes>()
@@ -220,7 +221,8 @@ namespace DABApp
 					Debug.WriteLine("Cleaning up episode {0} ({1})...", episode.id, episode.url);
 					try
 					{
-						if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString()))
+						var ext = episode.url.Split('.').Last();
+						if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
 						{
 							Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
 							episode.is_downloaded = false;
