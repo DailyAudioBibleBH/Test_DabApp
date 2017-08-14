@@ -45,10 +45,8 @@
 	<string>DAB</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>CFBundleShortVersionString</key>
-	<string>0.5</string>
 	<key>CFBundleVersion</key>
-	<string>0.5</string>
+	<string>0.6</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FetteEngD.ttf</string>
@@ -68,5 +66,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleShortVersionString</key>
+	<string>0.6</string>
 </dict>
 </plist>
