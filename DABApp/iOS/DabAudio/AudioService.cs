@@ -44,6 +44,12 @@ namespace DABApp.iOS
 			CurrentEpisode = episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
+			AVAudioSession.Notifications.ObserveInterruption((sender, args) => {
+				if (args.InterruptionType == AVAudioSessionInterruptionType.Ended)
+				{
+					Play();
+				}
+				});
 			nint TaskId = 0;
 			TaskId = UIApplication.SharedApplication.BeginBackgroundTask(delegate
 			{
@@ -95,40 +101,8 @@ namespace DABApp.iOS
 			_player.Seek(new CMTime(seekTime, 1), CMTime.Zero, CMTime.Zero);
 		}
 
-		public void RemoteControlReceived(UIEvent theEvent)
+		public void SwitchOutputs()
 		{
-			np = new MPNowPlayingInfo();
-			switch (theEvent.Subtype)
-			{
-				case UIEventSubtype.RemoteControlPause:
-					Pause();
-					break;
-				case UIEventSubtype.RemoteControlPlay:
-					Play();
-					break;
-				case UIEventSubtype.RemoteControlBeginSeekingForward:
-					_player.Rate = seekRate;
-					np.PlaybackRate = seekRate;
-					break;
-				case UIEventSubtype.RemoteControlEndSeekingForward:
-					_player.Rate = 1.0f;
-					np.PlaybackRate = 1.0f;
-					break;
-				case UIEventSubtype.RemoteControlBeginSeekingBackward:
-					_player.Rate = -seekRate;
-					np.PlaybackRate = -seekRate;
-					break;
-				case UIEventSubtype.RemoteControlEndSeekingBackward:
-					_player.Rate = 1.0f;
-					np.PlaybackRate = 1.0f;
-					break;
-			}
-			np.Title = CurrentEpisode.title;
-			np.ElapsedPlaybackTime = _player.CurrentTime.Seconds;
-			SetNowPlayingInfo();
-		}
-
-		public void SwitchOutputs() {
 			if (session.CurrentRoute.Outputs[0].PortName == "Speaker")
 			{
 				session.OverrideOutputAudioPort(AVAudioSessionPortOverride.None, out error);
@@ -156,7 +130,8 @@ namespace DABApp.iOS
 			MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = np;
 		}
 
-		async Task<UIImage> LoadImage(string imageUrl) {
+		async Task<UIImage> LoadImage(string imageUrl)
+		{
 			var client = new HttpClient();
 			Task<byte[]> contentsTask = client.GetByteArrayAsync(imageUrl);
 			var contents = await contentsTask;
@@ -171,8 +146,8 @@ namespace DABApp.iOS
 				np.Artwork = new MPMediaItemArtwork(await LoadImage(ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == CurrentEpisode.channel_title).images.thumbnail));
 			}
 			catch (Exception ex)
-			{ 
-			
+			{
+
 			}
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
@@ -204,7 +179,8 @@ namespace DABApp.iOS
 				Pause();
 				np.PlaybackRate = 0f;
 			}
-			if(arg.Command == commandCenter.PlayCommand) {
+			if (arg.Command == commandCenter.PlayCommand)
+			{
 				Play();
 				np.PlaybackRate = 1.0f;
 			}
