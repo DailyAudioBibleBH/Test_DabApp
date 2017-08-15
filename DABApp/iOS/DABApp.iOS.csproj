@@ -76,7 +76,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>iOS Team Provisioning Profile: com.dailyaudiobible.dabapp</CodesignProvision>
+    <CodesignProvision>DAB App</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
