@@ -303,6 +303,10 @@ namespace DABApp
 				return "Success";
 			}
 			catch (Exception e) {
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+				}
 				return e.Message;
 			}
 		}
@@ -364,6 +368,10 @@ namespace DABApp
 			}
 			catch (Exception e) 
 			{
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+				}
 				return e.Message;
 			}
 		}
@@ -406,6 +414,10 @@ namespace DABApp
 			}
 			catch (Exception e) 
 			{
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+				}
 				return e.Message;
 			}
 		}
@@ -430,6 +442,10 @@ namespace DABApp
 			}
 			catch (Exception e) 
 			{
+				if (e.GetType() == typeof(HttpRequestException))
+				{
+					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+				}
 				return e.Message;
 			}
 		}

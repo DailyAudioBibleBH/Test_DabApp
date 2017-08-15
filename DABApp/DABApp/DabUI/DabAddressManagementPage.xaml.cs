@@ -27,6 +27,7 @@ namespace DABApp
 			{
 				await Navigation.PushAsync(new DabUpdateAddressPage(result.billing, countries, false));
 			}
+			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}
@@ -43,6 +44,7 @@ namespace DABApp
 			{
 				await Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, countries, true));
 			}
+			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}

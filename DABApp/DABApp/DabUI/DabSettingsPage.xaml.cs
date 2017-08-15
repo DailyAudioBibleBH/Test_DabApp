@@ -118,7 +118,13 @@ namespace DABApp
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
 				var result = await AuthenticationAPI.GetWallet();
-				await Navigation.PushAsync(new DabWalletPage(result));
+				if (result != null)
+				{
+					await Navigation.PushAsync(new DabWalletPage(result));
+				}
+				else{
+					await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+				}
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 			}
