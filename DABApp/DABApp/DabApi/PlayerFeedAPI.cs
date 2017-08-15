@@ -348,7 +348,7 @@ namespace DABApp
 			}
 			catch (Exception e) 
 			{
-				return e.Message;
+				return $"Error: {e.Message}";
 			}
 		}
 	}

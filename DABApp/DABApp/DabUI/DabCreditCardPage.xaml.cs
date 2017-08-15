@@ -54,7 +54,7 @@ namespace DABApp
 			var result = await DependencyService.Get<IStripe>().AddCard(sCard);
 			if (result.card_token.Contains("Error"))
 			{
-				DisplayAlert("Error", result.card_token, "OK");
+				await DisplayAlert("Error", result.card_token, "OK");
 			}
 			else
 			{
@@ -78,7 +78,7 @@ namespace DABApp
 				await Navigation.PopAsync();
 			}
 			else {
-                DisplayAlert("Error", result, "OK");
+                await DisplayAlert("Error", result, "OK");
 			}
 			Delete.IsEnabled = true;
 		}

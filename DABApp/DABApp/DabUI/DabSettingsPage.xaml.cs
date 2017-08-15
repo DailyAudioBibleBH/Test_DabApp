@@ -137,7 +137,11 @@ namespace DABApp
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
 				var don = await AuthenticationAPI.GetDonations();
-				await Navigation.PushAsync(new DabManageDonationsPage(don));
+				if (don != null)
+				{
+					await Navigation.PushAsync(new DabManageDonationsPage(don));
+				}
+				else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
 			}

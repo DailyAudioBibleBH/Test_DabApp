@@ -85,7 +85,14 @@ namespace DABApp
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
 			DonationRecord[] history = await AuthenticationAPI.GetDonationHistory();
-			await Navigation.PushAsync(new DabDonationHistoryPage(history));
+			if (history != null)
+			{
+				await Navigation.PushAsync(new DabDonationHistoryPage(history));
+			}
+			else
+			{
+				await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+			}
 			isInitialized = false;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
@@ -113,7 +120,14 @@ namespace DABApp
 			activityHolder.IsVisible = true;
 			Button chosen = (Button)o;
 			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
-			DependencyService.Get<IRivets>().NavigateTo(url);
+			if (!url.Contains("Error"))
+			{
+				DependencyService.Get<IRivets>().NavigateTo(url);
+			}
+			else 
+			{
+				await DisplayAlert("An Error has occured.", url, "OK");
+			}
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}
@@ -131,31 +145,39 @@ namespace DABApp
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
 				_donations = await AuthenticationAPI.GetDonations();
-				foreach (var don in _donations)
+				if (_donations != null)
 				{
-					StackLayout donContainer = (StackLayout)Container.Children.Single(x => x.AutomationId == don.id.ToString());
-					var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
-					var ButtonContainer = donContainer.Children.Single(x => x.GetType() == typeof(StackLayout)) as StackLayout;
-					var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
-					if (don.pro != null)
+					foreach (var don in _donations)
 					{
-						Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
-						Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
-						Labels[2].Text = $"Recurs: {don.pro.next}";
-						Labels[1].IsVisible = true;
-						Labels[2].IsVisible = true;
-						Labels[1].FontSize = 14;
-						Labels[2].FontSize = 14;
-						Buttons[0].IsVisible = true;
-						Buttons[1].Text = "One-time gift";
+						StackLayout donContainer = (StackLayout)Container.Children.SingleOrDefault(x => x.AutomationId == don.id.ToString());
+						var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
+						var ButtonContainer = donContainer.Children.SingleOrDefault(x => x.GetType() == typeof(StackLayout)) as StackLayout;
+						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
+						if (don.pro != null)
+						{
+							Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
+							Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
+							Labels[2].Text = $"Recurs: {don.pro.next}";
+							Labels[1].IsVisible = true;
+							Labels[2].IsVisible = true;
+							Labels[1].FontSize = 14;
+							Labels[2].FontSize = 14;
+							Buttons[0].IsVisible = true;
+							Buttons[1].Text = "One-time gift";
+						}
+						else
+						{
+							Labels[1].Text = null;
+							Labels[2].Text = null;
+							Buttons[0].IsVisible = false;
+							Buttons[1].Text = "Give";
+						}
 					}
-					else
-					{
-						Labels[1].Text = null;
-						Labels[2].Text = null;
-						Buttons[0].IsVisible = false;
-						Buttons[1].Text = "Give";
-					}
+				}
+				else
+				{
+					await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+					//await Navigation.PopAsync();
 				}
 				activity.IsVisible = false;
 				activityHolder.IsVisible = false;
