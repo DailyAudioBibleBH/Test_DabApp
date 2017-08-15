@@ -17,7 +17,9 @@ namespace DABApp
 			Message.IsVisible = false;
 			if (ContentAPI.CheckContent())
 			{
-				Navigation.PushModalAsync(new NavigationPage(new DabChannelsPage()));
+				var nav = new NavigationPage(new DabLoginPage());
+				nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+				Navigation.PushModalAsync(nav);
 			}
 			else Message.IsVisible = true;
 			TryAgain.IsEnabled = true;
