@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Plugin.Connectivity;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -281,9 +282,13 @@ namespace DABApp
 			Login.IsEnabled = false;
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
-			var nav = new NavigationPage(new DabLoginPage(true));
-			nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-			Navigation.PushModalAsync(nav);
+			if (CrossConnectivity.Current.IsConnected)
+			{
+				var nav = new NavigationPage(new DabLoginPage(true));
+				nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+				Navigation.PushModalAsync(nav);
+			}
+            else DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
 			Login.IsEnabled = true;
 		}
 
