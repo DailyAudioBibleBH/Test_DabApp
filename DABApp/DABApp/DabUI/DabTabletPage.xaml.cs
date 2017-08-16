@@ -79,6 +79,7 @@ namespace DABApp
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 			KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+			AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
 			var tapper = new TapGestureRecognizer();
 			tapper.Tapped += (sender, e) => {
 				Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
@@ -409,6 +410,11 @@ namespace DABApp
 				}
 				//lastKeyboardStatus = e.IsExternalKeyboard;
 			}
+		}
+
+		async void OnPlaybackStopped(object o, EventArgs e)
+		{
+			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 		}
 	}
 }

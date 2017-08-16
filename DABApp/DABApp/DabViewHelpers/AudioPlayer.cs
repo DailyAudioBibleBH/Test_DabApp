@@ -19,6 +19,8 @@ namespace DABApp
 		private string _CurrentEpisodeTitle;
 		private string _CurrentChannelTitle;
 		private string _CurrentTimeString = "00:00";
+		private string _playerStatus = "";
+		private bool Once = false;
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -93,6 +95,12 @@ namespace DABApp
 									Unload();
 									IsInitialized = false;
 								}
+
+								if (!_player.PlayerCanKeepUp && Once)
+								{
+									PlayerFailure.Invoke(this, new EventArgs());
+									Once = false;
+								}
 							}
 							else {
 								_CurrentTime = 0;
@@ -154,6 +162,7 @@ namespace DABApp
 			}
 			CurrentTime = episode.stop_time;
 			RemainingTime = episode.remaining_time;
+			Once = false;
 		}
 
 
@@ -220,6 +229,7 @@ namespace DABApp
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", CurrentTime);
 				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+				Once = true;
 			}
 		}
 
@@ -342,6 +352,14 @@ namespace DABApp
 			}
 		}
 
+		public string playerStatus { 
+			get { return _playerStatus;}
+			set {
+				_playerStatus = value;
+				OnPropertyChanged("playerStatus");
+			}
+		}
+
 		public void SeekTo(int seconds)
 		{
 			_player.SeekTo(seconds);
@@ -360,6 +378,8 @@ namespace DABApp
 		public void GetOutputs() {
 			_player.SwitchOutputs();
 		}
+
+		public event EventHandler PlayerFailure;
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
 		{

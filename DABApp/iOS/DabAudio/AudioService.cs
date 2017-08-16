@@ -262,5 +262,17 @@ namespace DABApp.iOS
 				}
 			}
 		}
+
+		public bool PlayerCanKeepUp
+		{ 
+			get 
+			{
+				if (_player != null)
+				{
+					return _player.CurrentItem.PlaybackLikelyToKeepUp;
+				}
+				else return false;
+			}
+		}
 	}
 }

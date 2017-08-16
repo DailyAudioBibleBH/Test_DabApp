@@ -67,6 +67,7 @@ namespace DABApp
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 			KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+			AudioPlayer.Instance.PlayerFailure += OnPlayerFailure;
 			var tapper = new TapGestureRecognizer();
 			tapper.Tapped += (sender, e) => 
 			{
@@ -331,5 +332,9 @@ namespace DABApp
 			}
 		}
 
+		async void OnPlayerFailure(object o, EventArgs e)
+		{
+			await DisplayAlert("The audio player has failed", "This may be due to a loss of internet connectivity.  Please check your internet connectivity and try again.", "OK");
+		}
 	}
 }

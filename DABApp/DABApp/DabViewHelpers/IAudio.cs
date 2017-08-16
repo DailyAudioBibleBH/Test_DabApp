@@ -15,6 +15,7 @@ namespace DABApp
 		double CurrentTime { get;}
 		//double RemainingTime { get;}
 		double TotalTime { get;}
+		bool PlayerCanKeepUp { get;}
 		void Unload();
 		void SwitchOutputs();
 	}
