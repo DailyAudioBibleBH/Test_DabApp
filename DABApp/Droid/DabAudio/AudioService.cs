@@ -86,5 +86,12 @@ namespace DABApp.Droid
 			get { return player.Duration/1000;}
 		}
 
+		public bool PlayerCanKeepUp
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
 	}
 }

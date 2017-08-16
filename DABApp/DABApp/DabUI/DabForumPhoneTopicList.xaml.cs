@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Plugin.Connectivity;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -30,12 +31,12 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				//var choice = await DisplayAlert("Log in required", "You must be logged in to make a prayer request.  Would you like to log in?", "Yes", "No");
-				//if (choice)
-				//{
+				if (CrossConnectivity.Current.IsConnected)
+				{
 					await Navigation.PushModalAsync(new DabLoginPage(true));
 					login = true;
-				//}
+				}
+				else await DisplayAlert("Internet connection needed for logging in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
 			}
 			else
 			{
