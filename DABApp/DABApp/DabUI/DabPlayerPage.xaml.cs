@@ -334,7 +334,7 @@ namespace DABApp
 
 		async void OnPlayerFailure(object o, EventArgs e)
 		{
-			await DisplayAlert("The audio player has failed", "This may be due to a loss of internet connectivity.  Please check your internet connectivity and try again.", "OK");
+			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again.", "OK");
 		}
 	}
 }

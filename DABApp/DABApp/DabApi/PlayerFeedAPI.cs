@@ -150,6 +150,7 @@ namespace DABApp
 					catch (Exception e)
 					{
 						Debug.WriteLine("Error while downloading episode {0} ({1}): {2}", episode.id, episode.url, e.ToString());
+						DownloadIsRunning = false;
 						return false;
 					}
 				}

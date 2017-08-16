@@ -167,7 +167,9 @@ namespace DABApp
 			ContentAPI.UpdateOffline(e.Value, _resource.id);
 			if (e.Value)
 			{
-				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+				Task.Run(async () => { 
+					await PlayerFeedAPI.DownloadEpisodes(); 
+				});
 			}
 			else
 			{

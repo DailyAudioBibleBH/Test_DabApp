@@ -155,6 +155,10 @@ namespace DABApp
 					});
 				}
 				PlayerFeedAPI.CleanUpEpisodes();
+			Task.Run(async () =>
+			{
+				await PlayerFeedAPI.DownloadEpisodes();
+			});
 			if (GlobalResources.GetUserName() != "Guest Guest")
 			{
 				Task.Run(async () =>
