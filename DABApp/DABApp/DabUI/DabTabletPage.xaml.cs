@@ -414,7 +414,7 @@ namespace DABApp
 
 		async void OnPlaybackStopped(object o, EventArgs e)
 		{
-			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again.", "OK");
 		}
 	}
 }

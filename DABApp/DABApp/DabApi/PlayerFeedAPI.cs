@@ -274,7 +274,7 @@ namespace DABApp
 			}
 			catch (HttpRequestException re) {
 				var reading = new Reading();
-				reading.title = re.Message;
+				reading.title = "An Http Request Exception has been called.  This may be due to problems with your network.  Please check your internet connection and try again.";
 				return reading;
 			}
 			catch (Exception e) {

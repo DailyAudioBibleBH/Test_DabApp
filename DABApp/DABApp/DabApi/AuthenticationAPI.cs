@@ -416,7 +416,7 @@ namespace DABApp
 			{
 				if (e.GetType() == typeof(HttpRequestException))
 				{
-					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+					return "An Http Request Exception has been called.  This may be due to problems with your network.  Please check your connection and try again";
 				}
 				return e.Message;
 			}
