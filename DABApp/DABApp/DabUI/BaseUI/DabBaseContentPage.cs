@@ -3,6 +3,7 @@ using SlideOverKit;
 using Xamarin.Forms;
 using FFImageLoading.Forms;
 using System.Threading.Tasks;
+using Plugin.Connectivity;
 
 namespace DABApp
 {
@@ -74,13 +75,17 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
-				if (choice) 
+				if (CrossConnectivity.Current.IsConnected)
 				{
-					var nav = new NavigationPage(new DabLoginPage(false, true));
-					nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-					await Navigation.PushModalAsync(nav);
+					var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+					if (choice)
+					{
+						var nav = new NavigationPage(new DabLoginPage(false, true));
+						nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+						await Navigation.PushModalAsync(nav);
+					}
 				}
+				else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
 			}
 			else
 			{
