@@ -74,8 +74,8 @@
                     	<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
 						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
 					</StackLayout>
-                    <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" />
-                    <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  />
+                    <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}"/>
+                    <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  VerticalOptions="EndAndExpand"/>
 					<BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}"/>
                 </StackLayout>
                 <StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">

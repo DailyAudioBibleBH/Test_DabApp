@@ -14,7 +14,7 @@ namespace DABApp
 		View ChannelView;
 		dbEpisodes episode;
 		Resource _resource;
-		static bool IsUnInitialized = true;
+		//static bool IsUnInitialized = true;
 
 		public DabChannelsPage()
 		{
@@ -76,11 +76,12 @@ namespace DABApp
 				return true;
 			});
 
-			if (IsUnInitialized)
+			ConnectJournal();
+			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
-				AuthenticationAPI.ConnectJournal();
-				IsUnInitialized = false;
-			}
+				ConnectJournal();
+				return true;
+			});
 		}
 
 		void PostLogs()
@@ -169,6 +170,9 @@ namespace DABApp
 			}
 		}
 
-
+		void ConnectJournal()
+		{
+			AuthenticationAPI.ConnectJournal();
+		}
 	}
 }

@@ -90,19 +90,23 @@ namespace DABApp
 			else
 			{
 				var dons = await AuthenticationAPI.GetDonations();
-				if (dons.Length == 1)
+				if (dons != null)
 				{
-					var url = await PlayerFeedAPI.PostDonationAccessToken();
-					if (url.Contains("http://"))
+					if (dons.Length == 1)
 					{
-						DependencyService.Get<IRivets>().NavigateTo(url);
+						var url = await PlayerFeedAPI.PostDonationAccessToken();
+						if (url.Contains("http://"))
+						{
+							DependencyService.Get<IRivets>().NavigateTo(url);
+						}
+						else
+						{
+							await DisplayAlert("Error", url, "OK");
+						}
 					}
-					else
-					{
-						await DisplayAlert("Error", url, "OK");
-					}
+					else await Navigation.PushAsync(new DabManageDonationsPage(dons));
 				}
-				else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+				else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			}
 		}
 	}

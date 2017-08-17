@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Plugin.Connectivity;
 using SQLite;
 using Xamarin.Forms;
 
@@ -103,7 +104,7 @@ namespace DABApp
 				return false;
 			}
 			var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			if (!JournalTracker.Current.IsConnected) {
+			if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected) {
 				JournalTracker.Current.Connect(token.Value);
 			}
 			return true;
@@ -111,8 +112,11 @@ namespace DABApp
 
 		public static void ConnectJournal() 
 		{
-			var token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-			DependencyService.Get<ISocket>().Connect(token.Value);
+			if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
+			{
+				var token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+				JournalTracker.Current.Connect(token.Value);
+			}
 		}
 
 		public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password) {
@@ -229,7 +233,7 @@ namespace DABApp
 				ExpirationSettings.Value = token.expires;
 				db.Update(TokenSettings);
 				db.Update(ExpirationSettings);
-				DependencyService.Get<ISocket>().Connect(token.value);
+				JournalTracker.Current.Connect(token.value);
 				return true;
 			}
 			catch (Exception e) {
