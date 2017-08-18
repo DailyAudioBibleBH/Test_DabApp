@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using FFImageLoading;
 using Xamarin.Forms;
 
@@ -145,7 +146,7 @@ namespace DABApp
 			Instance = new ContentConfig();
 		}
 
-		public async void cachImages() 
+		public async Task cachImages() 
 		{ 
 			var channelView = Instance.views.Single(x => x.title == "Channels");
 			var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
