@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using FFImageLoading;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -10,13 +12,20 @@ namespace DABApp
 		public event PropertyChangedEventHandler PropertyChanged;
 		bool _IsGuestLogin = false;
 		string _UserName = GlobalResources.GetUserName();
-		Uri _AvatarUrl = new Uri("http://placehold.it/10x10");
+		string _AvatarUrl;
+		ImageSource _AvatarSource;
 
 		public static GuestStatus Current { get; private set; }
 
 		static GuestStatus()
 		{
 			Current = new GuestStatus();
+		}
+
+		private GuestStatus() 
+		{
+			_AvatarUrl = "http://placehold.it/10x10";
+			_AvatarSource = ImageSource.FromUri(new Uri(_AvatarUrl));
 		}
 
 		public bool IsGuestLogin
@@ -45,20 +54,31 @@ namespace DABApp
 			}
 		}
 
-		public Uri AvatarUrl
+		public string AvatarUrl
 		{
 			get
 			{
 				if (string.IsNullOrEmpty(GlobalResources.GetUserAvatar()))
 				{
-					return _AvatarUrl;
+					return _AvatarUrl = "http://placehold.it/10x10";
 				}
-				else return _AvatarUrl = new Uri(GlobalResources.GetUserAvatar());
+				else return _AvatarUrl = GlobalResources.GetUserAvatar();
 			}
 			set
 			{
 				_AvatarUrl = value;
 				OnPropertyChanged("AvatarUrl");
+				//AvatarChanged.Invoke(this, new EventArgs());
+			}
+		}
+
+		public ImageSource AvatarSource { 
+			get {
+				return _AvatarSource;
+			}
+			set {
+				_AvatarSource = value;
+				PropertyChanged(this, new PropertyChangedEventArgs("AvatarSource"));
 			}
 		}
 
@@ -68,6 +88,8 @@ namespace DABApp
 			if (handler != null)
 				handler(this, new PropertyChangedEventArgs(propertyName));
 		}
+
+		public event EventHandler AvatarChanged;
 	}
 
 	public class NegateBooleanConverter : IValueConverter

@@ -29,26 +29,26 @@ namespace DABApp
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
 			_resource = ChannelView.resources[0];
-			Task.Run(async () =>
-			{
-				await PlayerFeedAPI.GetEpisodes(_resource);
-			});
-			episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
-			if (episode == null)
-			{
-				bannerContentContainer.IsVisible = false;
-			}
-			else
-			{
-				bannerContentContainer.IsVisible = true;
-				var oldText = bannerContent.Text;
-				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					bannerContentContainer.HeightRequest = 350;
-					bannerStack.Padding = 65;
-				}
-			}
+			//Task.Run(async () =>
+			//{
+			//	await PlayerFeedAPI.GetEpisodes(_resource);
+			//});
+			//episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
+			//if (episode == null)
+			//{
+			//	bannerContentContainer.IsVisible = false;
+			//}
+			//else
+			//{
+			//	bannerContentContainer.IsVisible = true;
+			//	var oldText = bannerContent.Text;
+			//	bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+			//	if (Device.Idiom == TargetIdiom.Tablet)
+			//	{
+			//		bannerContentContainer.HeightRequest = 350;
+			//		bannerStack.Padding = 65;
+			//	}
+			//}
 
 			var remainder = ChannelView.resources.Count() % GlobalResources.Instance.FlowListViewColumns;
 			var number = ChannelView.resources.Count() / GlobalResources.Instance.FlowListViewColumns;
@@ -133,14 +133,18 @@ namespace DABApp
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
 			var episodes = await PlayerFeedAPI.GetEpisodes(resource);
-			if (Device.Idiom == TargetIdiom.Tablet)
+			if (!episodes.Contains("error"))
 			{
-				await Navigation.PushAsync(new DabTabletPage(resource));
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					await Navigation.PushAsync(new DabTabletPage(resource));
+				}
+				else
+				{
+					await Navigation.PushAsync(new DabEpisodesPage(resource));
+				}
 			}
-			else
-			{
-				await Navigation.PushAsync(new DabEpisodesPage(resource));
-			}
+			else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
 			selected.IsNotSelected = true;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
@@ -173,6 +177,33 @@ namespace DABApp
 		void ConnectJournal()
 		{
 			AuthenticationAPI.ConnectJournal();
+		}
+
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
+			if (episode == null)
+			{
+				bannerButton.IsEnabled = false;
+			}
+			await PlayerFeedAPI.GetEpisodes(_resource);
+			episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
+			if (episode == null)
+			{
+				bannerContentContainer.IsVisible = false;
+			}
+			else
+			{
+				bannerContentContainer.IsVisible = true;
+				var oldText = bannerContent.Text;
+				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					bannerContentContainer.HeightRequest = 350;
+					bannerStack.Padding = 65;
+				}
+			}
+			bannerButton.IsEnabled = true;
 		}
 	}
 }
