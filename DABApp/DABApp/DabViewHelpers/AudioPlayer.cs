@@ -92,7 +92,7 @@ namespace DABApp
 								if (_TotalTime == _CurrentTime) {
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
 									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, "0:00");
+						PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, "0:00");
 									Unload();
 									IsInitialized = false;
 								}

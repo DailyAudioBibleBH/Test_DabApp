@@ -24,6 +24,7 @@ namespace DABApp
 			ChannelsList.SelectedItem = _resource;
 			backgroundImage = _resource.images.backgroundTablet;
 			BackgroundImage.Source = backgroundImage;
+			Offline.IsToggled = resource.availableOffline;
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
@@ -188,6 +189,7 @@ namespace DABApp
 			_resource = (Resource)ChannelsList.SelectedItem;
 			backgroundImage = _resource.images.backgroundTablet;
 			await PlayerFeedAPI.GetEpisodes(_resource);
+			Offline.IsToggled = _resource.availableOffline;
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			EpisodeList.ItemsSource = Episodes;
 			BackgroundImage.Source = backgroundImage;
