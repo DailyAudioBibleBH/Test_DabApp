@@ -209,12 +209,20 @@ namespace DABApp
 					//	break;
 				}
 				Debug.WriteLine("Cleaning up episodes...");
-				var episodesToDelete = from x in db.Table<dbEpisodes>()
+				TableQuery<dbEpisodes> episodesToDelete;
+				if (OfflineEpisodeSettings.Instance.DeleteAfterListening)
+				{
+					episodesToDelete = from x in db.Table<dbEpisodes>()
 									   where x.is_downloaded  //downloaded episodes
-												 && (!OfflineEpisodeSettings.Instance.DeleteAfterListening //not flagged to delete after listening
-														||
-				                                     (x.is_listened_to == "listened" || x.PubDate < cutoffTime) || x.PubDate < cutoffTime)//flagged to delete after listening and listened to
+												   && (x.is_listened_to == "listened" || x.PubDate < cutoffTime)
 									   select x;
+				}
+				else
+				{
+					episodesToDelete = from x in db.Table<dbEpisodes>()
+									   where x.is_downloaded && x.PubDate < cutoffTime
+									   select x;
+				}
 				Debug.WriteLine("Cleaning up {0} episodes...", episodesToDelete.Count());
 				foreach (var episode in episodesToDelete)
 				{
