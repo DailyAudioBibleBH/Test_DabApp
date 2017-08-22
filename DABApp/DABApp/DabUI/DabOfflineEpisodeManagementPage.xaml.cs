@@ -34,6 +34,7 @@ namespace DABApp
 				//	SixthIcon.IsVisible = true;
 				//	break;
 			}
+			AfterListening.IsToggled = OfflineEpisodeSettings.Instance.DeleteAfterListening;
 		}
 
 		void OnDeleteAfterListening(object o, ToggledEventArgs e) {
@@ -100,6 +101,7 @@ namespace DABApp
 				//	OfflineEpisodeSettings.Instance.Duration = "One Month";
 				//	break;
 			}
+			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 
 		protected override void OnDisappearing()

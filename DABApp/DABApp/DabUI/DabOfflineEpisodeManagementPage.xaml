@@ -47,7 +47,7 @@
 						<ViewCell>
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Delete episodes after listening" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-								<Switch Toggled="OnDeleteAfterListening" VerticalOptions="Start" HorizontalOptions="EndAndExpand"/>
+								<Switch x:Name="AfterListening" Toggled="OnDeleteAfterListening" VerticalOptions="Start" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
 						</ViewCell>
 					</TableSection>
