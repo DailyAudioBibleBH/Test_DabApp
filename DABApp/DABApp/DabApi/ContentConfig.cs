@@ -150,6 +150,7 @@ namespace DABApp
 		{ 
 			var channelView = Instance.views.Single(x => x.title == "Channels");
 			var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
+
 			try
 			{
 				foreach (var v in views) {

@@ -92,7 +92,7 @@ namespace DABApp
 								if (_TotalTime == _CurrentTime) {
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
 									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-						PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, "0:00");
+									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 									Unload();
 									IsInitialized = false;
 								}
@@ -218,7 +218,7 @@ namespace DABApp
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
 				Task.Run(async () => {
-					await Task.Delay(2500);
+					await Task.Delay(5000);
 					ShowWarning = true;
 				});
 			}
@@ -384,6 +384,19 @@ namespace DABApp
 		}
 
 		public event EventHandler PlayerFailure;
+
+		private string stringConvert(double time)
+		{ 
+			var m = TimeSpan.FromSeconds(time);
+			var r = new TimeSpan(m.Days, m.Hours, m.Minutes, m.Seconds, 0);
+            if(r.Hours == 0)
+			{
+				return $"{r.Minutes:D2}:{r.Seconds:D2}";
+			}
+			else { 
+				return $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
+			}
+		}
 
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
 		{
