@@ -24,7 +24,7 @@ namespace DABApp
 			ChannelsList.SelectedItem = _resource;
 			backgroundImage = _resource.images.backgroundTablet;
 			BackgroundImage.Source = backgroundImage;
-			Offline.IsToggled = resource.availableOffline;
+			Offline.IsToggled = _resource.availableOffline;
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
@@ -33,10 +33,11 @@ namespace DABApp
 				Months.Items.Add(month);
 			}
 			Months.SelectedIndex = 0;
-			//Device.StartTimer( TimeSpan.FromSeconds(5),() =>
-			//{
-			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				return true;
+			});
 			if (Episode != null)
 			{
 				episode = Episode;
@@ -54,25 +55,11 @@ namespace DABApp
 			SetReading();
 			if (episode == null)
 			{
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				Output.IsVisible = false;
-				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
-				Initializer.IsVisible = true;
+				SetVisibility(false);
 			}
 			else if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
 			{
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				Output.IsVisible = false;
-				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
-				Initializer.IsVisible = true;
+				SetVisibility(false);
 			}
 			JournalTracker.Current.socket.Disconnect += OnDisconnect;
 			JournalTracker.Current.socket.Reconnect += OnReconnect;
@@ -138,25 +125,11 @@ namespace DABApp
 			episode = (dbEpisodes)e.Item;
 			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 			{
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				Output.IsVisible = false;
-				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
-				Initializer.IsVisible = true;
+				SetVisibility(false);
 			}
 			else
 			{
-				SeekBar.IsVisible = true;
-				TimeStrings.IsVisible = true;
-				Output.IsVisible = true;
-				PlayPause.IsVisible = true;
-				backwardButton.IsVisible = true;
-				forwardButton.IsVisible = true;
-				Share.IsVisible = true;
-				Initializer.IsVisible = false;
+				SetVisibility(true);
 			}
 			PlayerLabels.BindingContext = episode;
 			EpisodeList.SelectedItem = null;
@@ -198,25 +171,11 @@ namespace DABApp
 			SetReading();
 			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 			{
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				Output.IsVisible = false;
-				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
-				Initializer.IsVisible = true;
+				SetVisibility(false);
 			}
 			else
 			{
-				SeekBar.IsVisible = true;
-				TimeStrings.IsVisible = true;
-				Output.IsVisible = true;
-				PlayPause.IsVisible = true;
-				backwardButton.IsVisible = true;
-				forwardButton.IsVisible = true;
-				Share.IsVisible = true;
-				Initializer.IsVisible = false;
+				SetVisibility(true);
 			}
 		}
 
@@ -320,13 +279,7 @@ namespace DABApp
 			}
 			AudioPlayer.Instance.SetAudioFile(episode);
 			AudioPlayer.Instance.Play();
-			SeekBar.IsVisible = true;
-			TimeStrings.IsVisible = true;
-			Output.IsVisible = true;
-			PlayPause.IsVisible = true;
-			backwardButton.IsVisible = true;
-			forwardButton.IsVisible = true;
-			Share.IsVisible = true;
+			SetVisibility(true);
 		}
 
 		void OnJournalChanged(object o, EventArgs e)
@@ -424,6 +377,19 @@ namespace DABApp
 		async void OnPlaybackStopped(object o, EventArgs e)
 		{
 			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again.", "OK");
+		}
+
+		void SetVisibility(bool par)
+		{ 
+			SeekBar.IsVisible = par;
+			TimeStrings.IsVisible = par;
+			Output.IsVisible = par;
+			PlayPause.IsVisible = par;
+			backwardButton.IsVisible = par;
+			forwardButton.IsVisible = par;
+			Share.IsVisible = par;
+			favorite.IsVisible = par;
+			Initializer.IsVisible = !par;
 		}
 	}
 }

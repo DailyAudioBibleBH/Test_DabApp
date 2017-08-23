@@ -19,14 +19,7 @@ namespace DABApp.iOS
 				MPVolumeView control = new MPVolumeView();
 				control.ShowsVolumeSlider = false;
 				UIImage image = new UIImage();
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					image = UIImage.FromFile("ic_airplay_white_2x.png");
-				}
-				else
-				{
-					image = UIImage.FromFile("ic_airplay_white.png");
-				}
+				image = UIImage.FromFile("ic_airplay_white.png");
 				control.SetRouteButtonImage(image, UIControlState.Normal);
 				control.SetRouteButtonImage(image, UIControlState.Highlighted);
 				control.SetRouteButtonImage(image, UIControlState.Disabled);

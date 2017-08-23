@@ -27,7 +27,7 @@ namespace DABApp
 				Months.Items.Add(month);
 			}
 			Months.SelectedIndex = 0;
-			Device.StartTimer( TimeSpan.FromSeconds(5),() =>
+			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
 				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 				return true;

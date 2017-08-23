@@ -48,17 +48,26 @@ namespace DABApp
 										_CurrentTime = 0;
 									}
 									CurrentTime = _player.CurrentTime;
-									if (!Double.IsNaN(_player.TotalTime)) {
+									if (!Double.IsNaN(_player.TotalTime))
+									{
 										var t = TimeSpan.FromSeconds(TotalTime);
 										var c = TimeSpan.FromSeconds(CurrentTime);
 										var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
-						            if(r.Hours == 0)
-									{
-										RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
-									}
-									else { 
-									 RemainingTime = $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
-									}
+										if (r.TotalSeconds != 0)
+										{
+											if (r.Hours == 0)
+											{
+												RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
+											}
+											else
+											{
+												RemainingTime = $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
+											}
+										}
+										else {
+											CurrentTime = 0;
+											RemainingTime = stringConvert(TotalTime);
+							}
 									}
 								}
 
@@ -97,7 +106,7 @@ namespace DABApp
 									IsInitialized = false;
 								}
 
-								if (!_player.PlayerCanKeepUp && ShowWarning)
+								if (!_player.PlayerCanKeepUp && ShowWarning && !_IsPlaying)
 								{
 									PlayerFailure.Invoke(this, new EventArgs());
 									ShowWarning = false;
