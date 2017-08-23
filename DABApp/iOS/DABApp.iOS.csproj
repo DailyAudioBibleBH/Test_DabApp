@@ -272,6 +272,7 @@
     <Compile Include="DependencyServices\SocketService.cs" />
     <Compile Include="DependencyServices\SocketHelper.cs" />
     <Compile Include="DependencyServices\KeyboardService.cs" />
+    <Compile Include="CustomRenderers\CustomTableViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

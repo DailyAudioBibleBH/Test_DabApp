@@ -20,6 +20,7 @@
 			<Color x:Key="NonScrollingListViewColor">#222222</Color>
 			<Color x:Key="PlayerLabelColor">#ffffff</Color>
 			<Color x:Key="HighlightedButtonDisabledTextColor">#4d0000</Color>
+			<Color x:Key="EpisodeMenuColor">#252525</Color>
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<RelativeLayout>
