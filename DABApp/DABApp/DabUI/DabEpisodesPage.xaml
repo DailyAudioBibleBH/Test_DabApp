@@ -15,7 +15,7 @@
 				<Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
 			<BoxView HorizontalOptions="FillAndExpand"/>
-			<local:NonScrollingListView x:Name="EpisodeList" BackgroundColor="Transparent" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource NonScrollingListViewStyle}" SeparatorColor="Black">
+			<local:NonScrollingListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}">
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>

@@ -9,7 +9,12 @@
 					<Label Text="{Binding title}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
 				</StackLayout>
 			</RelativeLayout>
-			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" Style="{StaticResource secondaryListViewStyle}" HasUnevenRows="true">
+			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" BackgroundColor="Transparent" HasUnevenRows="true" SeparatorColor="{StaticResource EpisodeMenuColor}">
+			<ListView.Header>
+				<StackLayout>
+					<BoxView HeightRequest="25" Color="{StaticResource PageBackgroundColor}"/>
+				</StackLayout>
+			</ListView.Header>
 			<ListView.Footer>
 				<StackLayout VerticalOptions="FillAndExpand"/>
 			</ListView.Footer>
@@ -17,9 +22,9 @@
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
-								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal">
-									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
-									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}">
+									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontSize="Medium"/>
+									<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
 								</StackLayout>
 							</ViewCell.View>
 						</ViewCell>
@@ -44,8 +49,8 @@
 										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
 										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
 									</StackLayout>
-									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="#222222" Spacing="0">
-										<Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" FontSize="Large"/>
+									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="{DynamicResource NonScrollingListViewColor}" Padding="10" Spacing="0">
+										<Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 									</StackLayout>
 								</StackLayout>
 							</ViewCell.View>
