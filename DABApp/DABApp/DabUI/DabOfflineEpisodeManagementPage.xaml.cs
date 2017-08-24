@@ -34,7 +34,7 @@ namespace DABApp
 				//	SixthIcon.IsVisible = true;
 				//	break;
 			}
-			AfterListening.IsToggled = OfflineEpisodeSettings.Instance.DeleteAfterListening;
+			AfterListening.On = OfflineEpisodeSettings.Instance.DeleteAfterListening;
 		}
 
 		void OnDeleteAfterListening(object o, ToggledEventArgs e) {

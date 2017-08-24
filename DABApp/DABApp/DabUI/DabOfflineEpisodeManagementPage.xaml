@@ -44,12 +44,13 @@
 						</ViewCell>-->
 					</TableSection>
 					<TableSection Title="Choose how long episodes should remain stored locally when a channel is made available offline.">
-						<ViewCell>
+						<SwitchCell x:Name="AfterListening" Text="Delete episodes after listening" OnChanged="OnDeleteAfterListening"/>
+						<!--<ViewCell>
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Delete episodes after listening" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
 								<Switch x:Name="AfterListening" Toggled="OnDeleteAfterListening" VerticalOptions="Start" HorizontalOptions="EndAndExpand"/>
 							</StackLayout>
-						</ViewCell>
+						</ViewCell>-->
 					</TableSection>
 				</TableRoot>
 			</TableView>
