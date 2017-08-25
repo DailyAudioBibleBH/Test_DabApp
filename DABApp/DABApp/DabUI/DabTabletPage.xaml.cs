@@ -32,6 +32,7 @@ namespace DABApp
 			{
 				Months.Items.Add(month);
 			}
+			Months.Items.Add("Journaled");
 			Months.Items.Add("Favorites");
 			Months.SelectedIndex = 0;
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
@@ -155,13 +156,20 @@ namespace DABApp
 
 		public void OnMonthSelected(object o, EventArgs e)
 		{
-			if ((string)Months.SelectedItem != "Favorites")
+			if ((string)Months.SelectedItem != "Favorites" || (string)Months.SelectedItem != "Journaled")
 			{
 				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 			}
 			else 
 			{
-				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+				if ((string)Months.SelectedItem == "Favorites")
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+				}
+				else
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+				}
 			}
 		}
 
