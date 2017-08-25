@@ -71,13 +71,15 @@
 				</RelativeLayout>
 			</StackLayout>
 			<StackLayout Grid.Row="1" Grid.Column="0" Padding="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
+				<ContentView Padding="10, 0, 0, 0">
 				<Label FontSize="Small" Text="Channels" Style="{StaticResource secondaryLabelStyle}" FontAttributes="Bold"/>
+				</ContentView>
 				<ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel">
 					<ListView.ItemTemplate>
 						<DataTemplate>
 							<ViewCell>
 								<StackLayout Padding="10">
-									<Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center"/>
+									<Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
 								</StackLayout>
 							</ViewCell>
 						</DataTemplate>
