@@ -26,6 +26,7 @@ namespace DABApp
 			foreach (var month in months) {
 				Months.Items.Add(month);
 			}
+			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
@@ -64,7 +65,14 @@ namespace DABApp
 		}
 
 		public void OnMonthSelected(object o, EventArgs e) {
-			EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			if ((string)Months.SelectedItem != "My Favorites")
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+			}
+			else 
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+			}
 		}
 	}
 }
