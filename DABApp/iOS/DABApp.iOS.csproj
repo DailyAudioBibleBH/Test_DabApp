@@ -274,18 +274,16 @@
     <Compile Include="DependencyServices\KeyboardService.cs" />
     <Compile Include="CustomRenderers\CustomTableViewRenderer.cs" />
     <Compile Include="CustomRenderers\DabSwitchCellRenderer.cs" />
+    <Compile Include="CustomRenderers\DabImageRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
     <BundleResource Include="Resources\ic_menu_white.png" />
     <BundleResource Include="Resources\ic_menu_white_2x.png" />
     <BundleResource Include="Resources\ic_menu_white_3x.png" />
-    <BundleResource Include="Resources\ic_settings_white_2x.png" />
-    <BundleResource Include="Resources\ic_settings_white_3x.png" />
     <BundleResource Include="Resources\ic_attach_money_white_2x.png" />
     <BundleResource Include="Resources\ic_attach_money_white_3x.png" />
     <BundleResource Include="Resources\ic_attach_money_white.png" />
-    <BundleResource Include="Resources\ic_settings_white.png" />
     <BundleResource Include="Resources\LoginLogo10x.png" />
     <BundleResource Include="Resources\AppIcon20x.png" />
     <BundleResource Include="Resources\ic_arrow_forward_white.png" />
@@ -334,9 +332,6 @@
     <BundleResource Include="Resources\ic_favorite_white.png" />
     <BundleResource Include="Resources\ic_favorite_white_2x.png" />
     <BundleResource Include="Resources\ic_favorite_white_3x.png" />
-    <BundleResource Include="Resources\ic_person_white.png" />
-    <BundleResource Include="Resources\ic_person_white_2x.png" />
-    <BundleResource Include="Resources\ic_person_white_3x.png" />
     <BundleResource Include="Resources\ic_star_border_white.png" />
     <BundleResource Include="Resources\ic_star_border_white_2x.png" />
     <BundleResource Include="Resources\ic_star_border_white_3x.png" />
@@ -344,6 +339,12 @@
     <BundleResource Include="Resources\ic_star_white_2x.png" />
     <BundleResource Include="Resources\ic_star_white_3x.png" />
     <BundleResource Include="Resources\pencil-white.png" />
+    <BundleResource Include="Resources\ic_settings_white.png" />
+    <BundleResource Include="Resources\ic_settings_white_2x.png" />
+    <BundleResource Include="Resources\ic_settings_white_3x.png" />
+    <BundleResource Include="Resources\ic_person_white.png" />
+    <BundleResource Include="Resources\ic_person_white_3x.png" />
+    <BundleResource Include="Resources\ic_person_white_2x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

@@ -41,7 +41,7 @@
 						</TableSection>
 					<TableSection x:Name="logOut">
 						<ViewCell>
-							<StackLayout>
+							<StackLayout Padding="15, 0, 15, 0">
 				<Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
 							</StackLayout>
 						</ViewCell>
