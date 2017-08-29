@@ -24,8 +24,8 @@ namespace DABApp.iOS
 			Control.LeftViewMode = UITextFieldViewMode.Always;
 			//Remove the border
 			Control.BorderStyle = UITextBorderStyle.None;
-
-
+			Control.ClipsToBounds = true;
+			Control.Layer.CornerRadius = 5.0f;
 			//Control.TextColor = ((Color)App.Current.Resources["SecondaryTextColor"]).ToUIColor();
 			//Update the tint color to match whatever text color we're using.
 			Control.TintColor = Control.TextColor;

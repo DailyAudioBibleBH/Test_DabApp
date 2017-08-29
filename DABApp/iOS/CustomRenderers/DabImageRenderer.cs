@@ -16,8 +16,8 @@ namespace DABApp.iOS
 			{
 				var size = Control.Image.Size;
 				UIGraphics.BeginImageContextWithOptions(new CoreGraphics.CGSize(30 , 30), false, 0);
-				var image = UIGraphics.GetImageFromCurrentImageContext();
-				Control.Image = image;
+				//var image = UIGraphics.GetImageFromCurrentImageContext();
+				//Control.Image = image;
 			}
 		}
 	}
