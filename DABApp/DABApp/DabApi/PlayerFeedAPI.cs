@@ -179,9 +179,20 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateEpisodeProperty(int episodeId) {
+		public static void UpdateEpisodeProperty(int episodeId, string propertyName = null) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
-			episode.is_listened_to = "listened";
+			switch (propertyName)
+			{
+				case null:
+					episode.is_listened_to = "listened";
+					break;
+				case "is_favorite":
+					episode.is_favorite = !episode.is_favorite;
+					break;
+				case "has_journal":
+					episode.has_journal = !episode.has_journal;
+					break;
+			}
 			db.Update(episode);
 		}
 

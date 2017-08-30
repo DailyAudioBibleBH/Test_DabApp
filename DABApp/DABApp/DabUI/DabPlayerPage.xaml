@@ -56,7 +56,7 @@
 							<ColumnDefinition Width="3*"/>
 							<ColumnDefinition Width="3*"/>
 						</Grid.ColumnDefinitions>
-						<Button x:Name="Favorite" Image="ic_star_border_white.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="0"/>
+						<Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0"/>
 						 <local:AudioOutputView x:Name="Output" WidthRequest="35" Grid.Row="0" Grid.Column="1" />
 						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" />
 					</Grid>

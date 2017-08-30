@@ -5,14 +5,14 @@
 			<StackLayout Padding="10" Spacing="10">
 				<Button x:Name="Post" Text="Post a prayer request" FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}"/>
 			</StackLayout>
-			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource TextColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">
+			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<StackLayout Padding="10" Spacing="10">
-								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
-								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
-								<Label Text="{Binding Path=., Converter={StaticResource ParticipantConverter}}" Style="{StaticResource secondaryLabelStyle}"/>
+								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
+								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Medium"/>
+								<Label Text="{Binding Path=., Converter={StaticResource ParticipantConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
 							</StackLayout>
 						</ViewCell>
 					</DataTemplate>

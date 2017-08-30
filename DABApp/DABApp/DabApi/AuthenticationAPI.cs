@@ -589,14 +589,15 @@ namespace DABApp
 			GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 		}
 
-		public static void CreateNewActionLog(int episodeId, string actionType, double playTime) 
+		public static void CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
 		{
 			var actionLog = new dbPlayerActions();
-			actionLog.ActionDateTime = DateTime.Now;
-			actionLog.entity_type = "episode";
+			actionLog.ActionDateTime = DateTimeOffset.Now;
+			actionLog.entity_type = favorite.HasValue? "favorite" : "episode";
 			actionLog.EpisodeId = episodeId;
 			actionLog.PlayerTime = playTime;
 			actionLog.ActionType = actionType;
+			actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
 			var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
 			if (user != null) {
 				actionLog.UserEmail = user.Value;
@@ -655,7 +656,7 @@ namespace DABApp
 					throw new Exception();
 				}
 				else {
-					SaveMemberData(container.listened_episodes);
+					SaveMemberData(container.episodes);
 				}
 				return true;
 			}
@@ -673,6 +674,8 @@ namespace DABApp
 				}
 				else {
 					saved.stop_time = episode.stop_time;
+					saved.is_favorite = episode.is_favorite;
+					saved.has_journal = episode.has_journal;
 					db.Update(saved);
 				}
 			}

@@ -32,7 +32,7 @@
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
 			<StackLayout x:Name="ContentContainer" Padding="10">
-				<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
+				<local:HtmlLabel x:Name="Content" Text="{Binding content}" Style="{StaticResource playerLabelStyle}"/>
 			</StackLayout>
 			<ListView x:Name="Links" ItemsSource="{Binding links}" HasUnevenRows="true" ItemTapped="OnLinkTapped">
 				<ListView.ItemTemplate>

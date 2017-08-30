@@ -16,7 +16,7 @@
 				<DataTemplate>
 					<ViewCell>
 						<StackLayout Padding="10" Spacing="5">
-							<Label Text="{Binding title}" FontSize="20"/>
+							<Label Text="{Binding title}" FontSize="20" Style="{StaticResource playerLabelStyle}"/>
 						</StackLayout>
 					</ViewCell>
 				</DataTemplate>

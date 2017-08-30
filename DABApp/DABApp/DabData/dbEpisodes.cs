@@ -36,8 +36,8 @@ namespace DABApp
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
 		public string remaining_time { get; set; } = "01:00";
-		public bool is_favorite;
-		public bool has_journal;
+		public bool is_favorite { get; set; }
+		public bool has_journal { get; set;}
 
 		[Ignore]
 		public bool downloadVisible { 
@@ -72,6 +72,20 @@ namespace DABApp
 			{
 				is_favorite = value;
 				OnPropertyChanged("favoriteVisible");
+				OnPropertyChanged("favoriteSource");
+			}
+		}
+
+		[Ignore]
+		public string favoriteSource
+		{ 
+			get 
+			{
+				if (is_favorite)
+				{
+					return "ic_star_white.png";
+				}
+				else return "ic_star_border_white.png";
 			}
 		}
 

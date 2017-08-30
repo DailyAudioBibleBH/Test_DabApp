@@ -75,6 +75,7 @@ namespace DABApp
 				Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
 			};
 			AboutFormat.GestureRecognizers.Add(tapper);
+			Favorite.BindingContext = Episode;
 		}
 
 		void OnPlay(object o, EventArgs e)
@@ -340,6 +341,14 @@ namespace DABApp
 		async void OnPlayerFailure(object o, EventArgs e)
 		{
 			await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again.", "OK");
+		}
+
+		void OnFavorite(object o, EventArgs e)
+		{
+			Episode.is_favorite = !Episode.is_favorite;
+			Favorite.Image = Episode.favoriteSource;
+			PlayerFeedAPI.UpdateEpisodeProperty(Episode.id, "is_favorite");
+			AuthenticationAPI.CreateNewActionLog(Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
 		}
 	}
 }

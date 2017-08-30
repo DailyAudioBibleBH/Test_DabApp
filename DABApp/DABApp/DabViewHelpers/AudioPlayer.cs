@@ -106,7 +106,7 @@ namespace DABApp
 									IsInitialized = false;
 								}
 
-								if (!_player.PlayerCanKeepUp && ShowWarning)
+								if (!_player.PlayerCanKeepUp && ShowWarning && !_player.IsPlaying)
 								{
 									PlayerFailure.Invoke(this, new EventArgs());
 									ShowWarning = false;

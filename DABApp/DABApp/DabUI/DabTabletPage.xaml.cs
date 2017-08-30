@@ -48,6 +48,7 @@ namespace DABApp
 			{
 				episode = Episodes.First();
 			}
+			favorite.BindingContext = episode;
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
@@ -125,6 +126,7 @@ namespace DABApp
 		public void OnEpisode(object o, ItemTappedEventArgs e)
 		{
 			episode = (dbEpisodes)e.Item;
+			favorite.Image = episode.favoriteSource;
 			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 			{
 				SetVisibility(false);
@@ -406,6 +408,15 @@ namespace DABApp
 			Share.IsVisible = par;
 			favorite.IsVisible = par;
 			Initializer.IsVisible = !par;
+		}
+
+		void OnFavorite(object o, EventArgs e)
+		{ 
+			episode.is_favorite = !episode.is_favorite;
+			favorite.Image = episode.favoriteSource;
+			PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
+			AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
+			//EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 		}
 	}
 }

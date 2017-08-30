@@ -29,7 +29,7 @@
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
 								<StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
+									<Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
 <!--									<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>-->
 									<Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>

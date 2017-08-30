@@ -14,5 +14,6 @@ namespace DABApp
 		public string ActionType { get; set;}
 		public double PlayerTime { get; set;}
 		public string UserEmail { get; set;}
+		public bool Favorite { get; set;}
 	}
 }
