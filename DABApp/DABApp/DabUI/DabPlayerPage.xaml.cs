@@ -230,8 +230,9 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 6;
-			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 6;
+			int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
+			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
 			if (LoginJournal.IsVisible || Journal.IsVisible) {
 				if (GuestStatus.Current.IsGuestLogin)
 				{
@@ -280,6 +281,8 @@ namespace DABApp
 			{
 				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
 			});
+			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom* 6;
+			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 6;
 		}
 
 		void OnReconnect(object o, EventArgs e)
@@ -288,6 +291,8 @@ namespace DABApp
 			{
 				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
 			});
+			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 4;
+			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 4;
 		}
 
 		void OnReconnecting(object o, EventArgs e)
