@@ -63,9 +63,9 @@
 						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" />
 					</Grid>
                 </StackLayout>
-                <StackLayout x:Name="Read" IsVisible="false" Padding="20, 0, 20, 20" Spacing="10">
-                    <Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large" />
-                    <Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Medium" />
+                <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" Spacing="10" BackgroundColor="{DynamicResource ReadBackgroundColor}">
+                    <Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Medium" Style="{StaticResource secondaryLabelStyle}"/>
+                    <Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Small" Style="{StaticResource secondaryLabelStyle}"/>
                     <Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
                     <ScrollView>
                         <local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand" />

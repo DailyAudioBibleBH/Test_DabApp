@@ -101,8 +101,8 @@
 					<!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
 				</StackLayout>
 				<ScrollView x:Name="Archive" IsVisible="true">
-				<StackLayout Padding="20" Spacing="20">
-			<StackLayout Orientation="Horizontal">
+				<StackLayout Spacing="20">
+			<StackLayout Orientation="Horizontal" Padding="20">
 				<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" BackgroundColor="Transparent" TextColor="White"  />
 				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource playerLabelStyle}"/>
 				<Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline"/>
@@ -113,7 +113,7 @@
 				<local:NonScrollingListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
-							<Grid Padding="10,10,10,10">
+							<Grid Padding="20,10,20,10">
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="*"/>
@@ -138,9 +138,9 @@
 			</local:NonScrollingListView>
 			</StackLayout>
 			</ScrollView>
-				<StackLayout x:Name="Read" IsVisible="false" Padding="20, 0, 20, 20" VerticalOptions="StartAndExpand">
-					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Large"/>
-					<Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Medium"/>
+				<StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" VerticalOptions="StartAndExpand" BackgroundColor="{DynamicResource ReadBackgroundColor}">
+					<Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Medium" Style="{StaticResource secondaryLabelStyle}"/>
+					<Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Small" Style="{StaticResource secondaryLabelStyle}"/>
 					<Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read."/>
 					<ScrollView>
 					<local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand"/>
