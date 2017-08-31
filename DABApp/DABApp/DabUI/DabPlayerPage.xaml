@@ -23,9 +23,11 @@
                 <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
                     <StackLayout VerticalOptions="CenterAndExpand">
                         <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
-                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
-                        <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}" />
-                    </StackLayout>
+                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
+						<ContentView Padding="40, 10, 40, 0">
+                        <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="14" Style="{StaticResource playerLabelStyle}"/>
+                        </ContentView>
+					</StackLayout>
                     <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" />
                     <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
                         <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
