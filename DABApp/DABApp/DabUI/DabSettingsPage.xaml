@@ -12,30 +12,30 @@
 						<TableSection x:Name="Account" Title="Account">
 							<ViewCell x:Name="Profile" Tapped="OnProfile">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image Source="ic_person_white.png" HorizontalOptions="Start"/>
+									<Image Source="ic_person_white_3x.png" HorizontalOptions="Start" Aspect="AspectFit"/>
 									<Label Text="Profile" HorizontalOptions="StartAndExpand"/>
-									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 								</StackLayout>
 							</ViewCell>
 							<ViewCell x:Name="Addresses" Tapped="OnAddresses">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image Source="ic_location_on_white.png" HorizontalOptions="Start"/>
+									<Image Source="ic_location_on_white_3x.png" HorizontalOptions="Start" Aspect="AspectFit"/>
 									<Label Text="Addresses" HorizontalOptions="StartAndExpand"/>
-									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 								</StackLayout>
 							</ViewCell>
 							<ViewCell x:Name="Wallet" Tapped="OnWallet">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image Source="ic_credit_card_white.png" HorizontalOptions="Start"/>
+									<Image Source="ic_credit_card_white_3x.png" HorizontalOptions="Start" Aspect="AspectFit"/>
 									<Label Text="Wallet" HorizontalOptions="StartAndExpand"/>
-									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 								</StackLayout>
 							</ViewCell>
 							<ViewCell x:Name="Donations" Tapped="OnDonations">
 								<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-									<Image Source="ic_favorite_white.png" HorizontalOptions="Start"/>
+									<Image Source="ic_favorite_white_3x.png" HorizontalOptions="Start" Aspect="AspectFit"/>
 									<Label Text="Donations" HorizontalOptions="StartAndExpand"/>
-									<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 								</StackLayout>
 							</ViewCell>
 						</TableSection>
@@ -50,7 +50,7 @@
 						<ViewCell x:Name="Offline" Tapped="OnOffline">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Offline Episodes" VerticalOptions="Center"/>
-								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 							</StackLayout>
 						</ViewCell>
 						<!--<ViewCell x:Name="Reset" Tapped="OnReset">
@@ -64,7 +64,7 @@
 						<ViewCell x:Name="AppInfo" Tapped="OnAppInfo">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="App Info" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand"/>
+								<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 							</StackLayout>
 						</ViewCell>
 					</TableSection>

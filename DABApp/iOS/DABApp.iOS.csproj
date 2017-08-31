@@ -345,6 +345,7 @@
     <BundleResource Include="Resources\ic_person_white.png" />
     <BundleResource Include="Resources\ic_person_white_3x.png" />
     <BundleResource Include="Resources\ic_person_white_2x.png" />
+    <BundleResource Include="Resources\ic_chevron_right_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

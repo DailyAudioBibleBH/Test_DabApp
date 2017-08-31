@@ -3,6 +3,7 @@ using DABApp.iOS;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using CoreGraphics;
 
 [assembly: ExportRenderer(typeof(Image), typeof(DabImageRenderer))]
 namespace DABApp.iOS
@@ -14,8 +15,10 @@ namespace DABApp.iOS
 			base.OnElementChanged(e);
 			if (Control != null)
 			{
-				var size = Control.Image.Size;
-				UIGraphics.BeginImageContextWithOptions(new CoreGraphics.CGSize(30 , 30), false, 0);
+				//var size = Control.Image.Size;
+				//UIGraphics.BeginImageContextWithOptions(size, false, 0);
+				//var context = UIGraphics.GetCurrentContext();
+				//context.DrawImage(new CGRect(0, 0, size.Width, size.Height), Control.Image.CGImage);
 				//var image = UIGraphics.GetImageFromCurrentImageContext();
 				//Control.Image = image;
 			}
