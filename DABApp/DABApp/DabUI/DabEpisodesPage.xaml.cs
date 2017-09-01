@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Plugin.Connectivity;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -52,19 +53,15 @@ namespace DABApp
 
 		public async void OnEpisode(object o, ItemTappedEventArgs e) 
 		{
-			//activityHolder.IsVisible = true;
-			//activity.IsVisible = true;
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
 			var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-			//if (AudioPlayer.Instance.CurrentEpisodeId != chosen.id)
-			//{
-			//	AudioPlayer.Instance.SetAudioFile(chosen);
-			//}
-			await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+			if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
+			{
+				await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+			}
+			else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
 			EpisodeList.SelectedItem = null;
-			//activityHolder.IsVisible = false;
-			//activity.IsVisible = false;
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e) {

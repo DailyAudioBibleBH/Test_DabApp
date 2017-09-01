@@ -133,7 +133,7 @@ namespace DABApp
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
 			var episodes = await PlayerFeedAPI.GetEpisodes(resource);
-			if (!episodes.Contains("error"))
+			if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
 			{
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{

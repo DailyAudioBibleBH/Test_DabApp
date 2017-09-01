@@ -139,19 +139,24 @@ namespace DABApp
 
 		public void OnEpisode(object o, ItemTappedEventArgs e)
 		{
-			episode = (dbEpisodes)e.Item;
-			favorite.Image = episode.favoriteSource;
-			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+			var newEp = (dbEpisodes)e.Item;
+			if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
 			{
-				SetVisibility(false);
+				episode = (dbEpisodes)e.Item;
+				favorite.Image = episode.favoriteSource;
+				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+				{
+					SetVisibility(false);
+				}
+				else
+				{
+					SetVisibility(true);
+				}
+				PlayerLabels.BindingContext = episode;
+				EpisodeList.SelectedItem = null;
+				SetReading();
 			}
-			else
-			{
-				SetVisibility(true);
-			}
-			PlayerLabels.BindingContext = episode;
-			EpisodeList.SelectedItem = null;
-			SetReading();
+			else DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e)
