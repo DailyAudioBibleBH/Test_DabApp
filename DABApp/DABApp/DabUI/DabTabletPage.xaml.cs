@@ -35,23 +35,10 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
+			TimedActions();
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
-				if ((string)Months.SelectedItem == "My Favorites")
-				{
-					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
-				}
-				else
-				{
-					if ((string)Months.SelectedItem == "My Journals")
-					{
-						EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
-					}
-					else
-					{
-						EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-					}
-				}
+				TimedActions();
 				return true;
 			});
 			if (Episode != null)
@@ -196,24 +183,28 @@ namespace DABApp
 
 		async void OnChannel(object o, EventArgs e)
 		{
-			_resource = (Resource)ChannelsList.SelectedItem;
-			backgroundImage = _resource.images.backgroundTablet;
-			await PlayerFeedAPI.GetEpisodes(_resource);
-			Offline.IsToggled = _resource.availableOffline;
-			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-			EpisodeList.ItemsSource = Episodes;
-			BackgroundImage.Source = backgroundImage;
-			episode = Episodes.First();
-			PlayerLabels.BindingContext = episode;
-			SetReading();
-			if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+			if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
 			{
-				SetVisibility(false);
+				_resource = (Resource)ChannelsList.SelectedItem;
+				backgroundImage = _resource.images.backgroundTablet;
+				await PlayerFeedAPI.GetEpisodes(_resource);
+				Offline.IsToggled = _resource.availableOffline;
+				Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+				EpisodeList.ItemsSource = Episodes;
+				BackgroundImage.Source = backgroundImage;
+				episode = Episodes.First();
+				PlayerLabels.BindingContext = episode;
+				SetReading();
+				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+				{
+					SetVisibility(false);
+				}
+				else
+				{
+					SetVisibility(true);
+				}
 			}
-			else
-			{
-				SetVisibility(true);
-			}
+			else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 		}
 
 		void OnBack30(object o, EventArgs e)
@@ -450,6 +441,25 @@ namespace DABApp
 			PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
 			AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
 			//EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+		}
+
+		void TimedActions()
+		{
+			if ((string)Months.SelectedItem == "My Favorites")
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+			}
+			else
+			{
+				if ((string)Months.SelectedItem == "My Journals")
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+				}
+				else
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				}
+			}
 		}
 	}
 }
