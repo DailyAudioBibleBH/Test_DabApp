@@ -9,19 +9,19 @@
 						<ViewCell AutomationId="OneDay" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="One Day" VerticalOptions="Center"/>
-								<Image x:Name="FirstIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+								<Image x:Name="FirstIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20"/>
 							</StackLayout>
 						</ViewCell>
 						<ViewCell AutomationId="TwoDays" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Two Days" VerticalOptions="Center"/>
-								<Image x:Name="SecondIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+								<Image x:Name="SecondIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20"/>
 							</StackLayout>
 						</ViewCell>
 						<ViewCell AutomationId="ThreeDays" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="Three Days" VerticalOptions="Center"/>
-								<Image x:Name="ThirdIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+								<Image x:Name="ThirdIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20"/>
 							</StackLayout>
 						</ViewCell>
 						<!--<ViewCell AutomationId="FourDays" Tapped="OnDurationPicked">
@@ -33,7 +33,7 @@
 						<ViewCell AutomationId="OneWeek" Tapped="OnDurationPicked">
 							<StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
 								<Label Text="One Week" VerticalOptions="Center"/>
-								<Image x:Name="FifthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+								<Image x:Name="FifthIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20"/>
 							</StackLayout>
 						</ViewCell>
 						<!--<ViewCell AutomationId="OneMonth" Tapped="OnDurationPicked">

@@ -19,7 +19,7 @@ namespace DABApp.iOS
 				MPVolumeView control = new MPVolumeView();
 				control.ShowsVolumeSlider = false;
 				UIImage image = new UIImage();
-				image = UIImage.FromFile("ic_airplay_white.png");
+				image = UIImage.FromBundle("airplay");
 				control.SetRouteButtonImage(image, UIControlState.Normal);
 				control.SetRouteButtonImage(image, UIControlState.Highlighted);
 				control.SetRouteButtonImage(image, UIControlState.Disabled);

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SQLite;
+using Xamarin.Forms;
 
 namespace DABApp
 {
@@ -83,9 +84,9 @@ namespace DABApp
 			{
 				if (is_favorite)
 				{
-					return "ic_star_white.png";
+					return Device.Idiom == TargetIdiom.Phone ? "ic_star_white_3x.png" : "ic_star_white.png";
 				}
-				else return "ic_star_border_white.png";
+				else return Device.Idiom == TargetIdiom.Phone ? "ic_star_border_white_3x.png" : "ic_star_border_white.png";
 			}
 		}
 

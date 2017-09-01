@@ -223,6 +223,10 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png" />
     <ImageAsset Include="Assets.xcassets\LaunchImage-1.launchimage\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white.png" />
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_2x.png" />
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -232,6 +236,8 @@
     <Folder Include="Effects\" />
     <Folder Include="DabApi\" />
     <Folder Include="DependencyServices\" />
+    <Folder Include="Assets.xcassets\ic_play_circle_outline_white.png.imageset\" />
+    <Folder Include="Assets.xcassets\airplay.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />

@@ -5,13 +5,13 @@
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End"  IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}"  Padding="0" Spacing="0">
 				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End"   />
 				<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10" Padding="2"	>
-					<Button x:Name="PlayerButton" Image="ic_keyboard_arrow_up_white.png"  Clicked="OnShowPlayer" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
-					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}"  Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
+					<Button x:Name="PlayerButton" Image="ic_keyboard_arrow_up_white_3x.png"  Clicked="OnShowPlayer" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand" WidthRequest="20" HeightRequest="20"/>
+					<Button Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}"  Clicked="OnPlayPause" Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand" HeightRequest="35" WidthRequest="35"/>
 					<StackLayout x:Name="stackPodcastTitle" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Spacing="0" Padding="0">
 						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Small" VerticalOptions="FillAndExpand" FontAttributes="Bold" LineBreakMode="TailTruncation" Style="{StaticResource playerLabelStyle}"/>
 						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentChannelTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Micro" LineBreakMode="TailTruncation" Style="{StaticResource secondaryLabelStyle}"/>
 					</StackLayout>
-					<Button Image="ic_share_white.png" Clicked="OnShare"  Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand"/>
+					<Button Image="ic_share_white_3x.png" Clicked="OnShare"  Style="{StaticResource imageButtonStyle}" VerticalOptions="CenterAndExpand" HeightRequest="20" WidthRequest="20"/>
 				</StackLayout>
 			</StackLayout>
 		</StackLayout>
