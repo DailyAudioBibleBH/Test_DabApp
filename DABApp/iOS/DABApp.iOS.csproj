@@ -227,6 +227,10 @@
     <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white.png" />
     <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_2x.png" />
     <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_3x.png" />
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white.png" />
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_2x.png" />
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -238,6 +242,7 @@
     <Folder Include="DependencyServices\" />
     <Folder Include="Assets.xcassets\ic_play_circle_outline_white.png.imageset\" />
     <Folder Include="Assets.xcassets\airplay.imageset\" />
+    <Folder Include="Assets.xcassets\down_arrow.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />

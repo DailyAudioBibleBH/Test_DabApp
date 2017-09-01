@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using DABApp;
 using DABApp.iOS;
 using MediaPlayer;
@@ -26,7 +27,10 @@ namespace DABApp.iOS
 				control.SetRouteButtonImage(image, UIControlState.Selected);
 				SetNativeControl(control);
 			}
-			catch (Exception ex) { }
+			catch (Exception ex) 
+			{
+				Debug.WriteLine(ex.Message);
+			}
 		}
 
 	}

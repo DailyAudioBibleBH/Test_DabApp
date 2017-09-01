@@ -37,7 +37,21 @@ namespace DABApp
 			Months.SelectedIndex = 0;
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
-				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				if ((string)Months.SelectedItem == "My Favorites")
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+				}
+				else
+				{
+					if ((string)Months.SelectedItem == "My Journals")
+					{
+						EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+					}
+					else
+					{
+						EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+					}
+				}
 				return true;
 			});
 			if (Episode != null)
@@ -158,19 +172,19 @@ namespace DABApp
 
 		public void OnMonthSelected(object o, EventArgs e)
 		{
-			if ((string)Months.SelectedItem != "My Favorites" || (string)Months.SelectedItem != "My Journals")
+			if ((string)Months.SelectedItem == "My Favorites")
 			{
-				EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
 			}
 			else 
 			{
-				if ((string)Months.SelectedItem == "My Favorites")
-				{
-					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
-				}
-				else
+				if ((string)Months.SelectedItem == "My Journals")
 				{
 					EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+				}
+				else 
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 				}
 			}
 		}
@@ -259,7 +273,21 @@ namespace DABApp
 		void OnLogin(object o, EventArgs e)
 		{
 			Login.IsEnabled = false;
-			AudioPlayer.Instance.Pause();
+			AudioPlayer.Instance.Pause();if ((string)Months.SelectedItem == "My Favorites")
+			{
+				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+			}
+			else 
+			{
+				if ((string)Months.SelectedItem == "My Journals")
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+				}
+				else 
+				{
+					EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+				}
+			}
 			AudioPlayer.Instance.Unload();
 			if (CrossConnectivity.Current.IsConnected)
 			{

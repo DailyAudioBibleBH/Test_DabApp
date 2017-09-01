@@ -32,7 +32,7 @@ namespace DABApp.iOS
 
 			//Add an icon to the right side of the element
 			Control.RightViewMode = UITextFieldViewMode.Always;
-			UIImage icon = UIImage.FromFile("ic_keyboard_arrow_down_white.png");
+			UIImage icon = UIImage.FromBundle("down_arrow");
 			icon = icon.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
 			Control.RightView = new UIImageView(icon);
 			if (Control.Enabled == false) {
