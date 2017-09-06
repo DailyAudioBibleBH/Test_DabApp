@@ -28,7 +28,6 @@ namespace DABApp.iOS
 			Control.Layer.CornerRadius = 5.0f;
 			//Control.TextColor = ((Color)App.Current.Resources["SecondaryTextColor"]).ToUIColor();
 			//Update the tint color to match whatever text color we're using.
-			Control.TintColor = Control.TextColor;
 
 			//Add an icon to the right side of the element
 			Control.RightViewMode = UITextFieldViewMode.Always;
@@ -38,6 +37,7 @@ namespace DABApp.iOS
 			if (Control.Enabled == false) {
 				Control.TextColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
 			}
+			Control.TintColor = Control.TextColor;
 		}
 	}
 }
