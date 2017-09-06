@@ -14,6 +14,8 @@ using Android.Gms.Gcm;
 using Android.Util;
 using Android.Support.V7;
 using FFImageLoading.Forms.Droid;
+using Xamarin.Forms;
+using SQLite;
 
 namespace DABApp.Droid
 {
@@ -24,6 +26,11 @@ namespace DABApp.Droid
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
+			SQLitePCL.Batteries.Init();
+			SQLitePCL.raw.sqlite3_shutdown();
+			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
+			SQLitePCL.raw.sqlite3_initialize();
+
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
 
@@ -32,6 +39,7 @@ namespace DABApp.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
+			DependencyService.Register<SocketService>();
 
 			SegmentedControlRenderer.Init();
 

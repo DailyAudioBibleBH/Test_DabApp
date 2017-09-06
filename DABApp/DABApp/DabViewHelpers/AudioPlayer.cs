@@ -203,12 +203,12 @@ namespace DABApp
 				if (IsPlaying)
 				{
 					//Pause
-					return "ic_pause_circle_outline_white_3x.png";
+					return "ic_pause_circle_outline_white.png";
 				}
 				else
 				{
 					//Play
-					return "ic_play_circle_outline_white_3x.png";
+					return "ic_play_circle_outline_white.png";
 				}
 			}
 			set

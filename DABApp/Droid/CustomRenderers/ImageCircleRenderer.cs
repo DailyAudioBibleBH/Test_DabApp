@@ -3,13 +3,14 @@ using System.Diagnostics;
 using Android.Graphics;
 using DABApp;
 using DABApp.Droid;
+using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 [assembly:ExportRenderer(typeof(ImageCircle), typeof(ImageCircleRenderer))]
 namespace DABApp.Droid
 {
-	public class ImageCircleRenderer: ImageRenderer
+	public class ImageCircleRenderer: CachedImageRenderer
 	{
 		protected override bool DrawChild(Canvas canvas, global::Android.Views.View child, long drawingTime)
 		{
@@ -54,16 +55,16 @@ namespace DABApp.Droid
 			return base.DrawChild(canvas, child, drawingTime);
 		}
 
-		protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
-		{
-			base.OnElementChanged(e);
+		//protected override void OnElementPropertyChanged(ElementChangedEventArgs<Image> e)
+		//{
+		//	base.OnElementChanged(e);
 
-			if (e.OldElement == null)
-			{
+		//	if (e.OldElement == null)
+		//	{
 
-				if ((int)Android.OS.Build.VERSION.SdkInt < 18)
-					SetLayerType(Android.Views.LayerType.Software, null);
-			}
-		}
+		//		if ((int)Android.OS.Build.VERSION.SdkInt < 18)
+		//			SetLayerType(Android.Views.LayerType.Software, null);
+		//	}
+		//}
 	}
 }

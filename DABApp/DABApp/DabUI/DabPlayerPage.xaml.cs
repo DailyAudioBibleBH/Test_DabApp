@@ -67,7 +67,10 @@ namespace DABApp
 			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
-			KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+			if (Device.RuntimePlatform == "iOS")
+			{
+				KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+			}
 			AudioPlayer.Instance.PlayerFailure += OnPlayerFailure;
 			var tapper = new TapGestureRecognizer();
 			tapper.Tapped += (sender, e) => 
@@ -230,9 +233,13 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
-			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+			if (Device.RuntimePlatform == "iOS")
+			{
+				int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
+				JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+				original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+			}
+
 			if (LoginJournal.IsVisible || Journal.IsVisible) {
 				if (GuestStatus.Current.IsGuestLogin)
 				{

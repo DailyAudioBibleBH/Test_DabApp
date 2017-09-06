@@ -58,7 +58,7 @@ namespace DABApp.Droid
 
 		public void Unload()
 		{
-			throw new NotImplementedException();
+			IsLoaded = false;
 		}
 
 		public void SwitchOutputs()
@@ -71,7 +71,7 @@ namespace DABApp.Droid
 		}
 
 		public bool IsPlaying {
-			get { return player.IsPlaying;}
+			get { return player != null ? player.IsPlaying : false;}
 		}
 
 		public double CurrentTime {
