@@ -82,11 +82,17 @@ namespace DABApp
 		{ 
 			get 
 			{
-				if (is_favorite)
+				if (Device.RuntimePlatform == "iOS")
 				{
-					return Device.Idiom == TargetIdiom.Phone ? "ic_star_white_3x.png" : "ic_star_white.png";
+					if (is_favorite)
+					{
+						return Device.Idiom == TargetIdiom.Phone ? "ic_star_white_3x.png" : "ic_star_white.png";
+					}
+					else return Device.Idiom == TargetIdiom.Phone ? "ic_star_border_white_3x.png" : "ic_star_border_white.png";
 				}
-				else return Device.Idiom == TargetIdiom.Phone ? "ic_star_border_white_3x.png" : "ic_star_border_white.png";
+				else {
+					return is_favorite ? "ic_star_white.png" : "ic_star_border_white.png";
+				}
 			}
 		}
 

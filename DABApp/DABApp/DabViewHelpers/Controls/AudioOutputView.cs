@@ -6,6 +6,8 @@ namespace DABApp
 	public class AudioOutputView: Xamarin.Forms.View
 	{
 		public AudioOutputView()
-		{ }
+		{ 
+			
+		}
 	}
 }

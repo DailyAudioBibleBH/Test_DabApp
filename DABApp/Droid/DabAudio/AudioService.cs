@@ -90,7 +90,11 @@ namespace DABApp.Droid
 		{
 			get
 			{
-				throw new NotImplementedException();
+				if (player != null)
+				{
+					return true;
+				}
+				else return false;
 			}
 		}
 	}
