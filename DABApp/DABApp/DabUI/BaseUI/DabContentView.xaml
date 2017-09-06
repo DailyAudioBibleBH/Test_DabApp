@@ -24,7 +24,7 @@
 							<ViewCell.View>
 								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}">
 									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontSize="Medium"/>
-									<Image Source="ic_chevron_right_white.png" HorizontalOptions="EndAndExpand"/>
+									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" HeightRequest="20" Aspect="AspectFit"/>
 								</StackLayout>
 							</ViewCell.View>
 						</ViewCell>

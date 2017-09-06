@@ -12,6 +12,7 @@
 			<Color x:Key="SecondaryTextColor">#AFAFAF</Color>
 			<!--Color provided by LUTD for secondary text color: #AFAFAF-->
 			<Color x:Key="HighlightColor">#D5272E</Color>
+            <Color x:Key="HighlightTextColor">#FFFFFF</Color>
 			<!--Color provided by LUTD for highlights and important buttons: #D5272E-->
 			<Color x:Key="NavBarBackgroundColor">#383838</Color>
 			<!--Color provided by LUTD for nav bar background: #444444-->
@@ -118,7 +119,7 @@
 			<Style BasedOn="{StaticResource buttonStyle}" TargetType="Button" ApplyToDerivedTypes="true" />
 			<!--Highlighted Button-->
 			<Style x:Key="highlightedButtonStyle" TargetType="Button">
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+				<Setter Property="TextColor" Value="{DynamicResource HighlightTextColor}" />
 				<Setter Property="BorderColor" Value="{DynamicResource HighlightColor}" />
 				<Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
 			</Style>

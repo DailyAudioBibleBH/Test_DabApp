@@ -71,7 +71,7 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (Topic)value;
-			return $"Voices: {topic.voiceCount}  Replies: {topic.replyCount}";
+			return $"Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -104,7 +104,7 @@ namespace DABApp
 		{
 			if (value == null) return null;
 			var reply = (Member)value;
-			return $"Replies:{reply.replyCount}";
+			return $"Prayers:{reply.replyCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
