@@ -27,7 +27,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>DAB App</CodesignProvision>
+    <CodesignProvision>iOS Team Provisioning Profile: com.dailyaudiobible.dabapp</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>pdbonly</DebugType>
@@ -357,6 +357,9 @@
     <BundleResource Include="Resources\ic_person_white_3x.png" />
     <BundleResource Include="Resources\ic_person_white_2x.png" />
     <BundleResource Include="Resources\ic_chevron_right_white_3x.png" />
+    <BundleResource Include="Resources\seekbaricon.png" />
+    <BundleResource Include="Resources\seekbaricon%402x.png" />
+    <BundleResource Include="Resources\seekbaricon%403x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
