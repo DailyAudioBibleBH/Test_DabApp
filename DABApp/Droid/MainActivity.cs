@@ -40,6 +40,8 @@ namespace DABApp.Droid
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 			DependencyService.Register<SocketService>();
+			DependencyService.Register<FileManagement>();
+			DependencyService.Register<StripeApiManagement>();
 
 			SegmentedControlRenderer.Init();
 

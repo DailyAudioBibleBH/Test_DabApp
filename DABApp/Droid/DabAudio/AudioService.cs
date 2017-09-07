@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using Android.Media;
 using Android.Content.Res;
 using System.Collections.Generic;
+using System.IO;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -32,9 +33,11 @@ namespace DABApp.Droid
 			{
 				player.SetDataSource(fileName);
 			}
-			else {
-				var fd = global::Android.App.Application.Context.Assets.OpenFd(fileName);
-				player.SetDataSource(fd.FileDescriptor, fd.StartOffset, fd.Length);
+			else
+			{
+				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				fileName = Path.Combine(doc, fileName);
+				player.SetDataSource(fileName);
 			}
 			player.Prepare();
 		}

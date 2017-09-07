@@ -12,6 +12,11 @@ namespace DABApp.Droid
 {
 	public class ImageCircleRenderer: CachedImageRenderer
 	{
+		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
+		{
+			base.OnLayout(changed, left, top, right, bottom);
+		}
+
 		protected override bool DrawChild(Canvas canvas, global::Android.Views.View child, long drawingTime)
 		{
 			try
