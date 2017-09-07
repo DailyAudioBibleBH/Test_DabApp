@@ -46,33 +46,5 @@ namespace DABApp.Droid
 			if (OnSizeChangedEvent != null)
 				OnSizeChangedEvent(w, h, oldw, oldh);
 		}
-
-		public override void OnWindowFocusChanged(bool hasWindowFocus)
-		{
-			base.OnWindowFocusChanged(hasWindowFocus);
-			var activity = this.Context as MainActivity;
-
-			var actionBar = activity.SupportActionBar;
-			var toolbar = new Android.Support.V7.Widget.Toolbar(this.Context);
-
-			var contentPage = this.Element as ContentPage;
-			if (contentPage == null) {
-				return;
-			}
-
-			var itemsInfo = contentPage.ToolbarItems;
-			//var MenuItem = itemsInfo.Single(x => x.Priority == 1);
-			var MenuButton = new Android.Widget.ImageButton(this.Context);
-			MenuButton.SetImageResource(Resource.Drawable.ic_menu_white);
-			MenuButton.Id = Resource.Id.MenuButton;
-			var views = new List<Android.Views.View>();
-			views.Add(MenuButton);
-			toolbar.AddTouchables(views);
-			//toolbar.SetForegroundGravity(Android.Views.GravityFlags.Left);
-			var layoutParams = new Android.Support.V7.App.ActionBar.LayoutParams(8388611);//defining gravity as Start enum: 8388611
-			actionBar.SetCustomView(MenuButton, layoutParams);
-			actionBar.SetDisplayShowCustomEnabled(true);
-			activity.SetSupportActionBar(toolbar);
-		}
 	}
 }

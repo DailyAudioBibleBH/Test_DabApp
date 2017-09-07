@@ -263,6 +263,10 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_share_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_star_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_star_border_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_person_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_credit_card_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_location_on_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_favorite_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

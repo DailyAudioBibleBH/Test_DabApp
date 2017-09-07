@@ -1,4 +1,5 @@
 ﻿using System;
+using Android.Widget;
 using DABApp.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android.AppCompat;
@@ -6,15 +7,22 @@ using Xamarin.Forms.Platform.Android.AppCompat;
 [assembly:ExportRenderer(typeof(NavigationPage), typeof(DabNavigationPageRenderer))]
 namespace DABApp.Droid
 {
-	public class DabNavigationPageRenderer: NavigationPageRenderer
+	public class DabNavigationPageRenderer : NavigationPageRenderer
 	{
-		public DabNavigationPageRenderer()
+		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
 		{
+			base.OnLayout(changed, left, top, right, bottom);
+			ConfigureActionBar();
 		}
 
-		public override void OnViewAdded(Android.Views.View child)
+		void ConfigureActionBar()
 		{
-			base.OnViewAdded(child);
+			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+
+			if (toolbar.ChildCount > 0)
+			{
+				
+			}
 		}
 	}
 }
