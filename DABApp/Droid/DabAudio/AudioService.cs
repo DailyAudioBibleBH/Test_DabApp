@@ -29,7 +29,7 @@ namespace DABApp.Droid
 			{
 				IsLoaded = false;
 			};
-			if (fileName.Contains("http"))
+			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
 				player.SetDataSource(fileName);
 			}
@@ -86,7 +86,7 @@ namespace DABApp.Droid
 		}
 
 		public double TotalTime {
-			get { return player.Duration/1000;}
+			get { return player.Duration >= 0 ? player.Duration / 1000 : 60000; }
 		}
 
 		public bool PlayerCanKeepUp

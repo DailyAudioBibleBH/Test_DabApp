@@ -2,7 +2,9 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<t:MenuContainerPage.Content>
-		<StackLayout>
+		<ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}">
+			<ListView.Header>
+				<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
 				<ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
@@ -15,8 +17,9 @@
 				<Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
 			</StackLayout>
 			<BoxView HorizontalOptions="FillAndExpand"/>
-			<local:NonScrollingListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}">
-				<local:NonScrollingListView.ItemTemplate>
+				</StackLayout>
+			</ListView.Header>
+				<ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
@@ -33,7 +36,7 @@
 <!--									<Label Text="{Binding PubMonth}" FontSize="Medium" HorizontalOptions="Start"/>
 									<Label Text="{Binding PubDay}" FontSize="Large"/>-->
 									<Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
-									<Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil-white.png"/>
+									<Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
 								<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
 								</StackLayout>
 								<Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
@@ -41,8 +44,7 @@
 							</Grid>
 						</ViewCell>
 					</DataTemplate>
-				</local:NonScrollingListView.ItemTemplate>
-			</local:NonScrollingListView>
-		</StackLayout>
+				</ListView.ItemTemplate>
+			</ListView>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

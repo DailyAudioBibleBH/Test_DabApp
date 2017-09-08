@@ -349,7 +349,7 @@
     <BundleResource Include="Resources\ic_star_white.png" />
     <BundleResource Include="Resources\ic_star_white_2x.png" />
     <BundleResource Include="Resources\ic_star_white_3x.png" />
-    <BundleResource Include="Resources\pencil-white.png" />
+    <BundleResource Include="Resources\pencil_white.png" />
     <BundleResource Include="Resources\ic_settings_white.png" />
     <BundleResource Include="Resources\ic_settings_white_2x.png" />
     <BundleResource Include="Resources\ic_settings_white_3x.png" />
