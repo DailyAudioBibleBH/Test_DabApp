@@ -12,11 +12,6 @@ namespace DABApp.Droid
 {
 	public class ImageCircleRenderer: CachedImageRenderer
 	{
-		protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
-		{
-			base.OnLayout(changed, left, top, right, bottom);
-		}
-
 		protected override bool DrawChild(Canvas canvas, global::Android.Views.View child, long drawingTime)
 		{
 			try
@@ -27,28 +22,16 @@ namespace DABApp.Droid
 
 				//Create path to clip
 				var path = new Path();
+				var color = (Xamarin.Forms.Color)App.Current.Resources["HighlightColor"];
 				path.AddCircle(Width / 2, Height / 2, radius, Path.Direction.Ccw);
 				canvas.Save();
 				canvas.ClipPath(path);
-
+				canvas.DrawRGB(Convert.ToInt32(color.R*255), Convert.ToInt32(color.G*255), Convert.ToInt32(color.B*255));
 				var result = base.DrawChild(canvas, child, drawingTime);
 
 				canvas.Restore();
 
-				// Create path for circle border
-				//path = new Path();
-				//path.AddCircle(Width / 2, Height / 2, radius, Path.Direction.Ccw);
 
-				//var paint = new Paint();
-				//paint.AntiAlias = true;
-				//paint.StrokeWidth = 5;
-				//paint.SetStyle(Paint.Style.Stroke);
-				//paint.Color = global::Android.Graphics.Color.White;
-
-				//canvas.DrawPath(path, paint);
-
-				//Properly dispose
-				//paint.Dispose();
 				path.Dispose();
 				return result;
 			}

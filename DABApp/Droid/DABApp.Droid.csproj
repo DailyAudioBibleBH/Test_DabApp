@@ -217,6 +217,7 @@
     <Compile Include="CustomRenderers\DabSwitchRenderer.cs" />
     <Compile Include="DabApi\FileManagement.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
+    <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -272,6 +273,7 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_favorite_white_3x.png" />
     <AndroidResource Include="Resources\drawable\pencil_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_cloud_download_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
