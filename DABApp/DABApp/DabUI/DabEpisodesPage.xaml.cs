@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using SlideOverKit;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace DABApp
 {
@@ -50,7 +49,6 @@ namespace DABApp
 				}
 				return true;
 			});
-			//ListenedTo.BackgroundColor = Device.RuntimePlatform == "iOS" ? (Color)App.Current.Resources["HighlightColor"] : Color.Transparent;
 		}
 
 		public async void OnEpisode(object o, ItemTappedEventArgs e) 
