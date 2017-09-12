@@ -17,6 +17,7 @@ using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using SQLite;
 using Xamarin.Forms.Platform.Android;
+using Android.Graphics;
 
 namespace DABApp.Droid
 {
@@ -61,7 +62,9 @@ namespace DABApp.Droid
 			give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give");};
 			var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
-			text.SetTextColor(((Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
+			text.TextSize = 30;
 			toolbar.AddView(newMenu);
 		}
 	}
