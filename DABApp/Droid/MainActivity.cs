@@ -16,6 +16,7 @@ using Android.Support.V7;
 using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using SQLite;
+using Xamarin.Forms.Platform.Android;
 
 namespace DABApp.Droid
 {
@@ -50,6 +51,18 @@ namespace DABApp.Droid
 			SQLite_Droid.Assets = this.Assets;
 
 			LoadApplication(new App());
+
+			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+			SetSupportActionBar(toolbar);
+			var newMenu = LayoutInflater.Inflate(Resource.Layout.DabToolbar, null);
+			var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
+			menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
+			var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
+			give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give");};
+			var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
+			text.SetTextColor(((Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			toolbar.AddView(newMenu);
 		}
 	}
 }

@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using FFImageLoading.Forms;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
+using System.Linq;
 
 namespace DABApp
 {
@@ -51,24 +52,37 @@ namespace DABApp
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
 
-			//Menu Button
-			var menuButton = new ToolbarItem();
-			//menuButton.Text = "menu";
-			menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
-			menuButton.Icon = "ic_menu_white.png";
-			menuButton.Clicked += (sender, e) =>
+			if (Device.RuntimePlatform != "Android")
 			{
-				this.ShowMenu();
-			};
-			this.ToolbarItems.Add(menuButton);
+				//Menu Button
+				var menuButton = new ToolbarItem();
+				//menuButton.Text = "menu";
+				menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
+				menuButton.Icon = "ic_menu_white.png";
+				menuButton.Clicked += (sender, e) =>
+				{
+					this.ShowMenu();
+				};
+				this.ToolbarItems.Add(menuButton);
 
-			//Give button on the right (priority 1)
-			var giveButton = new ToolbarItem();
-			giveButton.Text = "Give";
-			//giveButton.Icon = "ic_attach_money_white.png";
-			giveButton.Priority = 0; //default
-			giveButton.Clicked += OnGive;
-			this.ToolbarItems.Add(giveButton);
+				//Give button on the right (priority 1)
+				var giveButton = new ToolbarItem();
+				giveButton.Text = "Give";
+				//giveButton.Icon = "ic_attach_money_white.png";
+				giveButton.Priority = 0; //default
+				giveButton.Clicked += OnGive;
+				this.ToolbarItems.Add(giveButton);
+			}
+			else 
+			{
+				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
+					if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+					{
+						this.ShowMenu();
+					}
+				});
+				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
+			}
 		}
 
 		async void OnGive(object o, EventArgs e) 

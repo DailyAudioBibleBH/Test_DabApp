@@ -82,11 +82,11 @@ namespace DABApp.Droid
 		}
 
 		public double RemainingTime {
-			get { return (player.CurrentPosition - player.Duration)/1000;}
+			get { return player.Duration >=0 ? (player.CurrentPosition - player.Duration)/1000 : 60000;}
 		}
 
 		public double TotalTime {
-			get { return player.Duration >= 0 ? player.Duration / 1000 : 60000; }
+			get { return player.Duration >=0 ? player.Duration / 1000 : 60000; }
 		}
 
 		public bool PlayerCanKeepUp

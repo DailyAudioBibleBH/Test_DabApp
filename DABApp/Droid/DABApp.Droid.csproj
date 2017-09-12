@@ -274,6 +274,7 @@
     <AndroidResource Include="Resources\drawable\pencil_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_cloud_download_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
+    <AndroidResource Include="Resources\layout\DabToolbar.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

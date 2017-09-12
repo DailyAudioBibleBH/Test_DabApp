@@ -1,4 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
 	<item name="MenuButton" type="id"/>
+	<item name="textView1" type="id"/>
 </resources>
