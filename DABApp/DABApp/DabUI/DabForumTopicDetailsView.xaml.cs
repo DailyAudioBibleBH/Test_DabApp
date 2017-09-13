@@ -14,17 +14,8 @@ namespace DABApp
         {
             InitializeComponent();
             BackgroundColor = (Color)App.Current.Resources["PageBackgroundColor"];
-            if (Device.Idiom == TargetIdiom.Phone)
-            {
-                //Show the mini player on phones
-                ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
-            }
-            else
-            {
-                //Don't show the mini player on tablets
-                ControlTemplate = (ControlTemplate)App.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
-
-            }
+            //Don't show the mini player since this is just a view. the containing page will take care of it.
+            ControlTemplate = (ControlTemplate)App.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             reply = rep;
             replies = reps;
             last = LastActivity;
