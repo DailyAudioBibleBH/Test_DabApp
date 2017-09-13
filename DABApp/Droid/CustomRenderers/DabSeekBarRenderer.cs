@@ -13,8 +13,8 @@ namespace DABApp.Droid
 		protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
 		{
 			base.OnElementChanged(e);
-			Control.Thumb.SetTint(Android.Graphics.Color.White);
-			Control.ProgressDrawable.SetTint(Android.Graphics.Color.White);
+			Control.Thumb.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 		}
 	}
 }
