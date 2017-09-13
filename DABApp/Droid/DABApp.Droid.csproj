@@ -218,6 +218,7 @@
     <Compile Include="DabApi\FileManagement.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
+    <Compile Include="CustomRenderers\DabSeekBarRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
