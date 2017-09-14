@@ -19,13 +19,13 @@
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
 							<StackLayout Padding="10" Spacing="0" IsVisible="{Binding IsNotSelected}">
-								<ff:CachedImage Aspect="AspectFit" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
+								<ff:CachedImage Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
 									<ff:CachedImage.Source>
 										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
 									</ff:CachedImage.Source>
 								</ff:CachedImage>
 								<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
-									<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>
+									<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
 								</StackLayout>
 							</StackLayout>
 						</DataTemplate>

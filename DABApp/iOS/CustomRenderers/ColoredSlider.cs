@@ -19,6 +19,7 @@ namespace DABApp.iOS
 			if (Control != null) {
 				Control.MaximumTrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
 				Control.MinimumTrackTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
+                Control.SetThumbImage(UIImage.FromFile("seekbaricon.png"), UIControlState.Normal);
 				var element = (DabSeekBar)e.NewElement;
 				Control.AllTouchEvents += (sender, er) => {
 					element.Touched(sender, er);

@@ -13,6 +13,7 @@ namespace DABApp.iOS
 		public override UIKit.UITableViewCell GetCell(Cell item, UIKit.UITableViewCell reusableCell, UIKit.UITableView tv)
 		{
 			var cell = base.GetCell(item, reusableCell, tv);
+            cell.SeparatorInset = UIEdgeInsets.Zero;
 
 			cell.SelectedBackgroundView = new UIView
 			{
