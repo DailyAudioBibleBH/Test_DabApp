@@ -21,6 +21,7 @@ namespace DABApp
 		public DabPlayerPage(dbEpisodes episode, Reading Reading)
 		{
 			InitializeComponent();
+			SegControl.ValueChanged += Handle_ValueChanged;
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
@@ -191,7 +192,7 @@ namespace DABApp
 
 		void OnPodcast(object o, EventArgs e)
 		{
-			SegControl.SelectTab(0);
+			SegControl.SelectedSegment = 0;
 		}
 
 		void OnLogin(object o, EventArgs e) {

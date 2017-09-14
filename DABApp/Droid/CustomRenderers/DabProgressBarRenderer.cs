@@ -14,6 +14,7 @@ namespace DABApp.Droid
 		{
 			base.OnElementChanged(e);
 			Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			Control.ProgressDrawable.SetBounds(0, 0, 0, 0);
 		}
 	}
 }

@@ -13,6 +13,8 @@ namespace DABApp.Droid
 	{
 		public static MediaPlayer player;
 		public static bool IsLoaded;
+		public static dbEpisodes Episode;
+		public static string FileName;
 
 		public AudioService()
 		{
@@ -29,6 +31,7 @@ namespace DABApp.Droid
 			{
 				IsLoaded = false;
 			};
+			player.Error += OnError;
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
 				player.SetDataSource(fileName);
@@ -39,6 +42,8 @@ namespace DABApp.Droid
 				fileName = Path.Combine(doc, fileName);
 				player.SetDataSource(fileName);
 			}
+			Episode = episode;
+			FileName = fileName;
 			player.Prepare();
 		}
 
@@ -99,6 +104,12 @@ namespace DABApp.Droid
 				}
 				else return false;
 			}
+		}
+
+		void OnError(object o, EventArgs e)
+		{
+			player.Dispose();
+			SetAudioFile(FileName, Episode);
 		}
 	}
 }

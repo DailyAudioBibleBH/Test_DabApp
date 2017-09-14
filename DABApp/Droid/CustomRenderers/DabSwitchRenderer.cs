@@ -12,8 +12,7 @@ namespace DABApp.Droid
 		{
 			base.OnElementChanged(e);
 			if (Control == null) return;
-			var c = (Android.Widget.Switch)Control;
-			c.SetHighlightColor(((Color)App.Current.Resources["HighlightColor"]).ToAndroid());
+			Control.SetHighlightColor(((Color)App.Current.Resources["HighlightColor"]).ToAndroid());
 		}
 	}
 }
