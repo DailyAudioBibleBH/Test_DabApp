@@ -220,6 +220,7 @@
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabSeekBarRenderer.cs" />
     <Compile Include="CustomRenderers\DabSegmentedControlRenderer.cs" />
+    <Compile Include="DependencyServices\RivetsService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

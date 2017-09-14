@@ -23,7 +23,7 @@ namespace DABApp.Droid
 {
 
 
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
 		protected override void OnCreate(Bundle bundle)
@@ -44,6 +44,7 @@ namespace DABApp.Droid
 			DependencyService.Register<SocketService>();
 			DependencyService.Register<FileManagement>();
 			DependencyService.Register<StripeApiManagement>();
+			DependencyService.Register<RivetsService>();
 
 			SegmentedControlRenderer.Init();
 

@@ -9,7 +9,7 @@ using Android.Content.PM;
 
 namespace DABApp.Droid
 {
-	[Activity(Label = "Daily Audio Bible", Icon = "@drawable/app_icon", Theme = "@style/Theme.Splash", MainLauncher = true, NoHistory = true)]
+	[Activity(Label = "Daily Audio Bible", Icon = "@drawable/app_icon", Theme = "@style/Theme.Splash", MainLauncher = true, NoHistory = true, ScreenOrientation=ScreenOrientation.Portrait)]
 	public class SplashScreen: AppCompatActivity
 	{
 		static readonly string TAG = "X:" + typeof(SplashScreen).Name;
