@@ -135,10 +135,10 @@
                     </StackLayout>
                 </ScrollView>
                 <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" VerticalOptions="StartAndExpand" BackgroundColor="{DynamicResource ReadBackgroundColor}">
-                    <ScrollView>
                         <Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Medium" Style="{StaticResource secondaryLabelStyle}" />
                         <Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Small" Style="{StaticResource secondaryLabelStyle}" />
                         <Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
+                    <ScrollView>
                         <local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand" />
                     </ScrollView>
                 </StackLayout>

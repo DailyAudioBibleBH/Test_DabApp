@@ -22,12 +22,12 @@
                 </StackLayout>
                 <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
                     <StackLayout VerticalOptions="CenterAndExpand">
-                        <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" />
-                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528" />
-                        <ContentView Padding="40, 10, 40, 0">
-                            <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}" />
+                        <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
+                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
+						<ContentView Padding="40, 10, 40, 0">
+                        <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
                         </ContentView>
-                    </StackLayout>
+					</StackLayout>
                     <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" />
                     <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
                         <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
@@ -45,40 +45,40 @@
                             <ColumnDefinition Width="17*" />
                         </Grid.ColumnDefinitions>
                         <Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" />
-                        <Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" />
-                        <Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" />
-                        <Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" />
+                        <Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"/>
+                        <Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"/>
+                        <Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25"/>
                     </Grid>
-                    <Grid VerticalOptions="EndAndExpand">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="3*" />
-                            <ColumnDefinition Width="3*" />
-                        </Grid.ColumnDefinitions>
-                        <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" />
-                        <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
-                        <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10" />
-                    </Grid>
+					<Grid VerticalOptions="EndAndExpand">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="3*"/>
+							<ColumnDefinition Width="3*"/>
+							<ColumnDefinition Width="3*"/>
+						</Grid.ColumnDefinitions>
+						<Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15"/>
+						 <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
+						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10"/>
+					</Grid>
                 </StackLayout>
                 <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" Spacing="10" BackgroundColor="{DynamicResource ReadBackgroundColor}">
+                    <Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Small" Style="{StaticResource secondaryLabelStyle}"/>
+                    <Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+                    <Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
                     <ScrollView>
-                        <Label x:Name="ReadTitle" VerticalOptions="Start" FontSize="Small" Style="{StaticResource secondaryLabelStyle}" />
-                        <Label x:Name="ReadExcerpts" VerticalOptions="Start" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}" />
-                        <Label x:Name="AltWarning" IsVisible="false" VerticalOptions="Start" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
                         <local:HtmlLabel x:Name="ReadText" VerticalOptions="StartAndExpand" />
                     </ScrollView>
                 </StackLayout>
                 <StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20, 0, 20, 20" Spacing="10">
-                    <StackLayout Orientation="Horizontal">
-                        <Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
-                        <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand" />
-                    </StackLayout>
-                    <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}" />
-                    <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}" VerticalOptions="EndAndExpand" />
-                    <BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}" />
+					<StackLayout Orientation="Horizontal">
+                    	<Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
+						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
+					</StackLayout>
+                    <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}"/>
+                    <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  VerticalOptions="EndAndExpand"/>
+					<BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}"/>
                 </StackLayout>
                 <StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
                     <Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold" />
