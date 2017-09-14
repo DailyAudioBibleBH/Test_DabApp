@@ -3,13 +3,13 @@
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout Padding="10" Spacing="10">
-			<Label Text="My Profile" VerticalOptions="Start" Style="{StaticResource playerLabelStyle}"/>
-			<Label Text="First Name" FontSize="Micro" VerticalOptions="EndAndExpand"/>
-			<Entry x:Name="FirstName" VerticalOptions="StartAndExpand" Completed="OnFirstNameCompleted"/>
-			<Label Text="Last Name" FontSize="Micro" VerticalOptions="EndAndExpand"/>
-			<Entry x:Name="LastName" VerticalOptions="StartAndExpand" Completed="OnLastNameCompleted"/>
-			<Label Text="Email Address" FontSize="Micro" VerticalOptions="EndAndExpand"/>
-			<Entry x:Name="Email" VerticalOptions="StartAndExpand" Keyboard="Email"/>
+			<Label Text="My Profile" Style="{StaticResource playerLabelStyle}"/>
+			<Label Text="First Name" FontSize="Micro"/>
+			<Entry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
+			<Label Text="Last Name" FontSize="Micro" />
+			<Entry x:Name="LastName" Completed="OnLastNameCompleted"/>
+			<Label Text="Email Address" FontSize="Micro"/>
+			<Entry x:Name="Email" Keyboard="Email"/>
 			<Label Text="Change Password" Style="{StaticResource playerLabelStyle}"/>
 			<Label Text="Current Password" FontSize="Micro"/>
 			<Entry x:Name="CurrentPassword" IsPassword="true" Completed="OnCurrentPasswordCompleted"/>

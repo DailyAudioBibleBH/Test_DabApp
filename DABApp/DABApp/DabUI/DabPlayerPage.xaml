@@ -44,7 +44,7 @@
                             <ColumnDefinition Width="17*" />
                             <ColumnDefinition Width="17*" />
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25"/>
+                        <Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" />
                         <Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"/>
                         <Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"/>
                         <Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25"/>

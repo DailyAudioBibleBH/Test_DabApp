@@ -71,7 +71,29 @@
 								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>
 				</RelativeLayout>
 			</ControlTemplate>
-			<!--Theme Styles-->
+            <!-- No player page and no scrolling-->
+            <ControlTemplate x:Key="NoPlayerPageTemplateWithoutScrolling">
+                <RelativeLayout>
+                <StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                    <ContentPresenter VerticalOptions="FillAndExpand" />
+<!--                    <local:DabPlayerBar VerticalOptions="End" />
+-->                </StackLayout>
+                <StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
+                                RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
+                                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
+                                RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
+                                RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                                </StackLayout>
+                <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
+                                RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
+                                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
+                                RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
+                                RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>
+                </RelativeLayout>
+            </ControlTemplate>
+
+
+            <!--Theme Styles-->
 			<!--Content Page-->
 			<Style x:Key="pageStyle" TargetType="ContentPage">
 				<Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
