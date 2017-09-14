@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -80,6 +80,12 @@
     <CodesignProvision>iOS Team Provisioning Profile: com.dailyaudiobible.dabapp</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MarkDownDeep.iOS">
+      <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Stripe">
+      <HintPath>..\Components\stripe-1.0.7\lib\ios-unified\Stripe.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -164,9 +170,6 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.2.3.4.247\lib\Xamarin.iOS10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
-    <Reference Include="Stripe">
-      <HintPath>..\Components\stripe-1.0.7\lib\ios-unified\Stripe.dll</HintPath>
-    </Reference>
     <Reference Include="TEditor.Abstractions">
       <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.Abstractions.dll</HintPath>
     </Reference>
@@ -181,9 +184,6 @@
     </Reference>
     <Reference Include="SocketIoClientDotNet">
       <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\xamarinios10\SocketIoClientDotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="MarkDownDeep.iOS">
-      <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack.NetCore">
       <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\netstandard1.3\HtmlAgilityPack.NetCore.dll</HintPath>
@@ -205,45 +205,92 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\29.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\58.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\87.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\120.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\180.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\40.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\50.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\100.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\72.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\144.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\76.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\152.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\167.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\57.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png" />
-    <ImageAsset Include="Assets.xcassets\LaunchImage-1.launchimage\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\airplay.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white.png" />
-    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_2x.png" />
-    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_3x.png" />
-    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white.png" />
-    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_2x.png" />
-    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_3x.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\29.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\58.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\87.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\120.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\180.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\40.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\50.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\100.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\72.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\144.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\76.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\152.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\167.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\57.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\114.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\80.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\LaunchImage-1.launchimage\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_2x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\airplay.imageset\ic_airplay_white_3x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_2x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\down_arrow.imageset\ic_keyboard_arrow_down_white_3x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="DabAudio\" />
-    <Folder Include="CustomRenderers\" />
-    <Folder Include="DabData\" />
-    <Folder Include="Effects\" />
-    <Folder Include="DabApi\" />
-    <Folder Include="DependencyServices\" />
-    <Folder Include="Assets.xcassets\ic_play_circle_outline_white.png.imageset\" />
     <Folder Include="Assets.xcassets\airplay.imageset\" />
     <Folder Include="Assets.xcassets\down_arrow.imageset\" />
+    <Folder Include="Assets.xcassets\ic_play_circle_outline_white.png.imageset\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
