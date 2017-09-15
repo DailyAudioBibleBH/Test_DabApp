@@ -60,7 +60,7 @@ namespace DABApp
 					APIToken token = container.token;
 					if (container.code == "login_error")
 					{
-						return container.message[0];
+						return container.message;
 					}
 					if (TokenSettings == null || EmailSettings == null)
 					{
@@ -139,7 +139,7 @@ namespace DABApp
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
 				if (container.code == "rest_forbidden" || container.code == "add_member_error") {
-					return "The following error was thrown by the server: " + container.message;
+					return "An error occured: " + container.message;
 				}
 				if (TokenSettings == null)
 				{
@@ -180,7 +180,7 @@ namespace DABApp
 				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/resetpassword", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-				return container.message[0];
+				return container.message;
 			}
 			catch (Exception e) {
 				return "The following exception was caught: " + e.Message;
@@ -293,7 +293,7 @@ namespace DABApp
 				APIToken token = container.token;
 				if (container.message != null && token == null)
 				{
-					throw new Exception(container.message[0]);
+					throw new Exception(container.message);
 				}
 				TokenSettings.Value = token.value;
 				ExpirationSettings.Value = token.expires;

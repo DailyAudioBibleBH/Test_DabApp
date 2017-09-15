@@ -86,6 +86,23 @@
                     <Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}" />
                 </StackLayout>
             </StackLayout>
-        </RelativeLayout>
-    </t:MenuContainerPage.Content>
+          </ScrollView>
+        </StackLayout>
+        <StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20, 0, 20, 20" Spacing="10">
+          <StackLayout Orientation="Horizontal">
+            <Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
+            <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
+          </StackLayout>
+          <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}"/>
+          <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  VerticalOptions="EndAndExpand"/>
+          <BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}"/>
+        </StackLayout>
+        <StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+          <Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold" />
+          <Label Text="Create an account and join us each day as we read through the bible every year." FontSize="Medium" />
+          <Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}" />
+        </StackLayout>
+      </StackLayout>
+    </RelativeLayout>
+  </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
