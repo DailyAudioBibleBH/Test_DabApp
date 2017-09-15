@@ -59,6 +59,7 @@ namespace DABApp
 			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == "Success")
 			{
+				MessagingCenter.Send<string>("Setup", "Setup");
 				GuestStatus.Current.IsGuestLogin = false;
 				if (_fromPlayer)
 				{

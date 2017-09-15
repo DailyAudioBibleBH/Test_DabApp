@@ -238,9 +238,6 @@
     <AndroidResource Include="..\iOS\Resources\ic_menu_white.png">
       <Link>Resources\drawable\ic_menu_white.png</Link>
     </AndroidResource>
-    <AndroidResource Include="..\iOS\Resources\ic_settings_white.png">
-      <Link>Resources\drawable\ic_settings_white.png</Link>
-    </AndroidResource>
     <AndroidResource Include="..\iOS\Resources\ic_attach_money_white.png">
       <Link>Resources\drawable\ic_attach_money_white.png</Link>
     </AndroidResource>
@@ -285,6 +282,9 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_pause_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_settings_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_settings_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_settings_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

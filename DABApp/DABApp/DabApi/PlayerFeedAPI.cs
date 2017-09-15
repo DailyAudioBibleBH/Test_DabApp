@@ -36,6 +36,7 @@ namespace DABApp
 				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
 				var existingEpisodeIds = existingEpisodes.Select(x => x.id);
 				var newEpisodeIds = Episodes.Select(x => x.id);
+
 				foreach (var e in Episodes) {
 					if (!existingEpisodeIds.Contains(e.id)) {
 						db.Insert(e);

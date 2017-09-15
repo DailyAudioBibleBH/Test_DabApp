@@ -14,11 +14,11 @@ namespace DABApp
 		string backgroundImage;
 		dbEpisodes episode;
 		static double original;
-		static bool lastKeyboardStatus;
 
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
+			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
 			ChannelsList.SelectedItem = _resource;
@@ -245,8 +245,12 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
-			original = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
+			if (Device.RuntimePlatform == "iOS")
+			{
+				int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
+				JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+				original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+			}
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)

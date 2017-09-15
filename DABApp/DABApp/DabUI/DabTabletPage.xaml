@@ -41,10 +41,10 @@
 								<ColumnDefinition Width="10*"/>
 								<ColumnDefinition Width="24*"/>
 							</Grid.ColumnDefinitions>
-				<Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white.png" Grid.Row="0" Grid.Column="1"/>
-				<Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImage}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
-				<Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_2x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
-				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white.png" Grid.Row="0" Grid.Column="3"/>
+				<Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
+				<Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2"/>
+				<Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3"/>
 			</Grid>
 			<local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" UserInteraction="OnTouched"
 					Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}"
@@ -67,7 +67,7 @@
 						</Grid.ColumnDefinitions>
 						<Button x:Name="favorite" Style="{StaticResource imageButtonStyle}" Image="{Binding favoriteSource}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="1"/>
 						<local:AudioOutputView x:Name="Output" WidthRequest="35" Grid.Row="0" Grid.Column="2"/>
-						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3"/>
+						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3"/>
 					</Grid>	
 					</StackLayout>
 				</RelativeLayout>
@@ -90,7 +90,7 @@
 			</StackLayout>
 			<StackLayout Grid.Row="1" Grid.Column="1">
 				<StackLayout Padding="20, 20, 20, 0" Spacing="10">
-					<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" ValueChanged="Handle_ValueChanged">
+					<controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0">
 						<controls:SegmentedControl.Children>
 							<controls:SegmentedControlOption Text="Archive"/>
 							<controls:SegmentedControlOption Text="Read"/>

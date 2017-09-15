@@ -54,6 +54,13 @@ namespace DABApp.Droid
 
 			LoadApplication(new App());
 
+			LoadCustomToolBar();
+			MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
+
+		}
+
+		void LoadCustomToolBar()
+		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
 			SetSupportActionBar(toolbar);
 			var newMenu = LayoutInflater.Inflate(Resource.Layout.DabToolbar, null);
@@ -61,7 +68,7 @@ namespace DABApp.Droid
 			menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
 			var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
 			give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give");};
+			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
 			var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
 			text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");

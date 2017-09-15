@@ -14,12 +14,11 @@ namespace DABApp
 		View ChannelView;
 		dbEpisodes episode;
 		Resource _resource;
-		//static bool IsUnInitialized = true;
+		//static bool IsUnInitialized = false;
 
 		public DabChannelsPage()
 		{
 			InitializeComponent();
-
 			////Choose a different control template to disable built in scroll view
 			//ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			//this.ControlTemplate = playerBarTemplate;
@@ -181,6 +180,7 @@ namespace DABApp
 
 		protected override async void OnAppearing()
 		{
+			MessagingCenter.Send<string>("Setup", "Setup");
 			base.OnAppearing();
 			if (episode == null)
 			{
