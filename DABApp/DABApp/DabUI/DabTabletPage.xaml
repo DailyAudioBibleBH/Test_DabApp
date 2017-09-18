@@ -38,10 +38,10 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="24*" />
               </Grid.ColumnDefinitions>
-              <Button x:Name="backwardButton" Clicked="OnBack30" Style="{StaticResource imageButtonStyle}" Image="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" />
-              <Button x:Name="PlayPause" Image="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Clicked="OnPlay" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" />
-              <Button x:Name="Initializer" Clicked="OnInitialized" IsVisible="false" Image="ic_play_circle_outline_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" />
-              <Button x:Name="forwardButton" Clicked="OnForward30" Style="{StaticResource imageButtonStyle}" Image="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" />
+              <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" ><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
+              <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
+              <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
+              <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
             </Grid>
             <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" UserInteraction="OnTouched" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" />
             <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings">
