@@ -51,7 +51,6 @@ namespace DABApp
 
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
-
 			if (Device.RuntimePlatform != "Android")
 			{
 				//Menu Button
@@ -73,7 +72,7 @@ namespace DABApp
 				giveButton.Clicked += OnGive;
 				this.ToolbarItems.Add(giveButton);
 			}
-			else 
+			else
 			{
 				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
 					if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
@@ -121,6 +120,29 @@ namespace DABApp
 					else await Navigation.PushAsync(new DabManageDonationsPage(dons));
 				}
 				else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+			}
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+			MessagingCenter.Unsubscribe<string>("Give", "Give");
+		}
+
+		protected override void OnAppearing()
+		{
+			base.OnAppearing();
+			if (Device.RuntimePlatform == "Android")
+			{
+				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+				{
+					if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+					{
+						this.ShowMenu();
+					}
+				});
+				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
 			}
 		}
 	}
