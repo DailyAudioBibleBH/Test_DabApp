@@ -40,7 +40,7 @@
 						<ViewCell>
 							<ViewCell.View>
 								<StackLayout Padding="20" Spacing="0">
-									<ff:CachedImage Aspect="AspectFill">
+									<ff:CachedImage Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
 										<ff:CachedImage.Source>
 											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 										</ff:CachedImage.Source>
