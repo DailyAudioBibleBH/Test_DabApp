@@ -36,11 +36,7 @@ namespace DABApp
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
 			TimedActions();
-			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
-			{
-				TimedActions();
-				return true;
-			});
+			MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
 			if (Episode != null)
 			{
 				episode = Episode;

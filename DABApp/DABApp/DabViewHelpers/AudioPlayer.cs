@@ -35,7 +35,7 @@ namespace DABApp
 		{
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
-
+			_player.Completed += OnCompleted;
 			// Start a timer to get time information from the player
 			Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
 						{
@@ -98,7 +98,8 @@ namespace DABApp
 									IsInitialized = Player.IsInitialized;
 								}
 
-								if (_TotalTime == _CurrentTime) {
+								if (_TotalTime == _CurrentTime)
+								{
 									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
 									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
 									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
@@ -412,6 +413,13 @@ namespace DABApp
 			var handler = PropertyChanged;
 			if (handler != null)
 				handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		void OnCompleted(object o, EventArgs e)
+		{ 
+			PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
+			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
+			PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

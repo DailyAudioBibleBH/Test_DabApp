@@ -274,5 +274,7 @@ namespace DABApp.iOS
 				else return false;
 			}
 		}
+
+		public event EventHandler Completed;
 	}
 }

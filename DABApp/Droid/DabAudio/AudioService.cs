@@ -30,6 +30,7 @@ namespace DABApp.Droid
 			player.Completion += (s, e) =>
 			{
 				IsLoaded = false;
+				Completed.Invoke(s, e);
 			};
 			player.Error += OnError;
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
@@ -105,6 +106,8 @@ namespace DABApp.Droid
 				else return false;
 			}
 		}
+
+		public event EventHandler Completed;
 
 		void OnError(object o, EventArgs e)
 		{

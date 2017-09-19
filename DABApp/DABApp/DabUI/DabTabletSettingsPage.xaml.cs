@@ -8,7 +8,7 @@ namespace DABApp
 	public partial class DabTabletSettingsPage : MasterDetailMenuPage
 	{
 		ControlTemplate playerBarTemplate;
-		bool needRemove = true;
+		bool needRemove = Device.RuntimePlatform == "iOS" ? true : false;
 
 		public DabTabletSettingsPage()
 		{

@@ -221,6 +221,7 @@
     <Compile Include="CustomRenderers\DabSeekBarRenderer.cs" />
     <Compile Include="CustomRenderers\DabSegmentedControlRenderer.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
+    <Compile Include="DependencyServices\ShareIntent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -276,15 +277,15 @@
     <AndroidResource Include="Resources\layout\DabToolbar.axml" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_replay_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_forward_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_replay_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_forward_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_pause_circle_outline_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_pause_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_settings_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_settings_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_settings_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_pause_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_play_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_forward_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_replay_30_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
