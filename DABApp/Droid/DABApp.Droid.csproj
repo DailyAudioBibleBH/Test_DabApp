@@ -258,9 +258,6 @@
     <AndroidResource Include="Resources\drawable-hdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\app_icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_done_white.png" />
     <AndroidResource Include="Resources\drawable\ic_play_circle_outline_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_up_white_3x.png" />
@@ -275,10 +272,6 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_cloud_download_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
     <AndroidResource Include="Resources\layout\DabToolbar.axml" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_replay_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_forward_30_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_play_circle_outline_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\ic_pause_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_settings_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_settings_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_settings_white_3x.png" />
@@ -286,6 +279,15 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_forward_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_replay_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_replay_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_forward_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_play_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_pause_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_replay_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\pencil_white.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

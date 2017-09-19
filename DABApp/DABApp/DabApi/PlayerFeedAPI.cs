@@ -157,7 +157,10 @@ namespace DABApp
 				}
 				Debug.WriteLine("Downloads complete!");
 				DownloadIsRunning = false;
-				Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update");});
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+				}
 				return true;
 			}
 			else {
@@ -174,7 +177,10 @@ namespace DABApp
 				{
 					episode.is_downloaded = false;
 					db.Update(episode);
-					MessagingCenter.Send<string>("Update", "Update");
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						MessagingCenter.Send<string>("Update", "Update");
+					}
 				}
 				else {
 					throw new Exception();
@@ -197,7 +203,10 @@ namespace DABApp
 					break;
 			}
 			db.Update(episode);
-			MessagingCenter.Send<string>("Update", "Update");
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				MessagingCenter.Send<string>("Update", "Update");
+			}
 		}
 
 		public static void CleanUpEpisodes() {
@@ -250,7 +259,10 @@ namespace DABApp
 							Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
 							episode.is_downloaded = false;
 							db.Update(episode);
-							Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update");});
+							if (Device.Idiom == TargetIdiom.Tablet)
+							{
+								Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+							}
 						}
 
 					}
@@ -275,7 +287,10 @@ namespace DABApp
 			episode.stop_time = NewStopTime;
 			episode.remaining_time = NewRemainingTime;
 			db.Update(episode);
-			MessagingCenter.Send<string>("Update", "Update");
+			if (Device.Idiom == TargetIdiom.Tablet)
+			{
+				MessagingCenter.Send<string>("Update", "Update");
+			}
 		}
 
 		public static async Task<Reading> GetReading(string ReadLink) {

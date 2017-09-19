@@ -12,7 +12,7 @@ namespace DABApp.Droid
 		public void OpenShareIntent(string Channelcode, string episodeId)
 		{
 			var myIntent = new Intent(Android.Content.Intent.ActionSend);
-			myIntent.SetDataAndNormalize(Android.Net.Uri.Parse($"https://player.dailyaudiobible.com/{Channelcode}/{episodeId}"));
+			myIntent.SetDataAndType(Android.Net.Uri.Parse($"https://player.dailyaudiobible.com/{Channelcode}/{episodeId}"), "text/html");
 			Forms.Context.StartActivity(Intent.CreateChooser(myIntent, "Choose an App"));
 		}
 	}
