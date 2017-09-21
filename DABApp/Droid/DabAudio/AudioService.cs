@@ -5,6 +5,7 @@ using Android.Media;
 using Android.Content.Res;
 using System.Collections.Generic;
 using System.IO;
+using Plugin.MediaManager;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -35,12 +36,14 @@ namespace DABApp.Droid
 			player.Error += OnError;
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
+				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.AudioUrl);
 				player.SetDataSource(fileName);
 			}
 			else
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				fileName = Path.Combine(doc, fileName);
+				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.AudioFile);
 				player.SetDataSource(fileName);
 			}
 			Episode = episode;
