@@ -18,6 +18,9 @@ using Xamarin.Forms;
 using SQLite;
 using Xamarin.Forms.Platform.Android;
 using Android.Graphics;
+using Plugin.MediaManager;
+using Plugin.MediaManager.MediaSession;
+using Plugin.MediaManager.ExoPlayer;
 
 namespace DABApp.Droid
 {
@@ -53,6 +56,10 @@ namespace DABApp.Droid
 			SQLite_Droid.Assets = this.Assets;
 
 			LoadApplication(new App());
+
+			((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(Forms.Context, typeof(ExoPlayerAudioService));
+			var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
+			CrossMediaManager.Current.AudioPlayer = exoPlayer;
 
 			LoadCustomToolBar();
 			MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
