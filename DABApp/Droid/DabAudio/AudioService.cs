@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using Plugin.MediaManager;
 using Plugin.MediaManager.Abstractions.EventArguments;
+using System.Linq;
+using Android.Content;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -35,6 +37,8 @@ namespace DABApp.Droid
 			//	Completed.Invoke(s, e);
 			//};
 			//player.Error += OnError;
+			Episode = episode;
+			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
@@ -65,7 +69,7 @@ namespace DABApp.Droid
 
 		public void SeekTo(int seconds) {
 			//player.SeekTo(seconds * 1000);
-			CrossMediaManager.Current.AudioPlayer.Seek(TimeSpan.FromSeconds(seconds));
+			CrossMediaManager.Current.Seek(TimeSpan.FromSeconds(seconds));
 		}
 
 		public void Skip(int seconds)
@@ -131,6 +135,17 @@ namespace DABApp.Droid
 				case Plugin.MediaManager.Abstractions.Enums.MediaPlayerStatus.Stopped:
 					IsLoaded = false; break;
 			}
+		}
+
+		void SetMetaData(object o, MediaFileChangedEventArgs e)
+		{
+			e.File.Metadata.Artist = Episode.channel_title;
+			e.File.Metadata.Title = Episode.title;
+			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
+			e.File.Metadata.AlbumArt = Android.Provider.MediaStore.Images.Media.GetBitmap(Forms.Context.ContentResolver, Android.Net.Uri.Parse(ImageUri));
+			e.File.Metadata.AlbumArtUri = ImageUri;
+			e.File.Metadata.DisplayIconUri = ImageUri;
+			e.File.Metadata.ArtUri = ImageUri;
 		}
 	}
 }

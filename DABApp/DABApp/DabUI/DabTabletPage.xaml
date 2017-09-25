@@ -123,7 +123,7 @@
                       </Grid.ColumnDefinitions>
                       <Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Grid.Row="0" Grid.Column="0" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" />
                       <Image IsVisible="{Binding favoriteVisible}" Source="ic_star_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="1" />
-                      <Image IsVisible="{Binding hasJournalVisible}" Source="pencil-white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
+                      <Image IsVisible="{Binding hasJournalVisible}" Source="pencil_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
                       <Image IsVisible="{Binding downloadVisible}" Source="ic_cloud_download_white" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="3" />
                       <Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="0" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation" />
                       <local:ImageCircle IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="4" WidthRequest="10" HeightRequest="10" VerticalOptions="Center" />
@@ -154,7 +154,7 @@
             <Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
             <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand" />
           </StackLayout>
-          <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="500" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" />
+          <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="650" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" />
           <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}" />
           <BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}" />
         </StackLayout>
