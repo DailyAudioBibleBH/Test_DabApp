@@ -11,7 +11,7 @@
             <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
             <StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
                 <StackLayout Padding="20, 20, 20, 0" Spacing="10">
-                    <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0">
+                    <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="Black">
                         <controls:SegmentedControl.Children>
                             <controls:SegmentedControlOption Text="Listen" />
                             <controls:SegmentedControlOption Text="Read" />

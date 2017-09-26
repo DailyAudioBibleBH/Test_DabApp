@@ -8,7 +8,8 @@ using System.IO;
 using Plugin.MediaManager;
 using Plugin.MediaManager.Abstractions.EventArguments;
 using System.Linq;
-using Android.Content;
+using FFImageLoading;
+using System.Threading.Tasks;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -40,6 +41,13 @@ namespace DABApp.Droid
 			Episode = episode;
 			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
+			CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
+			{
+				var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
+				arg.Metadata.AlbumArtUri = ImageUri;
+				arg.Metadata.DisplayIconUri = ImageUri;
+				arg.Metadata.ArtUri = ImageUri;
+			});
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
 				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
@@ -137,15 +145,23 @@ namespace DABApp.Droid
 			}
 		}
 
-		void SetMetaData(object o, MediaFileChangedEventArgs e)
+		async void SetMetaData(object o, MediaFileChangedEventArgs e)
 		{
 			e.File.Metadata.Artist = Episode.channel_title;
 			e.File.Metadata.Title = Episode.title;
+			e.File.Metadata.Album = null;
 			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			e.File.Metadata.AlbumArt = Android.Provider.MediaStore.Images.Media.GetBitmap(Forms.Context.ContentResolver, Android.Net.Uri.Parse(ImageUri));
-			e.File.Metadata.AlbumArtUri = ImageUri;
-			e.File.Metadata.DisplayIconUri = ImageUri;
-			e.File.Metadata.ArtUri = ImageUri;
+			await Task.Run(async () =>
+			{
+				var input = new Java.Net.URL(ImageUri).OpenStream();
+				var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+				Device.BeginInvokeOnMainThread(() =>
+				{
+					e.File.Metadata.AlbumArt = a;
+					e.File.Metadata.Art = a;
+					e.File.Metadata.DisplayIcon = a;
+				});
+			});
 		}
 	}
 }
