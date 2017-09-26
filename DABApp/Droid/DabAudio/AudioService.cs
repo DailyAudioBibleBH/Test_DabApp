@@ -43,10 +43,16 @@ namespace DABApp.Droid
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
 			CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
 			{
-				var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-				arg.Metadata.AlbumArtUri = ImageUri;
-				arg.Metadata.DisplayIconUri = ImageUri;
-				arg.Metadata.ArtUri = ImageUri;
+				await Task.Run(async () =>
+				{
+					var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
+					var input = new Java.Net.URL(ImageUri).OpenStream();
+					var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+
+					arg.Metadata.AlbumArt = a;
+					arg.Metadata.Art = a;
+					arg.Metadata.DisplayIcon = a;
+				});
 			});
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
