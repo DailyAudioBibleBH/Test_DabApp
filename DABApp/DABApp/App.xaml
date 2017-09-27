@@ -24,6 +24,7 @@
 			<Color x:Key="EpisodeMenuColor">#1b1b1b</Color>
 			<Color x:Key="TableViewHeaderColor">#878787</Color>
 			<Color x:Key="ReadBackgroundColor">#1b1b1b</Color>
+            <Color x:Key="ActivityHolderBackground">#000000</Color>
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<RelativeLayout>
@@ -33,7 +34,7 @@
 					</ScrollView>
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
+				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
 								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
@@ -58,7 +59,7 @@
 					<ContentPresenter VerticalOptions="FillAndExpand" />
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
+				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
 								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
@@ -78,7 +79,7 @@
                     <ContentPresenter VerticalOptions="FillAndExpand" />
 <!--                    <local:DabPlayerBar VerticalOptions="End" />
 -->                </StackLayout>
-                <StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
+                <StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
                                 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
                                 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
                                 RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
