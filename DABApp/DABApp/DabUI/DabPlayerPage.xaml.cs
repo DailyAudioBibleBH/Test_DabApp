@@ -25,7 +25,18 @@ namespace DABApp
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			}
-			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
+			
+			IsGuest = GuestStatus.Current.IsGuestLogin;
+			Episode = episode;
+
+			//Show or hide player controls
+			if (AudioPlayer.Instance.CurrentEpisodeId == 0)
+			{
+				//first episode being played, go ahead and initialize
+				OnInitialized(null, null);
+			}
+			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+			{
 				SeekBar.IsVisible = false;
 				TimeStrings.IsVisible = false;
 				PlayerControls.VerticalOptions = LayoutOptions.CenterAndExpand;
@@ -37,8 +48,7 @@ namespace DABApp
 				Initializer.IsVisible = true;
 				Favorite.IsVisible = false;
 			}
-			IsGuest = GuestStatus.Current.IsGuestLogin;
-			Episode = episode;
+
 			//AudioPlayer.Instance.ShowPlayerBar = false;
 			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
 			SeekBar.UserInteraction += OnTouch;
@@ -259,7 +269,11 @@ namespace DABApp
 				AudioPlayer.Instance.Pause();
 			}
 			AudioPlayer.Instance.SetAudioFile(Episode);
-			AudioPlayer.Instance.Play();
+
+            if (o != null) {
+            //Start playing if they pushed the play button
+                AudioPlayer.Instance.Play();
+                }
 			SeekBar.IsVisible = true;
 			TimeStrings.IsVisible = true;
 			PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
