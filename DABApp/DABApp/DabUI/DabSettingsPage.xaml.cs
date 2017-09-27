@@ -36,8 +36,11 @@ namespace DABApp
             _donations = Donations;
             if (GuestStatus.Current.IsGuestLogin)
             {
+                logOut.Title = null;
                 logOut.Clear();
+                Listening.Title = null;
                 Listening.Clear();
+                Account.Title = null;
                 Account.Clear();
             }
             //if (Device.Idiom == TargetIdiom.Tablet)
