@@ -21,7 +21,7 @@
 			<Color x:Key="NonScrollingListViewColor">#222222</Color>
 			<Color x:Key="PlayerLabelColor">#ffffff</Color>
 			<Color x:Key="HighlightedButtonDisabledTextColor">#4d0000</Color>
-			<Color x:Key="EpisodeMenuColor">#252525</Color>
+			<Color x:Key="EpisodeMenuColor">#1b1b1b</Color>
 			<Color x:Key="TableViewHeaderColor">#878787</Color>
 			<Color x:Key="ReadBackgroundColor">#1b1b1b</Color>
 			<!--Player Bar ControlTemplate-->
@@ -173,7 +173,7 @@
 			</Style>
 			<Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
 			<Style x:Key="EpisodeMenuStyle" TargetType="ListView">
-				<Setter Property="SeparatorColor" Value="{DynamicResource PageBackgroundColor}"/>
+				<Setter Property="SeparatorColor" Value="{DynamicResource InputBackgroundColor}"/>
 				<Setter Property="BackgroundColor" Value="{DynamicResource EpisodeMenuColor}"/>
 				<Setter Property="SeparatorVisibility" Value="Default"/>
 			</Style>
