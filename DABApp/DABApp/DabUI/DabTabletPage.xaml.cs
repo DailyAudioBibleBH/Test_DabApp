@@ -245,8 +245,8 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
-			original = Content.Height*2/3 - SegControl.Height - Divider.Height - 90;
+			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height  - 90; //- Divider.Height
+            original = Content.Height*2/3 - SegControl.Height - -90; //- Divider.Height
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)

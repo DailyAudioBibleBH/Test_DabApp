@@ -133,7 +133,7 @@ namespace DABApp
 					//AudioPlayer.Instance.showPlayerBar = false;
 					Listen.IsVisible = true;
 					BackgroundImage.IsVisible = true;
-					Divider.IsVisible = false;
+					//Divider.IsVisible = false;
 					break;
 				case 1:
 					Listen.IsVisible = false;
@@ -147,7 +147,7 @@ namespace DABApp
 					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					BackgroundImage.IsVisible = false;
-					Divider.IsVisible = true;
+					//Divider.IsVisible = true;
 					break;
 				case 2:
 					Read.IsVisible = false;
@@ -162,7 +162,7 @@ namespace DABApp
 						Journal.IsVisible = true;
 					}
 					BackgroundImage.IsVisible = false;
-					Divider.IsVisible = true;
+					//Divider.IsVisible = true;
 					break;
 			}
 		}

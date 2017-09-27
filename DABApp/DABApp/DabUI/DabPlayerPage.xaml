@@ -18,7 +18,7 @@
               <controls:SegmentedControlOption Text="Journal" />
             </controls:SegmentedControl.Children>ds
           </controls:SegmentedControl>
-          <BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
+          <!--<BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />-->
         </StackLayout>
         <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
           <StackLayout VerticalOptions="CenterAndExpand">
