@@ -422,15 +422,16 @@ namespace DABApp
 		}
 
 		void SetVisibility(bool par)
-		{ 
-			SeekBar.IsVisible = par;
-			TimeStrings.IsVisible = par;
-			Output.IsVisible = par;
+		{
+            int opa = par == true ? 1 : 0;
+            SeekBar.Opacity = opa;
+            TimeStrings.Opacity = opa;
+            backwardButton.Opacity = opa;
+            forwardButton.Opacity = opa;
+			//Output.IsVisible = par;
+			//Share.IsVisible = par;
+			//favorite.IsVisible = par;
 			PlayPause.IsVisible = par;
-			backwardButton.IsVisible = par;
-			forwardButton.IsVisible = par;
-			Share.IsVisible = par;
-			favorite.IsVisible = par;
 			Initializer.IsVisible = !par;
 		}
 

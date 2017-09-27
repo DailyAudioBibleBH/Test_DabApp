@@ -37,16 +37,16 @@ namespace DABApp
 			}
 			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
 			{
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				PlayerControls.VerticalOptions = LayoutOptions.CenterAndExpand;
-				Output.IsVisible = false;
+                SeekBar.Opacity = 0;
+				TimeStrings.Opacity = 0;
+				PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
+				//Output.Opacity = 0;
 				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
+				backwardButton.Opacity = 0;
+				forwardButton.Opacity = 0;
+				//Share.Opacity = 0;
 				Initializer.IsVisible = true;
-				Favorite.IsVisible = false;
+				//Favorite.Opacity = 0;
 			}
 
 			//AudioPlayer.Instance.ShowPlayerBar = false;
@@ -274,15 +274,16 @@ namespace DABApp
             //Start playing if they pushed the play button
                 AudioPlayer.Instance.Play();
                 }
-			SeekBar.IsVisible = true;
-			TimeStrings.IsVisible = true;
+            //Show controls
+            SeekBar.Opacity = 1;
+			TimeStrings.Opacity = 1;
 			PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
-			Output.IsVisible = true;
-			PlayPause.IsVisible = true;
-			backwardButton.IsVisible = true;
-			forwardButton.IsVisible = true;
-			Share.IsVisible = true;
-			Favorite.IsVisible = true;
+			//Output.Opacity = 1;
+            PlayPause.IsVisible = true;
+            backwardButton.Opacity = 1;
+            forwardButton.Opacity = 1;
+			//Share.Opacity = 1;
+			//Favorite.Opacity = 1;
 		}
 
 		void OnShare(object o, EventArgs e) {
