@@ -17,7 +17,7 @@ namespace DABApp
 			BackgroundColor = (Color)App.Current.Resources["PageBackgroundColor"];
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				Post.Text = "Log in";
+				Post.Text = "  Log in  ";
 			}
 		}
 	}
