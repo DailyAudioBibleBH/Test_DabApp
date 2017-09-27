@@ -294,6 +294,10 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_replay_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\pencil_white.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_share_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_share_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_keyboard_arrow_up_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_keyboard_arrow_up_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
