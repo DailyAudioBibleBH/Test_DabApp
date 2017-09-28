@@ -19,6 +19,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : 0;
+			EpisodeList.HeightRequest = 1000;
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;

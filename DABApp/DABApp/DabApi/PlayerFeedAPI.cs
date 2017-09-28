@@ -15,6 +15,7 @@ namespace DABApp
 	public class PlayerFeedAPI
 	{
 		static SQLiteConnection db = DabData.database;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 		static bool DownloadIsRunning = false;
 		static bool CleanupIsRunning = false;
 
@@ -38,14 +39,28 @@ namespace DABApp
 				var newEpisodeIds = Episodes.Select(x => x.id);
 				foreach (var e in Episodes) {
 					if (!existingEpisodeIds.Contains(e.id)) {
-						db.Insert(e);
+						if (Device.RuntimePlatform == "Android")
+						{
+							await adb.InsertOrReplaceAsync(e);
+						}
+						else
+						{
+							db.Insert(e);
+						}
 					}
 				}
 				foreach (var old in existingEpisodes)
 				{
 					if (!newEpisodeIds.Contains(old.id))
 					{
-						db.Delete(old);
+						if (Device.RuntimePlatform == "Android")
+						{
+							await adb.DeleteAsync(old);
+						}
+						else
+						{
+							db.Delete(old);
+						}
 					}
 				}
 				await DownloadEpisodes();

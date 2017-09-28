@@ -12,6 +12,11 @@ namespace DABApp.iOS
 	{
 		private static bool _initiated = false;
 
+		public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
+		{
+			throw new NotImplementedException();
+		}
+
 		public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the iOS database

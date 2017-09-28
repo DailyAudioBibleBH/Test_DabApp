@@ -157,17 +157,20 @@ namespace DABApp.Droid
 			e.File.Metadata.Title = Episode.title;
 			e.File.Metadata.Album = null;
 			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			await Task.Run(async () =>
+			if (Device.Idiom == TargetIdiom.Phone)
 			{
-				var input = new Java.Net.URL(ImageUri).OpenStream();
-				var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
-				Device.BeginInvokeOnMainThread(() =>
+				await Task.Run(async () =>
 				{
-					e.File.Metadata.AlbumArt = a;
-					e.File.Metadata.Art = a;
-					e.File.Metadata.DisplayIcon = a;
+					var input = new Java.Net.URL(ImageUri).OpenStream();
+					var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+					Device.BeginInvokeOnMainThread(() =>
+					{
+						e.File.Metadata.AlbumArt = a;
+						e.File.Metadata.Art = a;
+						e.File.Metadata.DisplayIcon = a;
+					});
 				});
-			});
+			}
             //SetNotificationManager();
 		}
 
