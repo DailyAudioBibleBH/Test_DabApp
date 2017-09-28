@@ -17,7 +17,7 @@ namespace DABApp.Droid
 		public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the Android database
-			var filename = "GbrSQLite.db3";
+			var filename = "DabSQLite.db3";
 			string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 			var path = Path.Combine(folder, filename);
 

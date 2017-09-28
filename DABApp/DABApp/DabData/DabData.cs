@@ -24,6 +24,7 @@ namespace DABApp
 			_database.CreateTable<dbSettings>();
 			_database.CreateTable<dbEpisodes>();
 			_database.CreateTable<dbPlayerActions>();
+			_database.BusyTimeout = TimeSpan.FromMinutes(1);
 		}
 	}
 }

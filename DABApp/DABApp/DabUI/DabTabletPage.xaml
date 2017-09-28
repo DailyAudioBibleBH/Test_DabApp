@@ -85,7 +85,7 @@
       </StackLayout>
       <StackLayout Grid.Row="1" Grid.Column="1">
         <StackLayout Padding="20, 20, 20, 0" Spacing="10">
-          <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0">
+          <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="{DynamicResource PageBackgroundColor}">
             <controls:SegmentedControl.Children>
               <controls:SegmentedControlOption Text="Archive" />
               <controls:SegmentedControlOption Text="Read" />
@@ -97,7 +97,7 @@
         </StackLayout>
         <ScrollView x:Name="Archive" IsVisible="true">
           <StackLayout Spacing="10">
-            <StackLayout Orientation="Horizontal">
+            <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader">
               <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" BackgroundColor="Transparent" TextColor="White" />
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}" />
               <Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline" />

@@ -1,15 +1,14 @@
 ﻿using System;
 using DABApp.Droid;
 using Xamarin.Forms;
-using Android.Media;
-using Android.Content.Res;
-using System.Collections.Generic;
 using System.IO;
 using Plugin.MediaManager;
 using Plugin.MediaManager.Abstractions.EventArguments;
 using System.Linq;
-using FFImageLoading;
 using System.Threading.Tasks;
+using Android.Content;
+using Android.App;
+using Android.Support.V4.Media.Session;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -20,6 +19,7 @@ namespace DABApp.Droid
 		public static bool IsLoaded;
 		public static dbEpisodes Episode;
 		public static string FileName;
+		private MediaSessionCompat mediaSessionCompat;
 
 		public AudioService()
 		{
@@ -41,19 +41,19 @@ namespace DABApp.Droid
 			Episode = episode;
 			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
-			CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
-			{
-				await Task.Run(async () =>
-				{
-					var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-					var input = new Java.Net.URL(ImageUri).OpenStream();
-					var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+			//CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
+			//{
+			//	await Task.Run(async () =>
+			//	{
+			//		var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
+			//		var input = new Java.Net.URL(ImageUri).OpenStream();
+			//		var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
 
-					arg.Metadata.AlbumArt = a;
-					arg.Metadata.Art = a;
-					arg.Metadata.DisplayIcon = a;
-				});
-			});
+			//		arg.Metadata.AlbumArt = a;
+			//		arg.Metadata.Art = a;
+			//		arg.Metadata.DisplayIcon = a;
+			//	});
+			//});
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
 				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
@@ -168,6 +168,19 @@ namespace DABApp.Droid
 					e.File.Metadata.DisplayIcon = a;
 				});
 			});
+            //SetNotificationManager();
+		}
+
+		void SetNotificationManager()
+		{
+			if (mediaSessionCompat == null)
+			{
+				Intent intent = new Intent(Forms.Context, typeof(MainActivity));
+				PendingIntent pIntent = PendingIntent.GetActivity(Forms.Context, 0, intent, 0);
+				ComponentName name = new ComponentName("dailyaudiobible.dabapp", new RemoteControlBroadcastReceiver().ComponentName);
+				mediaSessionCompat = new MediaSessionCompat(Forms.Context, "DAB", name, pIntent);
+			}
+			CrossMediaManager.Current.MediaNotificationManager = new DabMediaNotificationManager(Forms.Context, mediaSessionCompat.SessionToken, typeof(MediaPlayerService));
 		}
 	}
 }

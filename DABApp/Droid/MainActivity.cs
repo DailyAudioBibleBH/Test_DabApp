@@ -21,6 +21,7 @@ using Android.Graphics;
 using Plugin.MediaManager;
 using Plugin.MediaManager.MediaSession;
 using Plugin.MediaManager.ExoPlayer;
+using Android.Support.V4.Media.Session;
 
 namespace DABApp.Droid
 {

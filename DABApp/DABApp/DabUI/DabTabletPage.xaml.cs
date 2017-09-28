@@ -18,6 +18,7 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
+			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : 0;
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -35,7 +36,6 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
-			TimedActions();
 			MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
 			if (Episode != null)
 			{
