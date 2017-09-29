@@ -7,7 +7,7 @@
 				<StackLayout Padding="15,10,0,0">
 				<Label Text="Settings" FontSize="Large" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
 				</StackLayout>
-				<TableView Intent="Settings">
+				<TableView Intent="Settings" x:Name="SettingsTable">
 					<TableRoot>
 						<TableSection x:Name="Account" Title="Account">
 							<ViewCell x:Name="Profile" Tapped="OnProfile">

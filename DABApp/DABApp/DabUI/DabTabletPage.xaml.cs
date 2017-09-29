@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -244,12 +244,8 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			if (Device.RuntimePlatform == "iOS")
-			{
-				int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
-				JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-				original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-			}
+			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height  - 90; //- Divider.Height
+            original = Content.Height*2/3 - SegControl.Height - -90; //- Divider.Height
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)
@@ -425,15 +421,16 @@ namespace DABApp
 		}
 
 		void SetVisibility(bool par)
-		{ 
-			SeekBar.IsVisible = par;
-			TimeStrings.IsVisible = par;
-			Output.IsVisible = par;
+		{
+            int opa = par == true ? 1 : 0;
+            SeekBar.Opacity = opa;
+            TimeStrings.Opacity = opa;
+            backwardButton.Opacity = opa;
+            forwardButton.Opacity = opa;
+			//Output.IsVisible = par;
+			//Share.IsVisible = par;
+			//favorite.IsVisible = par;
 			PlayPause.IsVisible = par;
-			backwardButton.IsVisible = par;
-			forwardButton.IsVisible = par;
-			Share.IsVisible = par;
-			favorite.IsVisible = par;
 			Initializer.IsVisible = !par;
 		}
 

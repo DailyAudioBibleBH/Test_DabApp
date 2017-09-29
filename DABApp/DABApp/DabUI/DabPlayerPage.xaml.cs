@@ -26,20 +26,30 @@ namespace DABApp
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
 			}
-			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId) {
-				SeekBar.IsVisible = false;
-				TimeStrings.IsVisible = false;
-				PlayerControls.VerticalOptions = LayoutOptions.CenterAndExpand;
-				Output.IsVisible = false;
-				PlayPause.IsVisible = false;
-				backwardButton.IsVisible = false;
-				forwardButton.IsVisible = false;
-				Share.IsVisible = false;
-				Initializer.IsVisible = true;
-				Favorite.IsVisible = false;
-			}
+			
 			IsGuest = GuestStatus.Current.IsGuestLogin;
 			Episode = episode;
+
+			//Show or hide player controls
+			if (AudioPlayer.Instance.CurrentEpisodeId == 0)
+			{
+				//first episode being played, go ahead and initialize
+				OnInitialized(null, null);
+			}
+			if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+			{
+                SeekBar.Opacity = 0;
+				TimeStrings.Opacity = 0;
+				PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
+				//Output.Opacity = 0;
+				PlayPause.IsVisible = false;
+				backwardButton.Opacity = 0;
+				forwardButton.Opacity = 0;
+				//Share.Opacity = 0;
+				Initializer.IsVisible = true;
+				//Favorite.Opacity = 0;
+			}
+
 			//AudioPlayer.Instance.ShowPlayerBar = false;
 			SeekBar.Value = AudioPlayer.Instance.CurrentTime;
 			SeekBar.UserInteraction += OnTouch;
@@ -127,7 +137,7 @@ namespace DABApp
 					//AudioPlayer.Instance.showPlayerBar = false;
 					Listen.IsVisible = true;
 					BackgroundImage.IsVisible = true;
-					Divider.IsVisible = false;
+					//Divider.IsVisible = false;
 					break;
 				case 1:
 					Listen.IsVisible = false;
@@ -141,7 +151,7 @@ namespace DABApp
 					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					BackgroundImage.IsVisible = false;
-					Divider.IsVisible = true;
+					//Divider.IsVisible = true;
 					break;
 				case 2:
 					Read.IsVisible = false;
@@ -156,7 +166,7 @@ namespace DABApp
 						Journal.IsVisible = true;
 					}
 					BackgroundImage.IsVisible = false;
-					Divider.IsVisible = true;
+					//Divider.IsVisible = true;
 					break;
 			}
 		}
@@ -267,16 +277,21 @@ namespace DABApp
 				AudioPlayer.Instance.Pause();
 			}
 			AudioPlayer.Instance.SetAudioFile(Episode);
-			AudioPlayer.Instance.Play();
-			SeekBar.IsVisible = true;
-			TimeStrings.IsVisible = true;
+
+            if (o != null) {
+            //Start playing if they pushed the play button
+                AudioPlayer.Instance.Play();
+                }
+            //Show controls
+            SeekBar.Opacity = 1;
+			TimeStrings.Opacity = 1;
 			PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
-			Output.IsVisible = true;
-			PlayPause.IsVisible = true;
-			backwardButton.IsVisible = true;
-			forwardButton.IsVisible = true;
-			Share.IsVisible = true;
-			Favorite.IsVisible = true;
+			//Output.Opacity = 1;
+            PlayPause.IsVisible = true;
+            backwardButton.Opacity = 1;
+            forwardButton.Opacity = 1;
+			//Share.Opacity = 1;
+			//Favorite.Opacity = 1;
 		}
 
 		void OnShare(object o, EventArgs e) {

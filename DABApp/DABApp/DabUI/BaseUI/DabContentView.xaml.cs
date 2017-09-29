@@ -66,7 +66,8 @@ namespace DABApp
 
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {
 			var item = (Link)e.Item;
-			Navigation.PushAsync(new DabBrowserPage(item.link));
+            Device.OpenUri(new Uri(item.link));
+			//Navigation.PushAsync(new DabBrowserPage(item.link));
 		}
 
 		protected override void OnDisappearing()

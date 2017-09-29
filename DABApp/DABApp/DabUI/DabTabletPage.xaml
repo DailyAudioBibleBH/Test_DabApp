@@ -92,7 +92,7 @@
               <controls:SegmentedControlOption Text="Journal" />
             </controls:SegmentedControl.Children>
           </controls:SegmentedControl>
-          <BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
+<!--          <BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />-->
           <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
         </StackLayout>
         <ScrollView x:Name="Archive" IsVisible="true">
