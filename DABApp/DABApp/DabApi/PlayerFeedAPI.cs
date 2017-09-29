@@ -39,28 +39,14 @@ namespace DABApp
 				var newEpisodeIds = Episodes.Select(x => x.id);
 				foreach (var e in Episodes) {
 					if (!existingEpisodeIds.Contains(e.id)) {
-						if (Device.RuntimePlatform == "Android")
-						{
-							await adb.InsertOrReplaceAsync(e);
-						}
-						else
-						{
-							db.Insert(e);
-						}
+						await adb.InsertOrReplaceAsync(e);
 					}
 				}
 				foreach (var old in existingEpisodes)
 				{
 					if (!newEpisodeIds.Contains(old.id))
 					{
-						if (Device.RuntimePlatform == "Android")
-						{
-							await adb.DeleteAsync(old);
-						}
-						else
-						{
-							db.Delete(old);
-						}
+						await adb.DeleteAsync(old);
 					}
 				}
 				await DownloadEpisodes();

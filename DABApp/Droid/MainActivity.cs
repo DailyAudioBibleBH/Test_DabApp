@@ -13,7 +13,6 @@ using Android.Gms.Gcm.Iid;
 using Android.Gms.Gcm;
 using Android.Util;
 using Android.Support.V7;
-using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using SQLite;
 using Xamarin.Forms.Platform.Android;
@@ -22,6 +21,7 @@ using Plugin.MediaManager;
 using Plugin.MediaManager.MediaSession;
 using Plugin.MediaManager.ExoPlayer;
 using Android.Support.V4.Media.Session;
+using FFImageLoading.Forms.Droid;
 
 namespace DABApp.Droid
 {

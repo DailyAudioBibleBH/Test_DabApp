@@ -12,11 +12,6 @@ namespace DABApp.iOS
 	{
 		private static bool _initiated = false;
 
-		public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
-		{
-			throw new NotImplementedException();
-		}
-
 		public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the iOS database
@@ -44,5 +39,31 @@ namespace DABApp.iOS
 			// Return the database connection
 			return conn;
 		}
+
+        public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
+        {
+			//Build the path for storing the Android database
+			var sqliteFilename = "database.db3";
+			string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal); // Documents folder
+			string libraryPath = Path.Combine(documentsPath, "..", "Library"); // Library folder
+			var path = Path.Combine(libraryPath, sqliteFilename);
+
+			if (!_initiated)
+			{
+				//do things just once while the app is running
+				_initiated = true;
+				//Reset the file if requested
+				if (ResetDatabaseOnStart)
+				{
+					if (File.Exists(path))
+					{
+						File.Delete(path);
+					}
+				}
+			}
+
+			var connection = new SQLiteAsyncConnection(path);
+			return connection;
+        }
 	}
 }

@@ -18,8 +18,7 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
-			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : 0;
-			EpisodeList.HeightRequest = 1000;
+			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(15, 0, 15, 0);
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
