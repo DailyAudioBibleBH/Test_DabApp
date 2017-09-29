@@ -165,12 +165,6 @@
     <Reference Include="Xamarin.Forms.Xaml">
       <HintPath>..\packages\Xamarin.Forms.2.3.4.270\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
     </Reference>
-    <Reference Include="SegmentedControl.FormsPlugin.Abstractions">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.3\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="SegmentedControl.FormsPlugin.Android">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.3\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
-    </Reference>
     <Reference Include="ExoPlayer">
       <HintPath>..\packages\Xam.Plugins.Android.ExoPlayer.2.0.4.1\lib\MonoAndroid\ExoPlayer.dll</HintPath>
     </Reference>
@@ -194,6 +188,12 @@
     </Reference>
     <Reference Include="FFImageLoading.Forms.Droid">
       <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.10\lib\MonoAndroid10\FFImageLoading.Forms.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="SegmentedControl.FormsPlugin.Abstractions">
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="SegmentedControl.FormsPlugin.Android">
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +225,6 @@
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="CustomRenderers\DabPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabSeekBarRenderer.cs" />
-    <Compile Include="CustomRenderers\DabSegmentedControlRenderer.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
     <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
