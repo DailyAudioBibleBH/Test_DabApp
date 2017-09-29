@@ -361,7 +361,7 @@ namespace DABApp
 				}
 				else
 				{
-					JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : original;
+					JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
 				}
 			}
 		}

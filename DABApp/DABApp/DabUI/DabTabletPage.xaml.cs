@@ -18,7 +18,7 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
-			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(15, 0, 15, 0);
+			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -241,11 +241,14 @@ namespace DABApp
 			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.channel_code, episode.id.ToString());
 		}
 
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			JournalContent.HeightRequest = Content.Height*2/3 - SegControl.Height  - 90; //- Divider.Height
-            original = Content.Height*2/3 - SegControl.Height - -90; //- Divider.Height
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (Device.RuntimePlatform == "iOS")
+            {
+                JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height
+                original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
+            }
 			if (LoginJournal.IsVisible || Journal.IsVisible)
 			{
 				if (GuestStatus.Current.IsGuestLogin)
@@ -409,7 +412,7 @@ namespace DABApp
 				}
 				else
 				{
-					JournalContent.HeightRequest = e.Visible ? JournalContent.Height - e.Height : JournalContent.Height + e.Height;
+					JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
 				}
 				//lastKeyboardStatus = e.IsExternalKeyboard;
 			}
