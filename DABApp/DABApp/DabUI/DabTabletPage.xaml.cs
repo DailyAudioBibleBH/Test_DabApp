@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
@@ -19,6 +20,7 @@ namespace DABApp
 		{
 			InitializeComponent();
 			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
+            Share.Image = Device.RuntimePlatform == "iOS" ? "ic_share_white.png" : "ic_share_white_3x.png";
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -341,50 +343,56 @@ namespace DABApp
 
 		void OnDisconnect(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
 		}
 
 		void OnReconnect(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
 		}
 
 		void OnReconnecting(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
 		}
 
 		void OnRoom_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Room Error: {o.ToString()}");
 		}
 
 		void OnAuth_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Auth Error: {o.ToString()}");
 		}
 
 		void OnJoin_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//	DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Join error: {o.ToString()}");
 		}
 
 		void OnEdit(object o, EventArgs e)
