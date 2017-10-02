@@ -2,8 +2,8 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:local="clr-namespace:DABApp;"
 	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<ContentPage.Content>
-		<StackLayout>
-			<RelativeLayout x:Name="bannerContentContainer">
+		<StackLayout x:Name="Container">
+			<RelativeLayout x:Name="bannerContentContainer" IsVisible="false">
 				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
 				<StackLayout x:Name="bannerStack" Padding="25" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=MostRecentEpisodePassage}" Style="{StaticResource playerLabelStyle}"/>

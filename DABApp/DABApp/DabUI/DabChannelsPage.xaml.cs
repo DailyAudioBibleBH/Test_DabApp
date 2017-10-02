@@ -22,6 +22,7 @@ namespace DABApp
 			////Choose a different control template to disable built in scroll view
 			//ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			//this.ControlTemplate = playerBarTemplate;
+			Container.TranslationY = -bannerContentContainer.HeightRequest;
 			DabViewHelper.InitDabForm(this);
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			//ListTitle.Text = $"<h1>{ChannelView.title}</h1>";
@@ -194,14 +195,18 @@ namespace DABApp
 			}
 			else
 			{
-				bannerContentContainer.IsVisible = true;
+				double height = 300;
 				var oldText = bannerContent.Text;
 				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
-					bannerContentContainer.HeightRequest = 350;
+					height = 350;
+					bannerContentContainer.HeightRequest = height;
 					bannerStack.Padding = 65;
 				}
+				bannerContentContainer.IsVisible = true;
+				Container.TranslationY = -height;
+				await Container.TranslateTo(0, 0, 1000, Easing.Linear);
 			}
 			bannerButton.IsEnabled = true;
 		}
