@@ -229,6 +229,7 @@
     <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
     <Compile Include="CustomRenderers\DabButtonRenderer.cs" />
+    <Compile Include="CustomRenderers\DabSwitchCellRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

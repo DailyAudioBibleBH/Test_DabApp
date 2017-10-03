@@ -24,7 +24,7 @@ namespace DABApp.Droid
 			}
 			else 
 			{
-				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
+				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["TextColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
 			}
 			Control.CheckedChange += OnCheckChanged;
 		}
@@ -37,7 +37,7 @@ namespace DABApp.Droid
 			}
 			else 
 			{
-				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
+				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["TextColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
 			}
 		}
 	}
