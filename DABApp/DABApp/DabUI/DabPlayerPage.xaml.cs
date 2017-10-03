@@ -300,54 +300,56 @@ namespace DABApp
 
 		void OnDisconnect(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
-			});
-			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom* 6;
-			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 6;
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
+			//});
+			Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
 		}
 
 		void OnReconnect(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-			});
-			JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 4;
-			original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * 4;
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+			//});
+			Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
 		}
 
 		void OnReconnecting(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
+			//});
+			Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
 		}
 
-		void OnRoom_Error(object o, EventArgs e) 
+		void OnRoom_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+			//});
+            Debug.WriteLine($"Room Error: {o.ToString()}");
 		}
 
 		void OnAuth_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+			//});
+			Debug.WriteLine($"Auth Error: {o.ToString()}");
 		}
 
 		void OnJoin_Error(object o, EventArgs e)
 		{
-			Device.BeginInvokeOnMainThread(() =>
-			{
-				DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
-			});
+			//Device.BeginInvokeOnMainThread(() =>
+			//{
+			//  DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+			//});
+			Debug.WriteLine($"Join error: {o.ToString()}");
 		}
 
 		void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)

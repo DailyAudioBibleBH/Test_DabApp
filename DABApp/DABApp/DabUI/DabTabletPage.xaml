@@ -62,7 +62,7 @@
               </Grid.ColumnDefinitions>
               <Button x:Name="favorite" Style="{StaticResource imageButtonStyle}" Image="{Binding favoriteSource}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="1" WidthRequest="40" HeightRequest="40" />
               <local:AudioOutputView x:Name="Output" WidthRequest="40" HeightRequest="40" Grid.Row="0" Grid.Column="2" />
-              <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3" WidthRequest="40" HeightRequest="40" />
+              <Button x:Name="Share" Clicked="OnShare" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3" WidthRequest="40" HeightRequest="40" />
             </Grid>
           </StackLayout>
         </RelativeLayout>
