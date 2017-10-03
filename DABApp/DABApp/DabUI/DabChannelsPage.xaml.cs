@@ -29,6 +29,7 @@ namespace DABApp
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
 			_resource = ChannelView.resources[0];
+			Container.TranslationY = Device.Idiom == TargetIdiom.Tablet ? -289: -280;
 			//Task.Run(async () =>
 			//{
 			//	await PlayerFeedAPI.GetEpisodes(_resource);
@@ -206,7 +207,7 @@ namespace DABApp
 				}
 				bannerContentContainer.IsVisible = true;
 				Container.TranslationY = -height;
-				await Container.TranslateTo(0, 0, 1000, Easing.Linear);
+				await Container.TranslateTo(0, 0, 500, Easing.Linear);
 			}
 			bannerButton.IsEnabled = true;
 		}
