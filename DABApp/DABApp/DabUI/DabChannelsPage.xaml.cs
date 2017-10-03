@@ -29,7 +29,7 @@ namespace DABApp
 			BindingContext = ChannelView;
 			bannerContent.Text = ChannelView.banner.content;
 			_resource = ChannelView.resources[0];
-			Container.TranslationY = Device.Idiom == TargetIdiom.Tablet ? -289: -280;
+			Container.TranslationY = -280;
 			//Task.Run(async () =>
 			//{
 			//	await PlayerFeedAPI.GetEpisodes(_resource);
