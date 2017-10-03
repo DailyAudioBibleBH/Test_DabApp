@@ -35,6 +35,7 @@ namespace DABApp.Droid
 			SQLitePCL.Batteries.Init();
 			SQLitePCL.raw.sqlite3_shutdown();
 			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
+			SQLitePCL.raw.sqlite3_enable_shared_cache(1);
 			SQLitePCL.raw.sqlite3_initialize();
 
 			TabLayoutResource = Resource.Layout.Tabbar;
