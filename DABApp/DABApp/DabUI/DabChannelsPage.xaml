@@ -7,7 +7,7 @@
 				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
 				<StackLayout x:Name="bannerStack" Padding="25" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
 					<local:HtmlLabel x:Name="bannerContent" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=MostRecentEpisodePassage}" Style="{StaticResource playerLabelStyle}"/>
-					<Button x:Name="bannerButton" Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" Style="{StaticResource listenNowButtonStyle}" />
+					<Button x:Name="bannerButton" Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" Style="{StaticResource listenNowButtonStyle}"/>
 				</StackLayout>
 			</RelativeLayout>
 			<StackLayout Padding="15">

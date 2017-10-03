@@ -228,6 +228,7 @@
     <Compile Include="DependencyServices\RivetsService.cs" />
     <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
+    <Compile Include="CustomRenderers\DabButtonRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
