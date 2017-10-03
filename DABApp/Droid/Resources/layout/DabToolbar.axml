@@ -24,7 +24,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
     <Button
-        android:text="GIVE"
+        android:text="Give"
         android:background="?attr/actionBarItemBackground"
         android:layout_width="?attr/actionBarSize"
         android:layout_height="match_parent"
