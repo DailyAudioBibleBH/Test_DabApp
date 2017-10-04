@@ -14,7 +14,7 @@ namespace DABApp
 		View ChannelView;
 		dbEpisodes episode;
 		Resource _resource;
-		//static bool IsUnInitialized = false;
+		bool IsUnInitialized = true;
 
 		public DabChannelsPage()
 		{
@@ -22,7 +22,6 @@ namespace DABApp
 			////Choose a different control template to disable built in scroll view
 			//ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			//this.ControlTemplate = playerBarTemplate;
-			Container.TranslationY = -bannerContentContainer.HeightRequest;
 			DabViewHelper.InitDabForm(this);
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			//ListTitle.Text = $"<h1>{ChannelView.title}</h1>";
@@ -206,8 +205,12 @@ namespace DABApp
 					bannerStack.Padding = 65;
 				}
 				bannerContentContainer.IsVisible = true;
-				Container.TranslationY = -height;
-				await Container.TranslateTo(0, 0, 500, Easing.Linear);
+				if (IsUnInitialized)
+				{
+					Container.TranslationY = -height;
+					await Container.TranslateTo(0, 0, 500, Easing.Linear);
+					IsUnInitialized = false;
+				}
 			}
 			bannerButton.IsEnabled = true;
 		}
