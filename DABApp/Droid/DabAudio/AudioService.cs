@@ -66,6 +66,7 @@ namespace DABApp.Droid
 				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
 				//player.SetDataSource(fileName);
 			}
+			if(Device.Idiom == TargetIdiom.Phone)CrossMediaManager.Current.Pause();
 			Episode = episode;
 			FileName = fileName;
 			//player.Prepare();
