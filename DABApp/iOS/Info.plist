@@ -47,7 +47,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleVersion</key>
-	<string>0.11</string>
+	<string>0.12</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>FetteEngD.ttf</string>
@@ -68,6 +68,6 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.11</string>
+	<string>0.12</string>
 </dict>
 </plist>
