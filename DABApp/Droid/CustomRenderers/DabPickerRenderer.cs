@@ -11,6 +11,17 @@ namespace DABApp.Droid
 		protected override void OnElementChanged(ElementChangedEventArgs<Picker> e)
 		{
 			base.OnElementChanged(e);
+			var button = e.NewElement;
+
+			if (this.Control != null)
+			{
+				try
+				{
+                    this.Control.Background = this.Resources.GetDrawable(Resource.Drawable.down_arrow);
+				}
+				catch (Exception ex) { }
+			}
 		}
+
 	}
 }

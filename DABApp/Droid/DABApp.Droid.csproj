@@ -300,6 +300,7 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_share_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_keyboard_arrow_up_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_keyboard_arrow_up_white_3x.png" />
+    <AndroidResource Include="Resources\drawable\down_arrow.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
