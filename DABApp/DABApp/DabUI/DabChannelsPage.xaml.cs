@@ -6,6 +6,7 @@ using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using FFImageLoading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -182,6 +183,7 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			MessagingCenter.Send<string>("Setup", "Setup");
+			var start = DateTime.Now;
 			base.OnAppearing();
 			if (episode == null)
 			{
@@ -198,6 +200,7 @@ namespace DABApp
 				double height = 300;
 				var oldText = bannerContent.Text;
 				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+				Debug.WriteLine($"Finished replacing episode description {(DateTime.Now - start).TotalMilliseconds}");
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					height = 350;

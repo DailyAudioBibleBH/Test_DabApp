@@ -37,11 +37,13 @@ namespace DABApp
 				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
 				var existingEpisodeIds = existingEpisodes.Select(x => x.id);
 				var newEpisodeIds = Episodes.Select(x => x.id);
+				var start = DateTime.Now;
 				foreach (var e in Episodes) {
 					if (!existingEpisodeIds.Contains(e.id)) {
 						await adb.InsertOrReplaceAsync(e);
 					}
 				}
+				Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
 				foreach (var old in existingEpisodes)
 				{
 					if (!newEpisodeIds.Contains(old.id))
@@ -49,8 +51,10 @@ namespace DABApp
 						await adb.DeleteAsync(old);
 					}
 				}
+				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
 				await DownloadEpisodes();
-				var check = await AuthenticationAPI.GetMemberData();
+				await AuthenticationAPI.GetMemberData();//This slows down everything
+				Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
 				return "OK";
 				//else {
 				//	throw new Exception(); 
