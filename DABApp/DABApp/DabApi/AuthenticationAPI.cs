@@ -642,8 +642,9 @@ namespace DABApp
 
 		public static async Task<bool> GetMemberData(){
 			var start = DateTime.Now;
-			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			dbSettings EmailSettings = db.Table<dbSettings>().Single(x => x.Key == "Email");
+			var settings = await adb.Table<dbSettings>().ToListAsync();
+			dbSettings TokenSettings = settings.Single(x => x.Key == "Token");
+			dbSettings EmailSettings = settings.Single(x => x.Key == "Email");
 			Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
 			try
 			{
@@ -672,8 +673,11 @@ namespace DABApp
 		}
 
 		static async Task SaveMemberData(List<dbEpisodes> episodes) {
+			var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
 			foreach (dbEpisodes episode in episodes) {
-				var saved = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episode.id);
+				//var start = DateTime.Now;
+				var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
+				//Debug.WriteLine($"Reading Member episode data {(DateTime.Now - start).TotalMilliseconds}");
 				if (saved == null)
 				{
 					await adb.InsertAsync(episode);
@@ -684,6 +688,7 @@ namespace DABApp
 					saved.has_journal = episode.has_journal;
 					await adb.UpdateAsync(saved);
 				}
+				//Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
 			}
 		}
 	}
