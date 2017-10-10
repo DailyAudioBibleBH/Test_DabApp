@@ -674,22 +674,25 @@ namespace DABApp
 
 		static async Task SaveMemberData(List<dbEpisodes> episodes) {
 			var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
+			List<dbEpisodes> insert = new List<dbEpisodes>();
+			List<dbEpisodes> update = new List<dbEpisodes>();
+			var start = DateTime.Now;
 			foreach (dbEpisodes episode in episodes) {
-				//var start = DateTime.Now;
 				var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
-				//Debug.WriteLine($"Reading Member episode data {(DateTime.Now - start).TotalMilliseconds}");
 				if (saved == null)
 				{
-					await adb.InsertAsync(episode);
+					insert.Add(episode);
 				}
 				else {
 					saved.stop_time = episode.stop_time;
 					saved.is_favorite = episode.is_favorite;
 					saved.has_journal = episode.has_journal;
-					await adb.UpdateAsync(saved);
+					update.Add(saved);
 				}
-				//Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
 			}
+			await adb.InsertAllAsync(insert);
+			await adb.UpdateAllAsync(update);
+			Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
 		}
 	}
 }

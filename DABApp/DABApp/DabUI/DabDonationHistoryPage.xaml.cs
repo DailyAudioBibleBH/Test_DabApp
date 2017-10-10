@@ -11,6 +11,13 @@ namespace DABApp
 		{
 			InitializeComponent();
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
+			if (Device.RuntimePlatform != "Android")
+			{
+				base.ToolbarItems.RemoveAt(ToolbarItems.Count - 1);
+			}
+			else {
+				MessagingCenter.Send<string>("Remove", "Remove");
+			}
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);

@@ -56,7 +56,7 @@ namespace DABApp
 			if (remainder != 0) {
 				number += 1;
 			}
-			ChannelsList.HeightRequest = number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
+			ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
 
 			banner.Source = new UriImageSource
 			{
@@ -211,6 +211,7 @@ namespace DABApp
 				if (IsUnInitialized)
 				{
 					Container.TranslationY = -height;
+					bannerContentContainer.IsVisible = true;
 					await Container.TranslateTo(0, 0, 500, Easing.Linear);
 					IsUnInitialized = false;
 				}

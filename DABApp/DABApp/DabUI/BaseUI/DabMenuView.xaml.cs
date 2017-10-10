@@ -84,6 +84,10 @@ namespace DABApp
 		}
 
 		async void OnItemTapped(object o, ItemTappedEventArgs e) {
+			if (Device.RuntimePlatform == "Android") 
+			{ 
+				MessagingCenter.Send<string>("Show", "Show"); 
+			}
 			Nav item = (Nav)e.Item;
 			if (item.title == "Channels")
 			{

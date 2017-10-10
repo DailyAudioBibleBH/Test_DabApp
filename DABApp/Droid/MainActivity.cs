@@ -84,6 +84,8 @@ namespace DABApp.Droid
 			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
 			text.TextSize = 30;
 			toolbar.AddView(newMenu);
+			MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible;});
+			MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
 		}
 	}
 }

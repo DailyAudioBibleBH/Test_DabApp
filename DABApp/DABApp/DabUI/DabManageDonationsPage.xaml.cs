@@ -15,6 +15,17 @@ namespace DABApp
 		public DabManageDonationsPage(Donation[] donations, bool fromLogin = false)
 		{
 			InitializeComponent();
+			if (Device.RuntimePlatform == "Android")
+			{
+				if (Device.Idiom == TargetIdiom.Phone)
+				{
+					MessagingCenter.Send<string>("Remove", "Remove");
+				}
+			}
+			else 
+			{ 
+				ToolbarItems.RemoveAt(ToolbarItems.Count - 1);
+			}
 			_donations = donations;
 			_fromLogin = fromLogin;
 			if (Device.Idiom == TargetIdiom.Tablet) {
@@ -138,6 +149,10 @@ namespace DABApp
 			if (_fromLogin) {
 				Navigation.InsertPageBefore(new DabChannelsPage(), this);
 			}
+			if (Device.Idiom == TargetIdiom.Phone)
+			{
+				MessagingCenter.Send<string>("Remove", "Remove");
+			}
 			if (isInitialized)
 			{
 				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -183,6 +198,12 @@ namespace DABApp
 				activityHolder.IsVisible = false;
 			}
 			isInitialized = true;
+		}
+
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+			MessagingCenter.Send<string>("Show", "Show");
 		}
 	}
 }
