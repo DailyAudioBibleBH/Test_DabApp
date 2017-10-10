@@ -192,7 +192,7 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateEpisodeProperty(int episodeId, string propertyName = null) {
+		public static async Task UpdateEpisodeProperty(int episodeId, string propertyName = null) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
 			switch (propertyName)
 			{
@@ -206,7 +206,7 @@ namespace DABApp
 					episode.has_journal = !episode.has_journal;
 					break;
 			}
-			db.Update(episode);
+			await adb.UpdateAsync(episode);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				MessagingCenter.Send<string>("Update", "Update");
@@ -286,11 +286,11 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime) {
+		public static async Task UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
 			episode.stop_time = NewStopTime;
 			episode.remaining_time = NewRemainingTime;
-			db.Update(episode);
+			await adb.UpdateAsync(episode);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				MessagingCenter.Send<string>("Update", "Update");

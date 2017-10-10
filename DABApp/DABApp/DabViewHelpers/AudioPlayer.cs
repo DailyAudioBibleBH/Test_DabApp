@@ -236,6 +236,7 @@ namespace DABApp
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
 				Task.Run(async () => {
+					await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
 					await Task.Delay(5000);
 					ShowWarning = true;
 				});

@@ -591,7 +591,7 @@ namespace DABApp
 			GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 		}
 
-		public static void CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
+		public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
 		{
 			var actionLog = new dbPlayerActions();
 			actionLog.ActionDateTime = DateTimeOffset.Now;
@@ -604,7 +604,7 @@ namespace DABApp
 			if (user != null) {
 				actionLog.UserEmail = user.Value;
 			}
-			db.Insert(actionLog);
+			await adb.InsertAsync(actionLog);
 		}
 
 		public static async Task<string> PostActionLogs() {
