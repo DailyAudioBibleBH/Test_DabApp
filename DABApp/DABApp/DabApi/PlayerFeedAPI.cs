@@ -52,7 +52,7 @@ namespace DABApp
 					}
 				}
 				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-				await DownloadEpisodes();
+				Task.Run(async () => { await DownloadEpisodes(); });
 				await AuthenticationAPI.GetMemberData();//This slows down everything
 				Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
 				return "OK";
@@ -138,23 +138,24 @@ namespace DABApp
 										 select episode;
 
 				int ix = 0;
+				//List<dbEpisodes> episodesToUpdate = new List<dbEpisodes>();
 				foreach (var episode in EpisodesToDownload.ToList())
 				{
-					ix++;
 					try
 					{
+						ix++;
 						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, EpisodesToDownload.Count(), episode.url);
 						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
 							episode.is_downloaded = true;
-							db.Update(episode);
+							await adb.UpdateAsync(episode);
 						}
 						else throw new Exception();
 					}
 					catch (Exception e)
 					{
-						Debug.WriteLine("Error while downloading episode {0} ({1}): {2}", episode.id, episode.url, e.ToString());
+						Debug.WriteLine("Error while downloading episodes");
 						DownloadIsRunning = false;
 						return false;
 					}
