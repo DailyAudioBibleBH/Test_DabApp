@@ -29,10 +29,6 @@ namespace DABApp.iOS
 			{
 				if (Control != null && Element != null && !string.IsNullOrWhiteSpace(Element.Text))
 				{
-					if (((HtmlLabel)Element).EraseText)
-					{
-						Control.Text = null;
-					}
 					SetHtml();
 				}
 			}
@@ -54,6 +50,7 @@ namespace DABApp.iOS
 
 			var myHtmlData = NSData.FromString(htmlContents, NSStringEncoding.Unicode);
 			Control.Lines = 0;
+			Control.Text = null;
 			Control.AttributedText = new NSAttributedString(myHtmlData, attr, ref nsError);
 		}
 	}
