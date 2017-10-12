@@ -4,6 +4,7 @@ using System.Linq;
 using DLToolkit.Forms.Controls;
 using FFImageLoading.Forms.Touch;
 using Foundation;
+using HockeyApp.iOS;
 using PushNotification.Plugin;
 using SegmentedControl.FormsPlugin.iOS;
 using SQLite;
@@ -25,6 +26,11 @@ namespace DABApp.iOS
 			SQLitePCL.raw.sqlite3_initialize();
 
 			CachedImageRenderer.Init();
+
+			var manager = BITHockeyManager.SharedHockeyManager;
+			manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
+			manager.StartManager();
+			manager.Authenticator.AuthenticateInstallation();
 
 			global::Xamarin.Forms.Forms.Init();
 			Xamarin.Forms.DependencyService.Register<ShareIntent>();
@@ -52,7 +58,6 @@ namespace DABApp.iOS
 			{
 				((IPushNotificationHandler)CrossPushNotification.Current).OnErrorReceived(error);
 			}
-
 
 		}
 

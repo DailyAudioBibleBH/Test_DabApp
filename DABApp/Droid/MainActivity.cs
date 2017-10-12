@@ -22,6 +22,7 @@ using Plugin.MediaManager.MediaSession;
 using Plugin.MediaManager.ExoPlayer;
 using Android.Support.V4.Media.Session;
 using FFImageLoading.Forms.Droid;
+using HockeyApp.Android;
 
 namespace DABApp.Droid
 {
@@ -67,6 +68,12 @@ namespace DABApp.Droid
 			LoadCustomToolBar();
 			MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
 
+		}
+
+		protected override void OnResume()
+		{
+			base.OnResume();
+			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 		}
 
 		void LoadCustomToolBar()

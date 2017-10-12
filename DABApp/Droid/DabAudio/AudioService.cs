@@ -41,6 +41,7 @@ namespace DABApp.Droid
 			Episode = episode;
 			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
+			//This is a different way to get pictures onto the notifications.  Not as reliable but should theoretically do it before the track starts playing
 			//CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
 			//{
 			//	await Task.Run(async () =>
@@ -152,7 +153,7 @@ namespace DABApp.Droid
 			}
 		}
 
-		async void SetMetaData(object o, MediaFileChangedEventArgs e)
+		void SetMetaData(object o, MediaFileChangedEventArgs e)
 		{
 			e.File.Metadata.Artist = Episode.channel_title;
 			e.File.Metadata.Title = Episode.title;
@@ -160,7 +161,7 @@ namespace DABApp.Droid
 			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
 			if (e.File.Metadata.AlbumArtUri != ImageUri)
 			{
-				await Task.Run(async () =>
+				Task.Run(async () =>
 					{
 						var input = new Java.Net.URL(ImageUri).OpenStream();
 						var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);

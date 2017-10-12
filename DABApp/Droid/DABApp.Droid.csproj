@@ -195,6 +195,12 @@
     <Reference Include="SegmentedControl.FormsPlugin.Android">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
     </Reference>
+    <Reference Include="HockeySDK.AndroidBindings">
+      <HintPath>..\packages\HockeySDK.Xamarin.5.0.0\lib\MonoAndroid403\HockeySDK.AndroidBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="HockeySDK">
+      <HintPath>..\packages\HockeySDK.Xamarin.5.0.0\lib\MonoAndroid403\HockeySDK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">

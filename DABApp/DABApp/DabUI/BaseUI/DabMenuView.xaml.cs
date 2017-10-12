@@ -92,6 +92,7 @@ namespace DABApp
 			if (item.title == "Channels")
 			{
 				await Navigation.PopToRootAsync();
+				((DabBaseContentPage)Parent).HideMenu();
 			}
 			else {
 				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
