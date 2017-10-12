@@ -9,6 +9,8 @@ namespace DABApp.iOS
 {
 	public class HtmlLabelRenderer: LabelRenderer
 	{
+		string unFormattedText;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
 		{
 			base.OnElementChanged(e);
@@ -27,6 +29,10 @@ namespace DABApp.iOS
 			{
 				if (Control != null && Element != null && !string.IsNullOrWhiteSpace(Element.Text))
 				{
+					if (((HtmlLabel)Element).EraseText)
+					{
+						Control.Text = null;
+					}
 					SetHtml();
 				}
 			}

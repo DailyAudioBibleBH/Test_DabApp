@@ -19,6 +19,7 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
+			ReadText.EraseText = true;
 			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
             Share.Image = Device.RuntimePlatform == "iOS" ? "ic_share_white.png" : "ic_share_white_3x.png";
 			SegControl.ValueChanged += Handle_ValueChanged;

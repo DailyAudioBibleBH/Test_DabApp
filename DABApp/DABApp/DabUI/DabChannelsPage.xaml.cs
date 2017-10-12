@@ -210,7 +210,6 @@ namespace DABApp
 				bannerContentContainer.IsVisible = true;
 				if (IsUnInitialized)
 				{
-					Container.TranslationY = -height;
 					bannerContentContainer.IsVisible = true;
 					await Container.TranslateTo(0, 0, 500, Easing.Linear);
 					IsUnInitialized = false;

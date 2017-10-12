@@ -23,6 +23,7 @@ using Plugin.MediaManager.ExoPlayer;
 using Android.Support.V4.Media.Session;
 using FFImageLoading.Forms.Droid;
 using HockeyApp.Android;
+using HockeyApp.Android.Metrics;
 
 namespace DABApp.Droid
 {
