@@ -21,7 +21,6 @@ namespace DABApp
 			InitializeComponent();
 			ReadText.EraseText = true;
 			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
-            Share.Image = Device.RuntimePlatform == "iOS" ? "ic_share_white.png" : "ic_share_white_3x.png";
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -132,7 +131,7 @@ namespace DABApp
 			if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
 			{
 				episode = (dbEpisodes)e.Item;
-				favorite.Image = episode.favoriteSource;
+				favorite.Source = episode.favoriteSource;
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
 					SetVisibility(false);
@@ -451,7 +450,7 @@ namespace DABApp
 			favorite.IsEnabled = false;
 			favorite.Opacity = .5;
 			episode.is_favorite = !episode.is_favorite;
-			favorite.Image = episode.favoriteSource;
+			favorite.Source = episode.favoriteSource;
 			await PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
 			await AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
 			favorite.Opacity = 1;

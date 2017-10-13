@@ -23,7 +23,7 @@
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
               <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
-              <ContentView Padding="40, 10, 40, 0">
+              <ContentView Padding="40, 10, 30, 0">
                 <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" />
               </ContentView>
             </StackLayout>
@@ -60,10 +60,11 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="4*" />
               </Grid.ColumnDefinitions>
-              <Button x:Name="favorite" Style="{StaticResource imageButtonStyle}" Image="{Binding favoriteSource}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="1" WidthRequest="40" HeightRequest="40" />
+              <Image x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="1" WidthRequest="40" HeightRequest="40"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnFavorite"/></Image.GestureRecognizers></Image>
               <local:AudioOutputView x:Name="Output" WidthRequest="40" HeightRequest="40" Grid.Row="0" Grid.Column="2" />
-              <Button x:Name="Share" Clicked="OnShare" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3" WidthRequest="40" HeightRequest="40" />
-            </Grid>
+              <Image x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3" WidthRequest="40" HeightRequest="40"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShare"/></Image.GestureRecognizers></Image>
+              </Grid>
+			<BoxView Color="Transparent" HeightRequest="10"/>
           </StackLayout>
         </RelativeLayout>
       </StackLayout>
