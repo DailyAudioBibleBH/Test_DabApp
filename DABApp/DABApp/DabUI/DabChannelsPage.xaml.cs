@@ -189,8 +189,11 @@ namespace DABApp
 			{
 				bannerButton.IsEnabled = false;
 			}
+			Debug.WriteLine($"Before getting episodes {(DateTime.Now - start).TotalMilliseconds}");
 			await PlayerFeedAPI.GetEpisodes(_resource);
+			Debug.WriteLine($"Finished GetEpisodes call {(DateTime.Now - start).TotalMilliseconds}");
 			episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
+			Debug.WriteLine($"Finished Getting Most Recent Episode {(DateTime.Now - start).TotalMilliseconds}");
 			if (episode == null)
 			{
 				bannerContentContainer.IsVisible = false;
