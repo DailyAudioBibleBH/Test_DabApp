@@ -443,7 +443,7 @@ namespace DABApp
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut.Contains("code")) {
 					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-					throw new Exception(error.message);
+					throw new Exception($"Error: {error.message}");
 				}
 				return JsonOut;
 			}

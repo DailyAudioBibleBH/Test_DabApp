@@ -59,9 +59,9 @@ namespace DABApp
 			else
 			{
 				var Result = await AuthenticationAPI.AddCard(result);
-				if (Result.Contains("code"))
+				if (Result.Contains("code") || Result.Contains("Error"))
 				{
-					await DisplayAlert("Error", Result, "OK");
+					await DisplayAlert("Error", Result.Remove(0, 7), "OK");
 				}
 				else {
 					await Navigation.PopAsync();
