@@ -7,6 +7,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Threading;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -101,6 +102,7 @@ namespace DABApp
 		}
 
 		public static void UpdateOffline(bool offline, int ResourceId) {
+			Debug.WriteLine("Updating Offline Settings");
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
 			if (OfflineSettings != null)
 			{
@@ -118,6 +120,7 @@ namespace DABApp
 				}
 				OfflineSettings.Value = jsonArray.ToString();
 				db.Update(OfflineSettings);
+				Debug.WriteLine("Updated Offline settings");
 			}
 		}
 

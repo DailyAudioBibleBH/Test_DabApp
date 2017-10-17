@@ -8,15 +8,15 @@ namespace DABApp.Droid
 {
 	public class DabSwitchRenderer : SwitchRenderer
 	{
-		protected override void Dispose(bool disposing)
-		{
-			Control.CheckedChange -= this.OnCheckChanged;
-			base.Dispose(disposing);
-		}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Switch> e)
 		{
 			base.OnElementChanged(e);
+			if (e.OldElement != null)
+			{
+				this.Element.Toggled -= ElementToggled;
+			}
+			if (Element == null) return;
 			if (Control == null) return;
 			if (Control.Checked)
 			{
@@ -26,7 +26,20 @@ namespace DABApp.Droid
 			{
 				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["TextColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
 			}
-			Control.CheckedChange += OnCheckChanged;
+			this.Control.CheckedChange += OnCheckChanged;
+			this.Element.Toggled += ElementToggled;
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				this.Control.CheckedChange -= this.OnCheckChanged;
+				this.Element.Toggled -= this.ElementToggled;
+			}
+
+			base.Dispose(disposing);
+		
 		}
 
 		private void OnCheckChanged(object sender, Android.Widget.CompoundButton.CheckedChangeEventArgs e) 
@@ -39,6 +52,12 @@ namespace DABApp.Droid
 			{
 				Control.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["TextColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
 			}
+			this.Element.IsToggled = this.Control.Checked;
+		}
+
+		private void ElementToggled(object sender, ToggledEventArgs e)
+		{
+			this.Control.Checked = this.Element.IsToggled;
 		}
 	}
 }

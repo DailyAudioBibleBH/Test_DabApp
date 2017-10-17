@@ -23,7 +23,7 @@
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
               <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
-              <ContentView Padding="40, 10, 30, 0">
+              <ContentView Padding="40, 10, 40, 0">
                 <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" />
               </ContentView>
             </StackLayout>
@@ -48,7 +48,7 @@
               <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
               <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
             </StackLayout>
-            <Grid VerticalOptions="EndAndExpand" x:Name="ExtraControls">
+            <Grid VerticalOptions="EndAndExpand" x:Name="ExtraControls" Padding="0, 0, 5, 0">
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
@@ -64,7 +64,6 @@
               <local:AudioOutputView x:Name="Output" WidthRequest="40" HeightRequest="40" Grid.Row="0" Grid.Column="2" />
               <Image x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="3" WidthRequest="40" HeightRequest="40"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShare"/></Image.GestureRecognizers></Image>
               </Grid>
-			<BoxView Color="Transparent" HeightRequest="10"/>
           </StackLayout>
         </RelativeLayout>
       </StackLayout>
