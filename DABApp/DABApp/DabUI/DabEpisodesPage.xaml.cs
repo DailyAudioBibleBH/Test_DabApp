@@ -72,7 +72,7 @@ namespace DABApp
 				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
 			}
 			else {
-				PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+				Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
 			}
 		}
 

@@ -13,6 +13,7 @@ namespace DABApp
 	public class ContentAPI
 	{
 		static SQLiteConnection db = DabData.database;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
 		public static bool CheckContent() {
 			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
@@ -100,19 +101,24 @@ namespace DABApp
 		}
 
 		public static void UpdateOffline(bool offline, int ResourceId) {
-			var OfflineSettings = db.Table<dbSettings>().Single(x => x.Key == "AvailableOffline");
-			var jsonArray = JArray.Parse(OfflineSettings.Value);
-			if (offline || !jsonArray.Contains(ResourceId))
+			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+			if (OfflineSettings != null)
 			{
-				jsonArray.Add(ResourceId);
-			}
-			else {
-				if (jsonArray.Contains(ResourceId)) {
-					jsonArray.Remove(ResourceId);
+				var jsonArray = JArray.Parse(OfflineSettings.Value);
+				if (offline || !jsonArray.Contains(ResourceId))
+				{
+					jsonArray.Add(ResourceId);
 				}
+				else
+				{
+					if (jsonArray.Contains(ResourceId))
+					{
+						jsonArray.Remove(ResourceId);
+					}
+				}
+				OfflineSettings.Value = jsonArray.ToString();
+				db.Update(OfflineSettings);
 			}
-			OfflineSettings.Value = jsonArray.ToString();
-			db.Update(OfflineSettings);
 		}
 
 		public static async Task<Forum> GetForum(View view) 

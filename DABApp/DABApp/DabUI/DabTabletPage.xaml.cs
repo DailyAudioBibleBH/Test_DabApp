@@ -150,16 +150,14 @@ namespace DABApp
 		public void OnOffline(object o, ToggledEventArgs e)
 		{
 			_resource.availableOffline = e.Value;
-			ContentAPI.UpdateOffline(e.Value, _resource.id);
+			ContentAPI.UpdateOffline(e.Value, _resource.id); 
 			if (e.Value)
 			{
-				Task.Run(async () => { 
-					await PlayerFeedAPI.DownloadEpisodes(); 
-				});
+				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
 			}
 			else
 			{
-				PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+				Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
 			}
 		}
 
