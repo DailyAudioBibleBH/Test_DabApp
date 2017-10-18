@@ -9,11 +9,17 @@ namespace DABApp.Droid
 {
 	public class DabSwitchCellRenderer: SwitchCellRenderer
 	{
-		Android.Widget.Switch _view;
+		SwitchCellView _view;
+		Android.Widget.Switch Switch;
 
 		protected override Android.Views.View GetCellCore(Cell item, Android.Views.View convertView, Android.Views.ViewGroup parent, Android.Content.Context context)
 		{
 			var cell = base.GetCellCore(item, convertView, parent, context);
+
+			if ((_view = convertView as SwitchCellView) == null)
+				_view = new SwitchCellView(context, item);
+
+			_view.Cell = (SwitchCell)Cell;
 
 			cell.SetBackgroundColor(((Color)App.Current.Resources["InputBackgroundColor"]).ToAndroid());
 			var child1 = ((LinearLayout)cell).GetChildAt(1);
@@ -25,7 +31,8 @@ namespace DABApp.Droid
 			var swit = (Android.Widget.Switch)child2;
 			OnChecked(swit);
 			swit.CheckedChange += (sender, e) => { OnChecked(swit);};
-			_view = swit;
+			Switch = swit;
+			_view.Cell.OnChanged += OnElementChanged;
 
 			return cell;
 		}
@@ -40,15 +47,12 @@ namespace DABApp.Droid
 			{
 				s.ThumbDrawable.SetColorFilter(((Color)App.Current.Resources["TextColor"]).ToAndroid(), Android.Graphics.PorterDuff.Mode.SrcAtop);
 			}
+			_view.Cell.On = s.Checked;
 		}
 
-		protected override void OnCellPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)
+		void OnElementChanged(object sender, EventArgs e)
 		{
-			base.OnCellPropertyChanged(sender, args);
-			if (args.PropertyName == SwitchCell.OnProperty.PropertyName)
-			{
-				_view.Checked = ((SwitchCell)Cell).On;
-			}
+			Switch.Checked = _view.Cell.On;
 		}
 	}
 }
