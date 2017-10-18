@@ -101,6 +101,7 @@ namespace DABApp
 				//	OfflineEpisodeSettings.Instance.Duration = "One Month";
 				//	break;
 			}
+
 			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 

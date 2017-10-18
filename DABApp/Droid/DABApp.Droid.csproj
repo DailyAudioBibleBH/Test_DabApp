@@ -195,6 +195,12 @@
     <Reference Include="SegmentedControl.FormsPlugin.Android">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
     </Reference>
+    <Reference Include="HockeySDK.AndroidBindings">
+      <HintPath>..\packages\HockeySDK.Xamarin.5.0.0\lib\MonoAndroid403\HockeySDK.AndroidBindings.dll</HintPath>
+    </Reference>
+    <Reference Include="HockeySDK">
+      <HintPath>..\packages\HockeySDK.Xamarin.5.0.0\lib\MonoAndroid403\HockeySDK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
@@ -266,7 +272,7 @@
     <AndroidResource Include="Resources\drawable-hdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\app_icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_done_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_done_white_3x.png" />
     <AndroidResource Include="Resources\drawable\ic_play_circle_outline_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_up_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_share_white_3x.png" />
@@ -300,6 +306,9 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_share_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_keyboard_arrow_up_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_keyboard_arrow_up_white_3x.png" />
+    <AndroidResource Include="Resources\drawable\down_arrow.xml" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_star_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_star_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

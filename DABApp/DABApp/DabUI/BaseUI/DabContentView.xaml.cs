@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -15,21 +15,21 @@ namespace DABApp
 			{
 				bannerContainer.HeightRequest = 180;
 			}
-			if (contentView.title == "Initiatives")
-			{
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					Links.RowHeight = 300;
-				}
-				else
-				{
-					Links.RowHeight = 150;
-				}
-			}
+			//if (contentView.title == "Initiatives")
+			//{
+			//	if (Device.Idiom == TargetIdiom.Tablet)
+			//	{
+			//		Links.RowHeight = 300;
+			//	}
+			//	else
+			//	{
+			//		Links.RowHeight = 150;
+			//	}
+			//}
 			else {
 				Links.RowHeight = 0;
 			}
-			if (contentView.children == null)
+			if (contentView.children == null || contentView.children.Count == 0)
 			{
 				Children.IsVisible = false;
 			}
@@ -48,6 +48,17 @@ namespace DABApp
 			else { 
 				ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 				this.ControlTemplate = playerBarTemplate;
+				if (contentView.links.First().HasGraphic)
+				{
+					if (Device.Idiom == TargetIdiom.Tablet)
+					{
+						Links.RowHeight = 300;
+					}
+					else
+					{
+						Links.RowHeight = 150;
+					}
+				}
 			}
 
 			banner.Source = new UriImageSource

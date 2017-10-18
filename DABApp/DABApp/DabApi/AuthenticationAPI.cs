@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace DABApp
 	public class AuthenticationAPI
 	{
 		static SQLiteConnection db = DabData.database;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
 		public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false) {
 			try
@@ -44,7 +46,7 @@ namespace DABApp
 						AvatarSettings.Value = "";
 						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
 						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-						db.UpdateAll(settings, true);
+						await adb.UpdateAllAsync(settings);
 					}
 					return "IsGuest";
 				}
@@ -76,7 +78,7 @@ namespace DABApp
 						AvatarSettings.Value = token.user_avatar;
 						IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
 						settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-						db.UpdateAll(settings, true);
+						await adb.UpdateAllAsync(settings);
 						//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 						GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 					}
@@ -153,7 +155,7 @@ namespace DABApp
 					LastNameSettings.Value = token.user_last_name;
 					AvatarSettings.Value = token.user_avatar;
 					IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-					db.UpdateAll(settings, true);
+					await adb.UpdateAllAsync(settings);
 					//GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
 					GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 				}
@@ -202,13 +204,13 @@ namespace DABApp
 					throw new Exception();
 				}
 				ExpirationSettings.Value = DateTime.MinValue.ToString();
-				db.Update(ExpirationSettings);
+				await adb.UpdateAsync(ExpirationSettings);
 				return true;
 			}
 			catch (Exception e) {
 				dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
 				ExpirationSettings.Value = DateTime.MinValue.ToString();
-				db.Update(ExpirationSettings);
+				await adb.UpdateAsync(ExpirationSettings);
 				return false;
 			}
 		}
@@ -232,8 +234,8 @@ namespace DABApp
 				}
 				TokenSettings.Value = token.value;
 				ExpirationSettings.Value = token.expires;
-				db.Update(TokenSettings);
-				db.Update(ExpirationSettings);
+				await adb.UpdateAsync(TokenSettings);
+				await adb.UpdateAsync(ExpirationSettings);
 				JournalTracker.Current.Connect(token.value);
 				return true;
 			}
@@ -262,9 +264,9 @@ namespace DABApp
 				EmailSettings.Value = info.email;
 				FirstNameSettings.Value = info.first_Name;
 				LastNameSettings.Value = info.last_Name;
-				db.Update(EmailSettings);
-				db.Update(FirstNameSettings);
-				db.Update(LastNameSettings);
+				await adb.UpdateAsync(EmailSettings);
+				await adb.UpdateAsync(FirstNameSettings);
+				await adb.UpdateAsync(LastNameSettings);
 				return true;
 			}
 			catch (Exception e) 
@@ -300,11 +302,11 @@ namespace DABApp
 				EmailSettings.Value = token.user_email;
 				FirstNameSettings.Value = token.user_first_name;
 				LastNameSettings.Value = token.user_last_name;
-				db.Update(TokenSettings);
-				db.Update(ExpirationSettings);
-				db.Update(EmailSettings);
-				db.Update(FirstNameSettings);
-				db.Update(LastNameSettings);
+				await adb.UpdateAsync(TokenSettings);
+				await adb.UpdateAsync(ExpirationSettings);
+				await adb.UpdateAsync(EmailSettings);
+				await adb.UpdateAsync(FirstNameSettings);
+				await adb.UpdateAsync(LastNameSettings);
 				return "Success";
 			}
 			catch (Exception e) {
@@ -441,7 +443,7 @@ namespace DABApp
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut.Contains("code")) {
 					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-					throw new Exception(error.message);
+					throw new Exception($"Error: {error.message}");
 				}
 				return JsonOut;
 			}
@@ -589,7 +591,7 @@ namespace DABApp
 			GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
 		}
 
-		public static void CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
+		public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
 		{
 			var actionLog = new dbPlayerActions();
 			actionLog.ActionDateTime = DateTimeOffset.Now;
@@ -602,7 +604,7 @@ namespace DABApp
 			if (user != null) {
 				actionLog.UserEmail = user.Value;
 			}
-			db.Insert(actionLog);
+			await adb.InsertAsync(actionLog);
 		}
 
 		public static async Task<string> PostActionLogs() {
@@ -639,8 +641,11 @@ namespace DABApp
 		}
 
 		public static async Task<bool> GetMemberData(){
-			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			dbSettings EmailSettings = db.Table<dbSettings>().Single(x => x.Key == "Email");
+			var start = DateTime.Now;
+			var settings = await adb.Table<dbSettings>().ToListAsync();
+			dbSettings TokenSettings = settings.Single(x => x.Key == "Token");
+			dbSettings EmailSettings = settings.Single(x => x.Key == "Email");
+			Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
 			try
 			{
 				HttpClient client = new HttpClient();
@@ -648,15 +653,17 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.GetAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data");
+				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+				Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
 				if (container.code == "rest_forbidden")
 				{
 					throw new Exception();
 				}
 				else {
-					SaveMemberData(container.episodes);
+					await SaveMemberData(container.episodes);
+					Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
 				}
 				return true;
 			}
@@ -665,20 +672,27 @@ namespace DABApp
 			}
 		}
 
-		static void SaveMemberData(List<dbEpisodes> episodes) {
+		static async Task SaveMemberData(List<dbEpisodes> episodes) {
+			var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
+			List<dbEpisodes> insert = new List<dbEpisodes>();
+			List<dbEpisodes> update = new List<dbEpisodes>();
+			var start = DateTime.Now;
 			foreach (dbEpisodes episode in episodes) {
-				var saved = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episode.id);
+				var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
 				if (saved == null)
 				{
-					db.Insert(episode);
+					insert.Add(episode);
 				}
 				else {
 					saved.stop_time = episode.stop_time;
 					saved.is_favorite = episode.is_favorite;
 					saved.has_journal = episode.has_journal;
-					db.Update(saved);
+					update.Add(saved);
 				}
 			}
+			await adb.InsertAllAsync(insert);
+			await adb.UpdateAllAsync(update);
+			Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
 		}
 	}
 }

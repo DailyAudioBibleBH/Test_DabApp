@@ -19,8 +19,8 @@ namespace DABApp
 		public DabTabletPage(Resource resource, dbEpisodes Episode = null)
 		{
 			InitializeComponent();
+			ReadText.EraseText = true;
 			ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
-            Share.Image = Device.RuntimePlatform == "iOS" ? "ic_share_white.png" : "ic_share_white_3x.png";
 			SegControl.ValueChanged += Handle_ValueChanged;
 			_resource = resource;
 			ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -125,13 +125,13 @@ namespace DABApp
 			}
 		}
 
-		public void OnEpisode(object o, ItemTappedEventArgs e)
+		public async void OnEpisode(object o, ItemTappedEventArgs e)
 		{
 			var newEp = (dbEpisodes)e.Item;
 			if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
 			{
 				episode = (dbEpisodes)e.Item;
-				favorite.Image = episode.favoriteSource;
+				favorite.Source = episode.favoriteSource;
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
 					SetVisibility(false);
@@ -142,7 +142,7 @@ namespace DABApp
 				}
 				PlayerLabels.BindingContext = episode;
 				EpisodeList.SelectedItem = null;
-				SetReading();
+				await SetReading();
 			}
 			else DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
 		}
@@ -150,16 +150,14 @@ namespace DABApp
 		public void OnOffline(object o, ToggledEventArgs e)
 		{
 			_resource.availableOffline = e.Value;
-			ContentAPI.UpdateOffline(e.Value, _resource.id);
+			ContentAPI.UpdateOffline(e.Value, _resource.id); 
 			if (e.Value)
 			{
-				Task.Run(async () => { 
-					await PlayerFeedAPI.DownloadEpisodes(); 
-				});
+				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
 			}
 			else
 			{
-				PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+				Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
 			}
 		}
 
@@ -195,7 +193,7 @@ namespace DABApp
 				BackgroundImage.Source = backgroundImage;
 				episode = Episodes.First();
 				PlayerLabels.BindingContext = episode;
-				SetReading();
+				await SetReading();
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
 					SetVisibility(false);
@@ -299,7 +297,7 @@ namespace DABApp
 			Login.IsEnabled = true;
 		}
 
-		async void SetReading()
+		async Task SetReading()
 		{
 			Reading reading = await PlayerFeedAPI.GetReading(episode.read_link);
 			ReadTitle.Text = reading.title;
@@ -445,12 +443,16 @@ namespace DABApp
 			Initializer.IsVisible = !par;
 		}
 
-		void OnFavorite(object o, EventArgs e)
-		{ 
+		async void OnFavorite(object o, EventArgs e)
+		{
+			favorite.IsEnabled = false;
+			favorite.Opacity = .5;
 			episode.is_favorite = !episode.is_favorite;
-			favorite.Image = episode.favoriteSource;
-			PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
-			AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
+			favorite.Source = episode.favoriteSource;
+			await PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
+			await AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
+			favorite.Opacity = 1;
+			favorite.IsEnabled = true;
 			//EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
 		}
 

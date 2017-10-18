@@ -5,8 +5,6 @@ namespace DABApp
 {
 	public class HtmlLabel: Label
 	{
-		public HtmlLabel()
-		{
-		}
+		public bool EraseText { get; set; } = false;
 	}
 }

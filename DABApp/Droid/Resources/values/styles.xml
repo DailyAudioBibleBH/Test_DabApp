@@ -2,6 +2,7 @@
 <resources>
 	<color name="ListViewSelected">#26333333</color>
 	<color name="dab_red">#D5272E</color>
+	<color name="dab_text">#CBCBCB</color>
 	<style name="MyTheme" parent="MyTheme.Base">
 	</style>
 	<!-- Base theme applied no matter what API -->

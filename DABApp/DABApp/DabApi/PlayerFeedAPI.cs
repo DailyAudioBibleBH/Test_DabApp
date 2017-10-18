@@ -28,7 +28,7 @@ namespace DABApp
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(resource.feedUrl);
+				var result = await client.GetAsync($"{resource.feedUrl}?fromdate={DateTime.Now.Year}-01-01&&todate={DateTime.Now.Year}-12-31");
 				string jsonOut = await result.Content.ReadAsStringAsync();
 				var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
 				if (Episodes == null) {
@@ -37,11 +37,13 @@ namespace DABApp
 				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
 				var existingEpisodeIds = existingEpisodes.Select(x => x.id);
 				var newEpisodeIds = Episodes.Select(x => x.id);
+				var start = DateTime.Now;
 				foreach (var e in Episodes) {
 					if (!existingEpisodeIds.Contains(e.id)) {
 						await adb.InsertOrReplaceAsync(e);
 					}
 				}
+				Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
 				foreach (var old in existingEpisodes)
 				{
 					if (!newEpisodeIds.Contains(old.id))
@@ -49,8 +51,10 @@ namespace DABApp
 						await adb.DeleteAsync(old);
 					}
 				}
-				await DownloadEpisodes();
-				var check = await AuthenticationAPI.GetMemberData();
+				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
+				Task.Run(async () => { await DownloadEpisodes(); });
+				await AuthenticationAPI.GetMemberData();//This slows down everything
+				Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
 				return "OK";
 				//else {
 				//	throw new Exception(); 
@@ -62,9 +66,9 @@ namespace DABApp
 			}
 		}
 
-		public static dbEpisodes GetMostRecentEpisode(Resource resource) 
+		public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource) 
 		{
-			var episode = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).FirstOrDefault();
+			var episode = await adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync();
 			return episode;
 		}
 
@@ -126,31 +130,34 @@ namespace DABApp
 				}
 
 				//Get episodes to download
-				var EpisodesToDownload = from channel in OfflineChannels
-										 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
-										 where !episode.is_downloaded //not downloaded
-									  && episode.PubDate > cutoffTime //new enough to be downloaded
-									  && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.listenedToVisible) //not listened to or system not set to delete listened to episodes
-										 select episode;
+				var episodesToDownload = new List<dbEpisodes>();
+					var EpisodesToDownload = from channel in OfflineChannels
+											 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
+											 where !episode.is_downloaded //not downloaded
+																   && episode.PubDate > cutoffTime //new enough to be downloaded
+																   && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.listenedToVisible) //not listened to or system not set to delete listened to episodes
+											 select episode;
+					episodesToDownload = EpisodesToDownload.ToList();
 
 				int ix = 0;
-				foreach (var episode in EpisodesToDownload.ToList())
+				//List<dbEpisodes> episodesToUpdate = new List<dbEpisodes>();
+				foreach (var episode in episodesToDownload)
 				{
-					ix++;
 					try
 					{
-						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, EpisodesToDownload.Count(), episode.url);
+						ix++;
+						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToDownload.Count(), episode.url);
 						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
 							episode.is_downloaded = true;
-							db.Update(episode);
+							await adb.UpdateAsync(episode);
 						}
 						else throw new Exception();
 					}
 					catch (Exception e)
 					{
-						Debug.WriteLine("Error while downloading episode {0} ({1}): {2}", episode.id, episode.url, e.ToString());
+						Debug.WriteLine("Error while downloading episodes");
 						DownloadIsRunning = false;
 						return false;
 					}
@@ -169,17 +176,17 @@ namespace DABApp
 			}
 		}
 
-		public static void DeleteChannelEpisodes(Resource resource) {
+		public static async Task DeleteChannelEpisodes(Resource resource) {
 			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
 			foreach (var episode in Episodes) {
 				var ext = episode.url.Split('.').Last();
 				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
 				{
 					episode.is_downloaded = false;
-					db.Update(episode);
+					await adb.UpdateAsync(episode);
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						MessagingCenter.Send<string>("Update", "Update");
+						Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
 					}
 				}
 				else {
@@ -188,7 +195,7 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateEpisodeProperty(int episodeId, string propertyName = null) {
+		public static async Task UpdateEpisodeProperty(int episodeId, string propertyName = null) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
 			switch (propertyName)
 			{
@@ -202,7 +209,7 @@ namespace DABApp
 					episode.has_journal = !episode.has_journal;
 					break;
 			}
-			db.Update(episode);
+			await adb.UpdateAsync(episode);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				MessagingCenter.Send<string>("Update", "Update");
@@ -233,19 +240,21 @@ namespace DABApp
 					//	break;
 				}
 				Debug.WriteLine("Cleaning up episodes...");
-				TableQuery<dbEpisodes> episodesToDelete;
+				List<dbEpisodes> episodesToDelete = new List<dbEpisodes>();
 				if (OfflineEpisodeSettings.Instance.DeleteAfterListening)
 				{
-					episodesToDelete = from x in db.Table<dbEpisodes>()
+					var eps = from x in db.Table<dbEpisodes>()
 									   where x.is_downloaded  //downloaded episodes
 												   && (x.is_listened_to == "listened" || x.PubDate < cutoffTime)
 									   select x;
+					episodesToDelete = eps.ToList();
 				}
 				else
 				{
-					episodesToDelete = from x in db.Table<dbEpisodes>()
+					var eps = from x in db.Table<dbEpisodes>()
 									   where x.is_downloaded && x.PubDate < cutoffTime
 									   select x;
+					episodesToDelete = eps.ToList();
 				}
 				Debug.WriteLine("Cleaning up {0} episodes...", episodesToDelete.Count());
 				foreach (var episode in episodesToDelete)
@@ -282,11 +291,11 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime) {
+		public static async Task UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime) {
 			var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
 			episode.stop_time = NewStopTime;
 			episode.remaining_time = NewRemainingTime;
-			db.Update(episode);
+			await adb.UpdateAsync(episode);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				MessagingCenter.Send<string>("Update", "Update");

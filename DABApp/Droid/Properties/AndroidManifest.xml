@@ -22,5 +22,6 @@
 				<category android:name="dailyaudiobible.dabapp" />
 			</intent-filter>
 		</receiver>
+
 	</application>
 </manifest>

@@ -84,10 +84,15 @@ namespace DABApp
 		}
 
 		async void OnItemTapped(object o, ItemTappedEventArgs e) {
+			if (Device.RuntimePlatform == "Android") 
+			{ 
+				MessagingCenter.Send<string>("Show", "Show"); 
+			}
 			Nav item = (Nav)e.Item;
 			if (item.title == "Channels")
 			{
 				await Navigation.PopToRootAsync();
+				if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
 			}
 			else {
 				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);

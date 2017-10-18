@@ -2,4 +2,5 @@
 <resources>
 	<item name="MenuButton" type="id"/>
 	<item name="textView1" type="id"/>
+	<item name="down_arrow" type="id"/>
 </resources>

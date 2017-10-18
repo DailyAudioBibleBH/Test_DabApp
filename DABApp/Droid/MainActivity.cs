@@ -22,12 +22,15 @@ using Plugin.MediaManager.MediaSession;
 using Plugin.MediaManager.ExoPlayer;
 using Android.Support.V4.Media.Session;
 using FFImageLoading.Forms.Droid;
+using HockeyApp.Android;
+using HockeyApp.Android.Metrics;
 
 namespace DABApp.Droid
 {
 
 
 	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+	[IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable})]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
 		protected override void OnCreate(Bundle bundle)
@@ -68,6 +71,12 @@ namespace DABApp.Droid
 
 		}
 
+		protected override void OnResume()
+		{
+			base.OnResume();
+			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
+		}
+
 		void LoadCustomToolBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
@@ -83,6 +92,8 @@ namespace DABApp.Droid
 			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
 			text.TextSize = 30;
 			toolbar.AddView(newMenu);
+			MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible;});
+			MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
 		}
 	}
 }

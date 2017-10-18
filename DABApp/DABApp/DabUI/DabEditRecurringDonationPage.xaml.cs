@@ -12,6 +12,13 @@ namespace DABApp
 		public DabEditRecurringDonationPage(Donation campaign, Card[] cards)
 		{
 			InitializeComponent();
+			if (Device.RuntimePlatform != "Android")
+			{
+				base.ToolbarItems.RemoveAt(ToolbarItems.Count - 1);
+			}
+			else { 
+				MessagingCenter.Send<string>("Remove", "Remove");
+			}
 			_campaign = campaign;
 			Next.MinimumDate = DateTime.Now.AddDays(1);
 			if (Device.Idiom == TargetIdiom.Tablet) {

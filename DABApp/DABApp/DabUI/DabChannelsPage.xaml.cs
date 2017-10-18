@@ -6,6 +6,7 @@ using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using FFImageLoading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -55,7 +56,7 @@ namespace DABApp
 			if (remainder != 0) {
 				number += 1;
 			}
-			ChannelsList.HeightRequest = number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
+			ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
 
 			banner.Source = new UriImageSource
 			{
@@ -182,13 +183,17 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			MessagingCenter.Send<string>("Setup", "Setup");
+			var start = DateTime.Now;
 			base.OnAppearing();
 			if (episode == null)
 			{
 				bannerButton.IsEnabled = false;
 			}
+			Debug.WriteLine($"Before getting episodes {(DateTime.Now - start).TotalMilliseconds}");
 			await PlayerFeedAPI.GetEpisodes(_resource);
-			episode = PlayerFeedAPI.GetMostRecentEpisode(_resource);
+			Debug.WriteLine($"Finished GetEpisodes call {(DateTime.Now - start).TotalMilliseconds}");
+			episode = await PlayerFeedAPI.GetMostRecentEpisode(_resource);
+			Debug.WriteLine($"Finished Getting Most Recent Episode {(DateTime.Now - start).TotalMilliseconds}");
 			if (episode == null)
 			{
 				bannerContentContainer.IsVisible = false;
@@ -198,6 +203,7 @@ namespace DABApp
 				double height = 300;
 				var oldText = bannerContent.Text;
 				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+				Debug.WriteLine($"Finished replacing episode description {(DateTime.Now - start).TotalMilliseconds}");
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					height = 350;
@@ -207,7 +213,7 @@ namespace DABApp
 				bannerContentContainer.IsVisible = true;
 				if (IsUnInitialized)
 				{
-					Container.TranslationY = -height;
+					bannerContentContainer.IsVisible = true;
 					await Container.TranslateTo(0, 0, 500, Easing.Linear);
 					IsUnInitialized = false;
 				}

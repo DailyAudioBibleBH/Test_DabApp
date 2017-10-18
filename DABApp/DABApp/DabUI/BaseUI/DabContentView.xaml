@@ -39,7 +39,10 @@
 					<DataTemplate>
 						<ViewCell>
 							<ViewCell.View>
-								<StackLayout Padding="20" Spacing="0">
+								<StackLayout Spacing="0">
+									<StackLayout.Padding>
+									<OnPlatform x:TypeArguments="Thickness" iOS="20" Android="5"/>
+									</StackLayout.Padding>
 									<ff:CachedImage Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
 										<ff:CachedImage.Source>
 											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>

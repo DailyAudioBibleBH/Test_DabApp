@@ -236,6 +236,7 @@ namespace DABApp
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
 				Task.Run(async () => {
+					await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
 					await Task.Delay(5000);
 					ShowWarning = true;
 				});
@@ -423,11 +424,11 @@ namespace DABApp
 				handler(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		void OnCompleted(object o, EventArgs e)
+		async void OnCompleted(object o, EventArgs e)
 		{ 
-			PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
-			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-			PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
+			await PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
+			await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
+			await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

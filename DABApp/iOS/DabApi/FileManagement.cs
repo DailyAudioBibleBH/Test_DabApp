@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using DABApp.iOS;
 using System.Linq;
+using System.Diagnostics;
 
 [assembly: Dependency(typeof(FileManagement))]
 namespace DABApp.iOS
@@ -37,6 +38,7 @@ namespace DABApp.iOS
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
+				Debug.WriteLine($"Deleted episode {episodeId}");
 				File.Delete(fileName);
 				return true;
 			}

@@ -9,6 +9,8 @@ namespace DABApp.iOS
 {
 	public class HtmlLabelRenderer: LabelRenderer
 	{
+		string unFormattedText;
+
 		protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
 		{
 			base.OnElementChanged(e);
@@ -48,6 +50,7 @@ namespace DABApp.iOS
 
 			var myHtmlData = NSData.FromString(htmlContents, NSStringEncoding.Unicode);
 			Control.Lines = 0;
+			Control.Text = null;
 			Control.AttributedText = new NSAttributedString(myHtmlData, attr, ref nsError);
 		}
 	}
