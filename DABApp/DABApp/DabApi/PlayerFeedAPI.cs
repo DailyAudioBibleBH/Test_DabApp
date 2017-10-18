@@ -98,7 +98,6 @@ namespace DABApp
 		}
 
 		public static void UpdateOfflineEpisodeSettings() {
-			Debug.WriteLine("SwitchCell works");
 			var offlineSettings = db.Table<dbSettings>().Single(x => x.Key == "OfflineEpisodes");
 			offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
 			db.Update(offlineSettings);

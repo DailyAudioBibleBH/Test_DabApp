@@ -272,7 +272,7 @@
     <AndroidResource Include="Resources\drawable-hdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\app_icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\app_icon.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_done_white.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_done_white_3x.png" />
     <AndroidResource Include="Resources\drawable\ic_play_circle_outline_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_up_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_share_white_3x.png" />
