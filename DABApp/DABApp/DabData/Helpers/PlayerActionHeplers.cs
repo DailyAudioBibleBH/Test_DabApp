@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace DABApp
@@ -16,7 +17,9 @@ namespace DABApp
 			foreach (var log in actions) {
 				PlayerEpisodeAction action = new PlayerEpisodeAction();
 				action.entity_id = log.EpisodeId.ToString();
-				action.entity_datetime = $"{log.ActionDateTime.DayOfWeek.ToString()} {log.ActionDateTime.ToLocalTime().ToString()}";
+				var month = log.ActionDateTime.ToString("MMM", CultureInfo.InvariantCulture);
+				var time = log.ActionDateTime.TimeOfDay.ToString("HH:mm:ss");
+				action.entity_datetime = $"{log.ActionDateTime.DayOfWeek} {month} {log.ActionDateTime.Day} {log.ActionDateTime.Year} {time} GMT{log.ActionDateTime.Offset}00";
 				action.entity_type = log.entity_type;
 				if (log.ActionType != "favorite")
 				{
