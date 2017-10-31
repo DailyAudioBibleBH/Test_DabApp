@@ -51,8 +51,13 @@ namespace DABApp
 			});
 		}
 
-		public async void OnEpisode(object o, ItemTappedEventArgs e) 
+		public async void OnEpisode(object o, ItemTappedEventArgs e)
 		{
+			EpisodeList.IsEnabled = false;
+			//ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			//StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			//activity.IsVisible = true;
+			//activityHolder.IsVisible = true;
 			var chosen = (dbEpisodes)e.Item;
 			EpisodeList.SelectedItem = null;
 			var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
@@ -62,6 +67,9 @@ namespace DABApp
 			}
 			else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
 			EpisodeList.SelectedItem = null;
+			//activity.IsVisible = false;
+			//activityHolder.IsVisible = false;
+			EpisodeList.IsEnabled = true;
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e) {
