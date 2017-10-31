@@ -7,6 +7,8 @@ namespace DABApp
 {
 	public partial class DabPlayerBar : ContentView
 	{
+		bool Repeat = true;
+
 		public DabPlayerBar()
 		{
 			InitializeComponent();
@@ -45,22 +47,27 @@ namespace DABApp
 		//Show Player Page
 		async void OnShowPlayer(object o, EventArgs e)
 		{
-			PlayerButton.IsEnabled = false;
-			stackPodcastTitle.IsEnabled = false;
-			NavigationPage page = (NavigationPage)Application.Current.MainPage;
-			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
-			var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
-			if (Device.Idiom == TargetIdiom.Tablet)
+			if (Repeat)
 			{
-				var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
-				await page.PushAsync(new DabTabletPage(channel, currentEpisode));
+				Repeat = false;
+				PlayerButton.IsEnabled = false;
+				stackPodcastTitle.IsEnabled = false;
+				NavigationPage page = (NavigationPage)Application.Current.MainPage;
+				var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+				var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
+					await page.PushAsync(new DabTabletPage(channel, currentEpisode));
+				}
+				else
+				{
+					await page.PushAsync(new DabPlayerPage(currentEpisode, reading));
+				}
+				stackPodcastTitle.IsEnabled = true;
+				PlayerButton.IsEnabled = true;
+				Repeat = true;
 			}
-			else
-			{
-				await page.PushAsync(new DabPlayerPage(currentEpisode, reading));
-			}
-			stackPodcastTitle.IsEnabled = true;
-			PlayerButton.IsEnabled = true;
 		}
 
 		//Show share dialog
