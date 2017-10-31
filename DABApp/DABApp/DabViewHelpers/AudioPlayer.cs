@@ -67,6 +67,7 @@ namespace DABApp
 										else {
 											CurrentTime = 0;
 											RemainingTime = stringConvert(TotalTime);
+											Pause();
 							}
 									}
 								}
@@ -90,6 +91,11 @@ namespace DABApp
 									_IsPlaying = Player.IsPlaying;
 									OnPropertyChanged("PlayPauseButtonImageBig");
 									OnPropertyChanged("PlayPauseButtonImage");
+									if (IsPlaying)
+									{
+										UpdatePlay();
+									}
+									else UpdatePause();
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
@@ -98,14 +104,14 @@ namespace DABApp
 									IsInitialized = Player.IsInitialized;
 								}
 
-								if (_TotalTime == _CurrentTime)
-								{
-									PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
-									AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-									PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
-									Unload();
-									IsInitialized = false;
-								}
+								//if (_TotalTime == _CurrentTime)
+								//{
+								//	PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
+								//	AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
+								//	PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
+								//	Unload();
+								//	IsInitialized = false;
+								//}
 
 								if (!_player.PlayerCanKeepUp && ShowWarning && !_player.IsPlaying)
 								{
@@ -171,7 +177,7 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url, episode);
 			}
-			if (episode.stop_time == TotalTime)
+			if (episode.stop_time >= TotalTime)
 			{
 				CurrentTime = 0;
 			}
@@ -234,12 +240,7 @@ namespace DABApp
 				_player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
-				Task.Run(async () => {
-					await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
-					await Task.Delay(5000);
-					ShowWarning = true;
-				});
+				UpdatePlay();
 			}
 		}
 
@@ -251,8 +252,7 @@ namespace DABApp
 				_player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", CurrentTime);
-				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+				UpdatePause();
 			}
 		}
 
@@ -422,6 +422,24 @@ namespace DABApp
 			var handler = PropertyChanged;
 			if (handler != null)
 				handler(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		void UpdatePlay()
+		{
+			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
+			Task.Run(async () =>
+			{
+				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
+				await Task.Delay(5000);
+				ShowWarning = true;
+			});
+		}
+
+		void UpdatePause()
+		{
+			var time = CurrentTime >= 0 || CurrentTime < 1 ? TotalTime : CurrentTime;
+			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);
+			PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
 		}
 
 		async void OnCompleted(object o, EventArgs e)

@@ -595,7 +595,7 @@ namespace DABApp
 		public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
 		{
 			var actionLog = new dbPlayerActions();
-			actionLog.ActionDateTime = DateTimeOffset.Now;
+			actionLog.ActionDateTime = DateTimeOffset.Now.ToLocalTime();
 			actionLog.entity_type = favorite.HasValue? "favorite" : "episode";
 			actionLog.EpisodeId = episodeId;
 			actionLog.PlayerTime = playTime;
@@ -629,12 +629,13 @@ namespace DABApp
 					}
 					foreach (var action in actions)
 					{
-						db.Delete(action);
+						await adb.DeleteAsync(action);
 					}
 				}
 				catch (Exception e) 
 				{
 					//It's bad if the program lands here.
+					Debug.WriteLine($"Error in Posting Action logs: {e.Message}");
 					return e.Message;
 				}
 			}
@@ -687,6 +688,7 @@ namespace DABApp
 				else {
 					saved.stop_time = episode.stop_time;
 					saved.is_favorite = episode.is_favorite;
+					saved.is_listened_to = episode.is_listened_to;
 					saved.has_journal = episode.has_journal;
 					update.Add(saved);
 				}
