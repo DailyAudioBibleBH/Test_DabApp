@@ -595,7 +595,7 @@ namespace DABApp
 		public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null) 
 		{
 			var actionLog = new dbPlayerActions();
-			actionLog.ActionDateTime = DateTimeOffset.Now.ToLocalTime();
+			actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
 			actionLog.entity_type = favorite.HasValue? "favorite" : "episode";
 			actionLog.EpisodeId = episodeId;
 			actionLog.PlayerTime = playTime;

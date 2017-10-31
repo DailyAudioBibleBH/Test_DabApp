@@ -17,9 +17,9 @@ namespace DABApp
 			foreach (var log in actions) {
 				PlayerEpisodeAction action = new PlayerEpisodeAction();
 				action.entity_id = log.EpisodeId.ToString();
-				var month = log.ActionDateTime.ToString("MMM", CultureInfo.InvariantCulture);
-				var time = log.ActionDateTime.ToString("HH:mm:ss");
-				action.entity_datetime = $"{log.ActionDateTime.DayOfWeek} {month} {log.ActionDateTime.Day} {log.ActionDateTime.Year} {time} GMT{log.ActionDateTime.Offset}";
+				var month = log.ActionDateTime.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
+				var time = log.ActionDateTime.ToLocalTime().ToString("HH:mm:ss");
+				action.entity_datetime = $"{log.ActionDateTime.ToLocalTime().DayOfWeek} {month} {log.ActionDateTime.ToLocalTime().Day} {log.ActionDateTime.ToLocalTime().Year} {time} GMT {log.ActionDateTime.ToLocalTime().Offset}";
 				action.entity_type = log.entity_type;
 				if (log.ActionType != "favorite")
 				{

@@ -240,7 +240,7 @@ namespace DABApp
 				_player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				UpdatePlay();
+				//UpdatePlay();
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace DABApp
 				_player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
-				UpdatePause();
+				//UpdatePause();
 			}
 		}
 
@@ -438,8 +438,11 @@ namespace DABApp
 		void UpdatePause()
 		{
 			var time = CurrentTime >= 0 || CurrentTime < 1 ? TotalTime : CurrentTime;
-			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);
-			PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+			Task.Run(async () =>
+			{
+				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);
+				await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+			});
 		}
 
 		async void OnCompleted(object o, EventArgs e)
