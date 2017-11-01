@@ -66,9 +66,9 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.15</string>
+	<string>0.16</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>16</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We use your photo library to access photos to share with the DAB Community</string>
 	<key>NSCameraUsageDescription</key>
