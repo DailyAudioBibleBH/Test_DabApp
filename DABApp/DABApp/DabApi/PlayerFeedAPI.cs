@@ -62,6 +62,7 @@ namespace DABApp
 			}
 			catch (Exception e)
 			{
+				Debug.WriteLine($"Exception called in Getting episodes: {e.Message}");
 				return e.Message;
 			}
 		}
