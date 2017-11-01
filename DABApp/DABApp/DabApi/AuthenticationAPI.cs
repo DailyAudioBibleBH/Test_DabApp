@@ -57,7 +57,7 @@ namespace DABApp
 					var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
 					var content = new StringContent(JsonIn);
 					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-					var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member", content);
+					var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member", content);
 					string JsonOut = await result.Content.ReadAsStringAsync();
 					APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 					APIToken token = container.token;
@@ -133,11 +133,11 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
 				HttpClient client = new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcmVzdC5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNDg4NDc1NTI3LCJuYmYiOjE0ODg0NzU1MjcsImV4cCI6MTUyMDg3NTUyNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiNzE5NiJ9fX0.1I9rftNgHoJYI8g3i1jeHqI7nLjBA0cVOjhe6O5Ayf8");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
 				var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/profile", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
@@ -176,11 +176,11 @@ namespace DABApp
 			try
 			{
 				HttpClient client = new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcmVzdC5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNDg4NDc1NTI3LCJuYmYiOjE0ODg0NzU1MjcsImV4cCI6MTUyMDg3NTUyNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiNzE5NiJ9fX0.1I9rftNgHoJYI8g3i1jeHqI7nLjBA0cVOjhe6O5Ayf8");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
 				var JsonIn = JsonConvert.SerializeObject(new ResetEmailInfo(email));
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/resetpassword", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/resetpassword", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				return container.message;
@@ -196,11 +196,11 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
 				dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
 				HttpClient client= new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvcmVzdC5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNDg4NDc1NTI3LCJuYmYiOjE0ODg0NzU1MjcsImV4cCI6MTUyMDg3NTUyNywiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiNzE5NiJ9fX0.1I9rftNgHoJYI8g3i1jeHqI7nLjBA0cVOjhe6O5Ayf8");
+				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
 				var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/logout", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
 				if (result.StatusCode != System.Net.HttpStatusCode.OK) {
 					throw new Exception();
 				}
@@ -226,7 +226,7 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/exchangetoken", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/exchangetoken", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
@@ -255,7 +255,7 @@ namespace DABApp
 				dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/profile");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
 				if (info.email == null)
@@ -290,7 +290,7 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/profile", content);
+				var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
 				APIToken token = container.token;
@@ -325,7 +325,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
 				if (addresses.billing == null) {
@@ -344,7 +344,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/countries");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}countries");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				Country[] countries = JsonConvert.DeserializeObject<Country[]>(JsonOut);
 				return countries;
@@ -363,7 +363,7 @@ namespace DABApp
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/addresses", content);
+				var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}addresses", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut == "true")
 				{
@@ -391,7 +391,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}wallet");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				Card[] cards = JsonConvert.DeserializeObject<Card[]>(JsonOut);
 				return cards;
@@ -408,7 +408,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.DeleteAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet/{CardId}");
+				var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}wallet/{CardId}");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut == "true")
 				{
@@ -440,7 +440,7 @@ namespace DABApp
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.PostAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/wallet", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}wallet", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut.Contains("code")) {
 					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
@@ -465,7 +465,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
 				return donations;
@@ -485,7 +485,7 @@ namespace DABApp
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.PutAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations", content);
+				var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}donations", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut != "true") {
 					APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
@@ -509,7 +509,7 @@ namespace DABApp
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}donations", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut != "true")	
 				{
@@ -531,7 +531,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.DeleteAsync($"https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations/{id}");
+				var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}donations/{id}");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (JsonOut != "true")
 				{
@@ -552,7 +552,7 @@ namespace DABApp
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				HttpClient client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/donations/history");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations/history");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				DonationRecord[] history = JsonConvert.DeserializeObject<DonationRecord[]>(JsonOut);
 				return history;
@@ -621,7 +621,7 @@ namespace DABApp
 					var JsonIn = JsonConvert.SerializeObject(events);
 					var content = new StringContent(JsonIn);
 					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-					var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/logevents", content);
+					var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
 					string JsonOut = await result.Content.ReadAsStringAsync();
 					if (JsonOut != "1")
 					{
@@ -655,7 +655,7 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.GetAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/member/data");
+				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
 				Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
@@ -670,6 +670,7 @@ namespace DABApp
 				return true;
 			}
 			catch (Exception e) {
+				Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
 				return false;
 			}
 		}

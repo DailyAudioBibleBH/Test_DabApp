@@ -166,7 +166,7 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(topic);
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/topics", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}topics", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (!JsonOut.Contains("id")) {
 					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
@@ -194,7 +194,7 @@ namespace DABApp
 				var JsonIn = JsonConvert.SerializeObject(reply);
 				var content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://rest.dailyaudiobible.com/wp-json/lutd/v1/replies", content);
+				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}replies", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
 				if (!JsonOut.Contains("id"))
 				{
