@@ -132,7 +132,7 @@ namespace DABApp
 				await ImageService.Instance.LoadUrl(GuestStatus.Current.AvatarUrl).DownloadOnlyAsync();
 			}
 			catch(Exception ex) {
-				Debug.WriteLine(ex.Message);
+				Debug.WriteLine($"Error in OnAvatarChanged: {ex.Message}");
 			}
 		}
 	}

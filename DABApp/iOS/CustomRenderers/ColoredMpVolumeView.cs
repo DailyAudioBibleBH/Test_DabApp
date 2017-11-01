@@ -29,7 +29,7 @@ namespace DABApp.iOS
 			}
 			catch (Exception ex) 
 			{
-				Debug.WriteLine(ex.Message);
+				Debug.WriteLine($"Error in ColoredMPVolumeView iOS Renderer: {ex.Message}");
 			}
 		}
 
