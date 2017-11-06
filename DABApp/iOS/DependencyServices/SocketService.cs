@@ -44,67 +44,75 @@ namespace DABApp.iOS
 
 		public void Connect(string token)
 		{
-			socket.Connect();
-			connected = true;
-			Token = token;
-			socket.On("disconnect", data => 
+			try
 			{
-				Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
-				connected = false;
-				if (NotifyDis)
-				{
-					Disconnect(data, new EventArgs());
-					NotifyDis = false;
-					NotifyRe = true;
-				}
 				socket.Connect();
-			});
-			socket.On("reconnect", data =>
-			{
-				Debug.WriteLine($"Reconnected {data} {DateTime.Now}");
 				connected = true;
-				if (NotifyRe)
+				Token = token;
+				socket.On("disconnect", data =>
 				{
-					Reconnect(data, new EventArgs());
-					NotifyDis = true;
-					NotifyRe = false;
-				}
-				if (StoredHtml != null)
-				{
-					joined = true;
-					Key(StoredHtml, _date);
-					StoredHtml = null;
-				}
-				else {
-					if (!string.IsNullOrEmpty(_date))
+					Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
+					connected = false;
+					if (NotifyDis)
 					{
-						Join(_date);
+						Disconnect(data, new EventArgs());
+						NotifyDis = false;
+						NotifyRe = true;
 					}
-				}
-			});
-			socket.On("reconnecting", data => 
+					socket.Connect();
+				});
+				socket.On("reconnect", data =>
+				{
+					Debug.WriteLine($"Reconnected {data} {DateTime.Now}");
+					connected = true;
+					if (NotifyRe)
+					{
+						Reconnect(data, new EventArgs());
+						NotifyDis = true;
+						NotifyRe = false;
+					}
+					if (StoredHtml != null)
+					{
+						joined = true;
+						Key(StoredHtml, _date);
+						StoredHtml = null;
+					}
+					else
+					{
+						if (!string.IsNullOrEmpty(_date))
+						{
+							Join(_date);
+						}
+					}
+				});
+				socket.On("reconnecting", data =>
+				{
+					Debug.WriteLine($"Reconnecting {data} {DateTime.Now}");
+					//Reconnecting(data, new EventArgs());
+				});
+				socket.On("room_error", data =>
+				{
+					Debug.WriteLine($"Room_error {data} {DateTime.Now}");
+					joined = false;
+					Room_Error(data, new EventArgs());
+				});
+				socket.On("auth_error", data =>
+				{
+					Debug.WriteLine($"Auth_error {data} {DateTime.Now}");
+					Auth_Error(data, new EventArgs());
+				});
+				socket.On("join_error", data =>
+				{
+					Debug.WriteLine($"Join_error {data} {DateTime.Now}");
+					joined = false;
+					Join_Error(data, new EventArgs());
+				});
+				Debug.WriteLine($"Connected {DateTime.Now}");
+			}
+			catch (Exception e)
 			{
-				Debug.WriteLine($"Reconnecting {data} {DateTime.Now}");
-				//Reconnecting(data, new EventArgs());
-			});
-			socket.On("room_error", data => 
-			{
-				Debug.WriteLine($"Room_error {data} {DateTime.Now}");
-				joined = false;
-				Room_Error(data, new EventArgs());
-			});
-			socket.On("auth_error", data => 
-			{
-				Debug.WriteLine($"Auth_error {data} {DateTime.Now}");
-				Auth_Error(data, new EventArgs());
-			});
-			socket.On("join_error", data => 
-			{
-				Debug.WriteLine($"Join_error {data} {DateTime.Now}");
-				joined = false;
-				Join_Error(data, new EventArgs());
-			});
-			Debug.WriteLine($"Connected {DateTime.Now}");
+				Debug.WriteLine($"Exception caught in iOS SocketService.Connect(): {e.Message}");
+			}
 		}
 
 		public void Join(string date)
