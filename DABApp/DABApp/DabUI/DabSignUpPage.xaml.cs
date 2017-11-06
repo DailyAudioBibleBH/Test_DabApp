@@ -49,7 +49,7 @@ namespace DABApp
 							if (dons.Length == 1)
 							{
 								var url = await PlayerFeedAPI.PostDonationAccessToken();
-								if (url.Contains("http://"))
+								if (url.StartsWith("http"))
 								{
 									DependencyService.Get<IRivets>().NavigateTo(url);
 								}
