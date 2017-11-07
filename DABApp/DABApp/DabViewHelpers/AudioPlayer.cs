@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -37,7 +38,8 @@ namespace DABApp
 			_player = DependencyService.Get<IAudio>();
 			_player.Completed += OnCompleted;
 			// Start a timer to get time information from the player
-			Device.StartTimer(TimeSpan.FromMilliseconds(100), () =>
+            //20171107 Increased from 100 to 1000 to help with skipping
+			Device.StartTimer(TimeSpan.FromMilliseconds(1000), () =>
 						{
 							if (_player.IsInitialized)
 							{
@@ -282,21 +284,23 @@ namespace DABApp
 			}
 			set
 			{
-				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime) && value != 1)
-				{
-					if (Device.OS == TargetPlatform.iOS)
-					{
-						//if (IsTouched)
-						//{
-							Player.SeekTo(Convert.ToInt32(value));
-							IsTouched = false;
-						//}
-					}
-					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 2) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 2))
-					{
-						Player.SeekTo(Convert.ToInt32(value));
-					}
-				}
+                if (value != 1) //ignore 1 - this is the default when the player page is initialized and "never" a real value.
+                {
+                    double MinTimeToSkip = 5;
+                    double GoToTime = value;
+                    double PlayerTime = _player.CurrentTime;
+
+
+                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
+                    {
+                        Player.SeekTo(Convert.ToInt32(GoToTime));
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Ignoring current time change from {PlayerTime} to {GoToTime} because it's less than {MinTimeToSkip} seconds.");
+                    }
+                }
+
 				_CurrentTime = value;
 				OnPropertyChanged("CurrentTime");
 				OnPropertyChanged("RemainingTime");
@@ -426,7 +430,7 @@ namespace DABApp
 
 		void UpdatePlay()
 		{
-			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
+			Task.Run(async () => { await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime); });
 			Task.Run(async () =>
 			{
 				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
