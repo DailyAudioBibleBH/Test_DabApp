@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -283,28 +282,22 @@ namespace DABApp
 			}
 			set
 			{
-
-                if (value ==1)
-                {
-                    Debug.WriteLine("Setting currenttime to 1");
-
-                }
-                //Only seek to a new spot if the times differ by more than a few seconds
-
-                double MinTimeToSkip = 3;
-                double GoToTime = value;
-                double PlayerTime = _player.CurrentTime;
-
-                if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
-                {
-                    Player.SeekTo(Convert.ToInt32(GoToTime));
-                } else {
-                    Debug.WriteLine($"Ignoring current time change from {PlayerTime} to {GoToTime} because it's less than {MinTimeToSkip} seconds.");
-                } 
-                  
-                //Update related properties regardless
-
-                _CurrentTime = GoToTime;
+				if (Convert.ToInt32(value) != Convert.ToInt32(_player.CurrentTime) && value != 1)
+				{
+					if (Device.OS == TargetPlatform.iOS)
+					{
+						//if (IsTouched)
+						//{
+							Player.SeekTo(Convert.ToInt32(value));
+							IsTouched = false;
+						//}
+					}
+					else if (Convert.ToInt32(value) >= Convert.ToInt32(_player.CurrentTime + 2) || Convert.ToInt32(value) <= Convert.ToInt32(_player.CurrentTime - 2))
+					{
+						Player.SeekTo(Convert.ToInt32(value));
+					}
+				}
+				_CurrentTime = value;
 				OnPropertyChanged("CurrentTime");
 				OnPropertyChanged("RemainingTime");
 				OnPropertyChanged("Progress");
