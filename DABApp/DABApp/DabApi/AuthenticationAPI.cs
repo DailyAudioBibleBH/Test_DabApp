@@ -678,6 +678,9 @@ namespace DABApp
 			}
 			catch (Exception e) {
 				Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
+				DabData.ResetDatabases();
+				db = DabData.database;
+				adb = DabData.AsyncDatabase;
 				return false;
 			}
 		}

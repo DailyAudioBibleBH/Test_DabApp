@@ -13,6 +13,7 @@ using UIKit;
 using MediaPlayer;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Diagnostics;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
@@ -26,7 +27,7 @@ namespace DABApp.iOS
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
 		double skipInterval = 30;
-		float seekRate = 10.0f;
+		//float seekRate = 10.0f;
 		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
 
@@ -114,7 +115,7 @@ namespace DABApp.iOS
 			var n = error;
 		}
 
-		async void SetNowPlayingInfo()
+		void SetNowPlayingInfo()
 		{
 			//np = new MPNowPlayingInfo();
 			if (np.ElapsedPlaybackTime != _player.CurrentTime.Seconds)
@@ -138,7 +139,7 @@ namespace DABApp.iOS
 			return UIImage.LoadFromData(NSData.FromArray(contents));
 		}
 
-		async void SetCommandCenter()
+		async Task SetCommandCenter()
 		{
 			np = new MPNowPlayingInfo();
 			try
@@ -147,7 +148,7 @@ namespace DABApp.iOS
 			}
 			catch (Exception ex)
 			{
-
+				Debug.WriteLine($"Exception thrown setting artwork of media item: {ex.Message}");
 			}
 			MPSkipIntervalCommand skipForward = commandCenter.SkipForwardCommand;
 			skipForward.Enabled = true;
@@ -164,7 +165,7 @@ namespace DABApp.iOS
 			playCommand.Enabled = true;
 			playCommand.AddTarget(RemotePlayOrPause);
 
-			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () =>
+			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () => 
 				{
 					SetNowPlayingInfo();
 					return true;
