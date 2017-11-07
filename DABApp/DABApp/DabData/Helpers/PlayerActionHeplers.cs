@@ -19,7 +19,7 @@ namespace DABApp
 				action.entity_id = log.EpisodeId.ToString();
 				var month = log.ActionDateTime.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
 				var time = log.ActionDateTime.ToLocalTime().ToString("HH:mm:ss");
-				action.entity_datetime = $"{log.ActionDateTime.ToLocalTime().DayOfWeek} {month} {log.ActionDateTime.ToLocalTime().Day} {log.ActionDateTime.ToLocalTime().Year} {time} GMT {log.ActionDateTime.ToLocalTime().Offset}";
+				action.entity_datetime = $"{log.ActionDateTime.ToLocalTime().DayOfWeek.ToString().Substring(0, 3)} {month} {log.ActionDateTime.ToLocalTime().Day} {log.ActionDateTime.ToLocalTime().Year} {time} GMT{log.ActionDateTime.ToLocalTime().Offset}";
 				action.entity_type = log.entity_type;
 				if (log.ActionType != "favorite")
 				{

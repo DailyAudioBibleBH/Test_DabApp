@@ -177,7 +177,7 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url, episode);
 			}
-			if (episode.stop_time >= TotalTime)
+			if (episode.stop_time >= _player.TotalTime)
 			{
 				CurrentTime = 0;
 			}
