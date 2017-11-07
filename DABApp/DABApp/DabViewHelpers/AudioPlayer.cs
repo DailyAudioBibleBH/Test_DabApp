@@ -426,7 +426,7 @@ namespace DABApp
 
 		void UpdatePlay()
 		{
-			AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
+			Task.Run(async () => { await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime); });
 			Task.Run(async () =>
 			{
 				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
