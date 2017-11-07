@@ -286,7 +286,7 @@ namespace DABApp
 			{
                 if (value != 1) //ignore 1 - this is the default when the player page is initialized and "never" a real value.
                 {
-                    double MinTimeToSkip = 3;
+                    double MinTimeToSkip = 5;
                     double GoToTime = value;
                     double PlayerTime = _player.CurrentTime;
 
