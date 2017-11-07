@@ -31,8 +31,14 @@ namespace DABApp.iOS
 		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
 
+        private void LogAudioEvent(string text)
+        {
+            Debug.WriteLine($"{DateTime.Now.ToString()}: AUDIOSERVICE: {text}");
+        }
+
 		public AudioService()
 		{
+            LogAudioEvent("AudioService Instance Created");
 		}
 
 		static AudioService()
@@ -42,6 +48,7 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
+            LogAudioEvent($"SetAudio File to {fileName} / Episode {episode.id} ({episode.title})");
 			CurrentEpisode = episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
@@ -98,6 +105,10 @@ namespace DABApp.iOS
 
 		public void Skip(int seconds)
 		{
+            if (seconds<0) 
+            {
+                LogAudioEvent($"Skipping backwards! {seconds}...");
+            }
 			int seekTime = Convert.ToInt32(_player.CurrentTime.Seconds) + seconds;
 			_player.Seek(new CMTime(seekTime, 1), CMTime.Zero, CMTime.Zero);
 		}
