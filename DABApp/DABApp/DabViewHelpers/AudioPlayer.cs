@@ -437,7 +437,7 @@ namespace DABApp
 
 		void UpdatePause()
 		{
-			var time = CurrentTime >= 0 || CurrentTime < 1 ? TotalTime : CurrentTime;
+			var time = CurrentTime >= 0 && CurrentTime < 1.000 ? TotalTime : CurrentTime;
 			Task.Run(async () =>
 			{
 				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);

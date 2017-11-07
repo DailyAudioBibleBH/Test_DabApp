@@ -32,6 +32,7 @@ namespace DABApp
 			Months.SelectedIndex = 0;
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
+				Episodes = PlayerFeedAPI.GetEpisodeList(resource);
 				if ((string)Months.SelectedItem == "My Favorites")
 				{
 					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite);
@@ -85,6 +86,7 @@ namespace DABApp
 		}
 
 		public void OnMonthSelected(object o, EventArgs e) {
+			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 			if ((string)Months.SelectedItem == "My Favorites")
 			{
 				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);

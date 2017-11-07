@@ -116,10 +116,17 @@ namespace DABApp
 
 		public static void ConnectJournal() 
 		{
-			if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
+			try
 			{
-				var token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-				JournalTracker.Current.Connect(token.Value);
+				if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
+				{
+					var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
+					JournalTracker.Current.Connect(token.Value);
+				}
+			}
+			catch(Exception e)
+			{
+				Debug.WriteLine($"Exception caught in AuthenticationAPI.ConnectJournal(): {e.Message}");
 			}
 		}
 
@@ -671,6 +678,9 @@ namespace DABApp
 			}
 			catch (Exception e) {
 				Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
+				DabData.ResetDatabases();
+				db = DabData.database;
+				adb = DabData.AsyncDatabase;
 				return false;
 			}
 		}

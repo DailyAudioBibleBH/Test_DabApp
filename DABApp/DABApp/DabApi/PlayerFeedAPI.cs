@@ -197,23 +197,33 @@ namespace DABApp
 		}
 
 		public static async Task UpdateEpisodeProperty(int episodeId, string propertyName = null) {
-			var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
-			switch (propertyName)
+			try
 			{
-				case null:
-					episode.is_listened_to = "listened";
-					break;
-				case "is_favorite":
-					episode.is_favorite = !episode.is_favorite;
-					break;
-				case "has_journal":
-					episode.has_journal = !episode.has_journal;
-					break;
+				var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
+				switch (propertyName)
+				{
+					case null:
+						episode.is_listened_to = "listened";
+						break;
+					case "is_favorite":
+						episode.is_favorite = !episode.is_favorite;
+						break;
+					case "has_journal":
+						episode.has_journal = !episode.has_journal;
+						break;
+				}
+				await adb.UpdateAsync(episode);
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					MessagingCenter.Send<string>("Update", "Update");
+				}
 			}
-			await adb.UpdateAsync(episode);
-			if (Device.Idiom == TargetIdiom.Tablet)
+			catch (Exception e)
 			{
-				MessagingCenter.Send<string>("Update", "Update");
+				Debug.WriteLine($"Exception in PlayerFeedAPI.UpdateEpisodeProperty(): {e.Message}");
+				DabData.ResetDatabases();
+				db = DabData.database;
+				adb = DabData.AsyncDatabase;
 			}
 		}
 
@@ -293,13 +303,23 @@ namespace DABApp
 		}
 
 		public static async Task UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime) {
-			var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
-			episode.stop_time = NewStopTime;
-			episode.remaining_time = NewRemainingTime;
-			await adb.UpdateAsync(episode);
-			if (Device.Idiom == TargetIdiom.Tablet)
+			try
 			{
-				MessagingCenter.Send<string>("Update", "Update");
+				var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
+				episode.stop_time = NewStopTime;
+				episode.remaining_time = NewRemainingTime;
+				await adb.UpdateAsync(episode);
+				if (Device.Idiom == TargetIdiom.Tablet)
+				{
+					MessagingCenter.Send<string>("Update", "Update");
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine($"Exception thrown in PlayerFeedAPI.UpdateStopTime(): {e.Message}");
+				DabData.ResetDatabases();
+				db = DabData.database;
+				adb = DabData.AsyncDatabase;
 			}
 		}
 
@@ -398,7 +418,7 @@ namespace DABApp
 			}
 			catch (Exception e) 
 			{
-				return $"Error: {e.Message}";
+				return $"Error caught in PlayerFeedAPI.PostDonationAccessToken(): {e.Message}";
 			}
 		}
 	}

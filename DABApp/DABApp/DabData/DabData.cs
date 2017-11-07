@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using SQLite;
 using Xamarin.Forms;
 
@@ -9,32 +10,54 @@ namespace DABApp
 		public static readonly bool ResetDatabaseOnStart = false;
 
 		static SQLiteConnection _database;
-		static SQLiteAsyncConnection _aDatabase;
+		static SQLiteAsyncConnection _AsyncDatabase;
 		static bool _databaseInitiated = false;
-		public static SQLiteConnection database { 
-			get {
-				if (!_databaseInitiated) {
+		public static SQLiteConnection database
+		{
+			get
+			{
+				if (!_databaseInitiated)
+				{
 					initDatabase();
 				}
 				return _database;
 			}
 		}
 
-		public static SQLiteAsyncConnection AsyncDatabase { 
-			get {
-				if (!_databaseInitiated) {
+		public static SQLiteAsyncConnection AsyncDatabase
+		{
+			get
+			{
+				if (!_databaseInitiated)
+				{
 					initDatabase();
 				}
-				return _aDatabase;
+				return _AsyncDatabase;
 			}
 		}
 
-		static void initDatabase() {
+		static void initDatabase()
+		{
 			_database = DependencyService.Get<ISQLite>().GetConnection(ResetDatabaseOnStart);
-			_aDatabase = DependencyService.Get<ISQLite>().GetAsyncConnection(ResetDatabaseOnStart);
+			_AsyncDatabase = DependencyService.Get<ISQLite>().GetAsyncConnection(ResetDatabaseOnStart);
 			_database.CreateTable<dbSettings>();
 			_database.CreateTable<dbEpisodes>();
 			_database.CreateTable<dbPlayerActions>();
+		}
+
+		public static void ResetDatabases()
+		{
+			_database = DependencyService.Get<ISQLite>().GetConnection(ResetDatabaseOnStart);
+			_AsyncDatabase = DependencyService.Get<ISQLite>().GetAsyncConnection(ResetDatabaseOnStart);
+			NotifyStaticPropertyChanged("Database");
+			NotifyStaticPropertyChanged("AsyncDatabase");
+		}
+
+		public static event EventHandler<PropertyChangedEventArgs> StaticPropertyChanged = delegate { };
+
+		private static void NotifyStaticPropertyChanged(string propertyName)
+		{
+			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
