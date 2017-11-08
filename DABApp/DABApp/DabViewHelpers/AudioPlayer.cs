@@ -165,7 +165,7 @@ namespace DABApp
 		public void SetAudioFile(dbEpisodes episode)
 		{
 			if (_player.IsPlaying) {
-				PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+				Task.Run(async () => { await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime); });
 			}
 			Instance.CurrentEpisodeId = episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
@@ -179,7 +179,7 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url, episode);
 			}
-			if (episode.stop_time >= TotalTime)
+			if (episode.stop_time >= _player.TotalTime)
 			{
 				CurrentTime = 0;
 			}
@@ -295,10 +295,10 @@ namespace DABApp
                     {
                         Player.SeekTo(Convert.ToInt32(GoToTime));
                     }
-                    else
-                    {
-                        Debug.WriteLine($"Ignoring current time change from {PlayerTime} to {GoToTime} because it's less than {MinTimeToSkip} seconds.");
-                    }
+                    //else
+                    //{
+                    //    Debug.WriteLine($"Ignoring current time change from {PlayerTime} to {GoToTime} because it's less than {MinTimeToSkip} seconds.");
+                    //}
                 }
 
 				_CurrentTime = value;
