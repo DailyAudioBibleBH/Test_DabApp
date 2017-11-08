@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.App;
 using Android.Support.V4.Media.Session;
+using System.Diagnostics;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -67,7 +68,10 @@ namespace DABApp.Droid
 				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
 				//player.SetDataSource(fileName);
 			}
-			if(Device.Idiom == TargetIdiom.Phone)CrossMediaManager.Current.Pause();
+			if (Device.Idiom == TargetIdiom.Phone)
+			{
+				CrossMediaManager.Current.Pause();
+			}
 			Episode = episode;
 			FileName = fileName;
 			//player.Prepare();

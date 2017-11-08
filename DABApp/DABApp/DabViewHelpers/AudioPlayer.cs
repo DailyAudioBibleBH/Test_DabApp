@@ -36,7 +36,7 @@ namespace DABApp
 		{
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
-			_player.Completed += OnCompleted;
+			//_player.Completed += OnCompleted;
 			// Start a timer to get time information from the player
             //20171107 Increased from 100 to 1000 to help with skipping
 			Device.StartTimer(TimeSpan.FromMilliseconds(1000), () =>
@@ -49,6 +49,7 @@ namespace DABApp
 									if (_CurrentTime < 0) {
 										_CurrentTime = 0;
 									}
+									Debug.WriteLine($"_player.CurrentTime = {_player.CurrentTime}");
 									CurrentTime = _player.CurrentTime;
 									if (!Double.IsNaN(_player.TotalTime))
 									{
@@ -179,13 +180,14 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url, episode);
 			}
-			if (episode.stop_time >= _player.TotalTime)
+			if (episode.stop_time < _player.TotalTime || Device.RuntimePlatform == "Android")
 			{
-				CurrentTime = 0;
+				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");
+				CurrentTime = episode.stop_time;
 			}
 			else
 			{
-				CurrentTime = episode.stop_time;
+				CurrentTime = 0;
 			}
 
 			RemainingTime = episode.remaining_time;
@@ -441,7 +443,7 @@ namespace DABApp
 
 		void UpdatePause()
 		{
-			var time = CurrentTime >= 0 && CurrentTime < 1.000 ? TotalTime : CurrentTime;
+			var time = CurrentTime;
 			Task.Run(async () =>
 			{
 				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);

@@ -322,9 +322,9 @@ namespace DABApp
 			catch (Exception e)
 			{
 				Debug.WriteLine($"Exception thrown in PlayerFeedAPI.UpdateStopTime(): {e.Message}");
-				DabData.ResetDatabases();
-				db = DabData.database;
-				adb = DabData.AsyncDatabase;
+				//DabData.ResetDatabases();
+				//db = DabData.database;
+				//adb = DabData.AsyncDatabase;
 			}
 		}
 
