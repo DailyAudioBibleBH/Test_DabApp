@@ -10,6 +10,8 @@ using Android.Content;
 using Android.App;
 using Android.Support.V4.Media.Session;
 using System.Diagnostics;
+using Plugin.MediaManager.ExoPlayer;
+using System.Globalization;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -21,6 +23,7 @@ namespace DABApp.Droid
 		public static dbEpisodes Episode;
 		public static string FileName;
 		private MediaSessionCompat mediaSessionCompat;
+		double tt;
 
 		public AudioService()
 		{
@@ -71,6 +74,17 @@ namespace DABApp.Droid
 			if (Device.Idiom == TargetIdiom.Phone)
 			{
 				CrossMediaManager.Current.Pause();
+			}
+			var r = episode.remaining_time.Where(x => x == ':').Count() < 2 ? "00:" + episode.remaining_time : episode.remaining_time;
+			Debug.WriteLine($"r = {r}");
+			if (episode.remaining_time.Contains("-"))
+			{
+				tt = 60;
+			}
+			else
+			{
+				double conversion = episode.stop_time + TimeSpan.Parse(r).TotalSeconds;
+				tt = conversion > 0 ? conversion : 60;
 			}
 			Episode = episode;
 			FileName = fileName;
@@ -129,7 +143,10 @@ namespace DABApp.Droid
 
 		public double TotalTime {
 			//get { return player.Duration >0 ? player.Duration / 1000 : 60; }
-			get { return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : 60; }
+			get {
+				Debug.WriteLine($"CrossMediaManager = {CrossMediaManager.Current.Duration.TotalSeconds}, tt = {tt}");
+				return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : tt; 
+			}
 		}
 
 		public bool PlayerCanKeepUp

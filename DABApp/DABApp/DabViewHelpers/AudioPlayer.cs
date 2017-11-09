@@ -295,11 +295,8 @@ namespace DABApp
                     double PlayerTime = _player.CurrentTime;
                     if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
                     {
-						if (Device.RuntimePlatform != "Android" || GoToTime > 60 || GoToTime < 58)
-						{
-							Debug.WriteLine($"Seekto Time = {GoToTime}");
-							Player.SeekTo(Convert.ToInt32(GoToTime));
-						}
+						Debug.WriteLine($"Seekto Time = {GoToTime}");
+						Player.SeekTo(Convert.ToInt32(GoToTime));
                     }
                     //else
                     //{
