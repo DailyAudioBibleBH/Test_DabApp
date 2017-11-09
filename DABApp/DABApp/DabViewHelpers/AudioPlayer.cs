@@ -46,10 +46,10 @@ namespace DABApp
 								//Update current time
 								if (_CurrentTime != _player.CurrentTime)
 								{
-									if (_CurrentTime < 0) {
+									if (_CurrentTime < 0)
+									{
 										_CurrentTime = 0;
 									}
-									Debug.WriteLine($"_player.CurrentTime = {_player.CurrentTime}");
 									CurrentTime = _player.CurrentTime;
 									if (!Double.IsNaN(_player.TotalTime))
 									{
@@ -68,8 +68,10 @@ namespace DABApp
 											}
 										}
 										else {
+								Debug.WriteLine($"CurrentTime = {CurrentTime}, TotalTime = {_player.TotalTime}");
 											CurrentTime = 0;
 											RemainingTime = stringConvert(TotalTime);
+											Debug.WriteLine($"RemainingTime = {RemainingTime}");
 											Pause();
 							}
 									}
@@ -189,7 +191,7 @@ namespace DABApp
 			{
 				CurrentTime = 0;
 			}
-
+			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
 			ShowWarning = false;
 		}
@@ -291,11 +293,13 @@ namespace DABApp
                     double MinTimeToSkip = 5;
                     double GoToTime = value;
                     double PlayerTime = _player.CurrentTime;
-
-
                     if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
                     {
-                        Player.SeekTo(Convert.ToInt32(GoToTime));
+						if (Device.RuntimePlatform != "Android" || GoToTime > 60 || GoToTime < 58)
+						{
+							Debug.WriteLine($"Seekto Time = {GoToTime}");
+							Player.SeekTo(Convert.ToInt32(GoToTime));
+						}
                     }
                     //else
                     //{
@@ -391,14 +395,16 @@ namespace DABApp
 
 		public void SeekTo(int seconds)
 		{
+			Debug.WriteLine($"SeekTo seconds = {seconds}");
 			_player.SeekTo(seconds);
 			//Update the current time
 			CurrentTime = seconds;
+
 		}
 
 		public void Skip(int seconds)
 		{
-
+			Debug.WriteLine($"Skip = {seconds}");
 			_player.Skip(seconds);
 			//Update the current time
 			//CurrentTime = seconds;
