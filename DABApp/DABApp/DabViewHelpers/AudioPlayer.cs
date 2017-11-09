@@ -182,15 +182,15 @@ namespace DABApp
 			{
 				_player.SetAudioFile(episode.url, episode);
 			}
-			if (episode.stop_time < _player.TotalTime || Device.RuntimePlatform == "Android")
-			{
+			//if (episode.stop_time < _player.TotalTime || Device.RuntimePlatform == "Android")
+			//{
 				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");
 				CurrentTime = episode.stop_time;
-			}
-			else
-			{
-				CurrentTime = 0;
-			}
+			//}
+			//else
+			//{
+			//	CurrentTime = 0;
+			//}
 			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
 			ShowWarning = false;
