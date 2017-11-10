@@ -13,6 +13,7 @@ namespace DABApp.Droid
 		protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
 		{
 			base.OnElementChanged(e);
+			Control.SetMaxLines(100000);
 
 			if (Element.Text != null)
 			{

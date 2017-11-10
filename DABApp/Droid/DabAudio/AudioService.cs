@@ -144,7 +144,6 @@ namespace DABApp.Droid
 		public double TotalTime {
 			//get { return player.Duration >0 ? player.Duration / 1000 : 60; }
 			get {
-				Debug.WriteLine($"CrossMediaManager = {CrossMediaManager.Current.Duration.TotalSeconds}, tt = {tt}");
 				return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : tt; 
 			}
 		}
