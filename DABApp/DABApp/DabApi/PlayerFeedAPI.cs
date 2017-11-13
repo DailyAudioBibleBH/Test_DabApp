@@ -316,7 +316,7 @@ namespace DABApp
 				await adb.UpdateAsync(episode);
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
-					MessagingCenter.Send<string>("Update", "Update");
+					Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
 				}
 			}
 			catch (Exception e)

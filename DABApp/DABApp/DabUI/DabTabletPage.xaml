@@ -95,18 +95,19 @@
 <!--          <BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />-->
           <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
         </StackLayout>
-        <ScrollView x:Name="Archive" IsVisible="true">
-          <StackLayout Spacing="10">
-            <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader">
+				<StackLayout x:Name="Archive" IsVisible="true" >
+        <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode">
+		<ListView.Header>
+            <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
               <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" BackgroundColor="Transparent" TextColor="White" />
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}" />
               <Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline" />
             </StackLayout>
+							</ListView.Header>
             <!--                        <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
 -->
             <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
-            <local:NonScrollingListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode">
-              <local:NonScrollingListView.ItemTemplate>
+           <ListView.ItemTemplate>
                 <DataTemplate>
                   <ViewCell>
                     <Grid Padding="20,10,20,10">
@@ -130,10 +131,9 @@
                     </Grid>
                   </ViewCell>
                 </DataTemplate>
-              </local:NonScrollingListView.ItemTemplate>
-            </local:NonScrollingListView>
+              </ListView.ItemTemplate>
+            </ListView>
           </StackLayout>
-        </ScrollView>
         <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" VerticalOptions="StartAndExpand" BackgroundColor="{DynamicResource ReadBackgroundColor}">
           <ScrollView>
             <StackLayout>
