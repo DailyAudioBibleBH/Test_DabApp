@@ -38,6 +38,7 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
+			TimedActions();
 			MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
 			if (Episode != null)
 			{
@@ -54,7 +55,7 @@ namespace DABApp
 			}
 			PlayerLabels.BindingContext = episode;
 			Journal.BindingContext = episode;
-			SetReading();
+			Task.Run(async () => { await SetReading(); });
 			if (episode == null)
 			{
 				SetVisibility(false);

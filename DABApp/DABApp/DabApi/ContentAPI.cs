@@ -107,15 +107,16 @@ namespace DABApp
 			if (OfflineSettings != null)
 			{
 				var jsonArray = JArray.Parse(OfflineSettings.Value);
-				if (offline || !jsonArray.Contains(ResourceId))
+				var match = jsonArray.FirstOrDefault(j => j.ToString().Equals(ResourceId.ToString()));
+				if (offline && match == null)
 				{
 					jsonArray.Add(ResourceId);
 				}
 				else
 				{
-					if (jsonArray.Contains(ResourceId))
+					if (!offline && match != null)
 					{
-						jsonArray.Remove(ResourceId);
+						jsonArray.Remove(match);
 					}
 				}
 				OfflineSettings.Value = jsonArray.ToString();

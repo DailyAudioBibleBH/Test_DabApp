@@ -95,7 +95,7 @@
 <!--          <BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />-->
           <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
         </StackLayout>
-				<StackLayout x:Name="Archive" IsVisible="true" >
+				<StackLayout x:Name="Archive" IsVisible="true">
         <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode">
 		<ListView.Header>
             <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
