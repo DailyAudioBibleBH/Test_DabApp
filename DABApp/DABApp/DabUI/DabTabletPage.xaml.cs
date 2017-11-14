@@ -29,7 +29,7 @@ namespace DABApp
 			BackgroundImage.Source = backgroundImage;
 			Offline.IsToggled = _resource.availableOffline;
 			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
 			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
 			foreach (var month in months)
 			{
@@ -128,6 +128,10 @@ namespace DABApp
 
 		public async void OnEpisode(object o, ItemTappedEventArgs e)
 		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			var newEp = (dbEpisodes)e.Item;
 			if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
 			{
@@ -145,7 +149,9 @@ namespace DABApp
 				EpisodeList.SelectedItem = null;
 				await SetReading();
 			}
-			else DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+			else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		public void OnOffline(object o, ToggledEventArgs e)
@@ -183,6 +189,10 @@ namespace DABApp
 
 		async void OnChannel(object o, EventArgs e)
 		{
+			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+			activity.IsVisible = true;
+			activityHolder.IsVisible = true;
 			if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
 			{
 				_resource = (Resource)ChannelsList.SelectedItem;
@@ -205,6 +215,8 @@ namespace DABApp
 				}
 			}
 			else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+			activity.IsVisible = false;
+			activityHolder.IsVisible = false;
 		}
 
 		void OnBack30(object o, EventArgs e)
