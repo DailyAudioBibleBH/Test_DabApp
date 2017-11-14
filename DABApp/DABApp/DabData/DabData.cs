@@ -42,7 +42,7 @@ namespace DABApp
 			_AsyncDatabase = DependencyService.Get<ISQLite>().GetAsyncConnection(ResetDatabaseOnStart);
 			_database.BusyTimeout = TimeSpan.FromSeconds(60);
 			_AsyncDatabase.GetConnection().BusyTimeout = TimeSpan.FromSeconds(60);
-			_database.ExecuteScalar<string>("PRAGMA journal_mode=WAL");
+			_database.ExecuteScalar<string>("PRAGMA journal_mode=WAL");//Enabling Write Ahead Log instead of rollback journal.
 			_database.CreateTable<dbSettings>();
 			_database.CreateTable<dbEpisodes>();
 			_database.CreateTable<dbPlayerActions>();
