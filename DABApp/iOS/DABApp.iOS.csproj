@@ -427,6 +427,7 @@
     <BundleResource Include="Resources\seekbaricon.png" />
     <BundleResource Include="Resources\seekbaricon%402x.png" />
     <BundleResource Include="Resources\seekbaricon%403x.png" />
+    <BundleResource Include="Resources\ic_done_listened_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

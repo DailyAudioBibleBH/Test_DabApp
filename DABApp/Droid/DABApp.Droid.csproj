@@ -309,6 +309,7 @@
     <AndroidResource Include="Resources\drawable\down_arrow.xml" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_star_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_star_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_done_listened_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />

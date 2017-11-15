@@ -54,10 +54,10 @@ namespace DABApp
 		[Ignore]
 		public bool listenedToVisible { 
 			get {
-				return unTouched = is_listened_to == "listened" ? false : true;
+				return unTouched = is_listened_to == "listened" ? true : false;
 			}
 			set{
-				unTouched = is_listened_to == "listened" ? false : true;
+				unTouched = is_listened_to == "listened" ? true : false;
 				OnPropertyChanged("listenedToVisible");
 			}
 		}
