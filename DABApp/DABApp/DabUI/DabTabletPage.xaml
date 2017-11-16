@@ -122,6 +122,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                       </Grid.ColumnDefinitions>
+						<BoxView Color="Transparent" IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
 						<Image Source="ic_done_listened_3x.png" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
                       <Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" />
                       <Image IsVisible="{Binding favoriteVisible}" Source="ic_star_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
