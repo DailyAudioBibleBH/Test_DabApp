@@ -696,11 +696,14 @@ namespace DABApp
 					insert.Add(episode);
 				}
 				else {
-					saved.stop_time = episode.stop_time;
-					saved.is_favorite = episode.is_favorite;
-					saved.is_listened_to = episode.is_listened_to;
-					saved.has_journal = episode.has_journal;
-					update.Add(saved);
+					if (!(saved.stop_time == episode.stop_time && saved.is_favorite == episode.is_favorite && saved.is_listened_to == episode.is_listened_to && saved.has_journal == episode.has_journal))
+					{
+						saved.stop_time = episode.stop_time;
+						saved.is_favorite = episode.is_favorite;
+						saved.is_listened_to = episode.is_listened_to;
+						saved.has_journal = episode.has_journal;
+						update.Add(saved);
+					}
 				}
 			}
 			await adb.InsertAllAsync(insert);
