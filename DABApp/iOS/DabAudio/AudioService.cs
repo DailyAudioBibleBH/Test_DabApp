@@ -164,6 +164,9 @@ namespace DABApp.iOS
 			MPRemoteCommand playCommand = commandCenter.PlayCommand;
 			playCommand.Enabled = true;
 			playCommand.AddTarget(RemotePlayOrPause);
+			MPRemoteCommand playpauseCommand = commandCenter.TogglePlayPauseCommand;
+			playpauseCommand.Enabled = true;
+			playpauseCommand.AddTarget(RemotePlayOrPause);
 
 			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () => 
 				{
@@ -184,6 +187,19 @@ namespace DABApp.iOS
 			{
 				Play();
 				np.PlaybackRate = 1.0f;
+			}
+			if (arg.Command == commandCenter.TogglePlayPauseCommand)
+			{
+				if (_player.Rate != 0f)
+				{
+					Pause();
+					np.PlaybackRate = 0f;
+				}
+				else
+				{
+					Play();
+					np.PlaybackRate = 1.0f;
+				}
 			}
 			return MPRemoteCommandHandlerStatus.Success;
 		}
