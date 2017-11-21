@@ -5,9 +5,8 @@
 			<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
 			<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}"/>
 			<Label Text="{Binding content}"/>
-			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
-				</StackLayout>
-			<StackLayout Padding="10" Spacing="10">
+			</StackLayout>
+			<StackLayout Padding="10" Spacing="10" VerticalOptions="FillAndExpand">
 			<local:DabEditor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
 			<Grid VerticalOptions="End">
