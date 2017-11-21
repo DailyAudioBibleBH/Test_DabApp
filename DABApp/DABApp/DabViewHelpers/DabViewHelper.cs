@@ -88,7 +88,7 @@ namespace DABApp
 			if (value == null) { return null; }
 	
 			var topic = (Topic)value;
-			return $"Latest Reply {topic.lastActivity} ago";
+			return $"Latest Reply {topic.lastActivity}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
