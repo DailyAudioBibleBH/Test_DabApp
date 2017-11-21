@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateReply" xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
-		<StackLayout x:Name="Container" Padding="10" Spacing="10">
+		<StackLayout x:Name="Container">
+			<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
 			<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}"/>
 			<Label Text="{Binding content}"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
-			<Editor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand"/>
+				</StackLayout>
+			<StackLayout Padding="10" Spacing="10">
+			<local:DabEditor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
 			<Grid VerticalOptions="End">
 				<Grid.ColumnDefinitions>
@@ -18,6 +21,7 @@
 				<Button x:Name="Post" Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" Grid.Row="0" Grid.Column="0"/>
 				<Button x:Name="Cancel" Text="Cancel" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
 			</Grid>
+			</StackLayout>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

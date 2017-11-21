@@ -26,16 +26,23 @@ namespace DABApp
 		{
 			Post.IsEnabled = false;
 			Cancel.IsEnabled = false;
-			var rep = new PostReply(reply.Text, _topic.id);
-			var result = await ContentAPI.PostReply(rep);
-			if (result.Contains("id"))
+			if (string.IsNullOrWhiteSpace(reply.Text))
 			{
-				await DisplayAlert("Success", "Successfully posted new reply.", "OK");
-				await Navigation.PopAsync();
+				await DisplayAlert("Cannont Post Blank Reply", "If you would like to discard your post hit cancel.", "OK");
 			}
-			else 
+			else
 			{
-				await DisplayAlert("Error", result, "OK");
+				var rep = new PostReply(reply.Text, _topic.id);
+				var result = await ContentAPI.PostReply(rep);
+				if (result.Contains("id"))
+				{
+					await DisplayAlert("Success", "Successfully posted new reply.", "OK");
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", result, "OK");
+				}
 			}
 			Post.IsEnabled = true;
 			Cancel.IsEnabled = true;

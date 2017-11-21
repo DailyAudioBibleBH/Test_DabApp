@@ -4,7 +4,7 @@
 		<StackLayout Padding="10" Spacing="10" x:Name="Container">
 			<Entry Placeholder="Title" x:Name="title" BackgroundColor="Transparent" Completed="OnTitle"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}" VerticalOptions="Start"/>
-			<Editor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand"/>
+			<local:DabEditor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand" Placeholder="Your prayer request" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			<Grid VerticalOptions="End">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>

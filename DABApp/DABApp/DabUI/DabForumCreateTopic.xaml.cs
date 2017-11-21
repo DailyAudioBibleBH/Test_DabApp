@@ -26,16 +26,23 @@ namespace DABApp
 		{
 			Post.IsEnabled = false;
 			Cancel.IsEnabled = false;
-			var topic = new PostTopic(title.Text, Content.Text, _forum.id);
-			var result = await ContentAPI.PostTopic(topic);
-			if (result.Contains("id"))
+			if (string.IsNullOrWhiteSpace(title.Text))
 			{
-				await DisplayAlert("Success", "Successfully posted new topic.", "OK");
-				await Navigation.PopAsync();
+				await DisplayAlert("Prayer Request cannot be blank.", "If you would like to erase your prayer request please hit the cancel button.", "OK");
 			}
-			else 
+			else
 			{
-				await DisplayAlert("Error", result, "OK");
+				var topic = new PostTopic(title.Text, Content.Text, _forum.id);
+				var result = await ContentAPI.PostTopic(topic);
+				if (result.Contains("id"))
+				{
+					await DisplayAlert("Success", "Successfully posted new topic.", "OK");
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", result, "OK");
+				}
 			}
 			Post.IsEnabled = true;
 			Cancel.IsEnabled = true;

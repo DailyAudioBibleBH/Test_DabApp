@@ -353,6 +353,7 @@
     <Compile Include="CustomRenderers\CustomTableViewRenderer.cs" />
     <Compile Include="CustomRenderers\DabSwitchCellRenderer.cs" />
     <Compile Include="CustomRenderers\DabImageRenderer.cs" />
+    <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
