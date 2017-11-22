@@ -11,6 +11,7 @@ namespace DABApp.Droid
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Editor> e)
 		{
+//Code for this custom renderer found here: https://solidbrain.com/2017/07/10/placeholder-text-in-xamarin-forms-editor/
 			base.OnElementChanged(e);
 
 			if (Element == null)

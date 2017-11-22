@@ -5,6 +5,7 @@ namespace DABApp
 {
 	public class DabEditor : Editor
 	{
+//Code found here:https://solidbrain.com/2017/07/10/placeholder-text-in-xamarin-forms-editor/
 		public static BindableProperty PlaceholderProperty
 		   = BindableProperty.Create(nameof(Placeholder), typeof(string), typeof(DabEditor));
 

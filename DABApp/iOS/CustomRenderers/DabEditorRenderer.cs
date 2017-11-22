@@ -14,6 +14,7 @@ namespace DABApp.iOS
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Editor> e)
 		{
+//Code Found here: https://solidbrain.com/2017/07/10/placeholder-text-in-xamarin-forms-editor/
 			base.OnElementChanged(e);
 
 			if (Element == null)

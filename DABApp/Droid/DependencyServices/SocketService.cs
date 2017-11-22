@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using DABApp.Droid;
 using Html2Markdown;
@@ -10,7 +11,7 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(SocketService))]
 namespace DABApp.Droid
 {
-	public class SocketService: ISocket
+	public class SocketService : ISocket
 	{
 		static Socket socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
 		static bool connected = false;
@@ -25,6 +26,10 @@ namespace DABApp.Droid
 
 		public SocketService()
 		{
+			//Options ops = new Options();
+			//ops.Transports = ImmutableList.Create<string>().Add("websocket");
+			//var manager = new Manager(new Uri("wss://journal.dailyaudiobible.com:5000"));
+			//socket = manager.Socket("/");
 			md = new MarkdownDeep.Markdown();
 			md.SafeMode = false;
 			md.ExtraMode = true;
@@ -32,7 +37,7 @@ namespace DABApp.Droid
 			converter = new Converter();
 		}
 
-		public string content { get; set;}
+		public string content { get; set; }
 
 		public bool ExternalUpdate { get; set; } = true;
 
@@ -125,6 +130,9 @@ namespace DABApp.Droid
 					joined = false;
 					Join_Error(data, new EventArgs());
 				});
+				socket.On(Socket.EVENT_CONNECT_ERROR, data=> {
+					Debug.WriteLine($"SOCKET CONNECTION ERROR: {data.ToString()}");
+            	});
 				Debug.WriteLine($"Connected {DateTime.Now}");
 			}
 			catch (Exception e)
@@ -137,6 +145,7 @@ namespace DABApp.Droid
 		{
 			if (connected)
 			{
+				Debug.WriteLine($"Join: {date}");
 				_date = date;
 				var help = new SocketHelper(date, Token);
 				var Data = JObject.FromObject(help);
@@ -154,16 +163,21 @@ namespace DABApp.Droid
 						if (Date == _date)
 						{
 							string html = jObject.Value<string>("content");
-					//get rid of line breaks in the HTML
-					html = html.Replace("\n", "");
+							//get rid of line breaks in the HTML
+							html = html.Replace("\n", "");
 							content = converter.Convert(html);
-					//Replace extra \n\n with \n
-					content = content.Replace("\n\n", "\n");
-					//trim off a leading \n
-					if (content.StartsWith("\n"))
+							//Replace extra \n\n with \n
+							content = content.Replace("\n\n", "\n");
+							//trim off a leading \n
+							if (content.StartsWith("\n"))
 							{
 								content = content.Substring(1);
 							}
+							if (content == null)
+							{
+								content = "";
+							}
+							Debug.WriteLine($"Join Content:{content} Join Html:{html}");
 							contentChanged(this, new EventArgs());
 						}
 					}

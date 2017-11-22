@@ -107,6 +107,9 @@ namespace DABApp.iOS
 					joined = false;
 					Join_Error(data, new EventArgs());
 				});
+				socket.On(Socket.EVENT_CONNECT_ERROR, data=> {
+					Debug.WriteLine($"SOCKET CONNECTION ERROR: {data.ToString()}");
+            	});
 				Debug.WriteLine($"Connected {DateTime.Now}");
 			}
 			catch (Exception e)
