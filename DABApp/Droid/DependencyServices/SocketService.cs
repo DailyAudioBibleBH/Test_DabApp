@@ -26,10 +26,6 @@ namespace DABApp.Droid
 
 		public SocketService()
 		{
-			//Options ops = new Options();
-			//ops.Transports = ImmutableList.Create<string>().Add("websocket");
-			//var manager = new Manager(new Uri("wss://journal.dailyaudiobible.com:5000"));
-			//socket = manager.Socket("/");
 			md = new MarkdownDeep.Markdown();
 			md.SafeMode = false;
 			md.ExtraMode = true;
@@ -69,6 +65,10 @@ namespace DABApp.Droid
 		{
 			try
 			{
+				if (socket == null)
+				{ 
+					socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+				}
 				socket.Connect();
 				connected = true;
 				Token = token;
@@ -82,7 +82,18 @@ namespace DABApp.Droid
 						NotifyDis = false;
 						NotifyRe = true;
 					}
-					socket.Connect();
+					try
+					{
+						if(socket == null)
+						{
+							socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+						}
+						socket.Connect();
+					}
+					catch(Exception ex)
+					{
+						Debug.WriteLine($"Exception caught in iOS SocketService.Connect(): {e.Message}");
+					}
 				});
 				socket.On("reconnect", data =>
 				{

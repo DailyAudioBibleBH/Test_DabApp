@@ -46,6 +46,10 @@ namespace DABApp.iOS
 		{
 			try
 			{
+				if (socket == null)
+				{ 
+					socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+				}
 				socket.Connect();
 				connected = true;
 				Token = token;
@@ -59,7 +63,18 @@ namespace DABApp.iOS
 						NotifyDis = false;
 						NotifyRe = true;
 					}
-					socket.Connect();
+					try
+					{
+						if (socket == null)
+						{ 
+							socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+						}
+						socket.Connect();
+					}
+					catch (Exception e)
+					{ 
+						Debug.WriteLine($"Exception caught in iOS SocketService.Connect(): {e.Message}");
+					}
 				});
 				socket.On("reconnect", data =>
 				{
