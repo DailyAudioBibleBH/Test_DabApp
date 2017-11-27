@@ -83,6 +83,12 @@ namespace DABApp.Droid
 			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 		}
 
+		protected override void OnStop()
+		{
+			base.OnStop();
+			CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
+		}
+
 		void LoadCustomToolBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
