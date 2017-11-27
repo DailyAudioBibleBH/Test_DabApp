@@ -83,13 +83,13 @@ namespace DABApp.Droid
 			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 		}
 
-		protected override void OnStop()
+		protected override void OnDestroy()
 		{
-			base.OnStop();
 			if (CrossMediaManager.Current.MediaNotificationManager != null)
 			{
 				CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
 			}
+			base.OnDestroy();
 		}
 
 		void LoadCustomToolBar()
