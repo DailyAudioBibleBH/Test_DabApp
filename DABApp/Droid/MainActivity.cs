@@ -86,7 +86,10 @@ namespace DABApp.Droid
 		protected override void OnStop()
 		{
 			base.OnStop();
-			CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
+			if (CrossMediaManager.Current.MediaNotificationManager != null)
+			{
+				CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
+			}
 		}
 
 		void LoadCustomToolBar()
