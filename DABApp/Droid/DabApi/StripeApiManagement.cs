@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using DABApp.Droid;
 using Stripe;
 using Xamarin.Forms;
@@ -29,6 +30,7 @@ namespace DABApp.Droid
 			{
 				var container = new StripeContainer();
 				container.card_token = $"Error: {ex.Message}";
+				Debug.WriteLine($"CreateToken Error Message: {ex.Message}");
 				return container;
 			}
 		}

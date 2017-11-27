@@ -71,9 +71,9 @@ namespace DABApp.iOS
 						}
 						socket.Connect();
 					}
-					catch (Exception e)
+					catch (Exception ex)
 					{ 
-						Debug.WriteLine($"Exception caught in iOS SocketService.Connect(): {e.Message}");
+						Debug.WriteLine($"Exception caught in iOS SocketService.Connect(): {ex.Message}");
 					}
 				});
 				socket.On("reconnect", data =>

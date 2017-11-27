@@ -449,6 +449,7 @@ namespace DABApp
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
 				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}wallet", content);
 				string JsonOut = await result.Content.ReadAsStringAsync();
+				Debug.WriteLine($"Wallet Error: {JsonOut}");
 				if (JsonOut.Contains("code")) {
 					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
 					throw new Exception($"Error: {error.message}");
