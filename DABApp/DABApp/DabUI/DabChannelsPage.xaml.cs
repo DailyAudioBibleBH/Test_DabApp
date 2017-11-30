@@ -27,9 +27,9 @@ namespace DABApp
 			ChannelView = ContentConfig.Instance.views.Single(x => x.id == 56);
 			//ListTitle.Text = $"<h1>{ChannelView.title}</h1>";
 			BindingContext = ChannelView;
-			bannerContent.Text = ChannelView.banner.content;
+			//bannerContent.Text = ChannelView.banner.content;
 			_resource = ChannelView.resources[0];
-			Container.TranslationY = -280;
+			//Container.TranslationY = -280;
 			//Task.Run(async () =>
 			//{
 			//	await PlayerFeedAPI.GetEpisodes(_resource);
@@ -58,17 +58,17 @@ namespace DABApp
 			}
 			ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
 
-			banner.Source = new UriImageSource
-			{
-				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? ChannelView.banner.urlPhone : ChannelView.banner.urlTablet)),
-				CacheValidity = GlobalResources.ImageCacheValidity
-			};
+			//banner.Source = new UriImageSource
+			//{
+			//	Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? ChannelView.banner.urlPhone : ChannelView.banner.urlTablet)),
+			//	CacheValidity = GlobalResources.ImageCacheValidity
+			//};
 
-			bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
-			{
-				//resize the banner image to match the banner content container's height
-				banner.HeightRequest = bannerContentContainer.Height;
-			};
+			//bannerContentContainer.SizeChanged += (object sender, EventArgs e) =>
+			//{
+			//	//resize the banner image to match the banner content container's height
+			//	banner.HeightRequest = bannerContentContainer.Height;
+			//};
 
 			TimedActions();
 
@@ -180,45 +180,45 @@ namespace DABApp
 			AuthenticationAPI.ConnectJournal();
 		}
 
-		protected override async void OnAppearing()
-		{
-			MessagingCenter.Send<string>("Setup", "Setup");
-			var start = DateTime.Now;
-			base.OnAppearing();
-			if (episode == null)
-			{
-				bannerButton.IsEnabled = false;
-			}
-			Debug.WriteLine($"Before getting episodes {(DateTime.Now - start).TotalMilliseconds}");
-			await PlayerFeedAPI.GetEpisodes(_resource);
-			Debug.WriteLine($"Finished GetEpisodes call {(DateTime.Now - start).TotalMilliseconds}");
-			episode = await PlayerFeedAPI.GetMostRecentEpisode(_resource);
-			Debug.WriteLine($"Finished Getting Most Recent Episode {(DateTime.Now - start).TotalMilliseconds}");
-			if (episode == null)
-			{
-				bannerContentContainer.IsVisible = false;
-			}
-			else
-			{
-				double height = 300;
-				var oldText = bannerContent.Text;
-				bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
-				Debug.WriteLine($"Finished replacing episode description {(DateTime.Now - start).TotalMilliseconds}");
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					height = 350;
-					bannerContentContainer.HeightRequest = height;
-					bannerStack.Padding = 65;
-				}
-				bannerContentContainer.IsVisible = true;
-				if (IsUnInitialized)
-				{
-					bannerContentContainer.IsVisible = true;
-					await Container.TranslateTo(0, 0, 500, Easing.Linear);
-					IsUnInitialized = false;
-				}
-			}
-			bannerButton.IsEnabled = true;
-		}
+		//protected override async void OnAppearing()
+		//{
+		//	MessagingCenter.Send<string>("Setup", "Setup");
+		//	var start = DateTime.Now;
+		//	base.OnAppearing();
+		//	if (episode == null)
+		//	{
+		//		bannerButton.IsEnabled = false;
+		//	}
+		//	Debug.WriteLine($"Before getting episodes {(DateTime.Now - start).TotalMilliseconds}");
+		//	await PlayerFeedAPI.GetEpisodes(_resource);
+		//	Debug.WriteLine($"Finished GetEpisodes call {(DateTime.Now - start).TotalMilliseconds}");
+		//	episode = await PlayerFeedAPI.GetMostRecentEpisode(_resource);
+		//	Debug.WriteLine($"Finished Getting Most Recent Episode {(DateTime.Now - start).TotalMilliseconds}");
+		//	if (episode == null)
+		//	{
+		//		bannerContentContainer.IsVisible = false;
+		//	}
+		//	else
+		//	{
+		//		double height = 300;
+		//		var oldText = bannerContent.Text;
+		//		bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
+		//		Debug.WriteLine($"Finished replacing episode description {(DateTime.Now - start).TotalMilliseconds}");
+		//		if (Device.Idiom == TargetIdiom.Tablet)
+		//		{
+		//			height = 350;
+		//			bannerContentContainer.HeightRequest = height;
+		//			bannerStack.Padding = 65;
+		//		}
+		//		bannerContentContainer.IsVisible = true;
+		//		if (IsUnInitialized)
+		//		{
+		//			bannerContentContainer.IsVisible = true;
+		//			await Container.TranslateTo(0, 0, 500, Easing.Linear);
+		//			IsUnInitialized = false;
+		//		}
+		//	}
+		//	bannerButton.IsEnabled = true;
+		//}
 	}
 }
