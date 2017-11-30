@@ -12,6 +12,8 @@ using Android.Support.V4.Media.Session;
 using System.Diagnostics;
 using Plugin.MediaManager.ExoPlayer;
 using System.Globalization;
+using FFImageLoading;
+using FFImageLoading.Forms;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -24,6 +26,7 @@ namespace DABApp.Droid
 		public static string FileName;
 		private MediaSessionCompat mediaSessionCompat;
 		double tt;
+		bool Update = true;
 
 		public AudioService()
 		{
@@ -179,12 +182,16 @@ namespace DABApp.Droid
 			e.File.Metadata.Title = Episode.title;
 			e.File.Metadata.Album = null;
 			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			if (e.File.Metadata.AlbumArtUri != ImageUri)
+			if (e.File.Metadata.AlbumArtUri != ImageUri && Update)
 			{
+				Update = false;
 				Task.Run(async () =>
 					{
-						var input = new Java.Net.URL(ImageUri).OpenStream();
-						var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+						Debug.WriteLine($"Before getting Bitmap {ImageUri}");
+						//var input = new Java.Net.URL(ImageUri).OpenStream();
+						//var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+						var a = await fetchBitmap(ImageUri);
+						Debug.WriteLine($"Bitmap: {a}");
 						Device.BeginInvokeOnMainThread(() =>
 						{
 							e.File.Metadata.AlbumArt = a;
@@ -192,6 +199,7 @@ namespace DABApp.Droid
 							e.File.Metadata.DisplayIcon = a;
 							e.File.Metadata.AlbumArtUri = ImageUri;
 						});
+						Update = true;
 					});
 			}
 			//SetNotificationManager();
@@ -207,6 +215,20 @@ namespace DABApp.Droid
 				mediaSessionCompat = new MediaSessionCompat(Forms.Context, "DAB", name, pIntent);
 			}
 			CrossMediaManager.Current.MediaNotificationManager = new DabMediaNotificationManager(Forms.Context, mediaSessionCompat.SessionToken, typeof(MediaPlayerService));
+		}
+
+		async Task<Android.Graphics.Bitmap> fetchBitmap(string imageUri)
+		{
+			try
+			{
+				var draw = await ImageService.Instance.LoadUrl(imageUri).DownSample().AsBitmapDrawableAsync();
+				return draw.Bitmap;
+			}
+			catch (Exception e)
+			{
+				Debug.WriteLine($"Bitmap exception: {e.Message}");
+				return null;
+			}
 		}
 	}
 }

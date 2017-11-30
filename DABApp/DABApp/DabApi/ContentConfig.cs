@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -156,10 +157,10 @@ namespace DABApp
 				foreach (var v in views) {
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownSample().DownloadOnlyAsync();
 					}
 					else {
-						await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownSample().DownloadOnlyAsync();
 					}
 				}
 				foreach (var r in channelView.resources)
@@ -167,36 +168,36 @@ namespace DABApp
 					var image = r.images;
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						await ImageService.Instance.LoadUrl(image.backgroundTablet).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(image.backgroundTablet).DownSample().DownloadOnlyAsync();
 					}
 					else
 					{
-						await ImageService.Instance.LoadUrl(image.backgroundPhone).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(image.backgroundPhone).DownSample().DownloadOnlyAsync();
 					}
-					await ImageService.Instance.LoadUrl(image.bannerPhone).DownloadOnlyAsync();
-					await ImageService.Instance.LoadUrl(image.thumbnail).DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl(image.bannerPhone).DownSample().DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl(image.thumbnail).DownSample().DownloadOnlyAsync();
 				}
 				foreach (var i in initiativeView.links) {
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						await ImageService.Instance.LoadUrl(i.urlTablet).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(i.urlTablet).DownSample().DownloadOnlyAsync();
 					}
 					else
 					{
-						await ImageService.Instance.LoadUrl(i.urlPhone).DownloadOnlyAsync();
+						await ImageService.Instance.LoadUrl(i.urlPhone).DownSample().DownloadOnlyAsync();
 
 					}
 				}
 				if (GlobalResources.UserAvatar == null)
 				{
-					await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownSample().DownloadOnlyAsync();
 				}
 				else {
-					await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
 				}
 			}
-			catch (Exception e) { 
-				
+			catch (Exception e) {
+				Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
 			}
 		}
 	}

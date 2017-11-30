@@ -50,8 +50,6 @@ namespace DABApp.Droid
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
 
-			CachedImageRenderer.Init();
-
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
@@ -62,13 +60,15 @@ namespace DABApp.Droid
 
 			SegmentedControlRenderer.Init();
 
+			CachedImageRenderer.Init();
+
 			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
 			SQLite_Droid.Assets = this.Assets;
 
 			LoadApplication(new App());
 
-			((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(Forms.Context, typeof(ExoPlayerAudioService));
+			((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
 			var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
 			CrossMediaManager.Current.AudioPlayer = exoPlayer;
 
