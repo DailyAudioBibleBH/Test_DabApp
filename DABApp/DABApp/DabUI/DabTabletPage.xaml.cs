@@ -38,7 +38,7 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
-			//TimedActions();
+			TimedActions();
 			MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
 			if (Episode != null)
 			{
@@ -201,7 +201,7 @@ namespace DABApp
 				await PlayerFeedAPI.GetEpisodes(_resource);
 				Offline.IsToggled = _resource.availableOffline;
 				Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-				EpisodeList.ItemsSource = Episodes;
+				TimedActions();
 				BackgroundImage.Source = backgroundImage;
 				episode = Episodes.First();
 				PlayerLabels.BindingContext = episode;
