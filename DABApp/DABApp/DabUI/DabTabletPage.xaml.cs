@@ -38,7 +38,7 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
-			TimedActions();
+			//TimedActions();
 			MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
 			if (Episode != null)
 			{
@@ -49,6 +49,7 @@ namespace DABApp
 				episode = Episodes.First();
 			}
 			favorite.BindingContext = episode;
+
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));

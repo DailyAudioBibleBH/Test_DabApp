@@ -175,6 +175,7 @@
     <Compile Include="DabViewHelpers\JournalTracker.cs" />
     <Compile Include="DabViewHelpers\KeyboardHelper.cs" />
     <Compile Include="DabViewHelpers\Controls\DabEditor.cs" />
+    <Compile Include="DabViewHelpers\Controls\DabLabel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlideOverKit">

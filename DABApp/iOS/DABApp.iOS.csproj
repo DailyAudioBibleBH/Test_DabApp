@@ -320,7 +320,6 @@
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
-    <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DabData\SQLite_iOS.cs" />
     <Compile Include="CustomRenderers\DabTextCellRenderer.cs" />
     <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
@@ -347,6 +346,7 @@
     <Compile Include="CustomRenderers\DabSwitchCellRenderer.cs" />
     <Compile Include="CustomRenderers\DabImageRenderer.cs" />
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
+    <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

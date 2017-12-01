@@ -26,7 +26,6 @@ namespace DABApp.Droid
 		public static string FileName;
 		private MediaSessionCompat mediaSessionCompat;
 		double tt;
-		bool Update = true;
 
 		public AudioService()
 		{
@@ -48,19 +47,25 @@ namespace DABApp.Droid
 			Episode = episode;
 			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
+			//var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
 			//This is a different way to get pictures onto the notifications.  Not as reliable but should theoretically do it before the track starts playing
 			//CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
 			//{
-			//	await Task.Run(async () =>
+			//	if (arg.Metadata.AlbumArtUri != ImageUri)
 			//	{
-			//		var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			//		var input = new Java.Net.URL(ImageUri).OpenStream();
-			//		var a = await Android.Graphics.BitmapFactory.DecodeStreamAsync(input);
+			//		await Task.Run(async () =>
+			//		{
+			//			var a = await fetchBitmap(ImageUri);
 
-			//		arg.Metadata.AlbumArt = a;
-			//		arg.Metadata.Art = a;
-			//		arg.Metadata.DisplayIcon = a;
-			//	});
+			//			Device.BeginInvokeOnMainThread(() =>
+			//			{
+			//				arg.Metadata.AlbumArt = a;
+			//				arg.Metadata.Art = a;
+			//				arg.Metadata.DisplayIcon = a;
+			//				arg.Metadata.AlbumArtUri = ImageUri;
+			//			});
+			//		});
+			//	}
 			//});
 			if (fileName.Contains("http://") || fileName.Contains("https://"))
 			{
@@ -182,9 +187,8 @@ namespace DABApp.Droid
 			e.File.Metadata.Title = Episode.title;
 			e.File.Metadata.Album = null;
 			var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			if (e.File.Metadata.AlbumArtUri != ImageUri && Update)
+			if (e.File.Metadata.AlbumArtUri != ImageUri)
 			{
-				Update = false;
 				Task.Run(async () =>
 					{
 						Debug.WriteLine($"Before getting Bitmap {ImageUri}");
@@ -199,7 +203,6 @@ namespace DABApp.Droid
 							e.File.Metadata.DisplayIcon = a;
 							e.File.Metadata.AlbumArtUri = ImageUri;
 						});
-						Update = true;
 					});
 			}
 			//SetNotificationManager();

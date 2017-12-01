@@ -222,7 +222,6 @@
     <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
     <Compile Include="DABApp.cs" />
-    <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DabData\SQLite_Droid.cs" />
     <Compile Include="SplashScreen.cs" />
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
@@ -244,6 +243,7 @@
     <Compile Include="CustomRenderers\DabButtonRenderer.cs" />
     <Compile Include="CustomRenderers\DabSwitchCellRenderer.cs" />
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
+    <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
