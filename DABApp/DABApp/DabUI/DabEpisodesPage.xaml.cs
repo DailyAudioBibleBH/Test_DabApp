@@ -64,7 +64,11 @@ namespace DABApp
 			var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
 			if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
 			{
-				await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+                if (chosen.id != AudioPlayer.Instance.CurrentEpisodeId)
+                {
+                    JournalTracker.Current.Content = null;
+                }
+                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
 			}
 			else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
 			EpisodeList.SelectedItem = null;

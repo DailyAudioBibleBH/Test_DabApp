@@ -140,6 +140,7 @@ namespace DABApp
 				favorite.Source = episode.favoriteSource;
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
+                    JournalTracker.Current.Content = null;
 					SetVisibility(false);
 				}
 				else
@@ -208,6 +209,7 @@ namespace DABApp
 				await SetReading();
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
+                    JournalTracker.Current.Content = null;
 					SetVisibility(false);
 				}
 				else

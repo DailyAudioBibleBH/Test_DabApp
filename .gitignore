@@ -182,3 +182,7 @@ FakesAssemblies/
 *.userprefs
 
 .DS_Store
+*.ide-wal
+*.ide-shm
+*.lock
+*.ide
