@@ -45,6 +45,12 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EngineIoClientDotNet, Version=0.9.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\monoandroid10\EngineIoClientDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIoClientDotNet, Version=0.9.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\monoandroid10\SocketIoClientDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\android\Stripe.dll</HintPath>
     </Reference>
@@ -52,6 +58,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\monoandroid23\WebSocket4Net.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\packages\Xamarin.Android.Support.v4.23.3.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -164,18 +173,6 @@
     </Reference>
     <Reference Include="System.Collections.Immutable">
       <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperSocket.ClientEngine">
-      <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.8.0.13\lib\netstandard1.3\SuperSocket.ClientEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="WebSocket4Net">
-      <HintPath>..\packages\WebSocket4Net.0.15.0\lib\netstandard1.3\WebSocket4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="EngineIoClientDotNet">
-      <HintPath>..\packages\EngineIoClientDotNet.1.0.3\lib\netstandard1.3\EngineIoClientDotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SocketIoClientDotNet">
-      <HintPath>..\packages\SocketIoClientDotNet.1.0.3\lib\netstandard1.3\SocketIoClientDotNet.dll</HintPath>
     </Reference>
     <Reference Include="FFImageLoading">
       <HintPath>..\packages\Xamarin.FFImageLoading.2.2.25\lib\MonoAndroid10\FFImageLoading.dll</HintPath>

@@ -84,15 +84,27 @@
     </CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EngineIoClientDotNet, Version=0.9.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\xamarinios10\EngineIoClientDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="MarkDownDeep.iOS">
       <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="SocketIoClientDotNet, Version=0.9.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\xamarinios10\SocketIoClientDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\ios-unified\Stripe.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
+    <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\Xamarin.iOS10\WebSocket4Net.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.iOS" />
     <Reference Include="SlideOverKit">
       <HintPath>..\packages\SlideOverKit.2.1.4\lib\Xamarin.iOS10\SlideOverKit.dll</HintPath>
@@ -146,15 +158,6 @@
     </Reference>
     <Reference Include="TEditor">
       <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="WebSocket4Net">
-      <HintPath>..\packages\WebSocket4Net.0.14.1\lib\Xamarin.iOS10\WebSocket4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="EngineIoClientDotNet">
-      <HintPath>..\packages\EngineIoClientDotNet.0.9.22\lib\xamarinios10\EngineIoClientDotNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SocketIoClientDotNet">
-      <HintPath>..\packages\SocketIoClientDotNet.0.9.13\lib\xamarinios10\SocketIoClientDotNet.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack.NetCore">
       <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\netstandard1.3\HtmlAgilityPack.NetCore.dll</HintPath>
@@ -436,11 +439,6 @@
   <ItemGroup>
     <XamarinComponentReference Include="stripe">
       <Version>1.0.7</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="SocketIoClientDotNet">
-      <InstallationInProgress>True</InstallationInProgress>
-      <Version>0.9.13</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="MarkDownDeep">
