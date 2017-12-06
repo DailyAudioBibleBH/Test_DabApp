@@ -27,7 +27,7 @@ namespace DABApp.iOS
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
 		double skipInterval = 30;
-		//float seekRate = 10.0f;
+        //float seekRate = 10.0f;
 		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
 
@@ -46,7 +46,7 @@ namespace DABApp.iOS
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
 			AVAudioSession.Notifications.ObserveInterruption((sender, args) => {
-				if (args.InterruptionType == AVAudioSessionInterruptionType.Ended)
+				if (args.InterruptionType == AVAudioSessionInterruptionType.Ended && args.Option == AVAudioSessionInterruptionOptions.ShouldResume)
 				{
 					Play();
 				}
@@ -77,6 +77,7 @@ namespace DABApp.iOS
 				_player = AVPlayer.FromUrl(url);
 			}
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
+            NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.PlaybackStalledNotification, (notification) => { SetAudioFile(fileName, episode); });
 			SetCommandCenter();
 			IsLoaded = true;
 		}
