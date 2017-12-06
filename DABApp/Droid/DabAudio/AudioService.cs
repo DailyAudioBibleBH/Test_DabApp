@@ -14,6 +14,7 @@ using Plugin.MediaManager.ExoPlayer;
 using System.Globalization;
 using FFImageLoading;
 using FFImageLoading.Forms;
+using Plugin.Connectivity;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
@@ -94,14 +95,27 @@ namespace DABApp.Droid
 				double conversion = episode.stop_time + TimeSpan.Parse(r).TotalSeconds;
 				tt = conversion > 0 ? conversion : 60;
 			}
+            CrossMediaManager.Current.StatusChanged += Current_MediaFailed;
 			Episode = episode;
 			FileName = fileName;
 			//player.Prepare();
 		}
 
-		public void Play() {
+        private void Current_MediaFailed(object sender, StatusChangedEventArgs e)
+        {
+            if (e.Status == Plugin.MediaManager.Abstractions.Enums.MediaPlayerStatus.Loading && !CrossConnectivity.Current.IsConnected && !Episode.is_downloaded)
+            {
+                PlayerCanKeepUp = false;
+            }
+        }
+
+        public void Play() {
 			//player.Start();
 			CrossMediaManager.Current.Play();
+            //if (!PlayerCanKeepUp && CrossConnectivity.Current.IsConnected)
+            //{
+            //        SetAudioFile(FileName, Episode);
+            //}
 		}
 
 		public void Pause() {
@@ -156,17 +170,7 @@ namespace DABApp.Droid
 			}
 		}
 
-		public bool PlayerCanKeepUp
-		{
-			get
-			{
-				//if (player != null)
-				//{
-					return true;
-				//}
-				//else return false;
-			}
-		}
+        public bool PlayerCanKeepUp { get; set; } = true;
 
 		public event EventHandler Completed;
 

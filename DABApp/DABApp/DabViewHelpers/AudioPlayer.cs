@@ -118,7 +118,7 @@ namespace DABApp
 								//	IsInitialized = false;
 								//}
 
-								if (!_player.PlayerCanKeepUp && ShowWarning && !_player.IsPlaying)
+								if (!_player.PlayerCanKeepUp && ShowWarning)
 								{
 									PlayerFailure.Invoke(this, new EventArgs());
 									ShowWarning = false;
@@ -193,7 +193,7 @@ namespace DABApp
 			//}
 			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
-			ShowWarning = false;
+			ShowWarning = Device.RuntimePlatform == "iOS" ? false: true;
 		}
 
 
