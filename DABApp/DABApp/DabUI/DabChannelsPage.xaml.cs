@@ -180,9 +180,9 @@ namespace DABApp
 			AuthenticationAPI.ConnectJournal();
 		}
 
-		//protected override async void OnAppearing()
-		//{
-		//	MessagingCenter.Send<string>("Setup", "Setup");
+		protected override async void OnAppearing()
+		{
+			MessagingCenter.Send<string>("Setup", "Setup");
 		//	var start = DateTime.Now;
 		//	base.OnAppearing();
 		//	if (episode == null)
@@ -219,6 +219,6 @@ namespace DABApp
 		//		}
 		//	}
 		//	bannerButton.IsEnabled = true;
-		//}
+		}
 	}
 }

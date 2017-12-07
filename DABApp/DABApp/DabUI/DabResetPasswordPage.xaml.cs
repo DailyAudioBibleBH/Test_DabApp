@@ -27,7 +27,7 @@ namespace DABApp
 					await DisplayAlert("Error", message, "OK");
 				}
 				else {
-					await DisplayAlert("App side code successfully run", message, "OK");
+					await DisplayAlert("Success", message, "OK");
 					await Navigation.PopAsync();
 				}
 			}

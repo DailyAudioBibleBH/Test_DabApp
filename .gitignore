@@ -182,11 +182,7 @@ FakesAssemblies/
 *.userprefs
 
 .DS_Store
-DABApp/.vs/DABApp/v15/Server/sqlite3/db.lock
-DABApp/.vs/DABApp/v15/Server/sqlite3/storage.ide
-DABApp/.vs/DABApp/v15/Server/sqlite3/storage.ide-shm
-DABApp/.vs/DABApp/v15/Server/sqlite3/storage.ide-wal
-DABApp/.vs/DABApp/v15/sqlite3/db.lock
-DABApp/.vs/DABApp/v15/sqlite3/storage.ide-shm
-DABApp/.vs/DABApp/v15/sqlite3/storage.ide-wal
-DABApp/.vs/DABApp/v15/sqlite3/storage.ide
+*.ide-wal
+*.ide-shm
+*.lock
+*.ide

@@ -19,7 +19,7 @@
       <StackLayout Grid.Row="0" Grid.ColumnSpan="2">
         <RelativeLayout>
           <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
-          <StackLayout Padding="20" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+          <StackLayout Padding="25" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
               <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
@@ -124,11 +124,11 @@
                       </Grid.ColumnDefinitions>
 						<BoxView Color="Transparent" IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
 						<Image Source="ic_done_listened_3x.png" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
-                      <Label Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" />
+                      <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true"/>
                       <Image IsVisible="{Binding favoriteVisible}" Source="ic_star_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
                       <Image IsVisible="{Binding hasJournalVisible}" Source="pencil_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="3" />
                       <Image IsVisible="{Binding downloadVisible}" Source="ic_cloud_download_white" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="4" />
-                      <Label Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation" />
+                      <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation" />
                     </Grid>
                   </ViewCell>
                 </DataTemplate>

@@ -20,7 +20,7 @@
             </controls:SegmentedControl>
                     <BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
                 </StackLayout>
-                <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="20" Spacing="20">
+                <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="25" Spacing="20">
                     <StackLayout VerticalOptions="CenterAndExpand">
                         <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
                         <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>

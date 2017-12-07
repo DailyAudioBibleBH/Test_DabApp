@@ -49,6 +49,7 @@ namespace DABApp
 				episode = Episodes.First();
 			}
 			favorite.BindingContext = episode;
+
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
 				JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
@@ -70,11 +71,11 @@ namespace DABApp
 			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
-			if (Device.RuntimePlatform == "iOS")
-			{
-				KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
-				AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
-			}
+            if (Device.RuntimePlatform == "iOS")
+            {
+                KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+            }
+            AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
 			var tapper = new TapGestureRecognizer();
 			tapper.Tapped += (sender, e) => {
 				Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
@@ -139,6 +140,7 @@ namespace DABApp
 				favorite.Source = episode.favoriteSource;
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
+                    JournalTracker.Current.Content = null;
 					SetVisibility(false);
 				}
 				else
@@ -200,13 +202,14 @@ namespace DABApp
 				await PlayerFeedAPI.GetEpisodes(_resource);
 				Offline.IsToggled = _resource.availableOffline;
 				Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-				EpisodeList.ItemsSource = Episodes;
+				TimedActions();
 				BackgroundImage.Source = backgroundImage;
 				episode = Episodes.First();
 				PlayerLabels.BindingContext = episode;
 				await SetReading();
 				if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
 				{
+                    JournalTracker.Current.Content = null;
 					SetVisibility(false);
 				}
 				else
