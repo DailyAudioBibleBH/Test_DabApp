@@ -71,11 +71,11 @@ namespace DABApp
 			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
 			JournalTracker.Current.socket.Join_Error += OnJoin_Error;
-			if (Device.RuntimePlatform == "iOS")
-			{
-				KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
-				AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
-			}
+            if (Device.RuntimePlatform == "iOS")
+            {
+                KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
+            }
+            AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
 			var tapper = new TapGestureRecognizer();
 			tapper.Tapped += (sender, e) => {
 				Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));

@@ -7,8 +7,8 @@ namespace DABApp
 	public class DabLabel: Label
 	{
 		public static readonly BindableProperty IsTitleProperty = BindableProperty.Create("IsTitle", typeof(bool), typeof(bool), false);
-		static string Title;
-		static string Desc;
+		string Title;
+		string Desc;
 
 		protected override void OnBindingContextChanged()
 		{
