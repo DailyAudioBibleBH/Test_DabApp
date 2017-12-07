@@ -77,7 +77,9 @@ namespace DABApp.iOS
 				_player = AVPlayer.FromUrl(url);
 			}
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
-            NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.PlaybackStalledNotification, (notification) => { SetAudioFile(fileName, episode); });
+            NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.PlaybackStalledNotification, (notification) => {
+                Pause();
+            });
 			SetCommandCenter();
 			IsLoaded = true;
 		}

@@ -110,13 +110,12 @@ namespace DABApp.Droid
         }
 
         public void Play() {
-			//player.Start();
 			CrossMediaManager.Current.Play();
-            //if (!PlayerCanKeepUp && CrossConnectivity.Current.IsConnected)
-            //{
-            //        SetAudioFile(FileName, Episode);
-            //}
-		}
+            if (!PlayerCanKeepUp && CrossConnectivity.Current.IsConnected)
+            {
+                PlayerCanKeepUp = true;
+            }
+        }
 
 		public void Pause() {
 			//player.Pause();

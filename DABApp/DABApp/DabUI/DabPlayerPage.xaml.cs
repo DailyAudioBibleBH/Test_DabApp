@@ -92,23 +92,25 @@ namespace DABApp
 			Favorite.BindingContext = Episode;
 		}
 
-		void OnPlay(object o, EventArgs e)
-		{
-			if (AudioPlayer.Instance.IsInitialized)
-			{
-				if (AudioPlayer.Instance.IsPlaying)
-				{
-					AudioPlayer.Instance.Pause();
-				}
-				else {
-					AudioPlayer.Instance.Play();
-				}
-			}
-			else {
-				AudioPlayer.Instance.SetAudioFile(Episode);
-				AudioPlayer.Instance.Play();
-			}
-		}
+        void OnPlay(object o, EventArgs e)
+        {
+            if (AudioPlayer.Instance.IsInitialized)
+            {
+                if (AudioPlayer.Instance.IsPlaying)
+                {
+                    AudioPlayer.Instance.Pause();
+                }
+                else
+                {
+                    AudioPlayer.Instance.Play();
+                }
+            }
+            else
+            {
+                AudioPlayer.Instance.SetAudioFile(Episode);
+                AudioPlayer.Instance.Play();
+            }
+        }
 
 		void OnBack30(object o, EventArgs e)
 		{
