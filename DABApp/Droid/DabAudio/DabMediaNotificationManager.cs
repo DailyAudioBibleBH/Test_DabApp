@@ -128,9 +128,9 @@ namespace DABApp.Droid
 		{
 			_builder.MActions.Clear();
 			//_builder.AddAction(GenerateActionCompat(Resource.Drawable.IcMediaPrevious, "Previous", MediaServiceBase.ActionPrevious));
-			_builder.AddAction(mediaIsPlaying
-				? GenerateActionCompat(Resource.Drawable.ic_media_pause, "Pause", MediaServiceBase.ActionPause)
-				: GenerateActionCompat(Resource.Drawable.ic_media_play, "Play", MediaServiceBase.ActionPlay));
+			//_builder.AddAction(mediaIsPlaying
+			//	? GenerateActionCompat(Resource.Drawable.ic_media_pause, "Pause", MediaServiceBase.ActionPause)
+			//	: GenerateActionCompat(Resource.Drawable.ic_media_play, "Play", MediaServiceBase.ActionPlay));
 			//_builder.AddAction(GenerateActionCompat(Resource.Drawable.IcMediaNext, "Next", MediaServiceBase.ActionNext));
 		}
 	}
