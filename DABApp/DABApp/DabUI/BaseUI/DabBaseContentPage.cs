@@ -76,10 +76,11 @@ namespace DABApp
 			else
 			{
 				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
-					if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-					{
-						this.ShowMenu();
-					}
+                    if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+                    {
+                        this.ShowMenu();
+                    }
+                    
 				});
 				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
 			}
@@ -129,28 +130,33 @@ namespace DABApp
             }
 		}
 
-		protected override void OnDisappearing()
-		{
-			base.OnDisappearing();
-			MessagingCenter.Unsubscribe<string>("Menu", "Menu");
-			MessagingCenter.Unsubscribe<string>("Give", "Give");
-		}
+        public void Unsubscribe()
+        {
+            MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+        }
 
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
-			if (Device.RuntimePlatform == "Android")
-			{
-				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
-				{
-					if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-					{
-						this.ShowMenu();
-					}
-				});
-				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-			}
-		}
-	}
+        //protected override void OnDisappearing()
+        //{
+        //    base.OnDisappearing();
+        //    MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+        //    MessagingCenter.Unsubscribe<string>("Give", "Give");
+        //}
+
+        //protected override void OnAppearing()
+        //{
+        //    base.OnAppearing();
+        //    if (Device.RuntimePlatform == "Android")
+        //    {
+        //        MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+        //        {
+        //            if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+        //            {
+        //                this.ShowMenu();
+        //            }
+        //        });
+        //        MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
+        //    }
+        //}
+    }
 }
 

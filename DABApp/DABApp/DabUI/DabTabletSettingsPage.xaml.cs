@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Xamarin.Forms;
 
@@ -27,6 +28,15 @@ namespace DABApp
 			SettingsPage.addresses.Tapped += OnAddresses;
 			SettingsPage.wallet.Tapped += OnWallet;
 			SettingsPage.donations.Tapped += OnDonations;
+            if (Device.RuntimePlatform == "Android")
+            {
+                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
+                    if (Navigation.NavigationStack.Last() == this)
+                    {
+                        this.ShowMenu();
+                    }
+                });
+            }
 		}
 
 		void OnMenu(object o, EventArgs e) {
@@ -53,6 +63,7 @@ namespace DABApp
 
 		void OnAppInfo(object o, EventArgs e) {
 			var AppInfo = new DabAppInfoPage();
+            AppInfo.Unsubscribe();
 			Detail = AppInfo;
 			AppInfo.ToolbarItems.Clear();
 			Remove();
@@ -61,6 +72,7 @@ namespace DABApp
 		void OnReset(object o, EventArgs e)
 		{	
 			var Reset = new DabResetListenedToStatusPage();
+            Reset.Unsubscribe();
 			Detail = Reset;
 			Reset.ToolbarItems.Clear();
 			Remove();
@@ -68,6 +80,7 @@ namespace DABApp
 
 		void OnOffline(object o, EventArgs e) {
 			var Offline = new DabOfflineEpisodeManagementPage();
+            Offline.Unsubscribe();
 			Detail = Offline;
 			Offline.ToolbarItems.Clear();
 			Remove();
@@ -75,6 +88,7 @@ namespace DABApp
 
 		void OnProfile(object o, EventArgs e) {
 			var Profile = new DabProfileManagementPage();
+            Profile.Unsubscribe();
 			Detail = Profile;
 			Profile.ToolbarItems.Clear();
 			Remove();
@@ -82,6 +96,7 @@ namespace DABApp
 
 		void OnAddresses(object o, EventArgs e) {
 			var Addresses = new DabAddressManagementPage();
+            Addresses.Unsubscribe();
 			Detail = new NavigationPage(Addresses);
 			Addresses.ToolbarItems.Clear();
 			Remove();
@@ -96,6 +111,7 @@ namespace DABApp
 			if (result != null)
 			{
 				var Wallet = new DabWalletPage(result);
+                Wallet.Unsubscribe();
 				Detail = new NavigationPage(Wallet);
 				Wallet.ToolbarItems.Clear();
 				Remove();
@@ -112,6 +128,7 @@ namespace DABApp
 			//activityHolder.IsVisible = true;
 			var don = await AuthenticationAPI.GetDonations();
 			var Donations = new DabManageDonationsPage(don);
+            Donations.Unsubscribe();
 			Detail = new NavigationPage(Donations);
 			Donations.ToolbarItems.Clear();
 			Remove();
