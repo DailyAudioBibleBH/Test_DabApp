@@ -17,10 +17,11 @@ namespace DABApp
 			InitializeComponent();
 			if (Device.RuntimePlatform == "Android")
 			{
-				if (Device.Idiom == TargetIdiom.Phone)
-				{
-					MessagingCenter.Send<string>("Remove", "Remove");
-				}
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    MessagingCenter.Send<string>("Remove", "Remove");
+                }
+                else { NavigationPage.SetHasNavigationBar(this, false); }
 			}
 			else 
 			{ 

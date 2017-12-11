@@ -184,7 +184,7 @@ namespace DABApp
 		{
 			MessagingCenter.Send<string>("Setup", "Setup");
 		//	var start = DateTime.Now;
-		//	base.OnAppearing();
+		    base.OnAppearing();
 		//	if (episode == null)
 		//	{
 		//		bannerButton.IsEnabled = false;

@@ -12,7 +12,7 @@ namespace DABApp
 
 		public Action HideMenuAction { get; set; }
 
-		public Action ShowMenuAction { get; set; }
+        public Action ShowMenuAction { get; set; }
 
 		SlideMenuView slideMenu;
 		public SlideMenuView SlideMenu
@@ -34,14 +34,12 @@ namespace DABApp
 
 		public void ShowMenu()
 		{
-			if (ShowMenuAction != null)
-				ShowMenuAction();
-		}
+            ShowMenuAction?.Invoke();
+        }
 
 		public void HideMenu()
 		{
-			if (HideMenuAction != null)
-				HideMenuAction();
-		}
+            HideMenuAction?.Invoke();
+        }
 	}
 }

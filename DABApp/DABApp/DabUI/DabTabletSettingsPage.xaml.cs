@@ -14,6 +14,7 @@ namespace DABApp
 		public DabTabletSettingsPage()
 		{
 			InitializeComponent();
+            //NavigationPage.SetHasBackButton(this, false);
 			playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			Title = "DAILY AUDIO BIBLE";
 			this.SlideMenu = new DabMenuView();
@@ -28,16 +29,22 @@ namespace DABApp
 			SettingsPage.addresses.Tapped += OnAddresses;
 			SettingsPage.wallet.Tapped += OnWallet;
 			SettingsPage.donations.Tapped += OnDonations;
+            SettingsPage.Disappearing += OnDisappearing;
+            //SettingsPage.Appearing += OnMenu;
             if (Device.RuntimePlatform == "Android")
             {
-                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
+                AppInfoPage.Unsubscribe();
+                //SettingsPage.Unsubscribe();
+                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+                {
                     if (Navigation.NavigationStack.Last() == this)
                     {
                         this.ShowMenu();
+                        SettingsPage.ShowMenu();
                     }
                 });
             }
-		}
+        }
 
 		void OnMenu(object o, EventArgs e) {
 			this.ShowMenu();
@@ -48,7 +55,7 @@ namespace DABApp
 			//switch (pre.duration) { 
 			//	case "Offline Episodes":
 					var Offline = new DabOfflineEpisodeManagementPage();
-					this.Detail = Offline;
+					this.Detail = new NavigationPage(Offline);
 					Offline.ToolbarItems.Clear();
 					Remove();
 			//		break;
@@ -64,7 +71,7 @@ namespace DABApp
 		void OnAppInfo(object o, EventArgs e) {
 			var AppInfo = new DabAppInfoPage();
             AppInfo.Unsubscribe();
-			Detail = AppInfo;
+			Detail = new NavigationPage(AppInfo);
 			AppInfo.ToolbarItems.Clear();
 			Remove();
 		}
@@ -73,7 +80,7 @@ namespace DABApp
 		{	
 			var Reset = new DabResetListenedToStatusPage();
             Reset.Unsubscribe();
-			Detail = Reset;
+			Detail = new NavigationPage(Reset);
 			Reset.ToolbarItems.Clear();
 			Remove();
 		}
@@ -81,7 +88,7 @@ namespace DABApp
 		void OnOffline(object o, EventArgs e) {
 			var Offline = new DabOfflineEpisodeManagementPage();
             Offline.Unsubscribe();
-			Detail = Offline;
+			Detail = new NavigationPage(Offline);
 			Offline.ToolbarItems.Clear();
 			Remove();
 		}
@@ -89,7 +96,7 @@ namespace DABApp
 		void OnProfile(object o, EventArgs e) {
 			var Profile = new DabProfileManagementPage();
             Profile.Unsubscribe();
-			Detail = Profile;
+			Detail = new NavigationPage(Profile);
 			Profile.ToolbarItems.Clear();
 			Remove();
 		}
@@ -136,9 +143,15 @@ namespace DABApp
 			//activityHolder.IsVisible = false;
 		}
 
-		void Remove() {
-			if (needRemove) SettingsPage.ToolbarItems.RemoveAt(0);
-			needRemove = false;
-		}
+        void OnDisappearing(object o, EventArgs e)
+        {
+            MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+        }
+
+        void Remove()
+        {
+            if (needRemove) SettingsPage.ToolbarItems.RemoveAt(0);
+            needRemove = false;
+        }
 	}
 }
