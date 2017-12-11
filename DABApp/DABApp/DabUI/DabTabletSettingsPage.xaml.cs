@@ -30,6 +30,7 @@ namespace DABApp
 			SettingsPage.wallet.Tapped += OnWallet;
 			SettingsPage.donations.Tapped += OnDonations;
             SettingsPage.Disappearing += OnDisappearing;
+            SettingsPage.Appearing += OnAppearing;
             //SettingsPage.Appearing += OnMenu;
             if (Device.RuntimePlatform == "Android")
             {
@@ -37,11 +38,7 @@ namespace DABApp
                 //SettingsPage.Unsubscribe();
                 MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
                 {
-                    if (Navigation.NavigationStack.Last() == this)
-                    {
-                        this.ShowMenu();
-                        SettingsPage.ShowMenu();
-                    }
+                    OnMenu(sender, new EventArgs());
                 });
             }
         }
@@ -146,6 +143,11 @@ namespace DABApp
         void OnDisappearing(object o, EventArgs e)
         {
             MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+        }
+
+        void OnAppearing(object o, EventArgs e)
+        {
+            MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => { OnMenu(o, e); });
         }
 
         void Remove()

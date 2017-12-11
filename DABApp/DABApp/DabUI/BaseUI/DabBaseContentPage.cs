@@ -52,8 +52,6 @@ namespace DABApp
 
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
-			if (Device.RuntimePlatform != "Android")
-			{
 				//Menu Button
 				var menuButton = new ToolbarItem();
 				//menuButton.Text = "menu";
@@ -72,21 +70,9 @@ namespace DABApp
 				giveButton.Priority = 0; //default
 				giveButton.Clicked += OnGive;
 				this.ToolbarItems.Add(giveButton);
-			}
-			else
-			{
-				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
-                    if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-                    {
-                        this.ShowMenu();
-                    }
-                    
-				});
-				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-			}
 		}
 
-		public async void OnGive(object o, EventArgs e) 
+		async void OnGive(object o, EventArgs e) 
 		{
                 if (!giving)
                 {
