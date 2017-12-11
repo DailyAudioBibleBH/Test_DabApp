@@ -60,6 +60,7 @@ namespace DABApp
 
 		void OnSettings(object o, EventArgs e)
 		{
+            Settings.IsEnabled = false;
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
 				Navigation.PushAsync(new DabTabletSettingsPage());
@@ -69,6 +70,7 @@ namespace DABApp
 				Navigation.PushAsync(new DabSettingsPage());
 			}
 			RemovePages();
+            Settings.IsEnabled = true;
 		}
 
 		void RemovePages()

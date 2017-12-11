@@ -34,11 +34,12 @@ namespace DABApp
             //SettingsPage.Appearing += OnMenu;
             if (Device.RuntimePlatform == "Android")
             {
+                SettingsPage.ToolbarItems.Clear();
                 AppInfoPage.Unsubscribe();
                 //SettingsPage.Unsubscribe();
                 MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
                 {
-                    OnMenu(sender, new EventArgs());
+                    SettingsPage.ShowMenu();  
                 });
             }
         }
@@ -68,7 +69,7 @@ namespace DABApp
 		void OnAppInfo(object o, EventArgs e) {
 			var AppInfo = new DabAppInfoPage();
             AppInfo.Unsubscribe();
-			Detail = new NavigationPage(AppInfo);
+			Detail = new NavigationPage(AppInfo) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			AppInfo.ToolbarItems.Clear();
 			Remove();
 		}
@@ -85,7 +86,7 @@ namespace DABApp
 		void OnOffline(object o, EventArgs e) {
 			var Offline = new DabOfflineEpisodeManagementPage();
             Offline.Unsubscribe();
-			Detail = new NavigationPage(Offline);
+			Detail = new NavigationPage(Offline) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Offline.ToolbarItems.Clear();
 			Remove();
 		}
@@ -93,7 +94,7 @@ namespace DABApp
 		void OnProfile(object o, EventArgs e) {
 			var Profile = new DabProfileManagementPage();
             Profile.Unsubscribe();
-			Detail = new NavigationPage(Profile);
+			Detail = new NavigationPage(Profile) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Profile.ToolbarItems.Clear();
 			Remove();
 		}
@@ -101,7 +102,7 @@ namespace DABApp
 		void OnAddresses(object o, EventArgs e) {
 			var Addresses = new DabAddressManagementPage();
             Addresses.Unsubscribe();
-			Detail = new NavigationPage(Addresses);
+			Detail = new NavigationPage(Addresses) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Addresses.ToolbarItems.Clear();
 			Remove();
 		}
@@ -116,7 +117,7 @@ namespace DABApp
 			{
 				var Wallet = new DabWalletPage(result);
                 Wallet.Unsubscribe();
-				Detail = new NavigationPage(Wallet);
+				Detail = new NavigationPage(Wallet) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 				Wallet.ToolbarItems.Clear();
 				Remove();
 			}
@@ -133,7 +134,7 @@ namespace DABApp
 			var don = await AuthenticationAPI.GetDonations();
 			var Donations = new DabManageDonationsPage(don);
             Donations.Unsubscribe();
-			Detail = new NavigationPage(Donations);
+			Detail = new NavigationPage(Donations) { BarTextColor = (Color)App.Current.Resources["TextColor"]};
 			Donations.ToolbarItems.Clear();
 			Remove();
 			//activity.IsVisible = false;
@@ -147,7 +148,7 @@ namespace DABApp
 
         void OnAppearing(object o, EventArgs e)
         {
-            MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => { OnMenu(o, e); });
+            MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => { ((DabSettingsPage)Master).ShowMenu(); });
         }
 
         void Remove()
