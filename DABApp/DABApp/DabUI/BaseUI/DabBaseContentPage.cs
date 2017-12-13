@@ -52,8 +52,6 @@ namespace DABApp
 
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
-			if (Device.RuntimePlatform != "Android")
-			{
 				//Menu Button
 				var menuButton = new ToolbarItem();
 				//menuButton.Text = "menu";
@@ -72,91 +70,80 @@ namespace DABApp
 				giveButton.Priority = 0; //default
 				giveButton.Clicked += OnGive;
 				this.ToolbarItems.Add(giveButton);
-			}
-			else
-			{
-				MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
-                    if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-                    {
-                        this.ShowMenu();
-                    }
-                    
-				});
-				MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-			}
 		}
 
 		async void OnGive(object o, EventArgs e) 
 		{
-            if (!giving)
-            {
-                giving = true;
-                if (GuestStatus.Current.IsGuestLogin)
+                if (!giving)
                 {
-                    if (CrossConnectivity.Current.IsConnected)
+                    giving = true;
+                    if (GuestStatus.Current.IsGuestLogin)
                     {
-                        var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
-                        if (choice)
+                        if (CrossConnectivity.Current.IsConnected)
                         {
-                            var nav = new NavigationPage(new DabLoginPage(false, true));
-                            nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            await Navigation.PushModalAsync(nav);
-                        }
-                    }
-                    else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
-                }
-                else
-                {
-                    var dons = await AuthenticationAPI.GetDonations();
-                    if (dons != null)
-                    {
-                        if (dons.Length == 1)
-                        {
-                            var url = await PlayerFeedAPI.PostDonationAccessToken();
-                            if (url.StartsWith("http"))
+                            var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+                            if (choice)
                             {
-                                DependencyService.Get<IRivets>().NavigateTo(url);
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", url, "OK");
+                                var nav = new NavigationPage(new DabLoginPage(false, true));
+                                nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                await Navigation.PushModalAsync(nav);
                             }
                         }
-                        else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
-                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                    else
+                    {
+                        var dons = await AuthenticationAPI.GetDonations();
+                        if (dons != null)
+                        {
+                            if (dons.Length == 1)
+                            {
+                                var url = await PlayerFeedAPI.PostDonationAccessToken();
+                                if (url.StartsWith("http"))
+                                {
+                                    DependencyService.Get<IRivets>().NavigateTo(url);
+                                }
+                                else
+                                {
+                                    await DisplayAlert("Error", url, "OK");
+                                }
+                            }
+                            else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        }
+                        else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                    }
+                    giving = false;
                 }
-                giving = false;
-            }
 		}
 
         public void Unsubscribe()
         {
             MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+            MessagingCenter.Unsubscribe<string>("Give", "Give");
         }
 
-        //protected override void OnDisappearing()
-        //{
-        //    base.OnDisappearing();
-        //    MessagingCenter.Unsubscribe<string>("Menu", "Menu");
-        //    MessagingCenter.Unsubscribe<string>("Give", "Give");
-        //}
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+            MessagingCenter.Unsubscribe<string>("Give", "Give");
+        }
 
-        //protected override void OnAppearing()
-        //{
-        //    base.OnAppearing();
-        //    if (Device.RuntimePlatform == "Android")
-        //    {
-        //        MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
-        //        {
-        //            if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-        //            {
-        //                this.ShowMenu();
-        //            }
-        //        });
-        //        MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-        //    }
-        //}
+        protected override void OnAppearing()
+        { 
+            base.OnAppearing();
+            if (Device.RuntimePlatform == "Android")
+            {
+                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+                {
+                    if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+                    {
+                        this.ShowMenu();
+                    }
+                });
+                MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
+            }
+        }
     }
 }
 

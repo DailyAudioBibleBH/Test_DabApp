@@ -10,6 +10,7 @@ namespace DABApp
 		public DabProfileManagementPage()
 		{
 			InitializeComponent();
+            if (Device.Idiom == TargetIdiom.Tablet) { NavigationPage.SetHasNavigationBar(this, false); }
 			var UserName = GlobalResources.GetUserName().Split(' ');
 			FirstName.Text = UserName[0];
 			LastName.Text = UserName[1];

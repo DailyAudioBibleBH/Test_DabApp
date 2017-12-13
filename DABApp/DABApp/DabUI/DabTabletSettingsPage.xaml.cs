@@ -14,6 +14,7 @@ namespace DABApp
 		public DabTabletSettingsPage()
 		{
 			InitializeComponent();
+            //NavigationPage.SetHasBackButton(this, false);
 			playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			Title = "DAILY AUDIO BIBLE";
 			this.SlideMenu = new DabMenuView();
@@ -28,16 +29,20 @@ namespace DABApp
 			SettingsPage.addresses.Tapped += OnAddresses;
 			SettingsPage.wallet.Tapped += OnWallet;
 			SettingsPage.donations.Tapped += OnDonations;
+            SettingsPage.Disappearing += OnDisappearing;
+            SettingsPage.Appearing += OnAppearing;
+            //SettingsPage.Appearing += OnMenu;
             if (Device.RuntimePlatform == "Android")
             {
-                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => {
-                    if (Navigation.NavigationStack.Last() == this)
-                    {
-                        this.ShowMenu();
-                    }
+                SettingsPage.ToolbarItems.Clear();
+                AppInfoPage.Unsubscribe();
+                //SettingsPage.Unsubscribe();
+                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+                {
+                    SettingsPage.ShowMenu();  
                 });
             }
-		}
+        }
 
 		void OnMenu(object o, EventArgs e) {
 			this.ShowMenu();
@@ -48,7 +53,7 @@ namespace DABApp
 			//switch (pre.duration) { 
 			//	case "Offline Episodes":
 					var Offline = new DabOfflineEpisodeManagementPage();
-					this.Detail = Offline;
+					this.Detail = new NavigationPage(Offline);
 					Offline.ToolbarItems.Clear();
 					Remove();
 			//		break;
@@ -64,7 +69,7 @@ namespace DABApp
 		void OnAppInfo(object o, EventArgs e) {
 			var AppInfo = new DabAppInfoPage();
             AppInfo.Unsubscribe();
-			Detail = AppInfo;
+			Detail = new NavigationPage(AppInfo) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			AppInfo.ToolbarItems.Clear();
 			Remove();
 		}
@@ -73,7 +78,7 @@ namespace DABApp
 		{	
 			var Reset = new DabResetListenedToStatusPage();
             Reset.Unsubscribe();
-			Detail = Reset;
+			Detail = new NavigationPage(Reset);
 			Reset.ToolbarItems.Clear();
 			Remove();
 		}
@@ -81,7 +86,7 @@ namespace DABApp
 		void OnOffline(object o, EventArgs e) {
 			var Offline = new DabOfflineEpisodeManagementPage();
             Offline.Unsubscribe();
-			Detail = Offline;
+			Detail = new NavigationPage(Offline) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Offline.ToolbarItems.Clear();
 			Remove();
 		}
@@ -89,7 +94,7 @@ namespace DABApp
 		void OnProfile(object o, EventArgs e) {
 			var Profile = new DabProfileManagementPage();
             Profile.Unsubscribe();
-			Detail = Profile;
+			Detail = new NavigationPage(Profile) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Profile.ToolbarItems.Clear();
 			Remove();
 		}
@@ -97,7 +102,7 @@ namespace DABApp
 		void OnAddresses(object o, EventArgs e) {
 			var Addresses = new DabAddressManagementPage();
             Addresses.Unsubscribe();
-			Detail = new NavigationPage(Addresses);
+			Detail = new NavigationPage(Addresses) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Addresses.ToolbarItems.Clear();
 			Remove();
 		}
@@ -112,7 +117,7 @@ namespace DABApp
 			{
 				var Wallet = new DabWalletPage(result);
                 Wallet.Unsubscribe();
-				Detail = new NavigationPage(Wallet);
+				Detail = new NavigationPage(Wallet) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 				Wallet.ToolbarItems.Clear();
 				Remove();
 			}
@@ -129,16 +134,27 @@ namespace DABApp
 			var don = await AuthenticationAPI.GetDonations();
 			var Donations = new DabManageDonationsPage(don);
             Donations.Unsubscribe();
-			Detail = new NavigationPage(Donations);
+			Detail = new NavigationPage(Donations) { BarTextColor = (Color)App.Current.Resources["TextColor"]};
 			Donations.ToolbarItems.Clear();
 			Remove();
 			//activity.IsVisible = false;
 			//activityHolder.IsVisible = false;
 		}
 
-		void Remove() {
-			if (needRemove) SettingsPage.ToolbarItems.RemoveAt(0);
-			needRemove = false;
-		}
+        void OnDisappearing(object o, EventArgs e)
+        {
+            MessagingCenter.Unsubscribe<string>("Menu", "Menu");
+        }
+
+        void OnAppearing(object o, EventArgs e)
+        {
+            MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) => { ((DabSettingsPage)Master).ShowMenu(); });
+        }
+
+        void Remove()
+        {
+            if (needRemove) SettingsPage.ToolbarItems.RemoveAt(0);
+            needRemove = false;
+        }
 	}
 }
