@@ -63,16 +63,16 @@
 		</dict>
 	</array>
 	<key>CFBundleShortVersionString</key>
-	<string>0.26</string>
+	<string>0.25</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We use your photo library to access photos to share with the DAB Community</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We use your camera to created photos to share with the DAB Community</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We use your microphont to create videos to share with the DAB Community</string>
+	<key>CFBundleVersion</key>
+	<string>0.25</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>CFBundleVersion</key>
-	<string>20171208</string>
 </dict>
 </plist>
