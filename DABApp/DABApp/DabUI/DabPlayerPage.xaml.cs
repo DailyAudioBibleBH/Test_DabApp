@@ -99,6 +99,10 @@ namespace DABApp
                 if (AudioPlayer.Instance.IsPlaying)
                 {
                     AudioPlayer.Instance.Pause();
+                    Task.Run(async () =>
+                    {
+                        await AuthenticationAPI.PostActionLogs();
+                    });
                 }
                 else
                 {
@@ -110,11 +114,6 @@ namespace DABApp
                 AudioPlayer.Instance.SetAudioFile(Episode);
                 AudioPlayer.Instance.Play();
             }
-            Task.Run(async () =>
-            {
-                await AuthenticationAPI.PostActionLogs();
-                await AuthenticationAPI.GetMemberData();
-            });
         }
 
 		void OnBack30(object o, EventArgs e)

@@ -35,7 +35,10 @@ namespace DABApp
 				if (AudioPlayer.Instance.IsPlaying)
 				{
 					AudioPlayer.Instance.Pause();
-				}
+                    Task.Run(async () => {
+                        await AuthenticationAPI.PostActionLogs();
+                    });
+                }
 				else {
 					AudioPlayer.Instance.Play();
 				}
@@ -43,10 +46,6 @@ namespace DABApp
 			else {
 				AudioPlayer.Instance.Play();
 			}
-            Task.Run(async () => {
-                await AuthenticationAPI.PostActionLogs();
-                await AuthenticationAPI.GetMemberData();
-            });
 		}
 
 		//Show Player Page

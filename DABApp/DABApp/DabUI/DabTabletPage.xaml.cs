@@ -239,7 +239,11 @@ namespace DABApp
 				if (AudioPlayer.Instance.IsPlaying)
 				{
 					AudioPlayer.Instance.Pause();
-				}
+                    Task.Run(async () =>
+                    {
+                        await AuthenticationAPI.PostActionLogs();
+                    });
+                }
 				else
 				{
 					AudioPlayer.Instance.Play();
@@ -250,11 +254,6 @@ namespace DABApp
 				AudioPlayer.Instance.SetAudioFile(episode);
 				AudioPlayer.Instance.Play();
 			}
-            Task.Run(async () =>
-            {
-                await AuthenticationAPI.PostActionLogs();
-                await AuthenticationAPI.GetMemberData();
-            });
         }
 
 		void OnShare(object o, EventArgs e)
