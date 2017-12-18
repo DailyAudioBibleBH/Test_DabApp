@@ -17,7 +17,9 @@ namespace DABApp.Droid
 		public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the Android database
-			var filename = "DabSQLite.db3";
+			//var filename = "DabSQLite.db3";
+            var filename = $"database.{GlobalResources.DBVersion}.db3";
+
 			string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 			var path = Path.Combine(folder, filename);
 
@@ -33,6 +35,17 @@ namespace DABApp.Droid
 						File.Delete(path);
 					}
 				}
+
+                //Cleanup old database files (with names other than the one we're using)
+                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                foreach (FileInfo fil in dir.GetFiles(("*.db3")))
+                {
+                    if (fil.Name != filename)
+                    {
+                        fil.Delete();
+                    }
+                }
+
 			}
 
 			var connection = new SQLiteConnection(path);
@@ -42,7 +55,8 @@ namespace DABApp.Droid
 		public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the Android database
-			var filename = "DabSQLite.db3";
+			//var filename = "DabSQLite.db3";
+            var filename = $"database.{GlobalResources.DBVersion}.db3";
 			string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
 			var path = Path.Combine(folder, filename);
 
@@ -58,6 +72,17 @@ namespace DABApp.Droid
 						File.Delete(path);
 					}
 				}
+
+                //Cleanup old database files (with names other than the one we're using)
+                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                foreach (FileInfo fil in dir.GetFiles(("*.db3")))
+                {
+                    if (fil.Name != filename)
+                    {
+                        fil.Delete();
+                    }
+                }
+
 			}
 
 			var connection = new SQLiteAsyncConnection(path);

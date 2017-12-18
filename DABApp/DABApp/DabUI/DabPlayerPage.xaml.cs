@@ -383,8 +383,8 @@ namespace DABApp
 		{
 			Episode.is_favorite = !Episode.is_favorite;
 			Favorite.Image = Episode.favoriteSource;
-			PlayerFeedAPI.UpdateEpisodeProperty(Episode.id, "is_favorite");
-			AuthenticationAPI.CreateNewActionLog(Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
+			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "is_favorite");
+			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
 		}
 	}
 }

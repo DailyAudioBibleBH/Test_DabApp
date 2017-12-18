@@ -15,7 +15,8 @@ namespace DABApp.iOS
 		public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
 		{
 			//Build the path for storing the iOS database
-			var sqliteFilename = "database.db3";
+			//var sqliteFilename = "database.db3";
+            var sqliteFilename = $"database.{GlobalResources.DBVersion}.db3";
 			string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal); // Documents folder
 			string libraryPath = Path.Combine(documentsPath, "..", "Library"); // Library folder
 			var path = Path.Combine(libraryPath, sqliteFilename);
@@ -32,6 +33,16 @@ namespace DABApp.iOS
 						File.Delete(path);
 					}
 				}
+
+                //Cleanup old database files (with names other than the one we're using)
+                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                foreach (FileInfo fil in dir.GetFiles(("*.db3")))
+                {
+                    if (fil.Name != sqliteFilename)
+                    {
+                        fil.Delete();
+                    }
+                }
 			}
 
 			// Create the connection
@@ -43,7 +54,8 @@ namespace DABApp.iOS
         public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
         {
 			//Build the path for storing the Android database
-			var sqliteFilename = "database.db3";
+			//var sqliteFilename = "database.db3";
+            var sqliteFilename = $"database.{GlobalResources.DBVersion}.db3";
 			string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal); // Documents folder
 			string libraryPath = Path.Combine(documentsPath, "..", "Library"); // Library folder
 			var path = Path.Combine(libraryPath, sqliteFilename);
@@ -60,6 +72,16 @@ namespace DABApp.iOS
 						File.Delete(path);
 					}
 				}
+
+                //Cleanup old database files (with names other than the one we're using)
+                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                foreach (FileInfo fil in dir.GetFiles(("*.db3")))
+                {
+                    if (fil.Name != sqliteFilename)
+                    {
+                        fil.Delete();
+                    }
+                }
 			}
 
 			var connection = new SQLiteAsyncConnection(path);

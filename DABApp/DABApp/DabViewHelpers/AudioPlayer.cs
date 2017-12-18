@@ -170,7 +170,7 @@ namespace DABApp
 			if (_player.IsPlaying) {
 				Task.Run(async () => { await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime); });
 			}
-			Instance.CurrentEpisodeId = episode.id;
+			Instance.CurrentEpisodeId = (int)episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
 			Instance.CurrentChannelTitle = episode.channel_title;
 			var ext = episode.url.Split('.').Last();

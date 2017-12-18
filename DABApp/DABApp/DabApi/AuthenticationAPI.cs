@@ -680,7 +680,10 @@ namespace DABApp
                     var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
                     string JsonOut = await result.Content.ReadAsStringAsync();
                     MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+                    container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
+                    Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
                     Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
+                    Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
                     if (container.code == "rest_forbidden")
                     {
                         throw new Exception();

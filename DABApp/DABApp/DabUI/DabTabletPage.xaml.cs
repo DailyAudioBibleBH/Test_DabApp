@@ -469,8 +469,8 @@ namespace DABApp
 			favorite.Opacity = .5;
 			episode.is_favorite = !episode.is_favorite;
 			favorite.Source = episode.favoriteSource;
-			await PlayerFeedAPI.UpdateEpisodeProperty(episode.id, "is_favorite");
-			await AuthenticationAPI.CreateNewActionLog(episode.id, "favorite", episode.stop_time, episode.is_favorite);
+			await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "is_favorite");
+			await AuthenticationAPI.CreateNewActionLog((int)episode.id, "favorite", episode.stop_time, episode.is_favorite);
 			favorite.Opacity = 1;
 			favorite.IsEnabled = true;
 			//EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
