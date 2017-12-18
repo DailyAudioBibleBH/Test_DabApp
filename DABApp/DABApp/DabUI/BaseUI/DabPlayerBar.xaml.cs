@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -42,6 +43,10 @@ namespace DABApp
 			else {
 				AudioPlayer.Instance.Play();
 			}
+            Task.Run(async () => {
+                await AuthenticationAPI.PostActionLogs();
+                await AuthenticationAPI.GetMemberData();
+            });
 		}
 
 		//Show Player Page
