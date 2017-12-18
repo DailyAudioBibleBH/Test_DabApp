@@ -15,7 +15,10 @@ namespace DABApp
 	public class AuthenticationAPI
 	{
 		static SQLiteConnection db = DabData.database;
-		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
+        static bool notPosting = true;
+        static bool notGetting = true;
 
 		public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false) {
 			try
@@ -617,72 +620,87 @@ namespace DABApp
 		}
 
 		public static async Task<string> PostActionLogs() {
-			dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-			var actions = db.Table<dbPlayerActions>().ToList();
- 			if (actions.Count > 0) {
-				try
-				{
-					LoggedEvents events = new LoggedEvents();
-					HttpClient client = new HttpClient();
-					client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-					events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
-					var JsonIn = JsonConvert.SerializeObject(events);
-					var content = new StringContent(JsonIn);
-					content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-					var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
-					string JsonOut = await result.Content.ReadAsStringAsync();
-					if (JsonOut != "1")
-					{
-						throw new Exception();
-					}
-					foreach (var action in actions)
-					{
-						await adb.DeleteAsync(action);
-					}
-				}
-				catch (Exception e) 
-				{
-					//It's bad if the program lands here.
-					Debug.WriteLine($"Error in Posting Action logs: {e.Message}");
-
-					return e.Message;
-				}
-			}
-			return "OK";
+            if (notPosting)
+            {
+                notPosting = false;
+                dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+                var actions = db.Table<dbPlayerActions>().ToList();
+                if (actions.Count > 0)
+                {
+                    try
+                    {
+                        LoggedEvents events = new LoggedEvents();
+                        HttpClient client = new HttpClient();
+                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                        events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
+                        var JsonIn = JsonConvert.SerializeObject(events);
+                        var content = new StringContent(JsonIn);
+                        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                        var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
+                        string JsonOut = await result.Content.ReadAsStringAsync();
+                        if (JsonOut != "1")
+                        {
+                            throw new Exception();
+                        }
+                        foreach (var action in actions)
+                        {
+                            await adb.DeleteAsync(action);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        //It's bad if the program lands here.
+                        Debug.WriteLine($"Error in Posting Action logs: {e.Message}");
+                        notPosting = true;
+                        return e.Message;
+                    }
+                }
+                notPosting = true;
+                return "OK";
+            }
+            return "Currently Posting Action Logs";
 		}
 
 		public static async Task<bool> GetMemberData(){
-			var start = DateTime.Now;
-			var settings = await adb.Table<dbSettings>().ToListAsync();
-			dbSettings TokenSettings = settings.Single(x => x.Key == "Token");
-			dbSettings EmailSettings = settings.Single(x => x.Key == "Email");
-			Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
-			try
-			{
-				HttpClient client = new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
-				var content = new StringContent(JsonIn);
-				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
-				string JsonOut = await result.Content.ReadAsStringAsync();
-				MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
-				Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
-				if (container.code == "rest_forbidden")
-				{
-					throw new Exception();
-				}
-				else {
-					await SaveMemberData(container.episodes);
-					Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
-				}
-				return true;
-			}
-			catch (Exception e) {
-				Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
-
-				return false;
-			}
+            if (notGetting)
+            {
+                notGetting = false;
+                var start = DateTime.Now;
+                var settings = await adb.Table<dbSettings>().ToListAsync();
+                dbSettings TokenSettings = settings.Single(x => x.Key == "Token");
+                dbSettings EmailSettings = settings.Single(x => x.Key == "Email");
+                Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
+                try
+                {
+                    HttpClient client = new HttpClient();
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                    var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
+                    var content = new StringContent(JsonIn);
+                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
+                    string JsonOut = await result.Content.ReadAsStringAsync();
+                    MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+                    Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
+                    if (container.code == "rest_forbidden")
+                    {
+                        throw new Exception();
+                    }
+                    else
+                    {
+                        await SaveMemberData(container.episodes);
+                        Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
+                    }
+                    notGetting = true;
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
+                    notGetting = true;
+                    return false;
+                }
+            }
+            return false;
 		}
 
 		static async Task SaveMemberData(List<dbEpisodes> episodes) {

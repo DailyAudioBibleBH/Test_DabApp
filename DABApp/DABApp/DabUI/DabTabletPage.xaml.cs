@@ -250,7 +250,12 @@ namespace DABApp
 				AudioPlayer.Instance.SetAudioFile(episode);
 				AudioPlayer.Instance.Play();
 			}
-		}
+            Task.Run(async () =>
+            {
+                await AuthenticationAPI.PostActionLogs();
+                await AuthenticationAPI.GetMemberData();
+            });
+        }
 
 		void OnShare(object o, EventArgs e)
 		{

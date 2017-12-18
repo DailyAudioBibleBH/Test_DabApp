@@ -133,7 +133,6 @@ namespace DABApp
 			var selected = (Resource)e.Item;
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
-            await AuthenticationAPI.PostActionLogs();
 			var episodes = await PlayerFeedAPI.GetEpisodes(resource);
 			if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
 			{

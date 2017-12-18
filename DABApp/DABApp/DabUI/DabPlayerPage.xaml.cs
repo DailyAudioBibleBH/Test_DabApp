@@ -110,6 +110,11 @@ namespace DABApp
                 AudioPlayer.Instance.SetAudioFile(Episode);
                 AudioPlayer.Instance.Play();
             }
+            Task.Run(async () =>
+            {
+                await AuthenticationAPI.PostActionLogs();
+                await AuthenticationAPI.GetMemberData();
+            });
         }
 
 		void OnBack30(object o, EventArgs e)
