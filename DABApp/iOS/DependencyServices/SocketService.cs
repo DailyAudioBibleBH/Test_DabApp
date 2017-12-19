@@ -57,7 +57,7 @@ namespace DABApp.iOS
 				{
 					Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
 					connected = false;
-					if (NotifyDis)
+					if (NotifyDis && Disconnect != null)
 					{
 						Disconnect(data, new EventArgs());
 						NotifyDis = false;
@@ -80,7 +80,7 @@ namespace DABApp.iOS
 				{
 					Debug.WriteLine($"Reconnected {data} {DateTime.Now}");
 					connected = true;
-					if (NotifyRe)
+					if (NotifyRe && Reconnect != null)
 					{
 						Reconnect(data, new EventArgs());
 						NotifyDis = true;
@@ -109,18 +109,27 @@ namespace DABApp.iOS
 				{
 					Debug.WriteLine($"Room_error {data} {DateTime.Now}");
 					joined = false;
-					Room_Error(data, new EventArgs());
+                    if (Room_Error != null)
+                    {
+                        Room_Error(data, new EventArgs());
+                    }
 				});
 				socket.On("auth_error", data =>
 				{
 					Debug.WriteLine($"Auth_error {data} {DateTime.Now}");
-					Auth_Error(data, new EventArgs());
+                    if (Auth_Error != null)
+                    {
+                        Auth_Error(data, new EventArgs());
+                    }
 				});
 				socket.On("join_error", data =>
 				{
 					Debug.WriteLine($"Join_error {data} {DateTime.Now}");
 					joined = false;
-					Join_Error(data, new EventArgs());
+                    if (Join_Error != null)
+                    {
+                        Join_Error(data, new EventArgs());
+                    }
 				});
 				socket.On(Socket.EVENT_CONNECT_ERROR, data=> {
 					Debug.WriteLine($"SOCKET CONNECTION ERROR: {data.ToString()}");
