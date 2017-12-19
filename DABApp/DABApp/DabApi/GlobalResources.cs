@@ -16,10 +16,15 @@ namespace DABApp
 		public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
 
 		static SQLiteConnection db = DabData.database;
+
+
+        /* This string determins the database version. 
+         * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
+         */
         public static string DBVersion
         {
             get {
-                return "20171218";
+                return "1.0";
             }
         }
 

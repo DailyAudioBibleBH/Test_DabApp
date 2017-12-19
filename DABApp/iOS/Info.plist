@@ -68,11 +68,11 @@
 	<string>We use your camera to created photos to share with the DAB Community</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We use your microphont to create videos to share with the DAB Community</string>
-	<key>CFBundleVersion</key>
-	<string>0.26</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>CFBundleShortVersionString</key>
-	<string>0.26</string>
+	<string>1.0.0</string>
+	<key>CFBundleVersion</key>
+	<string>20171218</string>
 </dict>
 </plist>
