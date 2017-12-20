@@ -37,7 +37,7 @@ namespace DABApp.Droid
 				}
 
                 //Cleanup old database files (with names other than the one we're using)
-                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                DirectoryInfo dir = new DirectoryInfo(folder);
                 foreach (FileInfo fil in dir.GetFiles(("*.db3")))
                 {
                     if (fil.Name != filename)
@@ -74,7 +74,7 @@ namespace DABApp.Droid
 				}
 
                 //Cleanup old database files (with names other than the one we're using)
-                DirectoryInfo dir = new DirectoryInfo(libraryPath);
+                DirectoryInfo dir = new DirectoryInfo(folder);
                 foreach (FileInfo fil in dir.GetFiles(("*.db3")))
                 {
                     if (fil.Name != filename)
