@@ -101,6 +101,7 @@ namespace DABApp
 			var reading = await PlayerFeedAPI.GetReading(episode.read_link);
 			if (Device.Idiom == TargetIdiom.Tablet)
 			{
+                await PlayerFeedAPI.GetEpisodes(_resource); //Get episodes prior to pushing up the TabletPage
 				await Navigation.PushAsync(new DabTabletPage(_resource));
 			}
 			else
@@ -133,12 +134,12 @@ namespace DABApp
 			var selected = (Resource)e.Item;
 			selected.IsNotSelected = false;
 			var resource = (Resource)e.Item;
-			var episodes = await PlayerFeedAPI.GetEpisodes(resource);
+			var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
 			if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
 			{
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
-					await Navigation.PushAsync(new DabTabletPage(resource));
+                    await Navigation.PushAsync(new DabTabletPage(resource));
 				}
 				else
 				{

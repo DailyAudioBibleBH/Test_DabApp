@@ -7,7 +7,7 @@ namespace DABApp
 {
 	public class DabData
 	{
-		public static readonly bool ResetDatabaseOnStart = false;
+        public static readonly bool ResetDatabaseOnStart = false; //Set to true to clear the database at every launch
 
 		static SQLiteConnection _database;
 		static SQLiteAsyncConnection _AsyncDatabase;
