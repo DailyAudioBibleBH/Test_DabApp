@@ -136,6 +136,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             var newEp = (dbEpisodes)e.Item;
+            JournalTracker.Current.Join(newEp.PubDate.ToString("yyyy-MM-dd"));
             if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
             {
                 episode = (dbEpisodes)e.Item;
@@ -206,12 +207,15 @@ namespace DABApp
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
                 BackgroundImage.Source = backgroundImage;
+                if (episode.PubDate != Episodes.First().PubDate)
+                {
+                    JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
+                }
                 episode = Episodes.First();
                 PlayerLabels.BindingContext = episode;
                 await SetReading();
                 if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
                 {
-                    JournalTracker.Current.Content = null;
                     SetVisibility(false);
                 }
                 else

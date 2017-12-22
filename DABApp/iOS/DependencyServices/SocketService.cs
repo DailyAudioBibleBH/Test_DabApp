@@ -172,7 +172,7 @@ namespace DABApp.iOS
                             {
                                 content = content.Substring(1);
                             }
-							contentChanged(this, new EventArgs());
+							contentChanged?.Invoke(this, new EventArgs());
 						}
 					}
 				});

@@ -160,11 +160,11 @@ namespace DABApp.Droid
 				_date = date;
 				var help = new SocketHelper(date, Token);
 				var Data = JObject.FromObject(help);
-				socket.Emit("join", Data);
+				socket?.Emit("join", Data);
 				Debug.WriteLine($"join {Data}");
 				joined = true;
-				socket.Off("update");
-				socket.On("update", data =>
+				socket?.Off("update");
+				socket?.On("update", data =>
 				{
 					Debug.WriteLine($"update {data}");
 					if (ExternalUpdate)
@@ -189,7 +189,7 @@ namespace DABApp.Droid
 								content = "";
 							}
 							Debug.WriteLine($"Join Content:{content} Join Html:{html}");
-							contentChanged(this, new EventArgs());
+							contentChanged?.Invoke(this, new EventArgs());
 						}
 					}
 				});
@@ -204,10 +204,10 @@ namespace DABApp.Droid
 				var Data = JObject.FromObject(help);
 				if (!joined)
 				{
-					socket.Emit("join", Data);
+					socket?.Emit("join", Data);
 					Debug.WriteLine($"join {Data}");
 				}
-				socket.Emit("key", Data);
+				socket?.Emit("key", Data);
 				Debug.WriteLine($"key {Data}");
 			}
 			else
