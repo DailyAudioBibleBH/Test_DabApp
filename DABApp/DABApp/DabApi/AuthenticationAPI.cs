@@ -55,6 +55,7 @@ namespace DABApp
                         settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
                     }
+                    GuestLogin();
                     return "IsGuest";
                 }
                 else
@@ -791,6 +792,15 @@ namespace DABApp
             await adb.InsertAllAsync(insert);
             await adb.UpdateAllAsync(update);
             Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
+        }
+
+        static void GuestLogin()
+        {
+            var episodes = db.Table<dbEpisodes>();
+            if (episodes.Count() > 0)
+            {
+                db.DeleteAll<dbEpisodes>();
+            }
         }
     }
 }
