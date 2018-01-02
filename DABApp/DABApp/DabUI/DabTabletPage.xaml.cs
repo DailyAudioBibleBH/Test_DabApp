@@ -151,6 +151,7 @@ namespace DABApp
                     SetVisibility(true);
                 }
                 PlayerLabels.BindingContext = episode;
+                JournalTitle.BindingContext = episode;
                 EpisodeList.SelectedItem = null;
                 await SetReading();
             }
@@ -213,6 +214,7 @@ namespace DABApp
                 }
                 episode = Episodes.First();
                 PlayerLabels.BindingContext = episode;
+                JournalTitle.BindingContext = episode;
                 await SetReading();
                 if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
                 {

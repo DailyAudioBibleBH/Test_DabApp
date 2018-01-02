@@ -156,6 +156,7 @@ namespace DABApp
 			}
 			catch (Exception e)
 			{
+                Debug.WriteLine($"Exception caught in GetTopic: {e.Message}");
 				return null;
 			}
 		}

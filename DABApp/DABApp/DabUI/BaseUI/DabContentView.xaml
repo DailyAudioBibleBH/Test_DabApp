@@ -52,8 +52,8 @@
 										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
 										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
 									</StackLayout>
-									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="{DynamicResource NonScrollingListViewColor}" Padding="10" Spacing="0">
-										<Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
+									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="{DynamicResource NonScrollingListViewColor}" Padding="10" Spacing="0" Orientation="Horizontal">
+										<Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 									</StackLayout>
 								</StackLayout>
 							</ViewCell.View>

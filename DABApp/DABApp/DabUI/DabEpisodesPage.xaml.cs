@@ -30,7 +30,7 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
-			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+			Device.StartTimer(TimeSpan.FromMinutes(1), () =>
 			{
 				Episodes = PlayerFeedAPI.GetEpisodeList(resource);
 				if ((string)Months.SelectedItem == "My Favorites")
