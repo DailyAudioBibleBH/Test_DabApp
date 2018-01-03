@@ -41,7 +41,7 @@
 							<ViewCell.View>
 								<StackLayout Spacing="0">
 									<StackLayout.Padding>
-									<OnPlatform x:TypeArguments="Thickness" iOS="20" Android="5"/>
+									<OnPlatform x:TypeArguments="Thickness" iOS="20, 10, 20, 20" Android="5"/>
 									</StackLayout.Padding>
 									<ff:CachedImage Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
 										<ff:CachedImage.Source>
