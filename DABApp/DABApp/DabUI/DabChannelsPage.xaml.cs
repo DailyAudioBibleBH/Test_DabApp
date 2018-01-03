@@ -72,7 +72,7 @@ namespace DABApp
 
 			TimedActions();
 
-			Device.StartTimer(TimeSpan.FromMinutes(1), () => {
+			Device.StartTimer(TimeSpan.FromMinutes(30), () => {
 				TimedActions();
 				return true;
 			});
@@ -80,7 +80,10 @@ namespace DABApp
 			ConnectJournal();
 			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
 			{
-				ConnectJournal();
+                if (!JournalTracker.Current.IsConnected)
+                {
+                    ConnectJournal();
+                }
 				return true;
 			});
 		}
