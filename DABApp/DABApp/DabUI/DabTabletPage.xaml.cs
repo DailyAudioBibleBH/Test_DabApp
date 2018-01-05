@@ -15,6 +15,7 @@ namespace DABApp
         string backgroundImage;
         dbEpisodes episode;
         static double original;
+        bool NotConstructing = false;
 
         public DabTabletPage(Resource resource, dbEpisodes Episode = null)
         {
@@ -24,7 +25,6 @@ namespace DABApp
             SegControl.ValueChanged += Handle_ValueChanged;
             _resource = resource;
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
-            ChannelsList.SelectedItem = _resource;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
             Offline.IsToggled = _resource.availableOffline;
@@ -83,6 +83,7 @@ namespace DABApp
                 Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
+            ChannelsList.SelectedItem = _resource;
         }
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -188,7 +189,10 @@ namespace DABApp
                 }
                 else
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                    if (Months.SelectedIndex >= 0)
+                    {
+                        EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                    }
                 }
             }
         }
@@ -203,7 +207,11 @@ namespace DABApp
             {
                 _resource = (Resource)ChannelsList.SelectedItem;
                 backgroundImage = _resource.images.backgroundTablet;
-                await PlayerFeedAPI.GetEpisodes(_resource);
+                if (NotConstructing)
+                {
+                    await PlayerFeedAPI.GetEpisodes(_resource);
+                }
+                NotConstructing = true;
                 Offline.IsToggled = _resource.availableOffline;
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
@@ -502,7 +510,10 @@ namespace DABApp
                 }
                 else
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                    if (Months.SelectedIndex >= 0)
+                    {
+                        EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                    }
                 }
             }
         }

@@ -68,17 +68,14 @@ namespace DABApp
 			//{
 			//	//resize the banner image to match the banner content container's height
 			//	banner.HeightRequest = bannerContentContainer.Height;
-			//};
-
-			TimedActions();
+			//}
 
 			Device.StartTimer(TimeSpan.FromMinutes(30), () => {
 				TimedActions();
 				return true;
 			});
 
-			ConnectJournal();
-			Device.StartTimer(TimeSpan.FromSeconds(5), () =>
+			Device.StartTimer(TimeSpan.FromMinutes(5), () =>
 			{
                 if (!JournalTracker.Current.IsConnected)
                 {
@@ -189,6 +186,7 @@ namespace DABApp
 			MessagingCenter.Send<string>("Setup", "Setup");
 		//	var start = DateTime.Now;
 		    base.OnAppearing();
+            TimedActions();
 		//	if (episode == null)
 		//	{
 		//		bannerButton.IsEnabled = false;
