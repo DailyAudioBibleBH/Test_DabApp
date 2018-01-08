@@ -35,14 +35,16 @@ namespace DABApp
 			CrossPushNotification.Current.Register();
 		}
 
-		protected override void OnSleep()
+		protected override async void OnSleep()
 		{
+            await AuthenticationAPI.PostActionLogs();
 			JournalTracker.Current.Open = false;
 		}
 
 		protected override void OnResume()
 		{
 			JournalTracker.Current.Open = true;
+            AuthenticationAPI.GetMemberData();
 		}
 
 		//void OnPlayPause(object o, EventArgs e) {

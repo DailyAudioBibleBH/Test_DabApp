@@ -70,7 +70,7 @@ namespace DABApp
 			//	banner.HeightRequest = bannerContentContainer.Height;
 			//}
 
-			Device.StartTimer(TimeSpan.FromMinutes(15), () => {
+			Device.StartTimer(TimeSpan.FromMinutes(5), () => {
 				TimedActions();
 				return true;
 			});
@@ -186,7 +186,7 @@ namespace DABApp
 			MessagingCenter.Send<string>("Setup", "Setup");
 		//	var start = DateTime.Now;
 		    base.OnAppearing();
-            TimedActions();
+            //TimedActions();
 		//	if (episode == null)
 		//	{
 		//		bannerButton.IsEnabled = false;

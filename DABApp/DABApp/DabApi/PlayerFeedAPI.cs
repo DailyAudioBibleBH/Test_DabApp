@@ -54,12 +54,12 @@ namespace DABApp
 				}
 				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
 				Task.Run(async () => { await DownloadEpisodes(); });
-				var b = await AuthenticationAPI.GetMemberData();//This slows down everything
-				if (!b)
-				{
-					db = DabData.database;
-					adb = DabData.AsyncDatabase;
-				}
+				//var b = await AuthenticationAPI.GetMemberData();//This slows down everything
+				//if (!b)
+				//{
+				//	db = DabData.database;
+				//	adb = DabData.AsyncDatabase;
+				//}
 				Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
 				return "OK";
 				//else {
