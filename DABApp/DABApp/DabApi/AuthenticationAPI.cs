@@ -657,7 +657,7 @@ namespace DABApp
 
         public static async Task<string> PostActionLogs()
         {
-            if (!GuestStatus.Current.IsGuestLogin)
+            if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
 
                 if (notPosting)
@@ -708,7 +708,7 @@ namespace DABApp
 
         public static async Task<bool> GetMemberData()
         {
-            if (!GuestStatus.Current.IsGuestLogin)
+            if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
                 if (notGetting)
                 {

@@ -70,7 +70,7 @@ namespace DABApp
 			//	banner.HeightRequest = bannerContentContainer.Height;
 			//}
 
-			Device.StartTimer(TimeSpan.FromMinutes(30), () => {
+			Device.StartTimer(TimeSpan.FromMinutes(15), () => {
 				TimedActions();
 				return true;
 			});

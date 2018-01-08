@@ -104,7 +104,10 @@ namespace DABApp
 
 		public void Connect(string token)
 		{
-			socket.Connect(token);
+            if (Open)
+            {
+                socket.Connect(token);
+            }
 		}
 
 		public void Update(string date, string html) 
