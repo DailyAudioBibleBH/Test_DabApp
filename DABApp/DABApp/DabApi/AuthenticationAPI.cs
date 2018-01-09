@@ -663,9 +663,9 @@ namespace DABApp
                 if (notPosting)
                 {
                     notPosting = false;
-                    dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+                    dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                     var actions = db.Table<dbPlayerActions>().ToList();
-                    if (actions.Count > 0)
+                    if (TokenSettings != null && actions.Count > 0)
                     {
                         try
                         {
@@ -716,43 +716,48 @@ namespace DABApp
                     notGetting = false;
                     var start = DateTime.Now;
                     var settings = await adb.Table<dbSettings>().ToListAsync();
-                    dbSettings TokenSettings = settings.Single(x => x.Key == "Token");
-                    dbSettings EmailSettings = settings.Single(x => x.Key == "Email");
-                    Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
-                    try
+                    dbSettings TokenSettings = settings.SingleOrDefault(x => x.Key == "Token");
+                    dbSettings EmailSettings = settings.SingleOrDefault(x => x.Key == "Email");
+                    if (TokenSettings != null || EmailSettings != null)
                     {
-                        HttpClient client = new HttpClient();
-                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                        var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
-                        var content = new StringContent(JsonIn);
-                        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                        var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
-                        string JsonOut = await result.Content.ReadAsStringAsync();
-                        MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
-                        if (container.code == "rest_forbidden")
+                        Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
+                        try
                         {
-                            throw new Exception();
+                            HttpClient client = new HttpClient();
+                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                            var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
+                            var content = new StringContent(JsonIn);
+                            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                            var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
+                            string JsonOut = await result.Content.ReadAsStringAsync();
+                            MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+                            if (container.code == "rest_forbidden")
+                            {
+                                throw new Exception();
+                            }
+                            else
+                            {
+                                // Clean up null EpisodeIds
+                                Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
+                                container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
+                                Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
+                                Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
+                                //Save member data
+                                await SaveMemberData(container.episodes);
+                                Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
+                            }
+                            notGetting = true;
+                            return true;
                         }
-                        else
+                        catch (Exception e)
                         {
-                            // Clean up null EpisodeIds
-                            Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
-                            container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
-                            Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
-                            Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
-                            //Save member data
-                            await SaveMemberData(container.episodes);
-                            Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
+                            Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
+                            notGetting = true;
+                            return false;
                         }
-                        notGetting = true;
-                        return true;
                     }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
-                        notGetting = true;
-                        return false;
-                    }
+                    notGetting = true;
+                    return false;
                 }
                 //Already Getting
                 return false;

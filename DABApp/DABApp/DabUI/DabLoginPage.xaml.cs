@@ -61,6 +61,7 @@ namespace DABApp
 			{
 				MessagingCenter.Send<string>("Setup", "Setup");
 				GuestStatus.Current.IsGuestLogin = false;
+                await AuthenticationAPI.GetMemberData();
 				if (_fromPlayer)
 				{
 					await Navigation.PopModalAsync();

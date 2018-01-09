@@ -36,13 +36,18 @@ namespace DABApp
 					return "Server Error";
 				}
 				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
-				var existingEpisodeIds = existingEpisodes.Select(x => x.id);
+				var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
 				var newEpisodeIds = Episodes.Select(x => x.id);
 				var start = DateTime.Now;
 				foreach (var e in Episodes) {
-					if (!existingEpisodeIds.Contains(e.id)) {
-						await adb.InsertOrReplaceAsync(e);
-					}
+                    if (existingEpisodeIds.Contains(e.id))
+                    {
+                        await adb.UpdateAsync(e);
+                    }
+                    else
+                    {
+                        await adb.InsertOrReplaceAsync(e);
+                    }
 				}
 				Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
 				foreach (var old in existingEpisodes)
