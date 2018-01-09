@@ -71,7 +71,7 @@
         <ContentView Padding="10, 0, 0, 0">
           <Label FontSize="Small" Text="Channels" Style="{StaticResource secondaryLabelStyle}" FontAttributes="Bold" />
         </ContentView>
-        <ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel">
+        <ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel" HasUnevenRows="true">
           <ListView.ItemTemplate>
             <DataTemplate>
               <ViewCell>
