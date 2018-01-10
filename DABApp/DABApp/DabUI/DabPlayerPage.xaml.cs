@@ -99,10 +99,10 @@ namespace DABApp
                 if (AudioPlayer.Instance.IsPlaying)
                 {
                     AudioPlayer.Instance.Pause();
-                    Task.Run(async () =>
-                    {
-                        await AuthenticationAPI.PostActionLogs();
-                    });
+                    //Task.Run(async () =>
+                    //{
+                    //    await AuthenticationAPI.PostActionLogs();
+                    //});
                 }
                 else
                 {
