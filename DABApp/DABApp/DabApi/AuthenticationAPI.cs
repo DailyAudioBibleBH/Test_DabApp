@@ -773,18 +773,20 @@ namespace DABApp
         static async Task SaveMemberData(List<dbEpisodes> episodes)
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
-            List<dbEpisodes> insert = new List<dbEpisodes>();
+            //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
             foreach (dbEpisodes episode in episodes)
             {
                 var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
-                if (saved == null)
-                {
-                    insert.Add(episode);
-                }
-                else
-                {
+                //if (saved == null)
+                //{
+                //    insert.Add(episode);
+                //}
+                //else
+                //{
+                if(saved != null)
+                { 
                     if (!(saved.stop_time == episode.stop_time && saved.is_favorite == episode.is_favorite && saved.is_listened_to == episode.is_listened_to && saved.has_journal == episode.has_journal))
                     {
                         saved.stop_time = episode.stop_time;
@@ -795,7 +797,7 @@ namespace DABApp
                     }
                 }
             }
-            await adb.InsertAllAsync(insert);
+            //await adb.InsertAllAsync(insert);
             await adb.UpdateAllAsync(update);
             Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
         }

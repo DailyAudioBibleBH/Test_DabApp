@@ -35,16 +35,26 @@ namespace DABApp
 				if (Episodes == null) {
 					return "Server Error";
 				}
-				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).ToList();
+                var code = resource.title == "Daily Audio Bible" ? "dab" : resource.title.ToLower();
+				var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_code == code).ToList();
 				var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
 				var newEpisodeIds = Episodes.Select(x => x.id);
 				var start = DateTime.Now;
 				foreach (var e in Episodes) {
-                    if (existingEpisodeIds.Contains(e.id))
-                    {
-                        await adb.UpdateAsync(e);
-                    }
-                    else
+                    //var existing = existingEpisodes.SingleOrDefault(x => x.id == e.id);
+                    //if (existing == null)
+                    //{
+                    //    await adb.InsertOrReplaceAsync(e);
+                    //}
+                    //else
+                    //{
+                    //    e.is_listened_to = existing.is_listened_to;
+                    //    e.has_journal = existing.has_journal;
+                    //    e.is_favorite = existing.is_favorite;
+                    //    e.stop_time = existing.stop_time;
+                    //    await adb.UpdateAsync(e);
+                    //}
+                    if (!existingEpisodeIds.Contains(e.id))
                     {
                         await adb.InsertOrReplaceAsync(e);
                     }
