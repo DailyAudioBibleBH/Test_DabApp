@@ -41,22 +41,26 @@ namespace DABApp
 
 		async void OnLogin(object o, EventArgs e) {
 			Login.IsEnabled = false;
-			//switch (await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text)) { 
-			//	case 0:
-			//		Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-			//		await Navigation.PopToRootAsync();
-			//		break;
-			//	case 1:
-			//		await DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
-			//		break;
-			//	case 2:
-			//		await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
-			//		break;
-			//	case 3:
-			//		await DisplayAlert("OH NO!", "Something wen't wrong!", "OK");
-			//		break;
-			//}
-			var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
+            //switch (await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text)) { 
+            //	case 0:
+            //		Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+            //		await Navigation.PopToRootAsync();
+            //		break;
+            //	case 1:
+            //		await DisplayAlert("Login Failed", "Password and Email WRONG!", "OK");
+            //		break;
+            //	case 2:
+            //		await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+            //		break;
+            //	case 3:
+            //		await DisplayAlert("OH NO!", "Something wen't wrong!", "OK");
+            //		break;
+            //}
+            var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
 			if (result == "Success")
 			{
 				MessagingCenter.Send<string>("Setup", "Setup");
@@ -125,6 +129,8 @@ namespace DABApp
 				}
 			}
 			Login.IsEnabled = true;
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
 		}
 
 		void OnForgot(object o, EventArgs e) {
@@ -133,7 +139,11 @@ namespace DABApp
 
 		async void OnGuestLogin(object o, EventArgs e) {
 			GuestLogin.IsEnabled = false;
-			GuestStatus.Current.IsGuestLogin = true;
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
+            GuestStatus.Current.IsGuestLogin = true;
 			await AuthenticationAPI.ValidateLogin("Guest", "", true);
 			if (_fromPlayer)
 			{
@@ -146,6 +156,8 @@ namespace DABApp
 				Application.Current.MainPage = _nav;
 				await Navigation.PopToRootAsync();
 			}
+            activity.IsVisible = false;
+            activity.IsVisible = false;
 		}
 
 		protected override void OnAppearing()

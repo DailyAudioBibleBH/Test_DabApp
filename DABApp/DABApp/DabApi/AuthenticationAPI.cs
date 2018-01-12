@@ -79,6 +79,7 @@ namespace DABApp
                     }
                     else
                     {
+                        if (EmailSettings.Value != email) GuestLogin();
                         TokenSettings.Value = token.value;
                         ExpirationSettings.Value = token.expires;
                         EmailSettings.Value = token.user_email;
