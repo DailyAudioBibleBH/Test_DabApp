@@ -68,9 +68,12 @@ namespace DABApp.Droid
 
 			LoadApplication(new App());
 
-			((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
-			var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
-			CrossMediaManager.Current.AudioPlayer = exoPlayer;
+            if ((int)Android.OS.Build.VERSION.SdkInt < 24)
+            {
+                ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
+                var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
+                CrossMediaManager.Current.AudioPlayer = exoPlayer;
+            }
 
 			LoadCustomToolBar();
 			MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
