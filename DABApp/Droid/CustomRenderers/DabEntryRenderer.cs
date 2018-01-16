@@ -11,12 +11,13 @@ namespace DABApp.Droid
 		protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 		{
 			base.OnElementChanged(e);
+
 			if (Control != null)
 			{
 				var top = Device.Idiom == TargetIdiom.Tablet ? 20 : 50;
 				var bottom = Device.Idiom == TargetIdiom.Tablet ? 0 : 50;
 				Control.SetPadding(50, top, 50, bottom);
-				Control.SetHintTextColor(((Color)App.Current.Resources["SecondaryTextColor"]).ToAndroid());
+                Control.SetHintTextColor(((Color)App.Current.Resources["SecondaryTextColor"]).ToAndroid());
 			}
 		}
 	}
