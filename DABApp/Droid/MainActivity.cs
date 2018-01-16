@@ -73,6 +73,21 @@ namespace DABApp.Droid
                 ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
                 var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
                 CrossMediaManager.Current.AudioPlayer = exoPlayer;
+                if ((int)Android.OS.Build.VERSION.SdkInt > 22)
+                {
+                    var intent = new Intent();
+                    var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
+                    if (pm.IsIgnoringBatteryOptimizations(PackageName))
+                    {
+                        intent.SetAction(Android.Provider.Settings.ActionIgnoreBatteryOptimizationSettings);
+                    }
+                    else
+                    {
+                        intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
+                        intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
+                    }
+                    StartActivity(intent);
+                }
             }
 
 			LoadCustomToolBar();
