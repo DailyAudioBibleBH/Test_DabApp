@@ -9,10 +9,7 @@
 				</StackLayout>
 				<TableView Intent="Settings" x:Name="SettingsTable">
           <TableView.HasUnevenRows>
-            <OnPlatform x:TypeArguments="x:Boolean">
-              <OnPlatform.iOS>false</OnPlatform.iOS>
-              <OnPlatform.Android>true</OnPlatform.Android>
-            </OnPlatform>
+            <OnPlatform x:TypeArguments="x:Boolean" iOS="false" Android="true"/>
           </TableView.HasUnevenRows>
 					<TableRoot>
 						<TableSection x:Name="Account" Title="Account">
@@ -49,10 +46,7 @@
 						<ViewCell>
               <StackLayout>
                 <StackLayout.Padding>
-                  <OnPlatform x:TypeArguments="Thickness">
-                    <OnPlatform.iOS>15, 0, 15, 0</OnPlatform.iOS>
-                    <OnPlatform.Android>15, 15, 15, 0</OnPlatform.Android>
-                  </OnPlatform>
+                  <OnPlatform x:TypeArguments="Thickness" iOS="15, 0, 15, 0" Android ="15, 15, 15, 0"/>
                 </StackLayout.Padding>
                 <Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
               </StackLayout>
