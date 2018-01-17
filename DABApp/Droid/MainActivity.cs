@@ -77,16 +77,12 @@ namespace DABApp.Droid
                 {
                     var intent = new Intent();
                     var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
-                    if (pm.IsIgnoringBatteryOptimizations(PackageName))
-                    {
-                        intent.SetAction(Android.Provider.Settings.ActionIgnoreBatteryOptimizationSettings);
-                    }
-                    else
+                    if (!pm.IsIgnoringBatteryOptimizations(PackageName))
                     {
                         intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
                         intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
+                        StartActivity(intent);
                     }
-                    StartActivity(intent);
                 }
             }
 
