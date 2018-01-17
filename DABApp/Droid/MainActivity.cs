@@ -87,8 +87,9 @@ namespace DABApp.Droid
             }
 
 			LoadCustomToolBar();
-			MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
-
+            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
+            var metrics = Resources.DisplayMetrics;
+            GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
 		}
 
 		protected override void OnResume()

@@ -22,6 +22,10 @@ namespace DABApp
             InitializeComponent();
             ReadText.EraseText = true;
             ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
+            if (Device.RuntimePlatform == "Android" && Device.Idiom == TargetIdiom.Tablet)
+            {
+                PlayerOverlay.Padding = GlobalResources.Instance.ScreenSize > 1000 ? new Thickness(25) : new Thickness(25, 5, 25, 10);
+            }
             SegControl.ValueChanged += Handle_ValueChanged;
             _resource = resource;
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
