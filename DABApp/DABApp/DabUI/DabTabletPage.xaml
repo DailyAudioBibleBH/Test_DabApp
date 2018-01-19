@@ -23,9 +23,7 @@
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
               <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
-              <ContentView Padding="40, 10, 40, 0">
-                <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" />
-              </ContentView>
+                <Label x:Name="EpDescription" Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
             </StackLayout>
             <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
               <Grid.RowDefinitions>

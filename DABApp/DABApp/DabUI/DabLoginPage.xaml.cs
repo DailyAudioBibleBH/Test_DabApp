@@ -37,6 +37,9 @@ namespace DABApp
 			if (Device.Idiom == TargetIdiom.Tablet) {
 				Container.Padding = 100;
 			}
+            //MessagingCenter.Subscribe<string>("OptimizationWarning", "OptimizationWarning", (obj) => {
+            //    DisplayAlert("Background Playback", "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", "OK");
+            //});
 		}
 
 		async void OnLogin(object o, EventArgs e) {
