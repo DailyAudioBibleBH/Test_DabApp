@@ -30,24 +30,9 @@ namespace DABApp
 			Months.Items.Add("My Journals");
 			Months.Items.Add("My Favorites");
 			Months.SelectedIndex = 0;
-			Device.StartTimer(TimeSpan.FromMinutes(1), () =>
+			Device.StartTimer(TimeSpan.FromMinutes(5), () =>
 			{
-				Episodes = PlayerFeedAPI.GetEpisodeList(resource);
-				if ((string)Months.SelectedItem == "My Favorites")
-				{
-					EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite);
-				}
-				else
-				{
-					if ((string)Months.SelectedItem == "My Journals")
-					{
-						EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
-					}
-					else
-					{
-						EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-					}
-				}
+                TimedActions();
 				return true;
 			});
 		}
@@ -90,22 +75,33 @@ namespace DABApp
 		}
 
 		public void OnMonthSelected(object o, EventArgs e) {
-			Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-			if ((string)Months.SelectedItem == "My Favorites")
-			{
-				EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
-			}
-			else 
-			{
-				if ((string)Months.SelectedItem == "My Journals")
-				{
-					EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
-				}
-				else 
-				{
-					EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-				}
-			}
+            TimedActions();
 		}
-	}
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            TimedActions();
+        }
+
+        void TimedActions()
+        {
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            if ((string)Months.SelectedItem == "My Favorites")
+            {
+                EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+            }
+            else
+            {
+                if ((string)Months.SelectedItem == "My Journals")
+                {
+                    EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+                }
+                else
+                {
+                    EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                }
+            }
+        }
+    }
 }
