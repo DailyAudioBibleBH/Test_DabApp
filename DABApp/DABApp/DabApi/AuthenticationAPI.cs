@@ -65,7 +65,7 @@ namespace DABApp
                     var content = new StringContent(JsonIn);
                     content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                     var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member", content);
-                    if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new HttpRequestException(result.ReasonPhrase);
+                    //if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new HttpRequestException(result.ReasonPhrase);
                     string JsonOut = await result.Content.ReadAsStringAsync();
                     APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
                     APIToken token = container.token;
@@ -101,7 +101,11 @@ namespace DABApp
             {
                 if (e.GetType() == typeof(HttpRequestException))
                 {
-                    return $"An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again.  Exception: {e.Message}";
+                    if (!CrossConnectivity.Current.IsConnected)
+                    {
+                        return $"Your device is currently not connected to the internet.  If you would like to continue please log in as a guest and log in when you have an internet connection.";
+                    }
+                    else return $"An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again.  Exception: {e.Message}";
                 }
                 else return e.Message;
             }
