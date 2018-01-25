@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <resources>
 	<color name="ListViewSelected">#26333333</color>
+  <color name="ActionModeColor">#4FB8BD</color>
 	<color name="dab_red">#D5272E</color>
 	<color name="dab_text">#CBCBCB</color>
 	<style name="MyTheme" parent="MyTheme.Base">
@@ -24,6 +25,7 @@
 		<item name="windowActionModeOverlay">true</item>
 		<item name="android:datePickerDialogTheme">@style/AppCompatDialogStyle</item>
 		<item name="android:buttonStyle">@style/NoShadowButton</item>
+    <item name="android:actionModeBackground">@color/ActionModeColor</item>
 		<item name="android:colorPressedHighlight">@color/ListViewSelected</item>
    		<item name="android:colorLongPressedHighlight">@color/ListViewSelected</item>
    		<item name="android:colorFocusedHighlight">@color/ListViewSelected</item>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Plugin.Connectivity;
 using SlideOverKit;
 using Xamarin.Forms;
@@ -12,6 +13,7 @@ namespace DABApp
 	{
 		Resource _resource;
 		IEnumerable<dbEpisodes> Episodes;
+        bool _IsRefreshing = false;
 
 		public DabEpisodesPage(Resource resource)
 		{
@@ -19,7 +21,8 @@ namespace DABApp
 			_resource = resource;
 			DabViewHelper.InitDabForm(this);
 			Episodes = PlayerFeedAPI.GetEpisodeList(resource);
-			//EpisodeList.ItemsSource = Episodes;
+            //EpisodeList.ItemsSource = Episodes;
+            EpisodeList.BindingContext = this;
 			bannerImage.Source = resource.images.bannerPhone;
 			bannerContent.Text = resource.title;
 			Offline.IsToggled = resource.availableOffline;
@@ -94,6 +97,39 @@ namespace DABApp
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
             TimedActions();
+        }
+
+        //async void OnRefresh(object o, EventArgs e)
+        //{
+        //    await PlayerFeedAPI.GetEpisodes(_resource);
+        //    await AuthenticationAPI.GetMemberData();
+        //    TimedActions();
+        //    EpisodeList.IsRefreshing = false;
+        //}
+
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    IsRefreshing = true;
+                    await PlayerFeedAPI.GetEpisodes(_resource);
+                    await AuthenticationAPI.GetMemberData();
+                    TimedActions();
+                    IsRefreshing = false;
+                });
+            }
+        }
+
+        public bool IsRefreshing
+        {
+            get { return _IsRefreshing; }
+            set
+            {
+                _IsRefreshing = value;
+                OnPropertyChanged(nameof(IsRefreshing));
+            }
         }
 
         protected override void OnAppearing()

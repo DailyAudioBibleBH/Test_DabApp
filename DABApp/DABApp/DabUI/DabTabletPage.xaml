@@ -94,7 +94,7 @@
           <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
         </StackLayout>
 				<StackLayout x:Name="Archive" IsVisible="true">
-        <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode">
+        <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode" IsPullToRefreshEnabled="true" Refreshing="OnRefresh">
 		<ListView.Header>
             <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
               <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" BackgroundColor="Transparent" TextColor="White" />

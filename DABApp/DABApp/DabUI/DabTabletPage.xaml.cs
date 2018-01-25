@@ -517,9 +517,30 @@ namespace DABApp
         {
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+            if (ep.id == episode.id)
+            {
+                OnFavorite(o, e);
+            }
+            else
+            {
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+            }
             TimedActions();
+        }
+
+        async void OnRefresh(object o, EventArgs e)
+        {
+            //ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            //StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            //activity.IsVisible = true;
+            //activityHolder.IsVisible = true;
+            await PlayerFeedAPI.GetEpisodes(_resource);
+            await AuthenticationAPI.GetMemberData();
+            TimedActions();
+            //activity.IsVisible = false;
+            //activityHolder.IsVisible = false;
+            EpisodeList.IsRefreshing = false;
         }
 
         void TimedActions()
