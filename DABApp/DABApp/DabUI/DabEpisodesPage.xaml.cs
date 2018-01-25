@@ -78,6 +78,24 @@ namespace DABApp
             TimedActions();
 		}
 
+        public async void OnListened(object o, EventArgs e)
+        {
+            var mi = ((MenuItem)o);
+            var ep = (dbEpisodes)mi.CommandParameter;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
+            TimedActions();
+        }
+
+        public async void OnFavorite(object o, EventArgs e)
+        {
+            var mi = ((MenuItem)o);
+            var ep = (dbEpisodes)mi.CommandParameter;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+            TimedActions();
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

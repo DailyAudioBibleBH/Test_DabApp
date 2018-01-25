@@ -26,27 +26,31 @@
 			</ListView.Header>
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<ViewCell>
-							<Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
-								<Grid.RowDefinitions>
-									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="*"/>
-								</Grid.RowDefinitions>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto"/>
-									<ColumnDefinition Width="*"/>
-								</Grid.ColumnDefinitions>
-							<BoxView Color="Transparent" IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
-								<Image Source="ic_done_listened_3x.png" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
-								<StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-									<local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true"/>
-									<Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
-									<Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
-									<Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
-								</StackLayout>
-								<local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
-							</Grid>
-						</ViewCell>
+            <local:DabViewCell>
+              <ViewCell.ContextActions>
+                <MenuItem Clicked="OnListened" IsDestructive="true" Text="Completed" CommandParameter="{Binding .}"/>
+                <MenuItem Clicked="OnFavorite" Text="Favorite" CommandParameter="{Binding .}"/>
+              </ViewCell.ContextActions>
+              <Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto"/>
+                  <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <BoxView Color="Transparent" IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                <Image Source="ic_done_listened_3x.png" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                <StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                  <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true"/>
+                  <Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
+                  <Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
+                  <Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
+                </StackLayout>
+                <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
+              </Grid>
+            </local:DabViewCell>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 			</ListView>
