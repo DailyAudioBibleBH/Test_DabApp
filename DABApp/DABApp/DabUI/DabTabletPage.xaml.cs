@@ -504,6 +504,24 @@ namespace DABApp
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
         }
 
+        async void OnListened(object o, EventArgs e)
+        {
+            var mi = ((MenuItem)o);
+            var ep = (dbEpisodes)mi.CommandParameter;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
+            TimedActions();
+        }
+
+        async void OnListFavorite(object o, EventArgs e)
+        {
+            var mi = ((MenuItem)o);
+            var ep = (dbEpisodes)mi.CommandParameter;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+            TimedActions();
+        }
+
         void TimedActions()
         {
             if ((string)Months.SelectedItem == "My Favorites")
