@@ -366,7 +366,6 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_star_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_done_listened_3x.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <XamarinComponentReference Include="stripe">
       <Version>1.0.7</Version>
@@ -379,6 +378,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\FetteEngD.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_white_3x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_outline_blank_white_3x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -90,6 +90,7 @@ namespace DABApp
 			};
 			AboutFormat.GestureRecognizers.Add(tapper);
 			Favorite.BindingContext = Episode;
+            Completed.BindingContext = Episode;
 		}
 
         void OnPlay(object o, EventArgs e)
@@ -386,5 +387,13 @@ namespace DABApp
 			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "is_favorite");
 			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
 		}
+
+        void OnListened(object o, EventArgs e)
+        {
+            Episode.is_listened_to = "listened";
+            Completed.Image = Episode.listenedToSource;
+            PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id);
+            AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time);
+        }
 	}
 }

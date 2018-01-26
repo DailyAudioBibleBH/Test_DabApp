@@ -16,53 +16,77 @@
                             <controls:SegmentedControlOption Text="Listen" />
                             <controls:SegmentedControlOption Text="Read" />
                             <controls:SegmentedControlOption Text="Journal" />
-                        </controls:SegmentedControl.Children>ds
+                        </controls:SegmentedControl.Children>
             </controls:SegmentedControl>
                     <BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
                 </StackLayout>
-                <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" Padding="25" Spacing="20">
-                    <StackLayout VerticalOptions="CenterAndExpand">
-                        <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
-                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
-						<ContentView Padding="40, 10, 40, 0">
-                        <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
-                        </ContentView>
-					</StackLayout>
-                    <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" />
-                    <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start">
-                        <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
-                        <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
-                    </StackLayout>
-                    <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="32*" />
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="17*" />
-                        </Grid.ColumnDefinitions>
-                        <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Aspect="AspectFit"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
-                        <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
-                        <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
-                        <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Aspect="AspectFit"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
-                    </Grid>
-					<Grid VerticalOptions="EndAndExpand">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="auto"/>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="3*"/>
-							<ColumnDefinition Width="3*"/>
-							<ColumnDefinition Width="3*"/>
-						</Grid.ColumnDefinitions>
-						<Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15"/>
-						 <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
-						<Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10"/>
-					</Grid>
+              <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand">
+                <StackLayout VerticalOptions="CenterAndExpand">
+                  <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
+                  <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
+                  <ContentView Padding="40, 10, 40, 0">
+                    <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
+                  </ContentView>
                 </StackLayout>
+                <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="20, 0, 20, 0"/>
+                <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start" Padding="25, 0, 25, 0">
+                  <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
+                  <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
+                </StackLayout>
+                <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="17*" />
+                    <ColumnDefinition Width="17*" />
+                    <ColumnDefinition Width="32*" />
+                    <ColumnDefinition Width="17*" />
+                    <ColumnDefinition Width="17*" />
+                  </Grid.ColumnDefinitions>
+                  <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Aspect="AspectFit">
+                    <Image.GestureRecognizers>
+                      <TapGestureRecognizer Tapped="OnBack30"/>
+                    </Image.GestureRecognizers>
+                  </Image>
+                  <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100">
+                    <Image.GestureRecognizers>
+                      <TapGestureRecognizer Tapped="OnPlay"/>
+                    </Image.GestureRecognizers>
+                  </Image>
+                  <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100">
+                    <Image.GestureRecognizers>
+                      <TapGestureRecognizer Tapped="OnInitialized"/>
+                    </Image.GestureRecognizers>
+                  </Image>
+                  <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Aspect="AspectFit">
+                    <Image.GestureRecognizers>
+                      <TapGestureRecognizer Tapped="OnForward30"/>
+                    </Image.GestureRecognizers>
+                  </Image>
+                </Grid>
+                <Grid VerticalOptions="EndAndExpand" Padding="0, 0, 0, 20">
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                  </Grid.ColumnDefinitions>
+                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15"/>
+                  <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
+                  <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10"/>
+                </Grid>
+                <StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" BackgroundColor="{DynamicResource MarkCompletedBackground}" Padding="0, 10, 0, 10">
+                    <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened"/>
+                    <Label HorizontalOptions="StartAndExpand" Text="Mark as Listened" Style="{StaticResource playerLabelStyle}">
+                      <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnListened"/>
+                      </Label.GestureRecognizers>
+                    </Label>
+                </StackLayout>
+              </StackLayout>
                 <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" Spacing="10" BackgroundColor="{DynamicResource ReadBackgroundColor}">
 					<ScrollView>
 						<StackLayout>

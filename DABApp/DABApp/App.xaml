@@ -25,6 +25,7 @@
 			<Color x:Key="TableViewHeaderColor">#878787</Color>
 			<Color x:Key="ReadBackgroundColor">#1b1b1b</Color>
             <Color x:Key="ActivityHolderBackground">#000000</Color>
+            <Color x:Key="MarkCompletedBackground">#7f000000</Color>
 			<!--Player Bar ControlTemplate-->
 			<ControlTemplate x:Key="PlayerPageTemplate">
 				<RelativeLayout>

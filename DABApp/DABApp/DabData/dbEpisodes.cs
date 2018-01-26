@@ -95,6 +95,19 @@ namespace DABApp
 			}
 		}
 
+        [Ignore]
+        public string listenedToSource
+        {
+            get
+            {
+                if (listenedToVisible)
+                {
+                    return "ic_check_box_white_3x.png";
+                }
+                else return "ic_check_box_outline_blank_white_3x.png";
+            }
+        }
+
 		[Ignore]
 		public bool hasJournalVisible
 		{ 
