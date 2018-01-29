@@ -511,17 +511,42 @@ namespace DABApp
         {
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+            if (ep.is_listened_to == "listened")
+            {
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
+                if (ep.id == episode.id)
+                {
+                    episode.is_listened_to = "";
+                    Completed.Image = episode.listenedToSource;
+                }
+            }
+            else
+            {
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+                if (ep.id == episode.id)
+                {
+                    episode.is_listened_to = "listened";
+                    Completed.Image = episode.listenedToSource;
+                }
+            }
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
             TimedActions();
         }
 
-        async void OnListened(object o, EventArgs e)
+        void OnListened(object o, EventArgs e)
         {
-            episode.is_listened_to = "listened";
+            if (episode.is_listened_to == "listened")
+            {
+                episode.is_listened_to = "";
+                PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "");
+            }
+            else
+            {
+                episode.is_listened_to = "listened";
+                PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
+            }
             Completed.Image = episode.listenedToSource;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time);
+            AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time);
         }
 
         async void OnListFavorite(object o, EventArgs e)

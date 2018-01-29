@@ -85,7 +85,14 @@ namespace DABApp
         {
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+            if (ep.is_listened_to == "listened")
+            {
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
+            }
+            else
+            {
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+            }
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
             TimedActions();
         }

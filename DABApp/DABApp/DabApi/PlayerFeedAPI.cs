@@ -232,6 +232,9 @@ namespace DABApp
 					case "has_journal":
 						episode.has_journal = !episode.has_journal;
 						break;
+                    case "":
+                        episode.is_listened_to = "";
+                        break;
 				}
 				await adb.UpdateAsync(episode);
 				if (Device.Idiom == TargetIdiom.Tablet)
