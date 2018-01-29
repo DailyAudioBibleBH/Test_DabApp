@@ -92,6 +92,7 @@ namespace DABApp
             };
             AboutFormat.GestureRecognizers.Add(tapper);
             ChannelsList.SelectedItem = _resource;
+            Completed.BindingContext = episode;
         }
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -165,6 +166,7 @@ namespace DABApp
                 await SetReading();
             }
             else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+            Completed.Image = episode.listenedToSource;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
         }
@@ -240,6 +242,7 @@ namespace DABApp
                 {
                     SetVisibility(true);
                 }
+                Completed.Image = episode.listenedToSource;
             }
             else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             activity.IsVisible = false;
@@ -504,13 +507,21 @@ namespace DABApp
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
         }
 
-        async void OnListened(object o, EventArgs e)
+        async void OnListListened(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
             TimedActions();
+        }
+
+        async void OnListened(object o, EventArgs e)
+        {
+            episode.is_listened_to = "listened";
+            Completed.Image = episode.listenedToSource;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time);
         }
 
         async void OnListFavorite(object o, EventArgs e)

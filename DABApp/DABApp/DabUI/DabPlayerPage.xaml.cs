@@ -388,12 +388,12 @@ namespace DABApp
 			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
 		}
 
-        void OnListened(object o, EventArgs e)
+        async void OnListened(object o, EventArgs e)
         {
             Episode.is_listened_to = "listened";
             Completed.Image = Episode.listenedToSource;
-            PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id);
-            AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time);
         }
 	}
 }
