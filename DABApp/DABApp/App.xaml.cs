@@ -10,6 +10,12 @@ namespace DABApp
 	{
 		public App()
 		{
+            if (AuthenticationAPI.GetTestMode())
+            {
+                GlobalResources.APIVersion = "2";
+                GlobalResources.RestAPIUrl = "https://dailyaudiobibl.staging.wpengine.com/wp-json/lutd/v1/";
+                GlobalResources.TestMode = true;
+            }
 			InitializeComponent();
 
 			FlowListView.Init();

@@ -9,6 +9,7 @@ namespace DABApp
 	{
 		static bool _fromPlayer;
 		static bool _fromDonation;
+        int TapNumber = 0;
 
 		public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
 		{
@@ -170,6 +171,7 @@ namespace DABApp
 				AudioPlayer.Instance.Pause();
 			}
 			AudioPlayer.Instance.Unload();
+            TapNumber = 0;
 		}
 
 		protected override void OnDisappearing()
@@ -183,5 +185,21 @@ namespace DABApp
 		{
 			Password.Focus();
 		}
+
+        async void OnTest(object sender, EventArgs e)
+        {
+            TapNumber++;
+            if (TapNumber >= 5)
+            {
+                var testprod = GlobalResources.TestMode ? "production" : "test";
+                var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
+                if (accept)
+                {
+                    GlobalResources.TestMode = !GlobalResources.TestMode;
+                    AuthenticationAPI.SetTestMode();
+                    await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after recieving this message to fully go into {testprod} mode.", "OK");
+                }
+            }
+        }
 	}
 }

@@ -3,7 +3,8 @@
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
 		<StackLayout x:Name="Container" Padding="10" Spacing="5">
-			<Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png"/>
+      <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnTest"/></Image.GestureRecognizers>
+      </Image>
 			<Frame/>
 			<Label Text="Email" FontSize="Micro" VerticalOptions="End"/>
 			<local:DarkKeyboardEntry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted"/>

@@ -815,5 +815,28 @@ namespace DABApp
                 db.DeleteAll<dbEpisodes>();
             }
         }
+
+        public static bool GetTestMode()
+        {
+            var testmode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
+            if (testmode != null)
+            {
+                return Convert.ToBoolean(testmode.Value);
+            }
+            else return false;
+        }
+
+        public static void SetTestMode()
+        {
+            var testMode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
+            dbSettings newMode = new dbSettings();
+            newMode.Key = "TestMode";
+            newMode.Value = GlobalResources.TestMode.ToString();
+            if (testMode != null)
+            {
+                db.Update(newMode);
+            }
+            else db.InsertOrReplace(newMode);
+        }
     }
 }
