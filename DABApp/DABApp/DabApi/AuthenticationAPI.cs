@@ -647,7 +647,8 @@ namespace DABApp
         {
             var actionLog = new dbPlayerActions();
             actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
-            actionLog.entity_type = favorite.HasValue ? "favorite" : "episode";
+            var entity_type = actionType == "listened" ? "listened_status" : "episode";
+            actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
             actionLog.EpisodeId = episodeId;
             actionLog.PlayerTime = playTime;
             actionLog.ActionType = actionType;

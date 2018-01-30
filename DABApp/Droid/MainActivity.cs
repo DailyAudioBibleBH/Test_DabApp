@@ -124,8 +124,13 @@ namespace DABApp.Droid
 			text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
 			text.TextSize = 30;
-			toolbar.AddView(newMenu);
-			MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
+            if (GlobalResources.TestMode)
+            {
+                var testColor = ((Xamarin.Forms.Color)App.Current.Resources["HighlightColor"]).ToAndroid();
+                newMenu.SetBackgroundColor(testColor);
+            }
+            toolbar.AddView(newMenu);
+            MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
 			MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
 		}
 

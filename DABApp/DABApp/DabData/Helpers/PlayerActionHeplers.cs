@@ -56,7 +56,8 @@ namespace DABApp
 		}
 	}
 
-	public class LoggedEvents { 
+	public class LoggedEvents {
+        public string version { get { return GlobalResources.APIVersion; } }
 		public List<PlayerEpisodeAction> data { get; set;}
 	}
 
