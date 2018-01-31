@@ -14,9 +14,11 @@ namespace DABApp.Droid
 
 			if (Control != null)
 			{
-				var top = Device.Idiom == TargetIdiom.Tablet ? 20 : 50;
-				var bottom = Device.Idiom == TargetIdiom.Tablet ? 0 : 50;
-				Control.SetPadding(50, top, 50, bottom);
+                var top = Device.Idiom == TargetIdiom.Tablet ? 20 : 50;
+                var bottom = Device.Idiom == TargetIdiom.Tablet ? 0 : 50;
+                var right = Device.Idiom == TargetIdiom.Tablet ? 10 : 50;
+                var left = Device.Idiom == TargetIdiom.Tablet ? 10 : 50;
+                Control.SetPadding(right, top, left, bottom);
                 Control.SetHintTextColor(((Color)App.Current.Resources["SecondaryTextColor"]).ToAndroid());
 			}
 		}
