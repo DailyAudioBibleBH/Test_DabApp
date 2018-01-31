@@ -57,10 +57,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="20">
-              <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+              <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="20" Padding="20, 5, 20, 5">
+              <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
                 <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20"/>
-                <Label Text="Mark as Listened" FontSize="Small">
+                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand">
                   <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnListened"/>
                   </Label.GestureRecognizers>
