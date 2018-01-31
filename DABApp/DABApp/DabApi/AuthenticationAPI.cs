@@ -643,7 +643,7 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? favorite = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, string listened, bool? favorite = null)
         {
             var actionLog = new dbPlayerActions();
             actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
@@ -653,6 +653,7 @@ namespace DABApp
             actionLog.PlayerTime = playTime;
             actionLog.ActionType = actionType;
             actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
+            actionLog.listened_status = actionType == "listened"? listened: db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to;
             var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
             if (user != null)
             {

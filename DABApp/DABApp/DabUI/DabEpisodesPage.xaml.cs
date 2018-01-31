@@ -88,12 +88,13 @@ namespace DABApp
             if (ep.is_listened_to == "listened")
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
             }
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
             }
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
             TimedActions();
         }
 
@@ -102,7 +103,7 @@ namespace DABApp
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, ep.is_favorite);
             TimedActions();
         }
 

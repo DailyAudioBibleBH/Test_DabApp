@@ -385,7 +385,7 @@ namespace DABApp
 			Episode.is_favorite = !Episode.is_favorite;
 			Favorite.Image = Episode.favoriteSource;
 			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "is_favorite");
-			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, Episode.is_favorite);
+			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, null, Episode.is_favorite);
 		}
 
         void OnListened(object o, EventArgs e)
@@ -394,14 +394,15 @@ namespace DABApp
             {
                 Episode.is_listened_to = "";
                 PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "");
+                AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time, "");
             }
             else
             {
                 Episode.is_listened_to = "listened";
                 PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id);
+                AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time, "listened");
             }
             Completed.Image = Episode.listenedToSource;
-            AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time);
         }
 	}
 }

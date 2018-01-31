@@ -501,7 +501,7 @@ namespace DABApp
             episode.is_favorite = !episode.is_favorite;
             favorite.Source = episode.favoriteSource;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)episode.id, "favorite", episode.stop_time, episode.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.id, "favorite", episode.stop_time, null, episode.is_favorite);
             favorite.Opacity = 1;
             favorite.IsEnabled = true;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
@@ -519,6 +519,7 @@ namespace DABApp
                     episode.is_listened_to = "";
                     Completed.Image = episode.listenedToSource;
                 }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
             }
             else
             {
@@ -528,25 +529,27 @@ namespace DABApp
                     episode.is_listened_to = "listened";
                     Completed.Image = episode.listenedToSource;
                 }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
             }
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
             TimedActions();
         }
 
-        void OnListened(object o, EventArgs e)
+        async void OnListened(object o, EventArgs e)
         {
             if (episode.is_listened_to == "listened")
             {
                 episode.is_listened_to = "";
-                PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "");
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "");
+                await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time, "");
             }
             else
             {
                 episode.is_listened_to = "listened";
-                PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time, "listened");
             }
             Completed.Image = episode.listenedToSource;
-            AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time);
         }
 
         async void OnListFavorite(object o, EventArgs e)
@@ -560,7 +563,7 @@ namespace DABApp
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, ep.is_favorite);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, ep.is_favorite);
             }
             TimedActions();
         }

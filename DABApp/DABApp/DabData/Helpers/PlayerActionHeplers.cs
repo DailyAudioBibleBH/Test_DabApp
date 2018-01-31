@@ -25,7 +25,14 @@ namespace DABApp
 				action.entity_type = log.entity_type;
 				if (log.ActionType != "favorite")
 				{
-					action.entity_data = new PlayerAction(log.ActionType, log.PlayerTime.ToString());
+                    if (log.ActionType != "listened_status")
+                    {
+                        action.entity_data = new ListenedAction(log.listened_status);
+                    }
+                    else
+                    {
+                        action.entity_data = new PlayerAction(log.ActionType, log.PlayerTime.ToString());
+                    }
 				}
 				else
 				{
@@ -55,6 +62,15 @@ namespace DABApp
 			favorite = Favorite;
 		}
 	}
+
+    public class ListenedAction
+    {
+        public string listened_status { get; set; }
+        public ListenedAction(string listened)
+        {
+            listened_status = listened;
+        }
+    }
 
 	public class LoggedEvents {
         public string version { get { return GlobalResources.APIVersion; } }

@@ -435,10 +435,10 @@ namespace DABApp
 
 		void UpdatePlay()
 		{
-			Task.Run(async () => { await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime); });
+			Task.Run(async () => { await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime, null); });
 			Task.Run(async () =>
 			{
-				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime);
+				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime, null);
 				await Task.Delay(5000);
 				ShowWarning = true;
 			});
@@ -449,7 +449,7 @@ namespace DABApp
 			var time = CurrentTime;
 			Task.Run(async () =>
 			{
-				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time);
+				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time, null);
 				await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
 			});
 		}
@@ -457,7 +457,7 @@ namespace DABApp
 		async void OnCompleted(object o, EventArgs e)
 		{ 
 			await PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
-			await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
+			await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime, null);
 			await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 		}
 

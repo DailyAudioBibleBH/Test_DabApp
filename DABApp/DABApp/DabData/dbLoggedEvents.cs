@@ -13,6 +13,7 @@ namespace DABApp
 		public string entityType {get; set;}
 		public string entityId { get; set;}
 		public string action { get; set;}
+        public string listened_status { get; set; }
 		public double playerTime { get; set;}
 	}
 }
