@@ -570,15 +570,15 @@ namespace DABApp
 
         async void OnRefresh(object o, EventArgs e)
         {
-            //ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            //StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            //activity.IsVisible = true;
-            //activityHolder.IsVisible = true;
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
-            //activity.IsVisible = false;
-            //activityHolder.IsVisible = false;
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
             EpisodeList.IsRefreshing = false;
         }
 

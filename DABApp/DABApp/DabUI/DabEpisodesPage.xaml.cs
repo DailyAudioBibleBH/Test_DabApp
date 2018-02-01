@@ -9,77 +9,79 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabEpisodesPage : DabBaseContentPage
-	{
-		Resource _resource;
-		IEnumerable<dbEpisodes> Episodes;
+    public partial class DabEpisodesPage : DabBaseContentPage
+    {
+        Resource _resource;
+        IEnumerable<dbEpisodes> Episodes;
         bool _IsRefreshing = false;
 
-		public DabEpisodesPage(Resource resource)
-		{
-			InitializeComponent();
-			_resource = resource;
-			DabViewHelper.InitDabForm(this);
-			Episodes = PlayerFeedAPI.GetEpisodeList(resource);
+        public DabEpisodesPage(Resource resource)
+        {
+            InitializeComponent();
+            _resource = resource;
+            DabViewHelper.InitDabForm(this);
+            Episodes = PlayerFeedAPI.GetEpisodeList(resource);
             //EpisodeList.ItemsSource = Episodes;
             EpisodeList.BindingContext = this;
-			bannerImage.Source = resource.images.bannerPhone;
-			bannerContent.Text = resource.title;
-			Offline.IsToggled = resource.availableOffline;
-			var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-			foreach (var month in months) {
-				Months.Items.Add(month);
-			}
-			Months.Items.Add("My Journals");
-			Months.Items.Add("My Favorites");
-			Months.SelectedIndex = 0;
-			Device.StartTimer(TimeSpan.FromMinutes(5), () =>
-			{
+            bannerImage.Source = resource.images.bannerPhone;
+            bannerContent.Text = resource.title;
+            Offline.IsToggled = resource.availableOffline;
+            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
+            foreach (var month in months)
+            {
+                Months.Items.Add(month);
+            }
+            Months.Items.Add("My Journals");
+            Months.Items.Add("My Favorites");
+            Months.SelectedIndex = 0;
+            EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
+            Device.StartTimer(TimeSpan.FromMinutes(5), () =>
+            {
                 TimedActions();
-				return true;
-			});
-		}
+                return true;
+            });
+        }
 
-		public async void OnEpisode(object o, ItemTappedEventArgs e)
-		{
-			EpisodeList.IsEnabled = false;
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
-			var chosen = (dbEpisodes)e.Item;
-			EpisodeList.SelectedItem = null;
-			var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-			if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
-			{
+        public async void OnEpisode(object o, ItemTappedEventArgs e)
+        {
+            EpisodeList.IsEnabled = false;
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
+            var chosen = (dbEpisodes)e.Item;
+            EpisodeList.SelectedItem = null;
+            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
+            if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
+            {
                 if (chosen.id != AudioPlayer.Instance.CurrentEpisodeId)
                 {
                     JournalTracker.Current.Content = null;
                 }
                 await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
-			}
-			else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
-			EpisodeList.SelectedItem = null;
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
-			EpisodeList.IsEnabled = true;
-		}
+            }
+            else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+            EpisodeList.SelectedItem = null;
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
+            EpisodeList.IsEnabled = true;
+        }
 
-		public void OnOffline(object o, ToggledEventArgs e) {
-			_resource.availableOffline = e.Value;
-			ContentAPI.UpdateOffline(e.Value, _resource.id);
-			if (e.Value)
-			{
-				Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
-			}
-			else {
-				Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
-			}
-		}
+        public void OnOffline(object o, ToggledEventArgs e) {
+            _resource.availableOffline = e.Value;
+            ContentAPI.UpdateOffline(e.Value, _resource.id);
+            if (e.Value)
+            {
+                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+            }
+            else {
+                Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
+            }
+        }
 
-		public void OnMonthSelected(object o, EventArgs e) {
+        public void OnMonthSelected(object o, EventArgs e) {
             TimedActions();
-		}
+        }
 
         public async void OnListened(object o, EventArgs e)
         {
@@ -115,19 +117,17 @@ namespace DABApp
         //    EpisodeList.IsRefreshing = false;
         //}
 
-        public ICommand RefreshCommand
+        async Task Refresh()
         {
-            get
-            {
-                return new Command(async () =>
-                {
-                    IsRefreshing = true;
-                    await PlayerFeedAPI.GetEpisodes(_resource);
-                    await AuthenticationAPI.GetMemberData();
-                    TimedActions();
-                    IsRefreshing = false;
-                });
-            }
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
+            await PlayerFeedAPI.GetEpisodes(_resource);
+            await AuthenticationAPI.GetMemberData();
+            TimedActions();
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
         }
 
         public bool IsRefreshing

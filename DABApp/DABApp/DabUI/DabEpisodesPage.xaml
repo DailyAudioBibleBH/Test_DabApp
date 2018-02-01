@@ -7,7 +7,7 @@
     </ResourceDictionary>
   </local:DabBaseContentPage.Resources>
 	<t:MenuContainerPage.Content>
-		<ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true" IsRefreshing="{Binding IsRefreshing}" RefreshCommand="{Binding RefreshCommand}">
+		<ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true">
 			<ListView.Header>
 				<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
