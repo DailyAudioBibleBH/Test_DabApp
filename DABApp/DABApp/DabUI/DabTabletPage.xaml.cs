@@ -187,24 +187,7 @@ namespace DABApp
 
         public void OnMonthSelected(object o, EventArgs e)
         {
-            if ((string)Months.SelectedItem == "My Favorites")
-            {
-                EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
-            }
-            else
-            {
-                if ((string)Months.SelectedItem == "My Journals")
-                {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
-                }
-                else
-                {
-                    if (Months.SelectedIndex >= 0)
-                    {
-                        EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-                    }
-                }
-            }
+            TimedActions();
         }
 
         async void OnChannel(object o, EventArgs e)

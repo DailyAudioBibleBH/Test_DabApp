@@ -7,25 +7,26 @@
     </ResourceDictionary>
   </local:DabBaseContentPage.Resources>
 	<t:MenuContainerPage.Content>
-		<ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true">
-			<ListView.Header>
-				<StackLayout>
-			<RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-				<ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
-				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-					<local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
-				</StackLayout>
-			</RelativeLayout>
-			<Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
-			<StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
-				<Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
-				<Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
-			</StackLayout>
-			<BoxView HorizontalOptions="FillAndExpand"/>
-				</StackLayout>
-			</ListView.Header>
-				<ListView.ItemTemplate>
-					<DataTemplate>
+    <StackLayout x:Name="Container">
+      <ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true">
+        <ListView.Header>
+          <StackLayout>
+            <RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+              <ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+              <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+                <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
+              </StackLayout>
+            </RelativeLayout>
+            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
+            <StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
+              <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
+              <Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
+            </StackLayout>
+            <BoxView HorizontalOptions="FillAndExpand"/>
+          </StackLayout>
+        </ListView.Header>
+        <ListView.ItemTemplate>
+          <DataTemplate>
             <local:DabViewCell>
               <ViewCell.ContextActions>
                 <MenuItem Clicked="OnListened" IsDestructive="true" Text="Completed" CommandParameter="{Binding .}"/>
@@ -51,8 +52,9 @@
                 <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
               </Grid>
             </local:DabViewCell>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+    </StackLayout>
 	</t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
