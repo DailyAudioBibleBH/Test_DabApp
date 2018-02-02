@@ -14,30 +14,27 @@ namespace DABApp
 
 		public static List<PlayerEpisodeAction> ParsePlayerActions(List<dbPlayerActions> actions) {
 			List<PlayerEpisodeAction> result = new List<PlayerEpisodeAction>();
-			foreach (var log in actions) {
-				PlayerEpisodeAction action = new PlayerEpisodeAction();
-				action.entity_id = log.EpisodeId.ToString();
-				var month = log.ActionDateTime.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
-				var time = log.ActionDateTime.ToLocalTime().ToString("HH:mm:ss");
+            foreach (var log in actions) {
+                PlayerEpisodeAction action = new PlayerEpisodeAction();
+                action.entity_id = log.EpisodeId.ToString();
+                var month = log.ActionDateTime.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
+                var time = log.ActionDateTime.ToLocalTime().ToString("HH:mm:ss");
                 var offset = log.ActionDateTime.ToLocalTime().Offset.ToString().Replace(":", "");
-                offset = offset.Substring(0, offset.Length-2);
+                offset = offset.Substring(0, offset.Length - 2);
                 action.entity_datetime = $"{log.ActionDateTime.ToLocalTime().DayOfWeek.ToString().Substring(0, 3)} {month} {log.ActionDateTime.ToLocalTime().Day} {log.ActionDateTime.ToLocalTime().Year} {time} GMT{offset}";
-				action.entity_type = log.entity_type;
-				if (log.ActionType != "favorite")
-				{
-                    if (log.ActionType != "listened_status")
-                    {
+                action.entity_type = log.entity_type;
+                switch (log.ActionType)
+                {
+                    case ("listened"):
                         action.entity_data = new ListenedAction(log.listened_status);
-                    }
-                    else
-                    {
+                        break;
+                    case ("favorite"):
+                        action.entity_data = new FavoriteAction(log.Favorite);
+                        break;
+                    default:
                         action.entity_data = new PlayerAction(log.ActionType, log.PlayerTime.ToString());
-                    }
-				}
-				else
-				{
-					action.entity_data = new FavoriteAction(log.Favorite);
-				}
+                        break;
+                }
 				result.Add(action);
 			}
 			return result;

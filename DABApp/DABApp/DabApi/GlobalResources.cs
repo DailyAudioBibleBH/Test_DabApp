@@ -32,6 +32,7 @@ namespace DABApp
 
 		public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
 		public static string RestAPIUrl { get; set; } = "https://dailyaudiobible.com/wp-json/lutd/v1/";
+        public static string FeedAPIUrl { get; set; } = "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
 
 		public static GlobalResources Instance {get; private set;}
 

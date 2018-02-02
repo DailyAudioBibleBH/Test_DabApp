@@ -12,7 +12,7 @@ namespace DABApp
     public partial class DabEpisodesPage : DabBaseContentPage
     {
         Resource _resource;
-        List<dbEpisodes> Episodes;
+        IEnumerable<dbEpisodes> Episodes;
         bool _IsRefreshing = false;
 
         public DabEpisodesPage(Resource resource)
@@ -105,7 +105,7 @@ namespace DABApp
             var mi = ((MenuItem)o);
             var ep = (dbEpisodes)mi.CommandParameter;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, ep.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
             TimedActions();
         }
 
@@ -138,23 +138,28 @@ namespace DABApp
 
         void TimedActions()
         {
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource).ToList();
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
             if ((string)Months.SelectedItem == "My Favorites")
             {
-                EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true).ToList();
+                var list = Episodes.Where(x => x.is_favorite == true).ToList();
+                EpisodeList.ItemsSource = list;
+                Container.HeightRequest = EpisodeList.RowHeight * list.Count();
             }
             else
             {
                 if ((string)Months.SelectedItem == "My Journals")
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true).ToList();
+                    var list = Episodes.Where(x => x.has_journal == true).ToList();
+                    EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
                 }
                 else
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).ToList();
+                    var list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).ToList();
+                    EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
                 }
             }
-            Container.HeightRequest = EpisodeList.RowHeight * Episodes.Count();
         }
     }
 }

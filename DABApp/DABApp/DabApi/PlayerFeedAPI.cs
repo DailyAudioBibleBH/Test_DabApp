@@ -29,7 +29,7 @@ namespace DABApp
 			{
 				var client = new HttpClient();
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-				var result = await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
+                var result = /*GlobalResources.TestMode ? await client.GetAsync(resource.feedUrl) :*/ await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
 				string jsonOut = await result.Content.ReadAsStringAsync();
 				var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
 				if (Episodes == null) {

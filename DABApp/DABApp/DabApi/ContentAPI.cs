@@ -27,7 +27,7 @@ namespace DABApp
 				string jsonOut = "";
 				Task.Run(async () =>
 				{
-					var r = client.GetAsync("https://feed.dailyaudiobible.com/wp-json/lutd/v1/content");
+					var r = client.GetAsync($"{GlobalResources.FeedAPIUrl}content");
 					if (await Task.WhenAny(r, Task.Delay(TimeSpan.FromSeconds(8))) == r)
 					{
 						result = await r;

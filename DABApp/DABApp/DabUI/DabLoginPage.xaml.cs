@@ -197,7 +197,10 @@ namespace DABApp
                 {
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
-                    await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after recieving this message to fully go into {testprod} mode.", "OK");
+                    await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
+                    Login.IsEnabled = false;
+                    GuestLogin.IsEnabled = false;
+                    SignUp.IsEnabled = false;
                 }
             }
         }

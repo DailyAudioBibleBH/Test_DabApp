@@ -546,7 +546,7 @@ namespace DABApp
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, ep.is_favorite);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
             }
             TimedActions();
         }
