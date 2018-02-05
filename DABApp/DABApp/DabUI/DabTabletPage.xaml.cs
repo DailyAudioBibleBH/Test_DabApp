@@ -514,7 +514,6 @@ namespace DABApp
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
             }
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
             TimedActions();
         }
 
@@ -559,6 +558,7 @@ namespace DABApp
             activityHolder.IsVisible = true;
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
+            episode = PlayerFeedAPI.GetEpisode((int)episode.id);
             TimedActions();
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
@@ -584,6 +584,11 @@ namespace DABApp
                         EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
                     }
                 }
+            }
+            if (episode != null)
+            {
+                favorite.Source = episode.favoriteSource;
+                Completed.Image = episode.listenedToSource;
             }
         }
     }

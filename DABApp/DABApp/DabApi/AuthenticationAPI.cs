@@ -783,6 +783,16 @@ namespace DABApp
             //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
+            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == "listened").ToList();
+            foreach (dbEpisodes p in potential)
+            {
+                if (!episodes.Any(x => x.id == p.id))
+                {
+                    p.is_favorite = false;
+                    p.is_listened_to = "";
+                    update.Add(p);
+                }
+            }
             foreach (dbEpisodes episode in episodes)
             {
                 var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
