@@ -43,7 +43,11 @@ namespace DABApp
 
 		protected override async void OnSleep()
 		{
-            await AuthenticationAPI.PostActionLogs();
+            if (Device.RuntimePlatform == "iOS")
+            {
+                AuthenticationAPI.PostActionLogs();
+            }
+            else await AuthenticationAPI.PostActionLogs();
 			JournalTracker.Current.Open = false;
 		}
 
