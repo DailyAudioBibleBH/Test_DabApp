@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,16 +14,16 @@ namespace DABApp
     {
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
-        bool _IsRefreshing = false;
+        EpisodeListViewModel bindingContext;
 
         public DabEpisodesPage(Resource resource)
         {
             InitializeComponent();
             _resource = resource;
             DabViewHelper.InitDabForm(this);
-            Episodes = PlayerFeedAPI.GetEpisodeList(resource).ToList();
+            Episodes = PlayerFeedAPI.GetEpisodeList(resource);
             //EpisodeList.ItemsSource = Episodes;
-            EpisodeList.BindingContext = this;
+            BindingContext = bindingContext = new EpisodeListViewModel();
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
             Offline.IsToggled = resource.availableOffline;
@@ -75,7 +76,10 @@ namespace DABApp
                 Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
             }
             else {
-                Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
+                Task.Run(async () => {
+                    await PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+                    Device.BeginInvokeOnMainThread(() => { TimedActions(); });
+                });
             }
         }
 
@@ -138,26 +142,25 @@ namespace DABApp
 
         void TimedActions()
         {
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            //Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
             if ((string)Months.SelectedItem == "My Favorites")
             {
-                var list = Episodes.Where(x => x.is_favorite == true).ToList();
-                EpisodeList.ItemsSource = list;
-                Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                bindingContext.episodes = new ObservableCollection<dbEpisodes>(Episodes.Where(x => x.is_favorite == true));
+                Container.HeightRequest = EpisodeList.RowHeight * bindingContext.episodes.Count();
             }
             else
             {
                 if ((string)Months.SelectedItem == "My Journals")
                 {
-                    var list = Episodes.Where(x => x.has_journal == true).ToList();
-                    EpisodeList.ItemsSource = list;
-                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                    bindingContext.episodes = new ObservableCollection<dbEpisodes>(Episodes.Where(x => x.has_journal == true));
+                    //EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * bindingContext.episodes.Count();
                 }
                 else
                 {
-                    var list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).ToList();
-                    EpisodeList.ItemsSource = list;
-                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                    bindingContext.episodes = new ObservableCollection<dbEpisodes>(Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]));
+                    //EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * bindingContext.episodes.Count();
                 }
             }
         }

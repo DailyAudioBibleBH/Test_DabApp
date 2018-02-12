@@ -169,7 +169,7 @@ namespace DABApp
 					{
 						ix++;
 						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToDownload.Count(), episode.url);
-						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode.id.ToString()))
+						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode))
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
 							episode.is_downloaded = true;
@@ -198,7 +198,7 @@ namespace DABApp
 			}
 		}
 
-		public static async Task DeleteChannelEpisodes(Resource resource) {
+        public static async Task DeleteChannelEpisodes(Resource resource) {
 			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
 			foreach (var episode in Episodes) {
 				var ext = episode.url.Split('.').Last();

@@ -9,6 +9,8 @@ namespace DABApp
 	public class dbEpisodes
 	{
 		private bool unTouched;
+        private bool noProgress;
+        private int progress = -1;
 		[PrimaryKey]
         public int? id { get; set;}
 		public string title { get; set;}
@@ -49,6 +51,31 @@ namespace DABApp
 				OnPropertyChanged("downloadVisible");
 			}
 		}
+
+        [Ignore]
+        public int downloadProgress
+        {
+            get {
+                return progress;
+            }
+            set {
+                progress = value;
+                OnPropertyChanged("downloadProgress");
+                OnPropertyChanged("progressVisible");
+            }
+        }
+
+        [Ignore]
+        public bool progressVisible
+        {
+            get {
+                return noProgress = downloadProgress > -1 && !downloadVisible ? true : false;
+            }
+            set {
+                noProgress = downloadProgress > -1 && !downloadVisible ? true : false;
+                OnPropertyChanged("progressVisible");
+            }
+        }
 
 		[Ignore]
 		public bool listenedToVisible { 

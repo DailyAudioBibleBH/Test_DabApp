@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using DABApp.Droid;
+using SQLite;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(FileManagement))]
@@ -11,7 +13,11 @@ namespace DABApp.Droid
 {
 	public class FileManagement: IFileManagement
 	{
-		public FileManagement()
+        public event EventHandler<DabEventArgs> EpisodeDownloading;
+        public event EventHandler<DabEventArgs> EpisodeCompleted;
+        dbEpisodes _episode;
+
+        public FileManagement()
 		{
 		}
 
@@ -30,17 +36,20 @@ namespace DABApp.Droid
 			}
 		}
 
-		public async Task<bool> DownloadEpisodeAsync(string address, string episodeTitle)
+		public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
 		{
 			try
 			{
+                _episode = episode;
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var ext = address.Split('.').Last();
-				var fileName = Path.Combine(doc, $"{episodeTitle}.{ext}");
+				var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
 				//if (!File.Exists(fileName)) {
 				//	File.Create(fileName);
 				//}
 				WebClient client = new WebClient();
+                client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                client.DownloadFileCompleted += Client_DownloadFileCompleted;
 				await client.DownloadFileTaskAsync(address, fileName);
 				return true;
 			}
@@ -49,5 +58,17 @@ namespace DABApp.Droid
 				return false;
 			}
 		}
-	}
+
+        private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            var a = new DabEventArgs(_episode.id.Value, -1);
+            EpisodeCompleted?.Invoke(sender, a);
+        }
+
+        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            var a = new DabEventArgs(_episode.id.Value, e.ProgressPercentage);
+            EpisodeDownloading?.Invoke(sender, a);
+        }
+    }
 }

@@ -33,7 +33,7 @@ namespace DABApp.Droid
 {
 
 
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme")]
 	[IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
@@ -90,6 +90,10 @@ namespace DABApp.Droid
             }
 
 			LoadCustomToolBar();
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            }
             MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
             var metrics = Resources.DisplayMetrics;
             GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
@@ -113,25 +117,28 @@ namespace DABApp.Droid
 		void LoadCustomToolBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-			SetSupportActionBar(toolbar);
-			var newMenu = LayoutInflater.Inflate(Resource.Layout.DabToolbar, null);
-			var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
-			menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
-			var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
-			give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
-			var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
-			text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
-			text.TextSize = 30;
-            if (GlobalResources.TestMode)
+            if (toolbar != null)
             {
-                var testColor = ((Xamarin.Forms.Color)App.Current.Resources["HighlightColor"]).ToAndroid();
-                newMenu.SetBackgroundColor(testColor);
+                SetSupportActionBar(toolbar);
+                var newMenu = LayoutInflater?.Inflate(Resource.Layout.DabToolbar, null);
+                var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
+                menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
+                var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
+                give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+                give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
+                var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
+                text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+                text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
+                text.TextSize = 30;
+                if (GlobalResources.TestMode)
+                {
+                    var testColor = ((Xamarin.Forms.Color)App.Current.Resources["HighlightColor"]).ToAndroid();
+                    newMenu.SetBackgroundColor(testColor);
+                }
+                toolbar?.AddView(newMenu);
+                MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
+                MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
             }
-            toolbar.AddView(newMenu);
-            MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
-			MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
 		}
 
 
