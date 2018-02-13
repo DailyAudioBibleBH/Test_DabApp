@@ -12,14 +12,16 @@ namespace DABApp.iOS
 {
 	public class FileManagement: IFileManagement
 	{
+        public event EventHandler<DabEventArgs> EpisodeDownloading;
+        public event EventHandler<DabEventArgs> EpisodeCompleted;
 
-		public async Task<bool> DownloadEpisodeAsync(string address, string episodeTitle)
+		public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
 		{
 			try
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var ext = address.Split('.').Last();
-				var fileName = Path.Combine(doc, $"{episodeTitle}.{ext}");
+				var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
 				//if (!File.Exists(fileName)) {
 				//	File.Create(fileName);
 				//}
