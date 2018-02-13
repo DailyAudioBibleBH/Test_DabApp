@@ -28,15 +28,16 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Android.Support.Design.Widget;
+using Android.Content.Res;
 
 namespace DABApp.Droid
 {
 
-
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme")]
+	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
 	[IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
+
 		protected override void OnCreate(Bundle bundle)
 		{
 			SQLitePCL.Batteries.Init();
@@ -89,17 +90,28 @@ namespace DABApp.Droid
                 }
             }
 
-			LoadCustomToolBar();
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
-            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
+            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => {
+                LoadCustomToolBar();
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    RequestedOrientation = ScreenOrientation.Portrait;
+                }
+            });
             var metrics = Resources.DisplayMetrics;
             GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
 		}
 
-		protected override void OnResume()
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            base.OnConfigurationChanged(newConfig);
+            LoadCustomToolBar();
+        }
+
+        protected override void OnResume()
 		{
 			base.OnResume();
 			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
