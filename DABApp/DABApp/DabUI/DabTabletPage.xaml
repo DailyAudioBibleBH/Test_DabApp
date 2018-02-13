@@ -10,7 +10,7 @@
     <Grid RowSpacing="0" ColumnSpacing="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
-        <RowDefinition Height="2*" />
+        <RowDefinition x:Name="BesidesPlayer" Height="2*" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />

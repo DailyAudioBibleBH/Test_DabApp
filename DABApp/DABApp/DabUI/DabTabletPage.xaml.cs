@@ -550,6 +550,16 @@ namespace DABApp
             TimedActions();
         }
 
+        //protected override void OnSizeAllocated(double width, double height)
+        //{
+        //    base.OnSizeAllocated(width, height);
+        //    if (width > height)
+        //    {
+        //        BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
+        //    }
+        //    else BesidesPlayer.Height = new GridLength(2, GridUnitType.Star);
+        //}
+
         async void OnRefresh(object o, EventArgs e)
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");

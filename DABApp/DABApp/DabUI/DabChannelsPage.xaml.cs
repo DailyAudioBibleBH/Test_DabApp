@@ -222,5 +222,11 @@ namespace DABApp
 		//	}
 		//	bannerButton.IsEnabled = true;
 		}
-	}
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            GlobalResources.Instance.ThumbnailImageHeight = (App.Current.MainPage.Width / GlobalResources.Instance.FlowListViewColumns) - 30;
+        }
+    }
 }
