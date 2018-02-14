@@ -550,15 +550,34 @@ namespace DABApp
             TimedActions();
         }
 
-        //protected override void OnSizeAllocated(double width, double height)
-        //{
-        //    base.OnSizeAllocated(width, height);
-        //    if (width > height)
-        //    {
-        //        BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
-        //    }
-        //    else BesidesPlayer.Height = new GridLength(2, GridUnitType.Star);
-        //}
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width > height)
+            {
+                BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
+                BackgroundImage.Aspect = Aspect.Fill;
+                if (GlobalResources.Instance.ScreenSize < 1000)
+                {
+                    PlayPause.WidthRequest = 60;
+                    PlayPause.HeightRequest = 60;
+                    Initializer.WidthRequest = 60;
+                    Initializer.HeightRequest = 60;
+                }
+            }
+            else
+            {
+                BesidesPlayer.Height = new GridLength(2, GridUnitType.Star);
+                BackgroundImage.Aspect = Aspect.AspectFill;
+                if (GlobalResources.Instance.ScreenSize < 1000)
+                {
+                    PlayPause.WidthRequest = 90;
+                    PlayPause.HeightRequest = 90;
+                    Initializer.WidthRequest = 90;
+                    Initializer.HeightRequest = 90;
+                }
+            }
+        }
 
         async void OnRefresh(object o, EventArgs e)
         {

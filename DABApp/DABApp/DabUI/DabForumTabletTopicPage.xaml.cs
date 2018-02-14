@@ -161,5 +161,11 @@ namespace DABApp
 			fromPost = false;
 			unInitialized = false;
 		}
-	}
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            banner.Aspect = width > height ? Aspect.Fill : Aspect.AspectFill;
+        }
+    }
 }

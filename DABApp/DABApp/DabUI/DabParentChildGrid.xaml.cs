@@ -29,5 +29,11 @@ namespace DABApp
 			Content.BindingContext = item;
 			ContentContainer.IsVisible = true;
 		}
-	}
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            banner.Aspect = width > height ? Aspect.Fill : Aspect.AspectFill;
+        }
+    }
 }

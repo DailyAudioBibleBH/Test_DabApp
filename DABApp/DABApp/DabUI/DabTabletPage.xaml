@@ -10,14 +10,14 @@
     <Grid RowSpacing="0" ColumnSpacing="0">
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
-        <RowDefinition x:Name="BesidesPlayer" Height="Auto" />
+        <RowDefinition x:Name="BesidesPlayer" Height="2*" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="3*" />
       </Grid.ColumnDefinitions>
-      <StackLayout Grid.Row="0" Grid.ColumnSpan="2">
-        <RelativeLayout>
+      <!--<StackLayout Grid.Row="0" Grid.ColumnSpan="2">-->
+        <RelativeLayout Grid.Row="0" Grid.ColumnSpan="2">
           <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
           <StackLayout Padding="25" x:Name="PlayerOverlay" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
@@ -81,12 +81,12 @@
             </Grid>
           </StackLayout>
         </RelativeLayout>
-      </StackLayout>
+      <!--</StackLayout>-->
       <StackLayout Grid.Row="1" Grid.Column="0" Padding="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
         <ContentView Padding="10, 0, 0, 0">
           <Label FontSize="Small" Text="Channels" Style="{StaticResource secondaryLabelStyle}" FontAttributes="Bold" />
         </ContentView>
-        <ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel" HasUnevenRows="true">
+        <ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel">
           <ListView.ItemTemplate>
             <DataTemplate>
               <ViewCell>
