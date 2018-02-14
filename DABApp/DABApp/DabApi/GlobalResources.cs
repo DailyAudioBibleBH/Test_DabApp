@@ -14,6 +14,7 @@ namespace DABApp
         //public static IAudio Player { get; set;}
 
         private double thumbnailHeight;
+        private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;
 		public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
 
 		static SQLiteConnection db = DabData.database;
@@ -49,16 +50,13 @@ namespace DABApp
 			//Returns the number of columnts to use in a FlowListView
 			get
 			{
-				switch (Device.Idiom)
-				{
-					case TargetIdiom.Phone:
-						return 2;
-					case TargetIdiom.Tablet:
-						return 3;
-					default:
-						return 2;
-				}
+                return flowListViewColumns;
 			}
+            set
+            {
+                flowListViewColumns = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("FlowListViewColumns"));
+            }
 		}
 
 

@@ -57,7 +57,7 @@ namespace DABApp
 				number += 1;
 			}
 			ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
-
+            
 			//banner.Source = new UriImageSource
 			//{
 			//	Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? ChannelView.banner.urlPhone : ChannelView.banner.urlTablet)),
@@ -226,6 +226,10 @@ namespace DABApp
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                GlobalResources.Instance.FlowListViewColumns = width > height ? 4 : 3;
+            }
             GlobalResources.Instance.ThumbnailImageHeight = (App.Current.MainPage.Width / GlobalResources.Instance.FlowListViewColumns) - 30;
         }
     }
