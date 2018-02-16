@@ -16,10 +16,14 @@ namespace DABApp
         dbEpisodes episode;
         static double original;
         bool NotConstructing = false;
+        private double _width;
+        private double _height;
 
         public DabTabletPage(Resource resource, dbEpisodes Episode = null)
         {
             InitializeComponent();
+            _width = this.Width;
+            _height = this.Height;
             ReadText.EraseText = true;
             ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
             if (Device.RuntimePlatform == "Android" && Device.Idiom == TargetIdiom.Tablet)
@@ -552,7 +556,12 @@ namespace DABApp
 
         protected override void OnSizeAllocated(double width, double height)
         {
+            double oldwidth = _width;
             base.OnSizeAllocated(width, height);
+            if (Equals(_width, width) && Equals(_height, height)) return;
+            _width = width;
+            _height = height;
+            if (Equals(oldwidth, -1)) return;
             if (width > height)
             {
                 BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
