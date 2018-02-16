@@ -12,8 +12,9 @@ namespace DABApp
     {
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
+        List<EpisodeViewModel> list;
         string backgroundImage;
-        dbEpisodes episode;
+        EpisodeViewModel episode;
         static double original;
         bool NotConstructing = false;
         private double _width;
@@ -55,17 +56,17 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
             if (Episode != null)
             {
-                episode = Episode;
+                episode = new EpisodeViewModel(Episode);
             }
             else
             {
-                episode = Episodes.First();
+                episode = new EpisodeViewModel(Episodes.First());
             }
             favorite.BindingContext = episode;
 
             if (!GuestStatus.Current.IsGuestLogin)
             {
-                JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
             }
             PlayerLabels.BindingContext = episode;
             Journal.BindingContext = episode;
@@ -74,7 +75,7 @@ namespace DABApp
             {
                 SetVisibility(false);
             }
-            else if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+            else if (episode.Episode.id != AudioPlayer.Instance.CurrentEpisodeId)
             {
                 SetVisibility(false);
             }
@@ -149,13 +150,13 @@ namespace DABApp
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
-            var newEp = (dbEpisodes)e.Item;
-            JournalTracker.Current.Join(newEp.PubDate.ToString("yyyy-MM-dd"));
-            if (newEp.is_downloaded || CrossConnectivity.Current.IsConnected)
+            var newEp = (EpisodeViewModel)e.Item;
+            JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
+            if (newEp.Episode.is_downloaded || CrossConnectivity.Current.IsConnected)
             {
-                episode = (dbEpisodes)e.Item;
+                episode = (EpisodeViewModel)e.Item;
                 favorite.Source = episode.favoriteSource;
-                if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+                if (AudioPlayer.Instance.CurrentEpisodeId != episode.Episode.id)
                 {
                     JournalTracker.Current.Content = null;
                     SetVisibility(false);
@@ -213,15 +214,15 @@ namespace DABApp
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
                 BackgroundImage.Source = backgroundImage;
-                if (episode.PubDate != Episodes.First().PubDate)
+                if (episode.Episode.PubDate != Episodes.First().PubDate)
                 {
                     JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
                 }
-                episode = Episodes.First();
+                episode = new EpisodeViewModel(Episodes.First());
                 PlayerLabels.BindingContext = episode;
                 JournalTitle.BindingContext = episode;
                 await SetReading();
-                if (AudioPlayer.Instance.CurrentEpisodeId != episode.id)
+                if (AudioPlayer.Instance.CurrentEpisodeId != episode.Episode.id)
                 {
                     SetVisibility(false);
                 }
@@ -265,14 +266,14 @@ namespace DABApp
             }
             else
             {
-                AudioPlayer.Instance.SetAudioFile(episode);
+                AudioPlayer.Instance.SetAudioFile(episode.Episode);
                 AudioPlayer.Instance.Play();
             }
         }
 
         void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.channel_code, episode.id.ToString());
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.id.ToString());
         }
 
         protected override void OnAppearing()
@@ -298,7 +299,7 @@ namespace DABApp
             }
             if (episode != null && !GuestStatus.Current.IsGuestLogin)
             {
-                JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
             }
         }
 
@@ -333,7 +334,7 @@ namespace DABApp
 
         async Task SetReading()
         {
-            Reading reading = await PlayerFeedAPI.GetReading(episode.read_link);
+            Reading reading = await PlayerFeedAPI.GetReading(episode.Episode.read_link);
             //Update the Reading UI on the main thread after getting data from the API
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -359,7 +360,7 @@ namespace DABApp
             {
                 AudioPlayer.Instance.Pause();
             }
-            AudioPlayer.Instance.SetAudioFile(episode);
+            AudioPlayer.Instance.SetAudioFile(episode.Episode);
             AudioPlayer.Instance.Play();
             SetVisibility(true);
         }
@@ -368,7 +369,7 @@ namespace DABApp
         {
             if (JournalContent.IsFocused)
             {
-                JournalTracker.Current.Update(episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+                JournalTracker.Current.Update(episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
             }
         }
 
@@ -441,7 +442,7 @@ namespace DABApp
             JournalTracker.Current.socket.ExternalUpdate = true;
             if (!JournalTracker.Current.socket.IsJoined)
             {
-                JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
+                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
             }
         }
 
@@ -485,10 +486,10 @@ namespace DABApp
         {
             favorite.IsEnabled = false;
             favorite.Opacity = .5;
-            episode.is_favorite = !episode.is_favorite;
+            episode.Episode.is_favorite = !episode.Episode.is_favorite;
             favorite.Source = episode.favoriteSource;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)episode.id, "favorite", episode.stop_time, null, episode.is_favorite);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, "is_favorite");
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
             favorite.Opacity = 1;
             favorite.IsEnabled = true;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
@@ -497,13 +498,13 @@ namespace DABApp
         async void OnListListened(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = (dbEpisodes)mi.CommandParameter;
+            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
             if (ep.is_listened_to == "listened")
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
-                if (ep.id == episode.id)
+                if (ep.id == episode.Episode.id)
                 {
-                    episode.is_listened_to = "";
+                    episode.Episode.is_listened_to = "";
                     Completed.Image = episode.listenedToSource;
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
@@ -511,9 +512,9 @@ namespace DABApp
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
-                if (ep.id == episode.id)
+                if (ep.id == episode.Episode.id)
                 {
-                    episode.is_listened_to = "listened";
+                    episode.Episode.is_listened_to = "listened";
                     Completed.Image = episode.listenedToSource;
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
@@ -523,17 +524,17 @@ namespace DABApp
 
         async void OnListened(object o, EventArgs e)
         {
-            if (episode.is_listened_to == "listened")
+            if (episode.Episode.is_listened_to == "listened")
             {
-                episode.is_listened_to = "";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id, "");
-                await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time, "");
+                episode.Episode.is_listened_to = "";
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, "");
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "");
             }
             else
             {
-                episode.is_listened_to = "listened";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.id);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.id, "listened", episode.stop_time, "listened");
+                episode.Episode.is_listened_to = "listened";
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
             }
             Completed.Image = episode.listenedToSource;
         }
@@ -541,8 +542,8 @@ namespace DABApp
         async void OnListFavorite(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = (dbEpisodes)mi.CommandParameter;
-            if (ep.id == episode.id)
+            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
+            if (ep.id == episode.Episode.id)
             {
                 OnFavorite(o, e);
             }
@@ -596,7 +597,7 @@ namespace DABApp
             activityHolder.IsVisible = true;
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
-            episode = PlayerFeedAPI.GetEpisode((int)episode.id);
+            episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
             TimedActions();
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
@@ -607,19 +608,19 @@ namespace DABApp
         {
             if ((string)Months.SelectedItem == "My Favorites")
             {
-                EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+                EpisodeList.ItemsSource = list = Episodes.Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
             }
             else
             {
                 if ((string)Months.SelectedItem == "My Journals")
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
                 }
                 else
                 {
                     if (Months.SelectedIndex >= 0)
                     {
-                        EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+                        EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).Select(x => new EpisodeViewModel(x)).ToList();
                     }
                 }
             }
