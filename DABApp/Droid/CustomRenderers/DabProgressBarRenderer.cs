@@ -1,4 +1,5 @@
 ﻿using System;
+using Android.Content;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using DABApp.Droid;
@@ -10,7 +11,10 @@ namespace DABApp.Droid
 {
 	public class DabProgressBarRenderer: ProgressBarRenderer
 	{
-		protected override void OnElementChanged(ElementChangedEventArgs<ProgressBar> e)
+        public DabProgressBarRenderer(Context context) : base(context)
+        { }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<ProgressBar> e)
 		{
 			base.OnElementChanged(e);
 			Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());

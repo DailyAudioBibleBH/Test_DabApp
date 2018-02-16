@@ -157,7 +157,7 @@ namespace DABApp
 											 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
 											 where !episode.is_downloaded //not downloaded
 																   && episode.PubDate > cutoffTime //new enough to be downloaded
-																   && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.listenedToVisible) //not listened to or system not set to delete listened to episodes
+																   && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to == "listened") //not listened to or system not set to delete listened to episodes
 											 select episode;
 					episodesToDownload = EpisodesToDownload.ToList();
 

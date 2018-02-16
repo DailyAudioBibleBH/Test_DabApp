@@ -8,10 +8,10 @@ namespace DABApp
 {
     public class DabEventArgs: EventArgs
     {
-        public int ProgressPercentage { get; set; }
+        public double ProgressPercentage { get; set; }
         public int EpisodeId { get; set; }
 
-        public DabEventArgs(int id, int percent)
+        public DabEventArgs(int id, double percent)
         {
             ProgressPercentage = percent;
             EpisodeId = id;
