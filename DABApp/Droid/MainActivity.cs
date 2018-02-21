@@ -28,15 +28,16 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Android.Support.Design.Widget;
+using Android.Content.Res;
 
 namespace DABApp.Droid
 {
 
-
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
 	[IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
 	{
+
 		protected override void OnCreate(Bundle bundle)
 		{
 			SQLitePCL.Batteries.Init();
@@ -89,13 +90,28 @@ namespace DABApp.Droid
                 }
             }
 
-			LoadCustomToolBar();
-            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => { LoadCustomToolBar(); });
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                RequestedOrientation = ScreenOrientation.Portrait;
+            }
+            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => {
+                LoadCustomToolBar();
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    RequestedOrientation = ScreenOrientation.Portrait;
+                }
+            });
             var metrics = Resources.DisplayMetrics;
             GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
 		}
 
-		protected override void OnResume()
+        public override void OnConfigurationChanged(Configuration newConfig)
+        {
+            base.OnConfigurationChanged(newConfig);
+            LoadCustomToolBar();
+        }
+
+        protected override void OnResume()
 		{
 			base.OnResume();
 			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
@@ -113,25 +129,28 @@ namespace DABApp.Droid
 		void LoadCustomToolBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-			SetSupportActionBar(toolbar);
-			var newMenu = LayoutInflater.Inflate(Resource.Layout.DabToolbar, null);
-			var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
-			menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
-			var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
-			give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
-			var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
-			text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
-			text.TextSize = 30;
-            if (GlobalResources.TestMode)
+            if (toolbar != null)
             {
-                var testColor = ((Xamarin.Forms.Color)App.Current.Resources["HighlightColor"]).ToAndroid();
-                newMenu.SetBackgroundColor(testColor);
+                SetSupportActionBar(toolbar);
+                var newMenu = LayoutInflater?.Inflate(Resource.Layout.DabToolbar, null);
+                var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
+                menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
+                var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
+                give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+                give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
+                var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
+                text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+                text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");
+                text.TextSize = 30;
+                if (GlobalResources.TestMode)
+                {
+                    var testColor = ((Xamarin.Forms.Color)App.Current.Resources["HighlightColor"]).ToAndroid();
+                    newMenu.SetBackgroundColor(testColor);
+                }
+                toolbar?.AddView(newMenu);
+                MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
+                MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
             }
-            toolbar.AddView(newMenu);
-            MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
-			MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
 		}
 
 

@@ -12,19 +12,27 @@ namespace DABApp.iOS
 {
 	public class FileManagement: IFileManagement
 	{
+        public event EventHandler<DabEventArgs> EpisodeDownloading;
+        public event EventHandler<DabEventArgs> EpisodeCompleted;
+        dbEpisodes _episode;
+        double progress = -.01;
+        WebClient client;
 
-		public async Task<bool> DownloadEpisodeAsync(string address, string episodeTitle)
+        public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
 		{
 			try
 			{
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var ext = address.Split('.').Last();
-				var fileName = Path.Combine(doc, $"{episodeTitle}.{ext}");
+				var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
+                _episode = episode;
 				//if (!File.Exists(fileName)) {
 				//	File.Create(fileName);
 				//}
-				WebClient client = new WebClient();
-				await client.DownloadFileTaskAsync(address, fileName);
+				client = new WebClient();
+                client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                await client.DownloadFileTaskAsync(address, fileName);
 				return true;
 			}
 			catch (Exception e)
@@ -36,6 +44,10 @@ namespace DABApp.iOS
 		public bool DeleteEpisode(string episodeId, string extension) {
 			try
 			{
+                if (client.IsBusy)
+                {
+                    client.CancelAsync();
+                }
 				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
 				Debug.WriteLine($"Deleted episode {episodeId}");
@@ -47,5 +59,26 @@ namespace DABApp.iOS
 				return false;
 			}
 		}
-	}
+
+        private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        {
+            if (!e.Cancelled)
+            {
+                var a = new DabEventArgs(_episode.id.Value, -1);
+                progress = -.01;
+                EpisodeCompleted?.Invoke(sender, a);
+            }
+        }
+
+        private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            double pp = (e.ProgressPercentage / 100.00);
+            if (pp > progress + .1)
+            {
+                progress = pp;
+                var a = new DabEventArgs(_episode.id.Value, pp);
+                EpisodeDownloading?.Invoke(sender, a);
+            }
+        }
+    }
 }

@@ -36,6 +36,7 @@
                 <Grid.RowDefinitions>
                   <RowDefinition Height="Auto"/>
                   <RowDefinition Height="*"/>
+                  <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition Width="Auto"/>
@@ -50,6 +51,7 @@
                   <Image IsVisible="{Binding downloadVisible}"  Source="ic_cloud_download_white"  Opacity=".5" HeightRequest="15" Aspect="AspectFit" />
                 </StackLayout>
                 <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
+                <ProgressBar Progress="{Binding downloadProgress}" IsVisible="{Binding progressVisible}" HeightRequest="2" Grid.Row="2" Grid.ColumnSpan="2"/>
               </Grid>
             </local:DabViewCell>
           </DataTemplate>

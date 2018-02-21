@@ -13,7 +13,7 @@ namespace DABApp
 	public partial class DabPlayerPage : DabBaseContentPage
 	{
 		//IAudio player = GlobalResources.Player;
-		dbEpisodes Episode;
+		EpisodeViewModel Episode;
 		string backgroundImage;
 		bool IsGuest;
 		static double original;
@@ -28,7 +28,7 @@ namespace DABApp
 			}
 			
 			IsGuest = GuestStatus.Current.IsGuestLogin;
-			Episode = episode;
+			Episode = new EpisodeViewModel(episode);
 
 			//Show or hide player controls
 			if (AudioPlayer.Instance.CurrentEpisodeId == 0)
@@ -112,7 +112,7 @@ namespace DABApp
             }
             else
             {
-                AudioPlayer.Instance.SetAudioFile(Episode);
+                AudioPlayer.Instance.SetAudioFile(Episode.Episode);
                 AudioPlayer.Instance.Play();
             }
         }
@@ -230,7 +230,7 @@ namespace DABApp
 		{
 			if (JournalContent.IsFocused)
 			{
-				JournalTracker.Current.Update(Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+				JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
 			}
 		}
 
@@ -244,7 +244,7 @@ namespace DABApp
 			JournalTracker.Current.socket.ExternalUpdate = true;
 			if (!JournalTracker.Current.IsJoined)
 			{
-				JournalTracker.Current.Join(Episode.PubDate.ToString("yyyy-MM-dd"));
+				JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
 			}
 		}
 
@@ -271,7 +271,7 @@ namespace DABApp
 			}
 			if (!GuestStatus.Current.IsGuestLogin && !JournalTracker.Current.IsJoined)
 			{
-				JournalTracker.Current.Join(Episode.PubDate.ToString("yyyy-MM-dd"));
+				JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
 			}
 			//(base.SlideMenu as DabMenuView).ChangeAvatar();
 			//base.SlideMenu = new DabMenuView();
@@ -283,7 +283,7 @@ namespace DABApp
 			{
 				AudioPlayer.Instance.Pause();
 			}
-			AudioPlayer.Instance.SetAudioFile(Episode);
+			AudioPlayer.Instance.SetAudioFile(Episode.Episode);
 
             if (o != null) {
             //Start playing if they pushed the play button
@@ -302,7 +302,7 @@ namespace DABApp
 		}
 
 		void OnShare(object o, EventArgs e) {
-			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.channel_code, Episode.id.ToString());
+			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.id.ToString());
 		}
 
 		void OnDisconnect(object o, EventArgs e)
@@ -382,25 +382,25 @@ namespace DABApp
 
 		void OnFavorite(object o, EventArgs e)
 		{
-			Episode.is_favorite = !Episode.is_favorite;
+			Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
 			Favorite.Image = Episode.favoriteSource;
-			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "is_favorite");
-			AuthenticationAPI.CreateNewActionLog((int)Episode.id, "favorite", Episode.stop_time, null, Episode.is_favorite);
+			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
+			AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
 		}
 
         void OnListened(object o, EventArgs e)
         {
-            if (Episode.is_listened_to == "listened")
+            if (Episode.Episode.is_listened_to == "listened")
             {
-                Episode.is_listened_to = "";
-                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id, "");
-                AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time, "");
+                Episode.Episode.is_listened_to = "";
+                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
+                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
             }
             else
             {
-                Episode.is_listened_to = "listened";
-                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.id);
-                AuthenticationAPI.CreateNewActionLog((int)Episode.id, "listened", Episode.stop_time, "listened");
+                Episode.Episode.is_listened_to = "listened";
+                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
+                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
             Completed.Image = Episode.listenedToSource;
         }

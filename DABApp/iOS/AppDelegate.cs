@@ -107,7 +107,11 @@ namespace DABApp.iOS
 
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
 		{
-			return UIInterfaceOrientationMask.Portrait;
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                return UIInterfaceOrientationMask.Portrait;
+            }
+            else return UIInterfaceOrientationMask.All;
 		}
 
         //More of what was needed to get journaling to work on Android once again found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed

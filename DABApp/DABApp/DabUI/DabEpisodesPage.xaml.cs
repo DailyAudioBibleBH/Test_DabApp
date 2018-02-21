@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -13,16 +14,16 @@ namespace DABApp
     {
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
-        bool _IsRefreshing = false;
+        List<EpisodeViewModel> _Episodes;
 
         public DabEpisodesPage(Resource resource)
         {
             InitializeComponent();
             _resource = resource;
             DabViewHelper.InitDabForm(this);
-            Episodes = PlayerFeedAPI.GetEpisodeList(resource).ToList();
+            Episodes = PlayerFeedAPI.GetEpisodeList(resource);
             //EpisodeList.ItemsSource = Episodes;
-            EpisodeList.BindingContext = this;
+            BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
             Offline.IsToggled = resource.availableOffline;
@@ -49,7 +50,8 @@ namespace DABApp
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
-            var chosen = (dbEpisodes)e.Item;
+            var chosenVM = (EpisodeViewModel)e.Item;
+            var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
             var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
             if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
@@ -75,7 +77,10 @@ namespace DABApp
                 Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
             }
             else {
-                Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
+                Task.Run(async () => {
+                    await PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+                    Device.BeginInvokeOnMainThread(() => { TimedActions(); });
+                });
             }
         }
 
@@ -109,14 +114,6 @@ namespace DABApp
             TimedActions();
         }
 
-        //async void OnRefresh(object o, EventArgs e)
-        //{
-        //    await PlayerFeedAPI.GetEpisodes(_resource);
-        //    await AuthenticationAPI.GetMemberData();
-        //    TimedActions();
-        //    EpisodeList.IsRefreshing = false;
-        //}
-
         async Task Refresh()
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -138,26 +135,25 @@ namespace DABApp
 
         void TimedActions()
         {
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            //Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
             if ((string)Months.SelectedItem == "My Favorites")
             {
-                var list = Episodes.Where(x => x.is_favorite == true).ToList();
-                EpisodeList.ItemsSource = list;
-                Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.is_favorite == true).Select(e => new EpisodeViewModel(e)).ToList();
+                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
             }
             else
             {
                 if ((string)Months.SelectedItem == "My Journals")
                 {
-                    var list = Episodes.Where(x => x.has_journal == true).ToList();
-                    EpisodeList.ItemsSource = list;
-                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
+                    //EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
                 else
                 {
-                    var list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).ToList();
-                    EpisodeList.ItemsSource = list;
-                    Container.HeightRequest = EpisodeList.RowHeight * list.Count();
+                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).Select(x => new EpisodeViewModel(x)).ToList();
+                    //EpisodeList.ItemsSource = list;
+                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
             }
         }

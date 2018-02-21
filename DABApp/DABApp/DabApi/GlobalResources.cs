@@ -8,11 +8,13 @@ using System.Runtime.CompilerServices;
 
 namespace DABApp
 {
-	public class GlobalResources
+	public class GlobalResources : INotifyPropertyChanged
 	{
-		//public static bool IsPlaying { get; set; }
-		//public static IAudio Player { get; set;}
+        //public static bool IsPlaying { get; set; }
+        //public static IAudio Player { get; set;}
 
+        private double thumbnailHeight;
+        private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;
 		public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
 
 		static SQLiteConnection db = DabData.database;
@@ -31,30 +33,30 @@ namespace DABApp
         public static string APIVersion { get; set; } = "2";
 
 		public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
-		public static string RestAPIUrl { get; set; } = "https://dailyaudiobible.com/wp-json/lutd/v1/";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public static string RestAPIUrl { get; set; } = "https://dailyaudiobible.com/wp-json/lutd/v1/";
         public static string FeedAPIUrl { get; set; } = "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
 
 		public static GlobalResources Instance {get; private set;}
 
 		static GlobalResources(){
 			Instance = new GlobalResources();
-		}
+        }
 
 		public int FlowListViewColumns
 		{
 			//Returns the number of columnts to use in a FlowListView
 			get
 			{
-				switch (Device.Idiom)
-				{
-					case TargetIdiom.Phone:
-						return 2;
-					case TargetIdiom.Tablet:
-						return 3;
-					default:
-						return 2;
-				}
+                return flowListViewColumns;
 			}
+            set
+            {
+                flowListViewColumns = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("FlowListViewColumns"));
+            }
 		}
 
 
@@ -63,19 +65,24 @@ namespace DABApp
 			//returns the height we should use for a square thumbnail (based on the idiom and screen WIDTH)
 			get
 			{
-				double knownPadding = 30;
+				//double knownPadding = 30;
 				if (App.Current.MainPage != null)
 				{
-					return (App.Current.MainPage.Width / FlowListViewColumns) - knownPadding;
+                    return thumbnailHeight;
 				}
 				else {
 					if (Device.Idiom == TargetIdiom.Tablet)
 					{
-						return 212;
+						return thumbnailHeight = 212;
 					}
-					else return 180;
+					else return thumbnailHeight = 180;
 				}
 			}
+            set
+            {
+                thumbnailHeight = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ThumbnailImageHeight"));
+            }
 		}
 
 		public static string GetUserEmail()

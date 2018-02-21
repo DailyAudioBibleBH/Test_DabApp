@@ -22,7 +22,7 @@ namespace DABApp
 						Text = Title;
 					}
 					else {
-						Title = ((dbEpisodes)BindingContext).title;
+						Title = ((EpisodeViewModel)BindingContext).title;
 					}
 				}
 				else
@@ -33,7 +33,7 @@ namespace DABApp
 					}
 					else 
 					{
-						Desc = ((dbEpisodes)BindingContext).description;
+						Desc = ((EpisodeViewModel)BindingContext).description;
 					}
 				}
 			}
