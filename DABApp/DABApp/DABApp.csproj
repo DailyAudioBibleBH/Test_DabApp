@@ -28,6 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DabViewHelpers\Controls\CircularProgressControl.cs" />
     <Compile Include="DabViewHelpers\Controls\DabViewCell.cs" />
     <Compile Include="DabViewHelpers\DabEventArgs.cs" />
     <Compile Include="DabViewHelpers\EpisodeViewModel.cs" />
