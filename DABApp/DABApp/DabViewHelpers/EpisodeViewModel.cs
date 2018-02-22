@@ -144,7 +144,10 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                downloadVisible = false;
+                if (Device.Idiom == TargetIdiom.Tablet)
+                {
+                    downloadVisible = false;
+                }
                 downloadProgress = e.ProgressPercentage;
             }
         }
@@ -153,7 +156,10 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                downloadVisible = true;
+                if (Device.Idiom == TargetIdiom.Tablet)
+                {
+                    downloadVisible = true;
+                }
                 downloadProgress = -.01;
             }
         }

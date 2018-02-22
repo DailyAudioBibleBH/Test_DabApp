@@ -17,6 +17,8 @@ namespace DABApp.Droid
         public event EventHandler<DabEventArgs> EpisodeCompleted;
         dbEpisodes _episode;
         double progress = -.01;
+        WebClient client;
+        public bool keepDownloading { get; set; } = true;
 
         public FileManagement()
 		{
@@ -37,22 +39,46 @@ namespace DABApp.Droid
 			}
 		}
 
+        public bool StopDownloading()
+        {
+            try
+            {
+                if (client != null)
+                {
+                    if (client.IsBusy)
+                    {
+                        client.CancelAsync();
+                        keepDownloading = false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
         {
             try
             {
-                _episode = episode;
-                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var ext = address.Split('.').Last();
-                var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
-                //if (!File.Exists(fileName)) {
-                //	File.Create(fileName);
-                //}
-                WebClient client = new WebClient();
-                client.DownloadProgressChanged += Client_DownloadProgressChanged;
-                client.DownloadFileCompleted += Client_DownloadFileCompleted;
-                await client.DownloadFileTaskAsync(address, fileName);
-                return true;
+                if (keepDownloading)
+                {
+                    _episode = episode;
+                    var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var ext = address.Split('.').Last();
+                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
+                    //if (!File.Exists(fileName)) {
+                    //	File.Create(fileName);
+                    //}
+                    client = new WebClient();
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                    await client.DownloadFileTaskAsync(address, fileName);
+                    return true;
+                }
+                else return false;
             }
             catch (Exception e)
             {
@@ -62,12 +88,9 @@ namespace DABApp.Droid
 
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            if (!e.Cancelled)
-            {
-                var a = new DabEventArgs(_episode.id.Value, -1);
-                progress = -.01;
-                EpisodeCompleted?.Invoke(sender, a);
-            }
+            var a = new DabEventArgs(_episode.id.Value, -1);
+            progress = -.01;
+            EpisodeCompleted?.Invoke(sender, a);
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)

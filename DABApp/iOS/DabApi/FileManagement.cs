@@ -17,23 +17,28 @@ namespace DABApp.iOS
         dbEpisodes _episode;
         double progress = -.01;
         WebClient client;
+        public bool keepDownloading { get; set; } = true;
 
         public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
 		{
 			try
 			{
-				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				var ext = address.Split('.').Last();
-				var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
-                _episode = episode;
-				//if (!File.Exists(fileName)) {
-				//	File.Create(fileName);
-				//}
-				client = new WebClient();
-                client.DownloadProgressChanged += Client_DownloadProgressChanged;
-                client.DownloadFileCompleted += Client_DownloadFileCompleted;
-                await client.DownloadFileTaskAsync(address, fileName);
-				return true;
+                if (keepDownloading)
+                {
+                    var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var ext = address.Split('.').Last();
+                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
+                    _episode = episode;
+                    //if (!File.Exists(fileName)) {
+                    //	File.Create(fileName);
+                    //}
+                    client = new WebClient();
+                    client.DownloadProgressChanged += Client_DownloadProgressChanged;
+                    client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                    await client.DownloadFileTaskAsync(address, fileName);
+                    return true;
+                }
+                return false;
 			}
 			catch (Exception e)
 			{
@@ -44,11 +49,7 @@ namespace DABApp.iOS
 		public bool DeleteEpisode(string episodeId, string extension) {
 			try
 			{
-                if (client.IsBusy)
-                {
-                    client.CancelAsync();
-                }
-				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 				var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
 				Debug.WriteLine($"Deleted episode {episodeId}");
 				File.Delete(fileName);
@@ -60,14 +61,31 @@ namespace DABApp.iOS
 			}
 		}
 
+        public bool StopDownloading()
+        {
+            try
+            {
+                if (client != null)
+                {
+                    if (client.IsBusy)
+                    {
+                        client.CancelAsync();
+                        keepDownloading = false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            if (!e.Cancelled)
-            {
-                var a = new DabEventArgs(_episode.id.Value, -1);
-                progress = -.01;
-                EpisodeCompleted?.Invoke(sender, a);
-            }
+            var a = new DabEventArgs(_episode.id.Value, -1);
+            progress = -.01;
+            EpisodeCompleted?.Invoke(sender, a);
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)

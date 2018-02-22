@@ -7,6 +7,7 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
+    //Code found here: http://xamlnative.com/2016/04/14/xamarin-forms-a-simple-circular-progress-control/
     public class CircularProgressControl: Grid
     {
         Xamarin.Forms.View progress1;
@@ -27,6 +28,8 @@ namespace DABApp
             var img = new Image();
             img.Source = ImageSource.FromFile(v1 + ".png");
             img.Aspect = Aspect.AspectFit;
+            img.HeightRequest = this.HeightRequest;
+            img.WidthRequest = this.WidthRequest;
             this.Children.Add(img);
             return img;
         }

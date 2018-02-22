@@ -186,7 +186,10 @@ namespace DABApp
             }
             else
             {
-                Task.Run(async () => { await PlayerFeedAPI.DeleteChannelEpisodes(_resource); });
+                Task.Run(async () => {
+                    await PlayerFeedAPI.DeleteChannelEpisodes(_resource);
+                    Device.BeginInvokeOnMainThread(() => { TimedActions(); });
+                });
             }
         }
 

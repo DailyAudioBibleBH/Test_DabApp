@@ -129,6 +129,7 @@ namespace DABApp
 
 			if (!DownloadIsRunning)
 			{
+                DependencyService.Get<IFileManagement>().keepDownloading = true;
 				DownloadIsRunning = true;
 				var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
 				DateTime cutoffTime = new DateTime();
@@ -199,6 +200,7 @@ namespace DABApp
 		}
 
         public static async Task DeleteChannelEpisodes(Resource resource) {
+            DependencyService.Get<IFileManagement>().StopDownloading();
 			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
 			foreach (var episode in Episodes) {
 				var ext = episode.url.Split('.').Last();
@@ -206,11 +208,11 @@ namespace DABApp
 				{
 					episode.is_downloaded = false;
 					await adb.UpdateAsync(episode);
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-					}
-				}
+                    //if (Device.Idiom == TargetIdiom.Tablet)
+                    //{
+                    //    Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+                    //}
+                }
 				else {
 					throw new Exception();
 				}
