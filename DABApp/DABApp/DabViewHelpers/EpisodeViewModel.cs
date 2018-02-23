@@ -60,7 +60,7 @@ namespace DABApp
         {
             get
             {
-                return noProgress = progress > -.01 && !downloadVisible;
+                return noProgress = progress > -.01 || Episode.is_downloaded;
             }
             set
             {
@@ -144,10 +144,7 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    downloadVisible = false;
-                }
+                downloadVisible = false;
                 downloadProgress = e.ProgressPercentage;
             }
         }
@@ -156,10 +153,7 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    downloadVisible = true;
-                }
+                downloadVisible = true;
                 downloadProgress = -.01;
             }
         }
