@@ -91,7 +91,7 @@ namespace DABApp
         public async void OnListened(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = (dbEpisodes)mi.CommandParameter;
+            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
             if (ep.is_listened_to == "listened")
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
@@ -108,7 +108,7 @@ namespace DABApp
         public async void OnFavorite(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = (dbEpisodes)mi.CommandParameter;
+            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
             TimedActions();
