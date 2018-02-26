@@ -72,8 +72,7 @@ namespace DABApp
 			{
 				ReadExcerpts.Text = String.Join(", ", reading.excerpts);
 			}
-			JournalTracker.Current.socket.Disconnect += OnDisconnect;
-			JournalTracker.Current.socket.Reconnect += OnReconnect;
+            JournalTracker.Current.socket.Disconnect += OnDisconnect;
 			JournalTracker.Current.socket.Reconnecting += OnReconnecting;
 			JournalTracker.Current.socket.Room_Error += OnRoom_Error;
 			JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
@@ -316,10 +315,11 @@ namespace DABApp
 
 		void OnReconnect(object o, EventArgs e)
 		{
-			//Device.BeginInvokeOnMainThread(() =>
-			//{
-			//  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-			//});
+            //Device.BeginInvokeOnMainThread(() =>
+            //{
+            //  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+            //});
+            AuthenticationAPI.ConnectJournal();
 			Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
 		}
 

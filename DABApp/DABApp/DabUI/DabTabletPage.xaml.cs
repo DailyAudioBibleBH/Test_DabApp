@@ -33,6 +33,7 @@ namespace DABApp
                 {
                     PlayerOverlay.Padding = new Thickness(25, 10, 25, 25);
                     EpDescription.Margin = new Thickness(40, 0, 40, 0);
+                    JournalContent.HeightRequest = 450;
                 }
             }
             SegControl.ValueChanged += Handle_ValueChanged;
@@ -80,7 +81,6 @@ namespace DABApp
                 SetVisibility(false);
             }
             JournalTracker.Current.socket.Disconnect += OnDisconnect;
-            JournalTracker.Current.socket.Reconnect += OnReconnect;
             JournalTracker.Current.socket.Reconnecting += OnReconnecting;
             JournalTracker.Current.socket.Room_Error += OnRoom_Error;
             JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
@@ -396,6 +396,7 @@ namespace DABApp
             //{
             //	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
             //});
+            AuthenticationAPI.ConnectJournal();
             Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
         }
 
