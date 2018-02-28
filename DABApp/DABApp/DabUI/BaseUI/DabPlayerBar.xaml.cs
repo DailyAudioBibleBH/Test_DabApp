@@ -23,7 +23,6 @@ namespace DABApp
 				OnShowPlayer(sender, e);
 			};
 			stackPlayerBar.GestureRecognizers.Add(tapShowEpisode);
-
 		}
 
 		//Play - Pause

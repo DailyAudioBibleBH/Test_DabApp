@@ -54,7 +54,9 @@ namespace DABApp.iOS
 
 			LoadApplication(new App());
 
-			return base.FinishedLaunching(app, options);
+            var m = base.FinishedLaunching(app, options);
+            GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
+            return m;
 		}
 
 		public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)

@@ -90,6 +90,8 @@ namespace DABApp
 			AboutFormat.GestureRecognizers.Add(tapper);
 			Favorite.BindingContext = Episode;
             Completed.BindingContext = Episode;
+            if (GlobalResources.Instance.IsiPhoneX)
+                Listen.Margin = new Thickness(0, 0, 0, 16);
 		}
 
         void OnPlay(object o, EventArgs e)

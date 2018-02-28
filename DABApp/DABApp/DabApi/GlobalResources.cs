@@ -38,6 +38,7 @@ namespace DABApp
 
         public static string RestAPIUrl { get; set; } = "https://dailyaudiobible.com/wp-json/lutd/v1/";
         public static string FeedAPIUrl { get; set; } = "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+        public bool IsiPhoneX { get; set; } = false;
 
 		public static GlobalResources Instance {get; private set;}
 

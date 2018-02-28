@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabPlayerBar" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
 	<ContentView.Content>
-		<StackLayout  Padding="0" Spacing="0" BackgroundColor="{DynamicResource NavBarBackgroundColor}">
+		<StackLayout x:Name="Container" Padding="0" Spacing="0" BackgroundColor="{DynamicResource NavBarBackgroundColor}">
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End"  IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}"  Padding="0" Spacing="0">
 				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End"   />
 				<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10" Padding="2"	>

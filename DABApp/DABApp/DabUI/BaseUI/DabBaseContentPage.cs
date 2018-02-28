@@ -1,6 +1,7 @@
 ﻿using System;
 using SlideOverKit;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using FFImageLoading.Forms;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
@@ -23,6 +24,7 @@ namespace DABApp
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
 			RelativeLayout container = new RelativeLayout();
 			ControlTemplate = playerBarTemplate;
+            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 			//activityHolder = new StackLayout()
 			//
 			//	Opacity = 0.5,
@@ -48,7 +50,7 @@ namespace DABApp
 			//Content = view;
 
 			//Navigation properties
-			NavigationPage.SetBackButtonTitle(this, "");
+			Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
 
 			//Slide Menu
 			this.SlideMenu = new DabMenuView();
@@ -87,8 +89,8 @@ namespace DABApp
                             var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
                             if (choice)
                             {
-                                var nav = new NavigationPage(new DabLoginPage(false, true));
-                                nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
+                                nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                 await Navigation.PushModalAsync(nav);
                             }
                         }
