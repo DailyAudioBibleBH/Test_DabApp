@@ -55,7 +55,11 @@ namespace DABApp.iOS
 			LoadApplication(new App());
 
             var m = base.FinishedLaunching(app, options);
-            GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
+            int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
+            if (SystemVersion >= 11)
+            {
+                GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
+            }
             return m;
 		}
 
