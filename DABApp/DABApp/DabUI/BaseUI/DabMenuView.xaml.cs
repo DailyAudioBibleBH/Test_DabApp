@@ -61,9 +61,9 @@ namespace DABApp
 		void OnSettings(object o, EventArgs e)
 		{
             Settings.IsEnabled = false;
-			if (Device.Idiom == TargetIdiom.Tablet)
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
 			{
-				Navigation.PushAsync(new DabTabletSettingsPage());
+               Navigation.PushAsync(new DabTabletSettingsPage());
 			}
 			else
 			{

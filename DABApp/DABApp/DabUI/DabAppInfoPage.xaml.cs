@@ -10,7 +10,7 @@ namespace DABApp
 		public DabAppInfoPage()
 		{
 			InitializeComponent();
-            if (Device.Idiom == TargetIdiom.Tablet) { NavigationPage.SetHasNavigationBar(this, false); }
+            if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android") { NavigationPage.SetHasNavigationBar(this, false); }
 			BindingContext = ContentConfig.Instance.blocktext;
 			VersionNumber.Text = $"Version Number {CrossVersion.Current.Version}";
 		}

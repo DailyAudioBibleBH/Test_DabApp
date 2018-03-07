@@ -21,7 +21,7 @@ namespace DABApp
                 {
                     MessagingCenter.Send<string>("Remove", "Remove");
                 }
-                else { NavigationPage.SetHasNavigationBar(this, false); }
+                //else { NavigationPage.SetHasNavigationBar(this, false); }
 			}
 			else 
 			{ 
@@ -29,7 +29,7 @@ namespace DABApp
 			}
 			_donations = donations;
 			_fromLogin = fromLogin;
-			if (Device.Idiom == TargetIdiom.Tablet) {
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android") {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{

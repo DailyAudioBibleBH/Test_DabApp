@@ -21,7 +21,7 @@ namespace DABApp
 			}
 			_campaign = campaign;
 			Next.MinimumDate = DateTime.Now.AddDays(1);
-			if (Device.Idiom == TargetIdiom.Tablet) {
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android") {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			Title.Text = campaign.name;
