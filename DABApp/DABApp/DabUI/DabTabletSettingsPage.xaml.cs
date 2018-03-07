@@ -10,12 +10,16 @@ namespace DABApp
 	{
 		ControlTemplate playerBarTemplate;
 		bool needRemove = Device.RuntimePlatform == "iOS" ? true : false;
+        private double _width;
+        private double _height;
 
-		public DabTabletSettingsPage()
+        public DabTabletSettingsPage()
 		{
 			InitializeComponent();
+            _width = this.Width;
+            _height = this.Height;
             //NavigationPage.SetHasBackButton(this, false);
-			playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+            playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			Title = "DAILY AUDIO BIBLE";
 			this.SlideMenu = new DabMenuView();
 			SettingsPage.ControlTemplate = playerBarTemplate;
@@ -71,7 +75,7 @@ namespace DABApp
             AppInfo.Unsubscribe();
 			Detail = new NavigationPage(AppInfo) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			AppInfo.ToolbarItems.Clear();
-			Remove();
+			//Remove();
 		}
 
 		void OnReset(object o, EventArgs e)
@@ -86,7 +90,7 @@ namespace DABApp
 		void OnOffline(object o, EventArgs e) {
 			var Offline = new DabOfflineEpisodeManagementPage();
             Offline.Unsubscribe();
-			Detail = new NavigationPage(Offline) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
+            Detail = new NavigationPage(Offline) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 			Offline.ToolbarItems.Clear();
 			Remove();
 		}
@@ -154,7 +158,20 @@ namespace DABApp
         void Remove()
         {
             if (needRemove) SettingsPage.ToolbarItems.RemoveAt(0);
+            MessagingCenter.Send<string>("Setup", "Setup");
             needRemove = false;
+            SlideMenu = new DabMenuView();
         }
-	}
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            double oldwidth = _width;
+            base.OnSizeAllocated(width, height);
+            if (Equals(_width, width) && Equals(_height, height)) return;
+            _width = width;
+            _height = height;
+            if (Equals(oldwidth, -1)) return;
+            this.OnAppearing();
+        }
+    }
 }
