@@ -161,7 +161,6 @@ namespace DABApp
             MessagingCenter.Send<string>("Setup", "Setup");
             needRemove = false;
             SlideMenu = new DabMenuView();
-            App.Current.MainPage = (NavigationPage)Navigation;
         }
 
         protected override void OnSizeAllocated(double width, double height)
