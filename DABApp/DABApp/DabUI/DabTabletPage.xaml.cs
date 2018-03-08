@@ -571,12 +571,13 @@ namespace DABApp
             {
                 BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
                 BackgroundImage.Aspect = Aspect.Fill;
-                if (GlobalResources.Instance.ScreenSize < 1000)
+                var size = 60;
+                if (GlobalResources.Instance.ScreenSize < 1000 && Device.RuntimePlatform == "Android")
                 {
-                    PlayPause.WidthRequest = 60;
-                    PlayPause.HeightRequest = 60;
-                    Initializer.WidthRequest = 60;
-                    Initializer.HeightRequest = 60;
+                    PlayPause.WidthRequest = size;
+                    PlayPause.HeightRequest = size;
+                    Initializer.WidthRequest = size;
+                    Initializer.HeightRequest = size;
                 }
             }
             else

@@ -83,7 +83,7 @@ namespace DABApp.iOS
 
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            var a = new DabEventArgs(_episode.id.Value, -1);
+            var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
             progress = -.01;
             EpisodeCompleted?.Invoke(sender, a);
         }

@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Diagnostics;
+using Plugin.Connectivity;
 
 namespace DABApp
 {
@@ -18,6 +19,7 @@ namespace DABApp
 		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 		static bool DownloadIsRunning = false;
 		static bool CleanupIsRunning = false;
+        static bool ResumeNotSet = true;
 
 		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
 			//GetEpisodes(resource);
@@ -182,6 +184,11 @@ namespace DABApp
 					{
 						Debug.WriteLine("Error while downloading episodes");
 						DownloadIsRunning = false;
+                        //if (ResumeNotSet)
+                        //{
+                            CrossConnectivity.Current.ConnectivityChanged += ResumeDownload;
+                            ResumeNotSet = false;
+                        //}
 						return false;
 					}
 				}
@@ -198,6 +205,16 @@ namespace DABApp
 				return true;
 			}
 		}
+
+        static async void ResumeDownload(object o, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
+        {
+            if (e.IsConnected)
+            {
+                await DownloadEpisodes();
+                CrossConnectivity.Current.ConnectivityChanged -= ResumeDownload;
+                ResumeNotSet = true;
+            }
+        }
 
         public static async Task DeleteChannelEpisodes(Resource resource) {
             DependencyService.Get<IFileManagement>().StopDownloading();

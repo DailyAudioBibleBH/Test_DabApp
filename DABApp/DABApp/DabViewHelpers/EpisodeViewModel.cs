@@ -151,7 +151,7 @@ namespace DABApp
 
         void DownloadComplete(object o, DabEventArgs e)
         {
-            if (Episode.id.Value == e.EpisodeId)
+            if (Episode.id.Value == e.EpisodeId && !e.Cancelled)
             {
                 downloadVisible = true;
                 downloadProgress = -.01;

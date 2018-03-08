@@ -10,11 +10,13 @@ namespace DABApp
     {
         public double ProgressPercentage { get; set; }
         public int EpisodeId { get; set; }
+        public bool Cancelled { get; set; }
 
-        public DabEventArgs(int id, double percent)
+        public DabEventArgs(int id, double percent, bool cancelled = false)
         {
             ProgressPercentage = percent;
             EpisodeId = id;
+            Cancelled = cancelled;
         }
     }
 }
