@@ -82,13 +82,15 @@ namespace DABApp.Droid
             }
             catch (Exception e)
             {
+                client.CancelAsync();
                 return false;
             }
         }
 
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
+            var b = e.Cancelled || e.Error != null;
+            var a = new DabEventArgs(_episode.id.Value, -1, b);
             progress = -.01;
             EpisodeCompleted?.Invoke(sender, a);
         }
