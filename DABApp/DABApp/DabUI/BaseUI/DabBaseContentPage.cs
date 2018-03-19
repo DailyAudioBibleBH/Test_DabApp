@@ -79,7 +79,11 @@ namespace DABApp
 
 		async void OnGive(object o, EventArgs e) 
 		{
-                if (!giving)
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            activity.IsVisible = true;
+            activityHolder.IsVisible = true;
+            if (!giving)
                 {
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
@@ -119,6 +123,8 @@ namespace DABApp
                     }
                     giving = false;
                 }
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
 		}
 
         public void Unsubscribe()
