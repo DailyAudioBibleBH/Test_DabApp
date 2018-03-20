@@ -6,6 +6,7 @@ using FFImageLoading.Forms;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace DABApp
 {
@@ -79,52 +80,64 @@ namespace DABApp
 
 		async void OnGive(object o, EventArgs e) 
 		{
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
             if (!giving)
+            {
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                giving = true;
+                if (GuestStatus.Current.IsGuestLogin)
                 {
-                    giving = true;
-                    if (GuestStatus.Current.IsGuestLogin)
+                    if (CrossConnectivity.Current.IsConnected)
                     {
-                        if (CrossConnectivity.Current.IsConnected)
+                        var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+                        if (choice)
                         {
-                            var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
-                            if (choice)
-                            {
-                                var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
-                                nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                await Navigation.PushModalAsync(nav);
-                            }
+                            var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
+                            nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                            await Navigation.PushModalAsync(nav);
                         }
-                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
-                    else
-                    {
-                        var dons = await AuthenticationAPI.GetDonations();
-                        if (dons != null)
-                        {
-                            if (dons.Length == 1)
-                            {
-                                var url = await PlayerFeedAPI.PostDonationAccessToken();
-                                if (url.StartsWith("http"))
-                                {
-                                    DependencyService.Get<IRivets>().NavigateTo(url);
-                                }
-                                else
-                                {
-                                    await DisplayAlert("Error", url, "OK");
-                                }
-                            }
-                            else await Navigation.PushAsync(new DabManageDonationsPage(dons));
-                        }
-                        else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                    }
-                    giving = false;
+                    else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                 }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+                else
+                {
+                    var t = AuthenticationAPI.GetDonations();
+                    Donation[] dons = new Donation[] { };
+                    if (t == await Task.WhenAny(t, Task.Delay(15000)))
+                    {
+                        dons = await AuthenticationAPI.GetDonations();
+                    }
+                    else await DisplayAlert("Request Timeout exceeded", "This may be a server or internet connectivity issue.", "OK");
+                    if (dons != null)
+                    {
+                        if (dons.Length == 1)
+                        {
+                            String url = "";
+                            var ask = PlayerFeedAPI.PostDonationAccessToken();
+                            if (ask == await Task.WhenAny(ask, Task.Delay(15000)))
+                            {
+                                url = await PlayerFeedAPI.PostDonationAccessToken();
+                            }
+                            else await DisplayAlert("Request Timeout exceeded", "This may be a server or internet connectivity issue.", "OK");
+                            if (url.StartsWith("http"))
+                            {
+                                DependencyService.Get<IRivets>().NavigateTo(url);
+                            }
+                            else
+                            {
+                                await DisplayAlert("Error", url, "OK");
+                            }
+                        }
+                        else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                    }
+                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                }
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+                giving = false;
+            }
 		}
 
         public void Unsubscribe()

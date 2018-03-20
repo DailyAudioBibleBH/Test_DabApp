@@ -47,6 +47,10 @@ namespace DABApp
             SetRowSpan(background2, 3);
             Children.Add(cloud1, 1, 1);
             Children.Add(cloud2, 1, 1);
+            if (Device.RuntimePlatform == "iOS" && Device.Idiom == TargetIdiom.Phone)
+            {
+                Margin = new Thickness(0, 0, 0, 10);
+            }
             HandleProgressChanged(1, 0);
         }
 
