@@ -659,6 +659,10 @@ namespace DABApp
             {
                 actionLog.UserEmail = user.Value;
             }
+            if (adb == null)
+            {
+                adb = DabData.AsyncDatabase;
+            }
             await adb.InsertAsync(actionLog);
         }
 
