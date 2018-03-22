@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -645,25 +644,33 @@ namespace DABApp
 
         public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, string listened, bool? favorite = null)
         {
-            var actionLog = new dbPlayerActions();
-            actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
-            var entity_type = actionType == "listened" ? "listened_status" : "episode";
-            actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
-            actionLog.EpisodeId = episodeId;
-            actionLog.PlayerTime = playTime;
-            actionLog.ActionType = actionType;
-            actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
-            actionLog.listened_status = actionType == "listened"? listened: db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to;
-            var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-            if (user != null)
+            try
             {
-                actionLog.UserEmail = user.Value;
+                var actionLog = new dbPlayerActions();
+                actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
+                var entity_type = actionType == "listened" ? "listened_status" : "episode";
+                actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
+                actionLog.EpisodeId = episodeId;
+                actionLog.PlayerTime = playTime;
+                actionLog.ActionType = actionType;
+                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
+                actionLog.listened_status = actionType == "listened" ? listened : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to;
+                var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+                if (user != null)
+                {
+                    actionLog.UserEmail = user.Value;
+                }
+                if (Device.RuntimePlatform == "Android")
+                {
+                    db.Insert(actionLog);
+                }
+                else await adb.InsertAsync(actionLog);
             }
-            if (adb == null)
+            catch (Exception e)
             {
-                adb = DabData.AsyncDatabase;
+                HockeyApp.MetricsManager.TrackEvent($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
+                Debug.WriteLine($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
             }
-            await adb.InsertAsync(actionLog);
         }
 
         public static async Task<string> PostActionLogs()

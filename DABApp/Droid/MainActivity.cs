@@ -67,8 +67,9 @@ namespace DABApp.Droid
 			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
 			SQLite_Droid.Assets = this.Assets;
+            MetricsManager.Register(Application, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 
-			LoadApplication(new App());
+            LoadApplication(new App());
 
             ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
             var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
