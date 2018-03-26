@@ -5,13 +5,13 @@
 			<StackLayout x:Name="stackPlayerBar" VerticalOptions="End"  IsVisible="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=IsInitialized}"  Padding="0" Spacing="0">
 				<ProgressBar Progress="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=Progress}" VerticalOptions="End"   />
 				<StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Spacing="10" Padding="2"	>
-					<Image x:Name="PlayerButton" Source="ic_keyboard_arrow_up_white_3x.png" VerticalOptions="CenterAndExpand" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShowPlayer"/></Image.GestureRecognizers></Image>
-					<Image Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" VerticalOptions="CenterAndExpand" HeightRequest="35" WidthRequest="35" Aspect="AspectFit"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlayPause"/></Image.GestureRecognizers></Image>
+                    <Image x:Name="PlayerButton" Source="ic_keyboard_arrow_up_white_3x.png" VerticalOptions="CenterAndExpand" WidthRequest="30" HeightRequest="30" Aspect="AspectFit" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Player button"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShowPlayer"/></Image.GestureRecognizers></Image>
+                    <Image Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" VerticalOptions="CenterAndExpand" HeightRequest="35" WidthRequest="35" Aspect="AspectFit" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseAccessible}"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlayPause"/></Image.GestureRecognizers></Image>
 					<StackLayout x:Name="stackPodcastTitle" VerticalOptions="CenterAndExpand" HorizontalOptions="FillAndExpand" Spacing="0" Padding="0">
 						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentEpisodeTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Small" VerticalOptions="FillAndExpand" FontAttributes="Bold" LineBreakMode="TailTruncation" Style="{StaticResource playerLabelStyle}"/>
 						<Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentChannelTitle}"  HorizontalOptions="CenterAndExpand" FontSize="Micro" LineBreakMode="TailTruncation" Style="{StaticResource secondaryLabelStyle}"/>
 					</StackLayout>
-					<Image Source="ic_share_white_3x.png" VerticalOptions="CenterAndExpand" HeightRequest="30" WidthRequest="30" Aspect="AspectFit"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShare"/></Image.GestureRecognizers></Image>
+                    <Image Source="ic_share_white_3x.png" VerticalOptions="CenterAndExpand" HeightRequest="30" WidthRequest="30" Aspect="AspectFit" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share button"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnShare"/></Image.GestureRecognizers></Image>
 				</StackLayout>
 			</StackLayout>
 		</StackLayout>

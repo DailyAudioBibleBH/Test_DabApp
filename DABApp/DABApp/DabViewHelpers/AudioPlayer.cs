@@ -96,6 +96,7 @@ namespace DABApp
 									_IsPlaying = Player.IsPlaying;
 									OnPropertyChanged("PlayPauseButtonImageBig");
 									OnPropertyChanged("PlayPauseButtonImage");
+                                    OnPropertyChanged("PlayPauseAccessible");
 									if (IsPlaying)
 									{
 										UpdatePlay();
@@ -216,6 +217,25 @@ namespace DABApp
 				throw new Exception("You can't set this directly.");
 			}
 		}
+
+        public string PlayPauseAccessible
+        {
+            get
+            {
+                if (IsPlaying)
+                {
+                    return "Pause button";
+                }
+                else
+                {
+                    return "Play button";
+                }
+            }
+            set
+            {
+                throw new Exception("You can't set this directly.");
+            }
+        }
 
 		public string PlayPauseButtonImageBig
 		{

@@ -79,6 +79,15 @@ namespace DABApp
             {
                 unTouched = Episode.is_listened_to == "listened" ? true : false;
                 OnPropertyChanged("listenedToVisible");
+                OnPropertyChanged("listenAccessible");
+            }
+        }
+
+        public string listenAccessible
+        {
+            get
+            {
+                return listenedToVisible ? "listen to status Completed": "listen to status not completed";
             }
         }
 
@@ -93,6 +102,7 @@ namespace DABApp
                 Episode.is_favorite = value;
                 OnPropertyChanged("favoriteVisible");
                 OnPropertyChanged("favoriteSource");
+                OnPropertyChanged("favoriteAccessible");
             }
         }
 
@@ -112,6 +122,14 @@ namespace DABApp
                 {
                     return Episode.is_favorite ? "ic_star_white.png" : "ic_star_border_white.png";
                 }
+            }
+        }
+
+        public string favoriteAccessible
+        {
+            get
+            {
+                return Episode.is_favorite ? "favorite status favorited": "favorite status not favorited";
             }
         }
 
