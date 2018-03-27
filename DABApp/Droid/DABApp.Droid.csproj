@@ -265,6 +265,7 @@
     <Compile Include="CustomRenderers\DabAudioOutputRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabButtonRenderer.cs" />
+    <Compile Include="CustomRenderers\DabCachedImageRenderer.cs" />
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
     <Compile Include="CustomRenderers\DabEntryRenderer.cs" />
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />

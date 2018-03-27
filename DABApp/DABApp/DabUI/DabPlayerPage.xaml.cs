@@ -386,6 +386,7 @@ namespace DABApp
 		{
 			Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
 			Favorite.Image = Episode.favoriteSource;
+            AutomationProperties.SetHelpText(Favorite, Episode.favoriteAccessible);
 			PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
 			AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
 		}
@@ -405,6 +406,7 @@ namespace DABApp
                 AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
             Completed.Image = Episode.listenedToSource;
+            AutomationProperties.SetHelpText(Completed, Episode.listenAccessible);
         }
 	}
 }

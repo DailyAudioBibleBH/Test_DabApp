@@ -89,6 +89,7 @@ namespace DABApp
             {
                 return listenedToVisible ? "listen to status Completed": "listen to status not completed";
             }
+            set { throw new Exception("You cannot set this directly"); }
         }
 
         public bool favoriteVisible
@@ -131,6 +132,7 @@ namespace DABApp
             {
                 return Episode.is_favorite ? "favorite status favorited": "favorite status not favorited";
             }
+            set { throw new Exception("You cannot set this directly"); }
         }
 
         public string listenedToSource

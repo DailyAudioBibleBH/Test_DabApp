@@ -8,7 +8,7 @@
     </t:MenuContainerPage.Resources>
     <t:MenuContainerPage.Content>
         <RelativeLayout x:Name="ListenContainer">
-            <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
+            <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" AutomationProperties.IsInAccessibleTree="false"/>
             <StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
                 <StackLayout Padding="20, 20, 20, 0" Spacing="10">
                     <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="Black">
@@ -25,7 +25,7 @@
                   <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
                   <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528" AutomationProperties.IsInAccessibleTree="true"/>
                   <ContentView Padding="40, 10, 40, 0">
-                    <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
+                    <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true"/>
                   </ContentView>
                 </StackLayout>
                 <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="20, 0, 20, 0"/>
@@ -33,7 +33,7 @@
                   <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
                   <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
                 </StackLayout>
-                <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls" AutomationProperties.IsInAccessibleTree="false">
+                <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
                   <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                   </Grid.RowDefinitions>
@@ -74,9 +74,9 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="3*"/>
                   </Grid.ColumnDefinitions>
-                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding favoriteAccessible}"/>
+                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding favoriteAccessible}" AutomationProperties.Name="Favorite"/>
                   <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Change audio source"/>
-                  <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share button"/>
+                  <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share button" AutomationProperties.Name="Share"/>
                 </Grid>
                 <StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" BackgroundColor="{DynamicResource MarkCompletedBackground}" Padding="0, 10, 0, 10">
                     <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding listenAccessible}"/>
