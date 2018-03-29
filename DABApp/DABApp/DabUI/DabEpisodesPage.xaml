@@ -17,11 +17,11 @@
                 <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
               </StackLayout>
             </RelativeLayout>
-            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" BackgroundColor="Transparent" TextColor="{DynamicResource SecondaryTextColor}"  />
             <StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
               <Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
             </StackLayout>
+            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="CenterAndExpand" Style="{StaticResource monthPickerStyle}"/>
             <BoxView HorizontalOptions="FillAndExpand"/>
           </StackLayout>
         </ListView.Header>

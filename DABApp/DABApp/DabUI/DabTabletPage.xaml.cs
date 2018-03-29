@@ -27,15 +27,9 @@ namespace DABApp
             _height = this.Height;
             ReadText.EraseText = true;
             ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
-            if (Device.RuntimePlatform == "Android" && Device.Idiom == TargetIdiom.Tablet)
-            {
-                if (GlobalResources.Instance.ScreenSize < 1000)
-                {
-                    PlayerOverlay.Padding = new Thickness(25, 10, 25, 25);
-                    EpDescription.Margin = new Thickness(40, 0, 40, 0);
-                    JournalContent.HeightRequest = 450;
-                }
-            }
+            PlayerOverlay.Padding = new Thickness(25, 10, 25, 25);
+            EpDescription.Margin = new Thickness(40, 0, 40, 0);
+            JournalContent.HeightRequest = 450;
             SegControl.ValueChanged += Handle_ValueChanged;
             _resource = resource;
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -47,7 +41,8 @@ namespace DABApp
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
-                Months.Items.Add(month);
+                var m = MonthConverter.ConvertToFull(month);
+                Months.Items.Add(m);
             }
 
             Months.Items.Add("My Journals");
@@ -570,20 +565,25 @@ namespace DABApp
             if (width > height)
             {
                 BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
+                CenterVoid.Width = new GridLength(6, GridUnitType.Star);
+                SegControlContainer.Padding = new Thickness(200, 20, 200, 0);
                 BackgroundImage.Aspect = Aspect.Fill;
                 var size = 60;
-                if (GlobalResources.Instance.ScreenSize < 1000 && Device.RuntimePlatform == "Android")
-                {
-                    PlayPause.WidthRequest = size;
-                    PlayPause.HeightRequest = size;
-                    Initializer.WidthRequest = size;
-                    Initializer.HeightRequest = size;
-                }
+                PlayPause.WidthRequest = size;
+                PlayPause.HeightRequest = size;
+                Initializer.WidthRequest = size;
+                Initializer.HeightRequest = size;
+                backwardButton.Margin = 7;
+                forwardButton.Margin = 7;
             }
             else
             {
                 BesidesPlayer.Height = new GridLength(2, GridUnitType.Star);
+                SegControlContainer.Padding = new Thickness(20, 20, 20, 0);
+                CenterVoid.Width = new GridLength(4, GridUnitType.Star);
                 BackgroundImage.Aspect = Aspect.AspectFill;
+                backwardButton.Margin = 5;
+                forwardButton.Margin = 5;
                 if (GlobalResources.Instance.ScreenSize < 1000)
                 {
                     PlayPause.WidthRequest = 90;
@@ -626,7 +626,7 @@ namespace DABApp
                 {
                     if (Months.SelectedIndex >= 0)
                     {
-                        EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).Select(x => new EpisodeViewModel(x)).ToList();
+                        EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
                     }
                 }
             }

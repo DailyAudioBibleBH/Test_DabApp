@@ -387,13 +387,16 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_outline_blank_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\progress_done.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\progress_pending.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_black.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -25,7 +25,7 @@ namespace DABApp
             cloud1 = CreateImage("ic_cloud_download_white");
             cloud2 = CreateImage("cloud_teal");
             cloud1.Opacity = .5;
-            cloud2.Opacity = .5;
+            //cloud2.Opacity = .5;
             cloud2.IsVisible = false;
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(15) });
