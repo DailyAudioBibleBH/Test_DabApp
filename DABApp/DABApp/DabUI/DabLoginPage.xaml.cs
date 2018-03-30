@@ -35,6 +35,7 @@ namespace DABApp
 				Logo.WidthRequest = 250;
 				Logo.Aspect = Aspect.AspectFit;
 			}
+            SignUp.IsSelectable = false;
 			var tapper = new TapGestureRecognizer();
 			tapper.NumberOfTapsRequired = 1;
 			tapper.Tapped += (sender, e) =>

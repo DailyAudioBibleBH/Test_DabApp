@@ -23,7 +23,7 @@ namespace DABApp.Droid
 			{
 				Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
 			}
-            Control?.SetTextIsSelectable(true);
+            Control?.SetTextIsSelectable(((HtmlLabel)Element).IsSelectable);
 		}
 
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -37,7 +37,7 @@ namespace DABApp.Droid
 					Control?.SetText(Html.FromHtml(Element.Text), TextView.BufferType.Spannable);
 				}
 			}
-            Control?.SetTextIsSelectable(true);
+            Control?.SetTextIsSelectable(((HtmlLabel)Element).IsSelectable);
 		}
 	}
 }
