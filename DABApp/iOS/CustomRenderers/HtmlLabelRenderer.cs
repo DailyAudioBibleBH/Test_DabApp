@@ -38,7 +38,7 @@ namespace DABApp.iOS
 				if (Control != null && Element != null && !string.IsNullOrWhiteSpace(Element.Text))
 				{
 					SetHtml();
-                    Control.UserInteractionEnabled = true;
+                    Control.UserInteractionEnabled = ((HtmlLabel)Element).IsSelectable;
 				}
 			}
 		}
