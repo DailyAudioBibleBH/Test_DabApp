@@ -16,10 +16,15 @@ namespace DABApp
 		dbEpisodes episode;
 		Resource _resource;
 		bool IsUnInitialized = true;
+        private double _width;
+        private double _height;
+        private int number;
 
 		public DabChannelsPage()
 		{
 			InitializeComponent();
+            _width = Width;
+            _height = Height;
 			////Choose a different control template to disable built in scroll view
 			//ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			//this.ControlTemplate = playerBarTemplate;
@@ -52,12 +57,15 @@ namespace DABApp
 			//}
 
 			var remainder = ChannelView.resources.Count() % GlobalResources.Instance.FlowListViewColumns;
-			var number = ChannelView.resources.Count() / GlobalResources.Instance.FlowListViewColumns;
+			number = ChannelView.resources.Count() / GlobalResources.Instance.FlowListViewColumns;
 			if (remainder != 0) {
 				number += 1;
 			}
-			ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
-            
+            if (GlobalResources.Instance.ThumbnailImageHeight != 0)
+            {
+                ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
+            }
+            else ChannelsList.HeightRequest = 1000;
 			//banner.Source = new UriImageSource
 			//{
 			//	Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? ChannelView.banner.urlPhone : ChannelView.banner.urlTablet)),
@@ -186,6 +194,10 @@ namespace DABApp
 			MessagingCenter.Send<string>("Setup", "Setup");
 		//	var start = DateTime.Now;
 		    base.OnAppearing();
+            if (ChannelsList.HeightRequest == 1000 && GlobalResources.Instance.ThumbnailImageHeight != 0)
+            {
+                ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
+            }
             //TimedActions();
 		//	if (episode == null)
 		//	{
@@ -225,7 +237,12 @@ namespace DABApp
 
         protected override void OnSizeAllocated(double width, double height)
         {
+            double oldwidth = _width;
             base.OnSizeAllocated(width, height);
+            if (Equals(_width, width) && Equals(_height, height)) return;
+            _width = width;
+            _height = height;
+            if (Equals(oldwidth, -1)) return;
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 GlobalResources.Instance.FlowListViewColumns = width > height ? 4 : 3;

@@ -97,6 +97,11 @@ namespace DABApp
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
         {
+            if (Device.RuntimePlatform == "Android" && Device.Idiom == TargetIdiom.Tablet)
+            {
+                SegControl.IsVisible = false;
+                SegControl.IsVisible = true;
+            }
             switch (SegControl.SelectedSegment)
             {
                 case 0:
