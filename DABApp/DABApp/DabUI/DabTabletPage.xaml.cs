@@ -570,7 +570,9 @@ namespace DABApp
             if (width > height)
             {
                 BesidesPlayer.Height = new GridLength(1, GridUnitType.Star);
-                CenterVoid.Width = new GridLength(6, GridUnitType.Star);
+                CenterVoid.Width = new GridLength(8, GridUnitType.Star);
+                LeftVoid.Width = new GridLength(38, GridUnitType.Star);
+                RightVoid.Width = new GridLength(38, GridUnitType.Star);
                 SegControlContainer.Padding = new Thickness(200, 20, 200, 0);
                 BackgroundImage.Aspect = Aspect.Fill;
                 var size = 60;
@@ -586,6 +588,8 @@ namespace DABApp
                 BesidesPlayer.Height = new GridLength(2, GridUnitType.Star);
                 SegControlContainer.Padding = new Thickness(20, 20, 20, 0);
                 CenterVoid.Width = new GridLength(4, GridUnitType.Star);
+                LeftVoid.Width = new GridLength(24, GridUnitType.Star);
+                RightVoid.Width = new GridLength(24, GridUnitType.Star);
                 BackgroundImage.Aspect = Aspect.AspectFill;
                 backwardButton.Margin = 5;
                 forwardButton.Margin = 5;
