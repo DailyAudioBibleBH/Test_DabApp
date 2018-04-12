@@ -7,9 +7,9 @@
       </Image>
 			<Frame/>
 			<Label Text="Email" FontSize="Micro" VerticalOptions="End"/>
-			<local:DarkKeyboardEntry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted"/>
+			<local:DarkKeyboardEntry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}"/>
 			<Label Text="Password" FontSize="Micro" VerticalOptions="Center"/>
-			<local:DarkKeyboardEntry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin"/>
+			<local:DarkKeyboardEntry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}"/>
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
