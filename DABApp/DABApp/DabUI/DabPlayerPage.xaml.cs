@@ -324,12 +324,12 @@ namespace DABApp
             JournalWarning.IsEnabled = false;
             AuthenticationAPI.ConnectJournal();
 			Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
-            await Task.Delay(2000);
+            await Task.Delay(1000);
             if (!JournalTracker.Current.IsConnected)
             {
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
-            JournalWarning.IsEnabled = false;
+            JournalWarning.IsEnabled = true;
         }
 
 		void OnReconnecting(object o, EventArgs e)
