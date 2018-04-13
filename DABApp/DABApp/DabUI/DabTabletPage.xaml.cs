@@ -390,14 +390,21 @@ namespace DABApp
             Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
         }
 
-        void OnReconnect(object o, EventArgs e)
+        async void OnReconnect(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
             //{
             //	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
             //});
+            JournalWarning.IsEnabled = false;
             AuthenticationAPI.ConnectJournal();
             Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
+            await Task.Delay(2000);
+            if (!JournalTracker.Current.IsConnected)
+            {
+                await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
+            }
+            JournalWarning.IsEnabled = true;
         }
 
         void OnReconnecting(object o, EventArgs e)
