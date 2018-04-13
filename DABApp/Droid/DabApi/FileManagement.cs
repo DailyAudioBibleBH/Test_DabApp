@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -92,16 +93,18 @@ namespace DABApp.Droid
             var b = e.Cancelled || e.Error != null;
             var a = new DabEventArgs(_episode.id.Value, -1, b);
             progress = -.01;
+            Debug.WriteLine($"Download completed for {_episode.id.Value}");
             EpisodeCompleted?.Invoke(sender, a);
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             double pp = (((double)e.ProgressPercentage) / 100.00);
-            if (pp > progress + .1)
+            if (pp > progress + .1 && pp < 1)
             {
                 progress = pp;
                 var a = new DabEventArgs(_episode.id.Value, pp);
+                Debug.WriteLine($"Download Progress: {pp}");
                 EpisodeDownloading?.Invoke(sender, a);
             }
         }
