@@ -103,24 +103,25 @@ namespace DABApp
                 }
                 else
                 {
+                    var num = 15000;
                     var t = AuthenticationAPI.GetDonations();
                     Donation[] dons = new Donation[] { };
-                    if (t == await Task.WhenAny(t, Task.Delay(15000)))
+                    if (t == await Task.WhenAny(t, Task.Delay(num)))
                     {
                         dons = await AuthenticationAPI.GetDonations();
                     }
-                    else await DisplayAlert("Request Timeout exceeded", "This may be a server or internet connectivity issue.", "OK");
+                    else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
                     if (dons != null)
                     {
                         if (dons.Length == 1)
                         {
                             String url = "";
                             var ask = PlayerFeedAPI.PostDonationAccessToken();
-                            if (ask == await Task.WhenAny(ask, Task.Delay(15000)))
+                            if (ask == await Task.WhenAny(ask, Task.Delay(num)))
                             {
                                 url = await PlayerFeedAPI.PostDonationAccessToken();
                             }
-                            else await DisplayAlert("Request Timeout exceeded", "This may be a server or internet connectivity issue.", "OK");
+                            else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
                             if (url.StartsWith("http"))
                             {
                                 DependencyService.Get<IRivets>().NavigateTo(url);

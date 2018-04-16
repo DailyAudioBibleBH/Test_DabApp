@@ -34,7 +34,7 @@
 					</DataTemplate>
 				</local:NonScrollingListView.ItemTemplate>
 			</local:NonScrollingListView>
-			<ScrollView Grid.Row="1" Grid.Column="1">
+			<ScrollView Grid.Row="1" Grid.Column="1" BackgroundColor="{DynamicResource PageBackgroundColor}">
 				<StackLayout x:Name="ContentContainer" Padding="10" IsVisible="false">
 					<local:HtmlLabel x:Name="Content" Text="{Binding content}"/>
 				</StackLayout>

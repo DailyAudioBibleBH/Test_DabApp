@@ -10,10 +10,18 @@ namespace DABApp
 		static bool _fromPlayer;
 		static bool _fromDonation;
         int TapNumber = 0;
+        private double _width;
+        private double _height;
 
-		public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
+        public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
 		{
 			InitializeComponent();
+            _width = this.Width;
+            _height = this.Height;
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
+            }
 			NavigationPage.SetHasNavigationBar(this, false);
 			_fromPlayer = fromPlayer;
 			_fromDonation = fromDonation;
@@ -27,6 +35,7 @@ namespace DABApp
 				Logo.WidthRequest = 250;
 				Logo.Aspect = Aspect.AspectFit;
 			}
+            SignUp.IsSelectable = false;
 			var tapper = new TapGestureRecognizer();
 			tapper.NumberOfTapsRequired = 1;
 			tapper.Tapped += (sender, e) =>
@@ -204,5 +213,24 @@ namespace DABApp
                 }
             }
         }
-	}
+
+        //protected override void OnSizeAllocated(double width, double height)
+        //{
+        //    double oldwidth = _width;
+        //    base.OnSizeAllocated(width, height);
+        //    if (Equals(_width, width) && Equals(_height, height)) return;
+        //    _width = width;
+        //    _height = height;
+        //    if (Equals(oldwidth, -1)) return;
+        //    if (width > height)
+        //    {
+        //        Logo.WidthRequest = Device.RuntimePlatform == "Android" ? 300 : 400;
+        //        Logo.VerticalOptions = LayoutOptions.Start;
+        //    }
+        //    else
+        //    {
+        //        Logo.VerticalOptions = LayoutOptions.EndAndExpand;
+        //    }
+        //}
+    }
 }

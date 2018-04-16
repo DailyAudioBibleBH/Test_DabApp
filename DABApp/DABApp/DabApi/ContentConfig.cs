@@ -264,4 +264,36 @@ namespace DABApp
 			topicId = TopicId;
 		}
 	}
+
+    public static class MonthConverter
+    {
+        public static string ConvertToFull(string ShortHand)
+        {
+            switch (ShortHand)
+            {
+                case ("Jan"):
+                    return "January";
+                case ("Feb"):
+                    return "February";
+                case ("Mar"):
+                    return "March";
+                case ("Apr"):
+                    return "April";
+                case ("Jun"):
+                    return "June";
+                case ("Jul"):
+                    return "July";
+                case ("Aug"):
+                    return "August";
+                case ("Sep"):
+                    return "September";
+                case ("Nov"):
+                    return "November";
+                case ("Dec"):
+                    return "December";
+                default:
+                    return ShortHand;
+            }
+        }
+    }
 }

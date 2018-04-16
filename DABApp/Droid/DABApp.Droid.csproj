@@ -53,6 +53,9 @@
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidSupportedAbis />
+    <AndroidTlsProvider>btls</AndroidTlsProvider>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DLToolkit.Forms.Controls.FlowListView, Version=1.0.6542.36915, Culture=neutral, processorArchitecture=MSIL">
@@ -71,10 +74,10 @@
       <HintPath>..\packages\Xamarin.Forms.2.5.0.121934\lib\MonoAndroid10\FormsViewGroup.dll</HintPath>
     </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
     </Reference>
     <Reference Include="SlideOverKit, Version=1.0.6507.24362, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SlideOverKit.2.1.5\lib\MonoAndroid10\SlideOverKit.dll</HintPath>
@@ -388,13 +391,16 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_outline_blank_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\progress_done.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\progress_pending.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_black.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -30,7 +30,8 @@ namespace DABApp
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
-                Months.Items.Add(month);
+                var m = MonthConverter.ConvertToFull(month);
+                Months.Items.Add(m);
             }
             Months.Items.Add("My Journals");
             Months.Items.Add("My Favorites");
@@ -152,7 +153,7 @@ namespace DABApp
                 }
                 else
                 {
-                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]).Select(x => new EpisodeViewModel(x)).ToList();
+                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
                     //EpisodeList.ItemsSource = list;
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }

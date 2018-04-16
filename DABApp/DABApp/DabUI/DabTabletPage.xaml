@@ -25,55 +25,55 @@
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
                 <Label x:Name="EpDescription" Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
             </StackLayout>
+            <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" UserInteraction="OnTouched" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="50, 0, 50, 0"/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings" Margin="50, 0, 50, 0">
+              <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+              <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+            </StackLayout>
             <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="24*" />
+                <ColumnDefinition x:Name="LeftVoid" Width="24*" />
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="10*" />
                 <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="24*" />
+                <ColumnDefinition x:Name="RightVoid" Width="24*" />
               </Grid.ColumnDefinitions>
-              <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Rewind 30 seconds"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
-              <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseAccessible}"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
-              <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Play button"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
-              <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Fast forward 30 seconds"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
+              <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Margin="5"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
+              <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
+              <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
+              <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Margin="5"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
             </Grid>
-            <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" UserInteraction="OnTouched" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" />
-            <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings">
-              <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
-              <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
-            </StackLayout>
             <Grid VerticalOptions="EndAndExpand" x:Name="ExtraControls" Padding="0, 0, 5, 0">
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="4*" />
+                <ColumnDefinition x:Name="CenterVoid" Width="4*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="20" Padding="20, 5, 20, 5">
+              <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="15" Padding="20, 5, 20, 5">
               <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
-                <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding listenAccessible}"/>
-                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" AutomationProperties.IsInAccessibleTree="true">
+                <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20"/>
+                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}">
                   <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnListened"/>
                   </Label.GestureRecognizers>
                 </Label>
               </StackLayout>
               </Frame>
-              <Image x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="40" HeightRequest="40" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="{Binding favoriteAccessible}">
+              <Image x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnFavorite"/>
                 </Image.GestureRecognizers>
               </Image>
-              <local:AudioOutputView x:Name="Output" WidthRequest="40" HeightRequest="40" Grid.Row="0" Grid.Column="3" />
-              <Image x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="40" HeightRequest="40" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share Button">
+              <local:AudioOutputView x:Name="Output" WidthRequest="20" HeightRequest="20" Grid.Row="0" Grid.Column="3" />
+              <Image x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnShare"/>
                 </Image.GestureRecognizers>
@@ -99,7 +99,7 @@
         </ListView>
       </StackLayout>
       <StackLayout Grid.Row="1" Grid.Column="1">
-        <StackLayout Padding="20, 20, 20, 0" Spacing="10">
+        <StackLayout x:Name="SegControlContainer" Padding="20, 20, 20, 0" Spacing="10">
           <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="{DynamicResource PageBackgroundColor}">
             <controls:SegmentedControl.Children>
               <controls:SegmentedControlOption Text="Archive" />
@@ -114,7 +114,7 @@
         <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode" IsPullToRefreshEnabled="true" Refreshing="OnRefresh">
 		<ListView.Header>
             <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
-              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" BackgroundColor="Transparent" TextColor="White" />
+              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" Style="{StaticResource monthPickerStyle}" Margin="0, 10, 20, 10"/>
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}" />
               <Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline" />
             </StackLayout>
@@ -175,7 +175,7 @@
             <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand" />
           </StackLayout>
           <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="650" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" />
-          <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved.  Click here to try and reconnect." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}" AutomationProperties.IsInAccessibleTree="true">
+          <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved.  Click here to try and reconnect." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}" >
             <Label.GestureRecognizers>
               <TapGestureRecognizer Tapped="OnReconnect"/>
             </Label.GestureRecognizers>

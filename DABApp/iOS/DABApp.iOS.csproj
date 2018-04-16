@@ -92,6 +92,12 @@
     <Reference Include="MarkDownDeep.iOS">
       <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="SegmentedControl.FormsPlugin.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="SegmentedControl.FormsPlugin.iOS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.iOS.dll</HintPath>
+    </Reference>
     <Reference Include="SocketIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SocketIoClientDotNet.1.0.5\lib\netstandard1.3\SocketIoClientDotNet.dll</HintPath>
     </Reference>
@@ -175,12 +181,6 @@
     </Reference>
     <Reference Include="Plugin.Connectivity">
       <HintPath>..\packages\Xam.Plugin.Connectivity.3.0.2\lib\Xamarin.iOS10\Plugin.Connectivity.dll</HintPath>
-    </Reference>
-    <Reference Include="SegmentedControl.FormsPlugin.Abstractions">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="SegmentedControl.FormsPlugin.iOS">
-      <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.iOS.dll</HintPath>
     </Reference>
     <Reference Include="HockeySDK">
       <HintPath>..\packages\HockeySDK.Xamarin.5.0.0\lib\Xamarin.iOS10\HockeySDK.dll</HintPath>
@@ -461,16 +461,16 @@
     <BundleResource Include="Resources\ic_check_box_outline_blank_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\progress_done.png" />
+    <BundleResource Include="Resources\cloud_w_circle_gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\cloud_teal.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\progress_pending.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\cloud_w_circle_gray.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\cloud_teal.png" />
+    <BundleResource Include="Resources\progress_done.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.5.0.121934\build\netstandard1.0\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.5.0.121934\build\netstandard1.0\Xamarin.Forms.targets')" />
