@@ -16,9 +16,9 @@
 				<Button Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
 				<Button x:Name="GuestLogin" Text="Log in as Guest" Clicked="OnGuestLogin" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
-			<!--<Frame OutlineColor="#333333" VerticalOptions="EndAndExpand">-->
+			<Frame OutlineColor="{DynamicResource OutlineColor}" VerticalOptions="End" HeightRequest="40" Margin="20, 30, 20, 30">
 				<local:HtmlLabel x:Name="SignUp" VerticalOptions="End" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
-			<!--</Frame>-->
+			</Frame>
 			<!--<Button Text="Don't have an account? Sign up!" VerticalOptions="End" Clicked="OnSignUp" BorderWidth="2" BorderColor="#333333"/>-->
 		</StackLayout>
 	</ContentPage.Content>
