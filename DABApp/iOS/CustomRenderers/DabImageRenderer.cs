@@ -15,6 +15,7 @@ namespace DABApp.iOS
 			base.OnElementChanged(e);
 			if (Control != null)
 			{
+                Control.IsAccessibilityElement = true;
 				//var size = Control.Image.Size;
 				//UIGraphics.BeginImageContextWithOptions(size, false, 0);
 				//var context = UIGraphics.GetCurrentContext();
