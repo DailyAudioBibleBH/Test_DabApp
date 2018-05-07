@@ -74,8 +74,8 @@
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.9</string>
+	<string>1.0.10</string>
 	<key>CFBundleVersion</key>
-	<string>20180416</string>
+	<string>20180427</string>
 </dict>
 </plist>
