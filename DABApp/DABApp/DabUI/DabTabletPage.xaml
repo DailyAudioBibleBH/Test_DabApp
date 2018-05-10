@@ -18,8 +18,11 @@
       </Grid.ColumnDefinitions>
       <!--<StackLayout Grid.Row="0" Grid.ColumnSpan="2">-->
         <RelativeLayout Grid.Row="0" Grid.ColumnSpan="2">
-          <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
+          <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" AutomationProperties.IsInAccessibleTree="false"/>
           <StackLayout Padding="25" x:Name="PlayerOverlay" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+            <StackLayout.AutomationProperties.IsInAccessibleTree>
+              <OnPlatform x:TypeArguments="x:Boolean" iOS="false" Android="true"/>
+            </StackLayout.AutomationProperties.IsInAccessibleTree>
             <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
               <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
@@ -41,10 +44,10 @@
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition x:Name="RightVoid" Width="24*" />
               </Grid.ColumnDefinitions>
-              <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Back 30 seconds"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
-              <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause button"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
-              <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause button"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
-              <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Forward 30 seconds"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
+              <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Back 30 seconds" AutomationProperties.IsInAccessibleTree="true"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnBack30"/></Image.GestureRecognizers></Image>
+              <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnPlay"/></Image.GestureRecognizers></Image>
+              <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnInitialized"/></Image.GestureRecognizers></Image>
+              <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Forward 30 seconds" AutomationProperties.IsInAccessibleTree="true"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnForward30"/></Image.GestureRecognizers></Image>
             </Grid>
             <Grid VerticalOptions="EndAndExpand" x:Name="ExtraControls" Padding="0, 0, 5, 0">
               <Grid.RowDefinitions>
@@ -60,24 +63,24 @@
               <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="15" Padding="20, 5, 20, 5">
               <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
                 <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20"/>
-                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}">
+                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
                   <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnListened"/>
                   </Label.GestureRecognizers>
                 </Label>
               </StackLayout>
               </Frame>
-              <Image x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20">
+              <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Favorite button">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnFavorite"/>
                 </Image.GestureRecognizers>
-              </Image>
-              <local:AudioOutputView x:Name="Output" WidthRequest="20" HeightRequest="20" Grid.Row="0" Grid.Column="3" />
-              <Image x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20">
+              </local:PlayerImage>
+              <local:AudioOutputView x:Name="Output" WidthRequest="20" HeightRequest="20" Grid.Row="0" Grid.Column="3" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Change Audio Output"/>
+              <local:PlayerImage x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share button">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnShare"/>
                 </Image.GestureRecognizers>
-              </Image>
+              </local:PlayerImage>
             </Grid>
           </StackLayout>
         </RelativeLayout>

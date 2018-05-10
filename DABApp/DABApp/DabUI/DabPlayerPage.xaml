@@ -8,8 +8,8 @@
     </t:MenuContainerPage.Resources>
     <t:MenuContainerPage.Content>
         <RelativeLayout x:Name="ListenContainer">
-            <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type}"/>
-            <StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+            <local:BackgroundImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"  AutomationProperties.IsInAccessibleTree="false"/>
+            <StackLayout x:Name="Container" VerticalOptions="FillAndExpand" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" AutomationProperties.IsInAccessibleTree="false">
                 <StackLayout Padding="20, 20, 20, 0" Spacing="10">
                     <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="Black">
                         <controls:SegmentedControl.Children>
@@ -20,7 +20,7 @@
             </controls:SegmentedControl>
                     <BoxView x:Name="Divider" IsVisible="false" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />
                 </StackLayout>
-              <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand">
+              <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" AutomationProperties.IsInAccessibleTree="false">
                 <StackLayout VerticalOptions="CenterAndExpand">
                   <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
                   <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
@@ -44,26 +44,26 @@
                     <ColumnDefinition Width="17*" />
                     <ColumnDefinition Width="17*" />
                   </Grid.ColumnDefinitions>
-                  <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Aspect="AspectFit" AutomationProperties.HelpText="Back 30 seconds">
+                  <local:PlayerImage x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Aspect="AspectFit" AutomationProperties.HelpText="Back 30 seconds" AutomationProperties.IsInAccessibleTree="true">
                     <Image.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnBack30"/>
                     </Image.GestureRecognizers>
-                  </Image>
-                  <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button">
+                  </local:PlayerImage>
+                  <local:PlayerImage x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true">
                     <Image.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnPlay"/>
                     </Image.GestureRecognizers>
-                  </Image>
-                  <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button">
+                  </local:PlayerImage>
+                  <local:PlayerImage x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true">
                     <Image.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnInitialized"/>
                     </Image.GestureRecognizers>
-                  </Image>
-                  <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Aspect="AspectFit" AutomationProperties.HelpText="Forward 30 seconds">
+                  </local:PlayerImage>
+                  <local:PlayerImage x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Aspect="AspectFit" AutomationProperties.HelpText="Forward 30 seconds" AutomationProperties.IsInAccessibleTree="true">
                     <Image.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnForward30"/>
                     </Image.GestureRecognizers>
-                  </Image>
+                  </local:PlayerImage>
                 </Grid>
                 <Grid VerticalOptions="EndAndExpand" Padding="0, 0, 0, 20">
                   <Grid.RowDefinitions>
@@ -103,7 +103,7 @@
 						<Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
 					</StackLayout>
                     <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" FontSize="Small" HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}"/>
-                  <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved.  Click here to try and reconnect." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  VerticalOptions="EndAndExpand">
+                  <Label x:Name="JournalWarning" Text="You must be connected to the journal server inorder for changes to be saved.  Click here to try and reconnect." Style="{StaticResource warningLabelStyle}"  IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"  VerticalOptions="EndAndExpand" AutomationProperties.IsInAccessibleTree="true">
                     <Label.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnReconnect"/>
                     </Label.GestureRecognizers>

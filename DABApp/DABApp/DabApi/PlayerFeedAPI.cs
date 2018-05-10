@@ -146,9 +146,9 @@ namespace DABApp
 					case "Three Days":
 						cutoffTime = DateTime.Now.AddDays(-3);
 						break;
-					case "One Week":
+					default:
 						cutoffTime = DateTime.Now.AddDays(-7);
-						break;
+                        break;
 					//case "One Month":
 					//	cutoffTime = DateTime.Now.AddMonths(-1);
 					//	break;

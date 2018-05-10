@@ -15,22 +15,25 @@ namespace DABApp.iOS
 
         protected override void OnElementChanged(ElementChangedEventArgs<Xamarin.Forms.View> e)
         {
-            //try
-            //{
-            MPVolumeView control = new MPVolumeView();
-            control.ShowsVolumeSlider = false;
-            UIImage image = new UIImage();
-            image = UIImage.FromBundle("airplay");
-            control.SetRouteButtonImage(image, UIControlState.Normal);
-            control.SetRouteButtonImage(image, UIControlState.Highlighted);
-            control.SetRouteButtonImage(image, UIControlState.Disabled);
-            control.SetRouteButtonImage(image, UIControlState.Selected);
-            SetNativeControl(control);
-            //}
-            //catch (Exception ex) 
-            //{
-            //	Debug.WriteLine($"Error in ColoredMPVolumeView iOS Renderer: {ex.Message}");
-            //}
+            try
+            {
+                MPVolumeView control = new MPVolumeView();
+                control.ShowsVolumeSlider = false;
+                UIImage image = new UIImage();
+                image = UIImage.FromBundle("airplay");
+                control.SetRouteButtonImage(image, UIControlState.Normal);
+                control.SetRouteButtonImage(image, UIControlState.Highlighted);
+                control.SetRouteButtonImage(image, UIControlState.Disabled);
+                control.SetRouteButtonImage(image, UIControlState.Selected);
+                if (Element != null)
+                {
+                    SetNativeControl(control);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in ColoredMPVolumeView iOS Renderer: {ex.Message}");
+            }
         }
 
     }

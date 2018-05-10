@@ -16,16 +16,20 @@ using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using DABApp.Droid;
+using DABApp;
 
-[assembly: ExportRenderer(typeof(CachedImage), typeof(DabCachedImageRenderer))]
+[assembly: ExportRenderer(typeof(BackgroundImage), typeof(DabCachedImageRenderer))]
 namespace DABApp.Droid
 {
-    public class DabCachedImageRenderer: CachedImageRenderer
+    public class DabCachedImageRenderer : CachedImageRenderer
     {
         protected override void OnElementChanged(ElementChangedEventArgs<CachedImage> e)
         {
             base.OnElementChanged(e);
-            Control.AccessibilityLiveRegion = AccessibilityLiveRegion.Assertive;
+            Control.Focusable = false;
+            Control.Enabled = false;
+            Control.ImportantForAccessibility = ImportantForAccessibility.No;
+            Control.AccessibilityLiveRegion = AccessibilityLiveRegion.None;
         }
     }
 }

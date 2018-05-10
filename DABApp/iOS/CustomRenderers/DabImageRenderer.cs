@@ -4,8 +4,9 @@ using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 using CoreGraphics;
+using DABApp;
 
-[assembly: ExportRenderer(typeof(Image), typeof(DabImageRenderer))]
+[assembly: ExportRenderer(typeof(PlayerImage), typeof(DabImageRenderer))]
 namespace DABApp.iOS
 {
 	public class DabImageRenderer: ImageRenderer

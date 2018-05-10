@@ -173,9 +173,9 @@ namespace DABApp
 					{
 						Journal.IsVisible = true;
 					}
-					BackgroundImage.IsVisible = false;
-					//Divider.IsVisible = true;
-					break;
+                    BackgroundImage.IsVisible = false;
+                    //Divider.IsVisible = true;
+                    break;
 			}
 		}
 
