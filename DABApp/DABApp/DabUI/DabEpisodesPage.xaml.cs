@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Connectivity;
+using Rg.Plugins.Popup.Contracts;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -133,6 +134,11 @@ namespace DABApp
         {
             base.OnAppearing();
             TimedActions();
+        }
+
+        void OnFilters(object o, EventArgs e)
+        {
+            DependencyService.Get<IPopupNavigation>().AddPopup(new DabPopupEpisodeMenu());
         }
 
         void TimedActions()

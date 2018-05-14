@@ -127,7 +127,7 @@ namespace DABApp.Droid
 			base.OnDestroy();
 		}
 
-		void LoadCustomToolBar()
+        void LoadCustomToolBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             if (toolbar != null)

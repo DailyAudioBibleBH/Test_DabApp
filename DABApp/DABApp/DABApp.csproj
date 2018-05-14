@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DabUI\DabPopupEpisodeMenu.xaml.cs">
+      <DependentUpon>DabPopupEpisodeMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DabViewHelpers\Controls\BackgroundImage.cs" />
     <Compile Include="DabViewHelpers\Controls\CircularProgressControl.cs" />
     <Compile Include="DabViewHelpers\Controls\DabViewCell.cs" />
@@ -190,6 +193,12 @@
     </Reference>
     <Reference Include="HockeySDK, Version=5.0.6585.25313, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HockeySDK.Xamarin.5.1.2\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\HockeySDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.0.4\lib\portable-win+net45+wp8+win8+wpa81\Rg.Plugins.Popup.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.Platform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.0.4\lib\portable-win+net45+wp8+win8+wpa81\Rg.Plugins.Popup.Platform.dll</HintPath>
     </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.Abstractions, Version=1.0.6587.34229, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid10+Xamarin.iOS10\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
@@ -380,6 +389,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DabUI\DabForumTopicDetailsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DabUI\DabPopupEpisodeMenu.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
