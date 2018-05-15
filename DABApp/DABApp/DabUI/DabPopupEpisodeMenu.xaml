@@ -1,18 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-             xmlns:animation="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup" 
+                 xmlns:animation="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
              x:Class="DABApp.DabPopupEpisodeMenu" CloseWhenBackgroundIsClicked="True">
-    <!--<pages:PopupPage.Animation>
+    <pages:PopupPage.Animation>
         <animation:MoveAnimation
             PositionIn="Bottom"
             PositionOut="Bottom"
-            HasBackgroundAnimation="True"/>
-    </pages:PopupPage.Animation>-->
+            HasBackgroundAnimation="false"/>
+    </pages:PopupPage.Animation>
     <StackLayout>
+        <StackLayout.GestureRecognizers>
+            <TapGestureRecognizer Tapped="OnBackground"/>
+        </StackLayout.GestureRecognizers>
         <TableView Intent="Settings" BackgroundColor="{DynamicResource PageBackgroundColor}" VerticalOptions="EndAndExpand">
             <TableView.HasUnevenRows>
-                <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="True"/>
+                <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False"/>
             </TableView.HasUnevenRows>
             <TableRoot>
                 <TableSection x:Name="FilterBy" Title="Filter By">

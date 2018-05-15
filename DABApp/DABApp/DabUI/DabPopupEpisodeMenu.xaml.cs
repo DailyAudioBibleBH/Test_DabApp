@@ -19,13 +19,22 @@ namespace DABApp
             InitializeComponent();
         }
 
-        protected override bool OnBackButtonPressed() =>
+        protected override bool OnBackButtonPressed()
+        {
             // Return true if you don't want to close this popup page when a back button is pressed
-            false;
+            return false;
+        }
 
         // Invoked when background is clicked
-        protected override bool OnBackgroundClicked() =>
+        protected override bool OnBackgroundClicked()
+        {
             // Return false if you don't want to close this popup page when a background of the popup page is clicked
-            true;
+            return true;
+        }
+
+        private void OnBackground(object sender, EventArgs e)
+        {
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+        }
     }
 }

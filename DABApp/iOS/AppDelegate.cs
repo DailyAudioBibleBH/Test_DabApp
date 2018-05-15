@@ -32,6 +32,7 @@ namespace DABApp.iOS
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
 
             CachedImageRenderer.Init();
+            Rg.Plugins.Popup.Popup.Init();
 
 			var manager = BITHockeyManager.SharedHockeyManager;
 			manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");

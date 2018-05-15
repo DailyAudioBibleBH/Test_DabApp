@@ -54,14 +54,15 @@ namespace DABApp.Droid
 
 			base.OnCreate(bundle);
 
-			global::Xamarin.Forms.Forms.Init(this, bundle);
+            Rg.Plugins.Popup.Popup.Init(this, bundle);
+            global::Xamarin.Forms.Forms.Init(this, bundle);
 			DependencyService.Register<SocketService>();
 			DependencyService.Register<FileManagement>();
 			DependencyService.Register<StripeApiManagement>();
 			DependencyService.Register<RivetsService>();
 
 			SegmentedControlRenderer.Init();
-
+            
 			CachedImageRenderer.Init();
 
 			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
@@ -126,6 +127,14 @@ namespace DABApp.Droid
 			}
 			base.OnDestroy();
 		}
+
+        public override void OnBackPressed()
+        {
+            if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
+            {
+                Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+            }
+        }
 
         void LoadCustomToolBar()
 		{

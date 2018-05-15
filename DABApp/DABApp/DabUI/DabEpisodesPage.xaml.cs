@@ -138,7 +138,7 @@ namespace DABApp
 
         void OnFilters(object o, EventArgs e)
         {
-            DependencyService.Get<IPopupNavigation>().AddPopup(new DabPopupEpisodeMenu());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new DabPopupEpisodeMenu());
         }
 
         void TimedActions()
