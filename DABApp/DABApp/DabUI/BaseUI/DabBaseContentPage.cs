@@ -59,6 +59,7 @@ namespace DABApp
             {
                 //Menu Button
                 var menuButton = new ToolbarItem();
+                menuButton.SetValue(AutomationProperties.NameProperty, "Menu");
                 //menuButton.Text = "menu";
                 menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
                 menuButton.Icon = "ic_menu_white.png";
@@ -70,6 +71,7 @@ namespace DABApp
 
                 //Give button on the right (priority 1)
                 var giveButton = new ToolbarItem();
+                giveButton.SetValue(AutomationProperties.NameProperty, "Give");
                 giveButton.Text = "Give";
                 //giveButton.Icon = "ic_attach_money_white.png";
                 giveButton.Priority = 0; //default

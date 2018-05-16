@@ -135,6 +135,7 @@ namespace DABApp.Droid
                 SetSupportActionBar(toolbar);
                 var newMenu = LayoutInflater?.Inflate(Resource.Layout.DabToolbar, null);
                 var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
+                menu.ContentDescription = "Menu Button";
                 menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
                 var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
                 give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
