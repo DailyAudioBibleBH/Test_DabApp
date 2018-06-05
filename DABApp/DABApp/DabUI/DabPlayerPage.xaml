@@ -22,16 +22,16 @@
                 </StackLayout>
               <StackLayout x:Name="Listen" IsVisible="true" VerticalOptions="FillAndExpand" AutomationProperties.IsInAccessibleTree="false">
                 <StackLayout VerticalOptions="CenterAndExpand">
-                  <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold"/>
-                  <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528"/>
+                  <local:PlayerLabel Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
+                  <local:PlayerLabel Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Micro" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" Opacity=".6528" AutomationProperties.IsInAccessibleTree="true"/>
                   <ContentView Padding="40, 10, 40, 0">
-                    <Label Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
+                    <local:PlayerLabel Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="Small" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true"/>
                   </ContentView>
                 </StackLayout>
                 <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="20, 0, 20, 0"/>
                 <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start" Padding="25, 0, 25, 0">
-                  <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
-                  <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" />
+                  <local:PlayerLabel Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" AutomationProperties.IsInAccessibleTree="true"/>
+                  <local:PlayerLabel Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" AutomationProperties.IsInAccessibleTree="true"/>
                 </StackLayout>
                 <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
                   <Grid.RowDefinitions>
@@ -74,17 +74,17 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="3*"/>
                   </Grid.ColumnDefinitions>
-                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15"/>
+                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Favorite" AutomationProperties.HelpText="{Binding favoriteAccessible}"/>
                   <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
-                  <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10"/>
+                  <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Share"/>
                 </Grid>
                 <StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" BackgroundColor="{DynamicResource MarkCompletedBackground}" Padding="0, 10, 0, 10">
-                    <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened"/>
-                    <Label HorizontalOptions="StartAndExpand" Text="Mark as Listened" Style="{StaticResource playerLabelStyle}">
+                    <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Mark as listened" AutomationProperties.HelpText="{Binding listenAccessible}"/>
+                    <local:PlayerLabel HorizontalOptions="StartAndExpand" Text="Mark as Listened" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
                       <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnListened"/>
                       </Label.GestureRecognizers>
-                    </Label>
+                    </local:PlayerLabel>
                 </StackLayout>
               </StackLayout>
                 <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" Spacing="10" BackgroundColor="{DynamicResource ReadBackgroundColor}">

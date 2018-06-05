@@ -1,5 +1,6 @@
 ﻿using System;
 
+using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -29,6 +30,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Android.Support.Design.Widget;
 using Android.Content.Res;
+using Android.Views.Accessibility;
 
 namespace DABApp.Droid
 {
@@ -59,6 +61,9 @@ namespace DABApp.Droid
 			DependencyService.Register<FileManagement>();
 			DependencyService.Register<StripeApiManagement>();
 			DependencyService.Register<RivetsService>();
+
+            AccessibilityManager accessibilityManager = (AccessibilityManager)GetSystemService(Context.AccessibilityService);
+            var talkback = accessibilityManager.GetEnabledAccessibilityServiceList(Android.AccessibilityServices.FeedbackFlags.Spoken).Single(x => x.Id.EndsWith("TalkBackService"));
 
 			SegmentedControlRenderer.Init();
 

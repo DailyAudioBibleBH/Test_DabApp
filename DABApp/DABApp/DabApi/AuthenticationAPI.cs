@@ -698,7 +698,7 @@ namespace DABApp
                             string JsonOut = await result.Content.ReadAsStringAsync();
                             if (JsonOut != "1")
                             {
-                                throw new Exception();
+                                throw new Exception(JsonOut);
                             }
                             foreach (var action in actions)
                             {

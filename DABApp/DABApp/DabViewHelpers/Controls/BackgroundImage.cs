@@ -15,4 +15,8 @@ namespace DABApp
     public class PlayerImage : Image
     {
     }
+
+    public class PlayerLabel : Label
+    {
+    }
 }

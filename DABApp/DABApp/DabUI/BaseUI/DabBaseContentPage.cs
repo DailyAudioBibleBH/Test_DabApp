@@ -60,7 +60,7 @@ namespace DABApp
                 //Menu Button
                 var menuButton = new ToolbarItem();
                 menuButton.SetValue(AutomationProperties.NameProperty, "Menu");
-                //menuButton.Text = "menu";
+                menuButton.Text = "Menu";
                 menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
                 menuButton.Icon = "ic_menu_white.png";
                 menuButton.Clicked += (sender, e) =>

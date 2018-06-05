@@ -17,6 +17,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using DABApp.Droid;
 using DABApp;
+using Android.AccessibilityServices;
+using Android.Views.Accessibility;
 
 [assembly: ExportRenderer(typeof(BackgroundImage), typeof(DabCachedImageRenderer))]
 namespace DABApp.Droid
@@ -28,8 +30,19 @@ namespace DABApp.Droid
             base.OnElementChanged(e);
             Control.Focusable = false;
             Control.Enabled = false;
-            Control.ImportantForAccessibility = ImportantForAccessibility.No;
+            base.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
+            Control.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
             Control.AccessibilityLiveRegion = AccessibilityLiveRegion.None;
+            Control.SetAccessibilityDelegate(new ImageDelegate());
+        }
+    }
+
+    class ImageDelegate : Android.Views.View.AccessibilityDelegate
+    {
+        public override AccessibilityNodeProvider GetAccessibilityNodeProvider(Android.Views.View host)
+        {
+            host.ClearFocus();
+            return base.GetAccessibilityNodeProvider(host);
         }
     }
 }

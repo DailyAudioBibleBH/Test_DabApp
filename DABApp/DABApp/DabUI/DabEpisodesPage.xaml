@@ -21,7 +21,7 @@
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
               <Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline"/>
             </StackLayout>
-            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="CenterAndExpand" Style="{StaticResource monthPickerStyle}"/>
+            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="CenterAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true"/>
             <BoxView HorizontalOptions="FillAndExpand"/>
           </StackLayout>
         </ListView.Header>

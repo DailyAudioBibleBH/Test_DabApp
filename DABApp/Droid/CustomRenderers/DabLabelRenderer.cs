@@ -11,18 +11,17 @@ using Android.Views;
 using Android.Views.Accessibility;
 using Android.Widget;
 using DABApp;
-using DABApp.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly: ExportRenderer(typeof(PlayerImage), typeof(DabImageRenderer))]
+[assembly: ExportRenderer(typeof(PlayerLabel), typeof(DABApp.Droid.DabLabelRenderer))]
 namespace DABApp.Droid
 {
-    public class DabImageRenderer : ImageRenderer
+    public class DabLabelRenderer: LabelRenderer
     {
-        public DabImageRenderer(Context context) : base(context) { }
+        public DabLabelRenderer(Context context) : base(context) { }
 
-        protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
         {
             base.OnElementChanged(e);
             Control.Focusable = true;
@@ -30,11 +29,11 @@ namespace DABApp.Droid
             Control.Enabled = true;
             Control.ImportantForAccessibility = ImportantForAccessibility.Yes;
             Control.AccessibilityLiveRegion = AccessibilityLiveRegion.Assertive;
-            Control.SetAccessibilityDelegate(new DabAccessibilityDelegate());
+            Control.SetAccessibilityDelegate(new LabelDelegate());
         }
     }
 
-    class DabAccessibilityDelegate : Android.Views.View.AccessibilityDelegate
+    class LabelDelegate : Android.Views.View.AccessibilityDelegate
     {
         public override void OnInitializeAccessibilityEvent(Android.Views.View host, AccessibilityEvent e)
         {

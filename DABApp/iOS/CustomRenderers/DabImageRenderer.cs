@@ -17,12 +17,6 @@ namespace DABApp.iOS
 			if (Control != null)
 			{
                 Control.IsAccessibilityElement = true;
-				//var size = Control.Image.Size;
-				//UIGraphics.BeginImageContextWithOptions(size, false, 0);
-				//var context = UIGraphics.GetCurrentContext();
-				//context.DrawImage(new CGRect(0, 0, size.Width, size.Height), Control.Image.CGImage);
-				//var image = UIGraphics.GetImageFromCurrentImageContext();
-				//Control.Image = image;
 			}
 		}
 	}
