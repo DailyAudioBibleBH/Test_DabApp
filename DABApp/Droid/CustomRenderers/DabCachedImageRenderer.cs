@@ -39,10 +39,19 @@ namespace DABApp.Droid
 
     class ImageDelegate : Android.Views.View.AccessibilityDelegate
     {
-        public override AccessibilityNodeProvider GetAccessibilityNodeProvider(Android.Views.View host)
+        public override void OnPopulateAccessibilityEvent(Android.Views.View host, AccessibilityEvent e)
         {
-            host.ClearFocus();
-            return base.GetAccessibilityNodeProvider(host);
+            return;
+        }
+
+        public override bool DispatchPopulateAccessibilityEvent(Android.Views.View host, AccessibilityEvent e)
+        {
+            if (DabImageRenderer.Host != null)
+            {
+                e.SetSource(DabImageRenderer.Host);
+                return base.DispatchPopulateAccessibilityEvent(DabImageRenderer.Host, e);
+            }
+            return base.DispatchPopulateAccessibilityEvent(host, e);
         }
     }
 }

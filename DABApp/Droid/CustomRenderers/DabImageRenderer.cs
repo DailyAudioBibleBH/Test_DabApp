@@ -20,6 +20,8 @@ namespace DABApp.Droid
 {
     public class DabImageRenderer : ImageRenderer
     {
+        public static Android.Views.View Host { get; set; }
+
         public DabImageRenderer(Context context) : base(context) { }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
@@ -38,10 +40,7 @@ namespace DABApp.Droid
     {
         public override void OnInitializeAccessibilityEvent(Android.Views.View host, AccessibilityEvent e)
         {
-            if (e.EventType == EventTypes.ViewAccessibilityFocused)
-            {
-                host.RequestFocus();
-            }
+            DabImageRenderer.Host = host;
             base.OnInitializeAccessibilityEvent(host, e);
         }
     }

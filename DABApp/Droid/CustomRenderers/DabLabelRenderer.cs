@@ -37,10 +37,7 @@ namespace DABApp.Droid
     {
         public override void OnInitializeAccessibilityEvent(Android.Views.View host, AccessibilityEvent e)
         {
-            if (e.EventType == EventTypes.ViewAccessibilityFocused)
-            {
-                host.RequestFocus();
-            }
+            DabImageRenderer.Host = host;
             base.OnInitializeAccessibilityEvent(host, e);
         }
     }
