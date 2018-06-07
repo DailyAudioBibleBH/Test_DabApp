@@ -93,6 +93,7 @@ namespace DABApp
             AboutFormat.GestureRecognizers.Add(tapper);
             ChannelsList.SelectedItem = _resource;
             Completed.BindingContext = episode;
+            
         }
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -303,6 +304,14 @@ namespace DABApp
             if (episode != null && !GuestStatus.Current.IsGuestLogin)
             {
                 JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            }
+            if (Initializer.IsVisible)
+            {
+                Initializer.Focus();
+            }
+            else
+            {
+                PlayPause.Focus();
             }
         }
 

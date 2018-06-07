@@ -62,7 +62,7 @@
               </Grid.ColumnDefinitions>
               <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="15" Padding="20, 5, 20, 5">
               <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
-                <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20"/>
+                <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Mark as Listened" AutomationProperties.HelpText=""/>
                 <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
                   <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnListened"/>
@@ -70,13 +70,13 @@
                 </Label>
               </StackLayout>
               </Frame>
-              <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Favorite button">
+              <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Favorite" AutomationProperties.HelpText="">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnFavorite"/>
                 </Image.GestureRecognizers>
               </local:PlayerImage>
               <local:AudioOutputView x:Name="Output" WidthRequest="20" HeightRequest="20" Grid.Row="0" Grid.Column="3" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Change Audio Output"/>
-              <local:PlayerImage x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Share button">
+              <local:PlayerImage x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Share button">
                 <Image.GestureRecognizers>
                   <TapGestureRecognizer Tapped="OnShare"/>
                 </Image.GestureRecognizers>
@@ -117,7 +117,7 @@
         <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode" IsPullToRefreshEnabled="true" Refreshing="OnRefresh">
 		<ListView.Header>
             <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
-              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" Style="{StaticResource monthPickerStyle}" Margin="0, 10, 20, 10"/>
+              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" Style="{StaticResource monthPickerStyle}" Margin="0, 10, 20, 10" AutomationProperties.IsInAccessibleTree="true"/>
               <Label Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}" />
               <Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline" />
             </StackLayout>
