@@ -62,13 +62,9 @@ namespace DABApp.Droid
 			DependencyService.Register<StripeApiManagement>();
 			DependencyService.Register<RivetsService>();
 
-            AccessibilityManager accessibilityManager = (AccessibilityManager)GetSystemService(Context.AccessibilityService);
-            var talkback = accessibilityManager.GetEnabledAccessibilityServiceList(Android.AccessibilityServices.FeedbackFlags.Spoken).Single(x => x.Id.EndsWith("TalkBackService"));
-
 			SegmentedControlRenderer.Init();
 
 			CachedImageRenderer.Init();
-
 			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
 			SQLite_Droid.Assets = this.Assets;
@@ -110,6 +106,11 @@ namespace DABApp.Droid
             var metrics = Resources.DisplayMetrics;
             GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
 		}
+
+        public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)
+        {
+            return true;
+        }
 
         public override void OnConfigurationChanged(Configuration newConfig)
         {

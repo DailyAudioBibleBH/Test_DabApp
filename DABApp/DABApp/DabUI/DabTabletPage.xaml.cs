@@ -512,7 +512,7 @@ namespace DABApp
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
             favorite.Opacity = 1;
             favorite.IsEnabled = true;
-            AutomationProperties.SetHelpText(favorite, episode.favoriteAccessible);
+            AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
         }
 
@@ -560,7 +560,7 @@ namespace DABApp
                 await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
             }
             Completed.Image = episode.listenedToSource;
-            AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+            AutomationProperties.SetName(Completed, episode.listenAccessible);
         }
 
         async void OnListFavorite(object o, EventArgs e)

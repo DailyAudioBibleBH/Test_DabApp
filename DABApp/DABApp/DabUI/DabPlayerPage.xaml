@@ -49,12 +49,12 @@
                       <TapGestureRecognizer Tapped="OnBack30"/>
                     </Image.GestureRecognizers>
                   </local:PlayerImage>
-                  <local:PlayerImage x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true">
+                  <local:PlayerImage x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
                     <Image.GestureRecognizers>
                       <TapGestureRecognizer Tapped="OnPlay"/>
                     </Image.GestureRecognizers>
                   </local:PlayerImage>
-                    <local:PlayerImage x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause button" AutomationProperties.IsInAccessibleTree="true">
+                    <local:PlayerImage x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="100" WidthRequest="100" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
                       <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnInitialized"/>
                       </Image.GestureRecognizers>
@@ -74,12 +74,12 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="3*"/>
                   </Grid.ColumnDefinitions>
-                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Favorite" AutomationProperties.HelpText="{Binding favoriteAccessible}"/>
+                  <Button x:Name="Favorite" Image="{Binding favoriteSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnFavorite" Grid.Row="0" Grid.Column="0" WidthRequest="15" HeightRequest="15" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding favoriteAccessible}"/>
                   <local:AudioOutputView x:Name="Output" WidthRequest="25" HeightRequest="25" Grid.Row="0" Grid.Column="1" />
                   <Button x:Name="Share" Clicked="OnShare" Image="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="10" HeightRequest="10" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Share"/>
                 </Grid>
                 <StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" BackgroundColor="{DynamicResource MarkCompletedBackground}" Padding="0, 10, 0, 10">
-                    <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Mark as listened" AutomationProperties.HelpText="{Binding listenAccessible}"/>
+                    <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" Clicked="OnListened" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding listenAccessible}"/>
                     <local:PlayerLabel HorizontalOptions="StartAndExpand" Text="Mark as Listened" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
                       <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnListened"/>
