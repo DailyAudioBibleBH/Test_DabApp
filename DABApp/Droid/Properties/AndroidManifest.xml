@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dailyaudiobible.dabapp" android:installLocation="auto" android:versionCode="17" android:versionName="1.0.10">
-	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="23" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dailyaudiobible.dabapp" android:installLocation="auto" android:versionCode="18" android:versionName="1.0.11">
+	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="27" />
 	<permission android:name="dailyaudiobible.dabapp.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<supports-screens android:resizeable="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" />
 	<application android:label="DAB">
