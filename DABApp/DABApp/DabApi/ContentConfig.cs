@@ -46,7 +46,18 @@ namespace DABApp
 		public Images images { get; set; }
 		public string feedUrl { get; set; }
 		public string type { get; set; }
-		public bool availableOffline { get; set; } = false;
+        public bool AscendingSort { get; set; }
+
+        private bool _availableOffline = false;
+		public bool availableOffline {
+            get {
+                return _availableOffline;
+            }
+            set {
+                _availableOffline = value;
+                OnPropertyChanged("availableOffline");
+            }
+        }
 
 		private bool _IsNotSelected = true;
 		public bool IsNotSelected { 

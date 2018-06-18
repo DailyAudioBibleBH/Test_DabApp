@@ -19,6 +19,7 @@
             </RelativeLayout>
             <StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
               <Label x:Name="OffLabel" Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
+              <Button Text="Menu" Clicked="OnFilters"/>
               <Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline">
                 <Switch.AutomationProperties.Name>
                   <OnPlatform x:TypeArguments="generic:String" iOS="Make available offline"/>

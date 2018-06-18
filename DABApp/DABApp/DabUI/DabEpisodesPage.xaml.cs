@@ -130,20 +130,31 @@ namespace DABApp
             activityHolder.IsVisible = false;
         }
 
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            TimedActions();
-        }
-
         void OnFilters(object o, EventArgs e)
         {
-            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new DabPopupEpisodeMenu());
+            var popup = new DabPopupEpisodeMenu(_resource, _Episodes);
+            popup.ChangedRequested += Popup_ChangedRequested;
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup);
+        }
+
+        private void Popup_ChangedRequested(object sender, EventArgs e)
+        {
+            var popuPage = (DabPopupEpisodeMenu)sender;
+            _resource = popuPage.Resource;
+            _Episodes = popuPage.Episodes;
+            TimedActions();
         }
 
         void TimedActions()
         {
-            //Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            if (_resource.AscendingSort)
+            {
+                Episodes = Episodes.OrderBy(x => x.PubDate);
+            }
+            else
+            {
+                Episodes = Episodes.OrderByDescending(x => x.PubDate);
+            }
             if ((string)Months.SelectedItem == "My Favorites")
             {
                 EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.is_favorite == true).Select(e => new EpisodeViewModel(e)).ToList();
