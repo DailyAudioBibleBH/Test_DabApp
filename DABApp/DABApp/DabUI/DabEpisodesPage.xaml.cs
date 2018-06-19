@@ -27,15 +27,12 @@ namespace DABApp
             BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
-            Offline.IsToggled = resource.availableOffline;
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
                 var m = MonthConverter.ConvertToFull(month);
                 Months.Items.Add(m);
             }
-            Months.Items.Add("My Journals");
-            Months.Items.Add("My Favorites");
             Months.SelectedIndex = 0;
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
@@ -69,21 +66,6 @@ namespace DABApp
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
             EpisodeList.IsEnabled = true;
-        }
-
-        public void OnOffline(object o, ToggledEventArgs e) {
-            _resource.availableOffline = e.Value;
-            ContentAPI.UpdateOffline(e.Value, _resource.id);
-            if (e.Value)
-            {
-                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
-            }
-            else {
-                Task.Run(async () => {
-                    await PlayerFeedAPI.DeleteChannelEpisodes(_resource);
-                    Device.BeginInvokeOnMainThread(() => { TimedActions(); });
-                });
-            }
         }
 
         public void OnMonthSelected(object o, EventArgs e) {
@@ -132,16 +114,17 @@ namespace DABApp
 
         void OnFilters(object o, EventArgs e)
         {
-            var popup = new DabPopupEpisodeMenu(_resource, _Episodes);
+            Filters.IsEnabled = false;
+            var popup = new DabPopupEpisodeMenu(_resource);
             popup.ChangedRequested += Popup_ChangedRequested;
             Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup);
+            Filters.IsEnabled = true;
         }
 
         private void Popup_ChangedRequested(object sender, EventArgs e)
         {
             var popuPage = (DabPopupEpisodeMenu)sender;
             _resource = popuPage.Resource;
-            _Episodes = popuPage.Episodes;
             TimedActions();
         }
 
@@ -155,25 +138,20 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            if ((string)Months.SelectedItem == "My Favorites")
+            switch (_resource.filter)
             {
-                EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.is_favorite == true).Select(e => new EpisodeViewModel(e)).ToList();
-                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-            }
-            else
-            {
-                if ((string)Months.SelectedItem == "My Journals")
-                {
-                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
-                    //EpisodeList.ItemsSource = list;
+                case EpisodeFilters.Favorite:
+                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                }
-                else
-                {
+                    break;
+                case EpisodeFilters.Journal:
+                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
+                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                    break;
+                case EpisodeFilters.None:
                     EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
-                    //EpisodeList.ItemsSource = list;
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                }
+                    break;
             }
         }
     }

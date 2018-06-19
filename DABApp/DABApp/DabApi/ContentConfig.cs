@@ -47,6 +47,7 @@ namespace DABApp
 		public string feedUrl { get; set; }
 		public string type { get; set; }
         public bool AscendingSort { get; set; }
+        public EpisodeFilters filter { get; set; } = EpisodeFilters.None;
 
         private bool _availableOffline = false;
 		public bool availableOffline {
@@ -86,6 +87,11 @@ namespace DABApp
 			StaticPropertyChanged(null, new PropertyChangedEventArgs(propertyName));
 		}
 	}
+
+    public enum EpisodeFilters
+    {
+        None, Favorite, Journal
+    }
 
 	public class Banner
 	{

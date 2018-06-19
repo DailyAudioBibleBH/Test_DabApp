@@ -18,15 +18,9 @@
               </StackLayout>
             </RelativeLayout>
             <StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
-              <Label x:Name="OffLabel" Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium"  Style="{StaticResource secondaryLabelStyle}"/>
-              <Button Text="Menu" Clicked="OnFilters"/>
-              <Switch x:Name="Offline" HorizontalOptions="EndAndExpand" VerticalOptions="Center" Toggled="OnOffline">
-                <Switch.AutomationProperties.Name>
-                  <OnPlatform x:TypeArguments="generic:String" iOS="Make available offline"/>
-                </Switch.AutomationProperties.Name>
-              </Switch>
+              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true"/>
+              <Button x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Filters" Image="more_horiz" Clicked="OnFilters" Style="{StaticResource imageButtonStyle}"/>
             </StackLayout>
-            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="CenterAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true"/>
             <BoxView HorizontalOptions="FillAndExpand"/>
           </StackLayout>
         </ListView.Header>

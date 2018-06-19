@@ -16,16 +16,32 @@ namespace DABApp
     {
         public event EventHandler ChangedRequested;
         public Resource Resource { get; private set; }
-        public List<EpisodeViewModel> Episodes { get; private set; } 
 
-        public DabPopupEpisodeMenu(Resource resource, List<EpisodeViewModel> episodes)
+        public DabPopupEpisodeMenu(Resource resource)
         {
             InitializeComponent();
             Resource = resource;
             Offline.On = Resource.availableOffline;
-            Episodes = episodes;
             SortOld.IsVisible = Resource.AscendingSort;
             SortNew.IsVisible = !Resource.AscendingSort;
+            switch (Resource.filter)
+            {
+                case EpisodeFilters.None:
+                    FilterFavorite.IsVisible = false;
+                    FilterJournal.IsVisible = false;
+                    FilterNone.IsVisible = true;
+                    break;
+                case EpisodeFilters.Favorite:
+                    FilterFavorite.IsVisible = true;
+                    FilterJournal.IsVisible = false;
+                    FilterNone.IsVisible = false;
+                    break;
+                case EpisodeFilters.Journal:
+                    FilterFavorite.IsVisible = false;
+                    FilterJournal.IsVisible = true;
+                    FilterNone.IsVisible = false;
+                    break;
+            }
         }
 
         protected override bool OnBackButtonPressed()
@@ -48,7 +64,32 @@ namespace DABApp
 
         void OnFavorited(object sender, EventArgs e)
         {
-            Episodes = Episodes.Where(x => x.favoriteVisible == true).ToList();
+            Resource.filter = EpisodeFilters.Favorite;
+            FilterFavorite.IsVisible = true;
+            FilterJournal.IsVisible = false;
+            FilterNone.IsVisible = false;
+            var handler = ChangedRequested;
+            handler(this, new EventArgs());
+        }
+
+        void OnJournal(object sender, EventArgs e)
+        {
+            Resource.filter = EpisodeFilters.Journal;
+            FilterFavorite.IsVisible = false;
+            FilterJournal.IsVisible = true;
+            FilterNone.IsVisible = false;
+            var handler = ChangedRequested;
+            handler(this, new EventArgs());
+        }
+
+        void OnNone(object sender, EventArgs e)
+        {
+            Resource.filter = EpisodeFilters.None;
+            FilterFavorite.IsVisible = false;
+            FilterJournal.IsVisible = false;
+            FilterNone.IsVisible = true;
+            var handler = ChangedRequested;
+            handler(this, new EventArgs());
         }
 
         public void OnOffline(object o, ToggledEventArgs e)
@@ -70,6 +111,8 @@ namespace DABApp
                 });
             }
         }
+
+
 
         void OnNewest(object o, EventArgs e)
         {

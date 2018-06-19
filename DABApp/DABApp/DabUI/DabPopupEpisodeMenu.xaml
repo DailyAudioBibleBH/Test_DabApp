@@ -15,13 +15,19 @@
         </TableView.HasUnevenRows>
         <TableRoot>
             <TableSection x:Name="FilterBy" Title="Filter By">
+                <ViewCell Tapped="OnNone">
+                    <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
+                        <Label Text="None"/>
+                        <Image x:Name="FilterNone" IsVisible="true" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" />
+                    </StackLayout>
+                </ViewCell>
                 <ViewCell Tapped="OnFavorited">
                     <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
                         <Label Text="Favorited"/>
                         <Image x:Name="FilterFavorite" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" />
                     </StackLayout>
                 </ViewCell>
-                <ViewCell>
+                <ViewCell Tapped="OnJournal">
                     <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
                         <Label Text="Has Journal Entry"/>
                         <Image x:Name="FilterJournal" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" />
