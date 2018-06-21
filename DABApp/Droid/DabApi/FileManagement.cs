@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using DABApp.Droid;
 using SQLite;
+using HockeyApp;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(FileManagement))]

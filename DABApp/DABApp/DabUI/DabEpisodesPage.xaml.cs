@@ -33,6 +33,7 @@ namespace DABApp
                 var m = MonthConverter.ConvertToFull(month);
                 Months.Items.Add(m);
             }
+            Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
@@ -136,21 +137,12 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            switch (_resource.filter)
-            {
-                case EpisodeFilters.Favorite:
-                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
-                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                    break;
-                case EpisodeFilters.Journal:
-                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
-                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                    break;
-                case EpisodeFilters.None:
-                    EpisodeList.ItemsSource = _Episodes = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
-                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                    break;
-            }
+            EpisodeList.ItemsSource = _Episodes = Episodes
+                .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Select(x => new EpisodeViewModel(x)).ToList();
+                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
         }
     }
 }
