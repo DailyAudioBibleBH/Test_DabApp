@@ -118,12 +118,7 @@
 		<ListView.Header>
             <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
               <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" Style="{StaticResource monthPickerStyle}" Margin="0, 10, 20, 10" AutomationProperties.IsInAccessibleTree="true"/>
-              <Label x:Name="OfflineLabel" Text="Make available offline" HorizontalOptions="StartAndExpand" VerticalOptions="Center" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
-              <Switch x:Name="Offline" HorizontalOptions="End" VerticalOptions="Center" Toggled="OnOffline">
-                <Switch.AutomationProperties.Name>
-                  <OnPlatform x:TypeArguments="generic:String" iOS="Make available offline"/>
-                </Switch.AutomationProperties.Name>
-              </Switch>
+              <Button Image="more_horiz" Style="{StaticResource imageButtonStyle}" Clicked="OnFilters" HorizontalOptions="EndAndExpand"/>
             </StackLayout>
 							</ListView.Header>
             <!--                        <BoxView HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />

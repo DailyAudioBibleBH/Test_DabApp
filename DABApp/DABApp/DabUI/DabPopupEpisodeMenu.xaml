@@ -9,7 +9,7 @@
             PositionOut="Bottom"
             HasBackgroundAnimation="false"/>
     </pages:PopupPage.Animation>
-    <TableView Intent="Settings" BackgroundColor="{DynamicResource PageBackgroundColor}" VerticalOptions="EndAndExpand">
+    <TableView x:Name="Container" Intent="Settings" BackgroundColor="{DynamicResource PageBackgroundColor}" VerticalOptions="EndAndExpand">
         <TableView.HasUnevenRows>
             <OnPlatform x:TypeArguments="x:Boolean" iOS="False" Android="False"/>
         </TableView.HasUnevenRows>
@@ -50,9 +50,6 @@
             </TableSection>
             <TableSection Title="">
                 <SwitchCell Text="Make available offline" OnChanged="OnOffline" x:Name="Offline"/>
-            </TableSection>
-            <TableSection Title="">
-                <TextCell Text="Back" Tapped="OnBackground"/>
             </TableSection>
         </TableRoot>
     </TableView>

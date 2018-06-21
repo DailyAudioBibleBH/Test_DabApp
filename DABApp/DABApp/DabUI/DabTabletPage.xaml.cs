@@ -35,7 +35,6 @@ namespace DABApp
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Offline.IsToggled = _resource.availableOffline;
             Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
@@ -214,7 +213,6 @@ namespace DABApp
                     await PlayerFeedAPI.GetEpisodes(_resource);
                 }
                 NotConstructing = true;
-                Offline.IsToggled = _resource.availableOffline;
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
                 BackgroundImage.Source = backgroundImage;
@@ -639,25 +637,41 @@ namespace DABApp
             EpisodeList.IsRefreshing = false;
         }
 
+        async void OnFilters(object o, EventArgs e)
+        {
+            var popup = new DabPopupEpisodeMenu(_resource);
+            popup.ChangedRequested += Popup_ChangedRequested;
+            await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup, false);
+        }
+
+        private void Popup_ChangedRequested(object sender, EventArgs e)
+        {
+            var popuPage = (DabPopupEpisodeMenu)sender;
+            _resource = popuPage.Resource;
+            TimedActions();
+        }
+
         void TimedActions()
         {
-            if ((string)Months.SelectedItem == "My Favorites")
+            if (_resource.AscendingSort)
             {
-                EpisodeList.ItemsSource = list = Episodes.Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
+                Episodes = Episodes.OrderBy(x => x.PubDate);
             }
             else
             {
-                if ((string)Months.SelectedItem == "My Journals")
-                {
-                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
-                }
-                else
-                {
-                    if (Months.SelectedIndex >= 0)
-                    {
-                        EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
-                    }
-                }
+                Episodes = Episodes.OrderByDescending(x => x.PubDate);
+            }
+            switch (_resource.filter)
+            {
+                case EpisodeFilters.Favorite:
+                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
+                    break;
+                case EpisodeFilters.Journal:
+                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
+                    break;
+                case EpisodeFilters.None:
+                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
+                    break;
             }
             if (episode != null)
             {

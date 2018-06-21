@@ -114,11 +114,9 @@ namespace DABApp
 
         void OnFilters(object o, EventArgs e)
         {
-            Filters.IsEnabled = false;
             var popup = new DabPopupEpisodeMenu(_resource);
             popup.ChangedRequested += Popup_ChangedRequested;
             Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup);
-            Filters.IsEnabled = true;
         }
 
         private void Popup_ChangedRequested(object sender, EventArgs e)

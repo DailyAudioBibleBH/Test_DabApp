@@ -21,6 +21,15 @@ namespace DABApp
         {
             InitializeComponent();
             Resource = resource;
+            if (Device.RuntimePlatform == "iOS")
+            {
+                Container.Margin = new Thickness(0, 200, 0, 0);
+            }
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                var top = Device.RuntimePlatform == "Android" ? 50 : 150;
+                Container.Margin = new Thickness(150, top, 150, 150);
+            }
             Offline.On = Resource.availableOffline;
             SortOld.IsVisible = Resource.AscendingSort;
             SortNew.IsVisible = !Resource.AscendingSort;
