@@ -134,8 +134,8 @@
             </Style>
             <Style BasedOn="{StaticResource pickerStyle}" TargetType="Picker" ApplyToDerivedTypes="true" />
             <Style x:Key="monthPickerStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="{DynamicResource ActivityHolderBackground}"/>
-                <Setter Property="BackgroundColor" Value="{DynamicResource HighlightTextColor}"/>
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
+                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
                 <Setter Property="WidthRequest" Value="100"/>
             </Style>
 			<!--Button-->

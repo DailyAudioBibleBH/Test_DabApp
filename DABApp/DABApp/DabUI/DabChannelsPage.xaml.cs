@@ -192,47 +192,16 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			MessagingCenter.Send<string>("Setup", "Setup");
-		//	var start = DateTime.Now;
+            foreach (var r in ChannelView.resources)
+            {
+                r.AscendingSort = false;
+                r.filter = EpisodeFilters.None;
+            }
 		    base.OnAppearing();
             if (ChannelsList.HeightRequest == 1000 && GlobalResources.Instance.ThumbnailImageHeight != 0)
             {
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
-            //TimedActions();
-		//	if (episode == null)
-		//	{
-		//		bannerButton.IsEnabled = false;
-		//	}
-		//	Debug.WriteLine($"Before getting episodes {(DateTime.Now - start).TotalMilliseconds}");
-		//	await PlayerFeedAPI.GetEpisodes(_resource);
-		//	Debug.WriteLine($"Finished GetEpisodes call {(DateTime.Now - start).TotalMilliseconds}");
-		//	episode = await PlayerFeedAPI.GetMostRecentEpisode(_resource);
-		//	Debug.WriteLine($"Finished Getting Most Recent Episode {(DateTime.Now - start).TotalMilliseconds}");
-		//	if (episode == null)
-		//	{
-		//		bannerContentContainer.IsVisible = false;
-		//	}
-		//	else
-		//	{
-		//		double height = 300;
-		//		var oldText = bannerContent.Text;
-		//		bannerContent.Text = oldText.Replace("[current_reading]", episode.description);
-		//		Debug.WriteLine($"Finished replacing episode description {(DateTime.Now - start).TotalMilliseconds}");
-		//		if (Device.Idiom == TargetIdiom.Tablet)
-		//		{
-		//			height = 350;
-		//			bannerContentContainer.HeightRequest = height;
-		//			bannerStack.Padding = 65;
-		//		}
-		//		bannerContentContainer.IsVisible = true;
-		//		if (IsUnInitialized)
-		//		{
-		//			bannerContentContainer.IsVisible = true;
-		//			await Container.TranslateTo(0, 0, 500, Easing.Linear);
-		//			IsUnInitialized = false;
-		//		}
-		//	}
-		//	bannerButton.IsEnabled = true;
 		}
 
         protected override void OnSizeAllocated(double width, double height)

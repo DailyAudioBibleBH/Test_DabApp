@@ -21,14 +21,13 @@ namespace DABApp
         {
             InitializeComponent();
             Resource = resource;
-            if (Device.RuntimePlatform == "iOS")
-            {
-                Container.Margin = new Thickness(0, 200, 0, 0);
-            }
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                var top = Device.RuntimePlatform == "Android" ? 50 : 150;
-                Container.Margin = new Thickness(150, top, 150, 150);
+                Container.Margin = Device.RuntimePlatform == "Android" && GlobalResources.Instance.ScreenSize < 1000 ? new Thickness(100, 100, 100, 100) : new Thickness(150, 150, 150, 150);
+            }
+            else
+            {
+                Container.Margin = new Thickness(0, 200, 0, 0);
             }
             Offline.On = Resource.availableOffline;
             SortOld.IsVisible = Resource.AscendingSort;
@@ -66,11 +65,6 @@ namespace DABApp
             return true;
         }
 
-        private void OnBackground(object sender, EventArgs e)
-        {
-            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
-        }
-
         void OnFavorited(object sender, EventArgs e)
         {
             Resource.filter = EpisodeFilters.Favorite;
@@ -79,6 +73,7 @@ namespace DABApp
             FilterNone.IsVisible = false;
             var handler = ChangedRequested;
             handler(this, new EventArgs());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
         void OnJournal(object sender, EventArgs e)
@@ -89,6 +84,7 @@ namespace DABApp
             FilterNone.IsVisible = false;
             var handler = ChangedRequested;
             handler(this, new EventArgs());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
         void OnNone(object sender, EventArgs e)
@@ -99,6 +95,7 @@ namespace DABApp
             FilterNone.IsVisible = true;
             var handler = ChangedRequested;
             handler(this, new EventArgs());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
         public void OnOffline(object o, ToggledEventArgs e)
@@ -119,6 +116,10 @@ namespace DABApp
                     });
                 });
             }
+            if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Any())
+            {
+                Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+            }
         }
 
 
@@ -130,6 +131,7 @@ namespace DABApp
             SortOld.IsVisible = false;
             var handler = ChangedRequested;
             handler(this, new EventArgs());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
         void OnOldest(object o, EventArgs e)
@@ -139,6 +141,7 @@ namespace DABApp
             Resource.AscendingSort = true;
             var handler = ChangedRequested;
             handler(this, new EventArgs());
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
     }
 }

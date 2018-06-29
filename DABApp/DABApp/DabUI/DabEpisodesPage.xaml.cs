@@ -36,6 +36,9 @@ namespace DABApp
             Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+                TimedActions();
+            });
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
             {
                 TimedActions();
@@ -76,27 +79,31 @@ namespace DABApp
         public async void OnListened(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
             if (ep.is_listened_to == "listened")
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
+                model.listenedToVisible = false;
+
             }
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
+                model.listenedToVisible = true;
             }
-            TimedActions();
         }
 
         public async void OnFavorite(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
-            TimedActions();
+            model.favoriteVisible = !ep.is_favorite;
         }
 
         async Task Refresh()

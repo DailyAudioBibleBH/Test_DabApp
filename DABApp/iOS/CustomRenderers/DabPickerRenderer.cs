@@ -36,7 +36,7 @@ namespace DABApp.iOS
             Control.RightView = new UIImageView(icon);
             if (Control.Enabled == false)
             {
-                Control.TextColor = ((Color)App.Current.Resources["ActivityHolderBackground"]).ToUIColor();
+                Control.TextColor = ((Color)App.Current.Resources["InputBackgroundColor"]).ToUIColor();
             }
             Control.TintColor = Control.TextColor;
         }

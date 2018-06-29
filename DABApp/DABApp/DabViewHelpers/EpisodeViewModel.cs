@@ -77,7 +77,8 @@ namespace DABApp
             }
             set
             {
-                unTouched = Episode.is_listened_to == "listened" ? true : false;
+                unTouched = value;
+                Episode.is_listened_to = unTouched ? "listened" : "";
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");
             }

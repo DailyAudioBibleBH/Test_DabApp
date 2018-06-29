@@ -250,16 +250,16 @@ namespace DABApp
 						break;
 					case "has_journal":
 						episode.has_journal = !episode.has_journal;
-						break;
+                        if (Device.Idiom == TargetIdiom.Tablet)
+                        {
+                            MessagingCenter.Send<string>("Update", "Update");
+                        }
+                        break;
                     case "":
                         episode.is_listened_to = "";
                         break;
 				}
 				await adb.UpdateAsync(episode);
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					MessagingCenter.Send<string>("Update", "Update");
-				}
 			}
 			catch (Exception e)
 			{

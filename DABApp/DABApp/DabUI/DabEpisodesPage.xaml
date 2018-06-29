@@ -8,18 +8,18 @@
   </local:DabBaseContentPage.Resources>
 	<t:MenuContainerPage.Content>
     <StackLayout x:Name="Container">
-      <ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true">
+      <ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true" CachingStrategy="RecycleElementAndDataTemplate">
         <ListView.Header>
-          <StackLayout>
+          <StackLayout Spacing="0" Padding="0">
             <RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
               <ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
               <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
                 <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
               </StackLayout>
             </RelativeLayout>
-            <StackLayout Orientation="Horizontal" Padding="10" Spacing="5">
-              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true"/>
-              <Button x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Filters" Image="more_horiz" Clicked="OnFilters" Style="{StaticResource imageButtonStyle}"/>
+            <StackLayout Orientation="Horizontal" Padding="10" Spacing="5" BackgroundColor="{DynamicResource PageBackgroundColor}">
+              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
+              <Button x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" Image="more_horiz" Clicked="OnFilters" Style="{StaticResource imageButtonStyle}"/>
             </StackLayout>
             <BoxView HorizontalOptions="FillAndExpand"/>
           </StackLayout>

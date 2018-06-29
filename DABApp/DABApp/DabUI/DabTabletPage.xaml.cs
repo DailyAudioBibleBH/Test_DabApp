@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace DABApp
     {
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
-        List<EpisodeViewModel> list;
+        ObservableCollection<EpisodeViewModel> list;
         string backgroundImage;
         EpisodeViewModel episode;
         static double original;
@@ -43,12 +44,12 @@ namespace DABApp
                 var m = MonthConverter.ConvertToFull(month);
                 Months.Items.Add(m);
             }
-
-            Months.Items.Add("My Journals");
-            Months.Items.Add("My Favorites");
+            Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
             TimedActions();
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) => { TimedActions(); });
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+                TimedActions();
+            });
             if (Episode != null)
             {
                 episode = new EpisodeViewModel(Episode);
@@ -174,23 +175,6 @@ namespace DABApp
             Completed.Image = episode.listenedToSource;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
-        }
-
-        public void OnOffline(object o, ToggledEventArgs e)
-        {
-            _resource.availableOffline = e.Value;
-            ContentAPI.UpdateOffline(e.Value, _resource.id);
-            if (e.Value)
-            {
-                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
-            }
-            else
-            {
-                Task.Run(async () => {
-                    await PlayerFeedAPI.DeleteChannelEpisodes(_resource);
-                    Device.BeginInvokeOnMainThread(() => { TimedActions(); });
-                });
-            }
         }
 
         public void OnMonthSelected(object o, EventArgs e)
@@ -512,14 +496,17 @@ namespace DABApp
             favorite.IsEnabled = true;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+            TimedActions();
         }
 
         async void OnListListened(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
             if (ep.is_listened_to == "listened")
             {
+                model.listenedToVisible = false;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
                 if (ep.id == episode.Episode.id)
                 {
@@ -531,6 +518,7 @@ namespace DABApp
             }
             else
             {
+                model.listenedToVisible = true;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
                 if (ep.id == episode.Episode.id)
                 {
@@ -540,7 +528,6 @@ namespace DABApp
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
             }
-            TimedActions();
         }
 
         async void OnListened(object o, EventArgs e)
@@ -559,22 +546,22 @@ namespace DABApp
             }
             Completed.Image = episode.listenedToSource;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
+            TimedActions();
         }
 
         async void OnListFavorite(object o, EventArgs e)
         {
             var mi = ((MenuItem)o);
-            var ep = ((EpisodeViewModel)mi.CommandParameter).Episode;
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
             if (ep.id == episode.Episode.id)
             {
-                OnFavorite(o, e);
+                episode.favoriteVisible = !ep.is_favorite;
+                favorite.Source = episode.favoriteSource;
             }
-            else
-            {
+            model.favoriteVisible = !ep.is_favorite;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
-            }
-            TimedActions();
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -661,18 +648,11 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            switch (_resource.filter)
-            {
-                case EpisodeFilters.Favorite:
-                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.is_favorite == true).Select(x => new EpisodeViewModel(x)).ToList();
-                    break;
-                case EpisodeFilters.Journal:
-                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Where(x => x.has_journal == true).Select(x => new EpisodeViewModel(x)).ToList();
-                    break;
-                case EpisodeFilters.None:
-                    EpisodeList.ItemsSource = list = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3)).Select(x => new EpisodeViewModel(x)).ToList();
-                    break;
-            }
+            EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
+                .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Select(x => new EpisodeViewModel(x)));
             if (episode != null)
             {
                 favorite.Source = episode.favoriteSource;

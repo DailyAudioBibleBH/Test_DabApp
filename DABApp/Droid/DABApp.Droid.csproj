@@ -9,14 +9,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>DABApp.Droid</RootNamespace>
     <AssemblyName>DABApp.Droid</AssemblyName>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
     <NuGetPackageImportStamp>
@@ -353,7 +353,6 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_favorite_white_3x.png" />
     <AndroidResource Include="Resources\drawable\pencil_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_cloud_download_white.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
     <AndroidResource Include="Resources\layout\DabToolbar.axml" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_settings_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_settings_white_3x.png" />
@@ -413,6 +412,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\more_horiz.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
