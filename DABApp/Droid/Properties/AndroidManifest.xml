@@ -3,6 +3,7 @@
 	<uses-sdk android:minSdkVersion="15" android:targetSdkVersion="27" />
 	<permission android:name="dailyaudiobible.dabapp.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<supports-screens android:resizeable="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" />
+	<uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 	<application android:label="DAB">
 		<receiver android:name="dailyaudiobible.dabapp.AlarmReceiver"></receiver>
 		<receiver android:name="com.google.android.gms.gcm.GcmReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
