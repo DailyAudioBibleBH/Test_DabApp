@@ -76,22 +76,22 @@ namespace DABApp.Droid
             ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
             var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
             CrossMediaManager.Current.AudioPlayer = exoPlayer;
-            if ((int)Android.OS.Build.VERSION.SdkInt > 22)
-            {
-                var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
-                if (!pm.IsIgnoringBatteryOptimizations(PackageName))
-                {
-                    var intent = new Intent();
-                    intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
-                    intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
-                    var alert = Snackbar.Make(((Activity)this).Window.DecorView, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", Snackbar.LengthIndefinite);
-                    alert.View.FindViewById<TextView>(Resource.Id.snackbar_text).SetMaxLines(5);
-                    alert.SetAction("OK", v => StartActivity(intent));
-                    alert.Show();
-                    // MessagingCenter.Send<string>("OptimizationWarning", "OptimizationWarning");
-                    //Toast.MakeText(this.ApplicationContext, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", ToastLength.Long).Show();
-                }
-            }
+            //if ((int)Android.OS.Build.VERSION.SdkInt > 22)
+            //{
+            //    var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
+            //    if (!pm.IsIgnoringBatteryOptimizations(PackageName))
+            //    {
+            //        var intent = new Intent();
+            //        intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
+            //        intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
+            //        var alert = Snackbar.Make(((Activity)this).Window.DecorView, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", Snackbar.LengthIndefinite);
+            //        alert.View.FindViewById<TextView>(Resource.Id.snackbar_text).SetMaxLines(5);
+            //        alert.SetAction("OK", v => StartActivity(intent));
+            //        alert.Show();
+            //        // MessagingCenter.Send<string>("OptimizationWarning", "OptimizationWarning");
+            //        //Toast.MakeText(this.ApplicationContext, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", ToastLength.Long).Show();
+            //    }
+            //}
 
             if (Device.Idiom == TargetIdiom.Phone)
             {
