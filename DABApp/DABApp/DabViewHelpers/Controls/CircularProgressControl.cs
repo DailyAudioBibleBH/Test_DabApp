@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -101,7 +102,7 @@ namespace DABApp
                 background1.Rotation = rotation;
             }
             else
-            {
+            { 
                 if (oldValue < .5)
                 {
                     // this code is CPU intensive so only do it if we go from <50% to >=50%
@@ -134,6 +135,15 @@ namespace DABApp
         {
             get { return (bool)this.GetValue(DownloadVisibleProperty); }
             set { SetValue(DownloadVisibleProperty, value); }
+        }
+
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            if (propertyName == "IsVisible")
+            {
+                progress2.IsVisible = false;
+            }
+            base.OnPropertyChanged(propertyName);
         }
     }
 }

@@ -411,10 +411,10 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_black.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\more_horiz.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_white.png" />
+    <AndroidResource Include="Resources\drawable\more_horiz.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

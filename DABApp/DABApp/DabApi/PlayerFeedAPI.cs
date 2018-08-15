@@ -20,6 +20,7 @@ namespace DABApp
 		static bool DownloadIsRunning = false;
 		static bool CleanupIsRunning = false;
         static bool ResumeNotSet = true;
+        public static event EventHandler<DabEventArgs> MakeProgressVisible;
 
 		public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource) {
 			//GetEpisodes(resource);
@@ -163,7 +164,10 @@ namespace DABApp
 																   && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to == "listened") //not listened to or system not set to delete listened to episodes
 											 select episode;
 					episodesToDownload = EpisodesToDownload.ToList();
-
+                foreach (var episode in episodesToDownload)
+                {
+                    MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, 0));
+                }
 				int ix = 0;
 				//List<dbEpisodes> episodesToUpdate = new List<dbEpisodes>();
 				foreach (var episode in episodesToDownload)

@@ -25,8 +25,10 @@ namespace DABApp
             Episode = episode;
             description = episode.description;
             title = episode.title;
+            noProgress = episode.is_downloaded;
             DependencyService.Get<IFileManagement>().EpisodeDownloading += UpdateDownload;
             DependencyService.Get<IFileManagement>().EpisodeCompleted += DownloadComplete;
+            PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }
 
         public bool downloadVisible
@@ -60,7 +62,7 @@ namespace DABApp
         {
             get
             {
-                return noProgress = progress > -.01 || Episode.is_downloaded;
+                return noProgress;
             }
             set
             {
@@ -176,6 +178,14 @@ namespace DABApp
             {
                 downloadVisible = true;
                 downloadProgress = -.01;
+            }
+        }
+
+        void DownloadStarted(object o, DabEventArgs e)
+        {
+            if (Episode.id == e.EpisodeId)
+            {
+                progressVisible = true;
             }
         }
 
