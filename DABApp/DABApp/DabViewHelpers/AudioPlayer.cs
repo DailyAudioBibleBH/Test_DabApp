@@ -175,14 +175,7 @@ namespace DABApp
 			Instance.CurrentEpisodeTitle = episode.title;
 			Instance.CurrentChannelTitle = episode.channel_title;
 			var ext = episode.url.Split('.').Last();
-			if (episode.is_downloaded)
-			{
-				_player.SetAudioFile($"{episode.id.ToString()}.{ext}", episode);
-			}
-			else
-			{
-				_player.SetAudioFile(episode.url, episode);
-			}
+			_player.SetAudioFile($"{episode.id.ToString()}.{ext}", episode);
 			//if (episode.stop_time < _player.TotalTime || Device.RuntimePlatform == "Android")
 			//{
 				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");

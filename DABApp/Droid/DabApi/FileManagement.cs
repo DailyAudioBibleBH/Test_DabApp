@@ -71,8 +71,9 @@ namespace DABApp.Droid
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     var ext = address.Split('.').Last();
                     var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
-                    //if (!File.Exists(fileName)) {
-                    //	File.Create(fileName);
+                    //if (!File.Exists(fileName))
+                    //{
+                    //    File.Create(fileName);
                     //}
                     client = new WebClient();
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;

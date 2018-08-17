@@ -48,35 +48,36 @@ namespace DABApp.Droid
 			Episode = episode;
 			CrossMediaManager.Current.MediaFileChanged += SetMetaData;
 			CrossMediaManager.Current.StatusChanged += OnStatusChanged;
-			//var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
-			//This is a different way to get pictures onto the notifications.  Not as reliable but should theoretically do it before the track starts playing
-			//CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
-			//{
-			//	if (arg.Metadata.AlbumArtUri != ImageUri)
-			//	{
-			//		await Task.Run(async () =>
-			//		{
-			//			var a = await fetchBitmap(ImageUri);
+            //var ImageUri = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == Episode.channel_title).images.thumbnail;
+            //This is a different way to get pictures onto the notifications.  Not as reliable but should theoretically do it before the track starts playing
+            //CrossMediaManager.Current.SetOnBeforePlay(async (Plugin.MediaManager.Abstractions.IMediaFile arg) =>
+            //{
+            //	if (arg.Metadata.AlbumArtUri != ImageUri)
+            //	{
+            //		await Task.Run(async () =>
+            //		{
+            //			var a = await fetchBitmap(ImageUri);
 
-			//			Device.BeginInvokeOnMainThread(() =>
-			//			{
-			//				arg.Metadata.AlbumArt = a;
-			//				arg.Metadata.Art = a;
-			//				arg.Metadata.DisplayIcon = a;
-			//				arg.Metadata.AlbumArtUri = ImageUri;
-			//			});
-			//		});
-			//	}
-			//});
-			if (fileName.Contains("http://") || fileName.Contains("https://"))
+            //			Device.BeginInvokeOnMainThread(() =>
+            //			{
+            //				arg.Metadata.AlbumArt = a;
+            //				arg.Metadata.Art = a;
+            //				arg.Metadata.DisplayIcon = a;
+            //				arg.Metadata.AlbumArtUri = ImageUri;
+            //			});
+            //		});
+            //	}
+            //});
+            var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            fileName = Path.Combine(doc, fileName);
+
+            if (!File.Exists(fileName))
 			{
-				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
+				CrossMediaManager.Current.Play(episode.url, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
 				//player.SetDataSource(fileName);
 			}
 			else
 			{
-				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				fileName = Path.Combine(doc, fileName);
 				CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
 				//player.SetDataSource(fileName);
 			}

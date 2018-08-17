@@ -17,6 +17,7 @@ namespace DABApp.iOS
 			uiSwitch.OnTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
 			cell.BackgroundColor = ((Color)App.Current.Resources["InputBackgroundColor"]).ToUIColor();
 			cell.TextLabel.TextColor = ((Color)App.Current.Resources["TextColor"]).ToUIColor();
+            cell.TextLabel.MinimumScaleFactor = new nfloat(14.0);
 			return cell;
 		}
 	}

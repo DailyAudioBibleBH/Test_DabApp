@@ -26,7 +26,7 @@ namespace DABApp.Droid
 			var child2 = ((LinearLayout)cell).GetChildAt(2);
 
 			var label = (TextView)((LinearLayout)child1).GetChildAt(0);
-			label.SetTextColor(((Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
+			label.SetTextColor(((Color)App.Current.Resources["TextColor"]).ToAndroid());
 
 			var swit = (Android.Widget.Switch)child2;
 			OnChecked(swit);

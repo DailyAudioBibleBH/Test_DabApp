@@ -62,15 +62,16 @@ namespace DABApp.iOS
 				}
 			});
 
-			if (fileName.Contains("http://") || fileName.Contains("https://"))
+            var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            fileName = Path.Combine(doc, fileName);
+            
+            if (!File.Exists(fileName))
 			{
-				NSUrl url = NSUrl.FromString(fileName);
+				NSUrl url = NSUrl.FromString(episode.url);
 				_player = AVPlayer.FromUrl(url);
 			}
 			else
 			{
-				var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				fileName = Path.Combine(doc, fileName);
 				//string sFilePath = NSBundle.MainBundle.PathForResource
 				//(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
 				var url = NSUrl.FromFilename(fileName);

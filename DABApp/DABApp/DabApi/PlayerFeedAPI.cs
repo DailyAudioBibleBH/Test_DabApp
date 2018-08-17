@@ -440,7 +440,7 @@ namespace DABApp
 					user_avatar = AvatarSettings.Value
 				};
 				HttpClient client = new HttpClient();
-				var tres = await client.GetAsync("https://player.dailyaudiobible.com/donation/request_access");
+				var tres = await client.GetAsync($"{GlobalResources.GiveUrl}donation/request_access");
 				var tok = await tres.Content.ReadAsStringAsync();
 				var en = JsonConvert.DeserializeObject<GetTokenContainer>(tok);
 				var send = new DonationTokenContainer
@@ -453,7 +453,7 @@ namespace DABApp
 				string JsonIn = JsonConvert.SerializeObject(send);
 				HttpContent content = new StringContent(JsonIn);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync("https://player.dailyaudiobible.com/donation/request_access", content);
+				var result = await client.PostAsync($"{GlobalResources.GiveUrl}donation/request_access", content);
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				if (!JsonOut.Contains("url"))
 				{

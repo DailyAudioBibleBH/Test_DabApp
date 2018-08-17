@@ -365,8 +365,6 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_forward_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_play_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_pause_circle_outline_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white_3x.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_replay_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_forward_30_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\pencil_white.png" />
@@ -415,6 +413,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\more_horiz.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_play_circle_outline_white_3x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_pause_circle_outline_white_3x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

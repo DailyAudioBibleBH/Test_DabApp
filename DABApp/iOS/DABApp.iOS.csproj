@@ -476,10 +476,10 @@
     <BundleResource Include="Resources\progress_done.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\more_horiz.png" />
+    <BundleResource Include="Resources\ic_keyboard_arrow_down_white.png" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\ic_keyboard_arrow_down_white.png" />
+    <BundleResource Include="Resources\more_horiz.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

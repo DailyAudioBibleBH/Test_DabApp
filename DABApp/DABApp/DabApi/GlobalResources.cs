@@ -136,6 +136,12 @@ namespace DABApp
 		}
 
         public static bool TestMode { get; set; }
+        public static string GiveUrl {
+            get
+            {
+                return TestMode ? "https://player.staging.dailyaudiobible.com/" : "https://player.dailyaudiobible.com/";
+            }
+        }
 		public static bool LogInPageExists { get; set; }
 		public static bool DeleteEpisodesAfterListening { get; set; }
 		public static string DurationPicked { get; set; }
