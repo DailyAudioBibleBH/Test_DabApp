@@ -17,6 +17,7 @@ namespace DABApp
         Xamarin.Forms.View background2;
         Xamarin.Forms.View cloud1;
         Xamarin.Forms.View cloud2;
+        bool reset= false;
         public CircularProgressControl()
         {
             progress1 = CreateImage("progress_done");
@@ -88,6 +89,7 @@ namespace DABApp
 
         private void HandleProgressChanged(double oldValue, double p)
         {
+            reset = false;
             if (p < .5 && !DownloadVisible)
             {
                 if (oldValue >= .5)
@@ -117,6 +119,7 @@ namespace DABApp
 
         private void HandleDownloadVisibleChanged(bool newValue)
         {
+            reset = true;
             progress1.IsVisible = !newValue;
             progress2.IsVisible = !newValue;
             background1.IsVisible = !newValue;
@@ -139,9 +142,9 @@ namespace DABApp
 
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (propertyName == "IsVisible")
+            if (propertyName == "IsVisible" && IsVisible && reset)
             {
-                progress2.IsVisible = false;
+                HandleProgressChanged(1, 0);
             }
             base.OnPropertyChanged(propertyName);
         }

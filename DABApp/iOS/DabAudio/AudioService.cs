@@ -30,6 +30,7 @@ namespace DABApp.iOS
         //float seekRate = 10.0f;
 		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
+        bool ableToKeepUp;
 
 		public AudioService()
 		{
@@ -42,6 +43,7 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
+            ableToKeepUp = true;
 			CurrentEpisode = episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
@@ -78,6 +80,10 @@ namespace DABApp.iOS
 				_player = AVPlayer.FromUrl(url);
 			}
 			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
+            NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.ItemFailedToPlayToEndTimeNotification, (notification) => {
+                PlayerCanKeepUp = false;
+                Pause();
+            });
             NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.PlaybackStalledNotification, (notification) => {
                 Pause();
             });
@@ -272,7 +278,6 @@ namespace DABApp.iOS
 		{
 			get
 			{
-
 				if (_player != null)
 				{
 					return _player.CurrentItem.Duration.Seconds;
@@ -290,10 +295,13 @@ namespace DABApp.iOS
 			{
 				if (_player != null)
 				{
-					return _player.CurrentItem.PlaybackLikelyToKeepUp;
+					return ableToKeepUp;
 				}
 				else return false;
 			}
+            set {
+                ableToKeepUp = value;
+            }
 		}
 
 		public event EventHandler Completed;

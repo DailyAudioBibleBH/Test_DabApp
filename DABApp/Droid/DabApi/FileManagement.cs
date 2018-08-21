@@ -21,6 +21,7 @@ namespace DABApp.Droid
         double progress = -.01;
         WebClient client;
         public bool keepDownloading { get; set; } = true;
+        long FileSize;
 
         public FileManagement()
 		{
@@ -78,6 +79,8 @@ namespace DABApp.Droid
                     client = new WebClient();
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                    client.OpenRead(address);
+                    FileSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
                     await client.DownloadFileTaskAsync(address, fileName);
                     return true;
                 }
@@ -101,7 +104,7 @@ namespace DABApp.Droid
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            double pp = (((double)e.ProgressPercentage) / 100.00);
+            double pp = ((double)e.BytesReceived) / FileSize;
             if (pp > progress + .1 && pp < 1)
             {
                 progress = pp;

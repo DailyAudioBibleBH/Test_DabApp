@@ -54,7 +54,6 @@ namespace DABApp
             {
                 progress = value;
                 OnPropertyChanged("downloadProgress");
-                OnPropertyChanged("progressVisible");
             }
         }
 
