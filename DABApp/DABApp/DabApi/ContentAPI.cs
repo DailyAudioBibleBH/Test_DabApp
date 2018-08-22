@@ -19,7 +19,7 @@ namespace DABApp
 		public static bool CheckContent() {
 			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
 			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
-			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
+			//var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
 			try
 			{
 				var client = new System.Net.Http.HttpClient();
@@ -104,7 +104,7 @@ namespace DABApp
 		public static void UpdateOffline(bool offline, int ResourceId) {
 			Debug.WriteLine("Updating Offline Settings");
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
-			if (OfflineSettings == null)
+			if (OfflineSettings != null)
 			{
 				var jsonArray = JArray.Parse(OfflineSettings.Value);
 				var match = jsonArray.Where(j => j.ToString().Equals(ResourceId.ToString()));

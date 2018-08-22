@@ -16,8 +16,9 @@ namespace DABApp.iOS
 			UISwitch uiSwitch = cell.AccessoryView as UISwitch;
 			uiSwitch.OnTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
 			cell.BackgroundColor = ((Color)App.Current.Resources["InputBackgroundColor"]).ToUIColor();
+            UIFont font = UIFont.FromName("Helvetica", 18.5f);
+            cell.TextLabel.Font = font;
 			cell.TextLabel.TextColor = ((Color)App.Current.Resources["TextColor"]).ToUIColor();
-            cell.TextLabel.MinimumScaleFactor = new nfloat(14.0);
 			return cell;
 		}
 	}

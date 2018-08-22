@@ -18,6 +18,7 @@ namespace DABApp.iOS
         double progress = -.01;
         WebClient client;
         public bool keepDownloading { get; set; } = true;
+        long FileSize;
 
         public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
 		{
@@ -35,6 +36,8 @@ namespace DABApp.iOS
                     client = new WebClient();
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadFileCompleted += Client_DownloadFileCompleted;
+                    await client.OpenReadTaskAsync(address);
+                    FileSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
                     await client.DownloadFileTaskAsync(address, fileName);
                     return true;
                 }
@@ -90,7 +93,7 @@ namespace DABApp.iOS
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            double pp = (e.ProgressPercentage / 100.00);
+            double pp = (double)e.BytesReceived / FileSize;
             if (pp > progress + .1)
             {
                 progress = pp;
