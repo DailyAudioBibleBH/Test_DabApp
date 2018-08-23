@@ -222,6 +222,7 @@ namespace DABApp
 
         public static async Task DeleteChannelEpisodes(Resource resource) {
             DependencyService.Get<IFileManagement>().StopDownloading();
+            DownloadIsRunning = false;
 			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
 			foreach (var episode in Episodes) {
 				var ext = episode.url.Split('.').Last();

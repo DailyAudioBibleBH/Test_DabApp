@@ -101,7 +101,7 @@ namespace DABApp
         public void OnOffline(object o, ToggledEventArgs e)
         {
             Resource.availableOffline = e.Value;
-            ContentAPI.UpdateOffline(e.Value, Resource.id);
+            Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
             if (e.Value)
             {
                 Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });

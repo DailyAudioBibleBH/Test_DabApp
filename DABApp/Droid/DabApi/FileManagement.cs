@@ -79,8 +79,11 @@ namespace DABApp.Droid
                     client = new WebClient();
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadFileCompleted += Client_DownloadFileCompleted;
-                    client.OpenRead(address);
-                    FileSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
+                    //client.OpenRead(address);
+                    //FileSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
+                    HttpWebRequest request = WebRequest.CreateHttp(address);
+                    HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
+                    FileSize = response.ContentLength;
                     await client.DownloadFileTaskAsync(address, fileName);
                     return true;
                 }
@@ -105,6 +108,7 @@ namespace DABApp.Droid
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             double pp = ((double)e.BytesReceived) / FileSize;
+            //double pp = e.ProgressPercentage / 100.0;
             if (pp > progress + .1 && pp < 1)
             {
                 progress = pp;

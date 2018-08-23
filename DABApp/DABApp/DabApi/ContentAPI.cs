@@ -101,7 +101,7 @@ namespace DABApp
 			}
 		}
 
-		public static void UpdateOffline(bool offline, int ResourceId) {
+		public static async Task UpdateOffline(bool offline, int ResourceId) {
 			Debug.WriteLine("Updating Offline Settings");
 			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
 			if (OfflineSettings != null)
@@ -123,7 +123,7 @@ namespace DABApp
 					}
 				}
 				OfflineSettings.Value = jsonArray.ToString();
-				db.Update(OfflineSettings);
+				await adb.UpdateAsync(OfflineSettings);
 				Debug.WriteLine("Updated Offline settings");
 			}
 		}
