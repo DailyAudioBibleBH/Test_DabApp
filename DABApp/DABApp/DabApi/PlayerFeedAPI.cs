@@ -188,14 +188,10 @@ namespace DABApp
 					}
 					catch (Exception e)
 					{
-						Debug.WriteLine("Error while downloading episodes");
-						DownloadIsRunning = false;
-                        //if (ResumeNotSet)
-                        //{
-                            CrossConnectivity.Current.ConnectivityChanged += ResumeDownload;
-                            ResumeNotSet = false;
-                        //}
-						return false;
+						Debug.WriteLine("Error while downloading episode. Downloads will continue.");
+
+                        CrossConnectivity.Current.ConnectivityChanged += ResumeDownload;
+                        ResumeNotSet = false; 
 					}
 				}
 				Debug.WriteLine("Downloads complete!");
