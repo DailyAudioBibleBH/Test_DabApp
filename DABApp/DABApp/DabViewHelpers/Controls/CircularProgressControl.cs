@@ -20,6 +20,7 @@ namespace DABApp
         bool reset= false;
         public CircularProgressControl()
         {
+            IsVisible = false;
             progress1 = CreateImage("progress_done");
             background1 = CreateImage("progress_pending");
             background2 = CreateImage("progress_pending");
@@ -68,6 +69,8 @@ namespace DABApp
         public static BindableProperty ProgressProperty =
     BindableProperty.Create("Progress", typeof(double), typeof(CircularProgressControl), 0d, propertyChanged: ProgressChanged);
 
+        public static BindableProperty ProgressVisibleProperty = BindableProperty.Create("ProgressVisible", typeof(bool), typeof(CircularProgressControl), false, propertyChanged: ProgressVisibleChanged);
+
         private static void ProgressChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var c = bindable as CircularProgressControl;
@@ -78,6 +81,16 @@ namespace DABApp
         {
             var c = bindable as CircularProgressControl;
             c.HandleDownloadVisibleChanged((bool)newValue);
+        }
+
+        private static void ProgressVisibleChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var c = (CircularProgressControl)bindable;
+            c.IsVisible = (bool)newValue;
+            if ((bool)newValue)
+            {
+                c.HandleProgressChanged(1, 0);
+            }
         }
 
         static double Clamp(double value, double min, double max)

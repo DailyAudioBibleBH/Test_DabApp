@@ -153,7 +153,7 @@
                       <Image IsVisible="{Binding favoriteVisible}" Source="ic_star_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
                       <Image IsVisible="{Binding hasJournalVisible}" Source="pencil_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="3" />
                       <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation" />
-                      <local:CircularProgressControl Progress="{Binding downloadProgress}" IsVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.RowSpan="2" Grid.Column="4"/>
+                      <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.RowSpan="2" Grid.Column="4"/>
                     </Grid>
                   </local:DabViewCell>
                 </DataTemplate>
