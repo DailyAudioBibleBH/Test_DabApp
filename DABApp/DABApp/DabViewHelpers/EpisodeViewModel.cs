@@ -61,11 +61,11 @@ namespace DABApp
         {
             get
             {
-                return noProgress;
+                return Episode.progressVisible;
             }
             set
             {
-                noProgress = value;
+                Episode.progressVisible = value;
                 OnPropertyChanged("progressVisible");
             }
         }
@@ -182,7 +182,7 @@ namespace DABApp
 
         void DownloadStarted(object o, DabEventArgs e)
         {
-            if (Episode.id == e.EpisodeId)
+            if (e.EpisodeId == Episode.id.Value)
             {
                 progressVisible = true;
             }
