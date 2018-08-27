@@ -11,5 +11,6 @@ namespace DABApp
         event EventHandler<DabEventArgs> EpisodeDownloading;
         event EventHandler<DabEventArgs> EpisodeCompleted;
         bool keepDownloading { get; set; }
+        bool FileExists(string fileName);
 	}
 }

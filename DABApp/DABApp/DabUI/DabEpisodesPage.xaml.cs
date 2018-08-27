@@ -57,7 +57,8 @@ namespace DABApp
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
             var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-            if (chosen.is_downloaded || CrossConnectivity.Current.IsConnected)
+            var ext = chosen.url.Split('.').Last();
+            if (DependencyService.Get<IFileManagement>().FileExists($"{chosen.id.ToString()}.{ext}") || CrossConnectivity.Current.IsConnected)
             {
                 if (chosen.id != AudioPlayer.Instance.CurrentEpisodeId)
                 {

@@ -88,6 +88,13 @@ namespace DABApp.iOS
             }
         }
 
+        public bool FileExists(string fileName)
+        {
+            var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string FileName = Path.Combine(doc, fileName);
+            return File.Exists(FileName);
+        }
+
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
