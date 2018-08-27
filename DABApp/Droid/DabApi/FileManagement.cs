@@ -77,13 +77,14 @@ namespace DABApp.Droid
                     //    File.Create(fileName);
                     //}
                     client = new WebClient();
+                    WebRequest request = HttpWebRequest.Create(address);
+                    request.Method = "HEAD";
+                    using (WebResponse response = request.GetResponse())
+                    {
+                        FileSize = response.ContentLength;
+                    }
                     client.DownloadProgressChanged += Client_DownloadProgressChanged;
                     client.DownloadFileCompleted += Client_DownloadFileCompleted;
-                    //client.OpenRead(address);
-                    //FileSize = Convert.ToInt64(client.ResponseHeaders["Content-Length"]);
-                    HttpWebRequest request = WebRequest.CreateHttp(address);
-                    HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-                    FileSize = response.ContentLength;
                     await client.DownloadFileTaskAsync(address, fileName);
                     return true;
                 }

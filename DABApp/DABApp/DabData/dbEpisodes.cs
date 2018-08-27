@@ -37,6 +37,7 @@ namespace DABApp
 		public string remaining_time { get; set; } = "01:00";
 		public bool is_favorite { get; set; }
 		public bool has_journal { get; set;}
+        public bool progressVisible { get; set; }
 
 	//	[Ignore]
 	//	public bool downloadVisible { 

@@ -166,7 +166,9 @@ namespace DABApp
 					episodesToDownload = EpisodesToDownload.ToList();
                 foreach (var episode in episodesToDownload)
                 {
-                    MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, 0));
+                    episode.progressVisible = true;
+                    await adb.UpdateAsync(episode);
+                    MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
                 }
 				int ix = 0;
 				//List<dbEpisodes> episodesToUpdate = new List<dbEpisodes>();
@@ -223,12 +225,13 @@ namespace DABApp
         public static async Task DeleteChannelEpisodes(Resource resource) {
             DependencyService.Get<IFileManagement>().StopDownloading();
             DownloadIsRunning = false;
-			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded).ToList();
+			var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && x.is_downloaded || x.progressVisible).ToList();
 			foreach (var episode in Episodes) {
 				var ext = episode.url.Split('.').Last();
 				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
 				{
 					episode.is_downloaded = false;
+                    episode.progressVisible = false;
 					await adb.UpdateAsync(episode);
                     //if (Device.Idiom == TargetIdiom.Tablet)
                     //{

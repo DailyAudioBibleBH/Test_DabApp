@@ -345,7 +345,6 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_up_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_share_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_star_white.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\ic_star_border_white.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_person_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_credit_card_white_3x.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_location_on_white_3x.png" />
@@ -424,6 +423,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-xxhdpi\more_horiz.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_star_border_white.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
