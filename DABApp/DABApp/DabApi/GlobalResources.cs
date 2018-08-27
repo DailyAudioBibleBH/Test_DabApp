@@ -139,7 +139,7 @@ namespace DABApp
         public static string GiveUrl {
             get
             {
-                return TestMode ? "https://player.staging.dailyaudiobible.com/" : "https://player.dailyaudiobible.com/";
+                return TestMode ? "https://give.staging.dailyaudiobible.com/" : "https://player.dailyaudiobible.com/";
             }
         }
 		public static bool LogInPageExists { get; set; }
