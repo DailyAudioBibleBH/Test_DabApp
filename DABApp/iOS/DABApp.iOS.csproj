@@ -82,7 +82,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>DAB App</CodesignProvision>
+    <CodesignProvision>VS: com.dailyaudiobible.dabapp Development</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
