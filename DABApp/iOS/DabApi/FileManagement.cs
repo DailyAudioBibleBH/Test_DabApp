@@ -14,6 +14,7 @@ namespace DABApp.iOS
 	{
         public event EventHandler<DabEventArgs> EpisodeDownloading;
         public event EventHandler<DabEventArgs> EpisodeCompleted;
+        public static event EventHandler<DabEventArgs> DoneDownloading;
         dbEpisodes _episode;
         double progress = -.01;
         WebClient client;
@@ -100,6 +101,7 @@ namespace DABApp.iOS
             var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
             progress = -.01;
             EpisodeCompleted?.Invoke(sender, a);
+            DoneDownloading?.Invoke(sender, a);
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)

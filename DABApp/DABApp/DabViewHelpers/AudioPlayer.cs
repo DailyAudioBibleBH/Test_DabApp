@@ -121,7 +121,8 @@ namespace DABApp
 
 								if (!_player.PlayerCanKeepUp && ShowWarning)
 								{
-									PlayerFailure.Invoke(this, new EventArgs());
+
+                                    PlayerFailure.Invoke(this, new EventArgs());
 									ShowWarning = false;
 								}
 							}

@@ -14,6 +14,7 @@ using MediaPlayer;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
+using Plugin.Connectivity;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.iOS
@@ -31,6 +32,7 @@ namespace DABApp.iOS
 		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
         bool ableToKeepUp;
+        static bool UpdateOnPlay = false;
 
 		public AudioService()
 		{
@@ -44,6 +46,7 @@ namespace DABApp.iOS
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
             ableToKeepUp = true;
+            UpdateOnPlay = false;
 			CurrentEpisode = episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
@@ -67,39 +70,68 @@ namespace DABApp.iOS
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             fileName = Path.Combine(doc, fileName);
             
-            if (!File.Exists(fileName))
+            //if (!episode.is_downloaded && CrossConnectivity.Current.IsConnected)
+            if(!episode.is_downloaded && CrossConnectivity.Current.IsConnected)
 			{
-				NSUrl url = NSUrl.FromString(episode.url);
-				_player = AVPlayer.FromUrl(url);
-			}
+                NSUrl url = NSUrl.FromString(episode.url);
+                _player = AVPlayer.FromUrl(url);
+            }
 			else
 			{
-				//string sFilePath = NSBundle.MainBundle.PathForResource
-				//(Path.GetFileNameWithoutExtension(fileName), Path.GetExtension(fileName));
 				var url = NSUrl.FromFilename(fileName);
+                Debug.WriteLine(url.AbsoluteString);
 				_player = AVPlayer.FromUrl(url);
 			}
-			_player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
+            if (!episode.is_downloaded && File.Exists(fileName))
+            {
+                FileManagement.DoneDownloading += DoneDownloading;
+            }
+            _player.ActionAtItemEnd = AVPlayerActionAtItemEnd.Pause;
             NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.ItemFailedToPlayToEndTimeNotification, (notification) => {
-                PlayerCanKeepUp = false;
                 Pause();
+                if (!UpdateOnPlay)
+                {
+                    PlayerCanKeepUp = false;
+                }
+                else Play();
             });
             NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.PlaybackStalledNotification, (notification) => {
                 Pause();
+                if (UpdateOnPlay)
+                    Play();
             });
 			SetCommandCenter();
 			IsLoaded = true;
 		}
 
-		public void Play()
+        private void DoneDownloading(object sender, DabEventArgs e)
+        {
+            if (e.EpisodeId == CurrentEpisode.id.Value)
+            {
+                UpdateOnPlay = true;
+            }
+        }
+
+        public void Play()
 		{
-			_player.Play();
+            if (UpdateOnPlay)
+            {
+                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                NSUrl url = NSUrl.FromFilename(Path.Combine(doc, $"{CurrentEpisode.id.Value.ToString()}.{CurrentEpisode.url.Split('.').Last()}"));
+                var currentTime = _player.CurrentTime;
+                Debug.WriteLine(url.AbsoluteString);
+                _player.ReplaceCurrentItemWithPlayerItem(AVPlayerItem.FromAsset(AVAsset.FromUrl(url)));//Updating currently playing file so it isn't partial anymore
+                _player.Seek(currentTime);
+                UpdateOnPlay = false;
+                PlayerCanKeepUp = true;
+            }
+            _player.Play();
 		}
 
 		public void Pause()
 		{
 			_player.Pause();
-		}
+        }
 
 		public void SeekTo(int seconds)
 		{
