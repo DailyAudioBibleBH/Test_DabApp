@@ -14,6 +14,7 @@ the AVPlayer will quickly pause and play again switching the buffered file for t
 If there is no downloaded file then an alert will be displayed to the user.
 
 The UpdateOnPlay property is switched to true by a static event handler from the iOS FileManagement class called DoneDownloading.
+DoneDownloading is invoked in the Completed_Download event of the WebClient downloading the file in the FileManagement class.
 DoneDownloading is reassigned to a method called DoneDownloading whenever a new file is set to the AVPlayer and the episode is both not downloaded 
 and the partial file exists on the disk.
 
@@ -21,3 +22,7 @@ When the DoneDownloading event is triggered UpdateOnPlay is set to true only if 
 which is done downloading.
 If a partially downloaded file is played while the device is disconnected from the internet the partial file will play
 and switch to the completely downloaded file when the AVPlayer gets to the end of the partially downloaded file should that file exist.
+
+This is the message the user receives should they get to the end of a partially downloaded episode before the rest of the episode has been downloaded:
+"Audio Playback has stopped.", 
+"If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again."
