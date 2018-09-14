@@ -130,46 +130,48 @@ namespace DABApp
 
 		public static async Task<bool> DownloadEpisodes() {
 
-			if (!DownloadIsRunning)
+            bool RunAgain = false;
+            var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
+            DateTime cutoffTime = new DateTime();
+            switch (OfflineEpisodeSettings.Instance.Duration)
+            {
+                case "One Day":
+                    cutoffTime = DateTime.Now.AddDays(-1);
+                    break;
+                case "Two Days":
+                    cutoffTime = DateTime.Now.AddDays(-2);
+                    break;
+                case "Three Days":
+                    cutoffTime = DateTime.Now.AddDays(-3);
+                    break;
+                default:
+                    cutoffTime = DateTime.Now.AddDays(-7);
+                    break;
+                    //case "One Month":
+                    //	cutoffTime = DateTime.Now.AddMonths(-1);
+                    //	break;
+            }
+            //Get episodes to download
+            var episodesToShowDownload = new List<dbEpisodes>();
+            var EpisodesToDownload = from channel in OfflineChannels
+                                     join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
+                                     where !episode.is_downloaded //not downloaded
+                                                           && episode.PubDate > cutoffTime //new enough to be downloaded
+                                                           && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
+                                     select episode;
+            episodesToShowDownload = EpisodesToDownload.ToList();
+            foreach (var episode in episodesToShowDownload)
+            {
+                episode.progressVisible = true;
+                await adb.UpdateAsync(episode);
+                MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
+            }
+            if (!DownloadIsRunning)
 			{
                 DependencyService.Get<IFileManagement>().keepDownloading = true;
 				DownloadIsRunning = true;
-				var OfflineChannels = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => x.availableOffline == true);
-				DateTime cutoffTime = new DateTime();
-				switch (OfflineEpisodeSettings.Instance.Duration)
-				{
-					case "One Day":
-						cutoffTime = DateTime.Now.AddDays(-1);
-						break;
-					case "Two Days":
-						cutoffTime = DateTime.Now.AddDays(-2);
-						break;
-					case "Three Days":
-						cutoffTime = DateTime.Now.AddDays(-3);
-						break;
-					default:
-						cutoffTime = DateTime.Now.AddDays(-7);
-                        break;
-					//case "One Month":
-					//	cutoffTime = DateTime.Now.AddMonths(-1);
-					//	break;
-				}
-
-				//Get episodes to download
-				var episodesToDownload = new List<dbEpisodes>();
-					var EpisodesToDownload = from channel in OfflineChannels
-											 join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
-											 where !episode.is_downloaded //not downloaded
-																   && episode.PubDate > cutoffTime //new enough to be downloaded
-																   && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
-											 select episode;
-					episodesToDownload = EpisodesToDownload.ToList();
-                foreach (var episode in episodesToDownload)
-                {
-                    episode.progressVisible = true;
-                    await adb.UpdateAsync(episode);
-                    MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
-                }
+                var episodesToDownload = new List<dbEpisodes>();
+                episodesToDownload = episodesToShowDownload;
 				int ix = 0;
 				//List<dbEpisodes> episodesToUpdate = new List<dbEpisodes>();
 				foreach (var episode in episodesToDownload)
@@ -177,7 +179,7 @@ namespace DABApp
 					try
 					{
 						ix++;
-						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToDownload.Count(), episode.url);
+						Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToShowDownload.Count(), episode.url);
 						if (await DependencyService.Get<IFileManagement>().DownloadEpisodeAsync(episode.url, episode))
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
@@ -196,6 +198,10 @@ namespace DABApp
 				}
 				Debug.WriteLine("Downloads complete!");
 				DownloadIsRunning = false;
+                if (RunAgain)
+                {
+                    await DownloadEpisodes();
+                }
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
@@ -203,7 +209,8 @@ namespace DABApp
 				return true;
 			}
 			else {
-				//download is already running
+                //download is already running
+                RunAgain = true;
 				return true;
 			}
 		}
@@ -325,6 +332,7 @@ namespace DABApp
 						{
 							Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
 							episode.is_downloaded = false;
+                            episode.progressVisible = false;
 							db.Update(episode);
 							if (Device.Idiom == TargetIdiom.Tablet)
 							{
