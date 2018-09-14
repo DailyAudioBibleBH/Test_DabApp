@@ -6,6 +6,7 @@ namespace DABApp
 {
 	public class Preset : INotifyPropertyChanged
 	{
+        //used in the offline episode page as a way to control where check marks are on the duration list.
 		private bool _Selected = false;
 		public string duration { get; set; }
 		public bool Selected { get { return _Selected;} 
