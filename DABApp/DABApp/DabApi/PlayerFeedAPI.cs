@@ -226,25 +226,43 @@ namespace DABApp
         }
 
         public static async Task DeleteChannelEpisodes(Resource resource) {
-            DependencyService.Get<IFileManagement>().StopDownloading();
-            DownloadIsRunning = false;
-            var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && (x.is_downloaded || x.progressVisible)).ToList();
-			foreach (var episode in Episodes) {
-				var ext = episode.url.Split('.').Last();
-				if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
-				{
-					episode.is_downloaded = false;
-                    episode.progressVisible = false;
-					await adb.UpdateAsync(episode);
-                    //if (Device.Idiom == TargetIdiom.Tablet)
-                    //{
-                    //    Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-                    //}
+            try
+            {
+                DependencyService.Get<IFileManagement>().StopDownloading();
+                DownloadIsRunning = false;
+                var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && (x.is_downloaded || x.progressVisible)).ToList();
+                foreach (var episode in Episodes)
+                {
+                    var ext = episode.url.Split('.').Last();
+                    if (DependencyService.Get<IFileManagement>().DeleteEpisode(episode.id.ToString(), ext))
+                    {
+                        episode.is_downloaded = false;
+                        episode.progressVisible = false;
+                        if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform == Device.Android)
+                        {
+                            db.Update(episode);
+                        }
+                        else
+                        {
+                            await adb.UpdateAsync(episode);
+                        }
+                        Debug.WriteLine($"Episode: {episode.title} deleted");
+                        //if (Device.Idiom == TargetIdiom.Tablet)
+                        //{
+                        //    Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+                        //}
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
                 }
-				else {
-					throw new Exception();
-				}
-			}
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            Debug.WriteLine($"Episodes for {resource.title} Deleted");
 		}
 
 		public static async Task UpdateEpisodeProperty(int episodeId, string propertyName = null) {
@@ -364,10 +382,10 @@ namespace DABApp
 				episode.stop_time = NewStopTime;
 				episode.remaining_time = NewRemainingTime;
 				await adb.UpdateAsync(episode);
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
+				//if (Device.Idiom == TargetIdiom.Tablet)
+				//{
 					Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-				}
+				//}
 			}
 			catch (Exception e)
 			{

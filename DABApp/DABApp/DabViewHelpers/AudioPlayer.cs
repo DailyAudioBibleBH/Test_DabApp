@@ -169,10 +169,11 @@ namespace DABApp
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
-			if (_player.IsPlaying) {
-				Task.Run(async () => { await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime); });
-			}
-			Instance.CurrentEpisodeId = (int)episode.id;
+            bool wasPlaying = _player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
+            var time = CurrentTime;
+            var id = CurrentEpisodeId;
+            var rtime = RemainingTime;
+            Instance.CurrentEpisodeId = (int)episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
 			Instance.CurrentChannelTitle = episode.channel_title;
 			var ext = episode.url.Split('.').Last();
@@ -189,7 +190,15 @@ namespace DABApp
 			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
 			ShowWarning = Device.RuntimePlatform == "iOS" ? false: true;
-		}
+            if (wasPlaying)
+            {
+                Task.Run(async () =>
+                {
+                    await PlayerFeedAPI.UpdateStopTime(id, time, rtime);
+                    await AuthenticationAPI.CreateNewActionLog(id, "pause", time, null);
+                });
+            }
+        }
 
 
 		public string PlayPauseButtonImage
@@ -460,11 +469,14 @@ namespace DABApp
 
 		void UpdatePause()
 		{
+            //Storing these values in memory separately so that they don't change by the time they're called by the async functions
 			var time = CurrentTime;
+            var id = CurrentEpisodeId;
+            var rtime = RemainingTime;
 			Task.Run(async () =>
 			{
-				await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "pause", time, null);
-				await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, CurrentTime, RemainingTime);
+				await AuthenticationAPI.CreateNewActionLog(id, "pause", time, null);
+				await PlayerFeedAPI.UpdateStopTime(id, time, rtime);
 			});
 		}
 

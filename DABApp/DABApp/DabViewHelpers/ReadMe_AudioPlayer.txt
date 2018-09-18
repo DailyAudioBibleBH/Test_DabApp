@@ -29,3 +29,14 @@ In the set method for the CurrentTime property there is a check to deal with ini
 When CurrentTime is updated the RemainingTime and Progress properties also get updated via a call to the OnProgressChanged method.
 OnPropertyChanged is also called for the PlayPauseButtonImage and PlayPauseButtonImageBig properties whenever the app switches from playing to paused or vice versa.
 
+Each episode has a property called stop_time which is the time at which the episode was last paused by the user.  
+Immiediately after an episode is set to be played, via the SetAudioFile method, the CurrentTime of the AudioPlayer is set to that episodes stop_time.
+Whenever there is a discrepency between the _player isPlaying property and the AudioPlayer isPlaying property either UpdatePause or UpdatePlay methods are called.
+The UpdatePause method sets up a Task to run asynchronously in the background, unawaited.  It runs two methods.  
+First is a call to AuthenticationAPI.CreateNewActionLog which creates a new pause action log for the episode so that the server knows where the user is in listening to the episode.
+The Second is a call to PlayerFeedAPI.UpdateStopTime which updates the stop_time property of the episode in the local database.
+The UpdatePause and UpdatePlay methods are updated through the timer instead of directly through the Play, Pause methods so as to prevent SQLite Database Locked exceptions.  
+
+The SetAudioFile also updates the stop_time property of an episode should that episode be playing when the SetAudioFile is called.  
+This would happen if a user was listening to an episode and then switched to a different episode while still playing.
+If this happens then the SetAudioFile method 
