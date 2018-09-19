@@ -351,10 +351,10 @@ namespace DABApp
         void OnInitialized(object o, EventArgs e)
         {
             Initializer.IsVisible = false;
-            if (AudioPlayer.Instance.IsInitialized)
-            {
-                AudioPlayer.Instance.Pause();
-            }
+            //if (AudioPlayer.Instance.IsInitialized)
+            //{
+            //    AudioPlayer.Instance.Pause();
+            //}
             AudioPlayer.Instance.SetAudioFile(episode.Episode);
             AudioPlayer.Instance.Play();
             SetVisibility(true);
