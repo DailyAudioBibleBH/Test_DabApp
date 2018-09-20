@@ -71,7 +71,10 @@ namespace DABApp
 					}
 				}
 				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-				Task.Run(async () => { await DownloadEpisodes(); });
+                if (resource.availableOffline)
+                {
+                    Task.Run(async () => { await DownloadEpisodes(); });
+                }
 				//var b = await AuthenticationAPI.GetMemberData();//This slows down everything
 				//if (!b)
 				//{
@@ -156,7 +159,6 @@ namespace DABApp
             var EpisodesToDownload = from channel in OfflineChannels
                                      join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
                                      where !episode.is_downloaded //not downloaded
-                                     && !episode.progressVisible // not progress visible
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
                                                            && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
                                      select episode;
@@ -165,8 +167,11 @@ namespace DABApp
             {
                 try
                 {
-                    episode.progressVisible = true;
-                    await adb.UpdateAsync(episode);
+                    if (!episode.progressVisible)
+                    {
+                        episode.progressVisible = true;
+                        await adb.UpdateAsync(episode);
+                    }
                     MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
                 }
                 catch (Exception e)
@@ -192,13 +197,13 @@ namespace DABApp
 						{
 							Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
 							episode.is_downloaded = true;
-							await adb.UpdateAsync(episode);
+                            await adb.UpdateAsync(episode);
 						}
-						else throw new Exception();
+						else throw new Exception("Error called by the DownloadEpisodeAsync method of the IFileManagement dependency service.");
 					}
-					catch (Exception e)
+					catch (Exception ex)
 					{
-						Debug.WriteLine($"Error while downloading episode. Downloads will continue. Error:  {e.Message}");
+						Debug.WriteLine($"Error while downloading episode. Downloads will continue. Error:  {ex.Message}");
 
                         CrossConnectivity.Current.ConnectivityChanged += ResumeDownload;
                         ResumeNotSet = false; 
@@ -262,7 +267,7 @@ namespace DABApp
                     }
                     else
                     {
-                        throw new Exception();
+                        throw new Exception($"Error deleting episode for channel: {resource.title}");
                     }
                 }
             }
