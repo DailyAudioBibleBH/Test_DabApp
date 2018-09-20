@@ -16,6 +16,7 @@ namespace DABApp
     {
         public event EventHandler ChangedRequested;
         public Resource Resource { get; private set; }
+        bool initialized = false;
 
         public DabPopupEpisodeMenu(Resource resource)
         {
@@ -100,26 +101,32 @@ namespace DABApp
 
         public void OnOffline(object o, ToggledEventArgs e)
         {
-            Resource.availableOffline = e.Value;
-            Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
-            if (e.Value)
+            if (initialized || !Resource.availableOffline)
             {
-                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
-            }
-            else
-            {
-                Task.Run(async () => {
-                    await PlayerFeedAPI.DeleteChannelEpisodes(Resource);
-                    Device.BeginInvokeOnMainThread(() => {
-                        var handler = ChangedRequested;
-                        handler(this, new EventArgs());
+                Resource.availableOffline = e.Value;
+                Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
+                if (e.Value)
+                {
+                    Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+                }
+                else
+                {
+                    Task.Run(async () =>
+                    {
+                        await PlayerFeedAPI.DeleteChannelEpisodes(Resource);
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            var handler = ChangedRequested;
+                            handler(this, new EventArgs());
+                        });
                     });
-                });
+                }
+                if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Any())
+                {
+                    Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+                }
             }
-            if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Any())
-            {
-                Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
-            }
+            initialized = true;
         }
 
 

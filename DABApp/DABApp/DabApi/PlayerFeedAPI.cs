@@ -156,15 +156,23 @@ namespace DABApp
             var EpisodesToDownload = from channel in OfflineChannels
                                      join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
                                      where !episode.is_downloaded //not downloaded
+                                     && !episode.progressVisible // not progress visible
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
                                                            && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
                                      select episode;
             episodesToShowDownload = EpisodesToDownload.ToList();
             foreach (var episode in episodesToShowDownload)
             {
-                episode.progressVisible = true;
-                await adb.UpdateAsync(episode);
-                MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
+                try
+                {
+                    episode.progressVisible = true;
+                    await adb.UpdateAsync(episode);
+                    MakeProgressVisible?.Invoke(episode, new DabEventArgs(episode.id.Value, -1, false));
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Error while setting episodes to progress visible. Error: {e.Message}");
+                }
             }
             if (!DownloadIsRunning)
 			{
@@ -190,7 +198,7 @@ namespace DABApp
 					}
 					catch (Exception e)
 					{
-						Debug.WriteLine("Error while downloading episode. Downloads will continue.");
+						Debug.WriteLine($"Error while downloading episode. Downloads will continue. Error:  {e.Message}");
 
                         CrossConnectivity.Current.ConnectivityChanged += ResumeDownload;
                         ResumeNotSet = false; 
@@ -202,10 +210,10 @@ namespace DABApp
                 {
                     await DownloadEpisodes();
                 }
-				if (Device.Idiom == TargetIdiom.Tablet)
-				{
-					Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-				}
+				//if (Device.Idiom == TargetIdiom.Tablet)
+				//{
+				//	Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+				//}
 				return true;
 			}
 			else {
@@ -238,14 +246,14 @@ namespace DABApp
                     {
                         episode.is_downloaded = false;
                         episode.progressVisible = false;
-                        if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform == Device.Android)
-                        {
-                            db.Update(episode);
-                        }
-                        else
-                        {
+                        //if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform == Device.Android)
+                        //{
+                        //    db.Update(episode);
+                        //}
+                        //else
+                        //{
                             await adb.UpdateAsync(episode);
-                        }
+                        //}
                         Debug.WriteLine($"Episode: {episode.title} deleted");
                         //if (Device.Idiom == TargetIdiom.Tablet)
                         //{

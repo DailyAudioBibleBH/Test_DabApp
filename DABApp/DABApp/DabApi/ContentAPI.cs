@@ -102,30 +102,37 @@ namespace DABApp
 		}
 
 		public static async Task UpdateOffline(bool offline, int ResourceId) {
-			Debug.WriteLine("Updating Offline Settings");
-			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
-			if (OfflineSettings != null)
-			{
-				var jsonArray = JArray.Parse(OfflineSettings.Value);
-				var match = jsonArray.Where(j => j.ToString().Equals(ResourceId.ToString()));
-				if (offline && match.Count() == 0)
-				{
-					jsonArray.Add(ResourceId);
-				}
-				else
-				{
-					if (!offline && match.Count() > 0)
-					{
-						for (int m = match.Count()-1; m >= 0; m--)
-						{
-							jsonArray.Remove(match.ElementAt(m));
-						}
-					}
-				}
-				OfflineSettings.Value = jsonArray.ToString();
-				await adb.UpdateAsync(OfflineSettings);
-				Debug.WriteLine("Updated Offline settings");
-			}
+            try
+            {
+                Debug.WriteLine("Updating Offline Settings");
+                var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+                if (OfflineSettings != null)
+                {
+                    var jsonArray = JArray.Parse(OfflineSettings.Value);
+                    var match = jsonArray.Where(j => j.ToString().Equals(ResourceId.ToString()));
+                    if (offline && match.Count() == 0)
+                    {
+                        jsonArray.Add(ResourceId);
+                    }
+                    else
+                    {
+                        if (!offline && match.Count() > 0)
+                        {
+                            for (int m = match.Count() - 1; m >= 0; m--)
+                            {
+                                jsonArray.Remove(match.ElementAt(m));
+                            }
+                        }
+                    }
+                    OfflineSettings.Value = jsonArray.ToString();
+                    await adb.UpdateAsync(OfflineSettings);
+                    Debug.WriteLine("Updated Offline settings");
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 		}
 
 		public static async Task<Forum> GetForum(View view) 
