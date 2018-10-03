@@ -395,6 +395,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DabApi\ReadMe_PlayerFeedAPI.txt" />
     <Content Include="DabViewHelpers\ReadMe_AudioPlayer.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
