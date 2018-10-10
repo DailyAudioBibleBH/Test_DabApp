@@ -12,9 +12,7 @@ namespace DABApp
 		{
             if (AuthenticationAPI.GetTestMode())
             {
-                GlobalResources.RestAPIUrl = "https://dailyaudiobibl.staging.wpengine.com/wp-json/lutd/v1/";
-                //GlobalResources.FeedAPIUrl = "https://dabfeed.staging.wpengine.com/wp-json/lutd/v1/";
-                GlobalResources.TestMode = true;
+               GlobalResources.TestMode = true;
             }
 			InitializeComponent();
 

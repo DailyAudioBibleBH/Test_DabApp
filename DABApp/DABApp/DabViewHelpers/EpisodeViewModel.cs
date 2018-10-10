@@ -113,7 +113,7 @@ namespace DABApp
         {
             get
             {
-                if (Device.RuntimePlatform == "iOS")
+                if (Device.RuntimePlatform == Device.iOS || Device.Idiom == TargetIdiom.Tablet)
                 {
                     if (Episode.is_favorite)
                     {

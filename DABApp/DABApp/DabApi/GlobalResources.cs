@@ -36,8 +36,18 @@ namespace DABApp
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public static string RestAPIUrl { get; set; } = "https://dailyaudiobible.com/wp-json/lutd/v1/";
-        public static string FeedAPIUrl { get; set; } = "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+        public static string RestAPIUrl {
+            get {
+                var main = TestMode ? ContentConfig.Instance.app_settings.stage_main_link : ContentConfig.Instance.app_settings.prod_main_link;
+                return main + "/wp-json/lutd/v1/";
+            }
+        }
+        public static string FeedAPIUrl { get {
+                if (ContentConfig.Instance.app_settings == null) return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                var feed = TestMode ? ContentConfig.Instance.app_settings.stage_feed_link : ContentConfig.Instance.app_settings.prod_feed_link;
+                return feed + "/wp-json/lutd/v1/";
+            }
+        }
         public bool IsiPhoneX { get; set; } = false;
 
 		public static GlobalResources Instance {get; private set;}
@@ -139,7 +149,12 @@ namespace DABApp
         public static string GiveUrl {
             get
             {
-                return TestMode ? "https://give.staging.dailyaudiobible.com/" : "https://player.dailyaudiobible.com/";
+                return TestMode ? ContentConfig.Instance.app_settings.stage_give_link + "/" : ContentConfig.Instance.app_settings.prod_give_link + "/";
+            }
+        }
+        public static string JournalUrl {
+            get {
+                return TestMode ? ContentConfig.Instance.app_settings.stage_journal_link + "/" : ContentConfig.Instance.app_settings.prod_journal_link + "/";
             }
         }
 		public static bool LogInPageExists { get; set; }

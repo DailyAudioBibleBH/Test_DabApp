@@ -15,7 +15,7 @@ namespace DABApp.iOS
 {
 	public class SocketService: ISocket
 	{
-		static Socket socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+		static Socket socket = IO.Socket(GlobalResources.JournalUrl);
 		static bool connected = false;
 		static bool joined = false;
 		static bool NotifyDis = true;
@@ -48,7 +48,7 @@ namespace DABApp.iOS
 			{
 				if (socket == null)
 				{ 
-					socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+					socket = IO.Socket(GlobalResources.JournalUrl);
 				}
 				socket.Connect();
 				connected = true;
@@ -67,7 +67,7 @@ namespace DABApp.iOS
 					{
 						if (socket == null)
 						{ 
-							socket = IO.Socket("wss://journal.dailyaudiobible.com:5000");
+							socket = IO.Socket(GlobalResources.JournalUrl);
 						}
 						socket.Connect();
 					}

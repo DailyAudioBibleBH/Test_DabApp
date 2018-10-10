@@ -161,6 +161,7 @@ namespace DABApp
 		public Blocktext blocktext { get; set; }
 		public List<View> views { get; set; }
 		public static ContentConfig Instance { get; set;}
+        public AppSettings app_settings { get; set; }
 		static ContentConfig() {
 			Instance = new ContentConfig();
 		}
@@ -282,6 +283,18 @@ namespace DABApp
 			topicId = TopicId;
 		}
 	}
+
+    public class AppSettings
+    {
+        public string prod_main_link { get; set; }
+        public string prod_give_link { get; set; }
+        public string prod_journal_link { get; set; }
+        public string prod_feed_link { get; set; }
+        public string stage_main_link { get; set; }
+        public string stage_give_link { get; set; }
+        public string stage_journal_link { get; set; }
+        public string stage_feed_link { get; set; }
+    }
 
     public static class MonthConverter
     {
