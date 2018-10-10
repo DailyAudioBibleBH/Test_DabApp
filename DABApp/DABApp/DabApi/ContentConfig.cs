@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -60,8 +61,8 @@ namespace DABApp
             }
         }
 
-		private bool _IsNotSelected = true;
-		public bool IsNotSelected { 
+		private double _IsNotSelected = 1.0;
+		public double IsNotSelected { 
 			get {
 				return _IsNotSelected;
 			}
@@ -268,8 +269,8 @@ namespace DABApp
 		public string title { get; set; }
 		public string link { get; set; }
 		public int topicCount { get; set; }
-		public List<Topic> topics { get; set; }
-	}
+		public ObservableCollection<Topic> topics { get; set; }
+    }
 
 	public class PostReply
 	{ 

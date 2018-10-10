@@ -135,12 +135,12 @@ namespace DABApp
             }
 		}
 
-		public static async Task<Forum> GetForum(View view) 
+		public static async Task<Forum> GetForum(View view, int pageNumber = 1) 
 		{
 			try
 			{
 				var client = new HttpClient();
-				var result = await client.GetAsync(view.resources.First().feedUrl);
+				var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
 				return forum;

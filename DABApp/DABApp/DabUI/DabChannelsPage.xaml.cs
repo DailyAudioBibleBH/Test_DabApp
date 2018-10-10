@@ -140,7 +140,7 @@ namespace DABApp
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
 			var selected = (Resource)e.Item;
-			selected.IsNotSelected = false;
+			selected.IsNotSelected = .5;
 			var resource = (Resource)e.Item;
 			var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
 			if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
@@ -155,7 +155,7 @@ namespace DABApp
 				}
 			}
 			else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
-			selected.IsNotSelected = true;
+			selected.IsNotSelected = 1.0;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
 		}

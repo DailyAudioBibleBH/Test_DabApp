@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
@@ -13,6 +14,7 @@ namespace DABApp
 		bool loginTop = false;
 		bool fromPost = false;
 		bool unInitialized = true;
+        int pageNumber;
 		Forum _forum;
 		Topic topic;
 		View _view;
@@ -20,6 +22,7 @@ namespace DABApp
 		public DabForumTabletTopicPage(View view)
 		{
 			InitializeComponent();
+            pageNumber = 1;
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlTablet;
 			bannerTitle.Text = view.title;
@@ -30,7 +33,7 @@ namespace DABApp
 			DetailsView.reply.Clicked += OnReply;
 			ContentList.topicList.RefreshCommand = new Command(async () => { await Update(); ContentList.topicList.IsRefreshing = false;});
 			DetailsView.replies.RefreshCommand = new Command(async () => { await Update(); DetailsView.replies.IsRefreshing = false;});
-			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
+            MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", (obj) => { OnAppearing(); });
 		}
 
@@ -147,7 +150,19 @@ namespace DABApp
 					}
 				}
 			}
-			_forum = await ContentAPI.GetForum(_view);
+			var temp = await ContentAPI.GetForum(_view, pageNumber);
+            pageNumber++;
+            if (_forum == null)
+            {
+                _forum = temp;
+            }
+            else
+            {
+                foreach (Topic t in temp.topics)
+                {
+                    _forum.topics.Add(t);
+                }
+            }
 			if (_forum == null)
 			{
 				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");

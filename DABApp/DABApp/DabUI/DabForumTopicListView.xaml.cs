@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabForumTopicListView : ContentView
+	public partial class DabForumTopicListView : ContentView, INotifyPropertyChanged
 	{
-		public ListView topicList { get; set;}
+		public ListView topicList { get; set; }
 		public Button postButton { get; set;}
 
 		public DabForumTopicListView()
@@ -20,5 +22,5 @@ namespace DABApp
 				Post.Text = "  Log in  ";
 			}
 		}
-	}
+    }
 }

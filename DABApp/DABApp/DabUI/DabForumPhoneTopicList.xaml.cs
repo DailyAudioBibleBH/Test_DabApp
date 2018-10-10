@@ -11,12 +11,14 @@ namespace DABApp
 		bool login = false;
 		bool fromPost = false;
 		bool unInitialized = true;
+        int pageNumber;
 		Forum _forum;
 		View _view;
 
 		public DabForumPhoneTopicList(View view)
 		{
 			InitializeComponent();
+            pageNumber = 1;
 			base.ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlPhone;
 			bannerTitle.Text = view.title;
@@ -86,15 +88,26 @@ namespace DABApp
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
-				var result = await ContentAPI.GetForum(_view);
+				var result = await ContentAPI.GetForum(_view, pageNumber);
+                pageNumber++;
 				if (result == null)
 				{
 					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
 				}
 				else
 				{
-					_forum = result;
-					ContentList.topicList.ItemsSource = result.topics;
+                    if (_forum == null)
+                    {
+                        _forum = result;
+                    }
+                    else
+                    {
+                        foreach (Topic t in result.topics)
+                        {
+                            _forum.topics.Add(t);
+                        }
+                    }
+					ContentList.topicList.ItemsSource = _forum.topics;
 					fromPost = false;
 					unInitialized = false;
 				}
