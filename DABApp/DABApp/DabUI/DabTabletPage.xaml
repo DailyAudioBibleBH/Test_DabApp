@@ -94,7 +94,7 @@
             <DataTemplate>
               <ViewCell>
                 <StackLayout Padding="10">
-                  <Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" />
+                  <Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
                 </StackLayout>
               </ViewCell>
             </DataTemplate>
