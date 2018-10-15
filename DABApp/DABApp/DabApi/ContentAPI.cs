@@ -143,6 +143,7 @@ namespace DABApp
 				var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
 				var JsonOut = await result.Content.ReadAsStringAsync();
 				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
+                forum.view = view;
 				return forum;
 			}
 			catch (Exception e)

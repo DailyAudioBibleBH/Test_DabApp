@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using FFImageLoading;
+using Plugin.Connectivity;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -264,13 +266,31 @@ namespace DABApp
 		}
 	}
 
-	public class Forum
+	public class Forum : INotifyPropertyChanged
 	{
 		public int id { get; set; }
 		public string title { get; set; }
+        public View view { get; set; }
 		public string link { get; set; }
 		public int topicCount { get; set; }
+        public ICommand LoadMore { get; set; }
 		public ObservableCollection<Topic> topics { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Forum()
+        {
+            int page = 2;
+            this.LoadMore = new Command(async () =>
+            {
+                var f = await ContentAPI.GetForum(view, page);
+                page++;
+                foreach (var t in f.topics)
+                {
+                    topics.Add(t);
+                }
+            });
+        }
     }
 
 	public class PostReply

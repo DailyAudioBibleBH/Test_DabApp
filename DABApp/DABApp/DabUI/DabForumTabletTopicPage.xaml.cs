@@ -150,32 +150,21 @@ namespace DABApp
 					}
 				}
 			}
-			var temp = await ContentAPI.GetForum(_view, pageNumber);
-            pageNumber++;
+            _forum = await ContentAPI.GetForum(_view);
             if (_forum == null)
             {
-                _forum = temp;
+                await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
             }
             else
             {
-                foreach (Topic t in temp.topics)
-                {
-                    _forum.topics.Add(t);
-                }
+                ContentList.BindingContext = _forum;
+                ContentList.topicList.ItemsSource = _forum.topics;
             }
-			if (_forum == null)
-			{
-				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
-			}
-			else
-			{
-				ContentList.topicList.ItemsSource = _forum.topics;
-			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
-			fromPost = false;
-			unInitialized = false;
-		}
+            activity.IsVisible = false;
+            activityHolder.IsVisible = false;
+            fromPost = false;
+            unInitialized = false;
+        }
 
         protected override void OnSizeAllocated(double width, double height)
         {

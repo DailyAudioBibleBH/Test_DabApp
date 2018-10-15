@@ -273,7 +273,7 @@ namespace DABApp
             }
             catch (Exception e)
             {
-                throw e;
+                Debug.WriteLine($"Exception caught in DeleteChannelEpisodes: {e.Message}");
             }
             Debug.WriteLine($"Episodes for {resource.title} Deleted");
 		}

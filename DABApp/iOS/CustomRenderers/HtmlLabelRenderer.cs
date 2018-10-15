@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Acr.DeviceInfo;
 using Foundation;
 using UIKit;
 using Xamarin.Forms;
@@ -19,6 +20,7 @@ namespace DABApp.iOS
             if (Control == null)
             {
                 field = new UITextView();
+                field.ScrollEnabled = false;
                 SetNativeControl(field);
                 Control.Editable = false;
                 if (Element != null)

@@ -88,25 +88,14 @@ namespace DABApp
 				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 				activity.IsVisible = true;
 				activityHolder.IsVisible = true;
-				var result = await ContentAPI.GetForum(_view, pageNumber);
-                pageNumber++;
-				if (result == null)
+				_forum = await ContentAPI.GetForum(_view, pageNumber);
+				if (_forum == null)
 				{
 					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
 				}
 				else
 				{
-                    if (_forum == null)
-                    {
-                        _forum = result;
-                    }
-                    else
-                    {
-                        foreach (Topic t in result.topics)
-                        {
-                            _forum.topics.Add(t);
-                        }
-                    }
+                    ContentList.topicList.BindingContext = _forum;
 					ContentList.topicList.ItemsSource = _forum.topics;
 					fromPost = false;
 					unInitialized = false;

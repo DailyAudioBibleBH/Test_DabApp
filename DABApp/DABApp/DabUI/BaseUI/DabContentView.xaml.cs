@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Acr.DeviceInfo;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Version.Plugin;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -77,7 +79,17 @@ namespace DABApp
 
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {
 			var item = (Link)e.Item;
-            Device.OpenUri(new Uri(item.link));
+            if (item.linkText.Contains("Report an Issue"))
+            {
+                string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Hardware.OperatingSystem}" +
+                    $"&screenWidth={DeviceInfo.Hardware.ScreenWidth}&screenHeight={DeviceInfo.Hardware.ScreenHeight}&manufacturer={DeviceInfo.Hardware.Manufacturer}&model={DeviceInfo.Hardware.Model}" +
+                    $"&currentEpisodeId={AudioPlayer.Instance.CurrentEpisodeId}";
+                Device.OpenUri(new Uri(url));
+            }
+            else
+            {
+                Device.OpenUri(new Uri(item.link));
+            }
             Links.SelectedItem = null;
 			//Navigation.PushAsync(new DabBrowserPage(item.link));
 		}

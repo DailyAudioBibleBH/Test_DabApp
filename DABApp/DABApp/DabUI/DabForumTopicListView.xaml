@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicListView" xmlns:local="clr-namespace:DABApp;">
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicListView" xmlns:local="clr-namespace:DABApp;assembly=DABApp"
+             xmlns:b="clr-namespace:DABApp">
 	<ContentView.Content>
 		<StackLayout>
 			<StackLayout Padding="10" Spacing="10">
 				<Button x:Name="Post" Text="  Post a prayer request  " FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" HorizontalOptions="Center"/>
 			</StackLayout>
 			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">
-				<ListView.ItemTemplate>
+                <ListView.Behaviors>
+                    <b:InfiniteScroll LoadMoreCommand="{Binding LoadMore}" />
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
 					<DataTemplate>
 						<ViewCell>
 							<StackLayout Padding="5" Spacing="5">
