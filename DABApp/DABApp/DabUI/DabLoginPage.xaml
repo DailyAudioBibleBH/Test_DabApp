@@ -7,9 +7,9 @@
       </Image>
 			<Frame/>
 			<Label Text="Email" FontSize="Micro" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
-			<local:DarkKeyboardEntry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
 			<Label Text="Password" FontSize="Micro" VerticalOptions="Center" AutomationProperties.IsInAccessibleTree="true"/>
-			<local:DarkKeyboardEntry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+			<Entry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
