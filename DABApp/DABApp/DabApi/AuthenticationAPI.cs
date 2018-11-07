@@ -751,7 +751,7 @@ namespace DABApp
                             MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
                             if (container.code == "rest_forbidden")
                             {
-                                throw new Exception();
+                                throw new Exception($"server returned following error code:{container.code} with message: {container.message}");
                             }
                             else
                             {

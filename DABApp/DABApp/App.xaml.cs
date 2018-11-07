@@ -49,10 +49,14 @@ namespace DABApp
 			JournalTracker.Current.Open = false;
 		}
 
-		protected override void OnResume()
+		protected override async void OnResume()
 		{
 			JournalTracker.Current.Open = true;
-            AuthenticationAPI.GetMemberData();
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                AuthenticationAPI.GetMemberData();
+            }
+            await AuthenticationAPI.GetMemberData();
 		}
 
 		//void OnPlayPause(object o, EventArgs e) {

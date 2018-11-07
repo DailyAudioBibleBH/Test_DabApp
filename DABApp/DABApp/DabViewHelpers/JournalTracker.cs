@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Acr.DeviceInfo;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
