@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Acr.DeviceInfo;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -588,6 +589,7 @@ namespace DABApp
                 Initializer.HeightRequest = size;
                 backwardButton.Margin = 7;
                 forwardButton.Margin = 7;
+                JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .3 : height * .3;
             }
             else
             {
@@ -606,6 +608,7 @@ namespace DABApp
                     Initializer.WidthRequest = 90;
                     Initializer.HeightRequest = 90;
                 }
+                JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .5 : height * .5;
             }
         }
 

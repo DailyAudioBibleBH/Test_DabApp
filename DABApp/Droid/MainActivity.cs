@@ -70,6 +70,10 @@ namespace DABApp.Droid
 
 			SQLite_Droid.Assets = this.Assets;
             MetricsManager.Register(Application, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
+            var metrics = new DisplayMetrics();
+            WindowManager.DefaultDisplay.GetRealMetrics(metrics);
+            GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels / metrics.Density);
+            GlobalResources.Instance.AndroidDensity = metrics.Density;
 
             LoadApplication(new App());
 
@@ -104,8 +108,6 @@ namespace DABApp.Droid
                     RequestedOrientation = ScreenOrientation.Portrait;
                 }
             });
-            var metrics = Resources.DisplayMetrics;
-            GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels/metrics.Density);
 		}
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)
@@ -122,7 +124,7 @@ namespace DABApp.Droid
         protected override void OnResume()
 		{
 			base.OnResume();
-			CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
+            CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 		}
 
 		protected override void OnDestroy()

@@ -18,10 +18,19 @@ namespace DABApp
 
 		public static JournalTracker Current { get; private set;}
 
-		static JournalTracker()
-		{
-			Current = new JournalTracker();
-		}
+        static JournalTracker()
+        {
+            Current = new JournalTracker();
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                Current.EntryHeight = DeviceInfo.Hardware.ScreenHeight * .8;
+            }
+            else
+            {
+                var modified = DeviceInfo.Hardware.ScreenHeight / GlobalResources.Instance.AndroidDensity;
+                Current.EntryHeight = modified * .6;
+            }
+        }
 
 		private JournalTracker()
 		{

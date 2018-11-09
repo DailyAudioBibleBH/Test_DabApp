@@ -2,6 +2,8 @@
 using Android.App;
 using Android.Content;
 using Android.Runtime;
+using Android.Util;
+using Android.Views;
 using PushNotification.Plugin;
 
 namespace DABApp.Droid
@@ -31,7 +33,7 @@ namespace DABApp.Droid
 
 			//This service will keep your app receiving push even when closed.             
 			StartPushService();
-		}
+        }
 
 		public static void StartPushService()
 		{
