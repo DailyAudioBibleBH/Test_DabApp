@@ -73,7 +73,7 @@ namespace DABApp
 				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
                 if (resource.availableOffline)
                 {
-                    Task.Run(async () => { await DownloadEpisodes(); });
+                    await Task.Run(async () => { await DownloadEpisodes(); });
                 }
 				//var b = await AuthenticationAPI.GetMemberData();//This slows down everything
 				//if (!b)

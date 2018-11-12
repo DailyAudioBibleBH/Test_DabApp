@@ -17,7 +17,7 @@ namespace DABApp
         ObservableCollection<EpisodeViewModel> list;
         string backgroundImage;
         EpisodeViewModel episode;
-        static double original;
+        double original;
         bool NotConstructing = false;
         private double _width;
         private double _height;
@@ -270,7 +270,7 @@ namespace DABApp
             if (Device.RuntimePlatform == "iOS")
             {
                 JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height
-                original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
+                //original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
             }
             if (LoginJournal.IsVisible || Journal.IsVisible)
             {
@@ -590,6 +590,7 @@ namespace DABApp
                 backwardButton.Margin = 7;
                 forwardButton.Margin = 7;
                 JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .3 : height * .3;
+                original = JournalContent.HeightRequest;
             }
             else
             {
@@ -609,6 +610,7 @@ namespace DABApp
                     Initializer.HeightRequest = 90;
                 }
                 JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .5 : height * .5;
+                original = JournalContent.HeightRequest;
             }
         }
 
