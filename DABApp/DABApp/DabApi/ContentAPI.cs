@@ -20,7 +20,7 @@ namespace DABApp
 			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
 			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
             //var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
-            if (ContentConfig.Instance.app_settings == null) ParseContent(ContentSettings.Value);
+            if (ContentConfig.Instance.app_settings == null && ContentSettings != null) ParseContent(ContentSettings.Value);
 			try
 			{
 				var client = new System.Net.Http.HttpClient();

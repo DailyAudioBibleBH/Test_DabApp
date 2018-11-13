@@ -71,7 +71,7 @@ namespace DABApp
 					}
 				}
 				Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-                if (resource.availableOffline)
+                if (resource.availableOffline && Device.Idiom == TargetIdiom.Tablet)
                 {
                     Task.Run(async () => { await DownloadEpisodes(); });
                 }
@@ -365,11 +365,11 @@ namespace DABApp
 							episode.is_downloaded = false;
                             episode.progressVisible = false;
 							db.Update(episode);
-							if (Device.Idiom == TargetIdiom.Tablet)
-							{
-								Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-							}
-						}
+                            if (Device.Idiom == TargetIdiom.Tablet)
+                            {
+                                Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+                            }
+                        }
 
 					}
 					catch (Exception ex)

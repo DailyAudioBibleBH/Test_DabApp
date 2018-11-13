@@ -48,7 +48,8 @@ namespace DABApp
             Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
             TimedActions();
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
+            {
                 TimedActions();
             });
             if (Episode != null)
@@ -452,7 +453,7 @@ namespace DABApp
 
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
-            if (JournalTracker.Current.Open)
+            if (JournalTracker.Current.Open && original != 0)
             {
                 spacer.HeightRequest = e.Visible ? e.Height : 0;
                 if (e.IsExternalKeyboard)
@@ -590,7 +591,7 @@ namespace DABApp
                 backwardButton.Margin = 7;
                 forwardButton.Margin = 7;
                 JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .3 : height * .3;
-                original = JournalContent.HeightRequest;
+                original = 0;
             }
             else
             {

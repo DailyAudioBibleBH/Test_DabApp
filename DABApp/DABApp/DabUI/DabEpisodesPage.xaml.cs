@@ -35,6 +35,10 @@ namespace DABApp
             }
             Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
+            if (resource.availableOffline)
+            {
+                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+            }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
@@ -44,6 +48,7 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
+
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
@@ -117,6 +122,10 @@ namespace DABApp
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
+            if (_resource.availableOffline)
+            {
+                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+            }
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
         }
