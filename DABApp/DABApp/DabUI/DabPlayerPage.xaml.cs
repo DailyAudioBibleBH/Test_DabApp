@@ -58,7 +58,7 @@ namespace DABApp
 			BackgroundImage.Source = backgroundImage;
 			BindingContext = episode;
 			//Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
-			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
 			Reading reading = Reading;
 
 			ReadTitle.Text = reading.title;

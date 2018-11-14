@@ -21,6 +21,17 @@
 						</ViewCell>
 					</DataTemplate>
 				</ListView.ItemTemplate>
+                <ListView.Footer>
+                    <!--Code found here: https://devlinduldulao.pro/how-to-use-continuous-or-infinite-scrolling-in-xamarin-forms-->
+                    <Grid Padding="5" IsVisible="{Binding IsBusy}">
+                        <Grid.Triggers>
+                            <Trigger TargetType="Grid" Property="IsVisible" Value="False">
+                                <Setter Property="HeightRequest" Value="0"/>
+                            </Trigger>
+                        </Grid.Triggers>
+                        <Label Text="Loading more items..." Style="{StaticResource playerLabelStyle}" HorizontalOptions="Center" VerticalOptions="Center" IsVisible="{Binding IsBusy}" FontSize="Medium"/>
+                    </Grid>
+                </ListView.Footer>
 			</ListView>
 		</StackLayout>
 	</ContentView.Content>

@@ -273,6 +273,13 @@ namespace DABApp
         public View view { get; set; }
 		public string link { get; set; }
 		public int topicCount { get; set; }
+        private bool _IsBusy;
+        public bool IsBusy {
+            get { return _IsBusy; }
+            set { _IsBusy = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsBusy"));
+            }
+        }
         public ICommand LoadMore { get; set; }
 		public ObservableCollection<Topic> topics { get; set; }
 
@@ -283,12 +290,14 @@ namespace DABApp
             int page = 2;
             this.LoadMore = new Command(async () =>
             {
+                IsBusy = true;
                 var f = await ContentAPI.GetForum(view, page);
                 page++;
                 foreach (var t in f.topics)
                 {
                     topics.Add(t);
                 }
+                IsBusy = false;
             });
         }
     }
