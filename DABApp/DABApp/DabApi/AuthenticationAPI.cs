@@ -853,6 +853,7 @@ namespace DABApp
         {
             var testMode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
             dbSettings newMode = new dbSettings();
+            db.Query<dbEpisodes>("delete from dbEpisodes");
             newMode.Key = "TestMode";
             newMode.Value = GlobalResources.TestMode.ToString();
             if (testMode != null)
