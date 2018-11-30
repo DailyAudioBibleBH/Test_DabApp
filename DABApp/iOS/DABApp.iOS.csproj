@@ -490,6 +490,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ReadMe-Logic_Concerning_How_AVPlayer_Plays_Partially_Downloaded_Files.txt" />
+    <BundleResource Include="Resources\record_btn.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

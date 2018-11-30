@@ -154,9 +154,15 @@ namespace DABApp.Droid
                 var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
                 menu.ContentDescription = "Menu Button";
                 menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };
+
                 var give = (Android.Widget.Button)newMenu.FindViewById(Resource.Id.item2);
                 give.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
                 give.Click += (sender, e) => { MessagingCenter.Send<string>("Give", "Give"); };
+
+                var record = (ImageButton)newMenu.FindViewById(Resource.Id.item3);
+                record.ContentDescription = "Record Button";
+                record.Click += (sender, e) => { MessagingCenter.Send<string>("Record", "Record"); };
+
                 var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
                 text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
                 text.Typeface = Typeface.CreateFromAsset(Assets, "FetteEngD.ttf");

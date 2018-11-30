@@ -18,6 +18,10 @@ namespace DABApp.iOS
 {
 	public class DabBaseContentPageRenderer : PageRenderer, ISlideOverKitPageRendereriOS
 	{
+        public new DabBaseContentPage Element
+        {
+            get { return (DabBaseContentPage)base.Element; }
+        }
 
 		public Action<bool> ViewDidAppearEvent { get; set; }
 
@@ -56,6 +60,15 @@ namespace DABApp.iOS
             if (ViewDidAppearEvent != null)
                 ViewDidAppearEvent (animated);
 
+            var navigationItem = this.NavigationController.TopViewController.NavigationItem;
+            var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
+            if (recordButton != null)
+            {
+                var recordImage = recordButton.Image;
+                recordImage.Scale(new CGSize(.5, .5));
+                recordButton.Image = recordImage;
+                navigationItem.RightBarButtonItems[1] = recordButton;
+            }
         }
 
         public override void ViewDidDisappear (bool animated)

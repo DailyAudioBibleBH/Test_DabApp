@@ -70,6 +70,18 @@ namespace DABApp
                 };
                 this.ToolbarItems.Add(menuButton);
 
+                //Record Button
+                var recordButton = new ToolbarItem();
+                recordButton.SetValue(AutomationProperties.NameProperty, "Record");
+                recordButton.Text = "Record";
+                recordButton.Icon = "record_btn.png";
+                recordButton.Priority = 0;
+                recordButton.Clicked += async (sender, e) =>
+                {
+                    await Navigation.PushAsync(new DabRecordingPage());
+                };
+                this.ToolbarItems.Add(recordButton);
+
                 //Give button on the right (priority 1)
                 var giveButton = new ToolbarItem();
                 giveButton.SetValue(AutomationProperties.NameProperty, "Give");
@@ -148,13 +160,13 @@ namespace DABApp
         {
             MessagingCenter.Unsubscribe<string>("Menu", "Menu");
             MessagingCenter.Unsubscribe<string>("Give", "Give");
+            MessagingCenter.Unsubscribe<string>("Record", "Record");
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            MessagingCenter.Unsubscribe<string>("Menu", "Menu");
-            MessagingCenter.Unsubscribe<string>("Give", "Give");
+            Unsubscribe();
         }
 
         protected override void OnAppearing()
@@ -170,6 +182,9 @@ namespace DABApp
                     }
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
+                MessagingCenter.Subscribe<string>("Record", "Record", async (sender) => {
+                    await Navigation.PushAsync(new DabRecordingPage());
+                });
             }
         }
     }
