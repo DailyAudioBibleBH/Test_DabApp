@@ -9,7 +9,7 @@ namespace DABApp
 	{
 		public DabTestPage()
 		{
-			InitializeComponent();
+			//InitializeComponent();
 		}
 	}
 }

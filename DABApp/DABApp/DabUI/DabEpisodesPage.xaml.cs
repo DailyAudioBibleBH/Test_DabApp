@@ -84,7 +84,7 @@ namespace DABApp
 
         public async void OnListened(object o, EventArgs e)
         {
-            var mi = ((MenuItem)o);
+            var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             if (ep.is_listened_to == "listened")
@@ -104,7 +104,7 @@ namespace DABApp
 
         public async void OnFavorite(object o, EventArgs e)
         {
-            var mi = ((MenuItem)o);
+            var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");

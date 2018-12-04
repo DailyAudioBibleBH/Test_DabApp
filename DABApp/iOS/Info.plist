@@ -68,9 +68,9 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We use your photo library to access photos to share with the DAB Community</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We use your camera to created photos to share with the DAB Community</string>
+	<string>We use your camera to create photos to share with the DAB Community</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>We use your microphont to create videos to share with the DAB Community</string>
+	<string>We use your microphone to share prayer requests with the DAB Community</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>CFBundleShortVersionString</key>

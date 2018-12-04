@@ -14,6 +14,7 @@ using Xamarin.Forms;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using Plugin.AudioRecorder;
 
 namespace DABApp.iOS
 {
@@ -46,12 +47,12 @@ namespace DABApp.iOS
 
 			SlideOverKit.iOS.SlideOverKit.Init();
 
-            SegmentedControlRenderer.Init();
+            //SegmentedControlRenderer.Init();
 
 			CrossPushNotification.Initialize<CrossPushNotificationListener>();
 			app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-			Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
+			//Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
 
 			LoadApplication(new App());
 
@@ -61,6 +62,7 @@ namespace DABApp.iOS
             {
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
+            AudioRecorderService.RequestAVAudioSessionCategory(AVFoundation.AVAudioSessionCategory.PlayAndRecord);
             return m;
 		}
 

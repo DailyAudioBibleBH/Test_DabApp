@@ -164,7 +164,7 @@ namespace DABApp
 		//Set Audio File
 		public void SetAudioFile(string FileName)
 		{
-			_player.SetAudioFile(FileName, new dbEpisodes());
+			_player.SetAudioFile(FileName);
 		}
 
 		public void SetAudioFile(dbEpisodes episode)

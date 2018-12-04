@@ -43,6 +43,11 @@ namespace DABApp.iOS
 			Instance = new AudioService();
 		}
 
+        public void SetAudioFile(string fileName)
+        {
+            _player = AVPlayer.FromUrl(NSUrl.FromFilename(fileName));
+        }
+
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
             ableToKeepUp = true;

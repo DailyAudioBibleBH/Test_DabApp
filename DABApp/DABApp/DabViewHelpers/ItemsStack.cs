@@ -85,11 +85,11 @@ namespace DABApp
 			}
 		}
 
-		protected virtual View GetItemView(object item)
+		protected virtual Xamarin.Forms.View GetItemView(object item)
 		{
 			var content = ItemTemplate.CreateContent();
 
-			var view = content as View;
+			var view = content as Xamarin.Forms.View;
 			if (view == null)
 				return null;
 
@@ -106,11 +106,11 @@ namespace DABApp
 			return view;
 		}
 
-		protected void AddGesture(View view, TapGestureRecognizer gesture)
+		protected void AddGesture(Xamarin.Forms.View view, TapGestureRecognizer gesture)
 		{
 			view.GestureRecognizers.Add(gesture);
 
-			var layout = view as Layout<View>;
+			var layout = view as Layout<Xamarin.Forms.View>;
 
 			if (layout == null)
 				return;

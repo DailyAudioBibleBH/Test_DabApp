@@ -5,9 +5,9 @@
              x:Class="DABApp.DabRecordingPage">
     <t:MenuContainerPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Button Text="Record" Clicked="OnRecord" VerticalOptions="Center"/>
+            <Button Text="Play" Clicked="OnPlay" />
+            <Button Text="Submit" Clicked="OnSubmit"/>
         </StackLayout>
     </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

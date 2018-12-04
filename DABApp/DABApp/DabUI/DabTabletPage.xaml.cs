@@ -504,7 +504,7 @@ namespace DABApp
 
         async void OnListListened(object o, EventArgs e)
         {
-            var mi = ((MenuItem)o);
+            var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             if (ep.is_listened_to == "listened")
@@ -554,7 +554,7 @@ namespace DABApp
 
         async void OnListFavorite(object o, EventArgs e)
         {
-            var mi = ((MenuItem)o);
+            var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             if (ep.id == episode.Episode.id)
