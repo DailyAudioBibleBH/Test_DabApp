@@ -31,6 +31,9 @@ using System.Net.Security;
 using Android.Support.Design.Widget;
 using Android.Content.Res;
 using Android.Views.Accessibility;
+using Android.Support.V4.Content;
+using Android;
+using Android.Support.V4.App;
 
 namespace DABApp.Droid
 {
@@ -76,6 +79,11 @@ namespace DABApp.Droid
             GlobalResources.Instance.AndroidDensity = metrics.Density;
 
             LoadApplication(new App());
+
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.RecordAudio) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.RecordAudio }, 1);
+            }
 
             ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
             var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);

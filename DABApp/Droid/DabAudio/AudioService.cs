@@ -32,6 +32,11 @@ namespace DABApp.Droid
 		{
 		}
 
+        public void SetAudioFile(string fileName)
+        {
+            CrossMediaManager.Current.Play(fileName);
+        }
+
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
 			//player = new MediaPlayer();
@@ -237,5 +242,5 @@ namespace DABApp.Droid
 				return null;
 			}
 		}
-	}
+    }
 }
