@@ -350,6 +350,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\DabMenuItemRenderer.cs" />
+    <Compile Include="CustomRenderers\VisualizerViewRenderer.cs" />
+    <Compile Include="DependencyServices\RecordService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="DabAudio\AudioService.cs" />

@@ -65,6 +65,7 @@ namespace DABApp.Droid
 			DependencyService.Register<FileManagement>();
 			DependencyService.Register<StripeApiManagement>();
 			DependencyService.Register<RivetsService>();
+            DependencyService.Register<RecordService>();
 
 			SegmentedControlRenderer.Init();
             

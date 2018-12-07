@@ -18,7 +18,8 @@ namespace DABApp
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DabRecordingPage : DabBaseContentPage
     {
-        public AudioRecorderService recorder;
+        AudioRecorderService recorder;
+        RecorderViewModel viewModel;
 
         public DabRecordingPage()
         {
@@ -29,6 +30,8 @@ namespace DABApp
                 StopRecordingOnSilence = false
             };
             recorder.AudioInputReceived += audioInputReceived;
+            viewModel = new RecorderViewModel();
+            AudioVisualizer.BindingContext = viewModel;
         }
 
         async void OnRecord(object o, EventArgs e)
@@ -40,13 +43,15 @@ namespace DABApp
         {
             try
             {
-                if (!recorder.IsRecording)
+                if (!viewModel.IsRecording)
                 {
-                    await recorder.StartRecording();
+                    //await recorder.StartRecording();
+                    viewModel.StartRecording();
                 }
                 else
                 {
-                    await recorder.StopRecording();
+                    //await recorder.StopRecording();
+                    viewModel.StopRecording();
                 }
             }
             catch (Exception ex)
@@ -55,12 +60,9 @@ namespace DABApp
             }
         }
 
-        async void audioInputReceived(object sender, string audioFile)
+        void audioInputReceived(object sender, string audioFile)
         {
-            if (audioFile != null)
-            {
-                
-            }
+            Debug.WriteLine($"{recorder.AudioStreamDetails.BitsPerSample}");
         }
 
         void OnPlay(object o, EventArgs e)
@@ -75,7 +77,7 @@ namespace DABApp
             }
             else
             {
-                var audio = recorder.GetAudioFilePath();
+                var audio = viewModel.AudioFile;
                 if (audio != null)
                 {
                     AudioPlayer.Instance.SetAudioFile(audio);
@@ -86,14 +88,14 @@ namespace DABApp
 
         async void OnSubmit(object o, EventArgs e)
         {
-            var audio = recorder.GetAudioFilePath();
+            var audio = viewModel.AudioFile;
             if (audio != null)
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
                     SendAudio(audio);
                 }
-                else DisplayAlert("No Internet Connection", "In order to submit your voice message to the Daily Audio Bible please make sure you have an internet connection", "OK");
+                else await DisplayAlert("No Internet Connection", "In order to submit your voice message to the Daily Audio Bible please make sure you have an internet connection", "OK");
             }
         }
 

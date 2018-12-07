@@ -34,7 +34,7 @@ namespace DABApp.Droid
 
         public void SetAudioFile(string fileName)
         {
-            CrossMediaManager.Current.Play(fileName);
+            CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)

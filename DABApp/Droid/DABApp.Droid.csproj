@@ -367,6 +367,7 @@
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
     <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
+    <Compile Include="DependencyServices\RecordService.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

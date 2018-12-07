@@ -44,6 +44,7 @@ namespace DABApp.iOS
 			Xamarin.Forms.DependencyService.Register<ShareIntent>();
 			DependencyService.Register<SocketService>();
 			DependencyService.Register<KeyboardHelper>();
+            DependencyService.Register<RecordService>();
 
 			SlideOverKit.iOS.SlideOverKit.Init();
 

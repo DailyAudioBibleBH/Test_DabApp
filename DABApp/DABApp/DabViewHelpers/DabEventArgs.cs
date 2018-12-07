@@ -19,4 +19,16 @@ namespace DABApp
             Cancelled = cancelled;
         }
     }
+
+    public class RecordingHandler : EventArgs
+    {
+        public double AveragePower { get; set; }
+        public double PeakPower { get; set; }
+
+        public RecordingHandler(double averagePower, double peakPower)
+        {
+            AveragePower = averagePower;
+            PeakPower = peakPower;
+        }
+    }
 }
