@@ -8,6 +8,7 @@
             <Button Text="Record" Clicked="OnRecord" VerticalOptions="Center"/>
             <Button Text="Play" Clicked="OnPlay" />
             <Button Text="Submit" Clicked="OnSubmit"/>
+            <Label x:Name="Timer" HorizontalOptions="CenterAndExpand" Text="{Binding RecordingTime}"/>
             <StackLayout x:Name="AudioVisualizer" HeightRequest="100" HorizontalOptions="CenterAndExpand" Orientation="Horizontal">
                 <BoxView x:Name="LeftMostAudioVisualizer" Color="White" HeightRequest="{Binding LastAveragePower}" IsVisible="{Binding IsRecording}" WidthRequest="10" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
                 <BoxView x:Name="CenterLeftAudioVisualizer" Color="White" HeightRequest="{Binding MiddleAveragePower}" IsVisible="{Binding IsRecording}" WidthRequest="10" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>

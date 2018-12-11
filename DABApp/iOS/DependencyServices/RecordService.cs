@@ -23,6 +23,9 @@ namespace DABApp.iOS
 
         public string StartRecording()
         {
+            var audioSession = AVAudioSession.SharedInstance();
+            var err = audioSession.SetCategory(AVAudioSessionCategory.PlayAndRecord);
+            err = audioSession.SetActive(true);
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var fileName = Path.Combine(doc, $"DABRecording.wav");
             var settings = new AudioSettings();
@@ -31,22 +34,20 @@ namespace DABApp.iOS
             recorder.MeteringEnabled = true;
             double averagePower;
             double peakPower;
-
             recorder.Record();
             IsRecording = true;
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                Device.StartTimer(TimeSpan.FromMilliseconds(10), () =>
-                {
-                    if (!recorder.Recording) return false;
+                while (true) { 
+                    if (!recorder.Recording) return;
                     recorder.UpdateMeters();
-                    averagePower = (recorder.AveragePower(0) + 160)/160*100;
+                    averagePower = (recorder.AveragePower(0) + 50);
                     peakPower = recorder.PeakPower(0);
                     AudioWaves?.Invoke(this, new RecordingHandler(averagePower, peakPower));
-                    Console.WriteLine($"{DateTime.Now} {averagePower} : {peakPower}");
-                    return true;
-                });
+                    //Console.WriteLine($"{DateTime.Now} {averagePower} : {peakPower}");
+                    Thread.Sleep(100);
+                }
             }).Start();
             return fileName.ToString();
         }

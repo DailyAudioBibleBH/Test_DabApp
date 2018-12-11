@@ -13,6 +13,7 @@ namespace DABApp
         private double recentAveragePower = 1;
         private double middleAveragePower = 1;
         private double lastAveragePower = 1;
+        private string recordingTime = "2:00";
 
         public RecorderViewModel()
         {
@@ -77,10 +78,32 @@ namespace DABApp
             }
         }
 
+        public string RecordingTime { get { return recordingTime; }
+            set { recordingTime = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordingTime"));
+            } }
+
         public void StartRecording()
         {
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
+            TimeSpan maxTime = TimeSpan.FromSeconds(15);
+            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+                if (IsRecording && maxTime > TimeSpan.FromSeconds(0))
+                {
+                    maxTime = maxTime - TimeSpan.FromSeconds(1);
+                    RecordingTime = maxTime.ToString(@"m\:ss");
+                    return true;
+                }
+                else {
+                    if (IsRecording)
+                    {
+                        StopRecording();
+                    }
+                    RecordingTime = "2:00";
+                    return false;
+                }
+            });
         }
 
         public void StopRecording()

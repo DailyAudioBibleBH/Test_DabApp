@@ -21,6 +21,7 @@ namespace DABApp.Droid
         public bool IsRecording { get; set; }
 
         public event EventHandler<RecordingHandler> AudioWaves;
+        
 
         private MediaRecorder recorder;
         private string fileName;
@@ -44,7 +45,7 @@ namespace DABApp.Droid
                 Device.StartTimer(TimeSpan.FromMilliseconds(10), () => {
                     if (!IsRecording) return false;
                     MaxAmp = recorder.MaxAmplitude/32767.00*100.00;
-                    Console.WriteLine($"{MaxAmp}");
+                    //Console.WriteLine($"{MaxAmp}");
                     AudioWaves?.Invoke(this, new RecordingHandler(MaxAmp, 0));
                     return true;
                 });

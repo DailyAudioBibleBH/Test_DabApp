@@ -32,6 +32,7 @@ namespace DABApp
             recorder.AudioInputReceived += audioInputReceived;
             viewModel = new RecorderViewModel();
             AudioVisualizer.BindingContext = viewModel;
+            Timer.BindingContext = viewModel;
         }
 
         async void OnRecord(object o, EventArgs e)
