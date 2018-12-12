@@ -26,7 +26,8 @@ namespace DABApp
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
-		static AudioPlayer()
+        public double MinTimeToSkip { get; set; } = 5;
+        static AudioPlayer()
 		{
 			Instance = new AudioPlayer();
 		}
@@ -122,7 +123,7 @@ namespace DABApp
 								if (!_player.PlayerCanKeepUp && ShowWarning)
 								{
 
-                                    PlayerFailure.Invoke(this, new EventArgs());
+                                    PlayerFailure?.Invoke(this, new EventArgs());
 									ShowWarning = false;
 								}
 							}
@@ -165,6 +166,7 @@ namespace DABApp
 		public void SetAudioFile(string FileName)
 		{
 			_player.SetAudioFile(FileName);
+            ShowWarning = false;
 		}
 
 		public void SetAudioFile(dbEpisodes episode)
@@ -313,7 +315,6 @@ namespace DABApp
 			{
                 if (value != 1) //ignore 1 - this is the default when the player page is initialized and "never" a real value.
                 {
-                    double MinTimeToSkip = 5;
                     double GoToTime = value;
                     double PlayerTime = _player.CurrentTime;
                     if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)

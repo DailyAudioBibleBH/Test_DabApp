@@ -9,11 +9,15 @@ namespace DABApp
     public class RecorderViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangeButton;
         private bool isRecording;
         private double recentAveragePower = 1;
         private double middleAveragePower = 1;
         private double lastAveragePower = 1;
         private string recordingTime = "2:00";
+        private bool recorded;
+        private bool reviewed;
+        private string recordImageUrl = "Record";
 
         public RecorderViewModel()
         {
@@ -32,6 +36,7 @@ namespace DABApp
         }
 
         public string AudioFile { get; private set; }
+        
 
         public double RecentAveragePower
         {
@@ -78,15 +83,48 @@ namespace DABApp
             }
         }
 
+        public bool Recorded
+        {
+            get
+            {
+                return recorded;
+            }
+            set {
+                recorded = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Recorded"));
+            }
+        }
+
+        public bool Reviewed {
+            get {
+                return reviewed;
+            }
+            set {
+                reviewed = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Reviewed"));
+            }
+        }
+
         public string RecordingTime { get { return recordingTime; }
             set { recordingTime = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordingTime"));
             } }
 
+        public string RecordImageUrl {
+            get {
+                return recordImageUrl;
+            }
+            set {
+                recordImageUrl = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordImageUrl"));
+            }
+        }
+
         public void StartRecording()
         {
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
+            RecordImageUrl = "Stop";
             TimeSpan maxTime = TimeSpan.FromSeconds(15);
             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                 if (IsRecording && maxTime > TimeSpan.FromSeconds(0))
@@ -101,6 +139,7 @@ namespace DABApp
                         StopRecording();
                     }
                     RecordingTime = "2:00";
+                    Recorded = true;
                     return false;
                 }
             });
@@ -109,7 +148,9 @@ namespace DABApp
         public void StopRecording()
         {
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
+            Recorded = true;
             IsRecording = false;
+            RecordImageUrl = "Play";
         }
     }
 }

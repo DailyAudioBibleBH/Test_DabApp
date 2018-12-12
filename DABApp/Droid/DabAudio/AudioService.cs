@@ -34,7 +34,9 @@ namespace DABApp.Droid
 
         public void SetAudioFile(string fileName)
         {
+            CrossMediaManager.Current.StatusChanged += OnStatusChanged;
             CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
+            tt = 60;
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
@@ -75,7 +77,6 @@ namespace DABApp.Droid
             //});
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             fileName = Path.Combine(doc, fileName);
-
             if (!File.Exists(fileName))
 			{
 				CrossMediaManager.Current.Play(episode.url, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);

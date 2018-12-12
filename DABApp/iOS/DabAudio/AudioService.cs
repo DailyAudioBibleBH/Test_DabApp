@@ -48,6 +48,7 @@ namespace DABApp.iOS
             session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
             session.SetActive(true);
             _player = AVPlayer.FromUrl(NSUrl.FromFilename(fileName));
+            IsLoaded = true;
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
