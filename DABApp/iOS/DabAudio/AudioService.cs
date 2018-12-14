@@ -139,7 +139,10 @@ namespace DABApp.iOS
 
 		public void Pause()
 		{
-			_player.Pause();
+            if (_player != null)
+            {
+                _player.Pause();
+            }
         }
 
 		public void SeekTo(int seconds)

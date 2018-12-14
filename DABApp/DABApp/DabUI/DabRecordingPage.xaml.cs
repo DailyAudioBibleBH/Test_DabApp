@@ -84,6 +84,10 @@ namespace DABApp
                     {
                         //await recorder.StopRecording();
                         viewModel.StopRecording();
+                        Record.BindingContext = AudioPlayer.Instance;
+                        Record.SetBinding(Button.TextProperty, new Binding("PlayPauseImageBig"));
+                        Timer.BindingContext = AudioPlayer.Instance;
+                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime"));
                         SeekBar.Value = AudioPlayer.Instance.CurrentTime;
                         SeekBar.IsVisible = true;
                     }
@@ -148,6 +152,10 @@ namespace DABApp
                 SeekBar.IsVisible = false;
                 Playing = false;
                 viewModel.RecordingTime = "2:00";
+                Record.BindingContext = viewModel;
+                Record.SetBinding(Button.TextProperty, new Binding("RecordImageUrl"));
+                Timer.BindingContext = viewModel;
+                Timer.SetBinding(Label.TextProperty, new Binding("RecordingTime"));
             }
         }
 
@@ -171,11 +179,11 @@ namespace DABApp
             if(response)
             {
                 AudioPlayer.Instance.DeCouple();
-                //if (AudioPlayer.Instance.CurrentEpisodeId != 0)
-                //{
-                //    dbEpisodes episode = new dbEpisodes();
-                //    AudioPlayer.Instance.SetAudioFile(episode);
-                //}
+                if (AudioPlayer.Instance.CurrentEpisodeId != 0)
+                {
+                    dbEpisodes episode = new dbEpisodes();
+                    AudioPlayer.Instance.SetAudioFile(episode);
+                }
                 await Navigation.PopModalAsync();
             }
         }

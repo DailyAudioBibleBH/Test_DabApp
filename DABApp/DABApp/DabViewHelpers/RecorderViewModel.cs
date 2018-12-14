@@ -161,7 +161,6 @@ namespace DABApp
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;
             IsRecording = false;
-            RecordImageUrl = AudioPlayer.Instance.PlayPauseButtonImageBig;
             AudioPlayer.Instance.SetAudioFile(AudioFile);
             
             if(Device.RuntimePlatform == Device.Android)

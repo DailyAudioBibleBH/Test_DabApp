@@ -101,14 +101,14 @@ namespace DABApp
 									OnPropertyChanged("PlayPauseButtonImageBig");
 									OnPropertyChanged("PlayPauseButtonImage");
                                     OnPropertyChanged("PlayPauseAccessible");
-                                    //if (!OnRecord)
-                                    //{
+                                    if (!OnRecord)
+                                    {
                                         if (IsPlaying)
                                         {
                                             UpdatePlay();
                                         }
                                         else UpdatePause();
-                                    //}
+                                    }
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
@@ -177,8 +177,8 @@ namespace DABApp
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
-            //episode = OnRecord ? CurrentEpisode : episode;
-            //OnRecord = false;
+            episode = OnRecord && CurrentEpisode != null ? CurrentEpisode : episode;
+            OnRecord = false;
             bool wasPlaying = _player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
             var time = CurrentTime;
             var id = CurrentEpisodeId;
@@ -500,11 +500,11 @@ namespace DABApp
         public void DeCouple()
         {
             _player.Pause();
-            //if (!OnRecord)
-            //{
-            //    //CurrentEpisode.stop_time = _player.CurrentTime == null ? 0 : _player.CurrentTime;
-            //    CurrentEpisode.remaining_time = RemainingTime;
-            //}
+            if (!OnRecord && CurrentEpisode != null)
+            {
+                CurrentEpisode.stop_time = _player.CurrentTime;
+                CurrentEpisode.remaining_time = RemainingTime;
+            }
             _player.DeCouple();
         }
 
