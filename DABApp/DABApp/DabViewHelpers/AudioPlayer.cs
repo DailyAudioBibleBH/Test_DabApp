@@ -23,6 +23,8 @@ namespace DABApp
 		private string _CurrentTimeString = "00:00";
 		private string _playerStatus = "";
 		private bool ShowWarning = false;
+        private dbEpisodes CurrentEpisode;
+        public bool OnRecord { get; set; }
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -40,8 +42,9 @@ namespace DABApp
 			//_player.Completed += OnCompleted;
 			// Start a timer to get time information from the player
             //20171107 Increased from 100 to 1000 to help with skipping
-			Device.StartTimer(TimeSpan.FromMilliseconds(1000), () =>
+			Device.StartTimer(TimeSpan.FromSeconds(1), () =>
 						{
+                            //IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
 							if (_player.IsInitialized)
 							{
 								//Update current time
@@ -98,11 +101,14 @@ namespace DABApp
 									OnPropertyChanged("PlayPauseButtonImageBig");
 									OnPropertyChanged("PlayPauseButtonImage");
                                     OnPropertyChanged("PlayPauseAccessible");
-									if (IsPlaying)
-									{
-										UpdatePlay();
-									}
-									else UpdatePause();
+                                    //if (!OnRecord)
+                                    //{
+                                        if (IsPlaying)
+                                        {
+                                            UpdatePlay();
+                                        }
+                                        else UpdatePause();
+                                    //}
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
@@ -154,7 +160,7 @@ namespace DABApp
 		{
 			get
 			{
-				return Player.IsInitialized;
+				return _IsInitialized;
 			}
 			set
 			{
@@ -171,10 +177,13 @@ namespace DABApp
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
+            //episode = OnRecord ? CurrentEpisode : episode;
+            //OnRecord = false;
             bool wasPlaying = _player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
             var time = CurrentTime;
             var id = CurrentEpisodeId;
             var rtime = RemainingTime;
+            CurrentEpisode = episode;
             Instance.CurrentEpisodeId = (int)episode.id;
 			Instance.CurrentEpisodeTitle = episode.title;
 			Instance.CurrentChannelTitle = episode.channel_title;
@@ -487,6 +496,17 @@ namespace DABApp
 			await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime, null);
 			await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 		}
+
+        public void DeCouple()
+        {
+            _player.Pause();
+            //if (!OnRecord)
+            //{
+            //    //CurrentEpisode.stop_time = _player.CurrentTime == null ? 0 : _player.CurrentTime;
+            //    CurrentEpisode.remaining_time = RemainingTime;
+            //}
+            _player.DeCouple();
+        }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

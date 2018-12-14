@@ -37,6 +37,7 @@ namespace DABApp.Droid
             CrossMediaManager.Current.StatusChanged += OnStatusChanged;
             CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
             tt = 60;
+            IsLoaded = true;
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
@@ -243,5 +244,11 @@ namespace DABApp.Droid
 				return null;
 			}
 		}
+
+        public void DeCouple()
+        {
+            CrossMediaManager.Current.Pause();
+            CrossMediaManager.Current.Stop();
+        }
     }
 }

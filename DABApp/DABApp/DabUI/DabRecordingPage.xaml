@@ -28,9 +28,12 @@
                 </StackLayout>
             </StackLayout>
             <Label x:Name="Timer" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Text="{Binding RecordingTime}"/>
-            <Button x:Name="Record" Text="{Binding RecordImageUrl}" Clicked="OnRecord" VerticalOptions="StartAndExpand"/>
-            <Button x:Name="Submit" Text="Submit" Clicked="OnSubmit" IsVisible="{Binding Recorded}" IsEnabled="{Binding Reviewed}" VerticalOptions="StartAndExpand"/>
-            <Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="{Binding Recorded}" VerticalOptions="EndAndExpand"/>
+            <Button x:Name="Record" Text="{Binding RecordImageUrl}" Clicked="OnRecord" VerticalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
+            <Button x:Name="Submit" Text="Submit" Clicked="OnSubmit" IsVisible="{Binding Recorded}" IsEnabled="{Binding Reviewed}" VerticalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Padding="10">
+                <Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="{Binding Recorded}" HorizontalOptions="Center" Style="{StaticResource imageButtonStyle}"/>
+                <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" HorizontalOptions="Center" Style="{StaticResource imageButtonStyle}"/>
+            </StackLayout>
         </StackLayout>
     </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

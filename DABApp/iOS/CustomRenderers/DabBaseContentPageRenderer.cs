@@ -59,16 +59,18 @@ namespace DABApp.iOS
             base.ViewDidAppear (animated);
             if (ViewDidAppearEvent != null)
                 ViewDidAppearEvent (animated);
-
-            var navigationItem = this.NavigationController.TopViewController.NavigationItem;
-            var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
-            if (recordButton != null)
-            {
-                var recordImage = recordButton.Image;
-                recordImage.Scale(new CGSize(.5, .5));
-                recordButton.Image = recordImage;
-                navigationItem.RightBarButtonItems[1] = recordButton;
-            }
+            //if (this.NavigationController.TopViewController.NavigationItem != null)
+            //{
+            //    var navigationItem = this.NavigationController.TopViewController.NavigationItem;
+            //    var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
+            //    if (recordButton != null)
+            //    {
+            //        var recordImage = recordButton.Image;
+            //        recordImage.Scale(new CGSize(.5, .5));
+            //        recordButton.Image = recordImage;
+            //        navigationItem.RightBarButtonItems[1] = recordButton;
+            //    }
+            //}
         }
 
         public override void ViewDidDisappear (bool animated)

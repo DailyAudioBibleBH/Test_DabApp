@@ -20,16 +20,21 @@ namespace DABApp
     {
         AudioRecorderService recorder;
         RecorderViewModel viewModel;
+        bool Playing;
 
         public DabRecordingPage()
         {
             InitializeComponent();
+            AudioPlayer.Instance.DeCouple();
+            AudioPlayer.Instance.OnRecord = true;
+            Playing = false;
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             recorder = new AudioRecorderService() {
                 StopRecordingAfterTimeout = true,
                 TotalAudioTimeout = TimeSpan.FromMinutes(2),
                 StopRecordingOnSilence = false
             };
+            Playing = false;
             recorder.AudioInputReceived += audioInputReceived;
             viewModel = new RecorderViewModel();
             AudioVisualizer.BindingContext = viewModel;
@@ -37,13 +42,18 @@ namespace DABApp
             Submit.BindingContext = viewModel;
             Delete.BindingContext = viewModel;
             Record.BindingContext = viewModel;
+            SeekBar.IsVisible = false;
             banner.Source = new UriImageSource()
             {
                 Uri = new Uri(ContentConfig.Instance.views.First().banner.urlPhone),
                 CacheValidity = GlobalResources.ImageCacheValidity
             };
-            SeekBar.IsVisible = false;
             AudioPlayer.Instance.MinTimeToSkip = 1;
+            if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.DeCouple();
+            GlobalResources.Instance.OnRecord = true;
+            MessagingCenter.Subscribe<string>("Back", "Back", (sender) => {
+                OnCancel(this, new EventArgs());
+            });
         }
 
         async void OnRecord(object o, EventArgs e)
@@ -61,23 +71,29 @@ namespace DABApp
 
         async Task RecordAudio()
         {
-            try
+            if (CrossConnectivity.Current.IsConnected)
             {
-                if (!viewModel.IsRecording)
+                try
                 {
-                    //await recorder.StartRecording();
-                    viewModel.StartRecording();
+                    if (!viewModel.IsRecording)
+                    {
+                        //await recorder.StartRecording();
+                        viewModel.StartRecording();
+                    }
+                    else
+                    {
+                        //await recorder.StopRecording();
+                        viewModel.StopRecording();
+                        SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+                        SeekBar.IsVisible = true;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    //await recorder.StopRecording();
-                    viewModel.StopRecording();
+                    Debug.WriteLine($"Exception caught while recording: {ex.Message}");
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Exception caught while recording: {ex.Message}");
-            }
+            else await DisplayAlert("No Internet Connection", "In order to submit your voice message to the Daily Audio Bible please make sure you have an internet connection", "OK");
         }
 
         void audioInputReceived(object sender, string audioFile)
@@ -87,17 +103,18 @@ namespace DABApp
 
         void OnPlay()
         {
+            viewModel.Reviewed = true;
             if (AudioPlayer.Instance.IsInitialized)
             {
                 if (AudioPlayer.Instance.IsPlaying)
                 {
                     AudioPlayer.Instance.Pause();
-                    viewModel.RecordImageUrl = "Play";
+                    Playing = true;
                 }
                 else
                 {
                     AudioPlayer.Instance.Play();
-                    viewModel.RecordImageUrl = "Pause";
+                    Playing = false;
                 }
             }
             else
@@ -108,10 +125,9 @@ namespace DABApp
                     AudioPlayer.Instance.SetAudioFile(audio);
                     AudioPlayer.Instance.Play();
                 }
-                viewModel.RecordImageUrl = "Pause";
-                viewModel.Reviewed = true;
                 SeekBar.Value = AudioPlayer.Instance.CurrentTime;
                 SeekBar.IsVisible = true;
+                Playing = true;
             }
         }
 
@@ -125,10 +141,13 @@ namespace DABApp
             var response = await DisplayAlert("Recording will be lost!", "The recording that you worked on so far will be lost do you want to proceed?", "Yes", "No");
             if (response)
             {
+                AudioPlayer.Instance.DeCouple();
                 viewModel.Recorded = false;
                 viewModel.Reviewed = false;
                 viewModel.RecordImageUrl = "Record";
                 SeekBar.IsVisible = false;
+                Playing = false;
+                viewModel.RecordingTime = "2:00";
             }
         }
 
@@ -139,19 +158,38 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    SendAudio(audio);
+                    var result = await SendAudio(audio);
+                    if (result) await Navigation.PopModalAsync();
                 }
                 else await DisplayAlert("No Internet Connection", "In order to submit your voice message to the Daily Audio Bible please make sure you have an internet connection", "OK");
             }
         }
 
-        protected override void OnDisappearing()
+        async void OnCancel(object o, EventArgs e)
         {
-            base.OnDisappearing();
-            AudioPlayer.Instance.MinTimeToSkip = 5;
+            var response = await DisplayAlert("Recording will be lost!", "The recording that you worked on so far will be lost do you want to proceed?", "Yes", "No");
+            if(response)
+            {
+                AudioPlayer.Instance.DeCouple();
+                //if (AudioPlayer.Instance.CurrentEpisodeId != 0)
+                //{
+                //    dbEpisodes episode = new dbEpisodes();
+                //    AudioPlayer.Instance.SetAudioFile(episode);
+                //}
+                await Navigation.PopModalAsync();
+            }
         }
 
-        void SendAudio(string fileName)
+        protected override void OnDisappearing()
+        {
+            AudioPlayer.Instance.MinTimeToSkip = 5;
+            AudioPlayer.Instance.DeCouple();
+            MessagingCenter.Unsubscribe<string>("Back", "Back");
+            GlobalResources.Instance.OnRecord = false;
+            base.OnDisappearing();
+        }
+
+        async Task<bool> SendAudio(string fileName)
         {
             try
             {
@@ -166,12 +204,14 @@ namespace DABApp
                 mailMessage.Attachments.Add(attatchment);
                 smtp.Credentials = new NetworkCredential("chetcromer@c2itconsulting.net", "-M0yjVB_9EqZEzuKUDjw3A");
                 smtp.EnableSsl = true;
-                smtp.Send(mailMessage);
+                await smtp.SendMailAsync(mailMessage);
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Exception caught while sending audio via email: {ex.Message}");
-                DisplayAlert("Audio failed to send", "An error has been encountered and the audio has not been sent we're sorry for the inconvenience", "OK");
+                await DisplayAlert("Audio failed to send", "An error has been encountered and the audio has not been sent we're sorry for the inconvenience", "OK");
+                return false;
             }
         }
     }

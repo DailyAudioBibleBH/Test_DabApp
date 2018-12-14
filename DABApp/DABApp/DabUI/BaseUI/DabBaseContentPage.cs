@@ -78,7 +78,7 @@ namespace DABApp
                 recordButton.Priority = 0;
                 recordButton.Clicked += async (sender, e) =>
                 {
-                    await Navigation.PushAsync(new DabRecordingPage());
+                    await Navigation.PushModalAsync(new DabRecordingPage());
                 };
                 this.ToolbarItems.Add(recordButton);
 
@@ -183,7 +183,7 @@ namespace DABApp
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
                 MessagingCenter.Subscribe<string>("Record", "Record", async (sender) => {
-                    await Navigation.PushAsync(new DabRecordingPage());
+                    await Navigation.PushModalAsync(new DabRecordingPage());
                 });
             }
         }

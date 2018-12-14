@@ -105,16 +105,27 @@ namespace DABApp
             }
         }
 
-        public string RecordingTime { get { return recordingTime; }
-            set { recordingTime = value;
+        public string RecordingTime
+        {
+            get
+            {
+                return recordingTime;
+            }
+            set
+            {
+                recordingTime = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordingTime"));
-            } }
+            }
+        }
 
-        public string RecordImageUrl {
-            get {
+        public string RecordImageUrl
+        {
+            get
+            {
                 return recordImageUrl;
             }
-            set {
+            set
+            {
                 recordImageUrl = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordImageUrl"));
             }
@@ -125,7 +136,7 @@ namespace DABApp
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
             RecordImageUrl = "Stop";
-            TimeSpan maxTime = TimeSpan.FromSeconds(15);
+            TimeSpan maxTime = TimeSpan.FromMinutes(2);
             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                 if (IsRecording && maxTime > TimeSpan.FromSeconds(0))
                 {
@@ -138,7 +149,7 @@ namespace DABApp
                     {
                         StopRecording();
                     }
-                    RecordingTime = "2:00";
+                    //RecordingTime = "2:00";
                     Recorded = true;
                     return false;
                 }
@@ -150,7 +161,13 @@ namespace DABApp
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;
             IsRecording = false;
-            RecordImageUrl = "Play";
+            RecordImageUrl = AudioPlayer.Instance.PlayPauseButtonImageBig;
+            AudioPlayer.Instance.SetAudioFile(AudioFile);
+            
+            if(Device.RuntimePlatform == Device.Android)
+            {
+                AudioPlayer.Instance.Pause();
+            }
         }
     }
 }

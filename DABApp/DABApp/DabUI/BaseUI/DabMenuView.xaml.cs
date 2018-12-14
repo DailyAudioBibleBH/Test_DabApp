@@ -18,6 +18,7 @@ namespace DABApp
 			pages = new List<string>();
 			pages.Add("About");
 			pages.Add("Settings");
+            pages.Add("Send Audio Recording");
 
 			InitializeComponent();
 
@@ -91,39 +92,72 @@ namespace DABApp
 				MessagingCenter.Send<string>("Show", "Show"); 
 			}
 			Nav item = (Nav)e.Item;
-			if (item.title == "Channels")
-			{
-				await Navigation.PopToRootAsync();
-				if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-			}
-			else {
-				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
-				if (item.title == "Prayer Wall")
-				{
-					//var fo = await ContentAPI.GetForum(view);
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await Navigation.PushAsync(new DabForumTabletTopicPage(view));
-					}
-					else
-					{
-						await Navigation.PushAsync(new DabForumPhoneTopicList(view));
-					}
-					RemovePages();
-				}
-				else
-				{
-					if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
-					{
-						await Navigation.PushAsync(new DabParentChildGrid(view));
-					}
-					else
-					{
-						await Navigation.PushAsync(new DabContentView(view));
-					}
-					RemovePages();
-				}
-			}
+            View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
+            switch (item.title)
+            {
+                case "Channels":
+                    await Navigation.PopToRootAsync();
+                    if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+                    break;
+                case "Prayer Wall":
+                    if (Device.Idiom == TargetIdiom.Tablet)
+                    {
+                        await Navigation.PushAsync(new DabForumTabletTopicPage(view));
+                    }
+                    else
+                    {
+                        await Navigation.PushAsync(new DabForumPhoneTopicList(view));
+                    }
+                    RemovePages();
+                    break;
+                case "Send Audio Recording":
+                    await Navigation.PushModalAsync(new DabRecordingPage());
+                    break;
+                default:
+                    if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
+                    {
+                        await Navigation.PushAsync(new DabParentChildGrid(view));
+                    }
+                    else
+                    {
+                        await Navigation.PushAsync(new DabContentView(view));
+                    }
+                    RemovePages();
+                    break;
+            }
+			//if (item.title == "Channels")
+			//{
+			//	await Navigation.PopToRootAsync();
+			//	if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+			//}
+			//else {
+				
+			//	if (item.title == "Prayer Wall")
+			//	{
+			//		//var fo = await ContentAPI.GetForum(view);
+			//		if (Device.Idiom == TargetIdiom.Tablet)
+			//		{
+			//			await Navigation.PushAsync(new DabForumTabletTopicPage(view));
+			//		}
+			//		else
+			//		{
+			//			await Navigation.PushAsync(new DabForumPhoneTopicList(view));
+			//		}
+			//		RemovePages();
+			//	}
+			//	else
+			//	{
+			//		if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
+			//		{
+			//			await Navigation.PushAsync(new DabParentChildGrid(view));
+			//		}
+			//		else
+			//		{
+			//			await Navigation.PushAsync(new DabContentView(view));
+			//		}
+			//		RemovePages();
+			//	}
+			//}
 			pageList.SelectedItem = null;
 		}
 

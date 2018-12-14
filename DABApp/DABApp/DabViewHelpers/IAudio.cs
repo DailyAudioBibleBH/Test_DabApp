@@ -19,6 +19,7 @@ namespace DABApp
 		bool PlayerCanKeepUp { get;}
 		void Unload();
 		void SwitchOutputs();
+        void DeCouple();
 		event EventHandler Completed;
 	}
 }

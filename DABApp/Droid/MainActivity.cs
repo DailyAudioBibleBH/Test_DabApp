@@ -147,9 +147,16 @@ namespace DABApp.Droid
 
         public override void OnBackPressed()
         {
-            if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
+            if (GlobalResources.Instance.OnRecord)
             {
-                Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+                MessagingCenter.Send("Back", "Back");
+            }
+            else
+            {
+                if (Rg.Plugins.Popup.Popup.SendBackPressed(base.OnBackPressed))
+                {
+                    Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+                }
             }
         }
 

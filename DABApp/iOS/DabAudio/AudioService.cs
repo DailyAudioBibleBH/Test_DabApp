@@ -53,9 +53,10 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
+            
             ableToKeepUp = true;
             UpdateOnPlay = false;
-			CurrentEpisode = episode;
+			CurrentEpisode = episode == null ? CurrentEpisode : episode;
 			session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
 			session.SetActive(true);
 			AVAudioSession.Notifications.ObserveInterruption((sender, args) => {
@@ -165,6 +166,16 @@ namespace DABApp.iOS
 			var n = error;
 		}
 
+        public void DeCouple()
+        {
+            if (_player != null)
+            {
+                IsLoaded = false;
+                _player = new AVPlayer();
+                MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = new MPNowPlayingInfo();
+            }
+        }
+
 		void SetNowPlayingInfo()
 		{
 			//np = new MPNowPlayingInfo();
@@ -220,6 +231,10 @@ namespace DABApp.iOS
 
 			Device.StartTimer(new TimeSpan(0, 0, 0, 0, 1), () => 
 				{
+                    if (!IsLoaded)
+                    {
+                        return false;
+                    }
 					SetNowPlayingInfo();
 					return true;
 				});

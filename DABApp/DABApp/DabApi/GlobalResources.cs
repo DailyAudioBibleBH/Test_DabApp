@@ -52,6 +52,8 @@ namespace DABApp
 
 		public static GlobalResources Instance {get; private set;}
 
+        public bool OnRecord { get; set; }
+
 		static GlobalResources(){
 			Instance = new GlobalResources();
         }
