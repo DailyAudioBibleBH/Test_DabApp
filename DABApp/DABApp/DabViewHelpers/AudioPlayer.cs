@@ -173,12 +173,12 @@ namespace DABApp
 		{
 			_player.SetAudioFile(FileName);
             ShowWarning = false;
+            OnRecord = true;
 		}
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
             episode = OnRecord && CurrentEpisode != null ? CurrentEpisode : episode;
-            OnRecord = false;
             bool wasPlaying = _player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
             var time = CurrentTime;
             var id = CurrentEpisodeId;
@@ -500,8 +500,10 @@ namespace DABApp
         public void DeCouple()
         {
             _player.Pause();
+            IsPlaying = false;
             if (!OnRecord && CurrentEpisode != null)
             {
+                CurrentEpisode.start_time = _player.CurrentTime;
                 CurrentEpisode.stop_time = _player.CurrentTime;
                 CurrentEpisode.remaining_time = RemainingTime;
             }
