@@ -162,11 +162,6 @@ namespace DABApp
             Recorded = true;
             IsRecording = false;
             AudioPlayer.Instance.SetAudioFile(AudioFile);
-            
-            if(Device.RuntimePlatform == Device.Android)
-            {
-                AudioPlayer.Instance.Pause();
-            }
         }
     }
 }

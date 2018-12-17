@@ -23,8 +23,8 @@ namespace DABApp
 		private string _CurrentTimeString = "00:00";
 		private string _playerStatus = "";
 		private bool ShowWarning = false;
-        private dbEpisodes CurrentEpisode;
-        public bool OnRecord { get; set; }
+        public dbEpisodes CurrentEpisode { get; set; }
+        public bool OnRecord { get; set; } = false;
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -44,7 +44,7 @@ namespace DABApp
             //20171107 Increased from 100 to 1000 to help with skipping
 			Device.StartTimer(TimeSpan.FromSeconds(1), () =>
 						{
-                            //IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
+                            IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
 							if (_player.IsInitialized)
 							{
 								//Update current time
@@ -172,6 +172,10 @@ namespace DABApp
 		public void SetAudioFile(string FileName)
 		{
 			_player.SetAudioFile(FileName);
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                _player.Pause();
+            }
             ShowWarning = false;
             OnRecord = true;
 		}
@@ -201,7 +205,7 @@ namespace DABApp
 			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
 			ShowWarning = Device.RuntimePlatform == "iOS" ? false: true;
-            if (wasPlaying)
+            if (wasPlaying && !OnRecord)
             {
                 Task.Run(async () =>
                 {
@@ -326,7 +330,7 @@ namespace DABApp
                 {
                     double GoToTime = value;
                     double PlayerTime = _player.CurrentTime;
-                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
+                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip && GoToTime > MinTimeToSkip)
                     {
 						Debug.WriteLine($"Seekto Time = {GoToTime}");
 						Player.SeekTo(Convert.ToInt32(GoToTime));

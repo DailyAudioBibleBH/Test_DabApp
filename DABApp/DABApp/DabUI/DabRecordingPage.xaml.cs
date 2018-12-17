@@ -50,7 +50,6 @@ namespace DABApp
             };
             AudioPlayer.Instance.MinTimeToSkip = 1;
             if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.DeCouple();
-            GlobalResources.Instance.OnRecord = true;
             MessagingCenter.Subscribe<string>("Back", "Back", (sender) => {
                 OnCancel(this, new EventArgs());
             });
@@ -178,12 +177,6 @@ namespace DABApp
             var response = await DisplayAlert("Recording will be lost!", "The recording that you worked on so far will be lost do you want to proceed?", "Yes", "No");
             if(response)
             {
-                AudioPlayer.Instance.DeCouple();
-                if (AudioPlayer.Instance.CurrentEpisodeId != 0)
-                {
-                    dbEpisodes episode = new dbEpisodes();
-                    AudioPlayer.Instance.SetAudioFile(episode);
-                }
                 await Navigation.PopModalAsync();
             }
         }
@@ -193,7 +186,12 @@ namespace DABApp
             AudioPlayer.Instance.MinTimeToSkip = 5;
             AudioPlayer.Instance.DeCouple();
             MessagingCenter.Unsubscribe<string>("Back", "Back");
-            GlobalResources.Instance.OnRecord = false;
+            if(AudioPlayer.Instance.CurrentEpisodeId != 0)
+            {
+                dbEpisodes episode = new dbEpisodes();
+                AudioPlayer.Instance.SetAudioFile(episode);
+            }
+            AudioPlayer.Instance.OnRecord = false;
             base.OnDisappearing();
         }
 

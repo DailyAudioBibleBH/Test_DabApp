@@ -251,6 +251,7 @@ namespace DABApp
 
 		protected override void OnAppearing()
 		{
+            SeekBar.SetBinding(Slider.ValueProperty, new Binding("CurrentTime", BindingMode.Default, null, null, null, AudioPlayer.Instance));
 			base.OnAppearing();
 			if (Device.RuntimePlatform == "iOS")
 			{
@@ -278,7 +279,13 @@ namespace DABApp
 			//base.SlideMenu = new DabMenuView();
 		}
 
-		void OnInitialized(object o, EventArgs e) {
+        protected override void OnDisappearing()
+        {
+            SeekBar.RemoveBinding(Slider.ValueProperty);
+            base.OnDisappearing();
+        }
+
+        void OnInitialized(object o, EventArgs e) {
 			Initializer.IsVisible = false;
 			AudioPlayer.Instance.SetAudioFile(Episode.Episode);
 

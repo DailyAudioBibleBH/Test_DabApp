@@ -249,6 +249,8 @@ namespace DABApp.Droid
         {
             CrossMediaManager.Current.Pause();
             CrossMediaManager.Current.Stop();
+            CrossMediaManager.Current.MediaQueue.Clear();
+            IsLoaded = false;
         }
     }
 }
