@@ -80,6 +80,7 @@ namespace DABApp
             {
                 isRecording = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRecording"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordImageUrl"));
             }
         }
 
@@ -122,20 +123,23 @@ namespace DABApp
         {
             get
             {
-                return recordImageUrl;
+                if (isRecording)
+                {
+                    return "stop.png";
+                }
+                else return "microphone.png";
             }
             set
             {
-                recordImageUrl = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordImageUrl"));
+                throw new Exception("This can't be set directly");
             }
         }
+
 
         public void StartRecording()
         {
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
-            RecordImageUrl = "Stop";
             TimeSpan maxTime = TimeSpan.FromMinutes(2);
             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                 if (IsRecording && maxTime > TimeSpan.FromSeconds(0))

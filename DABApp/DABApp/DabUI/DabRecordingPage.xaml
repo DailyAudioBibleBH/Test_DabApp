@@ -28,11 +28,13 @@
                 </StackLayout>
             </StackLayout>
             <Label x:Name="Timer" HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand" Text="{Binding RecordingTime}"/>
-            <Button x:Name="Record" Text="{Binding RecordImageUrl}" Clicked="OnRecord" VerticalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
-            <Button x:Name="Submit" Text="Submit" Clicked="OnSubmit" IsVisible="{Binding Recorded}" IsEnabled="{Binding Reviewed}" VerticalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}"/>
+            <Image x:Name="Record" Source="{Binding RecordImageUrl}" VerticalOptions="StartAndExpand" Style="{StaticResource imageButtonStyle}" HeightRequest="65"/>
+            <StackLayout Padding="10">
+                <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Clicked="OnSubmit" IsVisible="{Binding Recorded}" IsEnabled="{Binding Reviewed}" VerticalOptions="StartAndExpand" Style="{StaticResource highlightedButtonStyle}"/>
+            </StackLayout>
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand" Padding="10">
-                <Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="{Binding Recorded}" HorizontalOptions="Center" Style="{StaticResource imageButtonStyle}"/>
-                <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" HorizontalOptions="Center" Style="{StaticResource imageButtonStyle}"/>
+                <Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="{Binding Recorded}" HorizontalOptions="CenterAndExpand"/>
+                <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" HorizontalOptions="CenterAndExpand"/>
             </StackLayout>
         </StackLayout>
     </t:MenuContainerPage.Content>

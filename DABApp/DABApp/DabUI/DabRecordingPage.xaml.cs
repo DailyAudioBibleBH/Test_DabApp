@@ -53,6 +53,9 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Back", "Back", (sender) => {
                 OnCancel(this, new EventArgs());
             });
+            var tapper = new TapGestureRecognizer();
+            tapper.Tapped += OnRecord;
+            Record.GestureRecognizers.Add(tapper);
         }
 
         async void OnRecord(object o, EventArgs e)
@@ -84,11 +87,13 @@ namespace DABApp
                         //await recorder.StopRecording();
                         viewModel.StopRecording();
                         Record.BindingContext = AudioPlayer.Instance;
-                        Record.SetBinding(Button.TextProperty, new Binding("PlayPauseImageBig"));
+                        Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
+                        var l = Record.Source;
                         Timer.BindingContext = AudioPlayer.Instance;
-                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime"));
+                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, new StringConverter(), null, null, AudioPlayer.Instance));
                         SeekBar.Value = AudioPlayer.Instance.CurrentTime;
                         SeekBar.IsVisible = true;
+                        Cancel.HorizontalOptions = LayoutOptions.FillAndExpand;
                     }
                 }
                 catch (Exception ex)
@@ -147,7 +152,6 @@ namespace DABApp
                 AudioPlayer.Instance.DeCouple();
                 viewModel.Recorded = false;
                 viewModel.Reviewed = false;
-                viewModel.RecordImageUrl = "Record";
                 SeekBar.IsVisible = false;
                 Playing = false;
                 viewModel.RecordingTime = "2:00";
@@ -155,6 +159,7 @@ namespace DABApp
                 Record.SetBinding(Button.TextProperty, new Binding("RecordImageUrl"));
                 Timer.BindingContext = viewModel;
                 Timer.SetBinding(Label.TextProperty, new Binding("RecordingTime"));
+                Cancel.HorizontalOptions = LayoutOptions.StartAndExpand;
             }
         }
 

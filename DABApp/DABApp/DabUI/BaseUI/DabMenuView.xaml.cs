@@ -19,25 +19,24 @@ namespace DABApp
 			pages.Add("About");
 			pages.Add("Settings");
             pages.Add("Send Audio Recording");
-
 			InitializeComponent();
 
 			// You must set IsFullScreen in this case, 
 			// otherwise you need to set HeightRequest, 
 			// just like the QuickInnerMenu sample
-			this.IsFullScreen = true;
+			IsFullScreen = true;
 			// You must set WidthRequest in this case
-			this.WidthRequest = 250;
-			this.MenuOrientations = MenuOrientation.LeftToRight;
+			WidthRequest = 250;
+		    MenuOrientations = MenuOrientation.LeftToRight;
 
-			// You must set BackgroundColor, 
-			// and you cannot put another layout with background color cover the whole View
-			// otherwise, it cannot be dragged on Android
-			//this.BackgroundColor = Color.White; //This is actually overridden by the menu view XAML
+            // You must set BackgroundColor,
+            // and you cannot put another layout with background color cover the whole View
+            // otherwise, it cannot be dragged on Android
+            //this.BackgroundColor = Color.White; //This is actually overridden by the menu view XAML
 
-			// This is shadow view color, you can set a transparent color
-			this.BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-			OnAvatarChanged(this, new EventArgs());
+            // This is shadow view color, you can set a transparent color
+            BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
+            OnAvatarChanged(this, new EventArgs());
 			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
 		}
 

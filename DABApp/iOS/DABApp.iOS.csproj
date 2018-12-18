@@ -503,6 +503,8 @@
     <Content Include="PushNotificationApplicationDelegate.txt" />
     <Content Include="ReadMe-Logic_Concerning_How_AVPlayer_Plays_Partially_Downloaded_Files.txt" />
     <BundleResource Include="Resources\record_btn.png" />
+    <BundleResource Include="Resources\microphone.png" />
+    <BundleResource Include="Resources\stop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
