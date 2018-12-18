@@ -251,7 +251,6 @@ namespace DABApp
 
 		protected override void OnAppearing()
 		{
-            SeekBar.SetBinding(Slider.ValueProperty, new Binding("CurrentTime", BindingMode.Default, null, null, null, AudioPlayer.Instance));
 			base.OnAppearing();
 			if (Device.RuntimePlatform == "iOS")
 			{
@@ -275,14 +274,9 @@ namespace DABApp
 			{
 				JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
 			}
-			//(base.SlideMenu as DabMenuView).ChangeAvatar();
-			//base.SlideMenu = new DabMenuView();
-		}
-
-        protected override void OnDisappearing()
-        {
-            SeekBar.RemoveBinding(Slider.ValueProperty);
-            base.OnDisappearing();
+            SeekBar.Value = AudioPlayer.Instance.OnRecord && AudioPlayer.Instance.CurrentEpisode != null ? AudioPlayer.Instance.CurrentEpisode.stop_time : SeekBar.Value;
+            //(base.SlideMenu as DabMenuView).ChangeAvatar();
+            //base.SlideMenu = new DabMenuView();
         }
 
         void OnInitialized(object o, EventArgs e) {

@@ -298,6 +298,7 @@ namespace DABApp
             {
                 PlayPause.Focus();
             }
+            SeekBar.Value = AudioPlayer.Instance.OnRecord && AudioPlayer.Instance.CurrentEpisode != null ? AudioPlayer.Instance.CurrentEpisode.stop_time : SeekBar.Value;
         }
 
         void OnLogin(object o, EventArgs e)

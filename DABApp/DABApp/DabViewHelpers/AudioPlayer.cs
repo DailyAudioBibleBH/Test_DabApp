@@ -24,6 +24,7 @@ namespace DABApp
 		private string _playerStatus = "";
 		private bool ShowWarning = false;
         public dbEpisodes CurrentEpisode { get; set; }
+        double dura;
         public bool OnRecord { get; set; } = false;
 
 		// Singleton for use throughout the app
@@ -197,6 +198,7 @@ namespace DABApp
 			//{
 				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");
 				CurrentTime = episode.stop_time;
+            TotalTime = OnRecord && dura != 0 ? dura : 1;
 			//}
 			//else
 			//{
@@ -330,7 +332,7 @@ namespace DABApp
                 {
                     double GoToTime = value;
                     double PlayerTime = _player.CurrentTime;
-                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip && GoToTime > MinTimeToSkip)
+                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
                     {
 						Debug.WriteLine($"Seekto Time = {GoToTime}");
 						Player.SeekTo(Convert.ToInt32(GoToTime));
@@ -510,6 +512,7 @@ namespace DABApp
                 CurrentEpisode.start_time = _player.CurrentTime;
                 CurrentEpisode.stop_time = _player.CurrentTime;
                 CurrentEpisode.remaining_time = RemainingTime;
+                dura = _player.TotalTime;
             }
             _player.DeCouple();
         }

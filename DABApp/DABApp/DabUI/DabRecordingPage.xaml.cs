@@ -192,6 +192,7 @@ namespace DABApp
                 AudioPlayer.Instance.SetAudioFile(episode);
             }
             AudioPlayer.Instance.OnRecord = false;
+            SeekBar.RemoveBinding(Slider.ValueProperty);
             base.OnDisappearing();
         }
 
