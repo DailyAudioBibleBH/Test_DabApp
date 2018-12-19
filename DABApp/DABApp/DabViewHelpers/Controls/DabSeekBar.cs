@@ -12,5 +12,7 @@ namespace DABApp
 				UserInteraction.Invoke(o, e);
 			}
 		}
-	}
+
+        public static readonly BindableProperty OnRecordPageProperty = BindableProperty.Create("OnRecordPage", typeof(bool), typeof(bool), false);
+    }
 }

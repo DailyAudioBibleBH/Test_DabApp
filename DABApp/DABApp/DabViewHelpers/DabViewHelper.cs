@@ -15,13 +15,26 @@ namespace DABApp
 
 	public class StringConverter : IValueConverter
 	{
+        bool onRecord;
+        public StringConverter(bool OnRecord = false)
+        {
+            onRecord = OnRecord;
+        }
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var m = TimeSpan.FromSeconds((double)value);
 			var r = new TimeSpan(m.Days, m.Hours, m.Minutes, m.Seconds, 0);
             if(r.Hours == 0)
 			{
-				return $"{r.Minutes:D2}:{r.Seconds:D2}";
+                if (onRecord)
+                {
+                    return m.ToString(@"m\:ss");
+                }
+                else
+                {
+                    return $"{r.Minutes:D2}:{r.Seconds:D2}";
+                }
 			}
 			else { 
 				return $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";

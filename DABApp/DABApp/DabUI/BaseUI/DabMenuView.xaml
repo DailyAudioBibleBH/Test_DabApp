@@ -6,8 +6,8 @@
 			<local:NegateBooleanConverter x:Key="inverter"/>
 		</ResourceDictionary>
 	</t:SlideMenuView.Resources>
-    <StackLayout>
-        <Frame BackgroundColor="{StaticResource SlideMenuBackgroundColor}" IsClippedToBounds="True">
+    <StackLayout BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
+        <Frame x:Name="dumb" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" IsClippedToBounds="True" VerticalOptions="FillAndExpand">
             <StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0">
                 <!--<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>

@@ -9,7 +9,7 @@ namespace DABApp
     public class RecorderViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangeButton;
+        public event EventHandler EndOfTimeLimit;
         private bool isRecording;
         private double recentAveragePower = 1;
         private double middleAveragePower = 1;
@@ -17,7 +17,6 @@ namespace DABApp
         private string recordingTime = "2:00";
         private bool recorded;
         private bool reviewed;
-        private string recordImageUrl = "Record";
 
         public RecorderViewModel()
         {
@@ -152,6 +151,7 @@ namespace DABApp
                     if (IsRecording)
                     {
                         StopRecording();
+                        EndOfTimeLimit?.Invoke(this, new EventArgs());
                     }
                     //RecordingTime = "2:00";
                     Recorded = true;
