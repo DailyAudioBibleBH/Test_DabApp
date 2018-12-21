@@ -7,7 +7,6 @@
 		</ResourceDictionary>
 	</t:SlideMenuView.Resources>
     <StackLayout BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
-        <Frame x:Name="dumb" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" IsClippedToBounds="True" VerticalOptions="FillAndExpand">
             <StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0">
                 <!--<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
 		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
@@ -36,6 +35,5 @@
                     <Button x:Name="Settings" Image="ic_settings_white_3x.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" Clicked="OnSettings" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center" AutomationProperties.Name="Settings" AutomationProperties.IsInAccessibleTree="true"/>
                 </StackLayout>
             </StackLayout>
-        </Frame>
     </StackLayout>
 </t:SlideMenuView>
