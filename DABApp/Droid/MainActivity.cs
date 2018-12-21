@@ -81,10 +81,7 @@ namespace DABApp.Droid
 
             LoadApplication(new App());
 
-            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.RecordAudio) != Permission.Granted)
-            {
-                ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.RecordAudio }, 1);
-            }
+            MessagingCenter.Subscribe<string>("RecordPermission", "RecordPermission", (sender) => { RequestRecordPermission(); }); 
 
             ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
             var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
@@ -252,5 +249,13 @@ namespace DABApp.Droid
 
 			return acceptCertificate;
 		}
+
+        void RequestRecordPermission()
+        {
+            if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.RecordAudio) != Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.RecordAudio }, 1);
+            }
+        }
 	}
 }

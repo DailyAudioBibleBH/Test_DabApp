@@ -4,14 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Android;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.Media;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.App;
+using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
 using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
 using Environment = System.Environment;
 
 namespace DABApp.Droid
@@ -58,6 +63,16 @@ namespace DABApp.Droid
             recorder.Stop();
             IsRecording = false;
             return fileName;
+        }
+
+        public bool RequestMicrophone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GoToSettings()
+        {
+            throw new NotImplementedException();
         }
     }
 }

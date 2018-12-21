@@ -139,7 +139,7 @@ namespace DABApp
         {
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
-            TimeSpan maxTime = TimeSpan.FromMinutes(2);
+            TimeSpan maxTime = TimeSpan.FromSeconds(119);
             Device.StartTimer(TimeSpan.FromSeconds(1), () => {
                 if (IsRecording && maxTime > TimeSpan.FromSeconds(0))
                 {
@@ -154,7 +154,7 @@ namespace DABApp
                         EndOfTimeLimit?.Invoke(this, new EventArgs());
                     }
                     //RecordingTime = "2:00";
-                    Recorded = true;
+                    //Recorded = true;
                     return false;
                 }
             });

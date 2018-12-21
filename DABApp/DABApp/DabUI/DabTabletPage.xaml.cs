@@ -150,7 +150,9 @@ namespace DABApp
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             var newEp = (EpisodeViewModel)e.Item;
@@ -176,6 +178,7 @@ namespace DABApp
             }
             else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
             Completed.Image = episode.listenedToSource;
+            labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
         }
@@ -189,6 +192,8 @@ namespace DABApp
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+            labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
@@ -222,6 +227,7 @@ namespace DABApp
                 Completed.Image = episode.listenedToSource;
             }
             else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+            labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
         }
@@ -620,6 +626,8 @@ namespace DABApp
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+            labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             await AuthenticationAPI.PostActionLogs();
@@ -627,6 +635,7 @@ namespace DABApp
             await AuthenticationAPI.GetMemberData();
             episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
             TimedActions();
+            labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
             EpisodeList.IsRefreshing = false;

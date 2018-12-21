@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AVFoundation;
 using Foundation;
+using Plugin.AudioRecorder;
 using UIKit;
 using Xamarin.Forms;
 
@@ -57,6 +58,31 @@ namespace DABApp.iOS
             recorder.Stop();
             IsRecording = false;
             return recorder.Url.ToString();
+        }
+
+        public bool RequestMicrophone()
+        {
+            var avAudioSession = AVAudioSession.SharedInstance();
+            var permissionStatus = avAudioSession.RecordPermission;
+            bool response = false;
+            switch (permissionStatus)
+            {
+                case AVAudioSessionRecordPermission.Denied:
+                    response = false;
+                    break;
+                case AVAudioSessionRecordPermission.Undetermined:
+                    avAudioSession.RequestRecordPermission(delegate (bool granted) { response = granted; });
+                    break;
+                default:
+                    response = true;
+                    break;
+            }
+            return response;
+        }
+
+        public void GoToSettings()
+        {
+            UIApplication.SharedApplication.OpenUrl(new Foundation.NSUrl(UIApplication.OpenSettingsUrlString));
         }
     }
 }

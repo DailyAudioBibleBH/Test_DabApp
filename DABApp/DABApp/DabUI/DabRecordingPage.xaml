@@ -9,7 +9,7 @@
                 <RowDefinition x:Name="r0" Height="*"/>
                 <RowDefinition x:Name="r1" Height="Auto"/>
                 <RowDefinition x:Name="r2" Height="*"/>
-                <RowDefinition x:Name="r3" Height="*"/>
+                <RowDefinition x:Name="r3" Height="Auto"/>
                 <RowDefinition x:Name="r4" Height="*"/>
                 <RowDefinition x:Name="r5" Height="*"/>
                 <RowDefinition x:Name="r6" Height="*"/>
@@ -25,7 +25,7 @@
                 </StackLayout>
             </RelativeLayout>
                 <StackLayout Padding="20" Grid.Row="1" Grid.ColumnSpan="2">
-                    <Label x:Name="Instructions" Style="{StaticResource playerLabelStyle}" Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque id nisl vel turpis sodales cursus et ac lectus. Curabitur ultricies egestas nibh a pharetra. Vestibulum porttitor eget ante vitae pellentesque. Nulla facilisi. Ut pharetra, velit et condimentum interdum, urna neque imperdiet tellus, a malesuada quam sem eu ligula."/>
+                <Label x:Name="Instructions" Style="{StaticResource playerLabelStyle}" Text="The Daily Audio Bible community is like no other. Reach out to the Daily Audio Bible community for prayer and praise using the audio recording component of the DAB App. Follow the prompts below to record, review, and then submit your recording. Please limit your recording to 2:00 minutes."/>
                 </StackLayout>
 
                 <!--<Button Text="Play" Clicked="OnPlay" />

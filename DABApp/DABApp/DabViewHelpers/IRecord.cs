@@ -11,5 +11,7 @@ namespace DABApp
         string StopRecording();
         bool IsRecording { get; set; }
         event EventHandler<RecordingHandler> AudioWaves;
+        bool RequestMicrophone();
+        void GoToSettings();
     }
 }

@@ -21,12 +21,18 @@ namespace DABApp
         AudioRecorderService recorder;
         RecorderViewModel viewModel;
         bool Playing;
+        bool granted = true;
         double _width;
         double _height;
 
         public DabRecordingPage()
         {
             InitializeComponent();
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                MessagingCenter.Send<string>("RecordPermission", "RecordPermission");
+            }
+            else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             AudioPlayer.Instance.DeCouple();
             AudioPlayer.Instance.OnRecord = true;
@@ -68,15 +74,26 @@ namespace DABApp
 
         async void OnRecord(object o, EventArgs e)
         {
-            if (viewModel.Recorded)
+            if (!granted)
             {
-                OnPlay();
+                var response = await DisplayAlert("Microphone permission required", "DAB needs access to your microphone in order to record would you like to go to settings and enable microphone access", "Go to Settings", "No");
+                if (response)
+                {
+                    DependencyService.Get<IRecord>().GoToSettings();
+                }
+                granted = DependencyService.Get<IRecord>().RequestMicrophone();
             }
             else
             {
-                await RecordAudio();
+                if (viewModel.Recorded)
+                {
+                    OnPlay();
+                }
+                else
+                {
+                    await RecordAudio();
+                }
             }
-
         }
 
         async Task RecordAudio()
@@ -97,7 +114,9 @@ namespace DABApp
                         Record.BindingContext = AudioPlayer.Instance;
                         Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
                         Timer.BindingContext = AudioPlayer.Instance;
-                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, new StringConverter(true), null, null, AudioPlayer.Instance));
+                        var converter = new StringConverter();
+                        converter.onRecord = true;
+                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.Instance));
                         SeekBar.Value = AudioPlayer.Instance.CurrentTime;
                         SeekBar.IsVisible = true;
                         c0.Width = new GridLength(2, GridUnitType.Star);
@@ -181,7 +200,20 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    Label explanation = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "Explanation");
+                    activity.IsVisible = true;
+                    activityHolder.IsVisible = true;
+                    labelHolder.IsVisible = true;
+                    activity.VerticalOptions = LayoutOptions.EndAndExpand;
+                    explanation.IsVisible = true;
                     var result = await SendAudio(audio);
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    labelHolder.IsVisible = false;
+                    explanation.IsVisible = false;
                     if (result) await Navigation.PopModalAsync();
                 }
                 else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");
@@ -216,14 +248,15 @@ namespace DABApp
         {
             try
             {
-                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", "vicfinney@c2itconsulting.net");
+                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", "dab@c2itconsulting.net");
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtp.UseDefaultCredentials = false;
                 smtp.Host = "smtp.mandrillapp.com";
                 var attatchment = new Attachment(fileName, "audio/wav");
-                mailMessage.Body = "";
+                mailMessage.Subject = "DAB Audio Recording Session";
+                mailMessage.Body = $"DAB Audio Recording Session {DateTime.Now} by {GlobalResources.GetUserName()}";
                 mailMessage.Attachments.Add(attatchment);
                 smtp.Credentials = new NetworkCredential("chetcromer@c2itconsulting.net", "-M0yjVB_9EqZEzuKUDjw3A");
                 smtp.EnableSsl = true;
@@ -269,7 +302,9 @@ namespace DABApp
             Record.BindingContext = AudioPlayer.Instance;
             Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
             Timer.BindingContext = AudioPlayer.Instance;
-            Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, new StringConverter(true), null, null, AudioPlayer.Instance));
+            var converter = new StringConverter();
+            converter.onRecord = true;
+            Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.Instance));
             SeekBar.Value = AudioPlayer.Instance.CurrentTime;
             SeekBar.IsVisible = true;
             c0.Width = new GridLength(2, GridUnitType.Star);

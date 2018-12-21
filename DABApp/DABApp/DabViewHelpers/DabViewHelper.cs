@@ -15,11 +15,7 @@ namespace DABApp
 
 	public class StringConverter : IValueConverter
 	{
-        bool onRecord;
-        public StringConverter(bool OnRecord = false)
-        {
-            onRecord = OnRecord;
-        }
+        public bool onRecord { get; set; } = false;
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{

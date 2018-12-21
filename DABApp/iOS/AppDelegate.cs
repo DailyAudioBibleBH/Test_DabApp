@@ -63,7 +63,6 @@ namespace DABApp.iOS
             {
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
-            AudioRecorderService.RequestAVAudioSessionCategory(AVFoundation.AVAudioSessionCategory.PlayAndRecord);
             return m;
 		}
 
