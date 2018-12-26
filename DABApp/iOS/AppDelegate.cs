@@ -48,7 +48,7 @@ namespace DABApp.iOS
 
 			SlideOverKit.iOS.SlideOverKit.Init();
 
-            //SegmentedControlRenderer.Init();
+            SegmentedControlRenderer.Init();
 
 			CrossPushNotification.Initialize<CrossPushNotificationListener>();
 			app.StatusBarStyle = UIStatusBarStyle.LightContent;
