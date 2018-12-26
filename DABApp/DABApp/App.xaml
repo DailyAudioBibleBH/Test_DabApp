@@ -36,7 +36,7 @@
 					</ScrollView>
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
+				<StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
 								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
@@ -61,7 +61,7 @@
 					<ContentPresenter VerticalOptions="FillAndExpand" />
 					<local:DabPlayerBar VerticalOptions="End" />
 				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
+				<StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
 								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
@@ -81,7 +81,7 @@
                     <ContentPresenter VerticalOptions="FillAndExpand"/>
 <!--                    <local:DabPlayerBar VerticalOptions="End" />
 -->                </StackLayout>
-                <StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
+                <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
                                 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
                                 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
                                 RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"

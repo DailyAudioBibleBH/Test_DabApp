@@ -56,7 +56,6 @@ namespace DABApp
             //Add vizualizer elements
             for (int x = ((viewModel.AudioHistoryCount * -1)+1); x <= viewModel.AudioHistoryCount-1; x++)
             {
-                Console.WriteLine(x);
                 BoxView box = new BoxView();
                 box.BindingContext = viewModel;
                 box.Color = (Color)App.Current.Resources["HighlightColor"];
