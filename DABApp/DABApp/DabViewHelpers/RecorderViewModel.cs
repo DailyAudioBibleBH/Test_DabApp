@@ -13,8 +13,6 @@ namespace DABApp
         public event EventHandler EndOfTimeLimit;
         private bool isRecording;
         private double recentAveragePower = 1;
-        //private double middleAveragePower = 1;
-        //private double lastAveragePower = 1;
         private string recordingTime = "2:00";
         private bool recorded;
         private bool reviewed;
@@ -38,12 +36,6 @@ namespace DABApp
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                /*
-                LastAveragePower = MiddleAveragePower;
-                MiddleAveragePower = RecentAveragePower;
-                RecentAveragePower = e.AveragePower;
-                */
-
                 //Shift all elements of the array
                 for (int x = _audioHistory.Count - 1; x > 0; x--)
                 {
@@ -85,29 +77,6 @@ namespace DABApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecentAveragePower"));
             }
         }
-        /*
-        public double MiddleAveragePower {
-            get {
-                return middleAveragePower;
-            }
-            set {
-                middleAveragePower = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MiddleAveragePower"));
-            }
-        }
-
-        public double LastAveragePower {
-            get
-            {
-                return lastAveragePower;
-            }
-            set
-            {
-                lastAveragePower = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastAveragePower"));
-            }
-        }
-        */
 
         public bool IsRecording
         {
@@ -120,6 +89,7 @@ namespace DABApp
                 isRecording = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRecording"));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecordImageUrl"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuideText"));
             }
         }
 
@@ -133,6 +103,7 @@ namespace DABApp
             {
                 recorded = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Recorded"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuideText"));
             }
         }
 
@@ -146,6 +117,7 @@ namespace DABApp
             {
                 reviewed = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Reviewed"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GuideText"));
             }
         }
 
@@ -171,6 +143,31 @@ namespace DABApp
                     return "stop.png";
                 }
                 else return "microphone.png";
+            }
+            set
+            {
+                throw new Exception("This can't be set directly");
+            }
+        }
+
+        public string GuideText
+            //Text beneath button to guide the user to what they should do now.
+        {
+            get
+            {
+                if (!isRecording && !reviewed && !recorded) //New recording - Not recording, not reviewed, and not recorded 
+                {
+                    return "Tap the microphone to begin your recording.";
+                } else if (isRecording) //Currently being recorded
+                {
+                    return "Tap the stop button to complete your recording.";
+                } else if (recorded && !reviewed) //Recorded but not reviewed
+                {
+                    return "Tap the play button to review your recording.";
+                } else //Recorded and Reviewed
+                {
+                    return "Tap the submit button to submit your recording.";
+                }
             }
             set
             {

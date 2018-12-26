@@ -71,7 +71,7 @@ namespace DABApp
 
 
 
-           
+            lblGuide.BindingContext = viewModel;
             Timer.BindingContext = viewModel;
             Submit.BindingContext = viewModel;
             Delete.BindingContext = viewModel;
