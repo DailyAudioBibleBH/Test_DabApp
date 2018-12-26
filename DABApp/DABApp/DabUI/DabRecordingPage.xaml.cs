@@ -59,8 +59,9 @@ namespace DABApp
                 Console.WriteLine(x);
                 BoxView box = new BoxView();
                 box.BindingContext = viewModel;
-                box.Color = Color.OrangeRed;
-                box.SetBinding(BoxView.HeightRequestProperty, new Binding($"AudioHistory[{Math.Abs(x)}]"));
+                box.Color = (Color)App.Current.Resources["HighlightColor"];
+                box.Opacity = (double)1 - ((double)Math.Abs(x) / (double)viewModel.AudioHistoryCount); //Fade out towards the edges
+                box.SetBinding(BoxView.HeightRequestProperty, new Binding($"AudioHistory[{Math.Abs(x)}]")); //Older data toward the edges
                 box.SetBinding(BoxView.IsVisibleProperty, new Binding("IsRecording"));
                 box.WidthRequest = 10;
                 box.HorizontalOptions = LayoutOptions.CenterAndExpand;

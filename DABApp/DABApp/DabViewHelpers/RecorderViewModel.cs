@@ -18,8 +18,7 @@ namespace DABApp
         private string recordingTime = "2:00";
         private bool recorded;
         private bool reviewed;
-        private ObservableCollection<double> _audioHistory = new ObservableCollection<double>() { 10, 20, 30, 40, 50 };
-        //        public double[] AudioHistory = new double[5] { 10, 20, 30, 40, 50 };
+        private ObservableCollection<double> _audioHistory = new ObservableCollection<double>() { 10, 20, 30, 40, 50,60,70,80,90,100 }; //Visualizer Initial Values
 
 
         public RecorderViewModel()
