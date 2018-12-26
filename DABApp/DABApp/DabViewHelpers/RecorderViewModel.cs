@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using Xamarin.Forms;
@@ -12,30 +13,67 @@ namespace DABApp
         public event EventHandler EndOfTimeLimit;
         private bool isRecording;
         private double recentAveragePower = 1;
-        private double middleAveragePower = 1;
-        private double lastAveragePower = 1;
+        //private double middleAveragePower = 1;
+        //private double lastAveragePower = 1;
         private string recordingTime = "2:00";
         private bool recorded;
         private bool reviewed;
+        private ObservableCollection<double> _audioHistory = new ObservableCollection<double>() { 10, 20, 30, 40, 50 };
+        //        public double[] AudioHistory = new double[5] { 10, 20, 30, 40, 50 };
+
 
         public RecorderViewModel()
         {
             DependencyService.Get<IRecord>().AudioWaves += UpdateWave;
         }
 
+        public int AudioHistoryCount
+        {
+            get
+            {
+                return AudioHistory.Count;
+            }
+        }
+
         private void UpdateWave(object sender, RecordingHandler e)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
+                /*
                 LastAveragePower = MiddleAveragePower;
                 MiddleAveragePower = RecentAveragePower;
                 RecentAveragePower = e.AveragePower;
-               
+                */
+
+                //Shift all elements of the array
+                for (int x = _audioHistory.Count - 1; x > 0; x--)
+                {
+                    _audioHistory[x] = _audioHistory[x - 1];
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"AudioHistory[{x}]"));
+                }
+                //Store the most recent poswer
+                _audioHistory[0] = e.AveragePower;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"AudioHistory[0]"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"AudioHistory"));
+                RecentAveragePower = e.AveragePower;
             });
         }
 
         public string AudioFile { get; private set; }
-        
+
+
+        public ObservableCollection<double> AudioHistory
+        {
+            get
+            {
+                return _audioHistory;
+            }
+            set
+            {
+                _audioHistory = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AudioHistory"));
+            }
+        }
 
         public double RecentAveragePower
         {
@@ -48,7 +86,7 @@ namespace DABApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RecentAveragePower"));
             }
         }
-
+        /*
         public double MiddleAveragePower {
             get {
                 return middleAveragePower;
@@ -70,9 +108,12 @@ namespace DABApp
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastAveragePower"));
             }
         }
+        */
 
-        public bool IsRecording {
-            get {
+        public bool IsRecording
+        {
+            get
+            {
                 return isRecording;
             }
             set
@@ -89,17 +130,21 @@ namespace DABApp
             {
                 return recorded;
             }
-            set {
+            set
+            {
                 recorded = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Recorded"));
             }
         }
 
-        public bool Reviewed {
-            get {
+        public bool Reviewed
+        {
+            get
+            {
                 return reviewed;
             }
-            set {
+            set
+            {
                 reviewed = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Reviewed"));
             }
@@ -140,14 +185,16 @@ namespace DABApp
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
             TimeSpan maxTime = TimeSpan.FromSeconds(119);
-            Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            {
                 if (IsRecording && maxTime > TimeSpan.FromSeconds(0))
                 {
                     maxTime = maxTime - TimeSpan.FromSeconds(1);
                     RecordingTime = maxTime.ToString(@"m\:ss");
                     return true;
                 }
-                else {
+                else
+                {
                     if (IsRecording)
                     {
                         StopRecording();

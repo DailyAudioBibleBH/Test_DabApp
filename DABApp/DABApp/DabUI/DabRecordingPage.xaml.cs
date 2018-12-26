@@ -42,7 +42,8 @@ namespace DABApp
             //    Main.Padding = new Thickness(10, 10, 10, 0);
             //}
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
-            recorder = new AudioRecorderService() {
+            recorder = new AudioRecorderService()
+            {
                 StopRecordingAfterTimeout = true,
                 TotalAudioTimeout = TimeSpan.FromMinutes(2),
                 StopRecordingOnSilence = false
@@ -51,6 +52,25 @@ namespace DABApp
             recorder.AudioInputReceived += audioInputReceived;
             viewModel = new RecorderViewModel();
             AudioVisualizer.BindingContext = viewModel;
+
+            //Add vizualizer elements
+            for (int x = ((viewModel.AudioHistoryCount * -1)+1); x <= viewModel.AudioHistoryCount-1; x++)
+            {
+                Console.WriteLine(x);
+                BoxView box = new BoxView();
+                box.BindingContext = viewModel;
+                box.Color = Color.OrangeRed;
+                box.SetBinding(BoxView.HeightRequestProperty, new Binding($"AudioHistory[{Math.Abs(x)}]"));
+                box.SetBinding(BoxView.IsVisibleProperty, new Binding("IsRecording"));
+                box.WidthRequest = 10;
+                box.HorizontalOptions = LayoutOptions.CenterAndExpand;
+                box.VerticalOptions = LayoutOptions.CenterAndExpand;
+                AudioVisualizer.Children.Add(box);
+            }
+
+
+
+           
             Timer.BindingContext = viewModel;
             Submit.BindingContext = viewModel;
             Delete.BindingContext = viewModel;
@@ -63,7 +83,8 @@ namespace DABApp
             };
             AudioPlayer.Instance.MinTimeToSkip = 1;
             if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.DeCouple();
-            MessagingCenter.Subscribe<string>("Back", "Back", (sender) => {
+            MessagingCenter.Subscribe<string>("Back", "Back", (sender) =>
+            {
                 OnCancel(this, new EventArgs());
             });
             var tapper = new TapGestureRecognizer();
@@ -223,7 +244,7 @@ namespace DABApp
         async void OnCancel(object o, EventArgs e)
         {
             var response = await DisplayAlert("Recording will be lost", "Are you sure you want to cancel your audio recording? Your current recording will be lost.", "Yes", "No");
-            if(response)
+            if (response)
             {
                 await Navigation.PopModalAsync();
             }
@@ -234,7 +255,7 @@ namespace DABApp
             AudioPlayer.Instance.MinTimeToSkip = 5;
             AudioPlayer.Instance.DeCouple();
             MessagingCenter.Unsubscribe<string>("Back", "Back");
-            if(AudioPlayer.Instance.CurrentEpisodeId != 0)
+            if (AudioPlayer.Instance.CurrentEpisodeId != 0)
             {
                 dbEpisodes episode = new dbEpisodes();
                 AudioPlayer.Instance.SetAudioFile(episode);
