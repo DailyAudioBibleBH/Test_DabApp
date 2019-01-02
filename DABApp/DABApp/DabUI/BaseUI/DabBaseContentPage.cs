@@ -64,6 +64,7 @@ namespace DABApp
                 menuButton.Text = "Menu";
                 menuButton.Priority = 1; //priority 1 causes it to be moved to the left by the platform specific navigation renderer
                 menuButton.Icon = "ic_menu_white.png";
+                AutomationProperties.SetHelpText(menuButton, "Menu");
                 menuButton.Clicked += (sender, e) =>
                 {
                     this.ShowMenu();
@@ -73,9 +74,11 @@ namespace DABApp
                 //Record Button
                 var recordButton = new ToolbarItem();
                 recordButton.SetValue(AutomationProperties.NameProperty, "Record");
+                recordButton.SetValue(AutomationProperties.HelpTextProperty, "Record");
                 recordButton.Text = "Record";
                 recordButton.Icon = "record_btn.png";
                 recordButton.Priority = 0;
+                AutomationProperties.SetHelpText(recordButton, "Record");
                 recordButton.Clicked += async (sender, e) =>
                 {
                     await Navigation.PushModalAsync(new DabRecordingPage());
