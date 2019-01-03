@@ -28,7 +28,7 @@
             <!--<Button Text="Play" Clicked="OnPlay" />
                 <Button Text="Submit" Clicked="OnSubmit"/>-->
             <StackLayout Grid.Row="2" Grid.ColumnSpan="2">
-                <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="CenterAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="20, 0, 20, 0" />
+                <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="CenterAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.OtherInstance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.OtherInstance}, Path=TotalTime}" Margin="20, 0, 20, 0" />
                 <StackLayout x:Name="AudioVisualizer" HeightRequest="100" HorizontalOptions="CenterAndExpand" Orientation="Horizontal" IsVisible="{Binding IsRecording}" VerticalOptions="StartAndExpand">
                 </StackLayout>
             </StackLayout>

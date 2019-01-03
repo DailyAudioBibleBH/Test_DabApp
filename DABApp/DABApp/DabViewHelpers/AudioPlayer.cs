@@ -29,14 +29,16 @@ namespace DABApp
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
+        public static AudioPlayer OtherInstance { get; private set; }
         public double MinTimeToSkip { get; set; } = 5;
         static AudioPlayer()
 		{
 			Instance = new AudioPlayer();
+            OtherInstance = new AudioPlayer();
 		}
 
-		//Don't allow creation of the class elsewhere in the app.
-		private AudioPlayer()
+        //Don't allow creation of the class elsewhere in the app.
+        private AudioPlayer()
 		{
 			//Create a player object 
 			_player = DependencyService.Get<IAudio>();
