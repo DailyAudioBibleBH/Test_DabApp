@@ -8,7 +8,7 @@
                 <RowDefinition x:Name="r2" Height="*" />
                 <RowDefinition x:Name="r3" Height="Auto" />
                 <RowDefinition x:Name="r4" Height="*" />
-                <RowDefinition x:Name="r5" Height="*" />
+                <RowDefinition x:Name="r5" Height="Auto" />
                 <RowDefinition x:Name="r6" Height="*" />
                 <RowDefinition x:Name="r7" Height="*" />
             </Grid.RowDefinitions>
