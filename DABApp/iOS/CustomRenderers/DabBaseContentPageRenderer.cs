@@ -67,7 +67,7 @@ namespace DABApp.iOS
                     var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
                     if (recordButton != null)
                     {
-                        recordButton.TintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
+                        recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
                         recordButton.ImageInsets = new UIEdgeInsets(0, 0, -6, 0);
                         recordButton.AccessibilityHint = "Record";
                     }

@@ -164,6 +164,7 @@ namespace DABApp.Droid
             {
                 SetSupportActionBar(toolbar);
                 var newMenu = LayoutInflater?.Inflate(Resource.Layout.DabToolbar, null);
+                //newMenu.ImportantForAutofill = Android.Views.ImportantForAutofill.Yes;
                 var menu = (ImageButton)newMenu.FindViewById(Resource.Id.item1);
                 menu.ContentDescription = "Menu Button";
                 menu.Click += (sender, e) => { MessagingCenter.Send<string>("Menu", "Menu"); };

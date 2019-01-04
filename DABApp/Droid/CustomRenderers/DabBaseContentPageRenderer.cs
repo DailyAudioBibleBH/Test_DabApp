@@ -9,6 +9,7 @@ using System.Linq;
 using Android.Support.V7.Widget;
 using Android.Widget;
 using System.Collections.Generic;
+using Android.Content;
 
 [assembly: ExportRenderer(typeof(DabBaseContentPage), typeof(DabBaseContentPageRenderer))]
 namespace DABApp.Droid
@@ -21,7 +22,7 @@ namespace DABApp.Droid
 
         public Action<int, int, int, int> OnSizeChangedEvent { get; set; }
 
-        public DabBaseContentPageRenderer()
+        public DabBaseContentPageRenderer(Context context) : base(context)
 		{
 			new SlideOverKitDroidHandler().Init(this);
 		}
@@ -30,6 +31,14 @@ namespace DABApp.Droid
         {
             base.OnElementChanged(e);
             OnElementChangedEvent?.Invoke(e);
+
+            var context = (Activity)Context;
+            var toolbar = context.FindViewById<Android.Support.V7.Widget.Toolbar>(Droid.Resource.Id.toolbar);
+            if (toolbar.NavigationIcon != null)
+            {
+                toolbar.NavigationIcon.Bounds.Right = 0;
+                toolbar.NavigationIcon.Bounds.Left = 0;
+            }
         }
 
         protected override void OnLayout(bool changed, int left, int top, int right, int bottom)
