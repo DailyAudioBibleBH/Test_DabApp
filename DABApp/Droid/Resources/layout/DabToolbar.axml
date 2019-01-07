@@ -16,7 +16,7 @@
     <Button
         android:text="Give"
         android:background="?attr/actionBarItemBackground"
-        android:layout_width="?attr/actionBarSize"
+        android:layout_width="45dp"
         android:layout_height="match_parent"
         android:scaleType="centerInside"
         android:id="@+id/item2"

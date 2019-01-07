@@ -59,26 +59,6 @@ namespace DABApp.iOS
             base.ViewDidAppear (animated);
             if (ViewDidAppearEvent != null)
                 ViewDidAppearEvent (animated);
-            if (NavigationController != null)
-            {
-                if (this.NavigationController.TopViewController.NavigationItem != null)
-                {
-                    var navigationItem = this.NavigationController.TopViewController.NavigationItem;
-                    var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
-                    if (recordButton != null)
-                    {
-                        recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
-                        recordButton.ImageInsets = new UIEdgeInsets(0, 0, -6, 0);
-                        recordButton.AccessibilityHint = "Record";
-                    }
-
-                    var menuButton = navigationItem.LeftBarButtonItem;
-                    if (menuButton != null)
-                    {
-                        menuButton.AccessibilityHint = "Menu";
-                    }
-                }
-            }
         }
 
         public override void ViewDidDisappear (bool animated)
@@ -137,8 +117,20 @@ namespace DABApp.iOS
 			//Set the navigation bar buttons
 			navigationItem.RightBarButtonItems = rightNativeButtons.ToArray();
 			navigationItem.LeftBarButtonItems = leftNativeButtons.ToArray();
+            var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
+            if (recordButton != null)
+            {
+                recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
+                recordButton.ImageInsets = new UIEdgeInsets(0, 0, -6, 0);
+                recordButton.AccessibilityHint = "Record";
+            }
 
-		}
+            var menuButton = navigationItem.LeftBarButtonItem;
+            if (menuButton != null)
+            {
+                menuButton.AccessibilityHint = "Menu";
+            }
+        }
 
 
 	}
