@@ -43,7 +43,7 @@ namespace DABApp.iOS
                 while (true) { 
                     if (!recorder.Recording) return;
                     recorder.UpdateMeters();
-                    averagePower = (recorder.AveragePower(0) + 50);
+                    averagePower = (recorder.AveragePower(0) + 50)*2.0;
                     peakPower = recorder.PeakPower(0);
                     AudioWaves?.Invoke(this, new RecordingHandler(averagePower, peakPower));
                     //Console.WriteLine($"{DateTime.Now} {averagePower} : {peakPower}");

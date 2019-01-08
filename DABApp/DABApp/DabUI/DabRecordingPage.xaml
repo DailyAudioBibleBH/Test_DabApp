@@ -5,7 +5,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="r0" Height="*" />
                 <RowDefinition x:Name="r1" Height="Auto" />
-                <RowDefinition x:Name="r2" Height="*" />
+                <RowDefinition x:Name="r2" Height="100" />
                 <RowDefinition x:Name="r3" Height="Auto" />
                 <RowDefinition x:Name="r4" Height="*" />
                 <RowDefinition x:Name="r5" Height="Auto" />
