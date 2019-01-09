@@ -21,26 +21,20 @@ namespace DABApp.iOS
 {
 	public class AudioService : IAudio
 	{
-		public static AVPlayer _player;
-		public static bool IsLoaded;
+		public AVPlayer _player;
+		public bool IsLoaded;
 		MPNowPlayingInfo np;
 		MPRemoteCommandCenter commandCenter = MPRemoteCommandCenter.Shared;
 		AVAudioSession session = AVAudioSession.SharedInstance();
 		NSError error;
 		double skipInterval = 30;
         //float seekRate = 10.0f;
-		public static AudioService Instance { get; private set; }
 		dbEpisodes CurrentEpisode;
         bool ableToKeepUp;
-        static bool UpdateOnPlay = false;
+        bool UpdateOnPlay = false;
 
 		public AudioService()
 		{
-		}
-
-		static AudioService()
-		{
-			Instance = new AudioService();
 		}
 
         public void SetAudioFile(string fileName)
@@ -53,7 +47,7 @@ namespace DABApp.iOS
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
-            
+
             ableToKeepUp = true;
             UpdateOnPlay = false;
 			CurrentEpisode = episode == null ? CurrentEpisode : episode;

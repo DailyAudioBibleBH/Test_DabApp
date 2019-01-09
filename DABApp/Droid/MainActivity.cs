@@ -144,7 +144,7 @@ namespace DABApp.Droid
 
         public override void OnBackPressed()
         {
-            if (AudioPlayer.Instance.OnRecord)
+            if (AudioPlayer.RecordingInstance.OnRecord)
             {
                 MessagingCenter.Send("Back", "Back");
             }

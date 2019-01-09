@@ -208,7 +208,7 @@ namespace DABApp
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;
             IsRecording = false;
-            AudioPlayer.Instance.SetAudioFile(AudioFile);
+            AudioPlayer.RecordingInstance.SetAudioFile(AudioFile);
         }
     }
 }

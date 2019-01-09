@@ -34,8 +34,8 @@ namespace DABApp
             }
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
-            AudioPlayer.Instance.DeCouple();
-            AudioPlayer.Instance.OnRecord = true;
+            //AudioPlayer.Instance.DeCouple();
+            //AudioPlayer.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
             //{
@@ -81,8 +81,8 @@ namespace DABApp
                 Uri = new Uri(ContentConfig.Instance.views.First().banner.urlPhone),
                 CacheValidity = GlobalResources.ImageCacheValidity
             };
-            AudioPlayer.Instance.MinTimeToSkip = 1;
-            if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.DeCouple();
+            AudioPlayer.RecordingInstance.MinTimeToSkip = 1;
+            if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.Pause();
             MessagingCenter.Subscribe<string>("Back", "Back", (sender) =>
             {
                 OnCancel(this, new EventArgs());
@@ -132,13 +132,13 @@ namespace DABApp
                     {
                         //await recorder.StopRecording();
                         viewModel.StopRecording();
-                        Record.BindingContext = AudioPlayer.Instance;
+                        Record.BindingContext = AudioPlayer.RecordingInstance;
                         Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
-                        Timer.BindingContext = AudioPlayer.Instance;
+                        Timer.BindingContext = AudioPlayer.RecordingInstance;
                         var converter = new StringConverter();
                         converter.onRecord = true;
-                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.Instance));
-                        SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.RecordingInstance));
+                        SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
                         SeekBar.IsVisible = true;
                         c0.Width = new GridLength(2, GridUnitType.Star);
                         c1.Width = new GridLength(2, GridUnitType.Star);
@@ -161,16 +161,16 @@ namespace DABApp
         void OnPlay()
         {
             viewModel.Reviewed = true;
-            if (AudioPlayer.Instance.IsInitialized)
+            if (AudioPlayer.RecordingInstance.IsInitialized)
             {
-                if (AudioPlayer.Instance.IsPlaying)
+                if (AudioPlayer.RecordingInstance.IsPlaying)
                 {
-                    AudioPlayer.Instance.Pause();
+                    AudioPlayer.RecordingInstance.Pause();
                     Playing = true;
                 }
                 else
                 {
-                    AudioPlayer.Instance.Play();
+                    AudioPlayer.RecordingInstance.Play();
                     Playing = false;
                 }
             }
@@ -179,18 +179,13 @@ namespace DABApp
                 var audio = viewModel.AudioFile;
                 if (audio != null)
                 {
-                    AudioPlayer.Instance.SetAudioFile(audio);
-                    AudioPlayer.Instance.Play();
+                    AudioPlayer.RecordingInstance.SetAudioFile(audio);
+                    AudioPlayer.RecordingInstance.Play();
                 }
-                SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+                SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
                 SeekBar.IsVisible = true;
                 Playing = true;
             }
-        }
-
-        void OnTouch(object o, EventArgs e)
-        {
-            AudioPlayer.Instance.IsTouched = true;
         }
 
         async void OnDelete(object o, EventArgs e)
@@ -198,7 +193,7 @@ namespace DABApp
             var response = await DisplayAlert("Recording will be lost", "Are you sure you want to cancel your audio recording? Your current recording will be lost.", "Yes", "No");
             if (response)
             {
-                AudioPlayer.Instance.DeCouple();
+                //AudioPlayer.Instance.DeCouple();
                 viewModel.Recorded = false;
                 viewModel.Reviewed = false;
                 SeekBar.IsVisible = false;
@@ -262,16 +257,17 @@ namespace DABApp
 
         protected override void OnDisappearing()
         {
-            AudioPlayer.Instance.MinTimeToSkip = 5;
-            AudioPlayer.Instance.DeCouple();
+            //AudioPlayer.Instance.MinTimeToSkip = 5;
+            //AudioPlayer.Instance.DeCouple();
             MessagingCenter.Unsubscribe<string>("Back", "Back");
-            if (AudioPlayer.Instance.CurrentEpisodeId != 0)
-            {
-                dbEpisodes episode = new dbEpisodes();
-                AudioPlayer.Instance.SetAudioFile(episode);
-            }
-            AudioPlayer.Instance.OnRecord = false;
-            SeekBar.RemoveBinding(Slider.ValueProperty);
+            //if (AudioPlayer.Instance.CurrentEpisodeId != 0)
+            //{
+            //    dbEpisodes episode = new dbEpisodes();
+            //    AudioPlayer.RecordingInstance.SetAudioFile(episode);
+            //}
+            //AudioPlayer.Instance.OnRecord = false;
+            //SeekBar.RemoveBinding(Slider.ValueProperty);
+            if (AudioPlayer.RecordingInstance.IsPlaying) AudioPlayer.RecordingInstance.Pause();
             base.OnDisappearing();
         }
 
@@ -330,13 +326,13 @@ namespace DABApp
 
         void EndOfTime(object o, EventArgs e)
         {
-            Record.BindingContext = AudioPlayer.Instance;
+            Record.BindingContext = AudioPlayer.RecordingInstance;
             Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
-            Timer.BindingContext = AudioPlayer.Instance;
+            Timer.BindingContext = AudioPlayer.RecordingInstance;
             var converter = new StringConverter();
             converter.onRecord = true;
-            Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.Instance));
-            SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+            Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.RecordingInstance));
+            SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
             SeekBar.IsVisible = true;
             c0.Width = new GridLength(2, GridUnitType.Star);
             c1.Width = new GridLength(2, GridUnitType.Star);

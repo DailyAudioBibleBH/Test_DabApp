@@ -11,8 +11,7 @@ namespace DABApp
 {
 	public class AudioPlayer : INotifyPropertyChanged
 	{
-		private IAudio _player;
-		private bool _IsInitialized = false;
+        private bool _IsInitialized = false;
 		private bool _IsPlaying = false;
 		private bool _IsTouched = false;
 		private double _CurrentTime = 0;
@@ -29,34 +28,37 @@ namespace DABApp
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
+        public static AudioPlayer RecordingInstance { get; private set; }
         public double MinTimeToSkip { get; set; } = 5;
         static AudioPlayer()
 		{
 			Instance = new AudioPlayer();
+            RecordingInstance = new AudioPlayer();
+            RecordingInstance.OnRecord = true;
 		}
 
 		//Don't allow creation of the class elsewhere in the app.
 		private AudioPlayer()
 		{
 			//Create a player object 
-			_player = DependencyService.Get<IAudio>();
+			Player = DependencyService.Get<IAudio>(DependencyFetchTarget.NewInstance);
 			//_player.Completed += OnCompleted;
 			// Start a timer to get time information from the player
             //20171107 Increased from 100 to 1000 to help with skipping
 			Device.StartTimer(TimeSpan.FromSeconds(1), () =>
 						{
-                            IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
-							if (_player.IsInitialized)
+                            //IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
+							if (Player.IsInitialized)
 							{
 								//Update current time
-								if (_CurrentTime != _player.CurrentTime)
+								if (_CurrentTime != Player.CurrentTime)
 								{
 									if (_CurrentTime < 0)
 									{
 										_CurrentTime = 0;
 									}
-									CurrentTime = _player.CurrentTime;
-									if (!Double.IsNaN(_player.TotalTime))
+									CurrentTime = Player.CurrentTime;
+									if (!Double.IsNaN(Player.TotalTime))
 									{
 										var t = TimeSpan.FromSeconds(TotalTime);
 										var c = TimeSpan.FromSeconds(CurrentTime);
@@ -73,7 +75,7 @@ namespace DABApp
 											}
 										}
 										else {
-								Debug.WriteLine($"CurrentTime = {CurrentTime}, TotalTime = {_player.TotalTime}");
+								Debug.WriteLine($"CurrentTime = {CurrentTime}, TotalTime = {Player.TotalTime}");
 											CurrentTime = 0;
 											RemainingTime = stringConvert(TotalTime);
 											Debug.WriteLine($"RemainingTime = {RemainingTime}");
@@ -82,9 +84,9 @@ namespace DABApp
 									}
 								}
 
-								if (_TotalTime != _player.TotalTime && !Double.IsNaN(_player.TotalTime))
+								if (_TotalTime != Player.TotalTime && !Double.IsNaN(Player.TotalTime))
 								{
-									TotalTime = _player.TotalTime;
+									TotalTime = Player.TotalTime;
 									var t = TimeSpan.FromSeconds(TotalTime);
 									var c = TimeSpan.FromSeconds(CurrentTime);
 									var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
@@ -127,7 +129,7 @@ namespace DABApp
 								//	IsInitialized = false;
 								//}
 
-								if (!_player.PlayerCanKeepUp && ShowWarning)
+								if (!Player.PlayerCanKeepUp && ShowWarning)
 								{
 
                                     PlayerFailure?.Invoke(this, new EventArgs());
@@ -146,18 +148,12 @@ namespace DABApp
 		}
 
 
-		//Reference to the player
-		private IAudio Player
-		{
-			get
-			{
-				return _player;
-			}
-		}
+        //Reference to the player
+        private IAudio Player { get; }
 
 
-		//property for whether or not a file is loaded (and whether to display the player bar)
-		public bool IsInitialized
+        //property for whether or not a file is loaded (and whether to display the player bar)
+        public bool IsInitialized
 		{
 			get
 			{
@@ -172,10 +168,10 @@ namespace DABApp
 		//Set Audio File
 		public void SetAudioFile(string FileName)
 		{
-			_player.SetAudioFile(FileName);
+			Player.SetAudioFile(FileName);
             if (Device.RuntimePlatform == Device.Android)
             {
-                _player.Pause();
+                Player.Pause();
             }
             ShowWarning = false;
             OnRecord = true;
@@ -183,17 +179,17 @@ namespace DABApp
 
 		public void SetAudioFile(dbEpisodes episode)
 		{
-            episode = OnRecord && CurrentEpisode != null ? CurrentEpisode : episode;
-            bool wasPlaying = _player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
+            //episode = OnRecord && CurrentEpisode != null ? CurrentEpisode : episode;
+            bool wasPlaying = Player.IsPlaying;//Setting these values in memory so that they don't change when the AudioPlayer gets updated
             var time = CurrentTime;
             var id = CurrentEpisodeId;
             var rtime = RemainingTime;
             CurrentEpisode = episode;
-            Instance.CurrentEpisodeId = (int)episode.id;
-			Instance.CurrentEpisodeTitle = episode.title;
-			Instance.CurrentChannelTitle = episode.channel_title;
+            CurrentEpisodeId = (int)episode.id;
+			CurrentEpisodeTitle = episode.title;
+			CurrentChannelTitle = episode.channel_title;
 			var ext = episode.url.Split('.').Last();
-			_player.SetAudioFile($"{episode.id.ToString()}.{ext}", episode);
+			Player.SetAudioFile($"{episode.id.ToString()}.{ext}", episode);
 			//if (episode.stop_time < _player.TotalTime || Device.RuntimePlatform == "Android")
 			//{
 				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");
@@ -283,7 +279,7 @@ namespace DABApp
 		{
 			if (!IsPlaying)
 			{
-				_player.Play();
+				Player.Play();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				//UpdatePlay();
@@ -295,7 +291,7 @@ namespace DABApp
 		{
 			if (IsPlaying)
 			{
-				_player.Pause();
+				Player.Pause();
 				OnPropertyChanged("PlayPauseButtonImage");
 				OnPropertyChanged("PlayPauseButtonImageBig");
 				//UpdatePause();
@@ -303,7 +299,7 @@ namespace DABApp
 		}
 
 		public void Unload(){
-			_player.Unload();
+			Player.Unload();
 		}
 
 		//property for whether a file is being played or not
@@ -311,7 +307,7 @@ namespace DABApp
 		{
 			get
 			{
-				return _player.IsPlaying;
+				return Player.IsPlaying;
 			}
 			set
 			{
@@ -331,7 +327,7 @@ namespace DABApp
                 if (value != 1) //ignore 1 - this is the default when the player page is initialized and "never" a real value.
                 {
                     double GoToTime = value;
-                    double PlayerTime = _player.CurrentTime;
+                    double PlayerTime = Player.CurrentTime;
                     if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
                     {
 						Debug.WriteLine($"Seekto Time = {GoToTime}");
@@ -432,7 +428,7 @@ namespace DABApp
 		public void SeekTo(int seconds)
 		{
 			Debug.WriteLine($"SeekTo seconds = {seconds}");
-			_player.SeekTo(seconds);
+			Player.SeekTo(seconds);
 			//Update the current time
 			CurrentTime = seconds;
 
@@ -441,13 +437,13 @@ namespace DABApp
 		public void Skip(int seconds)
 		{
 			Debug.WriteLine($"Skip = {seconds}");
-			_player.Skip(seconds);
+			Player.Skip(seconds);
 			//Update the current time
 			//CurrentTime = seconds;
 		}
 
 		public void GetOutputs() {
-			_player.SwitchOutputs();
+			Player.SwitchOutputs();
 		}
 
 		public event EventHandler PlayerFailure;
@@ -505,16 +501,16 @@ namespace DABApp
 
         public void DeCouple()
         {
-            _player.Pause();
+            Player.Pause();
             IsPlaying = false;
             if (!OnRecord && CurrentEpisode != null)
             {
-                CurrentEpisode.start_time = _player.CurrentTime;
-                CurrentEpisode.stop_time = _player.CurrentTime;
+                CurrentEpisode.start_time = Player.CurrentTime;
+                CurrentEpisode.stop_time = Player.CurrentTime;
                 CurrentEpisode.remaining_time = RemainingTime;
-                dura = _player.TotalTime;
+                dura = Player.TotalTime;
             }
-            _player.DeCouple();
+            Player.DeCouple();
         }
 
 		public event PropertyChangedEventHandler PropertyChanged;

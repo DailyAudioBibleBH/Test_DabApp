@@ -15,6 +15,7 @@ using System.Globalization;
 using FFImageLoading;
 using FFImageLoading.Forms;
 using Plugin.Connectivity;
+using Android.Media;
 
 [assembly: Dependency(typeof(AudioService))]
 namespace DABApp.Droid
