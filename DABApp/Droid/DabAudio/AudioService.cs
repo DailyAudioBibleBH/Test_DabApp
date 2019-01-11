@@ -23,11 +23,13 @@ namespace DABApp.Droid
 	public class AudioService: IAudio
 	{
 		//public static MediaPlayer player;
-		public static bool IsLoaded;
-		public static dbEpisodes Episode;
-		public static string FileName;
+		public bool IsLoaded;
+		public dbEpisodes Episode;
+		public string FileName;
 		private MediaSessionCompat mediaSessionCompat;
 		double tt;
+        public bool OnRecord { get; set; }
+        MediaPlayer player;
 
 		public AudioService()
 		{
@@ -35,10 +37,20 @@ namespace DABApp.Droid
 
         public void SetAudioFile(string fileName)
         {
-            CrossMediaManager.Current.StatusChanged += OnStatusChanged;
-            CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
+            //CrossMediaManager.Current.StatusChanged += OnStatusChanged;
+            //CrossMediaManager.Current.Play(fileName, Plugin.MediaManager.Abstractions.Enums.MediaFileType.Audio);
+            player = new MediaPlayer();
+            player.Prepared += (s, e) => {
+                IsLoaded = true;
+            };
+            player.Completion += (s, e) =>
+            {
+                IsLoaded = false;
+            };
             tt = 60;
-            IsLoaded = true;
+            OnRecord = true;
+            player.SetDataSource(fileName);
+            player.PrepareAsync();
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
@@ -119,7 +131,11 @@ namespace DABApp.Droid
         }
 
         public void Play() {
-			CrossMediaManager.Current.Play();
+            if (OnRecord)
+            {
+                player.Start();
+            }
+			else CrossMediaManager.Current.Play();
             if (!PlayerCanKeepUp && CrossConnectivity.Current.IsConnected)
             {
                 PlayerCanKeepUp = true;
@@ -128,18 +144,30 @@ namespace DABApp.Droid
 
 		public void Pause() {
 			//player.Pause();
-			CrossMediaManager.Current.Pause();
+            if(OnRecord)
+            {
+                player.Stop();
+            }
+			else CrossMediaManager.Current.Pause();
 		}
 
 		public void SeekTo(int seconds) {
-			//player.SeekTo(seconds * 1000);
-			CrossMediaManager.Current.Seek(TimeSpan.FromSeconds(seconds));
+            //player.SeekTo(seconds * 1000);
+            if (OnRecord)
+            {
+                player.SeekTo(seconds);
+            }
+			else CrossMediaManager.Current.Seek(TimeSpan.FromSeconds(seconds));
 		}
 
 		public void Skip(int seconds)
 		{
 			//player.SeekTo((Convert.ToInt32(CurrentTime) + seconds) * 1000);
-			CrossMediaManager.Current.Seek(CrossMediaManager.Current.Position + TimeSpan.FromSeconds(seconds));
+            if(OnRecord)
+            {
+                player.SeekTo(player.CurrentPosition + seconds);
+            }
+			else CrossMediaManager.Current.Seek(CrossMediaManager.Current.Position + TimeSpan.FromSeconds(seconds));
 		}
 
 		public void Unload()
@@ -158,23 +186,49 @@ namespace DABApp.Droid
 
 		public bool IsPlaying {
 			//get { return player != null ? player.IsPlaying : false;}
-			get { return CrossMediaManager.Current.AudioPlayer.Status == Plugin.MediaManager.Abstractions.Enums.MediaPlayerStatus.Playing ? true : false;}
+			get
+            {
+                if(OnRecord)
+                {
+                    return player.IsPlaying;
+                }
+                else return CrossMediaManager.Current.AudioPlayer.Status == Plugin.MediaManager.Abstractions.Enums.MediaPlayerStatus.Playing ? true : false;
+            }
 		}
 
 		public double CurrentTime {
 			//get { return player.CurrentPosition > 0 ? player.CurrentPosition/1000: 0;}
-			get { return CrossMediaManager.Current.Position.TotalSeconds;}
+			get {
+                if (OnRecord)
+                {
+                    return player.CurrentPosition > 0 ? player.CurrentPosition / 1000 : 0;
+                }
+                else return CrossMediaManager.Current.Position.TotalSeconds;
+            }
 		}
 
 		public double RemainingTime {
 			//get { return (player.CurrentPosition - player.Duration) > 0 ? (player.CurrentPosition - player.Duration) / 1000: 0;}
-			get { return (CrossMediaManager.Current.Duration.TotalSeconds - CrossMediaManager.Current.Position.TotalSeconds);}
+			get {
+                if(OnRecord)
+                {
+                    return (player.CurrentPosition - player.Duration) > 0 ? (player.CurrentPosition - player.Duration) / 1000 : 0;
+                }
+                else return (CrossMediaManager.Current.Duration.TotalSeconds - CrossMediaManager.Current.Position.TotalSeconds);
+            }
 		}
 
 		public double TotalTime {
 			//get { return player.Duration >0 ? player.Duration / 1000 : 60; }
 			get {
-				return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : tt; 
+                if (OnRecord)
+                {
+                    return player.Duration > 0 ? player.Duration / 1000 : tt;
+                }
+                else
+                {
+                    return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : tt;
+                }
 			}
 		}
 

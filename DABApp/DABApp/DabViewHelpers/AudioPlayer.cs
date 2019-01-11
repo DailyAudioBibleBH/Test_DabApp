@@ -22,9 +22,10 @@ namespace DABApp
 		private string _CurrentTimeString = "00:00";
 		private string _playerStatus = "";
 		private bool ShowWarning = false;
+        private bool onRecord = false;
         public dbEpisodes CurrentEpisode { get; set; }
         double dura;
-        public bool OnRecord { get; set; } = false;
+        
 
 		// Singleton for use throughout the app
 		public static AudioPlayer Instance { get; private set; }
@@ -34,6 +35,7 @@ namespace DABApp
 		{
 			Instance = new AudioPlayer();
             RecordingInstance = new AudioPlayer();
+            Instance.OnRecord = false;
             RecordingInstance.OnRecord = true;
 		}
 
@@ -47,7 +49,7 @@ namespace DABApp
             //20171107 Increased from 100 to 1000 to help with skipping
 			Device.StartTimer(TimeSpan.FromSeconds(1), () =>
 						{
-                            //IsInitialized = _player.IsInitialized != IsInitialized ? _player.IsInitialized : IsInitialized;
+                            //IsInitialized = Player.IsInitialized != IsInitialized ? Player.IsInitialized : IsInitialized;
 							if (Player.IsInitialized)
 							{
 								//Update current time
@@ -115,10 +117,12 @@ namespace DABApp
 									//TODO: Do we need to change out the PlayPauseButtonImage here?
 								}
 
-								if (_IsInitialized != Player.IsInitialized)
-								{
-									IsInitialized = Player.IsInitialized;
-								}
+                                
+                                    if (_IsInitialized != Player.IsInitialized)
+                                    {
+                                        IsInitialized = Player.IsInitialized;
+                                    }
+                                
 
 								//if (_TotalTime == _CurrentTime)
 								//{
@@ -174,7 +178,6 @@ namespace DABApp
                 Player.Pause();
             }
             ShowWarning = false;
-            OnRecord = true;
 		}
 
 		public void SetAudioFile(dbEpisodes episode)
@@ -194,7 +197,7 @@ namespace DABApp
 			//{
 				Debug.WriteLine($"episode.stop_time = {episode.stop_time}");
 				CurrentTime = episode.stop_time;
-            TotalTime = OnRecord && dura != 0 ? dura : 1;
+            //TotalTime = OnRecord && dura != 0 ? dura : 1;
 			//}
 			//else
 			//{
@@ -203,7 +206,7 @@ namespace DABApp
 			Debug.WriteLine($"episode.remaining_time = {episode.remaining_time}");
 			RemainingTime = episode.remaining_time;
 			ShowWarning = Device.RuntimePlatform == "iOS" ? false: true;
-            if (wasPlaying && !OnRecord)
+            if (wasPlaying)
             {
                 Task.Run(async () =>
                 {
@@ -381,8 +384,21 @@ namespace DABApp
 			}
 		}
 
+        public bool OnRecord
+        {
+            get
+            {
+                return onRecord;
+            }
+            set
+            {
+                onRecord = value;
+                Player.OnRecord = onRecord;
+            }
+        }
 
-		public double Progress
+
+        public double Progress
 		{
 			get
 			{
@@ -499,19 +515,19 @@ namespace DABApp
 			await PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
 		}
 
-        public void DeCouple()
-        {
-            Player.Pause();
-            IsPlaying = false;
-            if (!OnRecord && CurrentEpisode != null)
-            {
-                CurrentEpisode.start_time = Player.CurrentTime;
-                CurrentEpisode.stop_time = Player.CurrentTime;
-                CurrentEpisode.remaining_time = RemainingTime;
-                dura = Player.TotalTime;
-            }
-            Player.DeCouple();
-        }
+        //public void DeCouple()
+        //{
+        //    Player.Pause();
+        //    IsPlaying = false;
+        //    if (!OnRecord && CurrentEpisode != null)
+        //    {
+        //        CurrentEpisode.start_time = Player.CurrentTime;
+        //        CurrentEpisode.stop_time = Player.CurrentTime;
+        //        CurrentEpisode.remaining_time = RemainingTime;
+        //        dura = Player.TotalTime;
+        //    }
+        //    Player.DeCouple();
+        //}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 

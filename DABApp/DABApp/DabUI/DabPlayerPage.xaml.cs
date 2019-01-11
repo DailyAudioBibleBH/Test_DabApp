@@ -274,7 +274,6 @@ namespace DABApp
 			{
 				JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
 			}
-            SeekBar.Value = AudioPlayer.Instance.OnRecord && AudioPlayer.Instance.CurrentEpisode != null ? AudioPlayer.Instance.CurrentEpisode.stop_time : SeekBar.Value;
             //(base.SlideMenu as DabMenuView).ChangeAvatar();
             //base.SlideMenu = new DabMenuView();
         }

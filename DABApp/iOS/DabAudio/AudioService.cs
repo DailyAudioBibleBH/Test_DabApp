@@ -32,8 +32,9 @@ namespace DABApp.iOS
 		dbEpisodes CurrentEpisode;
         bool ableToKeepUp;
         bool UpdateOnPlay = false;
+        public bool OnRecord { get; set; }
 
-		public AudioService()
+        public AudioService()
 		{
 		}
 
@@ -42,12 +43,13 @@ namespace DABApp.iOS
             session.SetCategory(AVAudioSession.CategoryPlayback, AVAudioSessionCategoryOptions.AllowAirPlay, out error);
             session.SetActive(true);
             _player = AVPlayer.FromUrl(NSUrl.FromFilename(fileName));
+            OnRecord = true;
             IsLoaded = true;
         }
 
 		public void SetAudioFile(string fileName, dbEpisodes episode)
 		{
-
+            OnRecord = false;
             ableToKeepUp = true;
             UpdateOnPlay = false;
 			CurrentEpisode = episode == null ? CurrentEpisode : episode;

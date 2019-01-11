@@ -35,7 +35,7 @@ namespace DABApp
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
-            //AudioPlayer.Instance.OnRecord = true;
+            GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
             //{
@@ -82,6 +82,7 @@ namespace DABApp
                 CacheValidity = GlobalResources.ImageCacheValidity
             };
             AudioPlayer.RecordingInstance.MinTimeToSkip = 1;
+            AudioPlayer.RecordingInstance.OnRecord = true;
             if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.Pause();
             MessagingCenter.Subscribe<string>("Back", "Back", (sender) =>
             {
@@ -213,7 +214,7 @@ namespace DABApp
         {
             if (!viewModel.Reviewed)
             {
-                viewModel.Reviewed = await DisplayAlert("Submitting without review", "You're currently submitting your app without reviewing it would you like to review it?", "Submit Now", "Review");
+                viewModel.Reviewed = await DisplayAlert("Submitting without review", "You're about to submit your recording without reviewing it. Would you like to review your recording before you submit it?", "Submit Now", "Review");
             }
             if (viewModel.Reviewed)
             {
@@ -255,6 +256,12 @@ namespace DABApp
             }
         }
 
+        protected override void OnAppearing()
+        {
+            AudioPlayer.RecordingInstance.OnRecord = true;
+            base.OnAppearing();
+        }
+
         protected override void OnDisappearing()
         {
             //AudioPlayer.Instance.MinTimeToSkip = 5;
@@ -265,7 +272,8 @@ namespace DABApp
             //    dbEpisodes episode = new dbEpisodes();
             //    AudioPlayer.RecordingInstance.SetAudioFile(episode);
             //}
-            //AudioPlayer.Instance.OnRecord = false;
+            //AudioPlayer.RecordingInstance.OnRecord = false;
+            GlobalResources.Instance.OnRecord = false;
             //SeekBar.RemoveBinding(Slider.ValueProperty);
             if (AudioPlayer.RecordingInstance.IsPlaying) AudioPlayer.RecordingInstance.Pause();
             base.OnDisappearing();
