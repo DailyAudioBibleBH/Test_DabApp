@@ -68,8 +68,6 @@ namespace DABApp
                 AudioVisualizer.Children.Add(box);
             }
 
-
-
             lblGuide.BindingContext = viewModel;
             Timer.BindingContext = viewModel;
             Submit.BindingContext = viewModel;
@@ -317,17 +315,17 @@ namespace DABApp
             if (Equals(oldwidth, -1)) return;
             if (width > height)
             {
-                r6.Height = new GridLength(1, GridUnitType.Star);
                 r4.Height = new GridLength(1, GridUnitType.Star);
                 r3.Height = new GridLength(1, GridUnitType.Star);
+                r7.Height = new GridLength(1, GridUnitType.Star);
             }
             else
             {
                 if (Device.Idiom == TargetIdiom.Tablet)
                 {
-                    r6.Height = new GridLength(.5, GridUnitType.Star);
                     r4.Height = new GridLength(.5, GridUnitType.Star);
                     r3.Height = new GridLength(.5, GridUnitType.Star);
+                    r7.Height = new GridLength(.5, GridUnitType.Star);
                 }
             }
         }

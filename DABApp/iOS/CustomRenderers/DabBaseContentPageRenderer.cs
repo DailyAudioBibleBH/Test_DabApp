@@ -121,7 +121,7 @@ namespace DABApp.iOS
             if (recordButton != null)
             {
                 recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
-                recordButton.ImageInsets = new UIEdgeInsets(0, 0, -6, 0);
+                recordButton.ImageInsets = Device.Idiom == TargetIdiom.Tablet ? new UIEdgeInsets(0, 0, 6, 0) : new UIEdgeInsets(0, 0, -6, 0);
                 recordButton.AccessibilityHint = "Record";
             }
 

@@ -39,4 +39,10 @@ The UpdatePause and UpdatePlay methods are updated through the timer instead of 
 
 The SetAudioFile also updates the stop_time property of an episode should that episode be playing when the SetAudioFile is called.  
 This would happen if a user was listening to an episode and then switched to a different episode while still playing.
-If this happens then the SetAudioFile method 
+
+There are two public static instances of the AudioPlayer class, Instance and RecordingInstance.  This is done so that a user can save their spot in a podcast they are listening to while
+they record a message for the Daily Audio Bible.  On Android the static nature of CrossMediaPlayer.Current, which plays podcast episodes requires the use of MediaPlayer when the AudioService
+plays back user recorded audio.  In order to deal with both the MediaPlayer and the CrossMediaPlayer there is an OnRecord property on both the AudioPlayer and the AudioService.
+Setting this property via the AudioPlayer will also set this property on the AudioService for that player.  When OnRecord is true the AudioService returns values from the MediaPlayer
+when it is false it returns values from the CrossMediaPlayer.Current.  The OnRecord property for the static AudioPlayer Instance class is currently always set to false while on RecordingInstance
+it is set to true only when the DABRecordingPage is being displayed.

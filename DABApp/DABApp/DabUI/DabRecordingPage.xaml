@@ -37,10 +37,10 @@
             </StackLayout>
             <local:PlayerImage x:Name="Record" Source="{Binding RecordImageUrl}" Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource imageButtonStyle}" HeightRequest="65" AutomationProperties.Name="Record Stop Play Pause" AutomationProperties.IsInAccessibleTree="True"/>
             <local:PlayerLabel x:Name="lblGuide" Text="{Binding GuideText}" Grid.Row = "5" Grid.ColumnSpan="2" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" FontSize="Small"/>
-            <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit" IsVisible="{Binding Recorded}" VerticalOptions="StartAndExpand" Style="{StaticResource highlightedButtonStyle}" Grid.Row="6"
+            <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit" IsVisible="{Binding Recorded}" VerticalOptions="EndAndExpand" Style="{StaticResource highlightedButtonStyle}" Grid.Row="6"
                 Grid.ColumnSpan="2" AutomationProperties.Name="Submit"/>
-            <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" IsVisible="{Binding Recorded}" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" />
-            <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" />
+            <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" IsVisible="{Binding Recorded}" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" FontSize="Large" VerticalOptions="EndAndExpand"/>
+            <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" FontSize="Large" VerticalOptions="EndAndExpand"/>
         </Grid>
     </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

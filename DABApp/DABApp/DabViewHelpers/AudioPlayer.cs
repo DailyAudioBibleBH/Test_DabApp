@@ -106,7 +106,7 @@ namespace DABApp
 									OnPropertyChanged("PlayPauseButtonImageBig");
 									OnPropertyChanged("PlayPauseButtonImage");
                                     OnPropertyChanged("PlayPauseAccessible");
-                                    if (!OnRecord)
+                                    if (!OnRecord)//This is always false for Instance so that the RecordingInstance doesn't update the play position of the episode in the database
                                     {
                                         if (IsPlaying)
                                         {

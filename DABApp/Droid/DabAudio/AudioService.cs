@@ -223,10 +223,12 @@ namespace DABApp.Droid
 			get {
                 if (OnRecord)
                 {
-                    return player.Duration > 0 ? player.Duration / 1000 : tt;
+                    tt = player.Duration > 1000 ? tt : 1;
+                    return player.Duration > 1000 ? player.Duration / 1000 : tt;
                 }
                 else
                 {
+                    tt = 60;
                     return CrossMediaManager.Current.Duration.TotalSeconds > 0 ? CrossMediaManager.Current.Duration.TotalSeconds : tt;
                 }
 			}
