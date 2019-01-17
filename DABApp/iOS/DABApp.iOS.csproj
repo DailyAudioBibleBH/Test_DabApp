@@ -349,6 +349,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabMenuItemRenderer.cs" />
     <Compile Include="CustomRenderers\DabStackLayoutRenderer.cs" />
     <Compile Include="DependencyServices\RecordService.cs" />

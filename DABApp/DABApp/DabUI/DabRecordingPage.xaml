@@ -41,6 +41,7 @@
                 Grid.ColumnSpan="2" AutomationProperties.Name="Submit"/>
             <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" IsVisible="{Binding Recorded}" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" FontSize="Large" VerticalOptions="EndAndExpand"/>
             <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" FontSize="Large" VerticalOptions="EndAndExpand"/>
+            <local:ConfirmationPicker x:Name="Destination" Title="Select which podcast your recording should be sent to." IsEnabled="False" IsVisible="False"/>
         </Grid>
     </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>

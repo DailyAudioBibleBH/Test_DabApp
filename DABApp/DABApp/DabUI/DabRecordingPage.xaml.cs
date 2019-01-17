@@ -35,6 +35,7 @@ namespace DABApp
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
+            Destination.ItemsSource = new List<string>() { "DAB", "Chronological" };
             GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
@@ -216,32 +217,44 @@ namespace DABApp
             }
             if (viewModel.Reviewed)
             {
-                var audio = viewModel.AudioFile;
-                if (audio != null)
-                {
-                    if (CrossConnectivity.Current.IsConnected)
-                    {
-                        ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                        StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                        StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                        Label explanation = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "Explanation");
-                        activity.IsVisible = true;
-                        activityHolder.IsVisible = true;
-                        labelHolder.IsVisible = true;
-                        activity.VerticalOptions = LayoutOptions.EndAndExpand;
-                        explanation.IsVisible = true;
-                        var result = await SendAudio(audio);
-                        activity.IsVisible = false;
-                        activityHolder.IsVisible = false;
-                        labelHolder.IsVisible = false;
-                        explanation.IsVisible = false;
-                        if (result) await Navigation.PopModalAsync();
-                    }
-                    else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");
-                }
+                Destination.IsEnabled = true;
+                //Destination.IsVisible = true;
+                Destination.Focus();
+                Destination.Submitted += Destination_Submitted;
             }
-            else {
+            else
+            {
                 OnPlay();
+            }
+        }
+
+        private async void Destination_Submitted(object sender, EventArgs e)
+        {
+            Destination.Unfocus();
+            Destination.IsVisible = false;
+            Destination.IsEnabled = false;
+            var audio = viewModel.AudioFile;
+            if (audio != null)
+            {
+                if (CrossConnectivity.Current.IsConnected)
+                {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    Label explanation = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "Explanation");
+                    activity.IsVisible = true;
+                    activityHolder.IsVisible = true;
+                    labelHolder.IsVisible = true;
+                    activity.VerticalOptions = LayoutOptions.EndAndExpand;
+                    explanation.IsVisible = true;
+                    var result = await SendAudio(audio);
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    labelHolder.IsVisible = false;
+                    explanation.IsVisible = false;
+                    if (result) await Navigation.PopModalAsync();
+                }
+                else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");
             }
         }
 
