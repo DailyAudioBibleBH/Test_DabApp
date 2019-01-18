@@ -35,7 +35,7 @@ namespace DABApp
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
-            Destination.ItemsSource = new List<string>() { "DAB", "Chronological" };
+            Destination.ItemsSource = new List<string>() { "Daily Audio Bible", "Daily Audio Bible Chronological" };
             GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)

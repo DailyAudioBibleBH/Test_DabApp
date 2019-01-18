@@ -24,15 +24,19 @@ namespace DABApp.iOS.CustomRenderers
                 toolbar.SizeToFit();
                 toolbar.BarStyle = UIBarStyle.Default;
                 UIBarButtonItem title = new UIBarButtonItem();
-                title.Title = "Select podcast";
+                title.Title = "Select channel";
+                title.Style = UIBarButtonItemStyle.Plain;
                 UIBarButtonItem cancel = new UIBarButtonItem();
                 cancel.Title = "Cancel";
                 var el = (ConfirmationPicker)Element;
+                cancel.Style = UIBarButtonItemStyle.Done;
                 cancel.Clicked += (sender, EventArgs) => { el.Unfocus(); };
                 UIBarButtonItem submit = new UIBarButtonItem();
                 submit.Title = "Submit";
+                submit.Style = UIBarButtonItemStyle.Done;
+                UIBarButtonItem flexibleSpace = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
                 submit.Clicked += (sender, EventArgs) => { el.Submission(sender, EventArgs); };
-                toolbar.SetItems(new UIBarButtonItem[] { title, cancel, submit }, true);
+                toolbar.SetItems(new UIBarButtonItem[] { title, flexibleSpace, cancel, submit }, true);
                 Control.InputAccessoryView = toolbar;
             }
         }
