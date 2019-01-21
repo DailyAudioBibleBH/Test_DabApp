@@ -35,7 +35,11 @@ namespace DABApp
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
-            Destination.ItemsSource = new List<string>() { "Daily Audio Bible", "Daily Audio Bible Chronological" };
+            Destination.ItemsSource = new List<string>();
+            foreach (var s in GlobalResources.Instance.PodcastEmails)
+            {
+                Destination.ItemsSource.Add(s.Podcast);
+            }
             GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
@@ -298,7 +302,8 @@ namespace DABApp
         {
             try
             {
-                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", "dab@c2itconsulting.net");
+
+                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex].Email);
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;

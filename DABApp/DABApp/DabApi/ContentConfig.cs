@@ -356,4 +356,10 @@ namespace DABApp
             }
         }
     }
+
+    public class PodcastEmail
+    {
+        public string Podcast { get; set; }
+        public string Email { get; set; }
+    }
 }

@@ -5,6 +5,7 @@ using SQLite;
 using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace DABApp
 {
@@ -164,6 +165,11 @@ namespace DABApp
 		public static string DurationPicked { get; set; }
         public int ScreenSize { get; set; }
         public float AndroidDensity { get; set; }
-	}
+        public List<PodcastEmail> PodcastEmails { get; set; } = new List<PodcastEmail>()
+                {
+                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "dab@c2itconsulting.net"},
+                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "dab@c2itconsulting.net"}
+        };
+    }
 
 }
