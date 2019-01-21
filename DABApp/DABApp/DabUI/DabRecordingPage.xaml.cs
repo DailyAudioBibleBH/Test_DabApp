@@ -68,7 +68,7 @@ namespace DABApp
                 box.VerticalOptions = LayoutOptions.CenterAndExpand;
                 AudioVisualizer.Children.Add(box);
             }
-
+            
             lblGuide.BindingContext = viewModel;
             Timer.BindingContext = viewModel;
             Submit.BindingContext = viewModel;
@@ -91,6 +91,7 @@ namespace DABApp
             tapper.Tapped += OnRecord;
             Record.GestureRecognizers.Add(tapper);
             viewModel.EndOfTimeLimit += EndOfTime;
+            Destination.Submitted += Destination_Submitted;
         }
 
         async void OnRecord(object o, EventArgs e)
@@ -220,7 +221,6 @@ namespace DABApp
                 Destination.IsEnabled = true;
                 //Destination.IsVisible = true;
                 Destination.Focus();
-                Destination.Submitted += Destination_Submitted;
             }
             else
             {
@@ -286,6 +286,10 @@ namespace DABApp
             //AudioPlayer.RecordingInstance.OnRecord = false;
             GlobalResources.Instance.OnRecord = false;
             //SeekBar.RemoveBinding(Slider.ValueProperty);
+            if (viewModel.IsRecording)
+            {
+                viewModel.StopRecording();
+            }
             if (AudioPlayer.RecordingInstance.IsPlaying) AudioPlayer.RecordingInstance.Pause();
             base.OnDisappearing();
         }

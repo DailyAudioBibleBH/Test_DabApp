@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -26,40 +27,15 @@ namespace DABApp.Droid.CustomRenderers
         {
         }
 
-        protected override void OnElementChanged(ElementChangedEventArgs<Picker> e)
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            base.OnElementChanged(e);
-
+            base.OnElementPropertyChanged(sender, e);
             el = (ConfirmationPicker)Element;
 
+            if (e.PropertyName == "SelectedIndex")
+            {
+                el.Submission(sender, e);
+            }
         }
-
-        //private void Control_FocusChange(object sender, EventArgs e)
-        //{
-        //    if (el.IsFocused)
-        //    {
-        //        var dialog = new Dialog(Context);
-        //        dialog.SetContentView(Resource.Layout.ConfirmationPicker);
-        //        var title = (Android.Widget.TextView)dialog.FindViewById(Resource.Id.conPickerTitle);
-        //        title.Text = el.Title;
-        //        Android.Widget.Button cancel = (Android.Widget.Button)dialog.FindViewById(Resource.Id.button1);
-        //        Android.Widget.Button submit = (Android.Widget.Button)dialog.FindViewById(Resource.Id.button2);
-        //        Android.Widget.ListView listView = (Android.Widget.ListView)dialog.FindViewById(Resource.Id.lv);
-        //        listView.Adapter = new ArrayAdapter<String>(Context, Android.Resource.Layout.SimpleExpandableListItem1, el.Items);
-        //        cancel.Click += Cancel_Click;
-        //        submit.Click += Submit_Click;
-        //        dialog.Show();
-        //    }
-        //}
-
-        //void Cancel_Click(object sender, EventArgs e)
-        //{
-        //    el.Unfocus();
-        //}
-
-        //void Submit_Click(object sender, EventArgs e)
-        //{
-        //    el.Submission(sender, e);
-        //}
     }
 }
