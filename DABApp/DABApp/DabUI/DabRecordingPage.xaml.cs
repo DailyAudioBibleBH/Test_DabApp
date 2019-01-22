@@ -299,21 +299,22 @@ namespace DABApp
         {
             try
             {
-
-                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex].Email);
+                PodcastEmail podcastEmail = GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex];
+                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", podcastEmail.Email);
+                mailMessage.Bcc.Add("alerts_dab@c2itconsulting.net");
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtp.UseDefaultCredentials = false;
                 smtp.Host = "smtp.mandrillapp.com";
                 var attatchment = new Attachment(fileName, "audio/wav");
-                mailMessage.Subject = "DAB Audio Recording Session";
-                mailMessage.Body = $"DAB Audio Recording Session {DateTime.Now} by {GlobalResources.GetUserName()}";
+                mailMessage.Subject = $"{podcastEmail.Podcast} Audio Recording Session";
+                mailMessage.Body = $"{podcastEmail.Podcast} Audio Recording Session {DateTime.Now} by {GlobalResources.GetUserName()}";
                 mailMessage.Attachments.Add(attatchment);
                 smtp.Credentials = new NetworkCredential("chetcromer@c2itconsulting.net", "-M0yjVB_9EqZEzuKUDjw3A");
                 smtp.EnableSsl = true;
                 await smtp.SendMailAsync(mailMessage);
-                await DisplayAlert("Success!", "Your audio recording has been successfully submitted for the Daily Audio Bible.", "OK");
+                await DisplayAlert("Success!", $"Your audio recording has been successfully submitted for the {podcastEmail.Podcast}.", "OK");
                 return true;
             }
             catch (Exception ex)
