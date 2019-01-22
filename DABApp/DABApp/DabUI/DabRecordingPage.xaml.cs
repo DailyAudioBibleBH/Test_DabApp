@@ -35,11 +35,7 @@ namespace DABApp
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
-            Destination.ItemsSource = new List<string>();
-            foreach (var s in GlobalResources.Instance.PodcastEmails)
-            {
-                Destination.ItemsSource.Add(s.Podcast);
-            }
+            Destination.ItemsSource = GlobalResources.Instance.PodcastEmails.Select(x => x.Podcast).ToList();
             GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
