@@ -36,6 +36,7 @@ namespace DABApp
             banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
             Destination.ItemsSource = GlobalResources.Instance.PodcastEmails.Select(x => x.Podcast).ToList();
+            Destination.SelectedIndex = 0;
             GlobalResources.Instance.OnRecord = true;
             Playing = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
