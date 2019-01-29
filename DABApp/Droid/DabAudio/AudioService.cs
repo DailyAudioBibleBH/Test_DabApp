@@ -188,7 +188,7 @@ namespace DABApp.Droid
 			//get { return player != null ? player.IsPlaying : false;}
 			get
             {
-                if(OnRecord)
+                if(OnRecord && player != null)
                 {
                     return player.IsPlaying;
                 }
