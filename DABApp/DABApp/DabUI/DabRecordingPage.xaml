@@ -19,11 +19,11 @@
             <RelativeLayout x:Name="bannerContainer" Grid.ColumnSpan="2" Grid.Row="0" VerticalOptions="Start">
                 <ff:CachedImage x:Name="banner" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
                 <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                    <local:PlayerLabel Text="Audio Recordings" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="True"/>
+                    <local:PlayerLabel Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="True"/>
                 </StackLayout>
             </RelativeLayout>
-            <StackLayout Padding="20" Grid.Row="1" Grid.ColumnSpan="2">
-                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" Text="The Daily Audio Bible community is like no other. Reach out to the Daily Audio Bible community for prayer and praise using the audio recording component of the DAB App. Follow the prompts below to record, review, and then submit your recording. Please limit your recording to 2:00 minutes." />
+            <StackLayout Padding="20, 5, 20, 0" Grid.Row="1" Grid.ColumnSpan="2">
+                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Micro" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  If you're carrying burdens that are best not shouldered alone, or if you want to tell the good news of answered prayer, this is the place. Follow the prompts below to record, review and submit your recording.  Your call will likely be inserted into a forthcoming Daily Audio Bible episode, or in our Weekend Prayer and Encouragement program. Please limit your recording to two minutes or less.  We've given you a handy timer to help!" />
             </StackLayout>
             <!--<Button Text="Play" Clicked="OnPlay" />
                 <Button Text="Submit" Clicked="OnSubmit"/>-->

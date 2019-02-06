@@ -167,7 +167,7 @@ namespace DABApp
         public float AndroidDensity { get; set; }
         public List<PodcastEmail> PodcastEmails { get; set; } = new List<PodcastEmail>()
                 {
-                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "brian@dailyaudiobible.com"},
+                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = /*"dab@c2itconsulting.net"*/"china@dailyaudiobible.com"}
         };
     }
