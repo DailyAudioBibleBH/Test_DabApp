@@ -96,6 +96,7 @@ namespace DABApp
 
         async void OnRecord(object o, EventArgs e)
         {
+            granted = DependencyService.Get<IRecord>().RequestMicrophone();
             if (!granted)
             {
                 var response = await DisplayAlert("Microphone permission required", "DAB needs access to your microphone in order to record would you like to go to settings and enable microphone access", "Go to Settings", "No");

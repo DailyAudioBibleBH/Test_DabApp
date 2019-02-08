@@ -40,10 +40,11 @@ namespace DABApp.iOS
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                while (true) { 
+                while (true)
+                {
                     if (!recorder.Recording) return;
                     recorder.UpdateMeters();
-                    averagePower = (recorder.AveragePower(0) + 50)*2.0;
+                    averagePower = (recorder.AveragePower(0) + 50) * 2.0;
                     peakPower = recorder.PeakPower(0);
                     AudioWaves?.Invoke(this, new RecordingHandler(averagePower, peakPower));
                     //Console.WriteLine($"{DateTime.Now} {averagePower} : {peakPower}");
@@ -71,7 +72,11 @@ namespace DABApp.iOS
                     response = false;
                     break;
                 case AVAudioSessionRecordPermission.Undetermined:
-                    avAudioSession.RequestRecordPermission(delegate (bool granted) { response = granted; });
+                    // Hasn't answered yet - ask the
+                    avAudioSession.RequestRecordPermission(delegate (bool granted)
+                    {
+                        response = granted;
+                    });
                     break;
                 default:
                     response = true;
