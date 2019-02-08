@@ -120,8 +120,20 @@ namespace DABApp.iOS
             var recordButton = navigationItem.RightBarButtonItems.LastOrDefault();
             if (recordButton != null)
             {
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    var action = recordButton.Action;
+                    var r = new UICustomButton()
+                    r.ImageEdgeInsets = new UIEdgeInsets(6, 9, 6, 9);
+                    r.SetImage(recordButton.Image, UIControlState.Normal);
+                    r.TranslatesAutoresizingMaskIntoConstraints = false;
+                    recordButton.CustomView = r;
+                }
+                else
+                {
+                    recordButton.ImageInsets = new UIEdgeInsets(7, 7, 7, 7);
+                }
                 recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
-                recordButton.ImageInsets = Device.Idiom == TargetIdiom.Tablet ? new UIEdgeInsets(9, 7, 6, 7) : new UIEdgeInsets(0, 0, -6, 0);
                 recordButton.AccessibilityHint = "Record";
             }
 
@@ -129,9 +141,20 @@ namespace DABApp.iOS
             if (menuButton != null)
             {
                 menuButton.AccessibilityHint = "Menu";
+                menuButton.ImageInsets = new UIEdgeInsets(0, -10, 0, 10);
             }
+
         }
 
 
 	}
+}
+
+namespace DABApp.iOS {
+    public class UICustomButton : UIButton {
+
+        public UICustomButton(): base(UIButtonType.Custom) { }
+
+        public override UIEdgeInsets AlignmentRectInsets { get; } = new UIEdgeInsets(0, 20, 0, -20);
+    }
 }
