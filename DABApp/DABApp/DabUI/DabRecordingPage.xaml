@@ -3,27 +3,27 @@
     <t:MenuContainerPage.Content>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition x:Name="r0" Height="*" />
+                <RowDefinition x:Name="r0" Height="70" />
                 <RowDefinition x:Name="r1" Height="Auto" />
-                <RowDefinition x:Name="r2" Height="100" />
+                <RowDefinition x:Name="r2" Height="*" />
                 <RowDefinition x:Name="r3" Height="Auto" />
-                <RowDefinition x:Name="r4" Height="*" />
+                <RowDefinition x:Name="r4" Height="65" />
                 <RowDefinition x:Name="r5" Height="Auto" />
-                <RowDefinition x:Name="r6" Height="*" />
-                <RowDefinition x:Name="r7" Height="*" />
+                <RowDefinition x:Name="r6" Height="70" />
+                <RowDefinition x:Name="r7" Height="70" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="c0" Width="0" />
                 <ColumnDefinition x:Name="c1" Width="*" />
             </Grid.ColumnDefinitions>
-            <RelativeLayout x:Name="bannerContainer" Grid.ColumnSpan="2" Grid.Row="0" VerticalOptions="Start">
-                <ff:CachedImage x:Name="banner" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
+            <RelativeLayout x:Name="bannerContainer" Grid.ColumnSpan="2" Grid.Row="0" VerticalOptions="FillAndExpand">
+                <ff:CachedImage x:Name="banner" Aspect="Fill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
                 <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                    <local:PlayerLabel Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="True"/>
+                    <local:PlayerLabel x:Name="Title" Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="True"/>
                 </StackLayout>
             </RelativeLayout>
             <StackLayout Padding="20, 5, 20, 0" Grid.Row="1" Grid.ColumnSpan="2">
-                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Micro" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  If you're carrying burdens that are best not shouldered alone, or if you want to tell the good news of answered prayer, this is the place. Follow the prompts below to record, review and submit your recording.  Your call will likely be inserted into a forthcoming Daily Audio Bible episode, or in our Weekend Prayer and Encouragement program. Please limit your recording to two minutes or less.  We've given you a handy timer to help!" />
+                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Small" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  If you're carrying burdens that are best not shouldered alone, or if you want to tell the good news of answered prayer, this is the place. Follow the prompts below to record, review and submit your recording.  Your call will likely be inserted into a forthcoming Daily Audio Bible episode, or in our Weekend Prayer and Encouragement program. Please limit your recording to two minutes or less.  We've given you a handy timer to help!" />
             </StackLayout>
             <!--<Button Text="Play" Clicked="OnPlay" />
                 <Button Text="Submit" Clicked="OnSubmit"/>-->
@@ -35,7 +35,7 @@
             <StackLayout Grid.Row="3" Grid.ColumnSpan="2">
                 <Label x:Name="Timer" HorizontalOptions="Center" Text="{Binding RecordingTime}" />
             </StackLayout>
-            <local:PlayerImage x:Name="Record" Source="{Binding RecordImageUrl}" Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource imageButtonStyle}" HeightRequest="65" AutomationProperties.Name="Record Stop Play Pause" AutomationProperties.IsInAccessibleTree="True"/>
+            <local:PlayerImage x:Name="Record" Source="{Binding RecordImageUrl}" Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource imageButtonStyle}" WidthRequest="65" AutomationProperties.Name="Record Stop Play Pause" AutomationProperties.IsInAccessibleTree="True"/>
             <local:PlayerLabel x:Name="lblGuide" Text="{Binding GuideText}" Grid.Row = "5" Grid.ColumnSpan="2" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" FontSize="Small"/>
             <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit" IsVisible="{Binding Recorded}" VerticalOptions="EndAndExpand" Style="{StaticResource highlightedButtonStyle}" Grid.Row="6"
                 Grid.ColumnSpan="2" AutomationProperties.Name="Submit"/>

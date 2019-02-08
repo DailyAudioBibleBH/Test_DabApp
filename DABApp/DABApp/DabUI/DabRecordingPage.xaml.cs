@@ -33,7 +33,6 @@ namespace DABApp
                 MessagingCenter.Send<string>("RecordPermission", "RecordPermission");
             }
             else granted = DependencyService.Get<IRecord>().RequestMicrophone();
-            banner.Aspect = Device.RuntimePlatform == Device.Android ? Aspect.Fill : Aspect.AspectFill;
             //AudioPlayer.Instance.DeCouple();
             Destination.ItemsSource = GlobalResources.Instance.PodcastEmails.Select(x => x.Podcast).ToList();
             Destination.SelectedIndex = Device.RuntimePlatform == Device.iOS ? 0 : -1;

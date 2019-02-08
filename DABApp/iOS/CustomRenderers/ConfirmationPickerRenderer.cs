@@ -26,6 +26,10 @@ namespace DABApp.iOS.CustomRenderers
                 UIBarButtonItem title = new UIBarButtonItem();
                 title.Title = "Select channel";
                 title.Style = UIBarButtonItemStyle.Plain;
+                title.Enabled = false;
+                var l = new UITextAttributes();
+                l.TextColor = UIColor.Black;
+                title.SetTitleTextAttributes(l, UIControlState.Normal);
                 UIBarButtonItem cancel = new UIBarButtonItem();
                 cancel.Title = "Cancel";
                 var el = (ConfirmationPicker)Element;
