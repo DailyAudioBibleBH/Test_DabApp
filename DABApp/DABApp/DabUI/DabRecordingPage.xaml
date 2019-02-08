@@ -23,7 +23,7 @@
                 </StackLayout>
             </RelativeLayout>
             <StackLayout Padding="20, 5, 20, 0" Grid.Row="1" Grid.ColumnSpan="2">
-                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Small" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  If you're carrying burdens that are best not shouldered alone, or if you want to tell the good news of answered prayer, this is the place. Follow the prompts below to record, review and submit your recording.  Your call will likely be inserted into a forthcoming Daily Audio Bible episode, or in our Weekend Prayer and Encouragement program. Please limit your recording to two minutes or less.  We've given you a handy timer to help!" />
+                <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Small" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  Follow the prompts below to record, review and submit your prayer request or good news of answered prayer." />
             </StackLayout>
             <!--<Button Text="Play" Clicked="OnPlay" />
                 <Button Text="Submit" Clicked="OnSubmit"/>-->
