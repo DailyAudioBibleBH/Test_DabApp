@@ -121,17 +121,21 @@ namespace DABApp.iOS
             if (recordButton != null)
             {
                 if (Device.Idiom == TargetIdiom.Phone)
-                {
-                    var action = recordButton.Action;
-                    var r = new UICustomButton()
-                    r.ImageEdgeInsets = new UIEdgeInsets(6, 9, 6, 9);
+                { 
+                    var r = new UICustomButton();
+                    r.ImageEdgeInsets = new UIEdgeInsets(6, 30, 6, -12);
                     r.SetImage(recordButton.Image, UIControlState.Normal);
                     r.TranslatesAutoresizingMaskIntoConstraints = false;
+                    r.TouchUpInside += async delegate {
+                       Console.WriteLine("WORKING?????");
+                        await Element.Navigation.PushModalAsync(new DabRecordingPage());
+                    };
+                    //r.AddTarget(r.Self, recordButton.Action, UIControlEvent.TouchUpInside);
                     recordButton.CustomView = r;
                 }
                 else
                 {
-                    recordButton.ImageInsets = new UIEdgeInsets(7, 7, 7, 7);
+                    recordButton.ImageInsets = new UIEdgeInsets(0, 7, 14, 7);
                 }
                 recordButton.TintColor = ((Color)App.Current.Resources["RecordColor"]).ToUIColor();
                 recordButton.AccessibilityHint = "Record";
@@ -152,9 +156,7 @@ namespace DABApp.iOS
 
 namespace DABApp.iOS {
     public class UICustomButton : UIButton {
-
-        public UICustomButton(): base(UIButtonType.Custom) { }
-
+        public override UIButtonType ButtonType { get { return UIButtonType.Custom; } }
         public override UIEdgeInsets AlignmentRectInsets { get; } = new UIEdgeInsets(0, 20, 0, -20);
     }
 }
