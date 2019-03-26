@@ -49,8 +49,7 @@ namespace DABApp
             //20171107 Increased from 100 to 1000 to help with skipping
 			Device.StartTimer(TimeSpan.FromSeconds(1), () =>
 						{
-                            //IsInitialized = Player.IsInitialized != IsInitialized ? Player.IsInitialized : IsInitialized;
-							if (Player.IsInitialized)
+							if (Player.IsInitialized)//Only update if the player is ready to play audio
 							{
 								//Update current time
 								if (_CurrentTime != Player.CurrentTime)
@@ -60,14 +59,14 @@ namespace DABApp
 										_CurrentTime = 0;
 									}
 									CurrentTime = Player.CurrentTime;
-									if (!Double.IsNaN(Player.TotalTime))
+									if (!Double.IsNaN(Player.TotalTime))//Making sure that total time returned by AudioService is a real number
 									{
-										var t = TimeSpan.FromSeconds(TotalTime);
+										var t = TimeSpan.FromSeconds(TotalTime);//Setting up string for remaining time based off the difference between current and total times
 										var c = TimeSpan.FromSeconds(CurrentTime);
 										var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
-										if (r.TotalSeconds != 0)
+										if (r.TotalSeconds != 0)//If remaining seconds is not zero do not update.
 										{
-											if (r.Hours == 0)
+											if (r.Hours == 0)//If the remaining time is less than an hour do not include hours
 											{
 												RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
 											}
@@ -78,21 +77,21 @@ namespace DABApp
 										}
 										else {
 								Debug.WriteLine($"CurrentTime = {CurrentTime}, TotalTime = {Player.TotalTime}");
-											CurrentTime = 0;
-											RemainingTime = stringConvert(TotalTime);
+											CurrentTime = 0;//If remaining time is equal to zero set Current time to zero and remaining time to total time also Pause.
+                                            RemainingTime = stringConvert(TotalTime);
 											Debug.WriteLine($"RemainingTime = {RemainingTime}");
 											Pause();
 							}
 									}
 								}
 
-								if (_TotalTime != Player.TotalTime && !Double.IsNaN(Player.TotalTime))
+								if (_TotalTime != Player.TotalTime && !Double.IsNaN(Player.TotalTime))//Making sure Total time is not updated if it doesn't need to be and if the AudioService total time is a NaN
 								{
-									TotalTime = Player.TotalTime;
+									TotalTime = Player.TotalTime;//Setting total time to Audio Service total time and
 									var t = TimeSpan.FromSeconds(TotalTime);
 									var c = TimeSpan.FromSeconds(CurrentTime);
 									var r = new TimeSpan(t.Days, t.Hours, t.Minutes, t.Seconds, 0) - new TimeSpan(c.Days, c.Hours, c.Minutes, c.Seconds, 0);
-						            if(r.Hours == 0)
+						            if(r.Hours == 0)//Resetting remaining time if total time changes which happens when a different track is selected
 									{
 										RemainingTime = $"{r.Minutes:D2}:{r.Seconds:D2}";
 									}
@@ -100,10 +99,10 @@ namespace DABApp
 									 RemainingTime = $"{r.Hours:D2}:{r.Minutes:D2}:{r.Seconds:D2}";
 									}
 								}
-								if (_IsPlaying != Player.IsPlaying)
+								if (_IsPlaying != Player.IsPlaying)//Making sure to update IsPlaying only when AudioService IsPlaying changes
 								{
 									_IsPlaying = Player.IsPlaying;
-									OnPropertyChanged("PlayPauseButtonImageBig");
+									OnPropertyChanged("PlayPauseButtonImageBig");//Updating Image bindings for player
 									OnPropertyChanged("PlayPauseButtonImage");
                                     OnPropertyChanged("PlayPauseAccessible");
                                     if (!OnRecord)//This is always false for Instance so that the RecordingInstance doesn't update the play position of the episode in the database
@@ -118,30 +117,20 @@ namespace DABApp
 								}
 
                                 
-                                    if (_IsInitialized != Player.IsInitialized)
+                                    if (_IsInitialized != Player.IsInitialized)//Checking if AudioService is uninitialized and updating IsInitialized if it is.
                                     {
                                         IsInitialized = Player.IsInitialized;
                                     }
                                 
-
-								//if (_TotalTime == _CurrentTime)
-								//{
-								//	PlayerFeedAPI.UpdateEpisodeProperty(Instance.CurrentEpisodeId);
-								//	AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "stop", TotalTime);
-								//	PlayerFeedAPI.UpdateStopTime(CurrentEpisodeId, 0, stringConvert(TotalTime));
-								//	Unload();
-								//	IsInitialized = false;
-								//}
-
-								if (!Player.PlayerCanKeepUp && ShowWarning)
+								if (!Player.PlayerCanKeepUp && ShowWarning)//if statement which determines if the player has failed due to a loss of data or if it can keep up
 								{
-
+                                    //ShowWarning is only used on iOS as that platform tends to fire the PlayerCanKeepUp value more often than Android.
                                     PlayerFailure?.Invoke(this, new EventArgs());
 									ShowWarning = false;
 								}
 							}
 							else {
-								_CurrentTime = 0;
+								_CurrentTime = 0;//Resetting everything if Player is not initialized.
 								_TotalTime = 1;
 								_IsInitialized = false;
 								_IsPlaying = false;
@@ -169,7 +158,8 @@ namespace DABApp
 				OnPropertyChanged("IsInitialized");
 			}
 		}
-		//Set Audio File
+
+		//Set Audio File used primarily for Record page and recording playback.
 		public void SetAudioFile(string FileName)
 		{
 			Player.SetAudioFile(FileName);
@@ -180,6 +170,7 @@ namespace DABApp
             ShowWarning = false;
 		}
 
+        //Set Audio File used primarily for podcasts.
 		public void SetAudioFile(dbEpisodes episode)
 		{
             //episode = OnRecord && CurrentEpisode != null ? CurrentEpisode : episode;
@@ -208,7 +199,7 @@ namespace DABApp
 			ShowWarning = Device.RuntimePlatform == "iOS" ? false: true;
             if (wasPlaying)
             {
-                Task.Run(async () =>
+                Task.Run(async () =>//Updating stopped time of old track currently playing when new track is chosen.
                 {
                     await PlayerFeedAPI.UpdateStopTime(id, time, rtime);
                     await AuthenticationAPI.CreateNewActionLog(id, "pause", time, null);
@@ -217,7 +208,7 @@ namespace DABApp
         }
 
 
-		public string PlayPauseButtonImage
+		public string PlayPauseButtonImage//Image paths to play pause button images.  These are not used as they appear blurry on most devices.
 		{
 			get
 			{
@@ -256,7 +247,7 @@ namespace DABApp
             }
         }
 
-		public string PlayPauseButtonImageBig
+		public string PlayPauseButtonImageBig//Larger resolution play pause image paths for bindings these are the ones that are used the smaller ones are not.
 		{
 			get
 			{
@@ -331,7 +322,7 @@ namespace DABApp
                 {
                     double GoToTime = value;
                     double PlayerTime = Player.CurrentTime;
-                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)
+                    if (Math.Abs((GoToTime - PlayerTime)) > MinTimeToSkip)//Making sure that player only calls seekTo when the user is actually requesting it via the progress bar.
                     {
 						Debug.WriteLine($"Seekto Time = {GoToTime}");
 						Player.SeekTo(Convert.ToInt32(GoToTime));
@@ -343,13 +334,13 @@ namespace DABApp
                 }
 
 				_CurrentTime = value;
-				OnPropertyChanged("CurrentTime");
+				OnPropertyChanged("CurrentTime");//Making sure to update remaining time and progress bar whenever current time is updated.
 				OnPropertyChanged("RemainingTime");
 				OnPropertyChanged("Progress");
 			}
 		}
 
-		public string CurrentTimeString { 
+		public string CurrentTimeString { //String version of current time for binding purposes.
 			get {
 				return _CurrentTimeString;
 			}
@@ -384,7 +375,7 @@ namespace DABApp
 			}
 		}
 
-        public bool OnRecord
+        public bool OnRecord//Value that determines if Audio player is presented via recording page and is being used for record playback.
         {
             get
             {
@@ -398,7 +389,7 @@ namespace DABApp
         }
 
 
-        public double Progress
+        public double Progress//Progress that shows up on progress bar.
 		{
 			get
 			{
@@ -422,14 +413,6 @@ namespace DABApp
 			set {
 				_CurrentChannelTitle = value;
 				OnPropertyChanged("CurrentChannelTitle");
-			}
-		}
-
-		public bool IsTouched { 
-			get { return _IsTouched;}
-			set {
-				_IsTouched = value;
-				OnPropertyChanged("IsTouched");
 			}
 		}
 
@@ -477,14 +460,14 @@ namespace DABApp
 			}
 		}
 
-		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)//Necessary to handle updating bound properties AudioPlayer is a ViewModel after all.
 		{
 			var handler = PropertyChanged;
 			if (handler != null)
 				handler(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		void UpdatePlay()
+		void UpdatePlay()//Methods which update the play and pause status of episodes within the database and AuthenticationAPI.
 		{
 			Task.Run(async () => { await AuthenticationAPI.CreateNewActionLog(CurrentEpisodeId, "play", CurrentTime, null); });
 			Task.Run(async () =>

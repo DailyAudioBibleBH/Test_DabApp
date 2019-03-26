@@ -376,11 +376,6 @@ namespace DABApp
             }
         }
 
-        void OnTouched(object o, EventArgs e)
-        {
-            AudioPlayer.Instance.IsTouched = true;
-        }
-
         void OnDisconnect(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
