@@ -18,7 +18,7 @@ namespace DABApp
 
 		public static JournalTracker Current { get; private set;}
 
-        static JournalTracker()
+        static JournalTracker()//Static constructor which changes the EntryHeight depending on if the device is iOS or Android.
         {
             Current = new JournalTracker();
             if (Device.RuntimePlatform == Device.iOS)
@@ -28,18 +28,18 @@ namespace DABApp
             else
             {
                 var modified = DeviceInfo.Hardware.ScreenHeight / GlobalResources.Instance.AndroidDensity;
-                Current.EntryHeight = modified * .6;
+                Current.EntryHeight = modified * .6;//Changing the screen height of the journal based on the ScreenHeight divided by the density.
             }
         }
 
-		private JournalTracker()
+		private JournalTracker()//Private constructor which connects the socket and joins the user to the room.
 		{
-			socket = DependencyService.Get<ISocket>();
+			socket = DependencyService.Get<ISocket>();//Getting socket dependency service
 			_Content = socket.content;
-			socket.contentChanged += OnContentChanged;
-			Device.StartTimer(TimeSpan.FromMilliseconds(100), () => 
+			socket.contentChanged += OnContentChanged;//Setting contentChanged event. To update when the socket updates.
+			Device.StartTimer(TimeSpan.FromMilliseconds(100), () => //Checks the socket connection to the server every 1/10th of a second
 			{
-				if (_IsConnected != socket.IsConnected)
+				if (_IsConnected != socket.IsConnected)//If socket is not connected try to reconnect.
 				{
 					IsConnected = socket.IsConnected;
 					if (_IsConnected)
@@ -55,7 +55,7 @@ namespace DABApp
 						else Once = true;
 					}
 				}
-				if (_IsJoined != socket.IsJoined)
+				if (_IsJoined != socket.IsJoined)//If room is not joined try to rejoin the room
 				{
 					IsJoined = socket.IsJoined;
 				}
@@ -107,25 +107,25 @@ namespace DABApp
 			}
 		}
 
-		void OnContentChanged(object o, EventArgs e)
+		void OnContentChanged(object o, EventArgs e)//Updates the content displayed on the journal page so that it matches what's on the web socket server.
 		{
 			Content = socket.content;
 		}
 
-		public void Connect(string token)
+		public void Connect(string token)//Connecting to the web socket server.
 		{
-            if (Open)
+            if (Open)//Prevents the app from reconnecting when it is dismissed in the background
             {
                 socket.Connect(token);
             }
 		}
 
-		public void Update(string date, string html) 
+		public void Update(string date, string html)//Called when changes to the text is made by the user.
 		{
 			socket.Key(html, date);
 		}
 
-		public void Join(string date) {
+		public void Join(string date) {//Called in order to join the room
 			socket.Join(date);
 		}
 

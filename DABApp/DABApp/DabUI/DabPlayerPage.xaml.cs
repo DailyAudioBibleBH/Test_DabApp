@@ -224,7 +224,7 @@ namespace DABApp
 
 		void OnJournalChanged(object o, EventArgs e)
 		{
-			if (JournalContent.IsFocused)
+			if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
 			{
 				JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
 			}

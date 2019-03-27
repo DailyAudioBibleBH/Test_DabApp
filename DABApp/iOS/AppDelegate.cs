@@ -24,8 +24,8 @@ namespace DABApp.iOS
 
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
-			SQLitePCL.Batteries.Init();
-			SQLitePCL.raw.sqlite3_shutdown();
+			SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
+            SQLitePCL.raw.sqlite3_shutdown();
 			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
 			SQLitePCL.raw.sqlite3_initialize();
 

@@ -14,12 +14,12 @@ namespace DABApp
     public class AuthenticationAPI
     {
         static SQLiteConnection db = DabData.database;
-        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
         static bool notPosting = true;
         static bool notGetting = true;
 
-        public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)
+        public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.
         {
             try
             {
@@ -29,7 +29,7 @@ namespace DABApp
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
                 dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
-                if (IsGuest)
+                if (IsGuest)//Setting database settings for guest login
                 {
                     if (EmailSettings == null)
                     {
@@ -59,7 +59,7 @@ namespace DABApp
                 }
                 else
                 {
-                    HttpClient client = new HttpClient();
+                    HttpClient client = new HttpClient();//Getting all login user info from the Authentication API
                     var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
                     var content = new StringContent(JsonIn);
                     content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
@@ -76,7 +76,7 @@ namespace DABApp
                     {
                         CreateSettings(token);
                     }
-                    else
+                    else//Setting database settings for user based on what is returned by the Authentication API.
                     {
                         if (EmailSettings.Value != email) GuestLogin();
                         TokenSettings.Value = token.value;
@@ -110,7 +110,7 @@ namespace DABApp
             }
         }
 
-        public static bool CheckToken(int days = 0)
+        public static bool CheckToken(int days = 0)//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
             var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
             if (expiration == null)
@@ -131,7 +131,7 @@ namespace DABApp
             return true;
         }
 
-        public static void ConnectJournal()
+        public static void ConnectJournal()//Connecting Journal Tracker when user logs in.  Done here because of access to the database Token setting.
         {
             try
             {
@@ -147,7 +147,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)
+        public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.
         {
             try
             {
@@ -157,7 +157,7 @@ namespace DABApp
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
                 dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
-                HttpClient client = new HttpClient();
+                HttpClient client = new HttpClient();//Authentication Bearer token is hard coded in GlobalResources. 
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
                 var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
                 var content = new StringContent(JsonIn);
@@ -170,7 +170,7 @@ namespace DABApp
                 {
                     return "An error occured: " + container.message;
                 }
-                if (TokenSettings == null)
+                if (TokenSettings == null)//If the AuthenticationAPI does not have the new member data then creae it.  Otherwise login normally.
                 {
                     CreateSettings(token);
                 }
@@ -200,7 +200,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> ResetPassword(string email)
+        public static async Task<string> ResetPassword(string email)//Sends reset email request to API which then takes care of the rest.
         {
             try
             {
@@ -220,7 +220,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> LogOut()
+        public static async Task<bool> LogOut()//Logs the user out.
         {
             try
             {
@@ -249,7 +249,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> ExchangeToken()
+        public static async Task<bool> ExchangeToken()//Gets new token from the API App uses this whenever user arrives onto channels page and the current token is expired.
         {
             try
             {
@@ -281,7 +281,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> GetMember()
+        public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
         {
             try
             {
@@ -314,7 +314,7 @@ namespace DABApp
 
         public static async Task<string> EditMember(string email, string firstName, string lastName, string currentPassword, string newPassword, string confirmNewPassword)
         {
-            try
+            try//Edits member data used on DABProfileManagementPage
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                 dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
@@ -326,7 +326,7 @@ namespace DABApp
                 var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);
+                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);//Using an HttpPut method to update member profle
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
                 APIToken token = container.token;
@@ -339,7 +339,7 @@ namespace DABApp
                 EmailSettings.Value = token.user_email;
                 FirstNameSettings.Value = token.user_first_name;
                 LastNameSettings.Value = token.user_last_name;
-                await adb.UpdateAsync(TokenSettings);
+                await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
                 await adb.UpdateAsync(ExpirationSettings);
                 await adb.UpdateAsync(EmailSettings);
                 await adb.UpdateAsync(FirstNameSettings);
@@ -356,7 +356,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<APIAddresses> GetAddresses()
+        public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
         {
             try
             {
@@ -378,7 +378,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<Country[]> GetCountries()
+        public static async Task<Country[]> GetCountries()//Gets countries array for updating user addresses so that doesn't have to be hard coded.
         {
             try
             {
@@ -396,7 +396,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> UpdateBillingAddress(Address newBilling)
+        public static async Task<string> UpdateBillingAddress(Address newBilling)//Updating the Billing Address 
         {
             try
             {
@@ -428,7 +428,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<Card[]> GetWallet()
+        public static async Task<Card[]> GetWallet()//Gets user's saved credit cards.  Used for donations
         {
             try
             {
@@ -446,7 +446,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> DeleteCard(string CardId)
+        public static async Task<string> DeleteCard(string CardId)//Deletes user credit card from user wallet
         {
             try
             {
@@ -475,7 +475,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> AddCard(StripeContainer token)
+        public static async Task<string> AddCard(StripeContainer token)//Adds user credit card using the Stripe Xamarin API
         {
             try
             {
@@ -505,7 +505,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<Donation[]> GetDonations()
+        public static async Task<Donation[]> GetDonations()//Gets all recurring and historical user donations.
         {
             try
             {
@@ -523,7 +523,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> UpdateDonation(putDonation donation)
+        public static async Task<string> UpdateDonation(putDonation donation)//Updates a preexisting donation
         {
             try
             {
@@ -533,7 +533,7 @@ namespace DABApp
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}donations", content);
+                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}donations", content);//Uses HttpPut method to update donation
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 if (JsonOut != "true")
                 {
@@ -548,7 +548,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> AddDonation(postDonation donation)
+        public static async Task<string> AddDonation(postDonation donation)//Adding a donation. Either one time or recurring donation
         {
             try
             {
@@ -573,7 +573,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> DeleteDonation(int id)
+        public static async Task<string> DeleteDonation(int id)//Deletes recurring donations
         {
             try
             {
@@ -595,7 +595,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<DonationRecord[]> GetDonationHistory()
+        public static async Task<DonationRecord[]> GetDonationHistory()//Gets user donation history
         {
             try
             {
@@ -613,7 +613,7 @@ namespace DABApp
             }
         }
 
-        static void CreateSettings(APIToken token)
+        static void CreateSettings(APIToken token)//Class which creates new user settings
         {
             var TokenSettings = new dbSettings();
             TokenSettings.Key = "Token";
@@ -644,7 +644,7 @@ namespace DABApp
 
         public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, string listened, bool? favorite = null)
         {
-            try
+            try//Creates new action log which keeps track of user location on episodes.
             {
                 var actionLog = new dbPlayerActions();
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
@@ -673,7 +673,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> PostActionLogs()
+        public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
         {
             if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
@@ -724,7 +724,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> GetMemberData()
+        public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
             if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
@@ -761,7 +761,7 @@ namespace DABApp
                                 Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
                                 Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
                                 //Save member data
-                                await SaveMemberData(container.episodes);
+                                await SaveMemberData(container.episodes);//Saving member data to SQLite database.
                                 Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
                             }
                             notGetting = true;
@@ -788,7 +788,7 @@ namespace DABApp
             }
         }
 
-        static async Task SaveMemberData(List<dbEpisodes> episodes)
+        static async Task SaveMemberData(List<dbEpisodes> episodes)//Saves member data for each episode gotten from GetMemberData method.
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
             //List<dbEpisodes> insert = new List<dbEpisodes>();
