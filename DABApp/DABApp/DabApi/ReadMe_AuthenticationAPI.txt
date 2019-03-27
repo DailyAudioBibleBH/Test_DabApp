@@ -52,3 +52,5 @@ SaveMemberData: Saves the user episode data to the database.
 
 GuestLogin: Deletes all user episode data when a guest logs in.
 
+IMPORTANT:  The Authentication API class uses an asynchronous SQLite database connection to prevent constraint and locking errors.  
+It is also important to set up the SQLite database in Serealized mode in the Android project MainActivity and the iOS project AppDelegate classes.
