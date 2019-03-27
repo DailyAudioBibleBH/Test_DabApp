@@ -505,7 +505,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<Donation[]> GetDonations()//Gets all recurring and historical user donations.
+        public static async Task<Donation[]> GetDonations()//Gets all recurring user donations.  Not historical ones!
         {
             try
             {
@@ -830,7 +830,7 @@ namespace DABApp
             Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
         }
 
-        static void GuestLogin()
+        static void GuestLogin()//Deletes all user episode data when a guest logs in.
         {
             var episodes = db.Table<dbEpisodes>();
             if (episodes.Count() > 0)
