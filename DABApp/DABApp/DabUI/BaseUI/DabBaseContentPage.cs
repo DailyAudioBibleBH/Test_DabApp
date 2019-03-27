@@ -79,10 +79,7 @@ namespace DABApp
                 recordButton.Icon = "record_btn.png";
                 recordButton.Priority = 0;
                 AutomationProperties.SetHelpText(recordButton, "Record");
-                recordButton.Clicked += async (sender, e) =>
-                {
-                    await Navigation.PushModalAsync(new DabRecordingPage());
-                };
+                recordButton.Clicked += OnRecord;
                 this.ToolbarItems.Add(recordButton);
 
                 //Give button on the right (priority 1)
@@ -185,9 +182,19 @@ namespace DABApp
                     }
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-                MessagingCenter.Subscribe<string>("Record", "Record", async (sender) => {
-                    await Navigation.PushModalAsync(new DabRecordingPage());
-                });
+                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
+            }
+        }
+
+        async void OnRecord(object o, EventArgs e)
+        {
+            if (GuestStatus.Current.IsGuestLogin)
+            {
+                await DisplayAlert("Login Required", "You must be logged in to use this feature.", "OK");
+            }
+            else
+            {
+                await Navigation.PushModalAsync(new DabRecordingPage());
             }
         }
     }

@@ -1,0 +1,2 @@
+﻿The AuthenticationAPI class is a container for all methods communicating with the DAB Authentication API.  The Authentication API deals with user information and methods which need user info.
+All major methods which make calls with the Authentication API are static.  These classes are
