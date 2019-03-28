@@ -9,9 +9,6 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using SegmentedControl.FormsPlugin.Android;
-using PushNotification.Plugin;
-using Android.Gms.Gcm.Iid;
-using Android.Gms.Gcm;
 using Android.Util;
 using Android.Support.V7;
 using Xamarin.Forms;
@@ -66,6 +63,7 @@ namespace DABApp.Droid
 			DependencyService.Register<StripeApiManagement>();
 			DependencyService.Register<RivetsService>();
             DependencyService.Register<RecordService>();
+            DependencyService.Register<AnalyticsService>();
 
 			SegmentedControlRenderer.Init();
             

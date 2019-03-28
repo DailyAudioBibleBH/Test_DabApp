@@ -5,7 +5,6 @@ using DLToolkit.Forms.Controls;
 using FFImageLoading.Forms.Touch;
 using Foundation;
 using HockeyApp.iOS;
-using PushNotification.Plugin;
 using SegmentedControl.FormsPlugin.iOS;
 using SQLite;
 using UIKit;
@@ -34,6 +33,7 @@ namespace DABApp.iOS
 
             CachedImageRenderer.Init();
             Rg.Plugins.Popup.Popup.Init();
+            
 
 			var manager = BITHockeyManager.SharedHockeyManager;
 			manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
@@ -45,17 +45,19 @@ namespace DABApp.iOS
 			DependencyService.Register<SocketService>();
 			DependencyService.Register<KeyboardHelper>();
             DependencyService.Register<RecordService>();
+            DependencyService.Register<AnalyticsService>();
 
 			SlideOverKit.iOS.SlideOverKit.Init();
 
             SegmentedControlRenderer.Init();
 
-			CrossPushNotification.Initialize<CrossPushNotificationListener>();
+			//CrossPushNotification.Initialize<CrossPushNotificationListener>();
 			app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-			//Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
+            //Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
+            Firebase.Core.App.Configure();
 
-			LoadApplication(new App());
+            LoadApplication(new App());
 
             var m = base.FinishedLaunching(app, options);
             int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
@@ -66,47 +68,47 @@ namespace DABApp.iOS
             return m;
 		}
 
-		public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
-		{
+		//public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+		//{
 
-			if (CrossPushNotification.Current is IPushNotificationHandler)
-			{
-				((IPushNotificationHandler)CrossPushNotification.Current).OnErrorReceived(error);
-			}
+		//	if (CrossPushNotification.Current is IPushNotificationHandler)
+		//	{
+		//		((IPushNotificationHandler)CrossPushNotification.Current).OnErrorReceived(error);
+		//	}
 
-		}
+		//}
 
-		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
-		{
-			if (CrossPushNotification.Current is IPushNotificationHandler)
-			{
-				((IPushNotificationHandler)CrossPushNotification.Current).OnRegisteredSuccess(deviceToken);
-			}
+		//public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+		//{
+		//	if (CrossPushNotification.Current is IPushNotificationHandler)
+		//	{
+		//		((IPushNotificationHandler)CrossPushNotification.Current).OnRegisteredSuccess(deviceToken);
+		//	}
 
-		}
+		//}
 
-		public override void DidRegisterUserNotificationSettings(UIApplication application, UIUserNotificationSettings notificationSettings)
-		{
-			application.RegisterForRemoteNotifications();
-		}
+		//public override void DidRegisterUserNotificationSettings(UIApplication application, UIUserNotificationSettings notificationSettings)
+		//{
+		//	application.RegisterForRemoteNotifications();
+		//}
 
-		// Uncomment if using remote background notifications. To support this background mode, enable the Remote notifications option from the Background modes section of iOS project properties. (You can also enable this support by including the UIBackgroundModes key with the remote-notification value in your app’s Info.plist file.)
-        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
-        {
-			if (CrossPushNotification.Current is IPushNotificationHandler) 
-			{
-				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
-			}
-        }
+		//// Uncomment if using remote background notifications. To support this background mode, enable the Remote notifications option from the Background modes section of iOS project properties. (You can also enable this support by including the UIBackgroundModes key with the remote-notification value in your app’s Info.plist file.)
+  //      public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+  //      {
+		//	if (CrossPushNotification.Current is IPushNotificationHandler) 
+		//	{
+		//		((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
+		//	}
+  //      }
 
-		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
-		{
+		//public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+		//{
 
-			if (CrossPushNotification.Current is IPushNotificationHandler)
-			{
-				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
-			}
-		}
+		//	if (CrossPushNotification.Current is IPushNotificationHandler)
+		//	{
+		//		((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
+		//	}
+		//}
 
 		public override void OnActivated(UIApplication uiApplication)
 		{

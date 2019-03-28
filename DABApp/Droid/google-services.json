@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "844802106153",
+    "firebase_url": "https://daily-audio-bible-mobile-app.firebaseio.com",
+    "project_id": "daily-audio-bible-mobile-app",
+    "storage_bucket": "daily-audio-bible-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844802106153:android:c6ee9734dfb445e9",
+        "android_client_info": {
+          "package_name": "dailyaudiobible.dabapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "844802106153-t9lmhauutnjul7soq380d2atsh8sfdme.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAji2PMQEPAUPfTfEQ9g5xLDZMHyYKvbnU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

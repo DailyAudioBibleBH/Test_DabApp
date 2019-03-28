@@ -36,7 +36,6 @@
     <PackageReference Include="SQLitePCLRaw.core" version="1.1.2" />
     <PackageReference Include="TEditor" version="1.0.1" />
     <PackageReference Include="Xam.Plugin.Connectivity" version="3.0.2" />
-    <PackageReference Include="Xam.Plugin.PushNotification" version="1.2.4" developmentDependency="true" />
     <PackageReference Include="Xam.Plugin.Version" version="1.0.0.0" />
     <PackageReference Include="Xamarin.FFImageLoading" version="2.2.25" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" version="2.2.25" />

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using PushNotification.Plugin;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 
@@ -36,8 +35,8 @@ namespace DABApp
 
 		protected override void OnStart()
 		{
-			CrossPushNotification.Current.Register();
-		}
+            DependencyService.Get<IAnalyticsService>().LogEvent("StartUpInfo", "StartUp", "Hello World!");
+        }
 
 		protected override async void OnSleep()
 		{
