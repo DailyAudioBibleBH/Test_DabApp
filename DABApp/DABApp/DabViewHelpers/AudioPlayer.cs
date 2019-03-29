@@ -205,6 +205,12 @@ namespace DABApp
                     await AuthenticationAPI.CreateNewActionLog(id, "pause", time, null);
                 });
             }
+
+            //Sending information to firebase analytics whenever a user plays an episode
+            var info = new Dictionary<string, string>();
+            info.Add("channel", episode.channel_title);
+            info.Add("episode_date", episode.PubDate.ToString());
+            DependencyService.Get<IAnalyticsService>().LogEvent("PlayEpisode", info);
         }
 
 

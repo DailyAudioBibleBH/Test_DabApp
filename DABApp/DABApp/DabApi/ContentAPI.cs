@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Diagnostics;
+using Xamarin.Forms;
 
 namespace DABApp
 {
@@ -174,6 +175,9 @@ namespace DABApp
 		{
 			try
 			{
+                //Sending Event to Firebase Analytics about Topic post
+                DependencyService.Get<IAnalyticsService>().LogEvent("PostTopic");
+
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				var client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
@@ -202,6 +206,9 @@ namespace DABApp
 		{
 			try
 			{
+                //Sending Event to Firebase Analytics to record Reply post.
+                DependencyService.Get<IAnalyticsService>().LogEvent("PostReply");
+
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				var client = new HttpClient();
 				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);

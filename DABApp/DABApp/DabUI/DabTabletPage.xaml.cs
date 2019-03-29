@@ -130,6 +130,12 @@ namespace DABApp
                     }
                     //AudioPlayer.Instance.showPlayerBar = true;
                     Read.IsVisible = true;
+
+                    //Send info to Firebase analytics that user tapped the read tab
+                    var info = new Dictionary<string, string>();
+                    info.Add("channel", episode.Episode.channel_title);
+                    info.Add("episode_date", episode.Episode.PubDate.ToString());
+                    DependencyService.Get<IAnalyticsService>().LogEvent("OnReading", info);
                     break;
                 case 2:
                     Read.IsVisible = false;

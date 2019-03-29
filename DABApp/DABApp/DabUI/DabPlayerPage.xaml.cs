@@ -17,6 +17,7 @@ namespace DABApp
 		string backgroundImage;
 		bool IsGuest;
 		static double original;
+        dbEpisodes _episode;
 
 		public DabPlayerPage(dbEpisodes episode, Reading Reading)
 		{
@@ -29,6 +30,7 @@ namespace DABApp
 			
 			IsGuest = GuestStatus.Current.IsGuestLogin;
 			Episode = new EpisodeViewModel(episode);
+            _episode = episode;
 
 			//Show or hide player controls
 			if (AudioPlayer.Instance.CurrentEpisodeId == 0)
@@ -141,10 +143,8 @@ namespace DABApp
 					{
 						Journal.IsVisible = false;
 					}
-					//AudioPlayer.Instance.showPlayerBar = false;
 					Listen.IsVisible = true;
 					BackgroundImage.IsVisible = true;
-					//Divider.IsVisible = false;
 					break;
 				case 1:
 					Listen.IsVisible = false;
@@ -155,10 +155,14 @@ namespace DABApp
 					{
 						Journal.IsVisible = false;
 					}
-					//AudioPlayer.Instance.showPlayerBar = true;
 					Read.IsVisible = true;
 					BackgroundImage.IsVisible = false;
-					//Divider.IsVisible = true;
+
+                    //Send info to Firebase analytics that user tapped the read tab
+                    var info = new Dictionary<string, string>();
+                    info.Add("channel", _episode.channel_title);
+                    info.Add("episode_date", _episode.PubDate.ToString());
+                    DependencyService.Get<IAnalyticsService>().LogEvent("OnReading", info);
 					break;
 				case 2:
 					Read.IsVisible = false;

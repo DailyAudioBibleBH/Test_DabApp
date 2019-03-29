@@ -315,6 +315,10 @@ namespace DABApp
                 smtp.EnableSsl = true;
                 await smtp.SendMailAsync(mailMessage);
                 await DisplayAlert("Success!", $"Your audio recording has been successfully submitted for the {podcastEmail.Podcast}.", "OK");
+
+                //Sending Event to Firebase Analytics indicating user has successfully submitted a recording.
+                DependencyService.Get<IAnalyticsService>().LogEvent("SubmittedRecording");
+
                 return true;
             }
             catch (Exception ex)

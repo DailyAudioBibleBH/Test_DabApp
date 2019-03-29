@@ -28,7 +28,7 @@
               <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
                 <Label x:Name="EpDescription" Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
             </StackLayout>
-            <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" UserInteraction="OnTouched" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="50, 0, 50, 0"/>
+            <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="50, 0, 50, 0"/>
             <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings" Margin="50, 0, 50, 0">
               <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
               <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />

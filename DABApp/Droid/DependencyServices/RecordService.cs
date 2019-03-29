@@ -67,7 +67,7 @@ namespace DABApp.Droid
 
         public bool RequestMicrophone()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void GoToSettings()

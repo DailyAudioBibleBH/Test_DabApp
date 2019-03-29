@@ -205,6 +205,9 @@ namespace DABApp
 
         public void StopRecording()
         {
+            //Sending Event to Firebase Analytics that indicates user recorded a file.
+            DependencyService.Get<IAnalyticsService>().LogEvent("RecordedFile");
+
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;
             IsRecording = false;
