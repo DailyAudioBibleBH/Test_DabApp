@@ -178,6 +178,7 @@ namespace DABApp
 
         public void StartRecording()
         {
+            DependencyService.Get<IAnalyticsService>().LogEvent("recording_started");
             DependencyService.Get<IRecord>().StartRecording();
             IsRecording = true;
             TimeSpan maxTime = TimeSpan.FromSeconds(119);
@@ -206,7 +207,7 @@ namespace DABApp
         public void StopRecording()
         {
             //Sending Event to Firebase Analytics that indicates user recorded a file.
-            DependencyService.Get<IAnalyticsService>().LogEvent("RecordedFile");
+            DependencyService.Get<IAnalyticsService>().LogEvent("recording_recorded");
 
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;

@@ -156,7 +156,8 @@ namespace DABApp
 
 		public static async Task<Topic> GetTopic(Topic topic)
 		{
-			try
+            DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_read");
+            try
 			{
 				var client = new HttpClient();
 				var result = await client.GetAsync(topic.link);
@@ -176,7 +177,7 @@ namespace DABApp
 			try
 			{
                 //Sending Event to Firebase Analytics about Topic post
-                DependencyService.Get<IAnalyticsService>().LogEvent("PostTopic");
+                DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				var client = new HttpClient();
@@ -207,7 +208,7 @@ namespace DABApp
 			try
 			{
                 //Sending Event to Firebase Analytics to record Reply post.
-                DependencyService.Get<IAnalyticsService>().LogEvent("PostReply");
+                DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
 				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
 				var client = new HttpClient();

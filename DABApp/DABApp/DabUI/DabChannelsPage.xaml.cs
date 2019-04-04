@@ -135,7 +135,9 @@ namespace DABApp
 		}
 
 		async void OnChannel(object o, ItemTappedEventArgs e) {
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+
+
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
 			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
 			activity.IsVisible = true;
 			activityHolder.IsVisible = true;
@@ -158,9 +160,15 @@ namespace DABApp
 			selected.IsNotSelected = 1.0;
 			activity.IsVisible = false;
 			activityHolder.IsVisible = false;
-		}
 
-		void TimedActions()
+            //Send info to Firebase analytics that user accessed a channel
+            var infoJ = new Dictionary<string, string>();
+            infoJ.Add("channel", resource.description);
+            DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
+
+        }
+
+        void TimedActions()
 		{ 
 			if (!AuthenticationAPI.CheckToken(-1))
 				{

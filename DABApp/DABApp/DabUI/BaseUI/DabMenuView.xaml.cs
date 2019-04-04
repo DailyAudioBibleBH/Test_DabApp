@@ -41,7 +41,14 @@ namespace DABApp
 		}
 
 		void OnSignUp(object o, EventArgs e) {
-			SignUp.IsEnabled = false;
+
+            //Send info to Firebase analytics that user tapped an action we track
+            var info = new Dictionary<string, string>();
+            info.Add("title", "signup");
+            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
+
+            SignUp.IsEnabled = false;
 			//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
 			AudioPlayer.Instance.Pause();
 			AudioPlayer.Instance.Unload();
@@ -60,6 +67,11 @@ namespace DABApp
 
 		void OnSettings(object o, EventArgs e)
 		{
+            //Send info to Firebase analytics that user tapped an action we track
+            var info = new Dictionary<string, string>();
+            info.Add("title", "settings");
+            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
             Settings.IsEnabled = false;
 			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
 			{
@@ -92,6 +104,13 @@ namespace DABApp
 			}
 			Nav item = (Nav)e.Item;
             View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
+
+
+            //Send info to Firebase analytics that user tapped a menu item
+            var info = new Dictionary<string, string>();
+            info.Add("title", item.title);
+            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
             switch (item.title)
             {
                 case "Channels":

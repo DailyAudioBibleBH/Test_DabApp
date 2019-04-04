@@ -95,6 +95,11 @@ namespace DABApp
 
 		async void OnGive(object o, EventArgs e) 
 		{
+            //Send info to Firebase analytics that user tapped an action we track
+            var info = new Dictionary<string, string>();
+            info.Add("title", "give");
+            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
             if (!giving)
             {
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");

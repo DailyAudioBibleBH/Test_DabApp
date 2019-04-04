@@ -135,7 +135,8 @@ namespace DABApp
                     var info = new Dictionary<string, string>();
                     info.Add("channel", episode.Episode.channel_title);
                     info.Add("episode_date", episode.Episode.PubDate.ToString());
-                    DependencyService.Get<IAnalyticsService>().LogEvent("OnReading", info);
+                    info.Add("episode_name", episode.description);
+                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
                     break;
                 case 2:
                     Read.IsVisible = false;
@@ -149,6 +150,12 @@ namespace DABApp
                     {
                         Journal.IsVisible = true;
                     }
+                    //Send info to Firebase analytics that user tapped the journal tab
+                    var infoJ = new Dictionary<string, string>();
+                    infoJ.Add("channel", episode.Episode.channel_title);
+                    infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
+                    infoJ.Add("episode_name", episode.Episode.description);
+                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_journal", infoJ);
                     break;
             }
         }
@@ -181,6 +188,13 @@ namespace DABApp
                 JournalTitle.BindingContext = episode;
                 EpisodeList.SelectedItem = null;
                 await SetReading();
+
+                //Send info to Firebase analytics that user accessed and episode
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("channel", episode.Episode.channel_title);
+                infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
+                infoJ.Add("episode_name", episode.Episode.description);
+                DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
             }
             else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
             Completed.Image = episode.listenedToSource;

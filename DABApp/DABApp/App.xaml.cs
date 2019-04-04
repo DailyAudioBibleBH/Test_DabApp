@@ -35,7 +35,7 @@ namespace DABApp
 
 		protected override void OnStart()
 		{
-            DependencyService.Get<IAnalyticsService>().LogEvent("StartUpInfo", "StartUp", "Hello World!");
+            DependencyService.Get<IAnalyticsService>().LogEvent("app_startup","start_date", DateTime.Now.ToShortDateString());
         }
 
 		protected override async void OnSleep()

@@ -162,6 +162,7 @@ namespace DABApp
 
         void OnPlay()
         {
+            DependencyService.Get<IAnalyticsService>().LogEvent("recording_played");
             viewModel.Reviewed = true;
             if (AudioPlayer.RecordingInstance.IsInitialized)
             {
@@ -317,7 +318,7 @@ namespace DABApp
                 await DisplayAlert("Success!", $"Your audio recording has been successfully submitted for the {podcastEmail.Podcast}.", "OK");
 
                 //Sending Event to Firebase Analytics indicating user has successfully submitted a recording.
-                DependencyService.Get<IAnalyticsService>().LogEvent("SubmittedRecording");
+                DependencyService.Get<IAnalyticsService>().LogEvent("recording_submitted");
 
                 return true;
             }
@@ -356,6 +357,7 @@ namespace DABApp
 
         void EndOfTime(object o, EventArgs e)
         {
+            DependencyService.Get<IAnalyticsService>().LogEvent("recording_limitreached");
             Record.BindingContext = AudioPlayer.RecordingInstance;
             Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
             Timer.BindingContext = AudioPlayer.RecordingInstance;

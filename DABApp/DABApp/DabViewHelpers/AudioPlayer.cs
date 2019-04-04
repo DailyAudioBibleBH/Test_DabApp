@@ -210,7 +210,8 @@ namespace DABApp
             var info = new Dictionary<string, string>();
             info.Add("channel", episode.channel_title);
             info.Add("episode_date", episode.PubDate.ToString());
-            DependencyService.Get<IAnalyticsService>().LogEvent("PlayEpisode", info);
+            info.Add("episode_name", episode.description);
+            DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_played", info);
         }
 
 
