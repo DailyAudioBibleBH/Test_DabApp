@@ -135,7 +135,7 @@ namespace DABApp
                     var info = new Dictionary<string, string>();
                     info.Add("channel", episode.Episode.channel_title);
                     info.Add("episode_date", episode.Episode.PubDate.ToString());
-                    info.Add("episode_name", episode.description);
+                    info.Add("episode_name", episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
                     break;
                 case 2:
@@ -154,7 +154,7 @@ namespace DABApp
                     var infoJ = new Dictionary<string, string>();
                     infoJ.Add("channel", episode.Episode.channel_title);
                     infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
-                    infoJ.Add("episode_name", episode.Episode.description);
+                    infoJ.Add("episode_name", episode.Episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_journal", infoJ);
                     break;
             }
@@ -193,7 +193,7 @@ namespace DABApp
                 var infoJ = new Dictionary<string, string>();
                 infoJ.Add("channel", episode.Episode.channel_title);
                 infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
-                infoJ.Add("episode_name", episode.Episode.description);
+                infoJ.Add("episode_name", episode.Episode.title);
                 DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
             }
             else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");

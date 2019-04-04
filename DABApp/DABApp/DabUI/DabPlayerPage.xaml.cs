@@ -98,7 +98,7 @@ namespace DABApp
             var infoJ = new Dictionary<string, string>();
             infoJ.Add("channel", episode.channel_title);
             infoJ.Add("episode_date", episode.PubDate.ToString());
-            infoJ.Add("episode_name", episode.description);
+            infoJ.Add("episode_name", episode.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
 
         }
@@ -171,7 +171,7 @@ namespace DABApp
                     var info = new Dictionary<string, string>();
                     info.Add("channel", _episode.channel_title);
                     info.Add("episode_date", _episode.PubDate.ToString());
-                    info.Add("episode_name", _episode.description);
+                    info.Add("episode_name", _episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
                     break;
                 case 2:
@@ -193,7 +193,7 @@ namespace DABApp
                     var infoJ = new Dictionary<string, string>();
                     infoJ.Add("channel", _episode.channel_title);
                     infoJ.Add("episode_date", _episode.PubDate.ToString());
-                    infoJ.Add("episode_name", _episode.description);
+                    infoJ.Add("episode_name", _episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_journal", infoJ);
                     break;
             }

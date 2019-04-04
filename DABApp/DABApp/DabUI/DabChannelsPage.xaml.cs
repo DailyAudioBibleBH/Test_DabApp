@@ -163,7 +163,7 @@ namespace DABApp
 
             //Send info to Firebase analytics that user accessed a channel
             var infoJ = new Dictionary<string, string>();
-            infoJ.Add("channel", resource.description);
+            infoJ.Add("channel", resource.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
 
         }

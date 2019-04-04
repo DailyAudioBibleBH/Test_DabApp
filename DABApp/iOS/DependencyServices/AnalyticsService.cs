@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using DABApp;
@@ -30,6 +31,8 @@ namespace DABApp.iOS
         public void LogEvent(string eventId, IDictionary<string, string> parameters)
         {
 
+            Debug.WriteLine($"Logging Event: {eventId}...");
+
             if (parameters == null)
             {
                 Analytics.LogEvent(eventId, (Dictionary<object,object>)null);
@@ -42,6 +45,7 @@ namespace DABApp.iOS
             {
                 keys.Add(new NSString(item.Key));
                 values.Add(new NSString(item.Value));
+                Debug.WriteLine($"   Logging Parameter: {item.Key} = {item.Value}");
             }
 
             var parametersDictionary =
