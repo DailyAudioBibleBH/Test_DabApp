@@ -10,8 +10,8 @@ using System.Diagnostics;
 [assembly: Dependency(typeof(FileManagement))]
 namespace DABApp.iOS
 {
-	public class FileManagement: IFileManagement
-	{
+    public class FileManagement : IFileManagement
+    {
         public event EventHandler<DabEventArgs> EpisodeDownloading;
         public event EventHandler<DabEventArgs> EpisodeCompleted;
         public static event EventHandler<DabEventArgs> DoneDownloading;
@@ -22,9 +22,9 @@ namespace DABApp.iOS
         long FileSize;
 
         public async Task<bool> DownloadEpisodeAsync(string address, dbEpisodes episode)
-		{
-			try
-			{
+        {
+            try
+            {
                 if (keepDownloading)
                 {
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -47,27 +47,36 @@ namespace DABApp.iOS
                     return true;
                 }
                 return false;
-			}
-			catch (Exception e)
-			{
-				return false;
-			}
-		}
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    client.CancelAsync();
+                }
+                catch (Exception e2)
+                {
+                    //Do nothing
+                }
+                return false;
+            }
+        }
 
-		public bool DeleteEpisode(string episodeId, string extension) {
-			try
-			{
+        public bool DeleteEpisode(string episodeId, string extension)
+        {
+            try
+            {
                 var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
-				Debug.WriteLine($"Deleted episode {episodeId}");
-				File.Delete(fileName);
-				return true;
-			}
-			catch (Exception e)
-			{
-				return false;
-			}
-		}
+                var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
+                Debug.WriteLine($"Deleted episode {episodeId}");
+                File.Delete(fileName);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
 
         public bool StopDownloading()
         {
@@ -85,34 +94,58 @@ namespace DABApp.iOS
             }
             catch (Exception e)
             {
+                //Do nothing
                 return false;
             }
         }
 
         public bool FileExists(string fileName)
         {
-            var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string FileName = Path.Combine(doc, fileName);
-            return File.Exists(FileName);
+            try
+            {
+                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string FileName = Path.Combine(doc, fileName);
+                return File.Exists(FileName);
+            }
+            catch (Exception)
+            {
+                //Do nothing
+                return false;
+            }
         }
 
         private void Client_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
-            progress = -.01;
-            EpisodeCompleted?.Invoke(sender, a);
-            DoneDownloading?.Invoke(sender, a);
+            try
+            {
+                var a = new DabEventArgs(_episode.id.Value, -1, e.Cancelled);
+                progress = -.01;
+                EpisodeCompleted?.Invoke(sender, a);
+                DoneDownloading?.Invoke(sender, a);
+            }
+            catch (Exception)
+            {
+                //Do nothing
+            }
         }
 
         private void Client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            double pp = ((double)e.BytesReceived) / FileSize;
-            //double pp = e.ProgressPercentage / 100.0;
-            if (pp > progress + .1)
+
+            try
             {
-                progress = pp;
-                var a = new DabEventArgs(_episode.id.Value, pp);
-                EpisodeDownloading?.Invoke(sender, a);
+                double pp = ((double)e.BytesReceived) / FileSize;
+                //double pp = e.ProgressPercentage / 100.0;
+                if (pp > progress + .1)
+                {
+                    progress = pp;
+                    var a = new DabEventArgs(_episode.id.Value, pp);
+                    EpisodeDownloading?.Invoke(sender, a);
+                }
+            }
+            catch (Exception)
+            {
+                //Do nothing
             }
         }
     }
