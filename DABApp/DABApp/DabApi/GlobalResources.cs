@@ -42,17 +42,66 @@ namespace DABApp
         {
             get
             {
-                var main = TestMode ? ContentConfig.Instance.app_settings.stage_main_link : ContentConfig.Instance.app_settings.prod_main_link;
-                return main + "/wp-json/lutd/v1/";
+                try
+                {
+                    //Ensure we have content config data. If not, use hard coded value.
+                    if (ContentConfig.Instance.app_settings == null)
+                    {
+                        throw new Exception("No Content Config - Use last known feed url");
+                    }
+
+                    string url;
+                    if (TestMode)
+                    {
+                        url = ContentConfig.Instance.app_settings.stage_main_link;
+                    }
+                    else
+                    {
+                        url = ContentConfig.Instance.app_settings.prod_main_link;
+                    }
+                    return url + "/wp-json/lutd/v1/";
+                }
+                catch (Exception ex)
+                {
+                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                }
+
             }
         }
+
+
         public static string FeedAPIUrl
         {
             get
             {
-                if (ContentConfig.Instance.app_settings == null) return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
-                var feed = TestMode ? ContentConfig.Instance.app_settings.stage_feed_link : ContentConfig.Instance.app_settings.prod_feed_link;
-                return feed + "/wp-json/lutd/v1/";
+                try
+                {
+
+                    //Ensure we have content config data. If not, use hard coded value.
+                    if (ContentConfig.Instance.app_settings == null)
+                    {
+                        throw new Exception("No Content Config - Use last known feed url");
+                    }
+
+                    //Otherwise use production / test mode URLs
+                    string url;
+                    if (TestMode)
+                    {
+                        url = ContentConfig.Instance.app_settings.stage_feed_link;
+                    }
+                    else
+                    {
+                        url = ContentConfig.Instance.app_settings.prod_feed_link;
+                    }
+
+                    return url + "/wp-json/lutd/v1/";
+                }
+                catch (Exception ex)
+                {
+                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                }
+
+
             }
         }
         public bool IsiPhoneX { get; set; } = false;
