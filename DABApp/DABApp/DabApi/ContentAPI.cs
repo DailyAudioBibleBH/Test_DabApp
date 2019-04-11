@@ -12,98 +12,107 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public class ContentAPI
-	{
-		static SQLiteConnection db = DabData.database;
-		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+    public class ContentAPI
+    {
+        static SQLiteConnection db = DabData.database;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
-		public static bool CheckContent() {
-			var ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
-			var DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key=="data");
+        public static bool CheckContent()
+        {
+            dbSettings ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
+            dbSettings DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "data");
             //var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
-            if (ContentConfig.Instance.app_settings == null && ContentSettings != null) ParseContent(ContentSettings.Value);
-			try
-			{
-				var client = new System.Net.Http.HttpClient();
-				HttpResponseMessage result;
-				string jsonOut = "";
-				Task.Run(async () =>
-				{
-					var r = client.GetAsync($"{GlobalResources.FeedAPIUrl}content");
-					if (await Task.WhenAny(r, Task.Delay(TimeSpan.FromSeconds(8))) == r)
-					{
-						result = await r;
-						jsonOut = await result.Content.ReadAsStringAsync();
-					}
-					else throw new Exception("Request for Content API timed out.");
-				}).Wait();//Appended the GUID to avoid caching.
-				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
-				if (ContentSettings == null || DataSettings == null)
-				{
-					ContentSettings = new dbSettings();
-					ContentSettings.Key = "ContentJSON";
-					ContentSettings.Value = jsonOut;
-					DataSettings = new dbSettings();
-					DataSettings.Key = "data";
-					DataSettings.Value = updated;
-					db.Insert(ContentSettings);
-					db.Insert(DataSettings);
+            if (ContentConfig.Instance.app_settings == null && ContentSettings != null)
+            {
+                ParseContent(ContentSettings.Value);
+            }
+            try
+            {
+                var client = new HttpClient();
+                HttpResponseMessage result;
+                string jsonOut = "";
+                Task.Run(async () =>
+                {
+                    var r = client.GetAsync($"{GlobalResources.FeedAPIUrl}content");
+                    if (await Task.WhenAny(r, Task.Delay(TimeSpan.FromSeconds(8))) == r)
+                    {
+                        result = await r;
+                        jsonOut = await result.Content.ReadAsStringAsync();
+                    }
+                    else throw new Exception("Request for Content API timed out.");
+                }).Wait();//Appended the GUID to avoid caching.
+                var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
+                if (ContentSettings == null || DataSettings == null)
+                {
+                    ContentSettings = new dbSettings();
+                    ContentSettings.Key = "ContentJSON";
+                    ContentSettings.Value = jsonOut;
+                    DataSettings = new dbSettings();
+                    DataSettings.Key = "data";
+                    DataSettings.Value = updated;
+                    db.Insert(ContentSettings);
+                    db.Insert(DataSettings);
 
-					ParseContent(jsonOut);
-				}
-				else
-				{
-					if (DataSettings.Value == updated)
-					{
-						ParseContent(ContentSettings.Value);
-					}
-					else
-					{
-						DataSettings.Value = updated;
-						ContentSettings.Value = jsonOut;
-						ParseContent(jsonOut);
-					}
-				}
-				PlayerFeedAPI.CheckOfflineEpisodeSettings();
-				return true;
-			}
-			catch (Exception) {
-				if (ContentSettings == null)
-				{
-					return false;
-				}
-				else {
-					ParseContent(ContentSettings.Value);
-					return true;
-				}
-			}
-		}
+                    ParseContent(jsonOut);
+                }
+                else
+                {
+                    if (DataSettings.Value == updated)
+                    {
+                        ParseContent(ContentSettings.Value);
+                    }
+                    else
+                    {
+                        DataSettings.Value = updated;
+                        ContentSettings.Value = jsonOut;
+                        ParseContent(jsonOut);
+                    }
+                }
+                PlayerFeedAPI.CheckOfflineEpisodeSettings();
+                return true;
+            }
+            catch (Exception)
+            {
+                if (ContentSettings == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    ParseContent(ContentSettings.Value);
+                    return true;
+                }
+            }
+        }
 
-		public static void ParseContent(string jsonOut)
-		{			
-			var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
-			ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
-			Task.Run(async () =>
-			{
-				await ContentConfig.Instance.cachImages();
-			});
-			if (OfflineSettings == null)
-			{
-				OfflineSettings = new dbSettings();
-				OfflineSettings.Key = "AvailableOffline";
-				OfflineSettings.Value = new JArray().ToString();
-				db.Insert(OfflineSettings);
-			}
-			else {
-				List<int> ids = JsonConvert.DeserializeObject<List<int>>(OfflineSettings.Value);
-				List<Resource> resources = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => ids.Contains(x.id)).ToList();
-				foreach (var item in resources) {
-					item.availableOffline = true;
-				}
-			}
-		}
+        public static void ParseContent(string jsonOut)
+        {
+            var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+            ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
+            Task.Run(async () =>
+            {
+                await ContentConfig.Instance.cachImages();
+            });
+            if (OfflineSettings == null)
+            {
+                OfflineSettings = new dbSettings();
+                OfflineSettings.Key = "AvailableOffline";
+                OfflineSettings.Value = new JArray().ToString();
+                db.Insert(OfflineSettings);
+            }
+            else
+            {
+                List<int> ids = JsonConvert.DeserializeObject<List<int>>(OfflineSettings.Value);
+                List<Resource> resources = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => ids.Contains(x.id)).ToList();
+                foreach (var item in resources)
+                {
+                    item.availableOffline = true;
+                }
+            }
+        }
 
-		public static async Task UpdateOffline(bool offline, int ResourceId) {
+        public static async Task UpdateOffline(bool offline, int ResourceId)
+        {
             try
             {
                 Debug.WriteLine("Updating Offline Settings");
@@ -135,104 +144,105 @@ namespace DABApp
             {
                 throw e;
             }
-		}
+        }
 
-		public static async Task<Forum> GetForum(View view, int pageNumber = 1) 
-		{
-			try
-			{
-				var client = new HttpClient();
-				var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
-				var JsonOut = await result.Content.ReadAsStringAsync();
-				var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
+        public static async Task<Forum> GetForum(View view, int pageNumber = 1)
+        {
+            try
+            {
+                var client = new HttpClient();
+                var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
+                var JsonOut = await result.Content.ReadAsStringAsync();
+                var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
                 forum.view = view;
-				return forum;
-			}
-			catch (Exception e)
-			{
-				return null;
-			}
-		}
+                return forum;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
-		public static async Task<Topic> GetTopic(Topic topic)
-		{
+        public static async Task<Topic> GetTopic(Topic topic)
+        {
             DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_read");
             try
-			{
-				var client = new HttpClient();
-				var result = await client.GetAsync(topic.link);
-				var JsonOut = await result.Content.ReadAsStringAsync();
-				var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
-				return top;
-			}
-			catch (Exception e)
-			{
+            {
+                var client = new HttpClient();
+                var result = await client.GetAsync(topic.link);
+                var JsonOut = await result.Content.ReadAsStringAsync();
+                var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
+                return top;
+            }
+            catch (Exception e)
+            {
                 Debug.WriteLine($"Exception caught in GetTopic: {e.Message}");
-				return null;
-			}
-		}
+                return null;
+            }
+        }
 
-		public static async Task<string> PostTopic(PostTopic topic)
-		{
-			try
-			{
+        public static async Task<string> PostTopic(PostTopic topic)
+        {
+            try
+            {
                 //Sending Event to Firebase Analytics about Topic post
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
-				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-				var client = new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var JsonIn = JsonConvert.SerializeObject(topic);
-				var content = new StringContent(JsonIn);
-				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}topics", content);
-				string JsonOut = await result.Content.ReadAsStringAsync();
-				if (!JsonOut.Contains("id")) {
-					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-					throw new Exception(error.message);
-				}
-				return JsonOut;
-			}
-			catch (Exception e)
-			{
-				if (e.GetType() == typeof(HttpRequestException))
-				{ 
-					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-				}
-				return e.Message;
-			}
-		}
+                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                var JsonIn = JsonConvert.SerializeObject(topic);
+                var content = new StringContent(JsonIn);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}topics", content);
+                string JsonOut = await result.Content.ReadAsStringAsync();
+                if (!JsonOut.Contains("id"))
+                {
+                    var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+                    throw new Exception(error.message);
+                }
+                return JsonOut;
+            }
+            catch (Exception e)
+            {
+                if (e.GetType() == typeof(HttpRequestException))
+                {
+                    return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+                }
+                return e.Message;
+            }
+        }
 
-		public static async Task<string> PostReply(PostReply reply)
-		{
-			try
-			{
+        public static async Task<string> PostReply(PostReply reply)
+        {
+            try
+            {
                 //Sending Event to Firebase Analytics to record Reply post.
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
-				dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-				var client = new HttpClient();
-				client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-				var JsonIn = JsonConvert.SerializeObject(reply);
-				var content = new StringContent(JsonIn);
-				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-				var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}replies", content);
-				string JsonOut = await result.Content.ReadAsStringAsync();
-				if (!JsonOut.Contains("id"))
-				{
-					var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-					throw new Exception(error.message);
-				}
-				return JsonOut;
-			}
-			catch (Exception e)
-			{
-				if (e.GetType() == typeof(HttpRequestException))
-				{ 
-					return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-				}
-				return e.Message;
-			}
-		}
-	}
+                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                var JsonIn = JsonConvert.SerializeObject(reply);
+                var content = new StringContent(JsonIn);
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}replies", content);
+                string JsonOut = await result.Content.ReadAsStringAsync();
+                if (!JsonOut.Contains("id"))
+                {
+                    var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
+                    throw new Exception(error.message);
+                }
+                return JsonOut;
+            }
+            catch (Exception e)
+            {
+                if (e.GetType() == typeof(HttpRequestException))
+                {
+                    return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+                }
+                return e.Message;
+            }
+        }
+    }
 }
