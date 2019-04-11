@@ -35,7 +35,7 @@ namespace DABApp
 						result = await r;
 						jsonOut = await result.Content.ReadAsStringAsync();
 					}
-					else throw new Exception();
+					else throw new Exception("Request for Content API timed out.");
 				}).Wait();//Appended the GUID to avoid caching.
 				var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
 				if (ContentSettings == null || DataSettings == null)

@@ -234,7 +234,7 @@ namespace DABApp
                 var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    throw new Exception();
+                    throw new Exception($"Error Logging Out: {result.StatusCode}");
                 }
                 ExpirationSettings.Value = DateTime.MinValue.ToString();
                 await adb.UpdateAsync(ExpirationSettings);
@@ -266,7 +266,7 @@ namespace DABApp
                 APIToken token = container.token;
                 if (container.token == null)
                 {
-                    throw new Exception();
+                    throw new Exception($"Error Exchanging Token: {container.message}");
                 }
                 TokenSettings.Value = token.value;
                 ExpirationSettings.Value = token.expires;
@@ -296,7 +296,7 @@ namespace DABApp
                 ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
                 if (info.email == null)
                 {
-                    throw new Exception();
+                    throw new Exception($"Error Getting Member: email is null");
                 }
                 EmailSettings.Value = info.email;
                 FirstNameSettings.Value = info.first_Name;
@@ -368,7 +368,7 @@ namespace DABApp
                 APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
                 if (addresses.billing == null)
                 {
-                    throw new Exception();
+                    throw new Exception($"Error getting billing address");
                 }
                 return addresses;
             }
