@@ -68,7 +68,6 @@ namespace DABApp.Droid
 			SegmentedControlRenderer.Init();
             
 			CachedImageRenderer.Init();
-			//CrossPushNotification.Initialize<CrossPushNotificationListener>("494133786726");
 
 			SQLite_Droid.Assets = this.Assets;
             MetricsManager.Register(Application, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
