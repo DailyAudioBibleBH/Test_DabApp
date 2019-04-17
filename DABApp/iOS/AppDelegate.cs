@@ -14,11 +14,12 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Plugin.AudioRecorder;
+using Firebase.CloudMessaging;
 
 namespace DABApp.iOS
 {
 	[Register("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate
 	{
 
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
@@ -53,8 +54,38 @@ namespace DABApp.iOS
 
 			app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-            //Stripe.StripeClient.DefaultPublishableKey = "pk_test_L6czgMBGtoSv82HJgIHGayGO";
+            //Initialize Firebase
             Firebase.Core.App.Configure();
+
+            //Register for remote notifications (Firebase Cloud Messaging)
+            // https://firebase.google.com/docs/cloud-messaging/ios/client?authuser=0
+            // https://github.com/xamarin/GoogleApisForiOSComponents/blob/master/Firebase.CloudMessaging/component/GettingStarted.md
+            //
+            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            {
+                // For iOS 10 display notification (sent via APNS)
+                UNUserNotificationCenter.Current.Delegate = this;
+                var authOptions = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound;
+                UNUserNotificationCenter.Current.RequestAuthorization(authOptions, (granted, error) => {
+                    Console.WriteLine(granted);
+                });
+            }
+            else
+            {
+                // iOS 9 or before
+                var allNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound;
+                var settings = UIUserNotificationSettings.GetSettingsForTypes(allNotificationTypes, null);
+                UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+            }
+            UIApplication.SharedApplication.RegisterForRemoteNotifications();
+
+            //Assign the messaging delegat to this class
+            Messaging.SharedInstance.Delegate = this;
+            //WRite the current FCM token
+            var token = Messaging.SharedInstance.FcmToken ?? "";
+            Console.WriteLine($"FCM token: {token}");
+
+
 
             LoadApplication(new App());
 
@@ -140,5 +171,20 @@ namespace DABApp.iOS
 
             return acceptCertificate;
         }
+
+        [Export("messaging:didReceiveRegistrationToken:")]
+        public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
+        {
+            Console.WriteLine($"Firebase registration token: {fcmToken}");
+
+            // TODO: If necessary send token to application server.
+            // Note: This callback is fired at each app startup and whenever a new token is generated.
+        }
+
+        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        {
+            Messaging.SharedInstance.ApnsToken = deviceToken;
+        }
+
     }
 }
