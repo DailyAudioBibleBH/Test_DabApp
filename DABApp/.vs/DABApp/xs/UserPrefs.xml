@@ -1,0 +1,27 @@
+﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/obj/Debug/netstandard2.0/DABApp.App.xaml.g.cs">
+    <Files>
+      <File FileName="DABApp/obj/Debug/netstandard2.0/DABApp.App.xaml.g.cs" Line="19" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="DABApp" expanded="True">
+            <Node name="DABApp.iOS" expanded="True">
+              <Node name="CustomRenderers" expanded="True">
+                <Node name="DarkKeyboardEditorRenderer.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.DABApp.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.E8570B98-6289-40C0-B080-02ECBB8F29F3" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

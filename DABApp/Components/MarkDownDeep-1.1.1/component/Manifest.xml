@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<component format="1" id="MarkDownDeep">
+  <name>MarkDownDeep</name>
+  <publisher>HolisticWare d.o.o.</publisher>
+  <publisher-url>http://holisticware.net</publisher-url>
+  <version>1.1.1</version>
+  <summary>XMarkDownDeep Xamarin component by TopTenSoftware ported by HolisticWare</summary>
+  <samples>
+    <sample id="XSample.MarkDownDeep.XA">
+      <name>Android Sample</name>
+      <summary>Android Sample</summary>
+    </sample>
+    <sample id="XSample.MarkDownDeep.XI">
+      <name>iOS Unified Sample</name>
+      <summary>iOS Unified Sample</summary>
+    </sample>
+    <sample id="XSample.MarkDownDeep.XI-Classic">
+      <name>iOS Classic Sample</name>
+      <summary>iOS Classic Sample</summary>
+    </sample>
+  </samples>
+</component>
