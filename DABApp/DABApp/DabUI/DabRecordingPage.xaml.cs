@@ -160,17 +160,14 @@ namespace DABApp
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("recording_played");
             viewModel.Reviewed = true;
-            if (AudioPlayer.RecordingInstance.IsInitialized)
+            if (player.Duration>0)
             {
-                if (AudioPlayer.RecordingInstance.IsPlaying)
+                if (player.IsPlaying)
                 {
-                    AudioPlayer.RecordingInstance.Pause();
-                    Playing = true;
-                }
-                else
+                    player.Pause();
+                } else
                 {
-                    AudioPlayer.RecordingInstance.Play();
-                    Playing = false;
+                    player.Play();
                 }
             }
             else
@@ -178,12 +175,11 @@ namespace DABApp
                 var audio = viewModel.AudioFile;
                 if (audio != null)
                 {
-                    AudioPlayer.RecordingInstance.SetAudioFile(audio);
-                    AudioPlayer.RecordingInstance.Play();
+                    player.Load(audio);
+                    player.Play();
                 }
-                SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
+                SeekBar.Value = player.CurrentPosition;
                 SeekBar.IsVisible = true;
-                Playing = true;
             }
         }
 
@@ -196,7 +192,6 @@ namespace DABApp
                 viewModel.Recorded = false;
                 viewModel.Reviewed = false;
                 SeekBar.IsVisible = false;
-                Playing = false;
                 viewModel.RecordingTime = "2:00";
                 Record.BindingContext = viewModel;
                 Record.SetBinding(Image.SourceProperty, new Binding("RecordImageUrl"));
@@ -267,7 +262,6 @@ namespace DABApp
 
         protected override void OnAppearing()
         {
-            AudioPlayer.RecordingInstance.OnRecord = true;
             base.OnAppearing();
         }
 
@@ -288,7 +282,10 @@ namespace DABApp
             {
                 viewModel.StopRecording();
             }
-            if (AudioPlayer.RecordingInstance.IsPlaying) AudioPlayer.RecordingInstance.Pause();
+            if (player.IsPlaying)
+            {
+                player.Stop();
+            }
             base.OnDisappearing();
         }
 

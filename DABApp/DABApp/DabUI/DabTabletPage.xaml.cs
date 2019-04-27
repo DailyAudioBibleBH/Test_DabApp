@@ -73,7 +73,7 @@ namespace DABApp
             {
                 SetVisibility(false);
             }
-            else if (episode.Episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+            else if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
             {
                 SetVisibility(false);
             }
@@ -86,7 +86,7 @@ namespace DABApp
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
             }
-            AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
+            //AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
             {
@@ -175,7 +175,7 @@ namespace DABApp
             {
                 episode = (EpisodeViewModel)e.Item;
                 favorite.Source = episode.favoriteSource;
-                if (AudioPlayer.Instance.CurrentEpisodeId != episode.Episode.id)
+                if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
                     JournalTracker.Current.Content = null;
                     SetVisibility(false);
@@ -236,7 +236,7 @@ namespace DABApp
                 PlayerLabels.BindingContext = episode;
                 JournalTitle.BindingContext = episode;
                 await SetReading();
-                if (AudioPlayer.Instance.CurrentEpisodeId != episode.Episode.id)
+                if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
                     SetVisibility(false);
                 }

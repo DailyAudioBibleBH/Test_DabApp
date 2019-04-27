@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Plugin.SimpleAudioPlayer;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -7,6 +8,7 @@ namespace DABApp
 {
     public partial class DabSettingsPage : DabBaseContentPage
     {
+        private ISimpleAudioPlayer player = GlobalResources.playerPodcast;
         public ViewCell offline { get { return _offline; } }
         //public ViewCell reset { get { return _reset;} }
         public ViewCell appInfo { get { return _appInfo; } }
@@ -54,9 +56,8 @@ namespace DABApp
         async void OnLogOut(object o, EventArgs e)
         {
             LogOut.IsEnabled = false;
-            AudioPlayer.Instance.Pause();
-            AudioPlayer.Instance.Unload();
-            var nav = new NavigationPage(new DabLoginPage());
+            player.Stop();
+           var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
             if (await AuthenticationAPI.LogOut())
             {
