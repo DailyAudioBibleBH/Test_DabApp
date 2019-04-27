@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -17,7 +18,7 @@ namespace DABApp
         private bool recorded;
         private bool reviewed;
         private ObservableCollection<double> _audioHistory = new ObservableCollection<double>() { 10, 20, 30, 40, 50,60,70,80,90,100 }; //Visualizer Initial Values
-
+        private ISimpleAudioPlayer player = GlobalResources.playerRecorder;
 
         public RecorderViewModel()
         {
@@ -212,7 +213,7 @@ namespace DABApp
             AudioFile = DependencyService.Get<IRecord>().StopRecording();
             Recorded = true;
             IsRecording = false;
-            AudioPlayer.RecordingInstance.SetAudioFile(AudioFile);
+            player.Load(AudioFile);
         }
     }
 }

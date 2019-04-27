@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using FFImageLoading;
+using Plugin.SimpleAudioPlayer;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -12,6 +13,7 @@ namespace DABApp
 	public partial class DabMenuView : SlideMenuView
 	{
 		List<string> pages;
+        private ISimpleAudioPlayer player = GlobalResources.playerPodcast;
 
 		public DabMenuView()
 		{
@@ -49,9 +51,7 @@ namespace DABApp
 
 
             SignUp.IsEnabled = false;
-			//await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
-			AudioPlayer.Instance.Pause();
-			AudioPlayer.Instance.Unload();
+            player.Stop();
 			var nav = new NavigationPage(new DabLoginPage());
 			nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
 			Navigation.PushModalAsync(nav);

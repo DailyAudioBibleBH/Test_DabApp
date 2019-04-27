@@ -1,16 +1,34 @@
 ﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/obj/Debug/netstandard2.0/DABApp.App.xaml.g.cs">
+  <MonoDevelop.Ide.ItemProperties.DABApp.Droid AndroidDesignerPreferredTheme="Theme.DeviceDefault.Light.NoActionBar.Fullscreen" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/DabUI/DabTabletPage.xaml.cs">
     <Files>
-      <File FileName="DABApp/obj/Debug/netstandard2.0/DABApp.App.xaml.g.cs" Line="19" Column="1" />
+      <File FileName="DABApp/DabUI/DabRecordingPage.xaml.cs" Line="162" Column="39" />
+      <File FileName="DABApp/DabUI/DabPlayerPage.xaml.cs" Line="116" Column="35" />
+      <File FileName="DABApp/DabAudio/iSimpleAudioPlayer.cs" Line="8" Column="29" />
+      <File FileName="DABApp/DabUI/DabSettingsPage.xaml.cs" Line="56" Column="38" />
+      <File FileName="DABApp/DabUI/DabTabletPage.xaml.cs" Line="76" Column="44" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="DABApp" expanded="True">
-            <Node name="DABApp.iOS" expanded="True">
-              <Node name="CustomRenderers" expanded="True">
-                <Node name="DarkKeyboardEditorRenderer.cs" selected="True" />
+            <Node name="DABApp" expanded="True">
+              <Node name="DabAudio" expanded="True" />
+              <Node name="DabUI" expanded="True">
+                <Node name="DabPlayerPage.xaml" expanded="True" />
+                <Node name="DabRecordingPage.xaml" expanded="True" />
+                <Node name="DabSettingsPage.xaml" expanded="True" />
+                <Node name="DabTabletPage.xaml" expanded="True">
+                  <Node name="DabTabletPage.xaml.cs" selected="True" />
+                </Node>
               </Node>
+              <Node name="DabViewHelpers" expanded="True" />
+            </Node>
+            <Node name="DABApp.Droid" expanded="True">
+              <Node name="DabAudio" expanded="True" />
+            </Node>
+            <Node name="DABApp.iOS" expanded="True">
+              <Node name="DabAudio" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -21,7 +39,9 @@
   <MonoDevelop.Ide.ItemProperties.DABApp.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.E8570B98-6289-40C0-B080-02ECBB8F29F3" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/RecorderViewModel.cs" relfile="DABApp/DabViewHelpers/RecorderViewModel.cs" line="216" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

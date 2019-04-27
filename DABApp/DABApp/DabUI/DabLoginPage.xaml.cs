@@ -176,10 +176,11 @@ namespace DABApp
 		protected override void OnAppearing()
 		{
 			base.OnAppearing();
-			if (AudioPlayer.Instance.IsPlaying) {
-				AudioPlayer.Instance.Pause();
-			}
-			AudioPlayer.Instance.Unload();
+            if (GlobalResources.playerPodcast.IsPlaying)
+            {
+                //Stop the podcast player before continuing
+                GlobalResources.playerPodcast.Stop();
+            }
             TapNumber = 0;
 		}
 

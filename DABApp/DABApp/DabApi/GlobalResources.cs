@@ -6,13 +6,15 @@ using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using Plugin.SimpleAudioPlayer;
 
 namespace DABApp
 {
     public class GlobalResources : INotifyPropertyChanged
     {
-        //public static bool IsPlaying { get; set; }
-        //public static IAudio Player { get; set;}
+        public static ISimpleAudioPlayer playerPodcast = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+        public static ISimpleAudioPlayer playerRecorder = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+        public static int CurrentEpisodeId = 0;
 
         private double thumbnailHeight;
         private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;

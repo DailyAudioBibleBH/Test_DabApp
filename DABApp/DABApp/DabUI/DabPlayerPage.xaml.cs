@@ -7,12 +7,13 @@ using Xamarin.Forms;
 using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
+using Plugin.SimpleAudioPlayer;
 
 namespace DABApp
 {
     public partial class DabPlayerPage : DabBaseContentPage
     {
-        //IAudio player = GlobalResources.Player;
+        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
         string backgroundImage;
         bool IsGuest;
@@ -33,12 +34,12 @@ namespace DABApp
             _episode = episode;
 
             //Show or hide player controls
-            if (AudioPlayer.Instance.CurrentEpisodeId == 0)
+            if (GlobalResources.CurrentEpisodeId == 0)
             {
                 //first episode being played, go ahead and initialize
                 OnInitialized(null, null);
             }
-            if (episode.id != AudioPlayer.Instance.CurrentEpisodeId)
+            if (episode.id != GlobalResources.CurrentEpisodeId)
             {
                 SeekBar.Opacity = 0;
                 TimeStrings.Opacity = 0;
@@ -53,7 +54,7 @@ namespace DABApp
             }
 
             //AudioPlayer.Instance.ShowPlayerBar = false;
-            SeekBar.Value = AudioPlayer.Instance.CurrentTime;
+            SeekBar.Value = player.CurrentPosition;
             DabViewHelper.InitDabForm(this);
             backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
             BackgroundImage.Source = backgroundImage;
@@ -82,7 +83,7 @@ namespace DABApp
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
             }
-            AudioPlayer.Instance.PlayerFailure += OnPlayerFailure;
+            //AudioPlayer.Instance.PlayerFailure += OnPlayerFailure;
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
             {
@@ -105,36 +106,31 @@ namespace DABApp
 
         void OnPlay(object o, EventArgs e)
         {
-            if (AudioPlayer.Instance.IsInitialized)
+            if (player.Duration > 0)
             {
-                if (AudioPlayer.Instance.IsPlaying)
+                if (player.IsPlaying)
                 {
-                    AudioPlayer.Instance.Pause();
-                    //Task.Run(async () =>
-                    //{
-                    //    await AuthenticationAPI.PostActionLogs();
-                    //});
-                }
-                else
+                    player.Pause();
+                } else
                 {
-                    AudioPlayer.Instance.Play();
-                }
+                    player.Play();
+                } 
             }
             else
             {
-                AudioPlayer.Instance.SetAudioFile(Episode.Episode);
-                AudioPlayer.Instance.Play();
+                player.Load(Episode.Episode.file_name);
+                player.Play();
             }
         }
 
         void OnBack30(object o, EventArgs e)
         {
-            AudioPlayer.Instance.Skip(-30);
+            player.Seek(player.CurrentPosition - 30);
         }
 
         void OnForward30(object o, EventArgs e)
         {
-            AudioPlayer.Instance.Skip(30);
+            player.Seek(player.CurrentPosition + 30);
         }
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -232,8 +228,7 @@ namespace DABApp
         void OnLogin(object o, EventArgs e)
         {
             Login.IsEnabled = false;
-            AudioPlayer.Instance.Pause();
-            AudioPlayer.Instance.Unload();
+            player.Stop();
             if (CrossConnectivity.Current.IsConnected)
             {
                 var nav = new NavigationPage(new DabLoginPage(true));
@@ -300,12 +295,12 @@ namespace DABApp
         void OnInitialized(object o, EventArgs e)
         {
             Initializer.IsVisible = false;
-            AudioPlayer.Instance.SetAudioFile(Episode.Episode);
+            player.Load(Episode.Episode.file_name);
 
             if (o != null)
             {
                 //Start playing if they pushed the play button
-                AudioPlayer.Instance.Play();
+                player.Play();
             }
             //Show controls
             SeekBar.Opacity = 1;

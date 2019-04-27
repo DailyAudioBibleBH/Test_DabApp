@@ -12,6 +12,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
+using Plugin.SimpleAudioPlayer;
 
 namespace DABApp
 {
@@ -20,7 +21,7 @@ namespace DABApp
     {
         AudioRecorderService recorder;
         RecorderViewModel viewModel;
-        bool Playing;
+        ISimpleAudioPlayer player = GlobalResources.playerRecorder;
         bool granted = true;
         double _width;
         double _height;
@@ -37,11 +38,6 @@ namespace DABApp
             Destination.ItemsSource = GlobalResources.Instance.PodcastEmails.Select(x => x.Podcast).ToList();
             Destination.SelectedIndex = Device.RuntimePlatform == Device.iOS ? 0 : -1;
             GlobalResources.Instance.OnRecord = true;
-            Playing = false;
-            //if (Device.Idiom == TargetIdiom.Tablet)
-            //{
-            //    Main.Padding = new Thickness(10, 10, 10, 0);
-            //}
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             recorder = new AudioRecorderService()
             {
@@ -49,7 +45,6 @@ namespace DABApp
                 TotalAudioTimeout = TimeSpan.FromMinutes(2),
                 StopRecordingOnSilence = false
             };
-            Playing = false;
             recorder.AudioInputReceived += audioInputReceived;
             viewModel = new RecorderViewModel();
             AudioVisualizer.BindingContext = viewModel;
@@ -80,9 +75,10 @@ namespace DABApp
                 Uri = new Uri(ContentConfig.Instance.views.First().banner.urlPhone),
                 CacheValidity = GlobalResources.ImageCacheValidity
             };
-            AudioPlayer.RecordingInstance.MinTimeToSkip = 1;
-            AudioPlayer.RecordingInstance.OnRecord = true;
-            if (AudioPlayer.Instance.IsPlaying) AudioPlayer.Instance.Pause();
+            if (player.IsPlaying)
+            {
+                player.Pause();
+            }
             MessagingCenter.Subscribe<string>("Back", "Back", (sender) =>
             {
                 OnCancel(this, new EventArgs());
@@ -134,13 +130,13 @@ namespace DABApp
                     {
                         //await recorder.StopRecording();
                         viewModel.StopRecording();
-                        Record.BindingContext = AudioPlayer.RecordingInstance;
+                        Record.BindingContext = player;
                         Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
-                        Timer.BindingContext = AudioPlayer.RecordingInstance;
+                        Timer.BindingContext = player;
                         var converter = new StringConverter();
                         converter.onRecord = true;
-                        Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.RecordingInstance));
-                        SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
+                        Timer.SetBinding(Label.TextProperty, new Binding("Duration", BindingMode.Default, converter, null, null, player));
+                        SeekBar.Value = player.CurrentPosition;
                         SeekBar.IsVisible = true;
                         c0.Width = new GridLength(2, GridUnitType.Star);
                         c1.Width = new GridLength(2, GridUnitType.Star);

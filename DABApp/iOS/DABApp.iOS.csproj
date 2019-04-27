@@ -368,7 +368,6 @@
     <Compile Include="DependencyServices\RecordService.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="DabAudio\AudioService.cs" />
     <Compile Include="DabAudio\iosAudioOutputViewRenderer.cs" />
     <Compile Include="CustomRenderers\DabNavigationPageRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />

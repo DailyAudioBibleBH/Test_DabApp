@@ -65,7 +65,7 @@ namespace DABApp
             var ext = chosen.url.Split('.').Last();
             if (DependencyService.Get<IFileManagement>().FileExists($"{chosen.id.ToString()}.{ext}") || CrossConnectivity.Current.IsConnected)
             {
-                if (chosen.id != AudioPlayer.Instance.CurrentEpisodeId)
+                if (chosen.id != GlobalResources.CurrentEpisodeId)
                 {
                     JournalTracker.Current.Content = null;
                 }

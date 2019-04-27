@@ -154,4 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="DabViewHelpers\AudioPlayer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DabAudio\" />
+  </ItemGroup>
 </Project>

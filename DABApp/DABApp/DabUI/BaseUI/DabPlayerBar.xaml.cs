@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -9,6 +10,7 @@ namespace DABApp
 	public partial class DabPlayerBar : ContentView
 	{
 		bool Repeat = true;
+        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
 
 		public DabPlayerBar()
 		{
@@ -25,27 +27,20 @@ namespace DABApp
 			stackPlayerBar.GestureRecognizers.Add(tapShowEpisode);
 		}
 
-		//Play - Pause
-		void OnPlayPause(object o, EventArgs e)
-		{
+        //Play - Pause
+        void OnPlayPause(object o, EventArgs e)
+        {
+            //Play or pause the
+            if (player.IsPlaying)
+            {
+                player.Pause();
+            }
+            else
+            {
+                player.Play();
+            }
+        }
 
-			if (AudioPlayer.Instance.IsInitialized)
-			{
-				if (AudioPlayer.Instance.IsPlaying)
-				{
-					AudioPlayer.Instance.Pause();
-                    //Task.Run(async () => {
-                    //    await AuthenticationAPI.PostActionLogs();
-                    //});
-                }
-				else {
-					AudioPlayer.Instance.Play();
-				}
-			}
-			else {
-				AudioPlayer.Instance.Play();
-			}
-		}
 
 		//Show Player Page
 		async void OnShowPlayer(object o, EventArgs e)
@@ -56,7 +51,7 @@ namespace DABApp
 				PlayerButton.IsEnabled = false;
 				stackPodcastTitle.IsEnabled = false;
 				NavigationPage page = (NavigationPage)Application.Current.MainPage;
-				var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+				var currentEpisode = PlayerFeedAPI.GetEpisode(GlobalResources.CurrentEpisodeId);
 				var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
@@ -76,7 +71,7 @@ namespace DABApp
 		//Show share dialog
 		void OnShare(object o, EventArgs e)
 		{
-			var currentEpisode = PlayerFeedAPI.GetEpisode(AudioPlayer.Instance.CurrentEpisodeId);
+			var currentEpisode = PlayerFeedAPI.GetEpisode(GlobalResources.CurrentEpisodeId);
 			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(currentEpisode.channel_code, currentEpisode.id.ToString());
 		}
 	}
