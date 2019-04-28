@@ -15,9 +15,6 @@ using Xamarin.Forms;
 using SQLite;
 using Xamarin.Forms.Platform.Android;
 using Android.Graphics;
-using Plugin.MediaManager;
-using Plugin.MediaManager.MediaSession;
-using Plugin.MediaManager.ExoPlayer;
 using Android.Support.V4.Media.Session;
 using FFImageLoading.Forms.Droid;
 using HockeyApp.Android;
@@ -80,9 +77,9 @@ namespace DABApp.Droid
 
             MessagingCenter.Subscribe<string>("RecordPermission", "RecordPermission", (sender) => { RequestRecordPermission(); }); 
 
-            ((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
-            var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
-            CrossMediaManager.Current.AudioPlayer = exoPlayer;
+            //((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
+            //var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
+            //CrossMediaManager.Current.AudioPlayer = exoPlayer;
             //if ((int)Android.OS.Build.VERSION.SdkInt > 22)
             //{
             //    var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
@@ -130,14 +127,14 @@ namespace DABApp.Droid
             CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
 		}
 
-		protected override void OnDestroy()
-		{
-			if (CrossMediaManager.Current.MediaNotificationManager != null)
-			{
-				CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
-			}
-			base.OnDestroy();
-		}
+		//protected override void OnDestroy()
+		//{
+		//	if (CrossMediaManager.Current.MediaNotificationManager != null)
+		//	{
+		//		CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
+		//	}
+		//	base.OnDestroy();
+		//}
 
         public override void OnBackPressed()
         {

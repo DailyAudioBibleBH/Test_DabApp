@@ -1,10 +1,11 @@
 ﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
   <MonoDevelop.Ide.ItemProperties.DABApp.Droid AndroidDesignerPreferredTheme="Theme.DeviceDefault.Light.NoActionBar.Fullscreen" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Droid/MainActivity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Droid/DabAudio/DabMediaNotificationManager.cs">
     <Files>
       <File FileName="DABApp/DabUI/DabRecordingPage.xaml" />
       <File FileName="Droid/DabApi/FileManagement.cs" Line="118" Column="30" />
-      <File FileName="Droid/MainActivity.cs" Line="18" Column="14" />
+      <File FileName="Droid/MainActivity.cs" Line="18" Column="1" />
+      <File FileName="Droid/DabAudio/DabMediaNotificationManager.cs" Line="7" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -22,8 +23,9 @@
             </Node>
             <Node name="DABApp.Droid" expanded="True">
               <Node name="DabApi" expanded="True" />
-              <Node name="DabAudio" expanded="True" />
-              <Node name="MainActivity.cs" selected="True" />
+              <Node name="DabAudio" expanded="True">
+                <Node name="DabMediaNotificationManager.cs" selected="True" />
+              </Node>
             </Node>
             <Node name="DABApp.iOS" expanded="True">
               <Node name="DabAudio" expanded="True" />
