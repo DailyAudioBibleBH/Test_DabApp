@@ -6,12 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Acr.DeviceInfo;
 using Plugin.Connectivity;
+using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
 namespace DABApp
 {
     public partial class DabTabletPage : DabBaseContentPage
     {
+        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         ObservableCollection<EpisodeViewModel> list;
@@ -254,35 +256,29 @@ namespace DABApp
 
         void OnBack30(object o, EventArgs e)
         {
-            AudioPlayer.Instance.Skip(-30);
+            player.Seek(player.CurrentPosition - 30);
         }
 
         void OnForward30(object o, EventArgs e)
         {
-            AudioPlayer.Instance.Skip(30);
+            player.Seek(player.CurrentPosition + 30);
         }
 
         void OnPlay(object o, EventArgs e)
         {
-            if (AudioPlayer.Instance.IsInitialized)
+            if (player.Duration > 0)
             {
-                if (AudioPlayer.Instance.IsPlaying)
+                if (player.IsPlaying)
                 {
-                    AudioPlayer.Instance.Pause();
-                    //Task.Run(async () =>
-                    //{
-                    //    await AuthenticationAPI.PostActionLogs();
-                    //});
-                }
-                else
+                    player.Pause();
+                } else
                 {
-                    AudioPlayer.Instance.Play();
+                    player.Play();
                 }
-            }
-            else
+            } else
             {
-                AudioPlayer.Instance.SetAudioFile(episode.Episode);
-                AudioPlayer.Instance.Play();
+                player.Load(episode.Episode.file_name);
+                player.Play();
             }
         }
 
@@ -329,7 +325,7 @@ namespace DABApp
         void OnLogin(object o, EventArgs e)
         {
             Login.IsEnabled = false;
-            AudioPlayer.Instance.Pause(); if ((string)Months.SelectedItem == "My Favorites")
+            player.Pause(); if ((string)Months.SelectedItem == "My Favorites")
             {
                 EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
             }
@@ -344,7 +340,7 @@ namespace DABApp
                     EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
                 }
             }
-            AudioPlayer.Instance.Unload();
+            player.Stop();
             if (CrossConnectivity.Current.IsConnected)
             {
                 var nav = new NavigationPage(new DabLoginPage(true));
@@ -383,8 +379,8 @@ namespace DABApp
             //{
             //    AudioPlayer.Instance.Pause();
             //}
-            AudioPlayer.Instance.SetAudioFile(episode.Episode);
-            AudioPlayer.Instance.Play();
+            player.Load(episode.Episode.file_name);
+            player.Play();
             SetVisibility(true);
         }
 

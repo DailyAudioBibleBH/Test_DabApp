@@ -351,13 +351,14 @@ namespace DABApp
         void EndOfTime(object o, EventArgs e)
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("recording_limitreached");
-            Record.BindingContext = AudioPlayer.RecordingInstance;
+            Record.BindingContext = player;
+            //TODO: Create this property for the player
             Record.SetBinding(Image.SourceProperty, new Binding("PlayPauseButtonImageBig"));
-            Timer.BindingContext = AudioPlayer.RecordingInstance;
+            Timer.BindingContext = player;
             var converter = new StringConverter();
             converter.onRecord = true;
-            Timer.SetBinding(Label.TextProperty, new Binding("TotalTime", BindingMode.Default, converter, null, null, AudioPlayer.RecordingInstance));
-            SeekBar.Value = AudioPlayer.RecordingInstance.CurrentTime;
+            Timer.SetBinding(Label.TextProperty, new Binding("Duration", BindingMode.Default, converter, null, null, player));
+            SeekBar.Value = player.CurrentPosition;
             SeekBar.IsVisible = true;
             c0.Width = new GridLength(2, GridUnitType.Star);
             c1.Width = new GridLength(2, GridUnitType.Star);

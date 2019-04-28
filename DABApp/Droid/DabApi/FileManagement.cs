@@ -115,7 +115,7 @@ namespace DABApp.Droid
             catch (Exception)
             {
                 //Do nothing
-                return false
+                return false;
             }
         }
 
