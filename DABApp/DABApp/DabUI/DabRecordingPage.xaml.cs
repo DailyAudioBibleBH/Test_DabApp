@@ -12,7 +12,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
-using Plugin.SimpleAudioPlayer;
+using DABApp.DabAudio;
 
 namespace DABApp
 {
@@ -21,7 +21,7 @@ namespace DABApp
     {
         AudioRecorderService recorder;
         RecorderViewModel viewModel;
-        ISimpleAudioPlayer player = GlobalResources.playerRecorder;
+        DabPlayer player = GlobalResources.playerRecorder;
         bool granted = true;
         double _width;
         double _height;
@@ -160,7 +160,7 @@ namespace DABApp
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("recording_played");
             viewModel.Reviewed = true;
-            if (player.Duration>0)
+            if (player.isReady)
             {
                 if (player.IsPlaying)
                 {

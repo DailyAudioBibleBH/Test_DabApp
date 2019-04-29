@@ -5,15 +5,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Acr.DeviceInfo;
+using DABApp.DabAudio;
 using Plugin.Connectivity;
-using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
 namespace DABApp
 {
     public partial class DabTabletPage : DabBaseContentPage
     {
-        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
+        DabPlayer player = GlobalResources.playerPodcast;
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         ObservableCollection<EpisodeViewModel> list;
@@ -266,7 +266,7 @@ namespace DABApp
 
         void OnPlay(object o, EventArgs e)
         {
-            if (player.Duration > 0)
+            if (player.isReady)
             {
                 if (player.IsPlaying)
                 {

@@ -1,31 +1,37 @@
 ﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
   <MonoDevelop.Ide.ItemProperties.DABApp.Droid AndroidDesignerPreferredTheme="Theme.DeviceDefault.Light.NoActionBar.Fullscreen" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Droid/DabAudio/DabMediaNotificationManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/DabUI/DabTabletPage.xaml.cs">
     <Files>
-      <File FileName="DABApp/DabUI/DabRecordingPage.xaml" />
-      <File FileName="Droid/DabApi/FileManagement.cs" Line="118" Column="30" />
-      <File FileName="Droid/MainActivity.cs" Line="18" Column="1" />
-      <File FileName="Droid/DabAudio/DabMediaNotificationManager.cs" Line="7" Column="1" />
+      <File FileName="DABApp/DabUI/BaseUI/DabPlayerBar.xaml" />
+      <File FileName="DABApp/DabUI/BaseUI/DabPlayerBar.xaml.cs" Line="74" Column="65" />
+      <File FileName="DABApp/DabUI/BaseUI/DabBaseContentPage.cs" Line="27" Column="1" />
+      <File FileName="DABApp/DabAudio/DabPlayer.cs" Line="95" Column="17" />
+      <File FileName="DABApp/DabViewHelpers/IAudio.cs" Line="8" Column="37" />
+      <File FileName="DABApp/DabApi/GlobalResources.cs" Line="17" Column="114" />
+      <File FileName="Droid/DabAudio/AudioService.cs" Line="226" Column="26" />
+      <File FileName="DABApp/DabUI/DabPlayerPage.xaml.cs" Line="109" Column="17" />
+      <File FileName="DABApp/DabUI/DabRecordingPage.xaml.cs" Line="24" Column="58" />
+      <File FileName="DABApp/DabUI/DabTabletPage.xaml.cs" Line="15" Column="14" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="DABApp" expanded="True">
             <Node name="DABApp" expanded="True">
+              <Node name="DabApi" expanded="True" />
               <Node name="DabAudio" expanded="True" />
               <Node name="DabUI" expanded="True">
                 <Node name="DabPlayerPage.xaml" expanded="True" />
                 <Node name="DabRecordingPage.xaml" expanded="True" />
-                <Node name="DabSettingsPage.xaml" expanded="True" />
-                <Node name="DabTabletPage.xaml" expanded="True" />
+                <Node name="DabTabletPage.xaml" expanded="True">
+                  <Node name="DabTabletPage.xaml.cs" selected="True" />
+                </Node>
               </Node>
-              <Node name="DabViewHelpers" expanded="True" />
+              <Node name="App.xaml" expanded="True" />
             </Node>
             <Node name="DABApp.Droid" expanded="True">
               <Node name="DabApi" expanded="True" />
-              <Node name="DabAudio" expanded="True">
-                <Node name="DabMediaNotificationManager.cs" selected="True" />
-              </Node>
+              <Node name="DabAudio" expanded="True" />
             </Node>
             <Node name="DABApp.iOS" expanded="True">
               <Node name="DabAudio" expanded="True" />
@@ -41,6 +47,7 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/RecorderViewModel.cs" relfile="DABApp/DabViewHelpers/RecorderViewModel.cs" line="216" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/BaseUI/DabPlayerBar.xaml" relfile="DABApp/DabUI/BaseUI/DabPlayerBar.xaml" line="5" column="131" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />

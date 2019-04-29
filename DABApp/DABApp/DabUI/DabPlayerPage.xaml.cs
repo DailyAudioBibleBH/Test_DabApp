@@ -7,13 +7,13 @@ using Xamarin.Forms;
 using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
-using Plugin.SimpleAudioPlayer;
+using DABApp.DabAudio;
 
 namespace DABApp
 {
     public partial class DabPlayerPage : DabBaseContentPage
     {
-        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
+        DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
         string backgroundImage;
         bool IsGuest;
@@ -106,7 +106,7 @@ namespace DABApp
 
         void OnPlay(object o, EventArgs e)
         {
-            if (player.Duration > 0)
+            if (player.isReady)
             {
                 if (player.IsPlaying)
                 {

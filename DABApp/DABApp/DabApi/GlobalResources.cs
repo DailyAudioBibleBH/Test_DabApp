@@ -7,13 +7,14 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using Plugin.SimpleAudioPlayer;
+using DABApp.DabAudio;
 
 namespace DABApp
 {
     public class GlobalResources : INotifyPropertyChanged
     {
-        public static ISimpleAudioPlayer playerPodcast = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
-        public static ISimpleAudioPlayer playerRecorder = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
+        public static DabPlayer playerPodcast = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer());
+        public static DabPlayer playerRecorder = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer());
         public static int CurrentEpisodeId = 0;
 
         private double thumbnailHeight;
