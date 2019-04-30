@@ -23,15 +23,71 @@ namespace DABApp
         public DabPlayerPage(dbEpisodes episode, Reading Reading)
         {
             InitializeComponent();
+
+            IsGuest = GuestStatus.Current.IsGuestLogin;
+            Episode = new EpisodeViewModel(episode);
+            _episode = episode;
+            //Set up bindings to the player
+
+            //BINDINGS TO EPISODE
+            //Episode Title
+            lblTitle.BindingContext = Episode;
+            lblTitle.SetBinding(Label.TextProperty, "title");
+
+            //Channel TItle
+            lblChannelTitle.BindingContext = Episode;
+            lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
+
+            //Episode Description
+            lblDescription.BindingContext = Episode;
+            lblDescription.SetBinding(Label.TextProperty, "description");
+
+            //Favorite button
+            Favorite.BindingContext = Episode;
+            //TODO: Add favorite source image binding
+            //Favorite.SetBinding(Image.SourceProperty, "favoriteSource");
+            //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
+
+            //Completed button
+            Completed.BindingContext = Episode;
+            //TODO: Add completed source image binding
+            //Completed.SetBinding(Image.SourceProperty, "listenedToSource");
+            //TODO: Add Binding for AutomationProperties.Name for listenAccessible
+
+            //Journal Title
+            JournalTitle.BindingContext = Episode;
+            JournalTitle.SetBinding(Label.TextProperty, "title");
+
+            
+            //BINDINGS TO PLAYER
+
+            //Current Time
+            lblCurrentTime.BindingContext = player;
+            //TODO: Add 'stringer' converter
+            lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition");
+
+            //Total Time
+            lblTotalTime.BindingContext = player;
+            //TODO: Add 'stringer' converter
+            lblTotalTime.SetBinding(Label.TextProperty, "Duration");
+
+            //Seek bar
+            SeekBar.BindingContext = player;
+            SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
+            SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+
+            //Play-Pause button
+            PlayPause.BindingContext = player;
+            //TODO: Set binding for play pause image source (PlayPauseButtonImageBig)
+
+
             SegControl.ValueChanged += Handle_ValueChanged;
             if (!GuestStatus.Current.IsGuestLogin)
             {
                 JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
             }
 
-            IsGuest = GuestStatus.Current.IsGuestLogin;
-            Episode = new EpisodeViewModel(episode);
-            _episode = episode;
+
 
             //Show or hide player controls
             if (GlobalResources.CurrentEpisodeId == 0)
@@ -58,7 +114,7 @@ namespace DABApp
             DabViewHelper.InitDabForm(this);
             backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
             BackgroundImage.Source = backgroundImage;
-            BindingContext = episode;
+            //BindingContext = episode;
             //Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             Reading reading = Reading;
@@ -90,8 +146,8 @@ namespace DABApp
                 Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
-            Favorite.BindingContext = Episode;
-            Completed.BindingContext = Episode;
+            //Favorite.BindingContext = Episode;
+            //Completed.BindingContext = Episode;
             if (GlobalResources.Instance.IsiPhoneX)
                 Listen.Margin = new Thickness(0, 0, 0, 16);
 
@@ -118,7 +174,8 @@ namespace DABApp
             }
             else
             {
-                player.Load(Episode.Episode.file_name);
+                //TODO: Use local file name or URL, depending on if downloaded
+                player.Load(Episode.Episode.url);
                 player.Play();
             }
         }
@@ -295,7 +352,8 @@ namespace DABApp
         void OnInitialized(object o, EventArgs e)
         {
             Initializer.IsVisible = false;
-            player.Load(Episode.Episode.file_name);
+            //TODO: Use local file name or URL, depending on if downloaded
+            player.Load(Episode.Episode.url);
 
             if (o != null)
             {

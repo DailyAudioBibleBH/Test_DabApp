@@ -18,7 +18,17 @@ namespace DABApp.DabAudio
             player = Player;
         }
 
-        public double Duration => player.Duration;
+        public double Duration
+        {
+            get
+            {
+                //Return the duration of the player, ensuring it's >0
+                if (player.Duration <= 0)
+                { return 1; }
+                else
+                { return player.Duration; }
+            }
+        }
 
         public double CurrentPosition => player.CurrentPosition;
 

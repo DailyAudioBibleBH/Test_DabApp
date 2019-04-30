@@ -277,7 +277,8 @@ namespace DABApp
                 }
             } else
             {
-                player.Load(episode.Episode.file_name);
+                //TODO: Use local file name or URL, depending on if downloaded
+                player.Load(episode.Episode.url);
                 player.Play();
             }
         }
@@ -379,7 +380,8 @@ namespace DABApp
             //{
             //    AudioPlayer.Instance.Pause();
             //}
-            player.Load(episode.Episode.file_name);
+            //TODO: Use local file name or URL, depending on if downloaded
+            player.Load(episode.Episode.url);
             player.Play();
             SetVisibility(true);
         }

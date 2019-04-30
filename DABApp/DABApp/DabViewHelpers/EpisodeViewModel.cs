@@ -19,12 +19,14 @@ namespace DABApp
         public dbEpisodes Episode { get; set; }
         public string description { get; set; }
         public string title { get; set; }
+        public string channelTitle { get; set; }
 
         public EpisodeViewModel(dbEpisodes episode)
         {
             Episode = episode;
             description = episode.description;
             title = episode.title;
+            channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
             DependencyService.Get<IFileManagement>().EpisodeDownloading += UpdateDownload;
             DependencyService.Get<IFileManagement>().EpisodeCompleted += DownloadComplete;

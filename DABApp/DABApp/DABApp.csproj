@@ -155,7 +155,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="DabViewHelpers\AudioPlayer.cs" />
     <Compile Remove="DabAudio\iSimpleAudioPlayer.cs" />
   </ItemGroup>
   <ItemGroup>

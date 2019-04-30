@@ -3,13 +3,6 @@
 	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
 	<ContentPage.Content>
 		<StackLayout x:Name="Container">
-			<!--<RelativeLayout x:Name="bannerContentContainer">
-				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" />
-				<StackLayout x:Name="bannerStack" Padding="25" Spacing="10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}">
-					<local:HtmlLabel x:Name="bannerContent" Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=MostRecentEpisodePassage}" Style="{StaticResource playerLabelStyle}"/>
-					<Button x:Name="bannerButton" Text="Listen Now" Clicked="OnPlayer" WidthRequest="250" HorizontalOptions="Start" Style="{StaticResource listenNowButtonStyle}"/>
-				</StackLayout>
-			</RelativeLayout>-->
 			<StackLayout Padding="15">
 				<ContentView Padding="10, 0, 0, 0">
 				<local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
