@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using Plugin.SimpleAudioPlayer;
 
 namespace DABApp.DabAudio
@@ -59,6 +60,7 @@ namespace DABApp.DabAudio
             player.Dispose();
         }
 
+
         public bool Load(Stream audioStream)
         {
             return player.Load(audioStream);
@@ -66,8 +68,23 @@ namespace DABApp.DabAudio
 
         public bool Load(string fileName)
         {
-            return player.Load(fileName);
+            //Load file, determine local or remote first
+            //If remote, use a stream.
+            if (fileName.ToLower().StartsWith("http", StringComparison.Ordinal))
+            {
+                //Remote file
+                WebClient wc = new WebClient();
+                Stream fileStream = wc.OpenRead(fileName);
+                return player.Load(fileStream);
+            } else
+            {
+                //Local file
+                return player.Load(fileName);
+
+            }
+
         }
+
 
         public void Pause()
         {
