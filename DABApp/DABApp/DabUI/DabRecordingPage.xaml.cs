@@ -160,7 +160,7 @@ namespace DABApp
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("recording_played");
             viewModel.Reviewed = true;
-            if (player.isReady)
+            if (player.IsReady)
             {
                 if (player.IsPlaying)
                 {

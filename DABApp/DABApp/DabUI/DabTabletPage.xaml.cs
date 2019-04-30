@@ -266,7 +266,7 @@ namespace DABApp
 
         void OnPlay(object o, EventArgs e)
         {
-            if (player.isReady)
+            if (player.IsReady)
             {
                 if (player.IsPlaying)
                 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Plugin.SimpleAudioPlayer;
+using DABApp.DabAudio;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -10,15 +10,28 @@ namespace DABApp
 	public partial class DabPlayerBar : ContentView
 	{
 		bool Repeat = true;
-        ISimpleAudioPlayer player = GlobalResources.playerPodcast;
+        DabPlayer player = GlobalResources.playerPodcast;
 
 		public DabPlayerBar()
 		{
 			InitializeComponent();
 
+            //Set up bindings
+            stackPlayerBar.BindingContext = player;
+            stackPlayerBar.SetBinding(IsVisibleProperty, "IsReady");
+             lblEpisodeTitle.BindingContext = player;
+            lblEpisodeTitle.SetBinding(Label.TextProperty, "EpisodeTitle");
+            lblChannelTitle.BindingContext = player;
+            lblChannelTitle.SetBinding(Label.TextProperty, "ChannelTitle");
+            //TODO: Fix the PlayerButton image binding (currently 'source' returns invalid string')
+            //PlayerButton.BindingContext = player;
+            //PlayerButton.SetBinding(Button.ImageProperty, "PlayPauseButtonImageBig");
+            progProgress.BindingContext = player;
+            progProgress.SetBinding(ProgressBar.ProgressProperty, "CurrentPosition");
 
-			//Add a tap recognizer for the podcast tit
-			var tapShowEpisode = new TapGestureRecognizer();
+
+            //Add a tap recognizer for the podcast tit
+            var tapShowEpisode = new TapGestureRecognizer();
 			tapShowEpisode.NumberOfTapsRequired = 1;
 			tapShowEpisode.Tapped += (sender, e) =>
 			{

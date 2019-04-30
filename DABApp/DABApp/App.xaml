@@ -1,243 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
-	<Application.Resources>
-		<ResourceDictionary>
-			<!--Theme Values-->
-			<Color x:Key="PageBackgroundColor">#292929</Color>
-			<!--Color provided by LUTD for page backgrounds: #292929-->
-			<Color x:Key="InputBackgroundColor">#444444</Color>
-			<!--Color provided by LUTD for input background: #444444-->
-			<Color x:Key="TextColor">#CBCBCB</Color>
-			<!--Color provided by LUTD for normal text throughout the app: #FFFFFF-->
-			<Color x:Key="SecondaryTextColor">#AFAFAF</Color>
-			<!--Color provided by LUTD for secondary text color: #AFAFAF-->
-			<Color x:Key="HighlightColor">#D5272E</Color>
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--Theme Values-->
+            <Color x:Key="PageBackgroundColor">#292929</Color>
+            <!--Color provided by LUTD for page backgrounds: #292929-->
+            <Color x:Key="InputBackgroundColor">#444444</Color>
+            <!--Color provided by LUTD for input background: #444444-->
+            <Color x:Key="TextColor">#CBCBCB</Color>
+            <!--Color provided by LUTD for normal text throughout the app: #FFFFFF-->
+            <Color x:Key="SecondaryTextColor">#AFAFAF</Color>
+            <!--Color provided by LUTD for secondary text color: #AFAFAF-->
+            <Color x:Key="HighlightColor">#D5272E</Color>
             <Color x:Key="HighlightTextColor">#FFFFFF</Color>
-			<!--Color provided by LUTD for highlights and important buttons: #D5272E-->
-			<Color x:Key="NavBarBackgroundColor">#383838</Color>
-			<!--Color provided by LUTD for nav bar background: #444444-->
-			<Color x:Key="SlideMenuBackgroundColor">#D5272E</Color>
-			<!--Color provided by LUTD for slider menu: #D5272E-->
-			<Color x:Key="NonScrollingListViewColor">#222222</Color>
-			<Color x:Key="PlayerLabelColor">#ffffff</Color>
-			<Color x:Key="HighlightedButtonDisabledTextColor">#4d0000</Color>
-			<Color x:Key="EpisodeMenuColor">#1b1b1b</Color>
-			<Color x:Key="TableViewHeaderColor">#878787</Color>
-			<Color x:Key="ReadBackgroundColor">#1b1b1b</Color>
+            <!--Color provided by LUTD for highlights and important buttons: #D5272E-->
+            <Color x:Key="NavBarBackgroundColor">#383838</Color>
+            <!--Color provided by LUTD for nav bar background: #444444-->
+            <Color x:Key="SlideMenuBackgroundColor">#D5272E</Color>
+            <!--Color provided by LUTD for slider menu: #D5272E-->
+            <Color x:Key="NonScrollingListViewColor">#222222</Color>
+            <Color x:Key="PlayerLabelColor">#ffffff</Color>
+            <Color x:Key="HighlightedButtonDisabledTextColor">#4d0000</Color>
+            <Color x:Key="EpisodeMenuColor">#1b1b1b</Color>
+            <Color x:Key="TableViewHeaderColor">#878787</Color>
+            <Color x:Key="ReadBackgroundColor">#1b1b1b</Color>
             <Color x:Key="ActivityHolderBackground">#000000</Color>
             <Color x:Key="MarkCompletedBackground">#7f000000</Color>
             <Color x:Key="OutlineColor">#979797</Color>
             <Color x:Key="RecordColor">#ee878b</Color>
-			<!--Player Bar ControlTemplate-->
-			<ControlTemplate x:Key="PlayerPageTemplate">
-				<RelativeLayout>
-				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-					<ScrollView VerticalOptions="FillAndExpand">
-						<ContentPresenter VerticalOptions="FillAndExpand" />
-					</ScrollView>
-					<local:DabPlayerBar VerticalOptions="End" />
-				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+            <!--Player Bar ControlTemplate-->
+            <ControlTemplate x:Key="PlayerPageTemplate">
+                <RelativeLayout>
+                    <StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ScrollView VerticalOptions="FillAndExpand">
+                            <ContentPresenter VerticalOptions="FillAndExpand" />
+                        </ScrollView>
+                        <local:DabPlayerBar VerticalOptions="End" />
                     </StackLayout>
-				<ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>
+                    <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                    </StackLayout>
+                    <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" />
                 </RelativeLayout>
-			</ControlTemplate>
-			<!--Player Bar ControlTemplate WITHOUT ScrollView-->
-			<ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
-				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" >
-					<ContentPresenter VerticalOptions="FillAndExpand" />
-				</StackLayout>
-			</ControlTemplate>
-			<ControlTemplate x:Key="OtherPlayerPageTemplateWithoutScrolling">
-				<RelativeLayout>
-				<StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-					<ContentPresenter VerticalOptions="FillAndExpand" />
-					<local:DabPlayerBar VerticalOptions="End" />
-				</StackLayout>
-				<StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-								</StackLayout>
-				<ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>
-				</RelativeLayout>
-			</ControlTemplate>
+            </ControlTemplate>
+            <!--Player Bar ControlTemplate WITHOUT ScrollView-->
+            <ControlTemplate x:Key="PlayerPageTemplateWithoutScrolling">
+                <StackLayout VerticalOptions="FillAndExpand" Spacing="0">
+                    <ContentPresenter VerticalOptions="FillAndExpand" />
+                </StackLayout>
+            </ControlTemplate>
+            <ControlTemplate x:Key="OtherPlayerPageTemplateWithoutScrolling">
+                <RelativeLayout>
+                    <StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ContentPresenter VerticalOptions="FillAndExpand" />
+                        <local:DabPlayerBar VerticalOptions="End" />
+                    </StackLayout>
+                    <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                    </StackLayout>
+                    <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" />
+                </RelativeLayout>
+            </ControlTemplate>
             <!-- No player page and no scrolling-->
             <ControlTemplate x:Key="NoPlayerPageTemplateWithoutScrolling">
                 <RelativeLayout>
-                <StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                    <ContentPresenter VerticalOptions="FillAndExpand"/>
-<!--                    <local:DabPlayerBar VerticalOptions="End" />
--->                </StackLayout>
-                <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}"
-                                RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-                                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-                                RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-                                RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                    <StackLayout VerticalOptions="FillAndExpand" Spacing="0" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ContentPresenter VerticalOptions="FillAndExpand" />
                     </StackLayout>
-                    <StackLayout x:Name="labelHolder" IsVisible="False" BackgroundColor="Transparent"
-                                 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-                                RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-                                RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-                                RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                        <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"/>
-                        <Label x:Name="Explanation" IsVisible="False" TextColor="{DynamicResource PlayerLabelColor}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" 
-                                Text="Please wait while your audio file is submitted. This process may take a minute or two, depending upon your internet connection."/>
+                    <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                    </StackLayout>
+                    <StackLayout x:Name="labelHolder" IsVisible="False" BackgroundColor="Transparent" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
+                        <Label x:Name="Explanation" IsVisible="False" TextColor="{DynamicResource PlayerLabelColor}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Please wait while your audio file is submitted. This process may take a minute or two, depending upon your internet connection." />
                     </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
-
-
             <!--Theme Styles-->
-			<!--Content Page-->
-			<Style x:Key="pageStyle" TargetType="ContentPage">
-				<Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
-			</Style>
-			<Style BasedOn="{StaticResource pageStyle}" TargetType="ContentPage" ApplyToDerivedTypes="true" />
-			<!--Label-->
-			<Style x:Key="labelStyle" TargetType="Label">
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-			</Style>
-			<Style BasedOn="{StaticResource labelStyle}" TargetType="Label" ApplyToDerivedTypes="true" />
-			<!--Secondary Label-->
-			<Style x:Key="secondaryLabelStyle" TargetType="Label">
-				<Setter Property="TextColor" Value="{DynamicResource SecondaryTextColor}" />
-			</Style>
-			<!--Player Label-->
-			<Style x:Key="playerLabelStyle" TargetType="Label">
-				<Setter Property="TextColor" Value="{DynamicResource PlayerLabelColor}"/>
-			</Style>
-			<Style x:Key="warningLabelStyle" TargetType="Label">
-				<Setter Property="TextColor" Value="{DynamicResource HighlightColor}"/>
-				<Setter Property="FontSize" Value="Micro"/>
-			</Style>
-			<!--Entry-->
-			<Style x:Key="entryStyle" TargetType="Entry">
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
-				<Setter Property="HeightRequest" Value="50"/>
-			</Style>
-			<Style BasedOn="{StaticResource entryStyle}" TargetType="Entry" ApplyToDerivedTypes="true" />
-			<!--Picker-->
+            <!--Content Page-->
+            <Style x:Key="pageStyle" TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource pageStyle}" TargetType="ContentPage" ApplyToDerivedTypes="true" />
+            <!--Label-->
+            <Style x:Key="labelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource labelStyle}" TargetType="Label" ApplyToDerivedTypes="true" />
+            <!--Secondary Label-->
+            <Style x:Key="secondaryLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource SecondaryTextColor}" />
+            </Style>
+            <!--Player Label-->
+            <Style x:Key="playerLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource PlayerLabelColor}" />
+            </Style>
+            <Style x:Key="warningLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{DynamicResource HighlightColor}" />
+                <Setter Property="FontSize" Value="Micro" />
+            </Style>
+            <!--Entry-->
+            <Style x:Key="entryStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
+                <Setter Property="HeightRequest" Value="50" />
+            </Style>
+            <Style BasedOn="{StaticResource entryStyle}" TargetType="Entry" ApplyToDerivedTypes="true" />
+            <!--Picker-->
             <Style x:Key="pickerStyle" TargetType="Picker">
                 <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
                 <Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
-                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="HeightRequest" Value="50" />
             </Style>
             <Style BasedOn="{StaticResource pickerStyle}" TargetType="Picker" ApplyToDerivedTypes="true" />
             <Style x:Key="monthPickerStyle" TargetType="Picker">
-                <Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
-                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
-                <Setter Property="WidthRequest" Value="100"/>
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+                <Setter Property="WidthRequest" Value="100" />
             </Style>
-			<!--Button-->
-			<Style x:Key="buttonStyle" TargetType="Button">
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-				<Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
-				<Setter Property="BorderRadius" Value="3" />
-				<Setter Property="BorderWidth" Value="1" />
-				<Setter Property="BackgroundColor" Value="Transparent" />
-			</Style>
-			<Style BasedOn="{StaticResource buttonStyle}" TargetType="Button" ApplyToDerivedTypes="true" />
-			<!--Highlighted Button-->
-			<Style x:Key="highlightedButtonStyle" TargetType="Button">
-				<Setter Property="TextColor" Value="{DynamicResource HighlightTextColor}" />
-				<Setter Property="BorderColor" Value="{DynamicResource HighlightColor}" />
-				<Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
-			</Style>
-			<!--Image Button-->
-			<Style x:Key="imageButtonStyle" TargetType="Button">
-<!--				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
--->				<Setter Property="BorderColor" Value="Transparent" />
-				<Setter Property="BorderWidth" Value="0" />
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-			</Style>
-			<Style x:Key="listenNowButtonStyle" TargetType="Button">
-				<Setter Property="BorderColor" Value="White"/>
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-				<Setter Property="TextColor" Value="White"/>
-				<Setter Property="BorderWidth" Value="1"/>
-				<Setter Property="BorderRadius" Value="3"/>
-			</Style>
-			<Style x:Key="deleteButtonStyle" TargetType="Button">
-				<Setter Property="BorderColor" Value="{DynamicResource HighlightColor}"/>
-				<Setter Property="TextColor" Value="{DynamicResource HighlightColor}"/>
-				<Setter Property="BorderWidth" Value="1"/>
-				<Setter Property="BorderRadius" Value="3"/>
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-			</Style>
-			<!--ListView-->
-			<Style x:Key="listviewStyle" TargetType="ListView">
-				<Setter Property="SeparatorColor" Value="Transparent" />
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-			</Style>
-			<Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
-			<Style x:Key="EpisodeMenuStyle" TargetType="ListView">
-				<Setter Property="SeparatorColor" Value="{DynamicResource InputBackgroundColor}"/>
-				<Setter Property="BackgroundColor" Value="{DynamicResource EpisodeMenuColor}"/>
-				<Setter Property="SeparatorVisibility" Value="Default"/>
-			</Style>
-			<Style x:Key="tableviewStyle" TargetType="TableView">
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-			</Style>
-			<Style BasedOn="{StaticResource tableviewStyle}" TargetType="TableView" ApplyToDerivedTypes="true"/>
-			<!--TextCell-->
-			<Style x:Key="textcellStyle" TargetType="TextCell">
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}" />
-				<Setter Property="DetailColor" Value="{DynamicResource SecondaryTextColor}" />
-			</Style>
-			<Style BasedOn="{StaticResource textcellStyle}" TargetType="TextCell" ApplyToDerivedTypes="true" />
-			<Style x:Key="frameStyle" TargetType="Frame">
-				<Setter Property="OutlineColor" Value="Transparent"/>
-				<Setter Property="Padding" Value="15"/>
-				<Setter Property="BackgroundColor" Value="Transparent"/>
-				<Setter Property="HasShadow" Value="false"/>
-			</Style>
-			<Style BasedOn="{StaticResource frameStyle}" TargetType="Frame" ApplyToDerivedTypes="true"/>
-			<Style x:Key="NavStyle" TargetType="NavigationPage">
-				<Setter Property="BackgroundColor" Value="{DynamicResource NavBarBackgroundColor}"/>
-				<Setter Property="BarBackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
-			</Style>
-			<Style BasedOn="{StaticResource NavStyle}" TargetType="NavigationPage" ApplyToDerivedTypes="true"/>
-			<Style x:Key="NonScrollingListViewStyle" TargetType="ListView">
-				<Setter Property="BackgroundColor" Value="{DynamicResource NonScrollingListViewColor}"/>
-				<Setter Property="SeparatorVisibility" Value="Default"/>
-			</Style>
-			<Style x:Key="secondaryListViewStyle" TargetType="ListView">
-				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}"/>
-				<Setter Property="SeparatorVisibility" Value="Default"/>
-			</Style>
-			<Style x:Key="BoxViewStyle" TargetType="BoxView">
-				<Setter Property="HeightRequest" Value="1"/>
-				<Setter Property="Color" Value="{DynamicResource InputBackgroundColor}"/>
-			</Style>
-			<Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true"/>
-			<Style x:Key="SpacerStyle" TargetType="BoxView">
-				<Setter Property="Color" Value="{StaticResource PageBackgroundColor}"/>
-			</Style>
-			<Style x:Key="EditorStyle" TargetType="Editor">
-				<Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}"/>
-				<Setter Property="TextColor" Value="{DynamicResource TextColor}"/>
-			</Style>
-			<Style BasedOn="{StaticResource EditorStyle}" TargetType="Editor" ApplyToDerivedTypes="true"/>
-			<local:ParticipantConverter x:Key="ParticipantConverter"/>
-			<local:ActivityConverter x:Key="ActivityConverter"/>
-			<local:ReplyConverter x:Key="ReplyConverter"/>
-			<local:TopicConverter x:Key="TopicConverter"/>
-			<local:TimeConverter x:Key="TimeConverter"/>
-		</ResourceDictionary>
-	</Application.Resources>
+            <!--Button-->
+            <Style x:Key="buttonStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="BorderColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="BorderRadius" Value="3" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style BasedOn="{StaticResource buttonStyle}" TargetType="Button" ApplyToDerivedTypes="true" />
+            <!--Highlighted Button-->
+            <Style x:Key="highlightedButtonStyle" TargetType="Button">
+                <Setter Property="TextColor" Value="{DynamicResource HighlightTextColor}" />
+                <Setter Property="BorderColor" Value="{DynamicResource HighlightColor}" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource HighlightColor}" />
+            </Style>
+            <!--Image Button-->
+            <Style x:Key="imageButtonStyle" TargetType="Button">
+                <!--                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+-->
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="BorderWidth" Value="0" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style x:Key="listenNowButtonStyle" TargetType="Button">
+                <Setter Property="BorderColor" Value="White" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BorderRadius" Value="3" />
+            </Style>
+            <Style x:Key="deleteButtonStyle" TargetType="Button">
+                <Setter Property="BorderColor" Value="{DynamicResource HighlightColor}" />
+                <Setter Property="TextColor" Value="{DynamicResource HighlightColor}" />
+                <Setter Property="BorderWidth" Value="1" />
+                <Setter Property="BorderRadius" Value="3" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <!--ListView-->
+            <Style x:Key="listviewStyle" TargetType="ListView">
+                <Setter Property="SeparatorColor" Value="Transparent" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style BasedOn="{StaticResource listviewStyle}" TargetType="ListView" ApplyToDerivedTypes="true" />
+            <Style x:Key="EpisodeMenuStyle" TargetType="ListView">
+                <Setter Property="SeparatorColor" Value="{DynamicResource InputBackgroundColor}" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource EpisodeMenuColor}" />
+                <Setter Property="SeparatorVisibility" Value="Default" />
+            </Style>
+            <Style x:Key="tableviewStyle" TargetType="TableView">
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style BasedOn="{StaticResource tableviewStyle}" TargetType="TableView" ApplyToDerivedTypes="true" />
+            <!--TextCell-->
+            <Style x:Key="textcellStyle" TargetType="TextCell">
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+                <Setter Property="DetailColor" Value="{DynamicResource SecondaryTextColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource textcellStyle}" TargetType="TextCell" ApplyToDerivedTypes="true" />
+            <Style x:Key="frameStyle" TargetType="Frame">
+                <Setter Property="OutlineColor" Value="Transparent" />
+                <Setter Property="Padding" Value="15" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="HasShadow" Value="false" />
+            </Style>
+            <Style BasedOn="{StaticResource frameStyle}" TargetType="Frame" ApplyToDerivedTypes="true" />
+            <Style x:Key="NavStyle" TargetType="NavigationPage">
+                <Setter Property="BackgroundColor" Value="{DynamicResource NavBarBackgroundColor}" />
+                <Setter Property="BarBackgroundColor" Value="{DynamicResource PageBackgroundColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource NavStyle}" TargetType="NavigationPage" ApplyToDerivedTypes="true" />
+            <Style x:Key="NonScrollingListViewStyle" TargetType="ListView">
+                <Setter Property="BackgroundColor" Value="{DynamicResource NonScrollingListViewColor}" />
+                <Setter Property="SeparatorVisibility" Value="Default" />
+            </Style>
+            <Style x:Key="secondaryListViewStyle" TargetType="ListView">
+                <Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
+                <Setter Property="SeparatorVisibility" Value="Default" />
+            </Style>
+            <Style x:Key="BoxViewStyle" TargetType="BoxView">
+                <Setter Property="HeightRequest" Value="1" />
+                <Setter Property="Color" Value="{DynamicResource InputBackgroundColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource BoxViewStyle}" TargetType="BoxView" ApplyToDerivedTypes="true" />
+            <Style x:Key="SpacerStyle" TargetType="BoxView">
+                <Setter Property="Color" Value="{StaticResource PageBackgroundColor}" />
+            </Style>
+            <Style x:Key="EditorStyle" TargetType="Editor">
+                <Setter Property="BackgroundColor" Value="{DynamicResource InputBackgroundColor}" />
+                <Setter Property="TextColor" Value="{DynamicResource TextColor}" />
+            </Style>
+            <Style BasedOn="{StaticResource EditorStyle}" TargetType="Editor" ApplyToDerivedTypes="true" />
+            <local:ParticipantConverter x:Key="ParticipantConverter" />
+            <local:ActivityConverter x:Key="ActivityConverter" />
+            <local:ReplyConverter x:Key="ReplyConverter" />
+            <local:TopicConverter x:Key="TopicConverter" />
+            <local:TimeConverter x:Key="TimeConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

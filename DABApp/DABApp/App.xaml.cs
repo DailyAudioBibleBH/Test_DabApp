@@ -58,44 +58,6 @@ namespace DABApp
             await AuthenticationAPI.GetMemberData();
 		}
 
-		//void OnPlayPause(object o, EventArgs e) {
-			
-		//	if (AudioPlayer.Instance.IsInitialized)
-		//	{
-		//		if (AudioPlayer.Instance.IsPlaying)
-		//		{
-		//			AudioPlayer.Instance.Pause();
-		//		}
-		//		else {
-		//			AudioPlayer.Instance.Play();
-		//		}
-		//	}
-		//	else {
-		//		AudioPlayer.Instance.SetAudioFile(@"http://www.stephaniequinn.com/Music/Mouret%20-%20Rondeau.mp3");
-		//		AudioPlayer.Instance.Play();
-		//		}
-		//}
-
-		//void OnPodcast(object o, EventArgs e) {
-		//	NavigationPage page = (NavigationPage)Application.Current.MainPage;
-		//	page.PushAsync(new DabPlayerPage(new dbEpisodes()));
-
-		//}
-
-		//void ProgressBinding() {
-		//	Device.StartTimer(new TimeSpan(0, 0, 1), () =>
-		//	{
-		//		if (GlobalResources.Player.IsInitialized)
-		//		{
-		//			AudioPlayer.Instance.Progress = (GlobalResources.Player.CurrentTime / GlobalResources.Player.TotalTime);
-		//			return GlobalResources.Player.IsPlaying;
-		//		}
-		//		else {
-		//			AudioPlayer.Instance.Progress = 0;
-		//			AudioPlayer.Instance.PlayPauseButtonImage = "Play";
-		//			return GlobalResources.Player.IsInitialized;
-		//		}
-		//	});
-		//}
+		
 	}
 }

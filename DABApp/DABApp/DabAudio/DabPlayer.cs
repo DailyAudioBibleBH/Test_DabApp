@@ -10,6 +10,8 @@ namespace DABApp.DabAudio
     public class DabPlayer : ISimpleAudioPlayer
     {
         private ISimpleAudioPlayer player;
+        private string _channelTitle = "";
+        private string _episodeTitle = "";
 
         public DabPlayer(ISimpleAudioPlayer Player)
         {
@@ -88,7 +90,7 @@ namespace DABApp.DabAudio
             player.Seek(newPosition);
         }
 
-        public bool isReady
+        public bool IsReady
         {
             get
             {
@@ -109,6 +111,19 @@ namespace DABApp.DabAudio
         {
             //TODO: Impelement this method
             throw new NotImplementedException();
+        }
+
+        //Title of the channel
+        public string ChannelTitle => _channelTitle;
+
+        //Title of the episode
+        public string EpisodeTitle => _episodeTitle;
+
+        //Path to use for the play/pause image based on the state of the player
+        public string PlayPauseButtonImageBig
+        {
+            //TODO: Implement this.
+            get { return ""; }
         }
     }
 }
