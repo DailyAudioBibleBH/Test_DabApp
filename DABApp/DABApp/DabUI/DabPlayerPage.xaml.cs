@@ -44,14 +44,12 @@ namespace DABApp
 
             //Favorite button
             Favorite.BindingContext = Episode;
-            //TODO: Add favorite source image binding
-            //Favorite.SetBinding(Image.SourceProperty, "favoriteSource");
+            Favorite.SetBinding( Button.ImageProperty, "favoriteSource");
             //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
             //Completed button
             Completed.BindingContext = Episode;
-            //TODO: Add completed source image binding
-            //Completed.SetBinding(Image.SourceProperty, "listenedToSource");
+            Completed.SetBinding(Button.ImageProperty, "listenedToSource");
             //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
             //Journal Title
@@ -64,22 +62,22 @@ namespace DABApp
             //Current Time
             lblCurrentTime.BindingContext = player;
             //TODO: Add 'stringer' converter
-            lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition");
+            lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition",BindingMode.Default, new StringConverter());
 
             //Total Time
             lblTotalTime.BindingContext = player;
             //TODO: Add 'stringer' converter
-            lblTotalTime.SetBinding(Label.TextProperty, "Duration");
+            lblTotalTime.SetBinding(Label.TextProperty, "Duration",BindingMode.Default,new StringConverter());
 
-            //Seek bar
+            //Seek bar setup
             SeekBar.BindingContext = player;
             SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
             SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+            SeekBar.UserInteraction += (object sender, EventArgs e) => player.Seek(SeekBar.Value);    
 
             //Play-Pause button
             PlayPause.BindingContext = player;
-            //TODO: Set binding for play pause image source (PlayPauseButtonImageBig)
-
+            PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
 
             SegControl.ValueChanged += Handle_ValueChanged;
             if (!GuestStatus.Current.IsGuestLogin)
@@ -463,7 +461,8 @@ namespace DABApp
         void OnFavorite(object o, EventArgs e)
         {
             Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
-            Favorite.Image = Episode.favoriteSource;
+            //TODO: Set favorite image
+            //Favorite.Image = Episode.favoriteSource;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
@@ -483,7 +482,8 @@ namespace DABApp
                 PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
                 AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
-            Completed.Image = Episode.listenedToSource;
+            //TODO: Set completed image
+            //Completed.Image = Episode.listenedToSource;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
         }
     }

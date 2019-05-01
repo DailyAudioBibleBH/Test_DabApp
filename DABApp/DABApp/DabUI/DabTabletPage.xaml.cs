@@ -199,7 +199,8 @@ namespace DABApp
                 DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
             }
             else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
-            Completed.Image = episode.listenedToSource;
+            //TODO: Set completed image
+            //Completed.Image = episode.listenedToSource;
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
@@ -246,7 +247,8 @@ namespace DABApp
                 {
                     SetVisibility(true);
                 }
-                Completed.Image = episode.listenedToSource;
+                //TODO: Fix completed image
+                //Completed.Image = episode.listenedToSource;
             }
             else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             labelHolder.IsVisible = false;
@@ -533,7 +535,8 @@ namespace DABApp
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.is_listened_to = "";
-                    Completed.Image = episode.listenedToSource;
+                    //TODO: Fix completed image
+                    //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
@@ -545,7 +548,8 @@ namespace DABApp
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.is_listened_to = "listened";
-                    Completed.Image = episode.listenedToSource;
+                    //TODO: Fix completed image
+                    //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
@@ -566,7 +570,8 @@ namespace DABApp
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id);
                 await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
             }
-            Completed.Image = episode.listenedToSource;
+            //TODO: Fix completed image
+            //Completed.Image = episode.listenedToSource;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
             TimedActions();
         }
@@ -685,7 +690,8 @@ namespace DABApp
             if (episode != null)
             {
                 favorite.Source = episode.favoriteSource;
-                Completed.Image = episode.listenedToSource;
+                //TODO: Fix completed Image
+                //Completed.Image = episode.listenedToSource;
             }
         }
     }

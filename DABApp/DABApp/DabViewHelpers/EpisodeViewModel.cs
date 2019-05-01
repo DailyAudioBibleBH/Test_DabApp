@@ -111,22 +111,34 @@ namespace DABApp
             }
         }
 
-        public string favoriteSource
+        public ImageSource favoriteSource
         {
             get
             {
+                //TODO Simplify these graphics with vectors or other resource that doesn't need so many file names
+                //Return the appropiate image representing if an episode is a favorite or not
                 if (Device.RuntimePlatform == Device.iOS || Device.Idiom == TargetIdiom.Tablet)
                 {
                     if (Episode.is_favorite)
                     {
-                        return "ic_star_white_3x.png";
+                        return ImageSource.FromFile("ic_star_white_3x.png");
                     }
-                    else return "ic_star_border_white_3x.png";
+                    else {
+                        return ImageSource.FromFile("ic_star_border_white_3x.png");
+                    }
                 }
                 else
                 {
-                    return Episode.is_favorite ? "ic_star_white.png" : "ic_star_border_white.png";
+                    if (Episode.is_favorite)
+                    {
+                        return ImageSource.FromFile("ic_star_white.png");
+                    } else
+                    {
+                        return ImageSource.FromFile("ic_star_border_white.png");
+                    }
+
                 }
+
             }
         }
 
@@ -139,15 +151,18 @@ namespace DABApp
             set { throw new Exception("You cannot set this directly"); }
         }
 
-        public string listenedToSource
+        public ImageSource listenedToSource
         {
             get
             {
                 if (listenedToVisible)
                 {
-                    return "ic_check_box_white_3x.png";
+                    return ImageSource.FromFile("ic_check_box_white_3x.png");
                 }
-                else return "ic_check_box_outline_blank_white_3x.png";
+                else
+                {
+                    return ImageSource.FromFile("ic_check_box_outline_blank_white_3x.png");
+                }
             }
         }
 

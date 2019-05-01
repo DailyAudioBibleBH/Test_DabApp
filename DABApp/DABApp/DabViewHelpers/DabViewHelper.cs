@@ -13,7 +13,7 @@ namespace DABApp
 		}
 	}
 
-	public class StringConverter : IValueConverter
+    public class StringConverter : IValueConverter
 	{
         public bool onRecord { get; set; } = false;
 
