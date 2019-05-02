@@ -24,99 +24,44 @@ namespace DABApp
         {
             InitializeComponent();
 
+            //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
             _episode = episode;
-            //Set up bindings to the player
-
-            //BINDINGS TO EPISODE
-            //Episode Title
-            lblTitle.BindingContext = Episode;
-            lblTitle.SetBinding(Label.TextProperty, "title");
-
-            //Channel TItle
-            lblChannelTitle.BindingContext = Episode;
-            lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
-
-            //Episode Description
-            lblDescription.BindingContext = Episode;
-            lblDescription.SetBinding(Label.TextProperty, "description");
-
-            //Favorite button
-            Favorite.BindingContext = Episode;
-            Favorite.SetBinding( Button.ImageProperty, "favoriteSource");
-            //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
-
-            //Completed button
-            Completed.BindingContext = Episode;
-            Completed.SetBinding(Button.ImageProperty, "listenedToSource");
-            //TODO: Add Binding for AutomationProperties.Name for listenAccessible
-
-            //Journal Title
-            JournalTitle.BindingContext = Episode;
-            JournalTitle.SetBinding(Label.TextProperty, "title");
-
-            
-            //BINDINGS TO PLAYER
-
-            //Current Time
-            lblCurrentTime.BindingContext = player;
-            //TODO: Add 'stringer' converter
-            lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition",BindingMode.Default, new StringConverter());
-
-            //Total Time
-            lblTotalTime.BindingContext = player;
-            //TODO: Add 'stringer' converter
-            lblTotalTime.SetBinding(Label.TextProperty, "Duration",BindingMode.Default,new StringConverter());
-
-            //Seek bar setup
-            SeekBar.BindingContext = player;
-            SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
-            SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
-            SeekBar.UserInteraction += (object sender, EventArgs e) => player.Seek(SeekBar.Value);    
-
-            //Play-Pause button
-            PlayPause.BindingContext = player;
-            PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
-
-            SegControl.ValueChanged += Handle_ValueChanged;
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                JournalTracker.Current.Join(episode.PubDate.ToString("yyyy-MM-dd"));
-            }
-
-
 
             //Show or hide player controls
+
+            //first episode being played, bind controls to episode and player
             if (GlobalResources.CurrentEpisodeId == 0)
             {
-                //first episode being played, go ahead and initialize
                 OnInitialized(null, null);
             }
-            if (episode.id != GlobalResources.CurrentEpisodeId)
+            //Same episode already being played - bind controls to episode and player
+            else if (episode.id == GlobalResources.CurrentEpisodeId)
             {
+                BindControls(true, true);
+            }
+            //New episode (don't initiaze it yet and only bind to the episode, not the player)
+            else if (episode.id != GlobalResources.CurrentEpisodeId)
+            {
+                BindControls(true, false);
+
                 SeekBar.Opacity = 0;
                 TimeStrings.Opacity = 0;
                 PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
-                //Output.Opacity = 0;
                 PlayPause.IsVisible = false;
                 backwardButton.Opacity = 0;
                 forwardButton.Opacity = 0;
-                //Share.Opacity = 0;
                 Initializer.IsVisible = true;
-                //Favorite.Opacity = 0;
             }
 
-            //AudioPlayer.Instance.ShowPlayerBar = false;
-            SeekBar.Value = player.CurrentPosition;
             DabViewHelper.InitDabForm(this);
             backgroundImage = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Single(x => x.title == episode.channel_title).images.backgroundPhone;
             BackgroundImage.Source = backgroundImage;
-            //BindingContext = episode;
-            //Date.Text = $"{episode.PubMonth} {episode.PubDay.ToString()} {episode.PubYear.ToString()}";
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
-            Reading reading = Reading;
 
+            //Update properties of the reading
+            Reading reading = Reading;
             ReadTitle.Text = reading.title;
             ReadText.Text = reading.text;
             if (reading.IsAlt)
@@ -128,6 +73,8 @@ namespace DABApp
             {
                 ReadExcerpts.Text = String.Join(", ", reading.excerpts);
             }
+
+            //Connect to the journal
             JournalTracker.Current.socket.Disconnect += OnDisconnect;
             JournalTracker.Current.socket.Reconnecting += OnReconnecting;
             JournalTracker.Current.socket.Room_Error += OnRoom_Error;
@@ -137,15 +84,16 @@ namespace DABApp
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
             }
-            //AudioPlayer.Instance.PlayerFailure += OnPlayerFailure;
+
+            //Link MarkDown button to external link
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
             {
                 Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
-            //Favorite.BindingContext = Episode;
-            //Completed.BindingContext = Episode;
+
+            //Add some margin to bottom of the page for iPhoneX
             if (GlobalResources.Instance.IsiPhoneX)
                 Listen.Margin = new Thickness(0, 0, 0, 16);
 
@@ -158,6 +106,7 @@ namespace DABApp
 
         }
 
+        //Play or Pause the episode (not the same as the init play button)
         void OnPlay(object o, EventArgs e)
         {
             if (player.IsReady)
@@ -165,10 +114,11 @@ namespace DABApp
                 if (player.IsPlaying)
                 {
                     player.Pause();
-                } else
+                }
+                else
                 {
                     player.Play();
-                } 
+                }
             }
             else
             {
@@ -178,21 +128,25 @@ namespace DABApp
             }
         }
 
+        //Go back 30 seconds
         void OnBack30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition - 30);
         }
 
+        //Go forward 30 seconds
         void OnForward30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition + 30);
         }
 
+        //Select a tab at the top of the screen
         void Handle_ValueChanged(object sender, System.EventArgs e)
         {
             switch (SegControl.SelectedSegment)
             {
                 case 0:
+                    //Listen tab
                     Read.IsVisible = false;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
@@ -205,7 +159,9 @@ namespace DABApp
                     Listen.IsVisible = true;
                     BackgroundImage.IsVisible = true;
                     break;
+
                 case 1:
+                    //Read tab
                     Listen.IsVisible = false;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
@@ -225,7 +181,9 @@ namespace DABApp
                     info.Add("episode_name", _episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
                     break;
+
                 case 2:
+                    //Journal tab
                     Read.IsVisible = false;
                     Listen.IsVisible = false;
                     //AudioPlayer.Instance.showPlayerBar = true;
@@ -250,37 +208,16 @@ namespace DABApp
             }
         }
 
-        //void OnPlayPause(object o, EventArgs e)
-        //{
-
-        //	if (AudioPlayer.Instance.Player.IsInitialized)
-        //	{
-        //		if (AudioPlayer.Instance.Player.IsPlaying)
-        //		{
-        //			AudioPlayer.Instance.Player.Pause();
-        //			AudioPlayer.Instance.PlayPauseButtonImage = playImage;
-        //		}
-        //		else {
-        //			AudioPlayer.Instance.Player.Play();
-        //			//ProgressBinding();
-        //			AudioPlayer.Instance.PlayPauseButtonImage = pauseImage;
-        //		}
-        //	}
-        //	else {
-        //		//AudioPlayer.Instance.Player.SetAudioFile(@"http://dab1.podcast.dailyaudiobible.com/mp3/January03-2017.m4a");
-        //		AudioPlayer.Instance.Player.SetAudioFile("@"+Episode.url);
-        //		AudioPlayer.Instance.Player.Play();
-        //		//ProgressBinding();
-        //		AudioPlayer.Instance.PlayPauseButtonImage = pauseImage;
-        //	}
-        //}
 
         void OnPodcast(object o, EventArgs e)
         {
+            //Go to the first tab
+            //TODO: Why is this even here?
             SegControl.SelectedSegment = 0;
         }
 
         void OnLogin(object o, EventArgs e)
+        //Log the user in for login specific usage
         {
             Login.IsEnabled = false;
             player.Stop();
@@ -294,6 +231,7 @@ namespace DABApp
             Login.IsEnabled = true;
         }
 
+        //Journal data changed outside the app
         void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
@@ -302,11 +240,13 @@ namespace DABApp
             }
         }
 
+        //Journal was edited
         void OnEdit(object o, EventArgs e)
         {
             JournalTracker.Current.socket.ExternalUpdate = false;
         }
 
+        //Journal editing finished?
         void OffEdit(object o, EventArgs e)
         {
             JournalTracker.Current.socket.ExternalUpdate = true;
@@ -316,11 +256,13 @@ namespace DABApp
             }
         }
 
+        //Form appears
         protected override void OnAppearing()
         {
             base.OnAppearing();
             if (Device.RuntimePlatform == "iOS")
             {
+                //Set up padding for the journal tab with the keyboard
                 int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
                 original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
@@ -343,38 +285,117 @@ namespace DABApp
             {
                 JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
             }
-            //(base.SlideMenu as DabMenuView).ChangeAvatar();
-            //base.SlideMenu = new DabMenuView();
+        }
+
+        void BindControls(bool BindToEpisode, bool BindToPlayer)
+        {
+            if (BindToEpisode)
+            {
+                //BINDINGS TO EPISODE
+
+                //Episode Title
+                lblTitle.BindingContext = Episode;
+                lblTitle.SetBinding(Label.TextProperty, "title");
+
+                //Channel TItle
+                lblChannelTitle.BindingContext = Episode;
+                lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
+
+                //Episode Description
+                lblDescription.BindingContext = Episode;
+                lblDescription.SetBinding(Label.TextProperty, "description");
+
+                //Favorite button
+                Favorite.BindingContext = Episode;
+                Favorite.SetBinding(Button.ImageProperty, "favoriteSource");
+                //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
+
+                //Completed button
+                Completed.BindingContext = Episode;
+                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                //TODO: Add Binding for AutomationProperties.Name for listenAccessible
+
+                //Journal Title
+                JournalTitle.BindingContext = Episode;
+                JournalTitle.SetBinding(Label.TextProperty, "title");
+            }
+
+            if (BindToPlayer)
+            {
+                //BINDINGS TO PLAYER
+
+                //Current Time
+                lblCurrentTime.BindingContext = player;
+                //TODO: Add 'stringer' converter
+                lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
+
+                //Total Time
+                lblTotalTime.BindingContext = player;
+                //TODO: Add 'stringer' converter
+                lblTotalTime.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
+
+                //Seek bar setup
+                SeekBar.BindingContext = player;
+                SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
+                SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+                SeekBar.UserInteraction += (object sender, EventArgs e) => player.Seek(SeekBar.Value);
+
+                //Play-Pause button
+                PlayPause.BindingContext = player;
+                PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+            }
         }
 
         void OnInitialized(object o, EventArgs e)
         {
-            Initializer.IsVisible = false;
-            //TODO: Use local file name or URL, depending on if downloaded
-            player.Load(Episode.Episode.url);
+            //Initialize an episode for playback. This may fire when initially loading
+            //the page if the first playback, or it may wait until they press the fake "play" button
+            //to start an episode after a different one is loaded.
 
+            Initializer.IsVisible = false;
+
+            //Load the file if not already loaded.
+            if (Episode.Episode.id != GlobalResources.CurrentEpisodeId)
+            {
+                //TODO: Use local file name or URL, depending on if downloaded
+                player.Load(Episode.Episode.File_name);
+                GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+            }
+
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.stop_time);
+
+            //Bind controls for playback
+            BindControls(true, true);
+
+            SegControl.ValueChanged += Handle_ValueChanged;
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            }
+
+            //Start playing if they pushed the play button
             if (o != null)
             {
-                //Start playing if they pushed the play button
                 player.Play();
             }
+
             //Show controls
             SeekBar.Opacity = 1;
             TimeStrings.Opacity = 1;
             PlayerControls.VerticalOptions = LayoutOptions.StartAndExpand;
-            //Output.Opacity = 1;
             PlayPause.IsVisible = true;
             backwardButton.Opacity = 1;
             forwardButton.Opacity = 1;
-            //Share.Opacity = 1;
-            //Favorite.Opacity = 1;
         }
 
+        //Share the episode
         void OnShare(object o, EventArgs e)
         {
             Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.id.ToString());
         }
 
+        //Journal disconnected
         void OnDisconnect(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -384,6 +405,7 @@ namespace DABApp
             Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
         }
 
+        //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -401,6 +423,7 @@ namespace DABApp
             JournalWarning.IsEnabled = true;
         }
 
+        //Journal reconnecting
         void OnReconnecting(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -410,6 +433,7 @@ namespace DABApp
             Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
         }
 
+        //Journal room error
         void OnRoom_Error(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -419,6 +443,7 @@ namespace DABApp
             Debug.WriteLine($"Room Error: {o.ToString()}");
         }
 
+        //Journal auth error
         void OnAuth_Error(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -428,6 +453,7 @@ namespace DABApp
             Debug.WriteLine($"Auth Error: {o.ToString()}");
         }
 
+        //Journal Join error
         void OnJoin_Error(object o, EventArgs e)
         {
             //Device.BeginInvokeOnMainThread(() =>
@@ -437,6 +463,7 @@ namespace DABApp
             Debug.WriteLine($"Join error: {o.ToString()}");
         }
 
+        //Keyboard appears or disappears
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
             if (JournalTracker.Current.Open)
@@ -453,11 +480,14 @@ namespace DABApp
             }
         }
 
+        //Player failed
+        //TODO: Does this even run anymore?
         async void OnPlayerFailure(object o, EventArgs e)
         {
             await DisplayAlert("Audio Playback has stopped.", "If you are currently streaming this may be due to a loss of or poor internet connectivity.  Please check your connection and try again.", "OK");
         }
 
+        //User favorites (or unfavorites) an episode
         void OnFavorite(object o, EventArgs e)
         {
             Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
@@ -468,6 +498,7 @@ namespace DABApp
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
         }
 
+        //User listens to (or unlistens to) an episode
         void OnListened(object o, EventArgs e)
         {
             if (Episode.Episode.is_listened_to == "listened")

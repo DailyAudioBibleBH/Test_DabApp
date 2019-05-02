@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using SQLite;
 using Xamarin.Forms;
@@ -30,7 +31,6 @@ namespace DABApp
 		public string channel_title { get; set;}
 		public string channel_description { get; set;}
 		public bool is_downloaded { get; set; } = false;
-		public string file_name { get; set;}
 		public string is_listened_to { get; set; }
 		public double start_time { get; set; } = 0;
 		public double stop_time { get; set; } = 0;
@@ -38,6 +38,35 @@ namespace DABApp
 		public bool is_favorite { get; set; }
 		public bool has_journal { get; set;}
         public bool progressVisible { get; set; }
+
+
+        public string File_extension
+        //Extension of the file (always lower case)
+        {
+            get
+            {
+                return url.Split('.').Last().ToLower();
+            }
+        }
+
+        public string File_name
+        {
+            get
+            {
+                if (is_downloaded)
+                {
+                    //Use the local file
+                    var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var fileName = System.IO.Path.Combine(doc, $"{id}.{File_extension}");
+                    return fileName;
+                }
+                else
+                {
+                    //Use the remote file
+                    return url;
+                }
+            }
+        }
 
 	//	[Ignore]
 	//	public bool downloadVisible { 
