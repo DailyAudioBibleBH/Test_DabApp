@@ -490,7 +490,8 @@ namespace DABApp
         //User favorites (or unfavorites) an episode
         void OnFavorite(object o, EventArgs e)
         {
-            Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
+            Episode.favoriteVisible = !Episode.favoriteVisible;
+            //Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
             //TODO: Set favorite image
             //Favorite.Image = Episode.favoriteSource;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
