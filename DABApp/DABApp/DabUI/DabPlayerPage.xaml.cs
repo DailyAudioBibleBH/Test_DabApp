@@ -491,9 +491,6 @@ namespace DABApp
         void OnFavorite(object o, EventArgs e)
         {
             Episode.favoriteVisible = !Episode.favoriteVisible;
-            //Episode.Episode.is_favorite = !Episode.Episode.is_favorite;
-            //TODO: Set favorite image
-            //Favorite.Image = Episode.favoriteSource;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
@@ -502,21 +499,23 @@ namespace DABApp
         //User listens to (or unlistens to) an episode
         void OnListened(object o, EventArgs e)
         {
-            if (Episode.Episode.is_listened_to == "listened")
+            //Switch the value of listened to
+            Episode.listenedToVisible = !Episode.listenedToVisible;
+
+            if (Episode.listenedToVisible)
             {
-                Episode.Episode.is_listened_to = "";
+                //Mark episode as listened to
                 PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
                 AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
             }
             else
             {
-                Episode.Episode.is_listened_to = "listened";
+                //Mark episode as not listened to
                 PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
                 AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
-            //TODO: Set completed image
-            //Completed.Image = Episode.listenedToSource;
-            AutomationProperties.SetName(Completed, Episode.listenAccessible);
+            //TODO: Bind accessibiliyt text
+            AutomationProperties.SetName(Completed,Episode.listenAccessible);
         }
     }
 }

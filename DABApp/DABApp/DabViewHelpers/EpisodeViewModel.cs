@@ -82,6 +82,7 @@ namespace DABApp
             {
                 unTouched = value;
                 Episode.is_listened_to = unTouched ? "listened" : "";
+                OnPropertyChanged("https://twitter.com/mandrillapp?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor");
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");
             }
