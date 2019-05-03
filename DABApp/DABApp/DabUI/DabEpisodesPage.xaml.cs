@@ -62,16 +62,20 @@ namespace DABApp
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
             var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-            var ext = chosen.url.Split('.').Last();
-            if (DependencyService.Get<IFileManagement>().FileExists($"{chosen.id.ToString()}.{ext}") || CrossConnectivity.Current.IsConnected)
+
+            if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
                 if (chosen.id != GlobalResources.CurrentEpisodeId)
                 {
                     JournalTracker.Current.Content = null;
                 }
+                //Push the new player page
                 await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
             }
-            else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+            else
+            {
+                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+            }
             EpisodeList.SelectedItem = null;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;

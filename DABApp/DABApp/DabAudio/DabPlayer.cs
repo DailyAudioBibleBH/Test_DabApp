@@ -156,7 +156,8 @@ namespace DABApp.DabAudio
             else
             {
                 //Local file
-                rv= player.Load(fileName);
+                FileStream  fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                rv = player.Load(fs);
             }
             OnPropertyChanged("Duration");
             return rv;

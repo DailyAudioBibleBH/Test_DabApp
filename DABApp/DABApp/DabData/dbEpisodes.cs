@@ -7,36 +7,36 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public class dbEpisodes
-	{
-		[PrimaryKey]
-        public int? id { get; set;}
-		public string title { get; set;}
-		public string description { get; set;}
-		public string author { get; set;}
-		[Indexed]
-		public DateTime PubDate { get; set;}
-		[Indexed]
-		public int PubDay { get; set;}
-		[Indexed]
-		public string PubMonth { get; set;}
-		[Indexed]
-		public int PubYear { get; set;}
-		public string url { get; set;}
-		public string read_link { get; set;}
-		public string read_version_tag { get; set;}
-		public string read_version_name { get; set;}
-		[Indexed]
-		public string channel_code { get; set;}
-		public string channel_title { get; set;}
-		public string channel_description { get; set;}
-		public bool is_downloaded { get; set; } = false;
-		public string is_listened_to { get; set; }
-		public double start_time { get; set; } = 0;
-		public double stop_time { get; set; } = 0;
-		public string remaining_time { get; set; } = "01:00";
-		public bool is_favorite { get; set; }
-		public bool has_journal { get; set;}
+    public class dbEpisodes
+    {
+        [PrimaryKey]
+        public int? id { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string author { get; set; }
+        [Indexed]
+        public DateTime PubDate { get; set; }
+        [Indexed]
+        public int PubDay { get; set; }
+        [Indexed]
+        public string PubMonth { get; set; }
+        [Indexed]
+        public int PubYear { get; set; }
+        public string url { get; set; }
+        public string read_link { get; set; }
+        public string read_version_tag { get; set; }
+        public string read_version_name { get; set; }
+        [Indexed]
+        public string channel_code { get; set; }
+        public string channel_title { get; set; }
+        public string channel_description { get; set; }
+        public bool is_downloaded { get; set; } = false;
+        public string is_listened_to { get; set; }
+        public double start_time { get; set; } = 0;
+        public double stop_time { get; set; } = 0;
+        public string remaining_time { get; set; } = "01:00";
+        public bool is_favorite { get; set; }
+        public bool has_journal { get; set; }
         public bool progressVisible { get; set; }
 
 
@@ -49,7 +49,7 @@ namespace DABApp
             }
         }
 
-        public string File_name
+      public string File_name_local
         {
             get
             {
@@ -58,7 +58,30 @@ namespace DABApp
                     //Use the local file
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     var fileName = System.IO.Path.Combine(doc, $"{id}.{File_extension}");
-                    return fileName;
+                    if (FileManager.Instance.FileExists(fileName))
+                    {
+                        return fileName;
+                    } else
+                    {
+                        //File is marked as downloaded but doesn't really exist
+                        return null;
+                    }
+                } else
+                {
+                    //File isn't downloaded 
+                    return null;
+                }
+            }
+        }
+
+        public string File_name
+            //File name used to access the file 
+        {
+            get
+            {
+                if (File_name_local != null)
+                {
+                    return File_name_local;
                 }
                 else
                 {

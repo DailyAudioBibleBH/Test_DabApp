@@ -28,8 +28,10 @@ namespace DABApp
             title = episode.title;
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
-            DependencyService.Get<IFileManagement>().EpisodeDownloading += UpdateDownload;
-            DependencyService.Get<IFileManagement>().EpisodeCompleted += DownloadComplete;
+            FileManager.Instance.EpisodeDownloading += UpdateDownload;
+            FileManager.Instance.EpisodeCompleted += DownloadStarted;
+            //DependencyService.Get<IFileManagement>().EpisodeDownloading += UpdateDownload;
+            //DependencyService.Get<IFileManagement>().EpisodeCompleted += DownloadComplete;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }
 

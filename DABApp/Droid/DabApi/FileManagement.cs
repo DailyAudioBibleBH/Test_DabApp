@@ -70,12 +70,7 @@ namespace DABApp.Droid
                 {
                     _episode = episode;
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    var ext = address.Split('.').Last();
-                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
-                    //if (!File.Exists(fileName))
-                    //{
-                    //    File.Create(fileName);
-                    //}
+                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{episode.File_extension}");
                     client = new WebClient();
                     WebRequest request = HttpWebRequest.Create(address);
                     request.Method = "HEAD";
