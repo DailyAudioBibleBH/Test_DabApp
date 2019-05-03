@@ -58,7 +58,8 @@ namespace DABApp
                     //Use the local file
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     var fileName = System.IO.Path.Combine(doc, $"{id}.{File_extension}");
-                    if (FileManager.Instance.FileExists(fileName))
+                    FileManager fm = new FileManager();
+                    if (fm.FileExists(fileName))
                     {
                         return fileName;
                     } else

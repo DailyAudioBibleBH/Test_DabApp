@@ -28,12 +28,9 @@ namespace DABApp.iOS
                 if (keepDownloading)
                 {
                     var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    var ext = address.Split('.').Last();
-                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{ext}");
+                    var fileName = Path.Combine(doc, $"{episode.id.Value.ToString()}.{episode.File_extension}");
                     _episode = episode;
-                    //if (!File.Exists(fileName)) {
-                    //	File.Create(fileName);
-                    //}
+
                     client = new WebClient();
                     WebRequest request = HttpWebRequest.Create(address);
                     request.Method = "HEAD";
@@ -65,7 +62,7 @@ namespace DABApp.iOS
         public bool DeleteEpisode(string episodeId, string extension)
         {
             try
-            {
+            { 
                 var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
                 Debug.WriteLine($"Deleted episode {episodeId}");

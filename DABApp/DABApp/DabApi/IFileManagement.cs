@@ -18,9 +18,6 @@ namespace DABApp
     public class FileManager : IFileManagement
     {
         private IFileManagement _manager = DependencyService.Get<IFileManagement>();
-
-        public static FileManager Instance = new FileManager(); //General instance to use for file management
-
         public bool keepDownloading { get => _manager.keepDownloading; set => _manager.keepDownloading = value; }
 
         public event EventHandler<DabEventArgs> EpisodeDownloading

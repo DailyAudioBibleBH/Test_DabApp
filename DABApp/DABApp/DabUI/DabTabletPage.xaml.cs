@@ -172,8 +172,9 @@ namespace DABApp
             activityHolder.IsVisible = true;
             var newEp = (EpisodeViewModel)e.Item;
             JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
-            var ext = newEp.Episode.url.Split('.').Last();
-            if (DependencyService.Get<IFileManagement>().FileExists($"{newEp.Episode.id.ToString()}.{ext}") || CrossConnectivity.Current.IsConnected)
+   
+            // Make sure we have a file to play
+            if (newEp.Episode.File_name_local !=null || CrossConnectivity.Current.IsConnected)
             {
                 episode = (EpisodeViewModel)e.Item;
                 favorite.Source = episode.favoriteSource;
