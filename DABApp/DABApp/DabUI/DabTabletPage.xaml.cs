@@ -280,8 +280,7 @@ namespace DABApp
                 }
             } else
             {
-                //TODO: Use local file name or URL, depending on if downloaded
-                player.Load(episode.Episode.url);
+                player.Load(episode.Episode);
                 player.Play();
             }
         }
@@ -379,12 +378,7 @@ namespace DABApp
         void OnInitialized(object o, EventArgs e)
         {
             Initializer.IsVisible = false;
-            //if (AudioPlayer.Instance.IsInitialized)
-            //{
-            //    AudioPlayer.Instance.Pause();
-            //}
-            //TODO: Use local file name or URL, depending on if downloaded
-            player.Load(episode.Episode.url);
+            player.Load(episode.Episode);
             player.Play();
             SetVisibility(true);
         }

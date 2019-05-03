@@ -62,11 +62,28 @@ namespace DABApp.DabAudio
             }
         }
 
+        //Current position of the player
         public double CurrentPosition
         {
             get
             {
                 return player.CurrentPosition;
+            }
+        }
+
+        //Current position of the player as a percentage
+        public double CurrentProgressPercentage
+        {
+            get
+            {
+                if (Duration > 0)
+                {
+                    return CurrentPosition / Duration;
+                        }
+                else
+                {
+                    return 0;
+                }
             }
         }
 
@@ -164,6 +181,14 @@ namespace DABApp.DabAudio
 
         }
 
+        public bool Load(dbEpisodes episode)
+        {
+            //Load a specific episode (sets text properties as well
+            EpisodeTitle = episode.title;
+            ChannelTitle = episode.channel_title;
+            return Load(episode.File_name);
+        }
+
 
         public void Pause()
         {
@@ -183,6 +208,7 @@ namespace DABApp.DabAudio
         {
             player.Seek(position);
             OnPropertyChanged("CurrentPosition");
+            OnPropertyChanged("CurrentProgressPercentage");
         }
 
         public void Stop()
@@ -218,6 +244,8 @@ namespace DABApp.DabAudio
             {
                 LastPosition = player.CurrentPosition;
                 OnPropertyChanged("CurrentPosition");
+                OnPropertyChanged("CurrentProgressPercentage");
+
             }
 
         }

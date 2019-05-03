@@ -16,18 +16,27 @@ namespace DABApp
 		{
 			InitializeComponent();
 
-            //Set up bindings
+            //PLAYER BINDINGS
+
+            //Visibility of player
             stackPlayerBar.BindingContext = player;
             stackPlayerBar.SetBinding(IsVisibleProperty, "IsReady");
-             lblEpisodeTitle.BindingContext = player;
+
+            //Play / Pause button
+            PlayerButton.BindingContext = player;
+            PlayerButton.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+
+            //Progress bar (%)
+            progProgress.BindingContext = player;
+            progProgress.SetBinding(ProgressBar.ProgressProperty, "CurrentProgressPercentage");
+
+            //Episode Title
+            lblEpisodeTitle.BindingContext = player;
             lblEpisodeTitle.SetBinding(Label.TextProperty, "EpisodeTitle");
+
+            //Channel Title
             lblChannelTitle.BindingContext = player;
             lblChannelTitle.SetBinding(Label.TextProperty, "ChannelTitle");
-            //TODO: Fix the PlayerButton image binding (currently 'source' returns invalid string')
-            //PlayerButton.BindingContext = player;
-            //PlayerButton.SetBinding(Button.ImageProperty, "PlayPauseButtonImageBig");
-            progProgress.BindingContext = player;
-            progProgress.SetBinding(ProgressBar.ProgressProperty, "CurrentPosition");
 
 
             //Add a tap recognizer for the podcast tit

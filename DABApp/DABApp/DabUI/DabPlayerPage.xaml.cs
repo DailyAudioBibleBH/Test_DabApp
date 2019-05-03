@@ -122,8 +122,7 @@ namespace DABApp
             }
             else
             {
-                //TODO: Use local file name or URL, depending on if downloaded
-                player.Load(Episode.Episode.url);
+                player.Load(Episode.Episode);
                 player.Play();
             }
         }
@@ -358,7 +357,7 @@ namespace DABApp
             if (Episode.Episode.id != GlobalResources.CurrentEpisodeId)
             {
                 //TODO: Use local file name or URL, depending on if downloaded
-                player.Load(Episode.Episode.File_name);
+                player.Load(Episode.Episode);
                 GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
             }
 
