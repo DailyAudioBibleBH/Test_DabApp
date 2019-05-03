@@ -23,8 +23,8 @@ namespace DABApp
             stackPlayerBar.SetBinding(IsVisibleProperty, "IsReady");
 
             //Play / Pause button
-            PlayerButton.BindingContext = player;
-            PlayerButton.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+            btnPlayPause.BindingContext = player;
+            btnPlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
 
             //Progress bar (%)
             progProgress.BindingContext = player;

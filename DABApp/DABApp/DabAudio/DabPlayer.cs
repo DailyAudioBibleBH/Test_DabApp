@@ -154,6 +154,7 @@ namespace DABApp.DabAudio
             //Load a stream
             bool rv = player.Load(audioStream);
             OnPropertyChanged("Duration");
+            OnPropertyChanged("IsReady");
             return rv;
         }
 

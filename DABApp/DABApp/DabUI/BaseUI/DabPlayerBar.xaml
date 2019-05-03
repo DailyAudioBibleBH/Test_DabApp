@@ -10,7 +10,7 @@
                             <TapGestureRecognizer Tapped="OnShowPlayer" />
                         </Image.GestureRecognizers>
                     </Image>
-                    <Image Source="" VerticalOptions="CenterAndExpand" HeightRequest="35" WidthRequest="35" Aspect="AspectFit" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Play Pause">
+                    <Image x:Name="btnPlayPause" Source="" VerticalOptions="CenterAndExpand" HeightRequest="35" WidthRequest="35" Aspect="AspectFit" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Play Pause">
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnPlayPause" />
                         </Image.GestureRecognizers>
