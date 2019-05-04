@@ -138,6 +138,7 @@ namespace DABApp
         {
             player.Seek(player.CurrentPosition + 30);
         }
+            //Initialize an episode and bind all related controls
 
         //Select a tab at the top of the screen
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -325,12 +326,11 @@ namespace DABApp
 
                 //Current Time
                 lblCurrentTime.BindingContext = player;
-                //TODO: Add 'stringer' converter
                 lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
 
                 //Total Time
+                //TODO: Replace with remaining time
                 lblTotalTime.BindingContext = player;
-                //TODO: Add 'stringer' converter
                 lblTotalTime.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
 
                 //Seek bar setup

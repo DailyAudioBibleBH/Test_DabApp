@@ -24,6 +24,7 @@ namespace DABApp
         private double _width;
         private double _height;
 
+        //Open up the page and optionally init it with an episode
         public DabTabletPage(Resource resource, dbEpisodes Episode = null)
         {
             InitializeComponent();
@@ -35,11 +36,11 @@ namespace DABApp
             EpDescription.Margin = new Thickness(40, 0, 40, 0);
             JournalContent.HeightRequest = 450;
             SegControl.ValueChanged += Handle_ValueChanged;
-            _resource = resource;
+            _resource = resource; //Selected channel
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
@@ -56,10 +57,12 @@ namespace DABApp
             });
             if (Episode != null)
             {
+                //Use the provided episode
                 episode = new EpisodeViewModel(Episode);
             }
             else
             {
+                //Pick the first episode
                 episode = new EpisodeViewModel(Episodes.First());
             }
             favorite.BindingContext = episode;
@@ -97,7 +100,7 @@ namespace DABApp
             AboutFormat.GestureRecognizers.Add(tapper);
             ChannelsList.SelectedItem = _resource;
             Completed.BindingContext = episode;
-            
+
         }
 
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -172,9 +175,9 @@ namespace DABApp
             activityHolder.IsVisible = true;
             var newEp = (EpisodeViewModel)e.Item;
             JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
-   
+
             // Make sure we have a file to play
-            if (newEp.Episode.File_name_local !=null || CrossConnectivity.Current.IsConnected)
+            if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
                 episode = (EpisodeViewModel)e.Item;
                 favorite.Source = episode.favoriteSource;
@@ -257,16 +260,19 @@ namespace DABApp
             activityHolder.IsVisible = false;
         }
 
+        //Go back 30 seconds
         void OnBack30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition - 30);
         }
 
+        //Move forward 30 seconds
         void OnForward30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition + 30);
         }
 
+        //Play or pause the episode
         void OnPlay(object o, EventArgs e)
         {
             if (player.IsReady)
@@ -274,17 +280,20 @@ namespace DABApp
                 if (player.IsPlaying)
                 {
                     player.Pause();
-                } else
+                }
+                else
                 {
                     player.Play();
                 }
-            } else
+            }
+            else
             {
                 player.Load(episode.Episode);
                 player.Play();
             }
         }
 
+        //Share the episode
         void OnShare(object o, EventArgs e)
         {
             Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.id.ToString());
@@ -377,11 +386,75 @@ namespace DABApp
 
         void OnInitialized(object o, EventArgs e)
         {
-            Initializer.IsVisible = false;
-            player.Load(episode.Episode);
-            player.Play();
-            SetVisibility(true);
+            Initializer.IsVisible = false; //Hide the init button
+            BindControls(true, true); //Bind controls
+            player.Load(episode.Episode); //Load the episode
+            player.Play(); //Play
+            SetVisibility(true); //Adjust visibility of controls
         }
+
+        void BindControls(bool BindToEpisode, bool BindToPlayer)
+        {
+            if (BindToEpisode)
+            {
+                //BINDINGS TO EPISODE
+
+                //Episode Title
+                lblEpisodeTitle.BindingContext = episode;
+                lblEpisodeTitle.SetBinding(Label.TextProperty, "title");
+
+                //Channel title
+                lblChannelTitle.BindingContext = episode;
+                lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
+
+                //Episode Description
+                EpDescription.BindingContext = episode;
+                EpDescription.SetBinding(Label.TextProperty, "description");
+
+                //Favorite button
+                favorite.BindingContext = episode;
+                favorite.SetBinding(Image.SourceProperty, "favoriteSource");
+                //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
+
+                //Completed button
+                Completed.BindingContext = episode;
+                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                //TODO: Add Binding for AutomationProperties.Name for listenAccessible
+
+                //Journal Title
+                JournalTitle.BindingContext = episode;
+                JournalTitle.SetBinding(Label.TextProperty, "title");
+
+            }
+
+            if (BindToPlayer)
+            {
+                //PLAYER BINDINGS
+                //Current Time
+                lblCurrentPosition.BindingContext = player;
+                lblCurrentPosition.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
+
+                //Total Time
+                //TODO: Replace with remaining time
+                lblDuration.BindingContext = player;
+                lblDuration.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
+
+                //Seek bar setup
+                SeekBar.BindingContext = player;
+                SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
+                SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+                SeekBar.UserInteraction += (object sender, EventArgs e) => player.Seek(SeekBar.Value);
+
+                //Play-Pause button
+                PlayPause.BindingContext = player;
+                PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+
+
+
+            }
+        }
+
+
 
         void OnJournalChanged(object o, EventArgs e)
         {
@@ -582,8 +655,8 @@ namespace DABApp
                 favorite.Source = episode.favoriteSource;
             }
             model.favoriteVisible = !ep.is_favorite;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
         }
 
         protected override void OnSizeAllocated(double width, double height)

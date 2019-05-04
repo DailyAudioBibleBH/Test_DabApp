@@ -24,14 +24,14 @@
                         <OnPlatform x:TypeArguments="x:Boolean" iOS="false" Android="true" />
                     </StackLayout.AutomationProperties.IsInAccessibleTree>
                     <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
-                        <Label Text="{Binding title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
-                        <Label Text="{Binding channel_title}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
-                        <Label x:Name="EpDescription" Text="{Binding description}" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
+                        <Label x:Name="lblEpisodeTitle" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
+                        <Label x:Name="lblChannelTitle" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
+                        <Label x:Name="EpDescription" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
                     </StackLayout>
-                    <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" Value="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime}" Maximum="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=TotalTime}" Margin="50, 0, 50, 0" />
+                    <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" Margin="50, 0, 50, 0" />
                     <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings" Margin="50, 0, 50, 0">
-                        <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=CurrentTime, Converter={StaticResource stringer}}" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
-                        <Label Text="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=RemainingTime}" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+                        <Label x:Name="lblCurrentPosition"  HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+                        <Label x:Name="lblDuration" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
                     </StackLayout>
                     <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
                         <Grid.RowDefinitions>
@@ -49,7 +49,7 @@
                                 <TapGestureRecognizer Tapped="OnBack30" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="PlayPause" Source="{Binding Source={x:Static local:AudioPlayer.Instance}, Path=PlayPauseButtonImageBig}" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
+                        <Image x:Name="PlayPause" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnPlay" />
                             </Image.GestureRecognizers>
@@ -78,7 +78,7 @@
                         </Grid.ColumnDefinitions>
                         <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="15" Padding="20, 5, 20, 5">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
-                                <Button x:Name="Completed" Image="{Binding listenedToSource}" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding listenAccessible}" />
+                                <Button x:Name="Completed" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true"  />
                                 <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnListened" />
@@ -86,7 +86,7 @@
                                 </Label>
                             </StackLayout>
                         </Frame>
-                        <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Source="{Binding favoriteSource}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding favoriteAccessible}">
+                        <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" >
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFavorite" />
                             </Image.GestureRecognizers>
@@ -110,7 +110,7 @@
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout Padding="10">
-                                    <Label Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                    <Label x:Name="lblChannelsListTitle" Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
@@ -193,7 +193,7 @@
                 </StackLayout>
                 <StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20, 0, 20, 20">
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="JournalTitle" Text="{Binding title}" FontSize="Micro" />
+                        <Label x:Name="JournalTitle" FontSize="Micro" />
                         <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand" />
                     </StackLayout>
                     <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="650" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" />
