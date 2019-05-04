@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using DABApp.DabAudio;
 using Xamarin.Forms;
 
+//TODO: Tablet player bar crashes app when you tap the arrow.
+
+
 namespace DABApp
 {
 	public partial class DabPlayerBar : ContentView

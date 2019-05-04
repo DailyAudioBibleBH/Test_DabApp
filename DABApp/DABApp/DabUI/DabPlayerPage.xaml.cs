@@ -329,9 +329,8 @@ namespace DABApp
                 lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
 
                 //Total Time
-                //TODO: Replace with remaining time
-                lblTotalTime.BindingContext = player;
-                lblTotalTime.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
+                lblRemainingTime.BindingContext = player;
+                lblRemainingTime.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
 
                 //Seek bar setup
                 SeekBar.BindingContext = player;

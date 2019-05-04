@@ -31,7 +31,7 @@
                     <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" Margin="50, 0, 50, 0" />
                     <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings" Margin="50, 0, 50, 0">
                         <Label x:Name="lblCurrentPosition"  HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
-                        <Label x:Name="lblDuration" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+                        <Label x:Name="lblRemainingTime" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
                     </StackLayout>
                     <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
                         <Grid.RowDefinitions>

@@ -167,6 +167,7 @@ namespace DABApp
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
+            //Handle the selection of a different episode
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -180,7 +181,10 @@ namespace DABApp
             if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
                 episode = (EpisodeViewModel)e.Item;
-                favorite.Source = episode.favoriteSource;
+
+                //Bind episode data to the new episode (not the player though)
+                BindControls(true, false);
+
                 if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
                     JournalTracker.Current.Content = null;
@@ -190,8 +194,6 @@ namespace DABApp
                 {
                     SetVisibility(true);
                 }
-                PlayerLabels.BindingContext = episode;
-                JournalTitle.BindingContext = episode;
                 EpisodeList.SelectedItem = null;
                 await SetReading();
 
@@ -240,8 +242,7 @@ namespace DABApp
                     JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
                 }
                 episode = new EpisodeViewModel(Episodes.First());
-                PlayerLabels.BindingContext = episode;
-                JournalTitle.BindingContext = episode;
+                BindControls(true, false);
                 await SetReading();
                 if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
@@ -435,9 +436,8 @@ namespace DABApp
                 lblCurrentPosition.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
 
                 //Total Time
-                //TODO: Replace with remaining time
-                lblDuration.BindingContext = player;
-                lblDuration.SetBinding(Label.TextProperty, "Duration", BindingMode.Default, new StringConverter());
+                lblRemainingTime.BindingContext = player;
+                lblRemainingTime.SetBinding(Label.TextProperty, "RemainingSeconds", BindingMode.Default, new StringConverter());
 
                 //Seek bar setup
                 SeekBar.BindingContext = player;

@@ -71,6 +71,15 @@ namespace DABApp.DabAudio
             }
         }
 
+        //Remaining time for the player
+        public double RemainingSeconds
+        {
+            get
+            {
+                return player.Duration - CurrentPosition;
+            }
+        }
+
         //Current position of the player as a percentage
         public double CurrentProgressPercentage
         {
@@ -209,6 +218,7 @@ namespace DABApp.DabAudio
         {
             player.Seek(position);
             OnPropertyChanged("CurrentPosition");
+            OnPropertyChanged("RemainingSeconds");
             OnPropertyChanged("CurrentProgressPercentage");
         }
 
@@ -245,6 +255,7 @@ namespace DABApp.DabAudio
             {
                 LastPosition = player.CurrentPosition;
                 OnPropertyChanged("CurrentPosition");
+                OnPropertyChanged("RemainingSeconds");
                 OnPropertyChanged("CurrentProgressPercentage");
 
             }

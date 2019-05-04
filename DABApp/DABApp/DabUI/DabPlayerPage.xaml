@@ -31,7 +31,7 @@
                     <local:DabSeekBar x:Name="SeekBar" HorizontalOptions="FillAndExpand" Minimum="0" VerticalOptions="EndAndExpand" Margin="20, 0, 20, 0" />
                     <StackLayout x:Name="TimeStrings" Orientation="Horizontal" VerticalOptions="Start" Padding="25, 0, 25, 0">
                         <local:PlayerLabel x:Name="lblCurrentTime" HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" AutomationProperties.IsInAccessibleTree="true" />
-                        <local:PlayerLabel x:Name="lblTotalTime" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" AutomationProperties.IsInAccessibleTree="true" />
+                        <local:PlayerLabel x:Name="lblRemainingTime" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Micro" AutomationProperties.IsInAccessibleTree="true" />
                     </StackLayout>
                     <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
                         <Grid.RowDefinitions>
