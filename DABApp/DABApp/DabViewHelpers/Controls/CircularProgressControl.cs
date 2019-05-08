@@ -17,7 +17,7 @@ namespace DABApp
         Xamarin.Forms.View background2;
         Xamarin.Forms.View cloud1;
         Xamarin.Forms.View cloud2;
-        bool reset= false;
+        bool reset = false;
         public CircularProgressControl()
         {
             IsVisible = false;
@@ -117,7 +117,7 @@ namespace DABApp
                 background1.Rotation = rotation;
             }
             else
-            { 
+            {
                 if (oldValue < .5)
                 {
                     // this code is CPU intensive so only do it if we go from <50% to >=50%

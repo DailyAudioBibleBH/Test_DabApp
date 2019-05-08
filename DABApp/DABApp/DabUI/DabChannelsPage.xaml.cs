@@ -166,6 +166,8 @@ namespace DABApp
             infoJ.Add("channel", resource.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
 
+            //TODO: Subscribe to a channel
+
         }
 
         void TimedActions()
