@@ -101,7 +101,6 @@ namespace DABApp.iOS
             /////////////
             // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
             FirebasePushNotificationManager.Initialize(options, true);
-            CrossFirebasePushNotification.Current.OnTokenRefresh += (source, e) => ;
 
             //Token event usage sample:
             CrossFirebasePushNotification.Current.OnTokenRefresh += (s, p) =>
