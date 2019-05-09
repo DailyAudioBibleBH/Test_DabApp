@@ -77,5 +77,7 @@
 	<string>1.1.2</string>
 	<key>CFBundleVersion</key>
 	<string>20190415</string>
+	<key>FirebaseAppDelegatProxyEnabled</key>
+	<string>No</string>
 </dict>
 </plist>

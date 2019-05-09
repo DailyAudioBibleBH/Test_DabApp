@@ -15,6 +15,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Plugin.AudioRecorder;
 using Firebase.CloudMessaging;
+using Plugin.FirebasePushNotification;
 
 namespace DABApp.iOS
 {
@@ -24,6 +25,7 @@ namespace DABApp.iOS
 
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
+            //SQL Lite Init
 			SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
             SQLitePCL.raw.sqlite3_shutdown();
 			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
@@ -32,22 +34,26 @@ namespace DABApp.iOS
             //Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
 
+            //Cached Image Init
             CachedImageRenderer.Init();
+
+            //Popup INit
             Rg.Plugins.Popup.Popup.Init();
             
-
+            //HockeyApp Init
 			var manager = BITHockeyManager.SharedHockeyManager;
 			manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
 			manager.StartManager();
 			manager.Authenticator.AuthenticateInstallation();
 
-			global::Xamarin.Forms.Forms.Init();
+            global::Xamarin.Forms.Forms.Init();
 			Xamarin.Forms.DependencyService.Register<ShareIntent>();
 			DependencyService.Register<SocketService>();
 			DependencyService.Register<KeyboardHelper>();
             DependencyService.Register<RecordService>();
             DependencyService.Register<AnalyticsService>();
 
+            //Slideover Kit Init
 			SlideOverKit.iOS.SlideOverKit.Init();
 
             SegmentedControlRenderer.Init();
@@ -88,6 +94,9 @@ namespace DABApp.iOS
 
 
             LoadApplication(new App());
+
+            //FIrebase Init
+            FirebasePushNotificationManager.Initialize(options, true);
 
             var m = base.FinishedLaunching(app, options);
             int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
@@ -181,9 +190,37 @@ namespace DABApp.iOS
             // Note: This callback is fired at each app startup and whenever a new token is generated.
         }
 
+        //public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        //{
+        //    Messaging.SharedInstance.ApnsToken = deviceToken;
+        //}
+
+        //Firebase Cloud Messaging
         public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
         {
-            Messaging.SharedInstance.ApnsToken = deviceToken;
+            FirebasePushNotificationManager.DidRegisterRemoteNotifications(deviceToken);
+        }
+
+        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+        {
+            FirebasePushNotificationManager.RemoteNotificationRegistrationFailed(error);
+
+        }
+        // To receive notifications in foregroung on iOS 9 and below.
+        // To receive notifications in background in any iOS version
+        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+        {
+            // If you are receiving a notification message while your app is in the background,
+            // this callback will not be fired 'till the user taps on the notification launching the application.
+
+            // If you disable method swizzling, you'll need to call this method. 
+            // This lets FCM track message delivery and analytics, which is performed
+            // automatically with method swizzling enabled.
+            FirebasePushNotificationManager.DidReceiveMessage(userInfo);
+            // Do your magic to handle the notification data
+            System.Console.WriteLine(userInfo);
+
+            completionHandler(UIBackgroundFetchResult.NewData);
         }
 
     }
