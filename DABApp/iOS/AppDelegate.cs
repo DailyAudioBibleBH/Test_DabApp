@@ -19,17 +19,17 @@ using Plugin.FirebasePushNotification;
 
 namespace DABApp.iOS
 {
-	[Register("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate
-	{
+    [Register("AppDelegate")]
+    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate
+    {
 
-		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-		{
+        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        {
             //SQL Lite Init
-			SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
+            SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
             SQLitePCL.raw.sqlite3_shutdown();
-			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
-			SQLitePCL.raw.sqlite3_initialize();
+            SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
+            SQLitePCL.raw.sqlite3_initialize();
 
             //Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
@@ -39,26 +39,26 @@ namespace DABApp.iOS
 
             //Popup INit
             Rg.Plugins.Popup.Popup.Init();
-            
+
             //HockeyApp Init
-			var manager = BITHockeyManager.SharedHockeyManager;
-			manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
-			manager.StartManager();
-			manager.Authenticator.AuthenticateInstallation();
+            var manager = BITHockeyManager.SharedHockeyManager;
+            manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
+            manager.StartManager();
+            manager.Authenticator.AuthenticateInstallation();
 
             global::Xamarin.Forms.Forms.Init();
-			Xamarin.Forms.DependencyService.Register<ShareIntent>();
-			DependencyService.Register<SocketService>();
-			DependencyService.Register<KeyboardHelper>();
+            Xamarin.Forms.DependencyService.Register<ShareIntent>();
+            DependencyService.Register<SocketService>();
+            DependencyService.Register<KeyboardHelper>();
             DependencyService.Register<RecordService>();
             DependencyService.Register<AnalyticsService>();
 
             //Slideover Kit Init
-			SlideOverKit.iOS.SlideOverKit.Init();
+            SlideOverKit.iOS.SlideOverKit.Init();
 
             SegmentedControlRenderer.Init();
 
-			app.StatusBarStyle = UIStatusBarStyle.LightContent;
+            app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
             //Initialize Firebase
             Firebase.Core.App.Configure();
@@ -72,7 +72,8 @@ namespace DABApp.iOS
                 // For iOS 10 display notification (sent via APNS)
                 UNUserNotificationCenter.Current.Delegate = this;
                 var authOptions = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound;
-                UNUserNotificationCenter.Current.RequestAuthorization(authOptions, (granted, error) => {
+                UNUserNotificationCenter.Current.RequestAuthorization(authOptions, (granted, error) =>
+                {
                     Console.WriteLine(granted);
                 });
             }
@@ -95,8 +96,60 @@ namespace DABApp.iOS
 
             LoadApplication(new App());
 
-            //FIrebase Init
+            //////////////
+            //FIrebase Cloud Messaging Initialization and Events
+            /////////////
+            // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
             FirebasePushNotificationManager.Initialize(options, true);
+            CrossFirebasePushNotification.Current.OnTokenRefresh += (source, e) => ;
+
+            //Token event usage sample:
+            CrossFirebasePushNotification.Current.OnTokenRefresh += (s, p) =>
+            {
+                System.Diagnostics.Debug.WriteLine($"TOKEN : {p.Token}");
+            };
+
+            //Push message received event usage sample:
+            CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
+            {
+                System.Diagnostics.Debug.WriteLine("Received");
+            };
+
+            //Push message opened event usage sample:
+            CrossFirebasePushNotification.Current.OnNotificationOpened += (s, p) =>
+            {
+                System.Diagnostics.Debug.WriteLine("Opened");
+                foreach (var data in p.Data)
+                {
+                    System.Diagnostics.Debug.WriteLine($"{data.Key} : {data.Value}");
+                }
+            };
+
+            //Push message action tapped event usage sample: OnNotificationAction
+            CrossFirebasePushNotification.Current.OnNotificationAction += (s, p) =>
+            {
+                System.Diagnostics.Debug.WriteLine("Action");
+
+                if (!string.IsNullOrEmpty(p.Identifier))
+                {
+                    System.Diagnostics.Debug.WriteLine($"ActionId: {p.Identifier}");
+                    foreach (var data in p.Data)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"{data.Key} : {data.Value}");
+                    }
+
+                }
+
+            };
+            //Push message deleted event usage sample: (Android Only)
+            CrossFirebasePushNotification.Current.OnNotificationDeleted += (s, p) =>
+             {
+                 System.Diagnostics.Debug.WriteLine("Deleted");
+             };
+
+            //END OF FIREBASE CLOUD MESSAGING CODE //
+
+            //Back to Gereral Xam.Forms
 
             var m = base.FinishedLaunching(app, options);
             int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
@@ -105,23 +158,23 @@ namespace DABApp.iOS
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
             return m;
-		}
+        }
 
 
-		public override void OnActivated(UIApplication uiApplication)
-		{
-			base.OnActivated(uiApplication);
-			MessagingCenter.Send<string>("Refresh", "Refresh");
-		}
+        public override void OnActivated(UIApplication uiApplication)
+        {
+            base.OnActivated(uiApplication);
+            MessagingCenter.Send<string>("Refresh", "Refresh");
+        }
 
-		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
-		{
+        public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
+        {
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 return UIInterfaceOrientationMask.Portrait;
             }
             else return UIInterfaceOrientationMask.All;
-		}
+        }
 
         //More of what was needed to get journaling to work on Android once again found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
         private static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -196,6 +249,7 @@ namespace DABApp.iOS
         //}
 
         //Firebase Cloud Messaging
+        //See: https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
         public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
         {
             FirebasePushNotificationManager.DidRegisterRemoteNotifications(deviceToken);
