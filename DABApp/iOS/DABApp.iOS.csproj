@@ -359,12 +359,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <BundleResource Include="GoogleService-Info.plist" />
     <None Include="Info.plist">
       <SubType>Designer</SubType>
     </None>
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
+    <None Include="GoogleService-Info.plist" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
