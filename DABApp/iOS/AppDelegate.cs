@@ -61,7 +61,8 @@ namespace DABApp.iOS
             app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
             //Initialize Firebase
-            Firebase.Core.App.Configure();
+            //TODO: Disabled this to get FCM working - need to ensure we are still tracking analytics
+            //Firebase.Core.App.Configure();
 
             //Register for remote notifications (Firebase Cloud Messaging)
             // https://firebase.google.com/docs/cloud-messaging/ios/client?authuser=0
@@ -84,15 +85,6 @@ namespace DABApp.iOS
                 var settings = UIUserNotificationSettings.GetSettingsForTypes(allNotificationTypes, null);
                 UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
             }
-            UIApplication.SharedApplication.RegisterForRemoteNotifications();
-
-            //Assign the messaging delegat to this class
-            Messaging.SharedInstance.Delegate = this;
-            //WRite the current FCM token
-            var token = Messaging.SharedInstance.FcmToken ?? "";
-            Console.WriteLine($"FCM token: {token}");
-
-
 
             LoadApplication(new App());
 
@@ -101,6 +93,14 @@ namespace DABApp.iOS
             /////////////
             // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
             FirebasePushNotificationManager.Initialize(options, true);
+
+            //UIApplication.SharedApplication.RegisterForRemoteNotifications();
+
+            ////Assign the messaging delegat to this class
+            //Messaging.SharedInstance.Delegate = this;
+            ////WRite the current FCM token
+            //var token = Messaging.SharedInstance.FcmToken ?? "";
+            //Console.WriteLine($"FCM token: {token}");
 
             //Token event usage sample:
             CrossFirebasePushNotification.Current.OnTokenRefresh += (s, p) =>
@@ -111,12 +111,14 @@ namespace DABApp.iOS
             //Push message received event usage sample:
             CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
             {
+                //TODO: Handle push notifiations while within the app (just display it?)
                 System.Diagnostics.Debug.WriteLine("Received");
             };
 
             //Push message opened event usage sample:
             CrossFirebasePushNotification.Current.OnNotificationOpened += (s, p) =>
             {
+                //TODO: do something when the user opens the app after tapping a push notification
                 System.Diagnostics.Debug.WriteLine("Opened");
                 foreach (var data in p.Data)
                 {
@@ -127,6 +129,7 @@ namespace DABApp.iOS
             //Push message action tapped event usage sample: OnNotificationAction
             CrossFirebasePushNotification.Current.OnNotificationAction += (s, p) =>
             {
+                //TODO: Handle action
                 System.Diagnostics.Debug.WriteLine("Action");
 
                 if (!string.IsNullOrEmpty(p.Identifier))
@@ -143,6 +146,7 @@ namespace DABApp.iOS
             //Push message deleted event usage sample: (Android Only)
             CrossFirebasePushNotification.Current.OnNotificationDeleted += (s, p) =>
              {
+                 //TODO: Handle push notification deleted
                  System.Diagnostics.Debug.WriteLine("Deleted");
              };
 
