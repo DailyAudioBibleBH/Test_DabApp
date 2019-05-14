@@ -364,7 +364,6 @@
     </None>
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
-    <None Include="GoogleService-Info.plist" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
@@ -479,6 +478,7 @@
     <BundleResource Include="Resources\seekbaricon%402x.png" />
     <BundleResource Include="Resources\seekbaricon%403x.png" />
     <BundleResource Include="Resources\ic_done_listened_3x.png" />
+    <BundleResource Include="GoogleService-Info.plist" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
