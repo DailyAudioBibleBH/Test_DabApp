@@ -16,6 +16,7 @@ using System.Net.Security;
 using Plugin.AudioRecorder;
 using Firebase.CloudMessaging;
 using Plugin.FirebasePushNotification;
+using DABApp.DabNotifications;
 
 namespace DABApp.iOS
 {
@@ -111,19 +112,15 @@ namespace DABApp.iOS
             //Push message received event usage sample:
             CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
             {
-                //TODO: Handle push notifiations while within the app (just display it?)
-                System.Diagnostics.Debug.WriteLine("Received");
+                DabPushNotification push = new DabPushNotification(p);
+                push.DisplayAlert();
             };
 
             //Push message opened event usage sample:
             CrossFirebasePushNotification.Current.OnNotificationOpened += (s, p) =>
             {
-                //TODO: do something when the user opens the app after tapping a push notification
-                System.Diagnostics.Debug.WriteLine("Opened");
-                foreach (var data in p.Data)
-                {
-                    System.Diagnostics.Debug.WriteLine($"{data.Key} : {data.Value}");
-                }
+                DabPushNotification push = new DabPushNotification(p);
+                push.DisplayAlert();
             };
 
             //Push message action tapped event usage sample: OnNotificationAction
@@ -135,11 +132,6 @@ namespace DABApp.iOS
                 if (!string.IsNullOrEmpty(p.Identifier))
                 {
                     System.Diagnostics.Debug.WriteLine($"ActionId: {p.Identifier}");
-                    foreach (var data in p.Data)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"{data.Key} : {data.Value}");
-                    }
-
                 }
 
             };
@@ -279,6 +271,7 @@ namespace DABApp.iOS
 
             completionHandler(UIBackgroundFetchResult.NewData);
         }
+
 
     }
 }
