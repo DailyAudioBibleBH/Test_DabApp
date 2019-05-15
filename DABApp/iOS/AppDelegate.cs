@@ -89,6 +89,8 @@ namespace DABApp.iOS
             CrossFirebasePushNotification.Current.OnNotificationOpened += FCM_OnNotificationOpened;
             CrossFirebasePushNotification.Current.OnNotificationAction += FCM_OnNotificationAction;
             CrossFirebasePushNotification.Current.OnNotificationDeleted += FCM_OnNotificationDeleted;             //Push message deleted event usage sample: (Android Only)
+
+
             /* END FIREBASE CLOUD MESSAGING */
 
             var m = base.FinishedLaunching(app, options);
@@ -221,6 +223,33 @@ namespace DABApp.iOS
             //TODO: Handle push notification deleted (ANDROID ONLY)
             System.Diagnostics.Debug.WriteLine("Deleted");
 
+        }
+
+        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        {
+            FirebasePushNotificationManager.DidRegisterRemoteNotifications(deviceToken);
+        }
+
+        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+        {
+            FirebasePushNotificationManager.RemoteNotificationRegistrationFailed(error);
+
+        }
+        // To receive notifications in foregroung on iOS 9 and below.
+        // To receive notifications in background in any iOS version
+        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+        {
+            // If you are receiving a notification message while your app is in the background,
+            // this callback will not be fired 'till the user taps on the notification launching the application.
+
+            // If you disable method swizling, you'll need to call this method. 
+            // This lets FCM track message delivery and analytics, which is performed
+            // automatically with method swizzling enabled.
+            FirebasePushNotificationManager.DidReceiveMessage(userInfo);
+            // Do your magic to handle the notification data
+            System.Console.WriteLine(userInfo);
+
+            completionHandler(UIBackgroundFetchResult.NewData);
         }
 
         /* END FIREBASE CLOUD MESSAGING EVENTS */

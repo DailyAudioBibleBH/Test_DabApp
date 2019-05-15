@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Plugin.FirebasePushNotification.Abstractions;
+using Xamarin.Forms;
 
 namespace DABApp.DabNotifications
 {
@@ -9,6 +11,8 @@ namespace DABApp.DabNotifications
     {
         public string Title { get; set; }
         public string Message { get; set; }
+        //private static Page page;
+        //public static bool IsReady { get; private set; }
 
         /* Sample p key/values:
               google.c.a.c_l : Test 7
@@ -22,6 +26,11 @@ namespace DABApp.DabNotifications
               google.c.a.ts : 1557945954
           */
 
+        //public static void Init(Page p)
+        //{
+        //    page = p;
+        //    IsReady = true;
+        //}
 
         public DabPushNotification(FirebasePushNotificationDataEventArgs p)
         {
@@ -35,7 +44,7 @@ namespace DABApp.DabNotifications
             LoadPushNotificationData(p.Data);
         }
 
-        private void LoadPushNotificationData (IDictionary<string,object> d)
+        private void LoadPushNotificationData(IDictionary<string, object> d)
         {
             //Load push notification data into usable fields
             foreach (var data in d)
@@ -43,12 +52,14 @@ namespace DABApp.DabNotifications
                 switch (data.Key.ToLower())
                 {
                     case "aps.alert.title":
+                    case "title":
                         if (Title == null && data.Value != null)
-                        { 
+                        {
                             Title = data.Value.ToString();
                         }
                         break;
                     case "aps.alert.body":
+                    case "body":
                         if (Message == null && data.Value != null)
                         {
                             Message = data.Value.ToString();
@@ -63,13 +74,19 @@ namespace DABApp.DabNotifications
 
         public void DisplayAlert()
         {
+            //if (DabPushNotification.IsReady)
+            //{
             /* Display a simple alert with the push notification content */
-            Xamarin.Forms.Application.Current.MainPage.DisplayAlert(Title, Message, "OK");
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage.DisplayAlert(Title, Message, "OK");
+            });
+            //}
+            //else
+            //{
+            //    Debug.WriteLine("DabNotifications has not been initialized");
+            //}
         }
     }
 
-    public interface iDabNotification
-    {
-
-    }
 }
