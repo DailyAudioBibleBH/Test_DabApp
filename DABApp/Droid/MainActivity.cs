@@ -32,41 +32,41 @@ using Android.Support.V4.App;
 namespace DABApp.Droid
 {
 
-	[Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
-	[IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
-	{
+    [Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
+    [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    {
 
-		protected override void OnCreate(Bundle bundle)
-		{
-			SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
-			SQLitePCL.raw.sqlite3_shutdown();
-			SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
-			SQLitePCL.raw.sqlite3_enable_shared_cache(1);
-			SQLitePCL.raw.sqlite3_initialize();
+        protected override void OnCreate(Bundle bundle)
+        {
+            SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
+            SQLitePCL.raw.sqlite3_shutdown();
+            SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
+            SQLitePCL.raw.sqlite3_enable_shared_cache(1);
+            SQLitePCL.raw.sqlite3_initialize();
 
-//Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
-			ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true;});
+            //Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
+            ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
 
-			TabLayoutResource = Resource.Layout.Tabbar;
-			ToolbarResource = Resource.Layout.Toolbar;
+            TabLayoutResource = Resource.Layout.Tabbar;
+            ToolbarResource = Resource.Layout.Toolbar;
 
-			base.OnCreate(bundle);
+            base.OnCreate(bundle);
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
-			DependencyService.Register<SocketService>();
-			DependencyService.Register<FileManagement>();
-			DependencyService.Register<StripeApiManagement>();
-			DependencyService.Register<RivetsService>();
+            DependencyService.Register<SocketService>();
+            DependencyService.Register<FileManagement>();
+            DependencyService.Register<StripeApiManagement>();
+            DependencyService.Register<RivetsService>();
             DependencyService.Register<RecordService>();
             DependencyService.Register<AnalyticsService>();
 
-			SegmentedControlRenderer.Init();
-            
-			CachedImageRenderer.Init();
+            SegmentedControlRenderer.Init();
 
-			SQLite_Droid.Assets = this.Assets;
+            CachedImageRenderer.Init();
+
+            SQLite_Droid.Assets = this.Assets;
             MetricsManager.Register(Application, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
             var metrics = new DisplayMetrics();
             WindowManager.DefaultDisplay.GetRealMetrics(metrics);
@@ -75,40 +75,21 @@ namespace DABApp.Droid
 
             LoadApplication(new App());
 
-            MessagingCenter.Subscribe<string>("RecordPermission", "RecordPermission", (sender) => { RequestRecordPermission(); }); 
-
-            //((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager = new MediaSessionManager(this.ApplicationContext, typeof(ExoPlayerAudioService));
-            //var exoPlayer = new ExoPlayerAudioImplementation(((MediaManagerImplementation)CrossMediaManager.Current).MediaSessionManager);
-            //CrossMediaManager.Current.AudioPlayer = exoPlayer;
-            //if ((int)Android.OS.Build.VERSION.SdkInt > 22)
-            //{
-            //    var pm = (Android.OS.PowerManager)GetSystemService(PowerService);
-            //    if (!pm.IsIgnoringBatteryOptimizations(PackageName))
-            //    {
-            //        var intent = new Intent();
-            //        intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
-            //        intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
-            //        var alert = Snackbar.Make(((Activity)this).Window.DecorView, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", Snackbar.LengthIndefinite);
-            //        alert.View.FindViewById<TextView>(Resource.Id.snackbar_text).SetMaxLines(5);
-            //        alert.SetAction("OK", v => StartActivity(intent));
-            //        alert.Show();
-            //        // MessagingCenter.Send<string>("OptimizationWarning", "OptimizationWarning");
-            //        //Toast.MakeText(this.ApplicationContext, "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", ToastLength.Long).Show();
-            //    }
-            //}
+            MessagingCenter.Subscribe<string>("RecordPermission", "RecordPermission", (sender) => { RequestRecordPermission(); });
 
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
-            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) => {
+            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) =>
+            {
                 LoadCustomToolBar();
                 if (Device.Idiom == TargetIdiom.Phone)
                 {
                     RequestedOrientation = ScreenOrientation.Portrait;
                 }
             });
-		}
+        }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)
         {
@@ -122,23 +103,14 @@ namespace DABApp.Droid
         }
 
         protected override void OnResume()
-		{
-			base.OnResume();
+        {
+            base.OnResume();
             CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
-		}
-
-		//protected override void OnDestroy()
-		//{
-		//	if (CrossMediaManager.Current.MediaNotificationManager != null)
-		//	{
-		//		CrossMediaManager.Current.MediaNotificationManager.StopNotifications();
-		//	}
-		//	base.OnDestroy();
-		//}
+        }
 
         public override void OnBackPressed()
         {
-            if(GlobalResources.Instance.OnRecord)
+            if (GlobalResources.Instance.OnRecord)
             {
                 MessagingCenter.Send("Back", "Back");
             }
@@ -152,8 +124,8 @@ namespace DABApp.Droid
         }
 
         void LoadCustomToolBar()
-		{
-			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+        {
+            var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             if (toolbar != null)
             {
                 SetSupportActionBar(toolbar);
@@ -184,66 +156,66 @@ namespace DABApp.Droid
                 MessagingCenter.Subscribe<string>("Remove", "Remove", (obj) => { give.Visibility = ViewStates.Invisible; });
                 MessagingCenter.Subscribe<string>("Show", "Show", (obj) => { give.Visibility = ViewStates.Visible; });
             }
-		}
+        }
 
 
-//More of what was needed to get journaling to work on Android once again found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
-		private static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-		{
-			//Return true if the server certificate is ok
-			if (sslPolicyErrors == SslPolicyErrors.None)
-				return true;
+        //More of what was needed to get journaling to work on Android once again found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
+        private static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            //Return true if the server certificate is ok
+            if (sslPolicyErrors == SslPolicyErrors.None)
+                return true;
 
-			bool acceptCertificate = true;
-			string msg = "The server could not be validated for the following reason(s):\r\n";
+            bool acceptCertificate = true;
+            string msg = "The server could not be validated for the following reason(s):\r\n";
 
-			//The server did not present a certificate
-			if ((sslPolicyErrors &
-				 SslPolicyErrors.RemoteCertificateNotAvailable) == SslPolicyErrors.RemoteCertificateNotAvailable)
-			{
-				msg = msg + "\r\n    -The server did not present a certificate.\r\n";
-				acceptCertificate = false;
-			}
-			else
-			{
-				//The certificate does not match the server name
-				if ((sslPolicyErrors &
-					 SslPolicyErrors.RemoteCertificateNameMismatch) == SslPolicyErrors.RemoteCertificateNameMismatch)
-				{
-					msg = msg + "\r\n    -The certificate name does not match the authenticated name.\r\n";
-					acceptCertificate = false;
-				}
+            //The server did not present a certificate
+            if ((sslPolicyErrors &
+                 SslPolicyErrors.RemoteCertificateNotAvailable) == SslPolicyErrors.RemoteCertificateNotAvailable)
+            {
+                msg = msg + "\r\n    -The server did not present a certificate.\r\n";
+                acceptCertificate = false;
+            }
+            else
+            {
+                //The certificate does not match the server name
+                if ((sslPolicyErrors &
+                     SslPolicyErrors.RemoteCertificateNameMismatch) == SslPolicyErrors.RemoteCertificateNameMismatch)
+                {
+                    msg = msg + "\r\n    -The certificate name does not match the authenticated name.\r\n";
+                    acceptCertificate = false;
+                }
 
-				//There is some other problem with the certificate
-				if ((sslPolicyErrors &
-					 SslPolicyErrors.RemoteCertificateChainErrors) == SslPolicyErrors.RemoteCertificateChainErrors)
-				{
-					foreach (X509ChainStatus item in chain.ChainStatus)
-					{
-						if (item.Status != X509ChainStatusFlags.RevocationStatusUnknown &&
-							item.Status != X509ChainStatusFlags.OfflineRevocation)
-							break;
+                //There is some other problem with the certificate
+                if ((sslPolicyErrors &
+                     SslPolicyErrors.RemoteCertificateChainErrors) == SslPolicyErrors.RemoteCertificateChainErrors)
+                {
+                    foreach (X509ChainStatus item in chain.ChainStatus)
+                    {
+                        if (item.Status != X509ChainStatusFlags.RevocationStatusUnknown &&
+                            item.Status != X509ChainStatusFlags.OfflineRevocation)
+                            break;
 
-						if (item.Status != X509ChainStatusFlags.NoError)
-						{
-							msg = msg + "\r\n    -" + item.StatusInformation;
-							acceptCertificate = false;
-						}
-					}
-				}
-			}
+                        if (item.Status != X509ChainStatusFlags.NoError)
+                        {
+                            msg = msg + "\r\n    -" + item.StatusInformation;
+                            acceptCertificate = false;
+                        }
+                    }
+                }
+            }
 
-			//If Validation failed, present message box
-			if (acceptCertificate == false)
-			{
-				msg = msg + "\r\nDo you wish to override the security check?";
-				//          if (MessageBox.Show(msg, "Security Alert: Server could not be validated",
-				//                       MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
-				acceptCertificate = true;
-			}
+            //If Validation failed, present message box
+            if (acceptCertificate == false)
+            {
+                msg = msg + "\r\nDo you wish to override the security check?";
+                //          if (MessageBox.Show(msg, "Security Alert: Server could not be validated",
+                //                       MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                acceptCertificate = true;
+            }
 
-			return acceptCertificate;
-		}
+            return acceptCertificate;
+        }
 
         void RequestRecordPermission()
         {
@@ -252,5 +224,5 @@ namespace DABApp.Droid
                 ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.RecordAudio }, 1);
             }
         }
-	}
+    }
 }
