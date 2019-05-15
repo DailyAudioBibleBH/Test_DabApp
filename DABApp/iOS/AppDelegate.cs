@@ -61,14 +61,6 @@ namespace DABApp.iOS
 
             app.StatusBarStyle = UIStatusBarStyle.LightContent;
 
-            //Initialize Firebase
-            //TODO: Disabled this to get FCM working - need to ensure we are still tracking analytics
-            //Firebase.Core.App.Configure();
-
-            //Register for remote notifications (Firebase Cloud Messaging)
-            // https://firebase.google.com/docs/cloud-messaging/ios/client?authuser=0
-            // https://github.com/xamarin/GoogleApisForiOSComponents/blob/master/Firebase.CloudMessaging/component/GettingStarted.md
-            //
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 // For iOS 10 display notification (sent via APNS)
@@ -89,62 +81,15 @@ namespace DABApp.iOS
 
             LoadApplication(new App());
 
-            //////////////
-            //FIrebase Cloud Messaging Initialization and Events
-            /////////////
+            /* FIREBASE CLOUD MESSAGING */
             // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
             FirebasePushNotificationManager.Initialize(options, true);
-
-            //UIApplication.SharedApplication.RegisterForRemoteNotifications();
-
-            ////Assign the messaging delegat to this class
-            //Messaging.SharedInstance.Delegate = this;
-            ////WRite the current FCM token
-            //var token = Messaging.SharedInstance.FcmToken ?? "";
-            //Console.WriteLine($"FCM token: {token}");
-
-            //Token event usage sample:
-            CrossFirebasePushNotification.Current.OnTokenRefresh += (s, p) =>
-            {
-                System.Diagnostics.Debug.WriteLine($"TOKEN : {p.Token}");
-            };
-
-            //Push message received event usage sample:
-            CrossFirebasePushNotification.Current.OnNotificationReceived += (s, p) =>
-            {
-                DabPushNotification push = new DabPushNotification(p);
-                push.DisplayAlert();
-            };
-
-            //Push message opened event usage sample:
-            CrossFirebasePushNotification.Current.OnNotificationOpened += (s, p) =>
-            {
-                DabPushNotification push = new DabPushNotification(p);
-                push.DisplayAlert();
-            };
-
-            //Push message action tapped event usage sample: OnNotificationAction
-            CrossFirebasePushNotification.Current.OnNotificationAction += (s, p) =>
-            {
-                //TODO: Handle action
-                System.Diagnostics.Debug.WriteLine("Action");
-
-                if (!string.IsNullOrEmpty(p.Identifier))
-                {
-                    System.Diagnostics.Debug.WriteLine($"ActionId: {p.Identifier}");
-                }
-
-            };
-            //Push message deleted event usage sample: (Android Only)
-            CrossFirebasePushNotification.Current.OnNotificationDeleted += (s, p) =>
-             {
-                 //TODO: Handle push notification deleted
-                 System.Diagnostics.Debug.WriteLine("Deleted");
-             };
-
-            //END OF FIREBASE CLOUD MESSAGING CODE //
-
-            //Back to Gereral Xam.Forms
+            CrossFirebasePushNotification.Current.OnTokenRefresh += FCM_OnTokenRefresh;
+            CrossFirebasePushNotification.Current.OnNotificationReceived += FCM_OnNotificationReceived;
+            CrossFirebasePushNotification.Current.OnNotificationOpened += FCM_OnNotificationOpened;
+            CrossFirebasePushNotification.Current.OnNotificationAction += FCM_OnNotificationAction;
+            CrossFirebasePushNotification.Current.OnNotificationDeleted += FCM_OnNotificationDeleted;             //Push message deleted event usage sample: (Android Only)
+            /* END FIREBASE CLOUD MESSAGING */
 
             var m = base.FinishedLaunching(app, options);
             int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
@@ -156,6 +101,8 @@ namespace DABApp.iOS
         }
 
 
+        /* GENERAL UI EVENTS */
+
         public override void OnActivated(UIApplication uiApplication)
         {
             base.OnActivated(uiApplication);
@@ -164,12 +111,19 @@ namespace DABApp.iOS
 
         public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
         {
+            //Detect Orientation of device
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 return UIInterfaceOrientationMask.Portrait;
             }
             else return UIInterfaceOrientationMask.All;
         }
+
+        /* END GENERAL UI EVENTS */
+
+
+
+        /* JOURNALLING EVENTS */
 
         //More of what was needed to get journaling to work on Android once again found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
         private static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
@@ -229,49 +183,47 @@ namespace DABApp.iOS
             return acceptCertificate;
         }
 
-        [Export("messaging:didReceiveRegistrationToken:")]
-        public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
-        {
-            Console.WriteLine($"Firebase registration token: {fcmToken}");
+        /* END JOURNALING EVENTS */
 
-            // TODO: If necessary send token to application server.
-            // Note: This callback is fired at each app startup and whenever a new token is generated.
+
+        /* FIREBASE CLOUD MESSAGING EVENTS */
+
+        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationTokenEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine($"TOKEN : {e.Token}");
         }
 
-        //public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
-        //{
-        //    Messaging.SharedInstance.ApnsToken = deviceToken;
-        //}
-
-        //Firebase Cloud Messaging
-        //See: https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
-        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
         {
-            FirebasePushNotificationManager.DidRegisterRemoteNotifications(deviceToken);
+            DabPushNotification push = new DabPushNotification(e);
+            push.DisplayAlert();
         }
 
-        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
         {
-            FirebasePushNotificationManager.RemoteNotificationRegistrationFailed(error);
-
-        }
-        // To receive notifications in foregroung on iOS 9 and below.
-        // To receive notifications in background in any iOS version
-        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
-        {
-            // If you are receiving a notification message while your app is in the background,
-            // this callback will not be fired 'till the user taps on the notification launching the application.
-
-            // If you disable method swizzling, you'll need to call this method. 
-            // This lets FCM track message delivery and analytics, which is performed
-            // automatically with method swizzling enabled.
-            FirebasePushNotificationManager.DidReceiveMessage(userInfo);
-            // Do your magic to handle the notification data
-            System.Console.WriteLine(userInfo);
-
-            completionHandler(UIBackgroundFetchResult.NewData);
+            DabPushNotification push = new DabPushNotification(e);
+            push.DisplayAlert();
         }
 
+        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
+        {
+            //TODO: Handle action
+            System.Diagnostics.Debug.WriteLine("Action");
+
+            if (!string.IsNullOrEmpty(e.Identifier))
+            {
+                System.Diagnostics.Debug.WriteLine($"ActionId: {e.Identifier}");
+            }
+        }
+
+        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
+        {
+            //TODO: Handle push notification deleted (ANDROID ONLY)
+            System.Diagnostics.Debug.WriteLine("Deleted");
+
+        }
+
+        /* END FIREBASE CLOUD MESSAGING EVENTS */
 
     }
 }
