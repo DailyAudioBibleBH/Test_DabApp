@@ -39,6 +39,14 @@ namespace DABApp
         public bool has_journal { get; set; }
         public bool progressVisible { get; set; }
 
+        public long audio_size { get; set; } //Size of the file in bytes
+        //TODO: Use this if it exists rather than downloading size when getting file progress
+
+        public TimeSpan audio_duration { get; set; } //Duration - "05:44"
+                                                     //TODO: Validate this gets parsed correctly from JSON
+
+        public string audio_type { get; set; } //Type of audio file "audio/mp3"
+
         [Ignore]
         public string File_extension
         //Extension of the file (always lower case)
@@ -50,7 +58,7 @@ namespace DABApp
         }
 
         [Ignore]
-      public string File_name_local
+        public string File_name_local
         {
             get
             {
@@ -63,12 +71,14 @@ namespace DABApp
                     if (fm.FileExists(fileName))
                     {
                         return fileName;
-                    } else
+                    }
+                    else
                     {
                         //File is marked as downloaded but doesn't really exist
                         return null;
                     }
-                } else
+                }
+                else
                 {
                     //File isn't downloaded 
                     return null;
@@ -78,7 +88,7 @@ namespace DABApp
 
         [Ignore]
         public string File_name
-            //File name used to access the file 
+        //File name used to access the file 
         {
             get
             {
@@ -94,5 +104,5 @@ namespace DABApp
             }
         }
 
-	}
+    }
 }
