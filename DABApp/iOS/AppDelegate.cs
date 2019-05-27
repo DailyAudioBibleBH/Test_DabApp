@@ -15,6 +15,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Plugin.AudioRecorder;
 using Firebase.CloudMessaging;
+using AVFoundation;
+using MediaPlayer;
 
 namespace DABApp.iOS
 {
@@ -78,6 +80,20 @@ namespace DABApp.iOS
                 UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
             }
             UIApplication.SharedApplication.RegisterForRemoteNotifications();
+
+
+            //Remote Control (Lock Screen)
+            UIApplication.SharedApplication.BeginReceivingRemoteControlEvents();
+            AVAudioSession.SharedInstance().SetActive(true);
+            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.PlayAndRecord);
+            MPNowPlayingInfo nowPlayingInfo = new MPNowPlayingInfo();
+            nowPlayingInfo.Artist = "Daily Audio Bible";
+            nowPlayingInfo.Title = "[Episode Name Here]"; //TODO: Bind This
+            MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = nowPlayingInfo;
+
+
+
+
 
             //Assign the messaging delegat to this class
             Messaging.SharedInstance.Delegate = this;
@@ -185,6 +201,8 @@ namespace DABApp.iOS
         {
             Messaging.SharedInstance.ApnsToken = deviceToken;
         }
+
+
 
     }
 }
