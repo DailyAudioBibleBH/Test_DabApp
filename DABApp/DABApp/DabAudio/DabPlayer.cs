@@ -17,6 +17,7 @@ namespace DABApp.DabAudio
         private ISimpleAudioPlayer player;
         private string _channelTitle = "";
         private string _episodeTitle = "";
+        private double _episodeDuration = 1; //Estimated duration of the episode
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
 
@@ -53,7 +54,8 @@ namespace DABApp.DabAudio
                 //Return the duration of the player, ensuring it's >0
                 if (player.Duration <= 0)
                 {
-                    return 1;
+                    //TODO: Use the episodes total length if possible
+                    return _episodeDuration;
                 }
                 else
                 {
@@ -196,6 +198,8 @@ namespace DABApp.DabAudio
             //Load a specific episode (sets text properties as well
             EpisodeTitle = episode.title;
             ChannelTitle = episode.channel_title;
+            _episodeDuration = episode.Duration;
+            OnPropertyChanged("Duration");
             return Load(episode.File_name);
         }
 
