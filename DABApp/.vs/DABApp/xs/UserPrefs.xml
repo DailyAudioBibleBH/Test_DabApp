@@ -1,13 +1,7 @@
 ﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
-  <MonoDevelop.Ide.ItemProperties.DABApp.Droid AndroidDesignerPreferredTheme="Theme.DeviceDefault.Light.NoActionBar.Fullscreen" PreferredExecutionTarget="Android.nexus_5_x86_api27" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/DabAudio/DabPlayer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="iOS/AppDelegate.cs">
     <Files>
-      <File FileName="DABApp/DabUI/DabPlayerPage.xaml.cs" Line="361" Column="1" />
-      <File FileName="DABApp/DabUI/DabEpisodesPage.xaml.cs" Line="72" Column="1" />
-      <File FileName="DABApp/DabData/dbEpisodes.cs" Line="52" Column="32" />
-      <File FileName="DABApp/DabViewHelpers/EpisodeViewModel.cs" Line="7" Column="18" />
-      <File FileName="DABApp/DabApi/IFileManagement.cs" Line="9" Column="27" />
-      <File FileName="DABApp/DabAudio/DabPlayer.cs" Line="159" Column="1" />
+      <File FileName="iOS/AppDelegate.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -15,18 +9,22 @@
           <Node name="DABApp" expanded="True">
             <Node name="DABApp" expanded="True">
               <Node name="DabApi" expanded="True" />
-              <Node name="DabAudio" expanded="True">
-                <Node name="DabPlayer.cs" selected="True" />
-              </Node>
+              <Node name="DabAudio" expanded="True" />
               <Node name="DabData" expanded="True" />
               <Node name="DabUI" expanded="True">
-                <Node name="DabEpisodesPage.xaml" expanded="True" />
+                <Node name="DabChannelsPage.xaml" expanded="True" />
                 <Node name="DabPlayerPage.xaml" expanded="True" />
+                <Node name="DabRecordingPage.xaml" expanded="True" />
               </Node>
-              <Node name="DabViewHelpers" expanded="True" />
+              <Node name="App.xaml" expanded="True" />
             </Node>
             <Node name="DABApp.Droid" expanded="True">
-              <Node name="DabApi" expanded="True" />
+              <Node name="Properties" expanded="True" />
+            </Node>
+            <Node name="DABApp.iOS" expanded="True">
+              <Node name="DabAudio" expanded="True" />
+              <Node name="DabData" expanded="True" />
+              <Node name="AppDelegate.cs" selected="True" />
             </Node>
           </Node>
         </State>
@@ -40,13 +38,11 @@
     <BreakpointStore>
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/RecorderViewModel.cs" relfile="DABApp/DabViewHelpers/RecorderViewModel.cs" line="216" column="1" />
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/BaseUI/DabPlayerBar.xaml" relfile="DABApp/DabUI/BaseUI/DabPlayerBar.xaml" line="5" column="131" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabAudio/DabPlayer.cs" relfile="DABApp/DabAudio/DabPlayer.cs" line="159" column="1" />
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/iOS/Main.cs" relfile="iOS/Main.cs" line="18" column="1" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabAudio/DabPlayer.cs" relfile="DABApp/DabAudio/DabPlayer.cs" line="51" column="1" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/EpisodeViewModel.cs" relfile="DABApp/DabViewHelpers/EpisodeViewModel.cs" line="107" column="1" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabPlayerPage.xaml.cs" relfile="DABApp/DabUI/DabPlayerPage.xaml.cs" line="493" column="1" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabPlayerPage.xaml.cs" relfile="DABApp/DabUI/DabPlayerPage.xaml.cs" line="504" column="1" />
-      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabPlayerPage.xaml.cs" relfile="DABApp/DabUI/DabPlayerPage.xaml.cs" line="361" column="21" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/EpisodeViewModel.cs" relfile="DABApp/DabViewHelpers/EpisodeViewModel.cs" line="195" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="117" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="110" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="109" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
