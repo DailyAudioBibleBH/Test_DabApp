@@ -15,43 +15,47 @@ namespace DABApp
 {
 	public class Data
 	{
-		public string updated { get; set; }
+		public string updated { get; set; } //RFC3339 date api was updated (use to know when new data has been received)
 	}
 
 	public class Nav
 	{
-		public string title { get; set; }
-		public int view { get; set; }
+		public string title { get; set; } //Title of the item
+		public int view { get; set; } //View to use for the item
 	}
 
 	public class Blocktext
 	{
-		public string appInfo { get; set; }
-		public string termsAndConditions { get; set; }
-		public string resetPassword { get; set; }
-		public string signUp { get; set; }
-		public string login { get; set; }
+		public string appInfo { get; set; } //HTML displayed with the "App Information" screen of the app
+		public string termsAndConditions { get; set; } //Terms and conditions HTML
+		public string resetPassword { get; set; } //HTML displayed under reset password
+		public string signUp { get; set; } //HTML displayed on sign up page
+		public string login { get; set; } //HTML on login page
+        string modeText { get; set; } //HTML text to be displayed in the app notification of update/maintenance mode. If not in these modes, this may be null
+        object modeButtonText { get; set; } //String or object displayed on button when in maintenance mode. If 2 buttons, first will be for udpate, second will be for continue as guest.
+        //TODO: modeButtonText may be a string or array of strings (?). Needs to be worked on once real data is retrieved
 	}
 
 	public class Images
 	{
-		public string thumbnail { get; set; }
-		public string bannerPhone { get; set; }
-		public string backgroundPhone { get; set; }
-		public string backgroundTablet { get; set; }
+		public string thumbnail { get; set; } //thumbnail url 
+		public string bannerPhone { get; set; } //banner graphic on phones
+		public string backgroundPhone { get; set; } //background graphic on phones
+		public string backgroundTablet { get; set; } //background graphic on tablets
 	}
 
 	public class Resource: INotifyPropertyChanged
 	{
-		public int id { get; set;}
-		public string title { get; set; }
-		public string description { get; set; }
-		public Images images { get; set; }
-		public string feedUrl { get; set; }
-		public string type { get; set; }
-        public bool AscendingSort { get; set; }
-        public EpisodeFilters filter { get; set; } = EpisodeFilters.None;
+		public int id { get; set;} //id of the resource
+		public string title { get; set; } //title of the resource
+		public string description { get; set; } //html description
+		public Images images { get; set; } //images used for the resource
+		public string feedUrl { get; set; } //url used to get episode data for the resource
+		public string type { get; set; } //type of resource - "channel"
+        public bool AscendingSort { get; set; } //sorting of the resource
+        public EpisodeFilters filter { get; set; } = EpisodeFilters.None; //filters currently used for the resource
 
+        // Available Offline - notifies bound objects of changes */
         private bool _availableOffline = false;
 		public bool availableOffline {
             get {
@@ -62,6 +66,7 @@ namespace DABApp
                 OnPropertyChanged("availableOffline");
             }
         }
+
 
 		private double _IsNotSelected = 1.0;
 		public double IsNotSelected { 
@@ -74,6 +79,7 @@ namespace DABApp
 			}
 		}
 
+        /* Events to handle Binding */
 		protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
 		{
 			var handler = PropertyChanged;
@@ -91,27 +97,32 @@ namespace DABApp
 		}
 	}
 
+    /* Available episode filters */
     public enum EpisodeFilters
     {
         None, Favorite, Journal
     }
 
+    /* Banner object */
 	public class Banner
 	{
-		public string type { get; set; }
-		public string urlPhone { get; set; }
-		public string urlTablet { get; set; }
-		public string content { get; set; }
+		public string type { get; set; } //Either "title" or "content" - title just displays the title of parent view within the banner - content displays content HTML within the banner
+		public string urlPhone { get; set; } //Image URL for phones
+		public string urlTablet { get; set; } //Image URL for tablets
+		public string content { get; set; } //HTML to be displayed within the banner
 	}
 
+    /* Link object */
 	public class Link
 	{
-		public string title { get; set; }
-		public string type { get; set; }
-		public string urlPhone { get; set; }
-		public string urlTablet { get; set; }
-		public string link { get; set; }
-		public string linkText { get; set; }
+		public string title { get; set; } // title
+		public string type { get; set; } //type of link (used for formatting =- "image" or "text"
+		public string urlPhone { get; set; } //TODO: Documentation calls this "imageUrl" - verify which it is
+		public string urlTablet { get; set; } //TODO: Documentation calls this "imageUrl" - verify which it is
+        public string link { get; set; } // URL of the link
+		public string linkText { get; set; } //Text for the link (plain text)
+
+        //Boolean that determines if we have a graphic or not
 		public bool HasGraphic
 		{
 			get
@@ -123,6 +134,9 @@ namespace DABApp
 				else return true;
 			}
 		}
+
+        //Boolean that determins if we have text only or not
+        //TODO: Simply this and combine with the HasGraphic if possible
 		public bool HasNoGraphic { 
 			get {
 				if (type == "image")
@@ -132,6 +146,9 @@ namespace DABApp
 				else return true;
 			}
 		}
+
+        //String of URL to use for the Link based on idiom.
+        //TODO: Better naming 
 		public string PhoneOrTab { 
 			get {
 				if (Device.Idiom == TargetIdiom.Tablet)
@@ -145,28 +162,35 @@ namespace DABApp
 
 	public class View
 	{
-		public string type { get; set; }
+		public string type { get; set; } //"content", "app", or "links" 
 		public List<Resource> resources { get; set; }
-		public int id { get; set; }
-		public string title { get; set; }
-		public Banner banner { get; set; }
-		public string description { get; set; }
-		public string content { get; set; }
-		public List<View> children { get; set; }
-		public List<Link> links { get; set; }
+		public int id { get; set; } //id of the view, as the nav will reference it
+		public string title { get; set; } //title of the view
+		public Banner banner { get; set; } //banner information for the view
+		public string description { get; set; } //HTML text
+		public string content { get; set; } //HTML text
+		public List<View> children { get; set; } //array of children content views
+		public List<Link> links { get; set; } //aray of links
 	}
 
 	public class ContentConfig
 	{
-		public Data data { get; set; }
-		public List<Nav> nav { get; set; }
-		public Blocktext blocktext { get; set; }
-		public List<View> views { get; set; }
-		public static ContentConfig Instance { get; set;}
+        /* This is a class that has a single instance used throughout the app */
+
+        public static ContentConfig Instance { get; set; }
+
+        static ContentConfig()
+        {
+            Instance = new ContentConfig();
+        }
+
+        //Properties of the instance
+
+        public Data data { get; set; } //update data data
+		public List<Nav> nav { get; set; } //nav items
+		public Blocktext blocktext { get; set; } //block text data
+		public List<View> views { get; set; } //views
         public AppSettings app_settings { get; set; }
-		static ContentConfig() {
-			Instance = new ContentConfig();
-		}
 
 		public async Task cachImages() 
 		{ 
@@ -315,16 +339,17 @@ namespace DABApp
 
     public class AppSettings
     {
-        public string prod_main_link { get; set; }
-        public string prod_give_link { get; set; }
-        public string prod_journal_link { get; set; }
-        public string prod_feed_link { get; set; }
-        public string stage_main_link { get; set; }
-        public string stage_give_link { get; set; }
-        public string stage_journal_link { get; set; }
-        public string stage_feed_link { get; set; }
+        public string prod_main_link { get; set; } //Production link to the main website (HTTPS://)
+        public string prod_give_link { get; set; } //Production link to start giving process (HTTPS://)
+        public string prod_journal_link { get; set; } //Production link for journal (WSS://)
+        public string prod_feed_link { get; set; } //Production link for feed data (content API HTTPS://)
+        public string stage_main_link { get; set; } //Stage link to the main website (HTTPS://)
+        public string stage_give_link { get; set; } //Stage link to start giving process (HTTPS://)
+        public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
+        public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
     }
 
+    /* Converter class to convert short month names to long names */
     public static class MonthConverter
     {
         public static string ConvertToFull(string ShortHand)
@@ -357,6 +382,7 @@ namespace DABApp
         }
     }
 
+    /* Information used for routing recording sessions to the right person */
     public class PodcastEmail
     {
         public string Podcast { get; set; }

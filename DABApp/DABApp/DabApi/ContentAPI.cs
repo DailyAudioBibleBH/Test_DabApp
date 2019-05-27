@@ -19,15 +19,18 @@ namespace DABApp
 
         public static bool CheckContent()
         {
+
+            //Get the content API from the settings database
             dbSettings ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
             dbSettings DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "data");
-            //var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key =="AvailableOffline");
+
             if (ContentConfig.Instance.app_settings == null && ContentSettings != null)
             {
                 ParseContent(ContentSettings.Value);
             }
             try
             {
+                //Try to get a fresh copy of the Content API
                 var client = new HttpClient();
                 HttpResponseMessage result;
                 string jsonOut = "";

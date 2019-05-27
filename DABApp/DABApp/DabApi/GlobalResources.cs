@@ -267,7 +267,7 @@ namespace DABApp
         public List<PodcastEmail> PodcastEmails { get; set; } = new List<PodcastEmail>()
                 {
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
-                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = /*"dab@c2itconsulting.net"*/"china@dailyaudiobible.com"}
+                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
     }
 

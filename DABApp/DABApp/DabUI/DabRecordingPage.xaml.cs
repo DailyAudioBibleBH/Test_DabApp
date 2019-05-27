@@ -294,7 +294,7 @@ namespace DABApp
             try
             {
                 PodcastEmail podcastEmail = GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex];
-                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", podcastEmail.Email);
+                var mailMessage = new MailMessage("noreply@c2itconsulting.net", podcastEmail.Email);
                 mailMessage.Bcc.Add("alerts_dab@c2itconsulting.net");
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
