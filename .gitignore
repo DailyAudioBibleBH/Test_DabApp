@@ -186,3 +186,4 @@ FakesAssemblies/
 *.ide-shm
 *.lock
 *.ide
+UserPrefs.xml
