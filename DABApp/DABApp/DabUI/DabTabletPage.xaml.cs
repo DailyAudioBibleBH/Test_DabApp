@@ -289,7 +289,12 @@ namespace DABApp
             }
             else
             {
-                player.Load(episode.Episode);
+                if (!player.Load(episode.Episode))
+                {
+                    DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                    //TODO: Ensure nothing breaks if this happens.
+                    return;
+                }
                 player.Play();
             }
         }
@@ -389,7 +394,12 @@ namespace DABApp
         {
             Initializer.IsVisible = false; //Hide the init button
             BindControls(true, true); //Bind controls
-            player.Load(episode.Episode); //Load the episode
+            if (!player.Load(episode.Episode))
+            {
+                DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                //TODO: Ensure nothing breaks if this happens.
+                return;
+            }
             player.Play(); //Play
             SetVisibility(true); //Adjust visibility of controls
         }

@@ -239,19 +239,26 @@ namespace DABApp.DabAudio
                 FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 rv = player.Load(fs);
             }
-            OnPropertyChanged("Duration");
             return rv;
 
         }
 
         public bool Load(dbEpisodes episode)
         {
-            //Load a specific episode (sets text properties as well
-            EpisodeTitle = episode.title;
-            ChannelTitle = episode.channel_title;
+            try
+            {
+                //Load a specific episode (sets text properties as well
+                EpisodeTitle = episode.title;
+                ChannelTitle = episode.channel_title;
 
-            OnEpisodeDataChanged(this, new DabPlayerEventArgs(this));
-            return Load(episode.File_name);
+                OnEpisodeDataChanged(this, new DabPlayerEventArgs(this));
+                return Load(episode.File_name);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
 
         }
 

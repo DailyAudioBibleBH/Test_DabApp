@@ -122,8 +122,15 @@ namespace DABApp
             }
             else
             {
-                player.Load(Episode.Episode);
-                player.Play();
+                if (player.Load(Episode.Episode))
+                {
+                    player.Play();
+                }
+                else
+                {
+                    DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
+
             }
         }
 
@@ -138,7 +145,7 @@ namespace DABApp
         {
             player.Seek(player.CurrentPosition + 30);
         }
-            //Initialize an episode and bind all related controls
+        //Initialize an episode and bind all related controls
 
         //Select a tab at the top of the screen
         void Handle_ValueChanged(object sender, System.EventArgs e)
@@ -355,8 +362,12 @@ namespace DABApp
             //Load the file if not already loaded.
             if (Episode.Episode.id != GlobalResources.CurrentEpisodeId)
             {
-                //TODO: Use local file name or URL, depending on if downloaded
-                player.Load(Episode.Episode);
+                if (! player.Load(Episode.Episode))
+                {
+                    DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                    //TODO: Ensure nothing breaks if this happens.
+                    return;
+                }
                 GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
             }
 
@@ -513,7 +524,7 @@ namespace DABApp
                 AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
             //TODO: Bind accessibiliyt text
-            AutomationProperties.SetName(Completed,Episode.listenAccessible);
+            AutomationProperties.SetName(Completed, Episode.listenAccessible);
         }
     }
 }
