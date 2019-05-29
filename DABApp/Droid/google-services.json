@@ -25,15 +25,21 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "844802106153-t9lmhauutnjul7soq380d2atsh8sfdme.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "844802106153-fpdi7d9u95v6kgaalmr2gdt919nf6uk1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dailyaudiobible.dabapp",
+                "app_store_id": "1215838266"
+              }
+            }
+          ]
         }
       }
     }
