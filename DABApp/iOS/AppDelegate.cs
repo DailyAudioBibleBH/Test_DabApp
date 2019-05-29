@@ -82,14 +82,6 @@ namespace DABApp.iOS
             UIApplication.SharedApplication.RegisterForRemoteNotifications();
 
 
-            //Remote Control (Lock Screen)
-            UIApplication.SharedApplication.BeginReceivingRemoteControlEvents();
-            AVAudioSession.SharedInstance().SetActive(true);
-            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.PlayAndRecord);
-            MPNowPlayingInfo nowPlayingInfo = new MPNowPlayingInfo();
-            nowPlayingInfo.Artist = "Daily Audio Bible";
-            nowPlayingInfo.Title = "[Episode Name Here]"; //TODO: Bind This
-            MPNowPlayingInfoCenter.DefaultCenter.NowPlaying = nowPlayingInfo;
 
 
 

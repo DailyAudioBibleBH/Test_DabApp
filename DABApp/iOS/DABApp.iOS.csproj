@@ -399,6 +399,7 @@
     <Compile Include="CustomRenderers\DabImageRenderer.cs" />
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
+    <Compile Include="DependencyServices\iosDabNativePlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

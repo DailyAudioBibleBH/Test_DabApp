@@ -13,8 +13,8 @@ namespace DABApp
 {
     public class GlobalResources : INotifyPropertyChanged
     {
-        public static DabPlayer playerPodcast = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer());
-        public static DabPlayer playerRecorder = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer());
+        public static DabPlayer playerPodcast = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),true);
+        public static DabPlayer playerRecorder = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),false);
         public static int CurrentEpisodeId = 0;
 
         private double thumbnailHeight;

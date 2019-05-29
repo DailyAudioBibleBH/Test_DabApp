@@ -14,19 +14,28 @@ namespace DABApp.DabAudio
 
     public class DabPlayer : ISimpleAudioPlayer, INotifyPropertyChanged
     {
+        private IDabNativePlayer nativePlayer;
         private ISimpleAudioPlayer player;
         private string _channelTitle = "";
         private string _episodeTitle = "";
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
 
-        //Constructor 
-        public DabPlayer(ISimpleAudioPlayer Player)
-        {
-            player = Player;
 
+
+
+        //Constructor 
+        public DabPlayer(ISimpleAudioPlayer Player, bool IntegrateWithLockScreen)
+        {
+            player = Player; //store reference to the player
+
+            //Set up events tied to the player
             player.PlaybackEnded += Player_PlaybackEnded;
 
+
+            //Connect the native player interface
+            nativePlayer = DependencyService.Get<IDabNativePlayer>();
+            nativePlayer.Init(this, IntegrateWithLockScreen);
 
 
             //Set up the timer for tracking progress
@@ -36,10 +45,27 @@ namespace DABApp.DabAudio
             timer.Stop(); //Don't use it till we need it.
         }
 
+
+        /* Event Handlers */
+        public event EventHandler EpisodeDataChanged;
+        protected virtual void OnEpisodeDataChanged(object sender, EventArgs e)
+        {
+            EventHandler handler = EpisodeDataChanged;
+            handler?.Invoke(this, e);
+        }       
+
         void Player_PlaybackEnded(object sender, EventArgs e)
         {
             //Handle playback ending (update button image)
             OnPropertyChanged("PlayPauseButtonImageBig");
+        }
+
+        public ISimpleAudioPlayer SimpleAudioPlayer
+        {
+            get
+            {
+                return player;
+            }
         }
 
         /********************************
@@ -196,7 +222,10 @@ namespace DABApp.DabAudio
             //Load a specific episode (sets text properties as well
             EpisodeTitle = episode.title;
             ChannelTitle = episode.channel_title;
+
+            OnEpisodeDataChanged(this,new System.EventArgs()); 
             return Load(episode.File_name);
+
         }
 
 

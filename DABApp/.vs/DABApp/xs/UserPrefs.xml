@@ -1,30 +1,33 @@
 ﻿<Properties StartupConfiguration="{BBE306D7-A6CC-43D1-B599-B40EEB91CB55}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="iOS/AppDelegate.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="DABApp/DabApi/AuthenticationAPI.cs">
     <Files>
-      <File FileName="iOS/AppDelegate.cs" Line="1" Column="1" />
+      <File FileName="iOS/AppDelegate.cs" Line="8" Column="23" />
+      <File FileName="DABApp/DabAudio/DabPlayer.cs" Line="37" Column="1" />
+      <File FileName="Droid/DependencyServices/droidDabNativePlayer.cs" Line="12" Column="72" />
+      <File FileName="iOS/DependencyServices/iosDabNativePlayer.cs" Line="26" Column="1" />
+      <File FileName="DABApp/DabApi/GlobalResources.cs" Line="5" Column="19" />
+      <File FileName="DABApp/App.xaml.cs" Line="12" Column="42" />
+      <File FileName="DABApp/DabApi/AuthenticationAPI.cs" Line="842" Column="28" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="DABApp" expanded="True">
             <Node name="DABApp" expanded="True">
-              <Node name="DabApi" expanded="True" />
+              <Node name="DabApi" expanded="True">
+                <Node name="AuthenticationAPI.cs" selected="True" />
+              </Node>
               <Node name="DabAudio" expanded="True" />
               <Node name="DabData" expanded="True" />
-              <Node name="DabUI" expanded="True">
-                <Node name="DabChannelsPage.xaml" expanded="True" />
-                <Node name="DabPlayerPage.xaml" expanded="True" />
-                <Node name="DabRecordingPage.xaml" expanded="True" />
-              </Node>
               <Node name="App.xaml" expanded="True" />
             </Node>
             <Node name="DABApp.Droid" expanded="True">
-              <Node name="Properties" expanded="True" />
+              <Node name="DependencyServices" expanded="True" />
             </Node>
             <Node name="DABApp.iOS" expanded="True">
               <Node name="DabAudio" expanded="True" />
               <Node name="DabData" expanded="True" />
-              <Node name="AppDelegate.cs" selected="True" />
+              <Node name="DependencyServices" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -32,8 +35,8 @@
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.DABApp.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.E8570B98-6289-40C0-B080-02ECBB8F29F3" />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.DABApp.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.ce1609ce870fa031eaaaa628a32d27613c44266f" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabViewHelpers/RecorderViewModel.cs" relfile="DABApp/DabViewHelpers/RecorderViewModel.cs" line="216" column="1" />
@@ -43,6 +46,10 @@
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="117" column="1" />
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="110" column="1" />
       <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabUI/DabChannelsPage.xaml.cs" relfile="DABApp/DabUI/DabChannelsPage.xaml.cs" line="109" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabAudio/DabPlayer.cs" relfile="DABApp/DabAudio/DabPlayer.cs" line="226" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabAudio/DabPlayer.cs" relfile="DABApp/DabAudio/DabPlayer.cs" line="53" column="1" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/iOS/DependencyServices/iosDabNativePlayer.cs" relfile="iOS/DependencyServices/iosDabNativePlayer.cs" line="35" column="52" />
+      <Breakpoint file="/Users/chet/Projects/DABApp/DABApp/DABApp/DabApi/AuthenticationAPI.cs" relfile="DABApp/DabApi/AuthenticationAPI.cs" line="844" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
