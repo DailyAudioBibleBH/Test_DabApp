@@ -16,7 +16,6 @@ namespace DABApp
         public static DabPlayer playerPodcast = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),true);
         public static DabPlayer playerRecorder = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),false);
         public static int CurrentEpisodeId = 0;
-
         private double thumbnailHeight;
         private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;
         public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.

@@ -10,6 +10,23 @@ using Xamarin.Forms;
 namespace DABApp.DabAudio
 {
 
+    public class DabPlayerEventArgs : EventArgs
+    {
+        public string ChannelTitle;
+        public string EpisodeTitle;
+        public double Duration;
+        public double CurrentPosition;
+
+        public DabPlayerEventArgs(DabPlayer player)
+        {
+            //Init the object with known values
+            ChannelTitle = player.ChannelTitle;
+            EpisodeTitle = player.EpisodeTitle;
+            Duration = player.Duration;
+            CurrentPosition = player.CurrentPosition;
+        }
+    }
+
     //Class that extends the basic player used by the apps.
 
     public class DabPlayer : ISimpleAudioPlayer, INotifyPropertyChanged
@@ -48,11 +65,21 @@ namespace DABApp.DabAudio
 
         /* Event Handlers */
         public event EventHandler EpisodeDataChanged;
-        protected virtual void OnEpisodeDataChanged(object sender, EventArgs e)
+        protected virtual void OnEpisodeDataChanged(object sender, DabPlayerEventArgs e)
         {
             EventHandler handler = EpisodeDataChanged;
-            handler?.Invoke(this, e);
-        }       
+            handler?.Invoke(this, new DabPlayerEventArgs(this));
+        }
+
+        public event EventHandler EpisodeProgressChanged;
+        protected virtual void OnEpisodeProgressChanged(object sender, DabPlayerEventArgs e)
+        {
+            EventHandler handler = EpisodeProgressChanged;
+            handler?.Invoke(this, new DabPlayerEventArgs(this));
+        }
+
+
+
 
         void Player_PlaybackEnded(object sender, EventArgs e)
         {
@@ -114,7 +141,7 @@ namespace DABApp.DabAudio
                 if (Duration > 0)
                 {
                     return CurrentPosition / Duration;
-                        }
+                }
                 else
                 {
                     return 0;
@@ -209,7 +236,7 @@ namespace DABApp.DabAudio
             else
             {
                 //Local file
-                FileStream  fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                 rv = player.Load(fs);
             }
             OnPropertyChanged("Duration");
@@ -223,7 +250,7 @@ namespace DABApp.DabAudio
             EpisodeTitle = episode.title;
             ChannelTitle = episode.channel_title;
 
-            OnEpisodeDataChanged(this,new System.EventArgs()); 
+            OnEpisodeDataChanged(this, new DabPlayerEventArgs(this));
             return Load(episode.File_name);
 
         }
@@ -287,8 +314,9 @@ namespace DABApp.DabAudio
                 OnPropertyChanged("RemainingSeconds");
                 OnPropertyChanged("CurrentProgressPercentage");
 
+                //Fire event to tell native players to update lock screen
+                OnEpisodeProgressChanged(this, new DabPlayerEventArgs(this)); //Notify lock screen of new position
             }
-
         }
 
 

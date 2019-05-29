@@ -94,7 +94,6 @@ namespace DABApp.iOS
             Console.WriteLine($"FCM token: {token}");
 
 
-
             LoadApplication(new App());
 
             var m = base.FinishedLaunching(app, options);
