@@ -369,6 +369,7 @@ namespace DABApp
                     return;
                 }
                 GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+
             }
 
             //Goto the starting position of the episode

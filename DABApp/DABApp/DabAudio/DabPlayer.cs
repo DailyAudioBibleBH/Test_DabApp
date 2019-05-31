@@ -247,6 +247,12 @@ namespace DABApp.DabAudio
         {
             try
             {
+                //Stop playing the current episode if needed
+                if (IsPlaying)
+                {
+                    Stop();
+                }
+
                 //Load a specific episode (sets text properties as well
                 EpisodeTitle = episode.title;
                 ChannelTitle = episode.channel_title;
@@ -268,10 +274,18 @@ namespace DABApp.DabAudio
             player.Pause();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
+
+            UpdateEpisodeDataOnStop(); //Episode has been stopped
         }
 
         public void Play()
         {
+            if (IsPlaying)
+            {
+                //Stop the current episode properly if needed.
+                Stop();
+            }
+
             player.Play();
             timer.Start();
             OnPropertyChanged("PlayPauseButtonImageBig");
@@ -290,7 +304,11 @@ namespace DABApp.DabAudio
             player.Stop();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
+
+            UpdateEpisodeDataOnStop(); //episode has stopped
+
         }
+
 
 
 
@@ -331,6 +349,15 @@ namespace DABApp.DabAudio
         /******************************************
         /* Custom Properties added to our player */
         /****************************************/
+
+        private void UpdateEpisodeDataOnStop()
+        {
+            //Call other methods related to stopping / pausing an episode
+            int e = GlobalResources.CurrentEpisodeId;
+            PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
+            AuthenticationAPI.CreateNewActionLog(e, "pause", CurrentPosition, null, null);
+
+        }
 
         public void Skip(double seconds)
         {

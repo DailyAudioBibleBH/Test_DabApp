@@ -402,13 +402,13 @@ namespace DABApp
             }
         }
 
-        public static async Task UpdateStopTime(int CurrentEpisodeId, double NewStopTime, string NewRemainingTime)
+        public static async Task UpdateStopTime(int CurrentEpisodeId, double NewStopTime, double NewRemainingTime)
         {
             try
             {
                 var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
                 episode.stop_time = NewStopTime;
-                episode.remaining_time = NewRemainingTime;
+                episode.remaining_time = NewRemainingTime.ToString(); //TODO was a string - did making this a double break it?
                 await adb.UpdateAsync(episode);
                 //if (Device.Idiom == TargetIdiom.Tablet)
                 //{
