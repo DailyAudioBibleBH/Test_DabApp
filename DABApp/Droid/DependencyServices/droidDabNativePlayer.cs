@@ -4,14 +4,34 @@ using DABApp.DabAudio;
 using DABApp.Droid;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(droidDabNativePlayer))]
+[assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {
-    public class droidDabNativePlayer : IDabNativePlayer
+
+    public class DroidDabNativePlayer : MediaSession.Callback, IDabNativePlayer
     {
+
+        DabPlayer player;
+
+        public DroidDabNativePlayer()
+        {
+        }
+
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
-            throw new NotImplementedException();
+            player = Player;
+
+
+            if (IntegrateWithLockScreen)
+            {
+                /* SET UP LOCK SCREEN */
+                //TODO: Set up lock screen
+
+            }
+
+
         }
+
+
     }
 }

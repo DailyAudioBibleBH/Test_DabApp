@@ -250,7 +250,8 @@ namespace DABApp.DabAudio
                 //Stop playing the current episode if needed
                 if (IsPlaying)
                 {
-                    Stop();
+                    Pause(); //Have to use PAUSE on Android or it will reset current time to 0.
+                    //Stop();
                 }
 
                 //Load a specific episode (sets text properties as well
