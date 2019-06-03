@@ -60,6 +60,9 @@ namespace DABApp
             BackgroundImage.Source = backgroundImage;
             base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
 
+            /* Set up other tabs (segmented control) */
+            SegControl.ValueChanged += Handle_SegControlValueChanged;
+
             //Update properties of the reading
             Reading reading = Reading;
             ReadTitle.Text = reading.title;
@@ -74,7 +77,7 @@ namespace DABApp
                 ReadExcerpts.Text = String.Join(", ", reading.excerpts);
             }
 
-            //Connect to the journal
+            //Connect to theƒƒjournal
             JournalTracker.Current.socket.Disconnect += OnDisconnect;
             JournalTracker.Current.socket.Reconnecting += OnReconnecting;
             JournalTracker.Current.socket.Room_Error += OnRoom_Error;
@@ -148,7 +151,7 @@ namespace DABApp
         //Initialize an episode and bind all related controls
 
         //Select a tab at the top of the screen
-        void Handle_ValueChanged(object sender, System.EventArgs e)
+        void Handle_SegControlValueChanged(object sender, System.EventArgs e)
         {
             switch (SegControl.SelectedSegment)
             {
@@ -378,7 +381,6 @@ namespace DABApp
             //Bind controls for playback
             BindControls(true, true);
 
-            SegControl.ValueChanged += Handle_ValueChanged;
             if (!GuestStatus.Current.IsGuestLogin)
             {
                 JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
