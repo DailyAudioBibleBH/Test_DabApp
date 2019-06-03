@@ -8,7 +8,7 @@ using Xamarin.Forms;
 namespace DABApp.Droid
 {
 
-    public class DroidDabNativePlayer : MediaSession.Callback, IDabNativePlayer
+    public class DroidDabNativePlayer : IDabNativePlayer
     {
 
         DabPlayer player;
