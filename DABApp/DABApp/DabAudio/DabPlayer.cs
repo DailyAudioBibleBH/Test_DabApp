@@ -377,8 +377,7 @@ namespace DABApp.DabAudio
             get
             {
                 //Return if the player is ready to go.
-                //TODO: Make this more intelligent than just looking for duration >0
-                if (player.Duration > 0)
+                if (GlobalResources.CurrentEpisodeId >0)
                 {
                     return true;
                 }
