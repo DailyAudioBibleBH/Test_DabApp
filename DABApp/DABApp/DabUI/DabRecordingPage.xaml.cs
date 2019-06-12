@@ -29,6 +29,54 @@ namespace DABApp
         public DabRecordingPage()
         {
             InitializeComponent();
+
+            // TODO: Set up bindings removed from XAML:
+            // Timer Text < RecordingTime           
+            // Record Source < RecordImageUrl
+            // lblGuide Text < GuideText
+            // Delete IsVisible < Recorded
+            // SeekBar < Value="{Binding Source={x:Reference player}, Path=CurrentPosition}" 
+            // SeekBar < Maximum="{Binding Source={x:Reference player}, Path=Duration}"
+            // AudioVisualizer <  IsVisible="{Binding IsRecording}"
+            // Submit < IsVisible="{Binding Recorded}"
+
+            //Set up bindings
+            viewModel = new RecorderViewModel();
+
+            //Record Button
+            Record.BindingContext = viewModel;
+            Record.SetBinding(Image.SourceProperty, "RecordImageUrl");
+
+            //Timer
+            Timer.BindingContext = viewModel;
+            Timer.SetBinding(Label.TextProperty, "RecordingTime");
+
+            //Guide
+            lblGuide.BindingContext = viewModel;
+            lblGuide.SetBinding(Label.TextProperty, "GuideText");
+
+            //Delete
+            Delete.BindingContext= viewModel;
+            Delete.SetBinding(Button.IsVisibleProperty, "Recorded");
+
+            //Audio Visualizer
+            AudioVisualizer.BindingContext = viewModel;
+            AudioVisualizer.SetBinding(StackLayout.IsVisibleProperty, "IsRecording");
+
+            //Submit Button
+            Submit.BindingContext = viewModel;
+            Submit.SetBinding(Button.IsVisibleProperty, "Recorded");
+
+            //PLAYER BINDINGS
+            SeekBar.BindingContext = player;
+            SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
+            SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+
+
+
+
+
+
             if (Device.RuntimePlatform == Device.Android)
             {
                 MessagingCenter.Send<string>("RecordPermission", "RecordPermission");
@@ -46,8 +94,6 @@ namespace DABApp
                 StopRecordingOnSilence = false
             };
             recorder.AudioInputReceived += audioInputReceived;
-            viewModel = new RecorderViewModel();
-            AudioVisualizer.BindingContext = viewModel;
 
             //Add vizualizer elements
             for (int x = ((viewModel.AudioHistoryCount * -1)+1); x <= viewModel.AudioHistoryCount-1; x++)
@@ -293,21 +339,44 @@ namespace DABApp
         {
             try
             {
+
+                //Send the audio file as an email attachment
+
+                //Get the email address of the podcast
                 PodcastEmail podcastEmail = GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex];
-                var mailMessage = new MailMessage("chetcromer@c2itconsulting.net", podcastEmail.Email);
+
+                //Start a new mail message with proper destination emails
+                var mailMessage = new MailMessage("noreply@c2itconsulting.net", podcastEmail.Email);
                 mailMessage.Bcc.Add("alerts_dab@c2itconsulting.net");
+
+                //Build the message content
+                mailMessage.Subject = $"{podcastEmail.Podcast} Audio Recording: {GlobalResources.GetUserName()} at {DateTime.Now.ToString()}";
+                mailMessage.IsBodyHtml = true;
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"<h1>New Audio Recording Submission</h1>");
+                sb.AppendLine($"<p>User: {GlobalResources.GetUserName()}</p>");
+                sb.AppendLine($"<p>Timestamp: {DateTime.Now.ToString()}</p>");
+                sb.AppendLine($"<p>Platform: {Device.RuntimePlatform}</p>");
+                sb.AppendLine($"<p>Idiom: {Device.Idiom.ToString()}</p>");
+                mailMessage.Body = sb.ToString();
+
+                //Attach the file
+                var att = new Attachment(fileName, "audio/wav");
+                mailMessage.Attachments.Add(att);
+
+                //Set up the SMTP client using Mandril API credentials
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
                 smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtp.UseDefaultCredentials = false;
                 smtp.Host = "smtp.mandrillapp.com";
-                var attatchment = new Attachment(fileName, "audio/wav");
-                mailMessage.Subject = $"{podcastEmail.Podcast} Audio Recording Session";
-                mailMessage.Body = $"{podcastEmail.Podcast} Audio Recording Session {DateTime.Now} by {GlobalResources.GetUserName()}";
-                mailMessage.Attachments.Add(attatchment);
                 smtp.Credentials = new NetworkCredential("chetcromer@c2itconsulting.net", "-M0yjVB_9EqZEzuKUDjw3A");
                 smtp.EnableSsl = true;
+
+                //Send the email
                 await smtp.SendMailAsync(mailMessage);
+
+                //Let the user know it was sent.
                 await DisplayAlert("Success!", $"Your audio recording has been successfully submitted for the {podcastEmail.Podcast}.", "OK");
 
                 //Sending Event to Firebase Analytics indicating user has successfully submitted a recording.

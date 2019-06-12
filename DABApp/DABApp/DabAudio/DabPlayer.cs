@@ -231,13 +231,13 @@ namespace DABApp.DabAudio
                 //Remote file
                 WebClient wc = new WebClient();
                 Stream fileStream = wc.OpenRead(fileName);
-                rv = player.Load(fileStream);
+                rv = Load(fileStream);
             }
             else
             {
                 //Local file
                 FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                rv = player.Load(fs);
+                rv = Load(fs);
             }
             return rv;
 
