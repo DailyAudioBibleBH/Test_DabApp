@@ -19,6 +19,7 @@ using AVFoundation;
 using MediaPlayer;
 using Plugin.FirebasePushNotification;
 using DABApp.DabNotifications;
+using AVFoundation;
 
 namespace DABApp.iOS
 {
@@ -82,6 +83,18 @@ namespace DABApp.iOS
             }
 
             LoadApplication(new App());
+
+            /* AUDIO PLAYER DEFAULTS */
+
+            AVAudioSessionCategoryOptions audioOptions = AVAudioSessionCategoryOptions.AllowAirPlay |
+                AVAudioSessionCategoryOptions.AllowBluetooth |
+                AVAudioSessionCategoryOptions.AllowBluetoothA2DP |
+                AVAudioSessionCategoryOptions.DefaultToSpeaker |
+                AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers;
+            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.PlayAndRecord,audioOptions);
+
+
+            /* END AUDIO PLAYER DEFAULTS
 
             /* FIREBASE CLOUD MESSAGING */
             // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md

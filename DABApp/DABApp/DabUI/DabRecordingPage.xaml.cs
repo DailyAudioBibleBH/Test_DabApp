@@ -1,4 +1,4 @@
-﻿using Plugin.AudioRecorder;
+using Plugin.AudioRecorder;
 using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;

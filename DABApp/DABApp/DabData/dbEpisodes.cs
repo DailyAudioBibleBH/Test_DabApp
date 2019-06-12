@@ -39,6 +39,57 @@ namespace DABApp
         public bool has_journal { get; set; }
         public bool progressVisible { get; set; }
 
+        public long? audio_size { get; set; } //Size of the file in bytes
+        //TODO: Use this if it exists rather than downloading size when getting file progress
+
+        public string audio_duration { get; set; } //Duration - "05:44"
+
+        [Ignore]
+        public double Duration  //Duration of the audio file in seconds
+        {
+            get
+            {
+                if (audio_duration != null)
+                {
+                    try
+                    {
+                        string d = audio_duration;
+                        int segments = d.Split(':').Count(); //Count the colons so we can format the TS properly ( needs to be 00:00:00)
+                        switch (segments)
+                        {
+                            case 1:
+                                //seconds only
+                                d = $"00:00:{d}";
+                                break;
+                            case 2:
+                                //minutes/seconds
+                                d = $"00:{d}";
+                                break;
+                            default:
+                                //leave it alone and try as-is
+                                break;
+                        }
+                        TimeSpan ts = TimeSpan.Parse(d);
+                        return ts.TotalSeconds;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Error converting duration into double
+                        return 1;
+                    }
+                }
+                else
+                {
+                    //No duration specified
+                    return 1;
+                }
+
+            }
+        }
+
+
+        public string audio_type { get; set; } //Type of audio file "audio/mp3"
+
         [Ignore]
         public string File_extension
         //Extension of the file (always lower case)
@@ -50,7 +101,7 @@ namespace DABApp
         }
 
         [Ignore]
-      public string File_name_local
+        public string File_name_local
         {
             get
             {
@@ -63,12 +114,14 @@ namespace DABApp
                     if (fm.FileExists(fileName))
                     {
                         return fileName;
-                    } else
+                    }
+                    else
                     {
                         //File is marked as downloaded but doesn't really exist
                         return null;
                     }
-                } else
+                }
+                else
                 {
                     //File isn't downloaded 
                     return null;
@@ -78,7 +131,7 @@ namespace DABApp
 
         [Ignore]
         public string File_name
-            //File name used to access the file 
+        //File name used to access the file 
         {
             get
             {
@@ -94,5 +147,5 @@ namespace DABApp
             }
         }
 
-	}
+    }
 }
