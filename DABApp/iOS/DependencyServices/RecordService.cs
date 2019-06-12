@@ -25,7 +25,7 @@ namespace DABApp.iOS
         public string StartRecording()
         {
             var audioSession = AVAudioSession.SharedInstance();
-            var err = audioSession.SetCategory(AVAudioSessionCategory.PlayAndRecord);
+            var err = audioSession.SetCategory(AVAudioSessionCategory.Record); //Need to set this back to playback when done.
             err = audioSession.SetActive(true);
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var fileName = Path.Combine(doc, $"DABRecording.wav");
@@ -56,6 +56,10 @@ namespace DABApp.iOS
 
         public string StopRecording()
         {
+            //Set playback mode back to playback (vs. record)
+            var audioSession = AVAudioSession.SharedInstance();
+            var err = audioSession.SetCategory(AVAudioSessionCategory.Playback); 
+
             recorder.Stop();
             IsRecording = false;
             return recorder.Url.ToString();

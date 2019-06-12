@@ -20,14 +20,16 @@ namespace DABApp.iOS
 
             player = Player;
 
+            AVAudioSession.SharedInstance().SetActive(true);
+            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
+
+
             /* SET UP LOCK SCREEN COMPONENTS (if needed) */
 
             if (IntegrateWithLockScreen)
             {
                 //Remote Control (Lock Screen)
                 UIApplication.SharedApplication.BeginReceivingRemoteControlEvents();
-                AVAudioSession.SharedInstance().SetActive(true);
-                AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.PlayAndRecord);
 
                 nowPlayingInfo = new MPNowPlayingInfo();
                 nowPlayingInfo.Artist = "Daily Audio Bible";

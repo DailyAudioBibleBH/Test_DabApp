@@ -61,7 +61,7 @@ namespace DABApp.DabAudio
             timer.AutoReset = true;
             timer.Stop(); //Don't use it till we need it.
         }
-
+        
 
         /* Event Handlers */
         public event EventHandler EpisodeDataChanged;
@@ -271,7 +271,7 @@ namespace DABApp.DabAudio
 
 
         public void Pause()
-        {
+        { 
             player.Pause();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
