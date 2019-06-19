@@ -91,7 +91,7 @@ namespace DABApp.iOS
                 AVAudioSessionCategoryOptions.AllowBluetoothA2DP |
                 AVAudioSessionCategoryOptions.DefaultToSpeaker |
                 AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers;
-            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.PlayAndRecord,audioOptions);
+            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback,audioOptions);
 
 
             /* END AUDIO PLAYER DEFAULTS

@@ -31,9 +31,7 @@ namespace DABApp
 		public string resetPassword { get; set; } //HTML displayed under reset password
 		public string signUp { get; set; } //HTML displayed on sign up page
 		public string login { get; set; } //HTML on login page
-        string modeText { get; set; } //HTML text to be displayed in the app notification of update/maintenance mode. If not in these modes, this may be null
-        object modeButtonText { get; set; } //String or object displayed on button when in maintenance mode. If 2 buttons, first will be for udpate, second will be for continue as guest.
-        //TODO: modeButtonText may be a string or array of strings (?). Needs to be worked on once real data is retrieved
+        public modeData mode { get; set; } //Mode / UPdate data
 	}
 
 	public class Images
@@ -172,6 +170,19 @@ namespace DABApp
 		public List<View> children { get; set; } //array of children content views
 		public List<Link> links { get; set; } //aray of links
 	}
+
+    public class modeData
+    {
+        public string title { get; set; } //Title of the mode alert
+        public string content { get; set; } //STring content of the mode alert
+        public List<modeDataButtons> buttons { get; set; } //buttons for the alert
+    }
+
+    public class modeDataButtons
+    {
+        public string key { get; set; } //key of the button (action)
+        public string value { get; set; } //text for the button 
+    }
 
 	public class ContentConfig
 	{

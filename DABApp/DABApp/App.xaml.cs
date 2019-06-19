@@ -2,62 +2,67 @@ using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
+using System.Diagnostics;
 
 namespace DABApp
 {
-	public partial class App : Application
-	{
-		public App()
-		{
+    public partial class App : Application
+    {
+        public App()
+        {
             if (AuthenticationAPI.GetTestMode())
             {
-               GlobalResources.TestMode = true;
+                GlobalResources.TestMode = true;
             }
-			InitializeComponent();
+            InitializeComponent();
 
-			FlowListView.Init();
+            FlowListView.Init();
 
-			if (ContentAPI.CheckContent())
-			{
-				if (AuthenticationAPI.CheckToken()) {
-					MainPage = new NavigationPage(new DabChannelsPage());
-				}
-				else
-				{
-					MainPage = new NavigationPage(new DabLoginPage());
-				}
-			}
-			else {
-				MainPage = new DabNetworkUnavailablePage();
-			}
-			MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-		}
+            if (ContentAPI.CheckContent()) //Check for valid content API
+            {
 
-		protected override void OnStart()
-		{
-            DependencyService.Get<IAnalyticsService>().LogEvent("app_startup","start_date", DateTime.Now.ToShortDateString());
+                if (AuthenticationAPI.CheckToken() && ContentConfig.Instance.blocktext.mode == null) //Check to see if the user is logged in.
+                {
+                    MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
+                }
+                else
+                {
+                    //Take them to the login page if they aren't logged in or there is a special mode in play.
+                    MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if not logged in
+                }
+            }
+            else
+            {
+                MainPage = new DabNetworkUnavailablePage(); //Take to network unavailable page if not logged in.
+            }
+            MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
         }
 
-		protected override async void OnSleep()
-		{
+        protected override void OnStart()
+        {
+            DependencyService.Get<IAnalyticsService>().LogEvent("app_startup", "start_date", DateTime.Now.ToShortDateString());
+        }
+
+        protected override async void OnSleep()
+        {
             if (Device.RuntimePlatform == "iOS")
             {
                 AuthenticationAPI.PostActionLogs();
             }
             else await AuthenticationAPI.PostActionLogs();
-			JournalTracker.Current.Open = false;
-		}
+            JournalTracker.Current.Open = false;
+        }
 
-		protected override async void OnResume()
-		{
-			JournalTracker.Current.Open = true;
+        protected override async void OnResume()
+        {
+            JournalTracker.Current.Open = true;
             if (Device.RuntimePlatform == Device.iOS)
             {
                 AuthenticationAPI.GetMemberData();
             }
             await AuthenticationAPI.GetMemberData();
-		}
+        }
 
-		
-	}
+
+    }
 }

@@ -1,59 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabLoginPage : DabBaseContentPage
-	{
-		static bool _fromPlayer;
-		static bool _fromDonation;
+    public partial class DabLoginPage : DabBaseContentPage
+    {
+        static bool _fromPlayer;
+        static bool _fromDonation;
         int TapNumber = 0;
         private double _width;
         private double _height;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
             _width = this.Width;
             _height = this.Height;
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
             }
-			NavigationPage.SetHasNavigationBar(this, false);
-			_fromPlayer = fromPlayer;
-			_fromDonation = fromDonation;
-			GlobalResources.LogInPageExists = true;
-			ToolbarItems.Clear();
-			var email = GlobalResources.GetUserEmail();
-			if (email != "Guest" && !String.IsNullOrEmpty(email)){
-				Email.Text = email;
-			}
-			if (Device.Idiom == TargetIdiom.Phone) {
-				Logo.WidthRequest = 250;
-				Logo.Aspect = Aspect.AspectFit;
-			}
+            NavigationPage.SetHasNavigationBar(this, false);
+            _fromPlayer = fromPlayer;
+            _fromDonation = fromDonation;
+            GlobalResources.LogInPageExists = true;
+            ToolbarItems.Clear();
+            var email = GlobalResources.GetUserEmail();
+            if (email != "Guest" && !String.IsNullOrEmpty(email))
+            {
+                Email.Text = email;
+            }
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                Logo.WidthRequest = 250;
+                Logo.Aspect = Aspect.AspectFit;
+            }
             SignUp.IsSelectable = false;
-			var tapper = new TapGestureRecognizer();
-			tapper.NumberOfTapsRequired = 1;
-			tapper.Tapped += (sender, e) =>
-			{
-				Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
-			};
-			SignUp.GestureRecognizers.Add(tapper);
-			SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
-			if (Device.Idiom == TargetIdiom.Tablet) {
-				Container.Padding = 100;
-			}
+            var tapper = new TapGestureRecognizer();
+            tapper.NumberOfTapsRequired = 1;
+            tapper.Tapped += (sender, e) =>
+            {
+                Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
+            };
+            SignUp.GestureRecognizers.Add(tapper);
+            SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                Container.Padding = 100;
+            }
             //MessagingCenter.Subscribe<string>("OptimizationWarning", "OptimizationWarning", (obj) => {
             //    DisplayAlert("Background Playback", "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", "OK");
             //});
-		}
 
-		async void OnLogin(object o, EventArgs e) {
-			Login.IsEnabled = false;
+        }
+
+        async void OnLogin(object o, EventArgs e)
+        {
+            Login.IsEnabled = false;
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
@@ -74,127 +80,234 @@ namespace DABApp
             //		break;
             //}
             var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
-			if (result == "Success")
-			{
-				MessagingCenter.Send<string>("Setup", "Setup");
-				GuestStatus.Current.IsGuestLogin = false;
+            if (result == "Success")
+            {
+                MessagingCenter.Send<string>("Setup", "Setup");
+                GuestStatus.Current.IsGuestLogin = false;
                 await AuthenticationAPI.GetMemberData();
-				if (_fromPlayer)
-				{
-					await Navigation.PopModalAsync();
-				}
-				else
-				{
-					if (_fromDonation)
-					{
-						var dons = await AuthenticationAPI.GetDonations();
-						if (dons.Length == 1)
-						{
-							var url = await PlayerFeedAPI.PostDonationAccessToken();
-							if (url.StartsWith("http"))
-							{
-								DependencyService.Get<IRivets>().NavigateTo(url);
-							}
-							else
-							{
-								await DisplayAlert("Error", url, "OK");
-							}
-							NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-							_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-							Application.Current.MainPage = _nav;
-							Navigation.PopToRootAsync();
-						}
-						else
-						{
-							NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
-							_navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-							Application.Current.MainPage = _navs;
-							await Navigation.PopToRootAsync();
-							//NavigationPage nav = new NavigationPage(new DabManageDonationsPage(dons));
-							//nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-							//await Navigation.PushModalAsync(nav);
-						}
-					}
-					else
-					{
-						NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-						_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-						Application.Current.MainPage = _nav;
-						Navigation.PopToRootAsync();
-					}
-				}
-			}
-			else 
-			{
-				if (result.Contains("Error"))
-				{
-					if (result.Contains("Http"))
-					{
-						await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
-					}
-					else { 
-						await DisplayAlert("Error", result, "OK");
-					}
-				}
-				else
-				{
-					await DisplayAlert("Login Failed", result, "OK");
-				}
-			}
-			Login.IsEnabled = true;
+                if (_fromPlayer)
+                {
+                    await Navigation.PopModalAsync();
+                }
+                else
+                {
+                    if (_fromDonation)
+                    {
+                        var dons = await AuthenticationAPI.GetDonations();
+                        if (dons.Length == 1)
+                        {
+                            var url = await PlayerFeedAPI.PostDonationAccessToken();
+                            if (url.StartsWith("http"))
+                            {
+                                DependencyService.Get<IRivets>().NavigateTo(url);
+                            }
+                            else
+                            {
+                                await DisplayAlert("Error", url, "OK");
+                            }
+                            NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                            Application.Current.MainPage = _nav;
+                            Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+                            NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
+                            _navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                            Application.Current.MainPage = _navs;
+                            await Navigation.PopToRootAsync();
+                            //NavigationPage nav = new NavigationPage(new DabManageDonationsPage(dons));
+                            //nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                            //await Navigation.PushModalAsync(nav);
+                        }
+                    }
+                    else
+                    {
+                        NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                        Application.Current.MainPage = _nav;
+                        Navigation.PopToRootAsync();
+                    }
+                }
+            }
+            else
+            {
+                if (result.Contains("Error"))
+                {
+                    if (result.Contains("Http"))
+                    {
+                        await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                    }
+                    else
+                    {
+                        await DisplayAlert("Error", result, "OK");
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Login Failed", result, "OK");
+                }
+            }
+            Login.IsEnabled = true;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
-		}
+        }
 
-		void OnForgot(object o, EventArgs e) {
-			Navigation.PushAsync(new DabResetPasswordPage());
-		}
+        void OnForgot(object o, EventArgs e)
+        {
+            Navigation.PushAsync(new DabResetPasswordPage());
+        }
 
-		async void OnGuestLogin(object o, EventArgs e) {
-			GuestLogin.IsEnabled = false;
+        async void OnGuestLogin(object o, EventArgs e)
+        {
+            GuestLogin.IsEnabled = false;
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             GuestStatus.Current.IsGuestLogin = true;
-			await AuthenticationAPI.ValidateLogin("Guest", "", true);
-			if (_fromPlayer)
-			{
-				await Navigation.PopModalAsync();
-			}
-			else
-			{
-				NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-				_nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-				Application.Current.MainPage = _nav;
-				await Navigation.PopToRootAsync();
-			}
+            await AuthenticationAPI.ValidateLogin("Guest", "", true);
+            if (_fromPlayer)
+            {
+                await Navigation.PopModalAsync();
+            }
+            else
+            {
+                NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+                _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                Application.Current.MainPage = _nav;
+                await Navigation.PopToRootAsync();
+            }
             activity.IsVisible = false;
             activity.IsVisible = false;
-		}
+        }
 
-		protected override void OnAppearing()
-		{
-			base.OnAppearing();
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
             if (GlobalResources.playerPodcast.IsPlaying)
             {
                 //Stop the podcast player before continuing
                 GlobalResources.playerPodcast.Stop();
             }
             TapNumber = 0;
-		}
 
-		protected override void OnDisappearing()
-		{
-			base.OnDisappearing();
-			Login.IsEnabled = true;
-			GuestLogin.IsEnabled = true;
-		}
+            //Take action based on the mode of the app
+            modeData mode = ContentConfig.Instance.blocktext.mode;
+            if (mode != null)
+            {
+                string modeResponseCode = "";
+                switch (mode.buttons.Count)
+                {
+                    case 0:
+                        //Should not happen
+                        modeResponseCode = "";
+                        break;
+                    case 1:
+                        //One button - just tell them something and get the single button's response
+                        var mr1 = DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
+                        mr1.ContinueWith((t1) =>
+                        {
+                            modeResponseCode = mode.buttons.First().key;
+                            HandleModeResponse(modeResponseCode);
+                        });
+                        break;
+                    case 2:
+                        //Use display alert with cancel and ok buttons
+                        var mr2 = DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+                        mr2.ContinueWith((t1) =>
+                        {
+                            switch (t1.Result)
+                            {
+                                case true:
+                                    modeResponseCode = mode.buttons.Last().key;
+                                    break;
+                                case false:
+                                    modeResponseCode = mode.buttons.First().key;
+                                    break;
+                            }
+                            HandleModeResponse(modeResponseCode);
+                        });
 
-		void OnCompleted(object sender, System.EventArgs e)
-		{
-			Password.Focus();
-		}
+                        break;
+                    default:
+                        //TODO: Convert this into a picker list with all the options
+                        var mr3 = DisplayActionSheet(mode.title, mode.content, null, mode.buttons.Select(x => x.value).ToArray());
+                        mr3.ContinueWith((t1) =>
+                        {
+                            modeResponseCode = mode.buttons.Single(x => x.value == mr3.Result).key;
+                            HandleModeResponse(modeResponseCode);
+                        });
+                        break;
+                }
+
+
+
+            }
+
+        }
+
+        private void HandleModeResponse(string modeResponseCode)
+        {
+            switch (modeResponseCode)
+            {
+                case "update": //update app
+                               //Open up a page to update the app.
+                    var url = string.Empty;
+                    var appId = string.Empty;
+                    if (Device.RuntimePlatform == "iOS") //Apple
+                    {
+                        appId = "1215838266"; //TODO: Verify this is the right code
+                        url = $"itms-apps://itunes.apple.com/app/id{appId}";
+                    }
+                    else //Android
+                    {
+                        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
+                        url = $"https://play.google.com/store/apps/details?id={appId}";
+                    }
+
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        //Does not do anything on iOS Debugger.
+                        Device.OpenUri(new Uri(url));
+                    });
+                    //Disable inputs
+                    Email.IsEnabled = false;
+                    Password.IsEnabled = false;
+                    GuestLogin.IsEnabled = false;
+                    Login.IsEnabled = false;
+
+
+                    break;
+                case "guest": //login as guest
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        OnGuestLogin(null, null);
+                    });
+                    break;
+                case "ok": //ok button signifies it's currently offline
+                           //Disable inputs
+                    Email.IsEnabled = false;
+                    Password.IsEnabled = false;
+                    GuestLogin.IsEnabled = false;
+                    Login.IsEnabled = false;
+                    break;
+
+
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Login.IsEnabled = true;
+            GuestLogin.IsEnabled = true;
+        }
+
+        void OnCompleted(object sender, System.EventArgs e)
+        {
+            Password.Focus();
+        }
 
         async void OnTest(object sender, EventArgs e)
         {
