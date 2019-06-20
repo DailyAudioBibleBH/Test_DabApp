@@ -231,11 +231,10 @@ namespace DABApp
 
                         break;
                     default:
-                        //TODO: Convert this into a picker list with all the options
-                        var mr3 = DisplayActionSheet(mode.title, mode.content, null, mode.buttons.Select(x => x.value).ToArray());
+                        var mr3 = DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
                         mr3.ContinueWith((t1) =>
                         {
-                            modeResponseCode = mode.buttons.Single(x => x.value == mr3.Result).key;
+                            modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
                             HandleModeResponse(modeResponseCode);
                         });
                         break;
@@ -248,6 +247,7 @@ namespace DABApp
         }
 
         private void HandleModeResponse(string modeResponseCode)
+        //Handle the user's response to the maintenance mode prompt 
         {
             switch (modeResponseCode)
             {
@@ -262,6 +262,7 @@ namespace DABApp
                     }
                     else //Android
                     {
+                        //TODO: Test this
                         appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
                         url = $"https://play.google.com/store/apps/details?id={appId}";
                     }
@@ -271,11 +272,7 @@ namespace DABApp
                         //Does not do anything on iOS Debugger.
                         Device.OpenUri(new Uri(url));
                     });
-                    //Disable inputs
-                    Email.IsEnabled = false;
-                    Password.IsEnabled = false;
-                    GuestLogin.IsEnabled = false;
-                    Login.IsEnabled = false;
+                    DisableAllInputs("Restart app after updating.");
 
 
                     break;
@@ -287,14 +284,27 @@ namespace DABApp
                     break;
                 case "ok": //ok button signifies it's currently offline
                            //Disable inputs
-                    Email.IsEnabled = false;
-                    Password.IsEnabled = false;
-                    GuestLogin.IsEnabled = false;
-                    Login.IsEnabled = false;
+                    DisableAllInputs("Shutdown app and try again later.");
                     break;
 
 
             }
+        }
+
+        private void DisableAllInputs(string MainButtonText)
+        {
+            //Disables all inputs and changes the text of the main button
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Email.IsEnabled = false;
+                Password.IsEnabled = false;
+                GuestLogin.IsEnabled = false;
+                Login.IsEnabled = false;
+                btnForgot.IsEnabled = false;
+                SignUp.IsEnabled = false;
+                Login.Text = MainButtonText;
+            }
+            );
         }
 
         protected override void OnDisappearing()

@@ -13,7 +13,7 @@
 			<Frame/>
 			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
-				<Button Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
+				<Button x:Name="btnForgot" Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
 				<Button x:Name="GuestLogin" Text="Log in as Guest" Clicked="OnGuestLogin" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
 			</StackLayout>
 			<Frame OutlineColor="{DynamicResource OutlineColor}" VerticalOptions="End" HeightRequest="40" Margin="20, 30, 20, 30">
