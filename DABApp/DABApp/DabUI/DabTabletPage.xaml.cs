@@ -9,39 +9,56 @@ using DABApp.DabAudio;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
+
+/* This page is the tablet player page and controls channels, episodes, and player on tablet devices
+ * */
+
 namespace DABApp
 {
     public partial class DabTabletPage : DabBaseContentPage
     {
-        DabPlayer player = GlobalResources.playerPodcast;
-        Resource _resource;
-        IEnumerable<dbEpisodes> Episodes;
+        DabPlayer player = GlobalResources.playerPodcast; //Reference to the global podcast player object
+        Resource _resource; //The current resource (initially passed from the channels page)
+        IEnumerable<dbEpisodes> Episodes; //List of episodes for current channel
         ObservableCollection<EpisodeViewModel> list;
-        string backgroundImage;
+        string backgroundImage; //background image in the header?
         EpisodeViewModel episode;
         double original;
         bool NotConstructing = false;
-        private double _width;
-        private double _height;
+        private double _width; //screen width
+        private double _height; //screen height
 
         //Open up the page and optionally init it with an episode
         public DabTabletPage(Resource resource, dbEpisodes Episode = null)
         {
             InitializeComponent();
-            _width = this.Width;
+
+            //UI Setup
+            base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
+
+            _width = this.Width; //store current width and height
             _height = this.Height;
-            ReadText.EraseText = true;
+
+            //custom padding and sizing needs
             ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
             PlayerOverlay.Padding = new Thickness(25, 10, 25, 25);
             EpDescription.Margin = new Thickness(40, 0, 40, 0);
             JournalContent.HeightRequest = 450;
-            SegControl.ValueChanged += Handle_ValueChanged;
-            _resource = resource; //Selected channel
+
+            //Set up events
+            SegControl.ValueChanged += Handle_SegControlValueChanged;
+
+            //Channels list
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
+            ChannelsList.SelectedItem = _resource;
+
+            //Set up selected channel
+            _resource = resource;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
             Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
-            base.ControlTemplate = (ControlTemplate)Application.Current.Resources["NoPlayerPageTemplateWithoutScrolling"];
+
+            //Break episode months out into a list
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
@@ -50,14 +67,17 @@ namespace DABApp
             }
             Months.Items.Insert(0, "All Episodes");
             Months.SelectedIndex = 0;
+
+            //Run timed actions and subscribe to events to update them
             TimedActions();
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
                 TimedActions();
             });
+
+            //Load the specified episode
             if (Episode != null)
             {
-                //Use the provided episode
                 episode = new EpisodeViewModel(Episode);
             }
             else
@@ -65,14 +85,14 @@ namespace DABApp
                 //Pick the first episode
                 episode = new EpisodeViewModel(Episodes.First());
             }
+            //Bind to the active episode
             favorite.BindingContext = episode;
-
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
             PlayerLabels.BindingContext = episode;
-            Journal.BindingContext = episode;
+            Completed.BindingContext = episode;
+
+
+            //Reading area
+            ReadText.EraseText = true;
             Task.Run(async () => { await SetReading(); });
             if (episode == null)
             {
@@ -82,60 +102,65 @@ namespace DABApp
             {
                 SetVisibility(false);
             }
+
+
+            //Journal area
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                //Join the journal channel
+                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            }
+            Journal.BindingContext = episode;
             JournalTracker.Current.socket.Disconnect += OnDisconnect;
             JournalTracker.Current.socket.Reconnecting += OnReconnecting;
             JournalTracker.Current.socket.Room_Error += OnRoom_Error;
             JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
             JournalTracker.Current.socket.Join_Error += OnJoin_Error;
+
+            //Keyboard events on iOS for Journal
             if (Device.RuntimePlatform == "iOS")
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
             }
-            //AudioPlayer.Instance.PlayerFailure += OnPlaybackStopped;
+
+            //Tap event for the MarkDownDeep link
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
             {
                 Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
-            ChannelsList.SelectedItem = _resource;
-            Completed.BindingContext = episode;
 
         }
 
-        void Handle_ValueChanged(object sender, System.EventArgs e)
+        void Handle_SegControlValueChanged(object sender, System.EventArgs e)
+        /* Select different segment (play/read/journal) */
         {
             if (Device.RuntimePlatform == "Android" && Device.Idiom == TargetIdiom.Tablet)
             {
+                //Android tablet specific code for segment control - hide and show again?
                 SegControl.IsVisible = false;
                 SegControl.IsVisible = true;
             }
             switch (SegControl.SelectedSegment)
             {
-                case 0:
-                    if (GuestStatus.Current.IsGuestLogin)
-                    {
-                        LoginJournal.IsVisible = false;
-                    }
-                    else { Journal.IsVisible = false; }
-                    Read.IsVisible = false;
-                    Journal.IsVisible = false;
-                    //AudioPlayer.Instance.showPlayerBar = false;
+                case 0: //READ
+                    //Show Episode List Only
                     Archive.IsVisible = true;
+                    //Hide Read
+                    Read.IsVisible = false;
+                    //Hide Journal
+                    LoginJournal.IsVisible = false;
+                    Journal.IsVisible = false;
                     break;
-                case 1:
+                case 1: //READ
+                    //Hide Episode List
                     Archive.IsVisible = false;
-                    if (GuestStatus.Current.IsGuestLogin)
-                    {
-                        LoginJournal.IsVisible = false;
-                    }
-                    else
-                    {
-                        Journal.IsVisible = false;
-                    }
-                    //AudioPlayer.Instance.showPlayerBar = true;
+                    //Show Read
                     Read.IsVisible = true;
-
+                    //Hide Journal
+                    LoginJournal.IsVisible = false;
+                    Journal.IsVisible = false;
                     //Send info to Firebase analytics that user tapped the read tab
                     var info = new Dictionary<string, string>();
                     info.Add("channel", episode.Episode.channel_title);
@@ -143,17 +168,21 @@ namespace DABApp
                     info.Add("episode_name", episode.title);
                     DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
                     break;
-                case 2:
-                    Read.IsVisible = false;
+                case 2: //JOURNAL
+                    //Hide episode list
                     Archive.IsVisible = false;
-                    //AudioPlayer.Instance.showPlayerBar = true;
+                    //Hide Read
+                    Read.IsVisible = false;
+                    //Show Journal
                     if (GuestStatus.Current.IsGuestLogin)
                     {
                         LoginJournal.IsVisible = true;
+                        Journal.IsVisible = false;
                     }
                     else
                     {
                         Journal.IsVisible = true;
+                        LoginJournal.IsVisible = false;
                     }
                     //Send info to Firebase analytics that user tapped the journal tab
                     var infoJ = new Dictionary<string, string>();
@@ -166,8 +195,9 @@ namespace DABApp
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
+        //Handle the selection of a different episode
         {
-            //Handle the selection of a different episode
+            //Load the episode
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -175,6 +205,8 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             var newEp = (EpisodeViewModel)e.Item;
+
+            //Join the journal channel
             JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
 
             // Make sure we have a file to play
@@ -204,7 +236,10 @@ namespace DABApp
                 infoJ.Add("episode_name", episode.Episode.title);
                 DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
             }
-            else await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+            else
+            {
+                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+            }
             //TODO: Set completed image
             //Completed.Image = episode.listenedToSource;
             labelHolder.IsVisible = false;
@@ -218,13 +253,17 @@ namespace DABApp
         }
 
         async void OnChannel(object o, EventArgs e)
+            /* User selected a different channel */
         {
+            //Wait indicator 
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
             labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
+
+            //Load the episode list
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
             {
                 _resource = (Resource)ChannelsList.SelectedItem;
@@ -278,23 +317,24 @@ namespace DABApp
         {
             if (player.IsReady)
             {
-                if (player.IsPlaying)
+                if (player.IsPlaying) //Pause if playing
                 {
                     player.Pause();
                 }
-                else
+                else //Play if paused
                 {
                     player.Play();
                 }
             }
             else
             {
-                if (!player.Load(episode.Episode))
+                if (!player.Load(episode.Episode)) //Load the episode
                 {
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
                     //TODO: Ensure nothing breaks if this happens.
                     return;
                 }
+                //start playback
                 player.Play();
             }
         }
@@ -305,6 +345,7 @@ namespace DABApp
             Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.id.ToString());
         }
 
+        //Page appears event
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -340,6 +381,7 @@ namespace DABApp
             }
         }
 
+        //User login
         void OnLogin(object o, EventArgs e)
         {
             Login.IsEnabled = false;
@@ -369,6 +411,7 @@ namespace DABApp
             Login.IsEnabled = true;
         }
 
+        //Set the reading
         async Task SetReading()
         {
             Reading reading = await PlayerFeedAPI.GetReading(episode.Episode.read_link);
@@ -392,18 +435,52 @@ namespace DABApp
 
         void OnInitialized(object o, EventArgs e)
         {
+
+            //Initialize an episode for playback. This may fire when initially loading
+            //the page if the first playback, or it may wait until they press the fake "play" button
+            //to start an episode after a different one is loaded.
+
             Initializer.IsVisible = false; //Hide the init button
-            BindControls(true, true); //Bind controls
-            if (!player.Load(episode.Episode))
+           
+
+            //Load the file if not already loaded
+            if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
             {
-                DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                //TODO: Ensure nothing breaks if this happens.
-                return;
+                if (!player.Load(episode.Episode))
+                {
+                    DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                    //TODO: Ensure nothing breaks if this happens.
+                    return;
+                }
+
+                //Store episode data across app
+                GlobalResources.CurrentEpisodeId = (int)episode.Episode.id;
             }
-            player.Play(); //Play
+
+            //Go to starting position
+            player.Seek(episode.Episode.stop_time);
+
+            //Bind controls for playback
+            BindControls(true, true);
+
+            //Set up journal
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            }
+
+            //Start playing if they pushed the play button
+            if (o != null)
+            {
+                player.Play();
+            }
+
             SetVisibility(true); //Adjust visibility of controls
+
         }
 
+
+        //Bind controls to episode and player
         void BindControls(bool BindToEpisode, bool BindToPlayer)
         {
             if (BindToEpisode)
