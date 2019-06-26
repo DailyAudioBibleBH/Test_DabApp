@@ -74,10 +74,10 @@
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.5</string>
+	<string>1.1.6</string>
 	<key>FirebaseAppDelegatProxyEnabled</key>
 	<string>No</string>
 	<key>CFBundleVersion</key>
-	<string>20190612</string>
+	<string>20190626</string>
 </dict>
 </plist>
