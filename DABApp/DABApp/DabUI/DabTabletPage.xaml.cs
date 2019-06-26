@@ -24,7 +24,6 @@ namespace DABApp
         string backgroundImage; //background image in the header?
         EpisodeViewModel episode;
         double original;
-        bool NotConstructing = false;
         private double _width; //screen width
         private double _height; //screen height
 
@@ -253,7 +252,7 @@ namespace DABApp
         }
 
         async void OnChannel(object o, EventArgs e)
-            /* User selected a different channel */
+        /* User selected a different channel */
         {
             //Wait indicator 
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -266,35 +265,53 @@ namespace DABApp
             //Load the episode list
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
             {
+                //Store the resource / channel
                 _resource = (Resource)ChannelsList.SelectedItem;
-                backgroundImage = _resource.images.backgroundTablet;
-                if (NotConstructing)
-                {
-                    await PlayerFeedAPI.GetEpisodes(_resource);
-                }
-                NotConstructing = true;
+                BackgroundImage.Source = _resource.images.backgroundTablet;
+
+                //Load the list if episodes for the channel.
+                await PlayerFeedAPI.GetEpisodes(_resource);
+
+                //Get the list of episodes from the resource
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
-                BackgroundImage.Source = backgroundImage;
-                if (episode.Episode.PubDate != Episodes.First().PubDate)
+
+                //Prep the new episode (don't play yet though0
+                episode = new EpisodeViewModel(Episodes.FirstOrDefault());
+                if (episode != null)
                 {
-                    JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
-                }
-                episode = new EpisodeViewModel(Episodes.First());
-                BindControls(true, false);
-                await SetReading();
-                if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
-                {
-                    SetVisibility(false);
+                    if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
+                    {
+                        //Prep player tab
+                        BindControls(true, false);
+                        SetVisibility(false);
+
+                        //PRep reading tab
+                        await SetReading();
+
+                        //Load the journal for the episode
+                        JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
+
+                    }
+                    else
+                    {
+                        //Current episode 
+                        SetVisibility(true);
+                    }
                 }
                 else
                 {
-                    SetVisibility(true);
+                    //TODO: Handle no episodes available
                 }
+
                 //TODO: Fix completed image
                 //Completed.Image = episode.listenedToSource;
             }
-            else await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+            else
+            {
+                //No episodes available
+                await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+            }
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
@@ -441,7 +458,7 @@ namespace DABApp
             //to start an episode after a different one is loaded.
 
             Initializer.IsVisible = false; //Hide the init button
-           
+
 
             //Load the file if not already loaded
             if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
