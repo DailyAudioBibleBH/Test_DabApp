@@ -127,11 +127,11 @@ namespace DABApp
                 }
                 double rotation = 360 * p;
                 background2.Rotation = rotation;
-                //if (p > .9)
-                //{
-                //    HandleDownloadVisibleChanged(true); //amateur way of handling change
-                //}
-            } 
+                if (p >= .9)
+                {
+                    HandleDownloadVisibleChanged(true);
+                }
+            }
         }
 
         private void HandleDownloadVisibleChanged(bool newValue)

@@ -22,6 +22,7 @@ namespace DABApp.Droid
         WebClient client;
         public bool keepDownloading { get; set; } = true;
         long FileSize;
+        CircularProgressControl circularProgressControl = new CircularProgressControl();
 
         public FileManagement()
         {
@@ -123,6 +124,7 @@ namespace DABApp.Droid
                 progress = -.01;
                 Debug.WriteLine($"Download completed for {_episode.id.Value}");
                 EpisodeCompleted?.Invoke(sender, a);
+                //Need to call HandleDownloadVisibleChanged here
             }
             catch (Exception)
             {
