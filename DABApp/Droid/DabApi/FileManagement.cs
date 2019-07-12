@@ -119,12 +119,11 @@ namespace DABApp.Droid
         {
             try
             {
-                var c = new DabEventArgs(_episode.id.Value, 1, false, true); //new
+                var c = new DabEventArgs(_episode.id.Value, 1, false); //new
                 var b = e.Cancelled || e.Error != null;
                 var a = new DabEventArgs(_episode.id.Value, -1, b);
                 progress = -.01;
                 Debug.WriteLine($"Download completed for {_episode.id.Value}");
-                EpisodeCompleted?.Invoke(sender, a);
                 ChangeVisualDownload?.Invoke(sender, c); //new 
                 //Change property of blue cloud with event handling 
                 //Need to call HandleDownloadVisibleChanged here
