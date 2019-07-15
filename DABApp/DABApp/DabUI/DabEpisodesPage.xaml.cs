@@ -37,11 +37,19 @@ namespace DABApp
             Months.SelectedIndex = 0;
             if (resource.availableOffline)
             {
-                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+                Task.Run(async () => {
+                    await PlayerFeedAPI.DownloadEpisodes();
+                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                    circularProgressControl.HandleDownloadVisibleChanged(true);
+                });
             }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
+            });
+            MessagingCenter.Subscribe<string>("DownloadFileCompleted", "DownloadFileCompleted", (obj) =>
+            {
+                EpisodeList.RefreshCommand = new Command(async () => { await Refresh();
             });
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
             {
@@ -128,7 +136,11 @@ namespace DABApp
             TimedActions();
             if (_resource.availableOffline)
             {
-                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
+                Task.Run(async () => {
+                    await PlayerFeedAPI.DownloadEpisodes();
+                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                    circularProgressControl.HandleDownloadVisibleChanged(true);
+                });
             }
             activity.IsVisible = false;
             activityHolder.IsVisible = false;

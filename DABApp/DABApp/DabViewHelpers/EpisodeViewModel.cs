@@ -31,7 +31,6 @@ namespace DABApp
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
             fm.EpisodeCompleted += DownloadStarted;
-            fm.
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }
 
