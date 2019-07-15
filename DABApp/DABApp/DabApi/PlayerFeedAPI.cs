@@ -204,6 +204,7 @@ namespace DABApp
                         Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToShowDownload.Count(), episode.url);
                         if (await fm.DownloadEpisodeAsync(episode.url, episode))
                         {
+                            Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
                             Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
                             episode.is_downloaded = true;
                             await adb.UpdateAsync(episode);
@@ -373,7 +374,7 @@ namespace DABApp
                     try
                     {
                         FileManager fm = new FileManager();
-                        if (fm.DeleteEpisode(episode.id.ToString(),episode.File_extension));
+                        if (fm.DeleteEpisode(episode.id.ToString(),episode.File_extension))
                         {
                             Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
                             episode.is_downloaded = false;

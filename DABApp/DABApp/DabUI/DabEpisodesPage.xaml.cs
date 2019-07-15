@@ -47,10 +47,6 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
             });
-            MessagingCenter.Subscribe<string>("DownloadFileCompleted", "DownloadFileCompleted", (obj) =>
-            {
-                EpisodeList.RefreshCommand = new Command(async () => { await Refresh();
-            });
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
             {
                 TimedActions();

@@ -131,10 +131,6 @@ namespace DABApp
                 }
                 double rotation = 360 * p;
                 background2.Rotation = rotation;
-                if (p >= .9)
-                {
-                    System.Diagnostics.Debug.WriteLine("File Almost Done Downloading");
-                }
             }
         }
 

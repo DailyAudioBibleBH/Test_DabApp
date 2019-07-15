@@ -52,7 +52,7 @@
                   <Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
                   <Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
                 </StackLayout>
-                <local:CircularProgressControl x:Name="circularProgressControl" Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
+                <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
                 <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
               </Grid>
             </local:DabViewCell>
