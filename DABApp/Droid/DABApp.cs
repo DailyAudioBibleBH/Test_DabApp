@@ -7,6 +7,7 @@ using Android.Util;
 using Android.Views;
 using DABApp.DabNotifications;
 using Plugin.FirebasePushNotification;
+using Plugin.FirebasePushNotification.Abstractions;
 
 namespace DABApp.Droid
 {
@@ -45,6 +46,8 @@ namespace DABApp.Droid
             //If debug you should reset the token each time.
 #if DEBUG
             FirebasePushNotificationManager.Initialize(this, true);
+            new NotificationUserAction("Reply", "Reply", NotificationActionType.Foreground);
+
 #else
               FirebasePushNotificationManager.Initialize(this,false);
 #endif
@@ -55,6 +58,9 @@ namespace DABApp.Droid
             CrossFirebasePushNotification.Current.OnNotificationOpened += FCM_OnNotificationOpened;
             CrossFirebasePushNotification.Current.OnNotificationAction += FCM_OnNotificationAction;
             CrossFirebasePushNotification.Current.OnNotificationDeleted += FCM_OnNotificationDeleted;
+
+            FirebasePushNotificationManager.NotificationActivityType = typeof(MainActivity);
+
 
             /* END FIREBASE CLOUD MESSAGING INIT */
 

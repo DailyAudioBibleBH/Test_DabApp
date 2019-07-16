@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Timers;
+using Android.App;
 using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
@@ -28,9 +29,14 @@ namespace DABApp.DabAudio
     }
 
     //Class that extends the basic player used by the apps.
-
+    [Service]
+    [IntentFilter(new[] { ActionPlay, ActionPause, ActionStop })]
     public class DabPlayer : ISimpleAudioPlayer, INotifyPropertyChanged
     {
+        //Actions
+        public const string ActionPlay = "com.xamarin.action.PLAY";
+        public const string ActionPause = "com.xamarin.action.PAUSE";
+        public const string ActionStop = "com.xamarin.action.STOP";
         private IDabNativePlayer nativePlayer;
         private ISimpleAudioPlayer player;
         private string _channelTitle = "";
@@ -353,12 +359,12 @@ namespace DABApp.DabAudio
         /* Custom Properties added to our player */
         /****************************************/
 
-        private void UpdateEpisodeDataOnStop()
+        private async void UpdateEpisodeDataOnStop()
         {
             //Call other methods related to stopping / pausing an episode
             int e = GlobalResources.CurrentEpisodeId;
-            PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-            AuthenticationAPI.CreateNewActionLog(e, "pause", CurrentPosition, null, null);
+            await PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
+            await AuthenticationAPI.CreateNewActionLog(e, "pause", CurrentPosition, null, null);
 
         }
 
