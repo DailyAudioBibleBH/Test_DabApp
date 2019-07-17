@@ -53,6 +53,15 @@ namespace DABApp.iOS
 				socket.Connect();
 				connected = true;
 				Token = token;
+                
+                socket.On("jwt_expired", data =>
+                 {
+                    //This method should fire when a user logs themselves out of all devices via the website.
+                    Debug.WriteLine($"SOCKET jwt_expired {data} {DateTime.Now}");
+                     connected = false;
+                    //TODO: Log the user out of everything
+
+                });
 				socket.On("disconnect", data =>
 				{
 					Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
