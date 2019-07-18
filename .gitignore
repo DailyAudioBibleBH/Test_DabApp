@@ -187,3 +187,4 @@ FakesAssemblies/
 *.lock
 *.ide
 UserPrefs.xml
+DABApp/.vs/DABApp/xs/project-cache
