@@ -10,6 +10,9 @@ using Android.App;
 using Application = Android.App.Application;
 using Java.Lang;
 using Android.Content.Res;
+using Android.Media.Session;
+using Android.Support.V4.Media.Session;
+using Plugin.SimpleAudioPlayer;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -61,7 +64,10 @@ namespace DABApp.Droid
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
             player = Player;
-            int playposition = 0;
+            var mSession = new MediaSessionCompat(Application.Context, "MusicService");
+            mSession.SetFlags(MediaSessionCompat.FlagHandlesMediaButtons | MediaSessionCompat.FlagHandlesTransportControls);
+            var controller = mSession.Controller;
+            var description = GlobalResources.playerPodcast;
 
             if (IntegrateWithLockScreen)
             {
@@ -73,35 +79,66 @@ namespace DABApp.Droid
                     // Pass the current button press count value to the next activity:
                     var valuesForActivity = new Bundle();
                     valuesForActivity.PutInt(COUNT_KEY, count);
-                    
+
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
-
+                    Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
                     // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
                     const int pendingIntentId = 0;
                     PendingIntent pendingIntent =
                         PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.OneShot);
+                    PendingIntent pendingIntent2 =
+                        PendingIntent.GetActivity(Application.Context, pendingIntentId, playPauseIntent, PendingIntentFlags.OneShot);
 
                     // When the user clicks the notification, SecondActivity will start up.
                     var resultIntent = new Intent(Application.Context, typeof(SecondActivity));
+                    if (GlobalResources.playerPodcast.IsPlaying)
+                    {
+                        // Build the notification:
+                        var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
+                                      .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
+                                                .SetMediaSession(mSession.SessionToken)
+                                                .SetShowActionsInCompactView(0))
+                                      .SetVisibility(NotificationCompat.VisibilityPublic)
+                                      .SetAutoCancel(false) // Dismiss the notification from the notification area when the user clicks on it
+                                      .SetContentIntent(controller.SessionActivity) // Start up this activity when the user clicks the intent.
+                                      .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
+                                      .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
+                                      .AddAction(Resource.Drawable.ic_media_pause_dark, "Pause", pendingIntent2)
+                                      //.AddAction(Resource.Drawable.ic_media_play_dark, "Next", pendingIntent)
+                                      .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
+                                      .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
 
-                    // Build the notification:
-                    var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
-                                  .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
-                                            .SetShowActionsInCompactView(0, 1))
-                                  .SetVisibility(NotificationCompat.VisibilityPublic)
-                                  .SetAutoCancel(true) // Dismiss the notification from the notification area when the user clicks on it
-                                  .SetContentIntent(pendingIntent) // Start up this activity when the user clicks the intent.
-                                  .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
-                                  .AddAction(Resource.Drawable.ic_media_pause_dark, "Pause", pendingIntent)
-                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play", pendingIntent)
-                                  .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
-                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
+                        // Finally, publish the notification:
+                        var notificationManager = NotificationManagerCompat.From(Application.Context);
+                        notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+                    }
 
-                    // Finally, publish the notification:
-                    var notificationManager = NotificationManagerCompat.From(Application.Context);
-                    notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+                    else
+                    {
+                        // Build the notification:
+                        var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
+                                      .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
+                                                .SetMediaSession(mSession.SessionToken)
+                                                .SetShowActionsInCompactView(0))
+                                      .SetVisibility(NotificationCompat.VisibilityPublic)
+                                      .SetAutoCancel(false) // Dismiss the notification from the notification area when the user clicks on it
+                                      .SetContentIntent(controller.SessionActivity) // Start up this activity when the user clicks the intent.
+                                      .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
+                                      .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
+                                      .AddAction(Resource.Drawable.ic_media_pause_dark, "Pause", pendingIntent2)
+                                      //.AddAction(Resource.Drawable.ic_media_play_dark, "Next", pendingIntent)
+                                      .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
+                                      .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
+
+                        // Finally, publish the notification:
+                        var notificationManager = NotificationManagerCompat.From(Application.Context);
+                        notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+                    }
                 };
+                    
+
+                    
 
                 player.EpisodeProgressChanged += (object sender, EventArgs e) =>
                 {
@@ -111,32 +148,41 @@ namespace DABApp.Droid
 
             }
 
-
         }
     }
 
-    [Activity(Label = "Second Activity")]
+    [Activity]
     public class SecondActivity : Activity
     {
+        DabPlayer player = GlobalResources.playerPodcast;
+        EpisodeViewModel Episode;
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
-            // Get the count value passed to us from MainActivity:
-            var count = Intent.Extras.GetInt(DroidDabNativePlayer.COUNT_KEY, -1);
-
-            // No count was passed? Then just return.
-            if (count <= 0)
+            if (player.IsReady)
             {
-                return;
+                if (player.IsPlaying)
+                {
+                    player.Pause();
+                }
+                else
+                {
+                    player.Play();
+                }
             }
+            else
+            {
+                if (player.Load(Episode.Episode))
+                {
+                    player.Play();
+                }
+                else
+                {
+                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
 
-            // Display the count sent from the first activity:
-            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(DabChannelsPage));
-            System.Diagnostics.Debug.WriteLine("Notification Clicked");
-            //SetContentView(Resource.Layout.Second);
-            //var txtView = FindViewById<TextView>(Resource.Id.textView1);
-            //txtView.Text = $"You clicked the button {count} times in the previous activity.";
+            }
         }
     }
 }
