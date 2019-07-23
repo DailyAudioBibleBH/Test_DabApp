@@ -30,7 +30,9 @@ namespace DABApp.iOS
 		public event EventHandler Room_Error;
 		public event EventHandler Auth_Error;
 		public event EventHandler Join_Error;
-		static Markdown md;
+        public event EventHandler OnForcefulLogout;
+
+        static Markdown md;
 		static Converter converter;
 
 		static SocketService()
@@ -62,7 +64,8 @@ namespace DABApp.iOS
                     //This method should fire when a user logs themselves out of all devices via the website.
                     Debug.WriteLine($"SOCKET jwt_expired {data} {DateTime.Now}");
                      connected = false;
-                    //TODO: Log the user out of everything
+
+                     OnForcefulLogout?.Invoke(this, new EventArgs());
 
                 });
 
