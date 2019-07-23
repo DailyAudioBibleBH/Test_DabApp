@@ -61,7 +61,7 @@ namespace DABApp.Droid
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
             player = Player;
-
+            int playposition = 0;
 
             if (IntegrateWithLockScreen)
             {
@@ -85,29 +85,22 @@ namespace DABApp.Droid
                     // When the user clicks the notification, SecondActivity will start up.
                     var resultIntent = new Intent(Application.Context, typeof(SecondActivity));
 
-                    // Pass some values to SecondActivity:
-                    //resultIntent.PutExtras(valuesForActivity);
-
-                    // Construct a back stack for cross-task navigation:
-                    //var stackBuilder = TaskStackBuilder.Create(Application.Context);
-                    //stackBuilder.AddParentStack(Class.FromType(typeof(SecondActivity)));
-                    //stackBuilder.AddNextIntent(resultIntent);
-
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
+                                  .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
+                                            .SetShowActionsInCompactView(0, 1))
+                                  .SetVisibility(NotificationCompat.VisibilityPublic)
                                   .SetAutoCancel(true) // Dismiss the notification from the notification area when the user clicks on it
                                   .SetContentIntent(pendingIntent) // Start up this activity when the user clicks the intent.
-                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle) // Set the title
-                                  .SetNumber(count) // Display the count in the Content Info
-                                    .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
-                                  .SetContentText(GlobalResources.playerPodcast.EpisodeTitle); // the message to display.
+                                  .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
+                                  .AddAction(Resource.Drawable.ic_media_pause_dark, "Pause", pendingIntent)
+                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play", pendingIntent)
+                                  .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
+                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
 
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
-
-                    // Increment the button press count:
-                    count++;
                 };
 
                 player.EpisodeProgressChanged += (object sender, EventArgs e) =>
