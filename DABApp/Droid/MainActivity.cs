@@ -39,7 +39,7 @@ namespace DABApp.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
-            SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
+            SQLitePCL.Batteries.Init(); //Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
             SQLitePCL.raw.sqlite3_shutdown();
             SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
             SQLitePCL.raw.sqlite3_enable_shared_cache(1);

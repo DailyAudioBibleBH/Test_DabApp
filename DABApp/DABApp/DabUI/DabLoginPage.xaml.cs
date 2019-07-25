@@ -13,6 +13,7 @@ namespace DABApp
         int TapNumber = 0;
         private double _width;
         private double _height;
+        ContentConfig contentConfig = new ContentConfig();
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -193,56 +194,58 @@ namespace DABApp
             TapNumber = 0;
 
             //Take action based on the mode of the app
-            modeData mode = ContentConfig.Instance.blocktext.mode;
-            if (mode != null)
-            {
-                string modeResponseCode = "";
-                switch (mode.buttons.Count)
-                {
-                    case 0:
-                        //Should not happen
-                        modeResponseCode = "";
-                        break;
-                    case 1:
-                        //One button - just tell them something and get the single button's response
-                        var mr1 = DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
-                        mr1.ContinueWith((t1) =>
-                        {
-                            modeResponseCode = mode.buttons.First().key;
-                            HandleModeResponse(modeResponseCode);
-                        });
-                        break;
-                    case 2:
-                        //Use display alert with cancel and ok buttons
-                        var mr2 = DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
-                        mr2.ContinueWith((t1) =>
-                        {
-                            switch (t1.Result)
-                            {
-                                case true:
-                                    modeResponseCode = mode.buttons.Last().key;
-                                    break;
-                                case false:
-                                    modeResponseCode = mode.buttons.First().key;
-                                    break;
-                            }
-                            HandleModeResponse(modeResponseCode);
-                        });
+            List<Version> versionList = new List<Version>();
+            versionList = contentConfig.versions;
+            //modeData mode = ContentConfig.Instance.blocktext.mode;
+            //if   (versionList != null) //(mode != null)
+            //{
+            //    string modeResponseCode = "";
+            //    switch (mode.buttons.Count)
+            //    {
+            //        case 0:
+            //            //Should not happen
+            //            modeResponseCode = "";
+            //            break;
+            //        case 1:
+            //            //One button - just tell them something and get the single button's response
+            //            var mr1 = DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
+            //            mr1.ContinueWith((t1) =>
+            //            {
+            //                modeResponseCode = mode.buttons.First().key;
+            //                HandleModeResponse(modeResponseCode);
+            //            });
+            //            break;
+            //        case 2:
+            //            //Use display alert with cancel and ok buttons
+            //            var mr2 = DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+            //            mr2.ContinueWith((t1) =>
+            //            {
+            //                switch (t1.Result)
+            //                {
+            //                    case true:
+            //                        modeResponseCode = mode.buttons.Last().key;
+            //                        break;
+            //                    case false:
+            //                        modeResponseCode = mode.buttons.First().key;
+            //                        break;
+            //                }
+            //                HandleModeResponse(modeResponseCode);
+            //            });
 
-                        break;
-                    default:
-                        var mr3 = DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
-                        mr3.ContinueWith((t1) =>
-                        {
-                            modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
-                            HandleModeResponse(modeResponseCode);
-                        });
-                        break;
-                }
+            //            break;
+            //        default:
+            //            var mr3 = DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
+            //            mr3.ContinueWith((t1) =>
+            //            {
+            //                modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
+            //                HandleModeResponse(modeResponseCode);
+            //            });
+            //            break;
+            //    }
 
 
 
-            }
+            //}
 
         }
 

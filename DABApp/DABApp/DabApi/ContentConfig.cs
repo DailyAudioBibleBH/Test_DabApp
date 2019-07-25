@@ -31,10 +31,16 @@ namespace DABApp
 		public string resetPassword { get; set; } //HTML displayed under reset password
 		public string signUp { get; set; } //HTML displayed on sign up page
 		public string login { get; set; } //HTML on login page
-        public modeData mode { get; set; } //Mode / UPdate data
 	}
 
-	public class Images
+    public class Version
+    {
+        public string version { get; set; }
+        public string platform { get; set; }
+        public modeData mode { get; set; }
+    }
+
+    public class Images
 	{
 		public string thumbnail { get; set; } //thumbnail url 
 		public string bannerPhone { get; set; } //banner graphic on phones
@@ -173,6 +179,7 @@ namespace DABApp
 
     public class modeData
     {
+        public string mode { get; set; }
         public string title { get; set; } //Title of the mode alert
         public string content { get; set; } //STring content of the mode alert
         public List<modeDataButtons> buttons { get; set; } //buttons for the alert
@@ -201,6 +208,7 @@ namespace DABApp
 		public List<Nav> nav { get; set; } //nav items
 		public Blocktext blocktext { get; set; } //block text data
 		public List<View> views { get; set; } //views
+        public List<Version> versions { get; set; }
         public AppSettings app_settings { get; set; }
 
 		public async Task cachImages() 

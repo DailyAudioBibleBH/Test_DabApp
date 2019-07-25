@@ -184,6 +184,16 @@ namespace DABApp
             }
         }
 
+        public List<modeData> GetModes()
+        {
+            List<Version> versionsList = new List<Version>();
+            var mode = from version in versionsList
+                       where version.mode != null
+                       select version.mode;
+
+            return mode.ToList();
+        }
+
         public static async Task<string> PostTopic(PostTopic topic)
         {
             try
