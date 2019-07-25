@@ -84,7 +84,7 @@ namespace DABApp.Droid
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
                     PendingIntent pendingIntent =
                         PendingIntent.GetActivity(Application.Context, pendingIntentId, playPauseIntent, 0);
-
+                    
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()

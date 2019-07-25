@@ -31,10 +31,17 @@ namespace DABApp
 		public string resetPassword { get; set; } //HTML displayed under reset password
 		public string signUp { get; set; } //HTML displayed on sign up page
 		public string login { get; set; } //HTML on login page
-        public modeData mode { get; set; } //Mode / UPdate data
-	}
+        public modeData mode { get; set; }
+    }
 
-	public class Images
+    public class Versions
+    {
+        public string version { get; set; }
+        public string platform { get; set; }
+        public modeData mode { get; set; }
+    }
+
+    public class Images
 	{
 		public string thumbnail { get; set; } //thumbnail url 
 		public string bannerPhone { get; set; } //banner graphic on phones
@@ -173,6 +180,7 @@ namespace DABApp
 
     public class modeData
     {
+        public string mode { get; set; }
         public string title { get; set; } //Title of the mode alert
         public string content { get; set; } //STring content of the mode alert
         public List<modeDataButtons> buttons { get; set; } //buttons for the alert
@@ -201,6 +209,7 @@ namespace DABApp
 		public List<Nav> nav { get; set; } //nav items
 		public Blocktext blocktext { get; set; } //block text data
 		public List<View> views { get; set; } //views
+        public List<Versions> versions { get; set; }
         public AppSettings app_settings { get; set; }
 
 		public async Task cachImages() 
@@ -354,10 +363,12 @@ namespace DABApp
         public string prod_give_link { get; set; } //Production link to start giving process (HTTPS://)
         public string prod_journal_link { get; set; } //Production link for journal (WSS://)
         public string prod_feed_link { get; set; } //Production link for feed data (content API HTTPS://)
+        public string prod_service_link { get; set; }
         public string stage_main_link { get; set; } //Stage link to the main website (HTTPS://)
         public string stage_give_link { get; set; } //Stage link to start giving process (HTTPS://)
         public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
         public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
+        public string stage_service_link { get; set; }
     }
 
     /* Converter class to convert short month names to long names */
