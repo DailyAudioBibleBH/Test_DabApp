@@ -23,17 +23,9 @@ namespace DABApp
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                //Check Current Version Number
                 IAppVersionName service = DependencyService.Get<IAppVersionName>();
-                string version = service.GetVersionName();
-                if (Device.RuntimePlatform == Device.iOS)
-                {
-                    //iOS stuff
-                    //string version = service.GetVersionName();
-                }
-                else if (Device.RuntimePlatform == Device.Android)
-                {
-                    //string version = service.GetVersionName();
-                }
+                string versionName = service.GetVersionName();                
                 if (AuthenticationAPI.CheckToken() && ContentConfig.Instance.blocktext.mode == null) //Check to see if the user is logged in.
                 {
                     MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
