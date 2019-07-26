@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -182,6 +183,83 @@ namespace DABApp
             activity.IsVisible = false;
         }
 
+        public static modeData VersionCompare(List<Versions> versions, out modeData mode)
+        {
+            IAppVersionName service = DependencyService.Get<IAppVersionName>();
+            VersionInfo versionInfo = new VersionInfo(service.GetVersionName(), Device.RuntimePlatform);
+            List<modeData> modeList = new List<modeData>();
+            foreach (var i in versions)
+            {
+                modeList.Add(i.mode);
+            }    
+
+            foreach (var i in modeList)
+            {
+                if (versionInfo.platform == "Android")
+                {
+                    if (versionInfo.versionName.CompareTo("1.6.1") == -1 || versionInfo.versionName.CompareTo("1.6.1") == 0)
+                    {
+                        foreach (var x in versions)
+                        {
+                            if (x.version == "1.6.1" && x.platform == "android")
+                            {
+                                mode = x.mode;
+                                return x.mode;
+                            }
+                        }
+                        System.Diagnostics.Debug.WriteLine("The mode selected is update guest for android");
+                    }
+                    else if ((versionInfo.versionName.CompareTo("1.6.1") == 1 && versionInfo.versionName.CompareTo("1.6.2") == -1) || versionInfo.versionName.CompareTo("1.6.2") == 0)
+                    {
+                        foreach (var x in versions)
+                        {
+                            if (x.version == "1.6.2" && x.platform == "android")
+                            {
+                                mode = x.mode;
+                                return x.mode;
+                            }
+                        }
+                        System.Diagnostics.Debug.WriteLine("The mode selected is null for android");
+                        //null
+                    }
+                    mode = null;
+                    return null;
+                }
+                //if ios
+                if (versionInfo.platform == "iOS")
+                {
+                    if (versionInfo.versionName.CompareTo("1.6.0") == -1 || versionInfo.versionName.CompareTo("1.6.0") == 0)
+                    {
+                        foreach (var x in versions)
+                        {
+                            if (x.version == "1.6.0" && x.platform == "iOS")
+                            {
+                                mode = x.mode;
+                                return x.mode;
+                            }
+                        }
+                        System.Diagnostics.Debug.WriteLine("mode selected is update guest for ios");
+                    }
+                    else if ((versionInfo.versionName.CompareTo("1.6.0") == 1 && versionInfo.versionName.CompareTo("1.6.3") == -1) || versionInfo.versionName.CompareTo("1.6.2") == 0)
+                    {
+                        foreach (var x in versions)
+                        {
+                            if (x.version == "1.6.2" && x.platform == "iOS")
+                            {
+                                mode = x.mode;
+                                return x.mode;
+                            }
+                        }
+                        System.Diagnostics.Debug.WriteLine("mode selected is maintenance for ios");
+                    }
+                    mode = null;
+                    return null;
+                }
+            }
+            mode = null;
+            return null;
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -193,7 +271,10 @@ namespace DABApp
             TapNumber = 0;
 
             //Take action based on the mode of the app
-            modeData mode = ContentConfig.Instance.blocktext.mode;
+            modeData mode;
+            List<Versions> versions = ContentConfig.Instance.versions;
+           
+            VersionCompare(versions, out mode);
             if (mode != null)
             {
                 string modeResponseCode = "";
@@ -239,11 +320,7 @@ namespace DABApp
                         });
                         break;
                 }
-
-
-
             }
-
         }
 
         private void HandleModeResponse(string modeResponseCode)
