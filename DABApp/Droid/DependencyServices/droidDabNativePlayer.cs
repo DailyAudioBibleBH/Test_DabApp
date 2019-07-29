@@ -94,7 +94,7 @@ namespace DABApp.Droid
                                   .SetContentIntent(firstPendingIntent) // Start up this activity when the user clicks the intent.
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
-                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play", pendingIntent)
+                                  .AddAction(Resource.Drawable.ic_media_play_pause, "Play", pendingIntent)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
                                   .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
 
