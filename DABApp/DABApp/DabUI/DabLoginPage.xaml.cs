@@ -183,81 +183,37 @@ namespace DABApp
             activity.IsVisible = false;
         }
 
-        public static modeData VersionCompare(List<Versions> versions, out modeData mode)
+        public modeData VersionCompare(List<Versions> versions, out modeData mode)
         {
-            IAppVersionName service = DependencyService.Get<IAppVersionName>();
-            VersionInfo versionInfo = new VersionInfo(service.GetVersionName(), Device.RuntimePlatform);
-            List<modeData> modeList = new List<modeData>();
-            foreach (var i in versions)
+            try
             {
-                modeList.Add(i.mode);
-            }    
-
-            foreach (var i in modeList)
-            {
-                if (versionInfo.platform == "Android")
+                //Device version
+                IAppVersionName service = DependencyService.Get<IAppVersionName>();
+                VersionInfo versionInfo = new VersionInfo(service.GetVersionName(), Device.RuntimePlatform);
+                IEnumerable<Versions> matchingVersions = versions.Where(x => x.platform.ToUpper() == versionInfo.platform.ToUpper()).ToList(); //Filters to matching platform
+                matchingVersions = matchingVersions.Where(x => new System.Version(x.version).CompareTo(versionInfo.versionName) >= 0).ToList(); //Filters to versions at or above curent version
+                matchingVersions = matchingVersions.OrderBy(x => x.version).ToList(); //Sorts by version # so we can get the lowest one above or at current
+                Versions match = matchingVersions.FirstOrDefault(); //Get the first version out of the filtered / sorted list
+                                                                    //Return the match if one was found.
+                if (match != null)
                 {
-                    if (versionInfo.versionName.CompareTo("1.6.1") == -1 || versionInfo.versionName.CompareTo("1.6.1") == 0)
-                    {
-                        foreach (var x in versions)
-                        {
-                            if (x.version == "1.6.1" && x.platform == "android")
-                            {
-                                mode = x.mode;
-                                return x.mode;
-                            }
-                        }
-                        System.Diagnostics.Debug.WriteLine("The mode selected is update guest for android");
-                    }
-                    else if ((versionInfo.versionName.CompareTo("1.6.1") == 1 && versionInfo.versionName.CompareTo("1.6.2") == -1) || versionInfo.versionName.CompareTo("1.6.2") == 0)
-                    {
-                        foreach (var x in versions)
-                        {
-                            if (x.version == "1.6.2" && x.platform == "android")
-                            {
-                                mode = x.mode;
-                                return x.mode;
-                            }
-                        }
-                        System.Diagnostics.Debug.WriteLine("The mode selected is null for android");
-                        //null
-                    }
-                    mode = null;
-                    return null;
+                    mode = match.mode;
+                    return mode;
                 }
-                //if ios
-                if (versionInfo.platform == "iOS")
+                else
                 {
-                    if (versionInfo.versionName.CompareTo("1.6.0") == -1 || versionInfo.versionName.CompareTo("1.6.0") == 0)
-                    {
-                        foreach (var x in versions)
-                        {
-                            if (x.version == "1.6.0" && x.platform == "iOS")
-                            {
-                                mode = x.mode;
-                                return x.mode;
-                            }
-                        }
-                        System.Diagnostics.Debug.WriteLine("mode selected is update guest for ios");
-                    }
-                    else if ((versionInfo.versionName.CompareTo("1.6.0") == 1 && versionInfo.versionName.CompareTo("1.6.3") == -1) || versionInfo.versionName.CompareTo("1.6.2") == 0)
-                    {
-                        foreach (var x in versions)
-                        {
-                            if (x.version == "1.6.2" && x.platform == "iOS")
-                            {
-                                mode = x.mode;
-                                return x.mode;
-                            }
-                        }
-                        System.Diagnostics.Debug.WriteLine("mode selected is maintenance for ios");
-                    }
                     mode = null;
                     return null;
                 }
             }
-            mode = null;
-            return null;
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+                mode = null;
+                return null;
+                throw;
+            }
+
         }
 
         protected override void OnAppearing()
@@ -273,7 +229,7 @@ namespace DABApp
             //Take action based on the mode of the app
             modeData mode;
             List<Versions> versions = ContentConfig.Instance.versions;
-           
+
             VersionCompare(versions, out mode);
             if (mode != null)
             {
@@ -286,7 +242,7 @@ namespace DABApp
                         break;
                     case 1:
                         //One button - just tell them something and get the single button's response
-                        var mr1 = DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
+                        var mr1 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
                         mr1.ContinueWith((t1) =>
                         {
                             modeResponseCode = mode.buttons.First().key;
@@ -295,7 +251,7 @@ namespace DABApp
                         break;
                     case 2:
                         //Use display alert with cancel and ok buttons
-                        var mr2 = DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+                        var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
                         mr2.ContinueWith((t1) =>
                         {
                             switch (t1.Result)
@@ -312,7 +268,7 @@ namespace DABApp
 
                         break;
                     default:
-                        var mr3 = DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
+                        var mr3 = Application.Current.MainPage.DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
                         mr3.ContinueWith((t1) =>
                         {
                             modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
@@ -322,6 +278,7 @@ namespace DABApp
                 }
             }
         }
+
 
         private void HandleModeResponse(string modeResponseCode)
         //Handle the user's response to the maintenance mode prompt 
