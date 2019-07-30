@@ -77,7 +77,7 @@ namespace DABApp.Droid
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
                     Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
-                    // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
+                    // Create a PendingIntent; 
                     const int pendingIntentId = 0;
                     const int firstPendingIntentId = 1;
                     PendingIntent firstPendingIntent =

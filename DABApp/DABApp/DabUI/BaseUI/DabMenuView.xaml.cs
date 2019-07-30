@@ -58,6 +58,8 @@ namespace DABApp
 			SignUp.IsEnabled = true;
 		}
 
+       
+
 		//Menu Actions
 
 		//void OnChannels(object o, EventArgs e)
