@@ -72,7 +72,19 @@ namespace DABApp.Droid
 				socket.Connect();
 				connected = true;
 				Token = token;
-				socket.On("disconnect", data =>
+
+                //Handle the JWT Expired event which fires when the user is logged out 
+                socket.On("jwt_expired", data =>
+                {
+                    //This method should fire when a user logs themselves out of all devices via the website.
+                    Debug.WriteLine($"SOCKET jwt_expired {data} {DateTime.Now}");
+                    connected = false;
+                    //TODO: Log the user out of everything
+
+                });
+
+                //Handle the DISCONNECT socket action
+                socket.On("disconnect", data =>
 				{
 					Debug.WriteLine($"Disconnect {data} {DateTime.Now}");
 					connected = false;
@@ -95,6 +107,8 @@ namespace DABApp.Droid
 						Debug.WriteLine($"Exception caught in Droid SocketService.Connect(): {ex.Message}");
 					}
 				});
+
+                //Handle the RECONNECT socket action
 				socket.On("reconnect", data =>
 				{
 					Debug.WriteLine($"Reconnected {data} {DateTime.Now}");
@@ -119,31 +133,43 @@ namespace DABApp.Droid
 						}
 					}
 				});
+
+                //Handle the RECONNECTING socket action
 				socket.On("reconnecting", data =>
 				{
 					Debug.WriteLine($"Reconnecting {data} {DateTime.Now}");
 					//Reconnecting(data, new EventArgs());
 				});
+
+                //Handle the ROOM ERROR socket action
 				socket.On("room_error", data =>
 				{
 					Debug.WriteLine($"Room_error {data} {DateTime.Now}");
 					joined = false;
                     Room_Error?.Invoke(data, new EventArgs());
                 });
+
+                //Handle the AUTH ERROR socket action
 				socket.On("auth_error", data =>
 				{
 					Debug.WriteLine($"Auth_error {data} {DateTime.Now}");
                     Auth_Error?.Invoke(data, new EventArgs());
                 });
+
+                //Handle the JOIN ERROR socket action
 				socket.On("join_error", data =>
 				{
 					Debug.WriteLine($"Join_error {data} {DateTime.Now}");
 					joined = false;
 					Join_Error?.Invoke(data, new EventArgs());
 				});
+
+                //Handle the EVENT CONNECT ERROR socket actdion
 				socket.On(Socket.EVENT_CONNECT_ERROR, data=> {
 					Debug.WriteLine($"SOCKET CONNECTION ERROR: {data.ToString()}");
             	});
+
+                //Finish connction
 				Debug.WriteLine($"Connected {DateTime.Now}");
 			}
 			catch (Exception e)

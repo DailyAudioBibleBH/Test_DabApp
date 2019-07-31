@@ -17,5 +17,6 @@ namespace DABApp
 		event EventHandler Room_Error;
 		event EventHandler Auth_Error;
 		event EventHandler Join_Error;
+        event EventHandler OnForcefulLogout;
 	}
 }
