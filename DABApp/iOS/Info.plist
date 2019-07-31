@@ -78,6 +78,6 @@
 	<key>FirebaseAppDelegatProxyEnabled</key>
 	<string>No</string>
 	<key>CFBundleVersion</key>
-	<string>20190626</string>
+	<string>20190731</string>
 </dict>
 </plist>
