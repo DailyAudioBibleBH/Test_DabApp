@@ -60,8 +60,9 @@ namespace DABApp.Droid
 		public event EventHandler Reconnect;
 		public event EventHandler Reconnecting;
 		public event EventHandler Room_Error;
+        public event EventHandler OnForcefulLogout;
 
-		public void Connect(string token)
+        public void Connect(string token)
 		{
 			try
 			{
@@ -79,7 +80,8 @@ namespace DABApp.Droid
                     //This method should fire when a user logs themselves out of all devices via the website.
                     Debug.WriteLine($"SOCKET jwt_expired {data} {DateTime.Now}");
                     connected = false;
-                    //TODO: Log the user out of everything
+
+                    OnForcefulLogout?.Invoke(this, new EventArgs());
 
                 });
 
