@@ -96,7 +96,10 @@ namespace DABApp
         static double Clamp(double value, double min, double max)
         {
             if (value <= max && value >= min) return value;
-            else if (value > max) return max;
+            else if (value > max)
+            {
+                return max;
+            }
             else return min;
         }
 
@@ -113,6 +116,7 @@ namespace DABApp
                     background2.Rotation = 180;
                     progress1.Rotation = 0;
                 }
+
                 double rotation = 360 * p;
                 background1.Rotation = rotation;
             }
@@ -130,9 +134,8 @@ namespace DABApp
             }
         }
 
-        private void HandleDownloadVisibleChanged(bool newValue)
+        public void HandleDownloadVisibleChanged(bool newValue)
         {
-            reset = true;
             progress1.IsVisible = !newValue;
             progress2.IsVisible = !newValue;
             background1.IsVisible = !newValue;

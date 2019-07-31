@@ -34,12 +34,12 @@ namespace DABApp.Droid
         public string StartRecording()
         {
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            fileName = Path.Combine(doc, $"DABRecording.mp3");
+            fileName = Path.Combine(doc, $"DABRecording.m4a");
             double MaxAmp = 1;
 
             recorder = new MediaRecorder();
             recorder.SetAudioSource(AudioSource.Mic);
-            recorder.SetOutputFormat(OutputFormat.Mpeg4);
+            recorder.SetOutputFormat(OutputFormat.AacAdts);
             recorder.SetAudioEncoder(AudioEncoder.Aac);
             recorder.SetOutputFile(fileName);
             recorder.Prepare();

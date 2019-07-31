@@ -196,6 +196,7 @@ namespace DABApp
             {
                 downloadVisible = true;
                 downloadProgress = -.01;
+                //This isn't being called 
             }
         }
 

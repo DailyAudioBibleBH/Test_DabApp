@@ -105,7 +105,7 @@ namespace DABApp.Droid
         protected override void OnResume()
         {
             base.OnResume();
-            CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
+            //CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d"); //Why is this here? Is it registering a crash on being woke back up?
         }
 
         public override void OnBackPressed()

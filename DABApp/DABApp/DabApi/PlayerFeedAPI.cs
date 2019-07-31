@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+//using System.Linq;
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Diagnostics;
 using Plugin.Connectivity;
+using System.Linq;
 
 namespace DABApp
 {
@@ -169,6 +170,7 @@ namespace DABApp
                                      where !episode.is_downloaded //not downloaded
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
                                                            && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
+                                     orderby episode.PubDate descending
                                      select episode;
             episodesToShowDownload = EpisodesToDownload.ToList();
             foreach (var episode in episodesToShowDownload)
@@ -204,6 +206,7 @@ namespace DABApp
                         Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToShowDownload.Count(), episode.url);
                         if (await fm.DownloadEpisodeAsync(episode.url, episode))
                         {
+                            Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
                             Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
                             episode.is_downloaded = true;
                             await adb.UpdateAsync(episode);
@@ -373,7 +376,7 @@ namespace DABApp
                     try
                     {
                         FileManager fm = new FileManager();
-                        if (fm.DeleteEpisode(episode.id.ToString(),episode.File_extension));
+                        if (fm.DeleteEpisode(episode.id.ToString(),episode.File_extension))
                         {
                             Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
                             episode.is_downloaded = false;

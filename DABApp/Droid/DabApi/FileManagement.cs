@@ -17,11 +17,13 @@ namespace DABApp.Droid
     {
         public event EventHandler<DabEventArgs> EpisodeDownloading;
         public event EventHandler<DabEventArgs> EpisodeCompleted;
+        public event EventHandler<DabEventArgs> ChangeVisualDownload;
         dbEpisodes _episode;
         double progress = -.01;
         WebClient client;
         public bool keepDownloading { get; set; } = true;
         long FileSize;
+        CircularProgressControl circularProgressControl = new CircularProgressControl(); 
 
         public FileManagement()
         {
@@ -118,11 +120,12 @@ namespace DABApp.Droid
         {
             try
             {
+                var c = new DabEventArgs(_episode.id.Value, 1, false); //new
                 var b = e.Cancelled || e.Error != null;
                 var a = new DabEventArgs(_episode.id.Value, -1, b);
                 progress = -.01;
                 Debug.WriteLine($"Download completed for {_episode.id.Value}");
-                EpisodeCompleted?.Invoke(sender, a);
+                ChangeVisualDownload?.Invoke(sender, a);
             }
             catch (Exception)
             {
@@ -143,6 +146,7 @@ namespace DABApp.Droid
                     var a = new DabEventArgs(_episode.id.Value, pp);
                     Debug.WriteLine($"Download Progress: {pp}");
                     EpisodeDownloading?.Invoke(sender, a);
+                    //Code exits here during download when following breakpoints
                 }
 
             }
