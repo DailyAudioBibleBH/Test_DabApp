@@ -84,14 +84,7 @@ namespace DABApp.iOS
 
             LoadApplication(new App());
 
-            /* AUDIO PLAYER DEFAULTS */
 
-            AVAudioSessionCategoryOptions audioOptions = AVAudioSessionCategoryOptions.AllowAirPlay |
-                AVAudioSessionCategoryOptions.AllowBluetooth |
-                AVAudioSessionCategoryOptions.AllowBluetoothA2DP |
-                AVAudioSessionCategoryOptions.DefaultToSpeaker |
-                AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers;
-            AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback,audioOptions);
 
 
             /* END AUDIO PLAYER DEFAULTS

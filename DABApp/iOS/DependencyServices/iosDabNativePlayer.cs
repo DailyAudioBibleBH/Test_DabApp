@@ -205,6 +205,15 @@ namespace DABApp.iOS
         {
             if (player != null)
             {
+                //Set up the player categories
+                AVAudioSessionCategoryOptions audioOptions = AVAudioSessionCategoryOptions.AllowAirPlay |
+    AVAudioSessionCategoryOptions.AllowBluetooth |
+    AVAudioSessionCategoryOptions.AllowBluetoothA2DP |
+    AVAudioSessionCategoryOptions.DefaultToSpeaker |
+    AVAudioSessionCategoryOptions.InterruptSpokenAudioAndMixWithOthers;
+                AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback, audioOptions);
+
+
                 //Register for a notification that playback ended
                 _OnPlaybackEndedHandle = NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.DidPlayToEndTimeNotification, OnPlaybackEnded);
 
@@ -242,6 +251,7 @@ namespace DABApp.iOS
         {
             if (player == null)
                 return;
+
 
             if (IsPlaying)
                 //Go back to the beginning
