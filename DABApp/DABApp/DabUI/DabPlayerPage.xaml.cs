@@ -346,7 +346,10 @@ namespace DABApp
                 SeekBar.BindingContext = player;
                 SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
                 SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
-                SeekBar.UserInteraction += (object sender, EventArgs e) => player.Seek(SeekBar.Value);
+                SeekBar.UserInteraction += (object sender, EventArgs e) =>
+                {
+                    player.Seek(SeekBar.Value);
+                };
 
                 //Play-Pause button
                 PlayPause.BindingContext = player;

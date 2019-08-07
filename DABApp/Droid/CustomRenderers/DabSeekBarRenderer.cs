@@ -1,4 +1,5 @@
 ﻿using System;
+using Android.Content;
 using Android.Graphics;
 using DABApp;
 using DABApp.Droid;
@@ -8,13 +9,40 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(DabSeekBar), typeof(DabSeekBarRenderer))]
 namespace DABApp.Droid
 {
-	public class DabSeekBarRenderer: SliderRenderer
-	{
-		protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
-		{
-			base.OnElementChanged(e);
-			Control.Thumb.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-			Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
-		}
-	}
+    public class DabSeekBarRenderer : SliderRenderer
+    {
+
+        public DabSeekBarRenderer(Context context) : base(context)
+        {
+        }
+
+        protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
+        {
+            //Set up colors
+            base.OnElementChanged(e);
+            Control.Thumb.SetTint(((Xamarin.Forms.Color)Application.Current.Resources["PlayerLabelColor"]).ToAndroid());
+            Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)Application.Current.Resources["PlayerLabelColor"]).ToAndroid());
+
+            //Connect touch events
+            //TODO: Set thjis up - it's not working right now.
+            var element = (DabSeekBar)e.NewElement;
+            //Control.Touch += (sender, er) =>
+            //{
+            //    element.Touched(sender, er);
+            //};
+
+            Control.StopTrackingTouch += (sender, er) =>
+            {
+                //TODO: Wire this up.
+                //bool playing = GlobalResources.playerPodcast.IsPlaying;
+                //GlobalResources.playerPodcast.Pause();
+                //element.Touched(sender, er);
+                //if (playing)
+                //{
+                //    GlobalResources.playerPodcast.Play();
+                //}
+
+            };
+        }
+    }
 }

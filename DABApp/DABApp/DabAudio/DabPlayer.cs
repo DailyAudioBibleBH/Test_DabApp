@@ -120,6 +120,14 @@ namespace DABApp.DabAudio
             {
                 return nativePlayer.CurrentPosition;
             }
+                //set
+                //{
+                //    double offset = Math.Abs(value - nativePlayer.CurrentPosition);
+                //    if (offset >=5) //only allow setting of 
+                //    {
+                //        Seek(value);
+                //    }
+                //}
         }
 
         //Remaining time for the player

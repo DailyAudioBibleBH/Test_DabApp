@@ -266,8 +266,11 @@ namespace DABApp.Droid
         ///</Summary>
         public void Seek(double position)
         {
-            if (CanSeek)
+              if (CanSeek)
+            { 
                 player?.SeekTo((int)position * 1000);
+                System.Diagnostics.Debug.WriteLine($"Seeking to {position}");
+            }
         }
 
         ///<Summary>
