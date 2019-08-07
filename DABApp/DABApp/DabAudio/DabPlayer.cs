@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
-using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
 
 namespace DABApp.DabAudio
@@ -32,10 +31,9 @@ namespace DABApp.DabAudio
 
     //Class that extends the basic player used by the apps.
 
-    public class DabPlayer : ISimpleAudioPlayer, INotifyPropertyChanged
+    public class DabPlayer :  INotifyPropertyChanged
     {
         private IDabNativePlayer nativePlayer;
-        private ISimpleAudioPlayer player;
         private string _channelTitle = "";
         private string _episodeTitle = "";
         private double _episodeDuration = 1; //Estimated duration of the episode
@@ -46,17 +44,17 @@ namespace DABApp.DabAudio
 
 
         //Constructor 
-        public DabPlayer(ISimpleAudioPlayer Player, bool IntegrateWithLockScreen)
+        public DabPlayer( bool IntegrateWithLockScreen)
         {
-            player = Player; //store reference to the player
 
-            //Set up events tied to the player
-            player.PlaybackEnded += Player_PlaybackEnded;
-
-
+            
+            
             //Connect the native player interface
             nativePlayer = DependencyService.Get<IDabNativePlayer>();
             nativePlayer.Init(this, IntegrateWithLockScreen);
+            //Set up events tied to the player
+            nativePlayer.PlaybackEnded += Player_PlaybackEnded;
+
 
 
             //Set up the timer for tracking progress
@@ -91,13 +89,6 @@ namespace DABApp.DabAudio
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
 
-        public ISimpleAudioPlayer SimpleAudioPlayer
-        {
-            get
-            {
-                return player;
-            }
-        }
 
         /********************************
         ISimpleAudioPlayer Implementation 
@@ -108,14 +99,14 @@ namespace DABApp.DabAudio
             get
             {
                 //Return the duration of the player, ensuring it's >0
-                if (player.Duration <= 0)
+                if (nativePlayer.Duration <= 0)
                 {
                     //TODO: Use the episodes total length if possible
                     return _episodeDuration;
                 }
                 else
                 {
-                    return player.Duration;
+                    return nativePlayer.Duration;
                 }
             }
         }
@@ -125,7 +116,7 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return player.CurrentPosition;
+                return nativePlayer.CurrentPosition;
             }
         }
 
@@ -134,7 +125,7 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return player.Duration - CurrentPosition;
+                return nativePlayer.Duration - CurrentPosition;
             }
         }
 
@@ -158,12 +149,12 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return player.Volume;
+                return nativePlayer.Volume;
 
             }
             set
             {
-                player.Volume = value;
+                nativePlayer.Volume = value;
                 OnPropertyChanged("Volume");
             }
         }
@@ -171,48 +162,48 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return player.Balance;
+                return nativePlayer.Balance;
             }
             set
             {
-                player.Balance = value;
+                nativePlayer.Balance = value;
                 OnPropertyChanged("Balance");
             }
         }
 
-        public bool IsPlaying => player.IsPlaying;
+        public bool IsPlaying => nativePlayer.IsPlaying;
 
         public bool Loop
         {
             get
             {
-                return player.Loop;
+                return nativePlayer.Loop;
             }
             set
             {
-                player.Loop = value;
+                nativePlayer.Loop = value;
                 OnPropertyChanged("Loop");
             }
         }
 
-        public bool CanSeek => player.CanSeek;
+        public bool CanSeek => nativePlayer.CanSeek;
 
         public event EventHandler PlaybackEnded
         {
             add
             {
-                player.PlaybackEnded += value;
+                nativePlayer.PlaybackEnded += value;
             }
 
             remove
             {
-                player.PlaybackEnded -= value;
+                nativePlayer.PlaybackEnded -= value;
             }
         }
 
         public void Dispose()
         {
-            player.Dispose();
+            //nativePlayer.Dispose();
         }
 
 
@@ -221,7 +212,7 @@ namespace DABApp.DabAudio
             //Load a stream
             Task.Run(() =>
             {
-                bool rv = player.Load(audioStream);
+                bool rv = nativePlayer.Load(audioStream);
                 OnPropertyChanged("Duration");
             }
             );
@@ -240,14 +231,7 @@ namespace DABApp.DabAudio
 
             if (fileName.ToLower().StartsWith("http", StringComparison.Ordinal))
             {
-                //Remote file
-                fileName = "http://dab1.podcast.dailyaudiobible.com/mp3/january01-2019.m4a";
-                fileName = "http://dab1.podcast.dailyaudiobible.com/mp3/C_January19-2019.mp3";
-                WebClient wc = new WebClient();
-                Stream fileStream = wc.OpenRead(fileName);
-                DateTime loadStart = DateTime.Now;
-                rv = Load(fileStream);
-                Debug.WriteLine($"{DateTime.Now.Subtract(loadStart).TotalSeconds} seconds to load {fileName}...");
+                rv = nativePlayer.LoadUrl(fileName);
             }
             else
             {
@@ -287,8 +271,8 @@ namespace DABApp.DabAudio
 
 
         public void Pause()
-        { 
-            player.Pause();
+        {
+            nativePlayer.Pause();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
 
@@ -303,14 +287,14 @@ namespace DABApp.DabAudio
                 Stop();
             }
 
-            player.Play();
+            nativePlayer.Play();
             timer.Start();
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
 
         public void Seek(double position)
         {
-            player.Seek(position);
+            nativePlayer.Seek(position);
             OnPropertyChanged("CurrentPosition");
             OnPropertyChanged("RemainingSeconds");
             OnPropertyChanged("CurrentProgressPercentage");
@@ -318,7 +302,7 @@ namespace DABApp.DabAudio
 
         public void Stop()
         {
-            player.Stop();
+            nativePlayer.Stop();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
 
@@ -349,9 +333,9 @@ namespace DABApp.DabAudio
         {
             System.Diagnostics.Debug.WriteLine(DateTime.Now.Ticks);
             //Raise an event if the players progress has moved
-            if (LastPosition != player.CurrentPosition)
+            if (LastPosition != nativePlayer.CurrentPosition)
             {
-                LastPosition = player.CurrentPosition;
+                LastPosition = nativePlayer.CurrentPosition;
                 OnPropertyChanged("CurrentPosition");
                 OnPropertyChanged("RemainingSeconds");
                 OnPropertyChanged("CurrentProgressPercentage");
@@ -379,11 +363,11 @@ namespace DABApp.DabAudio
         public void Skip(double seconds)
         {
             //Skip forward or backward from current position
-            double newPosition = player.CurrentPosition + seconds;
+            double newPosition = nativePlayer.CurrentPosition + seconds;
             if (newPosition < 0) { newPosition = 0; }
-            if (newPosition > player.Duration)
+            if (newPosition > nativePlayer.Duration)
             {
-                newPosition = player.Duration;
+                newPosition = nativePlayer.Duration;
             }
             Seek(newPosition);
         }

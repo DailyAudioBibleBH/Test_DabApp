@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Plugin.SimpleAudioPlayer;
+using DABApp.DabAudio;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -8,7 +8,7 @@ namespace DABApp
 {
     public partial class DabSettingsPage : DabBaseContentPage
     {
-        private ISimpleAudioPlayer player = GlobalResources.playerPodcast;
+        private DabPlayer player = GlobalResources.playerPodcast;
         public ViewCell offline { get { return _offline; } }
         //public ViewCell reset { get { return _reset;} }
         public ViewCell appInfo { get { return _appInfo; } }

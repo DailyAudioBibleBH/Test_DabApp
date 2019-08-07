@@ -6,15 +6,14 @@ using System.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using Plugin.SimpleAudioPlayer;
 using DABApp.DabAudio;
 
 namespace DABApp
 {
     public class GlobalResources : INotifyPropertyChanged
     {
-        public static DabPlayer playerPodcast = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),true);
-        public static DabPlayer playerRecorder = new DabPlayer(CrossSimpleAudioPlayer.CreateSimpleAudioPlayer(),false);
+        public static DabPlayer playerPodcast = new DabPlayer(true);
+        public static DabPlayer playerRecorder = new DabPlayer(false);
         public static int CurrentEpisodeId = 0;
         private double thumbnailHeight;
         private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;

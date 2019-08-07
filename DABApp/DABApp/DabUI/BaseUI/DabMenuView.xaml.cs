@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabAudio;
 using FFImageLoading;
-using Plugin.SimpleAudioPlayer;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -13,7 +13,7 @@ namespace DABApp
 	public partial class DabMenuView : SlideMenuView
 	{
 		List<string> pages;
-        private ISimpleAudioPlayer player = GlobalResources.playerPodcast;
+        private DabPlayer player = GlobalResources.playerPodcast;
 
 		public DabMenuView()
 		{
