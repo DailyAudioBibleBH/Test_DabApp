@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Timers;
 using Plugin.SimpleAudioPlayer;
 using Xamarin.Forms;
@@ -216,14 +219,21 @@ namespace DABApp.DabAudio
         public bool Load(Stream audioStream)
         {
             //Load a stream
-            bool rv = player.Load(audioStream);
-            OnPropertyChanged("Duration");
+            Task.Run(() =>
+            {
+                bool rv = player.Load(audioStream);
+                OnPropertyChanged("Duration");
+            }
+            );
+
             OnPropertyChanged("IsReady");
-            return rv;
+            return true;
         }
+
 
         public bool Load(string fileName)
         {
+
             //Load file, determine local or remote first
             //If remote, use a stream.
             bool rv;
@@ -231,9 +241,13 @@ namespace DABApp.DabAudio
             if (fileName.ToLower().StartsWith("http", StringComparison.Ordinal))
             {
                 //Remote file
+                fileName = "http://dab1.podcast.dailyaudiobible.com/mp3/january01-2019.m4a";
+                fileName = "http://dab1.podcast.dailyaudiobible.com/mp3/C_January19-2019.mp3";
                 WebClient wc = new WebClient();
                 Stream fileStream = wc.OpenRead(fileName);
+                DateTime loadStart = DateTime.Now;
                 rv = Load(fileStream);
+                Debug.WriteLine($"{DateTime.Now.Subtract(loadStart).TotalSeconds} seconds to load {fileName}...");
             }
             else
             {
