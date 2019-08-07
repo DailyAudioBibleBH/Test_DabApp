@@ -269,13 +269,6 @@ namespace DABApp.iOS
             if (player != null)
             {
                 int seconds = (int)position;
-                if (seconds < 0) { seconds = 0; }
-                if (seconds >= Duration)
-                {
-                    //end of file
-                    seconds = (int)Duration;
-                    Stop();
-                }
                 player.Seek(new CoreMedia.CMTime(seconds, 1));
             }
         }
