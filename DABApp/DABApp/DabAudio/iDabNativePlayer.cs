@@ -8,7 +8,6 @@ namespace DABApp.DabAudio
 
     public interface IDabNativePlayer
     {
-        void Init(DabPlayer Player, bool IntegrateWithLockScreen); //Init the player on the platform-specific implementation
 
         /*
          * Events
@@ -39,6 +38,9 @@ namespace DABApp.DabAudio
         /*
          * Methods
          * */
+
+        //Init the player with a DabPlayer class for interaction with the app
+        void Init(DabPlayer Player, bool IntegrateWithLockScreen); //Init the player on the platform-specific implementation
 
         //Load audio file from url or local file path
         bool Load(string path);
