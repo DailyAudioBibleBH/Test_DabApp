@@ -16,7 +16,7 @@ namespace DABApp.iOS
         DabPlayer dabplayer;
         MPNowPlayingInfo nowPlayingInfo;
 
-      
+
 
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
@@ -37,7 +37,7 @@ namespace DABApp.iOS
                 nowPlayingInfo = new MPNowPlayingInfo();
                 nowPlayingInfo.Artist = "Daily Audio Bible";
 
-                dabplayer.EpisodeDataChanged += (sender, e) => 
+                dabplayer.EpisodeDataChanged += (sender, e) =>
                 {
                     //Update the lock screen with new playing info
                     DabPlayerEventArgs args = (DabPlayerEventArgs)e;
@@ -129,7 +129,7 @@ namespace DABApp.iOS
 
 
         ///<Summary>
-        /// Raised when playback completes or loops
+        /// Raised when playback completes
         ///</Summary>
         public event EventHandler PlaybackEnded;
 
@@ -139,13 +139,21 @@ namespace DABApp.iOS
         /// Length of audio in seconds
         ///</Summary>
         public double Duration
-        { get { return player == null ? 0 : player.CurrentItem.Asset.Duration.Seconds; } }
+        { get
+            {
+                return player == null ? 0 : player.CurrentItem.Asset.Duration.Seconds;
+            }
+        }
 
         ///<Summary>
         /// Current position of audio in seconds
         ///</Summary>
         public double CurrentPosition
-        { get { return player == null ? 0 : player.CurrentTime.Seconds; } }
+        { get
+            {
+                return player == null ? 0 : player.CurrentItem.CurrentTime.Seconds;
+            }
+        }
 
         ///<Summary>
         /// Playback volume (0 to 1)
@@ -153,80 +161,70 @@ namespace DABApp.iOS
         public double Volume
         {
             get { return player == null ? 0 : player.Volume; }
-            set { SetVolume(value, Balance); }
+            set { SetVolume(value); }
         }
-
-        ///<Summary>
-        /// Balance left/right: -1 is 100% left : 0% right, 1 is 100% right : 0% left, 0 is equal volume left/right
-        ///</Summary>
-        public double Balance
-        {
-            get { return _balance; }
-            set { SetVolume(Volume, _balance = value); }
-        }
-        double _balance = 0;
 
         ///<Summary>
         /// Indicates if the currently loaded audio file is playing
         ///</Summary>
         public bool IsPlaying
-        { get { return player == null ? false : (player.Rate != 0); } }
-
-        ///<Summary>
-        /// Continously repeats the currently playing sound
-        ///</Summary>
-        public bool Loop
-        {
-            get { return _loop; }
-            set
+        { get
             {
-                _loop = value;
-                //if (player != null)
-                //    player.NumberOfLoops = _loop ? -1 : 0;
+                return player == null ? false : (Math.Abs(player.Rate) > double.Epsilon);
             }
         }
-        bool _loop;
 
         ///<Summary>
         /// Indicates if the position of the loaded audio file can be updated - always returns true on iOS
         ///</Summary>
         public bool CanSeek
-        { get { return player == null ? false : true; } }
-
-
-
-        ///<Summary>
-        /// Load wave or mp3 audio file as a stream
-        ///</Summary>
-        public bool Load(Stream audioStream)
-        {
-            DeletePlayer();
-
-            var data = NSData.FromStream(audioStream);
-            throw new NotImplementedException();
-//            player = AVAudioPlayer.FromData(data);
-
-            return PreparePlayer();
+        { get
+            {
+                return player == null ? false : true;
+            }
         }
 
         ///<Summary>
-        /// Load wave or mp3 audio file from the Android assets folder
+        /// Load audio file from local or web-based resource
         ///</Summary>
-        public bool Load(string fileName)
+        public bool Load(string path)
         {
             DeletePlayer();
-            throw  new NotImplementedException();
-//            player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(fileName));
+
+            if (path.ToLower().StartsWith("http", StringComparison.CurrentCulture))
+            {
+                //Internet resource
+                NSUrl u = NSUrl.FromString(path);
+                player = AVPlayer.FromUrl(u);
+
+            }
+            else
+            {
+                //Local file
+                if (path.ToLower().StartsWith("file", StringComparison.CurrentCulture))
+                {
+                    path.Insert(0, "file://");
+                }
+                NSUrl u = NSUrl.FromString(path);
+                player = AVPlayer.FromUrl(u);
+            }
 
             return PreparePlayer();
+
+
         }
 
+        private NSObject _OnPlaybackEndedHandle;
         bool PreparePlayer()
         {
             if (player != null)
             {
-               // player.FinishedPlaying += OnPlaybackEnded;
-              //  player.PrepareToPlay();
+                //Register for a notification that playback ended
+                _OnPlaybackEndedHandle = NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.DidPlayToEndTimeNotification, OnPlaybackEnded);
+
+                //Prepare to play the file by play/pausing it
+                player.Play();
+                player.Pause();
             }
 
             return (player == null) ? false : true;
@@ -238,16 +236,24 @@ namespace DABApp.iOS
 
             if (player != null)
             {
-               // player.FinishedPlaying -= OnPlaybackEnded;
+                //Unregister the notification
+                NSNotificationCenter.DefaultCenter.RemoveObserver(_OnPlaybackEndedHandle);
+
+                //dispose of the player
                 player.Dispose();
                 player = null;
             }
         }
 
-        private void OnPlaybackEnded(object sender, AVStatusEventArgs e)
+        private void OnPlaybackEnded(NSNotification notification)
         {
-            PlaybackEnded?.Invoke(sender, e);
+            PlaybackEnded?.Invoke(this, null);
         }
+
+        //private void OnPlaybackEnded(object sender, AVStatusEventArgs e)
+        //{
+        //    PlaybackEnded?.Invoke(sender, e);
+        //}
 
         ///<Summary>
         /// Begin playback or resume if paused
@@ -257,8 +263,9 @@ namespace DABApp.iOS
             if (player == null)
                 return;
 
-            if (player.Rate != 0)
-                player.Seek(new CoreMedia.CMTime(0,0)); // CurrentTime = 0;
+            if (IsPlaying)
+                //Go back to the beginning
+                player.Seek(new CoreMedia.CMTime(0, 1));
             else
                 player?.Play();
         }
@@ -286,24 +293,24 @@ namespace DABApp.iOS
         public void Seek(double position)
         {
             if (player == null)
-                return;
-            //player.Seek(new CoreMedia.CMTime(long.Parse(position.ToString()), 0));
+            { 
+                int seconds = (int)position;
+                player.Seek(new CoreMedia.CMTime(seconds, 1));
+            }
         }
 
-        void SetVolume(double volume, double balance)
+        //Set volume of player (0 - 1)
+        void SetVolume(double volume)
         {
             if (player == null)
                 return;
 
             volume = Math.Max(0, volume);
             volume = Math.Min(1, volume);
-
-            balance = Math.Max(-1, balance);
-            balance = Math.Min(1, balance);
-
             player.Volume = (float)volume;
-            //player.Pan = (float)balance;
         }
+
+        //Fires Playback Ended event
         void OnPlaybackEnded()
         {
             PlaybackEnded?.Invoke(this, EventArgs.Empty);
@@ -324,14 +331,6 @@ namespace DABApp.iOS
             isDisposed = true;
         }
 
-        //SimpleAudioPlayerImplementation()
-        //{
-        //    Dispose(false);
-        //}
-
-        ///<Summary>
-        /// Dispose SimpleAudioPlayer and release resources
-        ///</Summary>
         public void Dispose()
         {
             Dispose(true);
@@ -339,14 +338,6 @@ namespace DABApp.iOS
             GC.SuppressFinalize(this);
         }
 
-        public bool LoadUrl(string url)
-        {
-            DeletePlayer();
 
-            NSUrl u = NSUrl.FromString(url);
-            player = AVPlayer.FromUrl(u);
-
-            return PreparePlayer();
-        }
     }
 }

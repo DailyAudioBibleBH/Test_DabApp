@@ -158,33 +158,11 @@ namespace DABApp.DabAudio
                 OnPropertyChanged("Volume");
             }
         }
-        public double Balance
-        {
-            get
-            {
-                return nativePlayer.Balance;
-            }
-            set
-            {
-                nativePlayer.Balance = value;
-                OnPropertyChanged("Balance");
-            }
-        }
+
 
         public bool IsPlaying => nativePlayer.IsPlaying;
 
-        public bool Loop
-        {
-            get
-            {
-                return nativePlayer.Loop;
-            }
-            set
-            {
-                nativePlayer.Loop = value;
-                OnPropertyChanged("Loop");
-            }
-        }
+
 
         public bool CanSeek => nativePlayer.CanSeek;
 
@@ -207,19 +185,19 @@ namespace DABApp.DabAudio
         }
 
 
-        public bool Load(Stream audioStream)
-        {
-            //Load a stream
-            Task.Run(() =>
-            {
-                bool rv = nativePlayer.Load(audioStream);
-                OnPropertyChanged("Duration");
-            }
-            );
+        //public bool Load(Stream audioStream)
+        //{
+        //    //Load a stream
+        //    Task.Run(() =>
+        //    {
+        //        bool rv = nativePlayer.Load(audioStream);
+        //        OnPropertyChanged("Duration");
+        //    }
+        //    );
 
-            OnPropertyChanged("IsReady");
-            return true;
-        }
+        //    OnPropertyChanged("IsReady");
+        //    return true;
+        //}
 
 
         public bool Load(string fileName)
@@ -228,17 +206,7 @@ namespace DABApp.DabAudio
             //Load file, determine local or remote first
             //If remote, use a stream.
             bool rv;
-
-            if (fileName.ToLower().StartsWith("http", StringComparison.Ordinal))
-            {
-                rv = nativePlayer.LoadUrl(fileName);
-            }
-            else
-            {
-                //Local file
-                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                rv = Load(fs);
-            }
+            rv = nativePlayer.Load(fileName);
             return rv;
 
         }

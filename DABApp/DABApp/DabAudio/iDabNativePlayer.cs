@@ -31,37 +31,17 @@ namespace DABApp.DabAudio
         double Volume { get; set; }
 
         ///<Summary>
-        /// Balance left/right: -1 is 100% left : 0% right, 1 is 100% right : 0% left, 0 is equal volume left/right
-        ///</Summary>
-        double Balance { get; set; }
-
-        ///<Summary>
         /// Indicates if the currently loaded audio file is playing
         ///</Summary>
         bool IsPlaying { get; }
-
-        ///<Summary>
-        /// Continously repeats the currently playing sound
-        ///</Summary>
-        bool Loop { get; set; }
 
         ///<Summary>
         /// Indicates if the position of the loaded audio file can be updated
         ///</Summary>
         bool CanSeek { get; }
 
-        ///<Summary>
-        /// Load wav or mp3 audio file as a stream
-        ///</Summary>
-        bool Load(Stream audioStream);
-
-        //Load audio file from url
-        bool LoadUrl(string url);
-
-        ///<Summary>
-        /// Load wav or mp3 audio file from local path
-        ///</Summary>
-        bool Load(string fileName);
+        //Load audio file from url or local file path
+        bool Load(string path);
 
         ///<Summary>
         /// Begin playback or resume if paused
