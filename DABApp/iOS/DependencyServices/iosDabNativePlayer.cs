@@ -133,19 +133,19 @@ namespace DABApp.iOS
         ///</Summary>
         public event EventHandler PlaybackEnded;
 
-        AVAudioPlayer player;
+        AVPlayer player;
 
         ///<Summary>
         /// Length of audio in seconds
         ///</Summary>
         public double Duration
-        { get { return player == null ? 0 : player.Duration; } }
+        { get { return player == null ? 0 : player.CurrentItem.Asset.Duration.Seconds; } }
 
         ///<Summary>
         /// Current position of audio in seconds
         ///</Summary>
         public double CurrentPosition
-        { get { return player == null ? 0 : player.CurrentTime; } }
+        { get { return player == null ? 0 : player.CurrentTime.Seconds; } }
 
         ///<Summary>
         /// Playback volume (0 to 1)
@@ -170,7 +170,7 @@ namespace DABApp.iOS
         /// Indicates if the currently loaded audio file is playing
         ///</Summary>
         public bool IsPlaying
-        { get { return player == null ? false : player.Playing; } }
+        { get { return player == null ? false : (player.Rate != 0); } }
 
         ///<Summary>
         /// Continously repeats the currently playing sound
@@ -181,8 +181,8 @@ namespace DABApp.iOS
             set
             {
                 _loop = value;
-                if (player != null)
-                    player.NumberOfLoops = _loop ? -1 : 0;
+                //if (player != null)
+                //    player.NumberOfLoops = _loop ? -1 : 0;
             }
         }
         bool _loop;
@@ -203,8 +203,8 @@ namespace DABApp.iOS
             DeletePlayer();
 
             var data = NSData.FromStream(audioStream);
-
-            player = AVAudioPlayer.FromData(data);
+            throw new NotImplementedException();
+//            player = AVAudioPlayer.FromData(data);
 
             return PreparePlayer();
         }
@@ -215,8 +215,8 @@ namespace DABApp.iOS
         public bool Load(string fileName)
         {
             DeletePlayer();
-
-            player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(fileName));
+            throw  new NotImplementedException();
+//            player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(fileName));
 
             return PreparePlayer();
         }
@@ -225,8 +225,8 @@ namespace DABApp.iOS
         {
             if (player != null)
             {
-                player.FinishedPlaying += OnPlaybackEnded;
-                player.PrepareToPlay();
+               // player.FinishedPlaying += OnPlaybackEnded;
+              //  player.PrepareToPlay();
             }
 
             return (player == null) ? false : true;
@@ -238,7 +238,7 @@ namespace DABApp.iOS
 
             if (player != null)
             {
-                player.FinishedPlaying -= OnPlaybackEnded;
+               // player.FinishedPlaying -= OnPlaybackEnded;
                 player.Dispose();
                 player = null;
             }
@@ -257,8 +257,8 @@ namespace DABApp.iOS
             if (player == null)
                 return;
 
-            if (player.Playing)
-                player.CurrentTime = 0;
+            if (player.Rate != 0)
+                player.Seek(new CoreMedia.CMTime(0,0)); // CurrentTime = 0;
             else
                 player?.Play();
         }
@@ -276,7 +276,7 @@ namespace DABApp.iOS
         ///</Summary>
         public void Stop()
         {
-            player?.Stop();
+            player?.Pause();
             Seek(0);
         }
 
@@ -287,7 +287,7 @@ namespace DABApp.iOS
         {
             if (player == null)
                 return;
-            player.CurrentTime = position;
+            //player.Seek(new CoreMedia.CMTime(long.Parse(position.ToString()), 0));
         }
 
         void SetVolume(double volume, double balance)
@@ -302,7 +302,7 @@ namespace DABApp.iOS
             balance = Math.Min(1, balance);
 
             player.Volume = (float)volume;
-            player.Pan = (float)balance;
+            //player.Pan = (float)balance;
         }
         void OnPlaybackEnded()
         {
@@ -344,7 +344,7 @@ namespace DABApp.iOS
             DeletePlayer();
 
             NSUrl u = NSUrl.FromString(url);
-            player = AVAudioPlayer.FromUrl(u);
+            player = AVPlayer.FromUrl(u);
 
             return PreparePlayer();
         }
