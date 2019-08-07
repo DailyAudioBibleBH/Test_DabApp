@@ -68,7 +68,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        GlobalResources.playerPodcast.Play();
+                        this.Play();
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -82,7 +82,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        GlobalResources.playerPodcast.Pause();
+                        this.Pause();
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -98,7 +98,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        GlobalResources.playerPodcast.Skip(15); //icon says 15 seconds
+                        dabplayer.Skip(15); //icon says 15 seconds
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -113,7 +113,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        GlobalResources.playerPodcast.Skip(-15); //icon says 15 seconds
+                        dabplayer.Skip(-15); //icon says 15 seconds
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -128,16 +128,12 @@ namespace DABApp.iOS
 
 
 
-        ///<Summary>
         /// Raised when playback completes
-        ///</Summary>
         public event EventHandler PlaybackEnded;
 
         AVPlayer player;
 
-        ///<Summary>
         /// Length of audio in seconds
-        ///</Summary>
         public double Duration
         { get
             {
@@ -145,9 +141,7 @@ namespace DABApp.iOS
             }
         }
 
-        ///<Summary>
         /// Current position of audio in seconds
-        ///</Summary>
         public double CurrentPosition
         { get
             {
@@ -155,18 +149,14 @@ namespace DABApp.iOS
             }
         }
 
-        ///<Summary>
         /// Playback volume (0 to 1)
-        ///</Summary>
         public double Volume
         {
             get { return player == null ? 0 : player.Volume; }
             set { SetVolume(value); }
         }
 
-        ///<Summary>
         /// Indicates if the currently loaded audio file is playing
-        ///</Summary>
         public bool IsPlaying
         { get
             {
@@ -174,9 +164,7 @@ namespace DABApp.iOS
             }
         }
 
-        ///<Summary>
         /// Indicates if the position of the loaded audio file can be updated - always returns true on iOS
-        ///</Summary>
         public bool CanSeek
         { get
             {
@@ -184,9 +172,7 @@ namespace DABApp.iOS
             }
         }
 
-        ///<Summary>
         /// Load audio file from local or web-based resource
-        ///</Summary>
         public bool Load(string path)
         {
             DeletePlayer();
@@ -201,9 +187,9 @@ namespace DABApp.iOS
             else
             {
                 //Local file
-                if (path.ToLower().StartsWith("file", StringComparison.CurrentCulture))
+                if (!path.ToLower().StartsWith("file", StringComparison.CurrentCulture))
                 {
-                    path.Insert(0, "file://");
+                    path = path.Insert(0, "file://");
                 }
                 NSUrl u = NSUrl.FromString(path);
                 player = AVPlayer.FromUrl(u);
@@ -245,19 +231,13 @@ namespace DABApp.iOS
             }
         }
 
+        //Playback has ended - raise event
         private void OnPlaybackEnded(NSNotification notification)
         {
             PlaybackEnded?.Invoke(this, null);
         }
 
-        //private void OnPlaybackEnded(object sender, AVStatusEventArgs e)
-        //{
-        //    PlaybackEnded?.Invoke(sender, e);
-        //}
-
-        ///<Summary>
         /// Begin playback or resume if paused
-        ///</Summary>
         public void Play()
         {
             if (player == null)
@@ -270,31 +250,32 @@ namespace DABApp.iOS
                 player?.Play();
         }
 
-        ///<Summary>
         /// Pause playback if playing (does not resume)
-        ///</Summary>
         public void Pause()
         {
             player?.Pause();
         }
 
-        ///<Summary>
         /// Stop playack and set the current position to the beginning
-        ///</Summary>
         public void Stop()
         {
             player?.Pause();
             Seek(0);
         }
 
-        ///<Summary>
         /// Seek a position in seconds in the currently loaded sound file 
-        ///</Summary>
         public void Seek(double position)
         {
-            if (player == null)
-            { 
+            if (player != null)
+            {
                 int seconds = (int)position;
+                if (seconds < 0) { seconds = 0; }
+                if (seconds >= Duration)
+                {
+                    //end of file
+                    seconds = (int)Duration;
+                    Stop();
+                }
                 player.Seek(new CoreMedia.CMTime(seconds, 1));
             }
         }
@@ -317,9 +298,7 @@ namespace DABApp.iOS
         }
 
         bool isDisposed = false;
-        ///<Summary>
         /// Dispose SimpleAudioPlayer and release resources
-        ///</Summary>
         protected virtual void Dispose(bool disposing)
         {
             if (isDisposed)

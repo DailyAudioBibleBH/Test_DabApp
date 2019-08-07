@@ -85,6 +85,8 @@ namespace DABApp.DabAudio
 
         void Player_PlaybackEnded(object sender, EventArgs e)
         {
+            //Go back to the beginning
+            Seek(0);
             //Handle playback ending (update button image)
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
