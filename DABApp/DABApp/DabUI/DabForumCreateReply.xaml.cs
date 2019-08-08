@@ -28,7 +28,7 @@ namespace DABApp
 			Cancel.IsEnabled = false;
 			if (string.IsNullOrWhiteSpace(reply.Text))
 			{
-				await DisplayAlert("Cannont Post Blank Reply", "If you would like to discard your post hit cancel.", "OK");
+				await DisplayAlert("Cannot Post Blank Reply", "If you would like to discard your post hit cancel.", "OK");
 			}
 			else
 			{
