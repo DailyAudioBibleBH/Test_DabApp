@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -13,7 +14,6 @@ namespace DABApp
         int TapNumber = 0;
         private double _width;
         private double _height;
-        ContentConfig contentConfig = new ContentConfig();
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -183,6 +183,39 @@ namespace DABApp
             activity.IsVisible = false;
         }
 
+        public modeData VersionCompare(List<Versions> versions, out modeData mode)
+        {
+            try
+            {
+                //Device version
+                IAppVersionName service = DependencyService.Get<IAppVersionName>();
+                VersionInfo versionInfo = new VersionInfo(service.GetVersionName(), Device.RuntimePlatform);
+                IEnumerable<Versions> matchingVersions = versions.Where(x => x.platform.ToUpper() == versionInfo.platform.ToUpper()).ToList(); //Filters to matching platform
+                matchingVersions = matchingVersions.Where(x => new System.Version(x.version).CompareTo(versionInfo.versionName) >= 0).ToList(); //Filters to versions at or above curent version
+                matchingVersions = matchingVersions.OrderBy(x => x.version).ToList(); //Sorts by version # so we can get the lowest one above or at current
+                Versions match = matchingVersions.FirstOrDefault(); //Get the first version out of the filtered / sorted list
+                                                                    //Return the match if one was found.
+                if (match != null)
+                {
+                    mode = match.mode;
+                    return mode;
+                }
+                else
+                {
+                    mode = null;
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+                mode = null;
+                return null;
+                throw;
+            }
+
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -194,60 +227,58 @@ namespace DABApp
             TapNumber = 0;
 
             //Take action based on the mode of the app
-            List<Version> versionList = new List<Version>();
-            versionList = contentConfig.versions;
-            //modeData mode = ContentConfig.Instance.blocktext.mode;
-            //if   (versionList != null) //(mode != null)
-            //{
-            //    string modeResponseCode = "";
-            //    switch (mode.buttons.Count)
-            //    {
-            //        case 0:
-            //            //Should not happen
-            //            modeResponseCode = "";
-            //            break;
-            //        case 1:
-            //            //One button - just tell them something and get the single button's response
-            //            var mr1 = DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
-            //            mr1.ContinueWith((t1) =>
-            //            {
-            //                modeResponseCode = mode.buttons.First().key;
-            //                HandleModeResponse(modeResponseCode);
-            //            });
-            //            break;
-            //        case 2:
-            //            //Use display alert with cancel and ok buttons
-            //            var mr2 = DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
-            //            mr2.ContinueWith((t1) =>
-            //            {
-            //                switch (t1.Result)
-            //                {
-            //                    case true:
-            //                        modeResponseCode = mode.buttons.Last().key;
-            //                        break;
-            //                    case false:
-            //                        modeResponseCode = mode.buttons.First().key;
-            //                        break;
-            //                }
-            //                HandleModeResponse(modeResponseCode);
-            //            });
+            modeData mode;
+            List<Versions> versions = ContentConfig.Instance.versions;
 
-            //            break;
-            //        default:
-            //            var mr3 = DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
-            //            mr3.ContinueWith((t1) =>
-            //            {
-            //                modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
-            //                HandleModeResponse(modeResponseCode);
-            //            });
-            //            break;
-            //    }
+            VersionCompare(versions, out mode);
+            if (mode != null)
+            {
+                string modeResponseCode = "";
+                switch (mode.buttons.Count)
+                {
+                    case 0:
+                        //Should not happen
+                        modeResponseCode = "";
+                        break;
+                    case 1:
+                        //One button - just tell them something and get the single button's response
+                        var mr1 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.First().value);
+                        mr1.ContinueWith((t1) =>
+                        {
+                            modeResponseCode = mode.buttons.First().key;
+                            HandleModeResponse(modeResponseCode);
+                        });
+                        break;
+                    case 2:
+                        //Use display alert with cancel and ok buttons
+                        var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+                        mr2.ContinueWith((t1) =>
+                        {
+                            switch (t1.Result)
+                            {
+                                case true:
+                                    modeResponseCode = mode.buttons.Last().key;
+                                    break;
+                                case false:
+                                    modeResponseCode = mode.buttons.First().key;
+                                    break;
+                            }
+                            HandleModeResponse(modeResponseCode);
+                        });
 
-
-
-            //}
-
+                        break;
+                    default:
+                        var mr3 = Application.Current.MainPage.DisplayActionSheet(mode.title + "\n\n" + mode.content, null, null, mode.buttons.Select(x => x.value).ToArray());
+                        mr3.ContinueWith((t1) =>
+                        {
+                            modeResponseCode = mode.buttons.First(x => x.value == mr3.Result).key;
+                            HandleModeResponse(modeResponseCode);
+                        });
+                        break;
+                }
+            }
         }
+
 
         private void HandleModeResponse(string modeResponseCode)
         //Handle the user's response to the maintenance mode prompt 

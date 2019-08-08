@@ -19,7 +19,7 @@ namespace DABApp
             InitializeComponent();
 
             FlowListView.Init();
-            List<Version> versionList = new List<Version>();
+            List<Versions> versionList = new List<Versions>();
             versionList = contentConfig.versions;
             contentAPI.GetModes();
             if (ContentAPI.CheckContent()) //Check for valid content API

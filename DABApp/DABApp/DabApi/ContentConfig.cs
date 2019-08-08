@@ -31,9 +31,10 @@ namespace DABApp
 		public string resetPassword { get; set; } //HTML displayed under reset password
 		public string signUp { get; set; } //HTML displayed on sign up page
 		public string login { get; set; } //HTML on login page
-	}
+        public modeData mode { get; set; }
+    }
 
-    public class Version
+    public class Versions
     {
         public string version { get; set; }
         public string platform { get; set; }
@@ -208,7 +209,7 @@ namespace DABApp
 		public List<Nav> nav { get; set; } //nav items
 		public Blocktext blocktext { get; set; } //block text data
 		public List<View> views { get; set; } //views
-        public List<Version> versions { get; set; }
+        public List<Versions> versions { get; set; }
         public AppSettings app_settings { get; set; }
 
 		public async Task cachImages() 
@@ -362,10 +363,12 @@ namespace DABApp
         public string prod_give_link { get; set; } //Production link to start giving process (HTTPS://)
         public string prod_journal_link { get; set; } //Production link for journal (WSS://)
         public string prod_feed_link { get; set; } //Production link for feed data (content API HTTPS://)
+        public string prod_service_link { get; set; }
         public string stage_main_link { get; set; } //Stage link to the main website (HTTPS://)
         public string stage_give_link { get; set; } //Stage link to start giving process (HTTPS://)
         public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
         public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
+        public string stage_service_link { get; set; }
     }
 
     /* Converter class to convert short month names to long names */

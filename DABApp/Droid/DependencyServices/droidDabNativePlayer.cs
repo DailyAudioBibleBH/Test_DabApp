@@ -13,6 +13,8 @@ using Android.Content.Res;
 using Android.Media.Session;
 using Android.Support.V4.Media.Session;
 using Plugin.SimpleAudioPlayer;
+using DABApp.Droid.DependencyServices;
+using Android.Telephony;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -77,14 +79,14 @@ namespace DABApp.Droid
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
                     Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
-                    // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
+                    // Create a PendingIntent; 
                     const int pendingIntentId = 0;
                     const int firstPendingIntentId = 1;
                     PendingIntent firstPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
                     PendingIntent pendingIntent =
                         PendingIntent.GetActivity(Application.Context, pendingIntentId, playPauseIntent, 0);
-
+                    
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()

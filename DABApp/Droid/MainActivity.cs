@@ -28,6 +28,8 @@ using Android.Views.Accessibility;
 using Android.Support.V4.Content;
 using Android;
 using Android.Support.V4.App;
+using Android.Telephony;
+using DABApp.Droid.DependencyServices;
 
 namespace DABApp.Droid
 {
@@ -36,6 +38,7 @@ namespace DABApp.Droid
     [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        CallReceiver callReceiver;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -89,6 +92,10 @@ namespace DABApp.Droid
                     RequestedOrientation = ScreenOrientation.Portrait;
                 }
             });
+
+            callReceiver = new CallReceiver();
+            TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
+            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);
         }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)
@@ -105,7 +112,7 @@ namespace DABApp.Droid
         protected override void OnResume()
         {
             base.OnResume();
-            CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
+            //CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d"); //Why is this here? Is it registering a crash on being woke back up?
         }
 
         public override void OnBackPressed()

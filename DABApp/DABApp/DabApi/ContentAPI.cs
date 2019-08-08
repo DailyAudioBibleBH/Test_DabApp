@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Diagnostics;
 using Xamarin.Forms;
+using System.Runtime.Serialization.Json;
+using Xamarin.Forms.PlatformConfiguration;
 
 namespace DABApp
 {
@@ -92,6 +94,7 @@ namespace DABApp
         {
             var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
+            
             Task.Run(async () =>
             {
                 await ContentConfig.Instance.cachImages();
@@ -186,7 +189,7 @@ namespace DABApp
 
         public List<modeData> GetModes()
         {
-            List<Version> versionsList = new List<Version>();
+            List<Versions> versionsList = new List<Versions>();
             var mode = from version in versionsList
                        where version.mode != null
                        select version.mode;
