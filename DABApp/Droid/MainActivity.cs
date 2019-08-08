@@ -93,6 +93,7 @@ namespace DABApp.Droid
                 }
             });
 
+            //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();
             TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
             telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);

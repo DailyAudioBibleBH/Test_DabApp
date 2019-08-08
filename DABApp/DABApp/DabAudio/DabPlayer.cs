@@ -380,7 +380,8 @@ namespace DABApp.DabAudio
             get
             {
                 //Return if the player is ready to go.
-                if (GlobalResources.CurrentEpisodeId > 0)
+                //Changed from > to >= to have play/pause work correctly on DabRecordingPage
+                if (GlobalResources.CurrentEpisodeId >= 0)
                 {
                     return true;
                 }
@@ -456,6 +457,7 @@ namespace DABApp.DabAudio
             player.Play();
         }
 
+        //Pause method for if a call was interrupted 
         public void PauseForCall()
         {
             shouldResumePlay = true;

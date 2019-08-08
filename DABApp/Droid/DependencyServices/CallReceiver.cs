@@ -18,12 +18,7 @@ namespace DABApp.Droid.DependencyServices
     {
         TelephonyManager telManager;
         Context context;
-        //public override void OnReceive(Context context, Intent intent)
-        //{
-        //    this.context = context;
-        //    telManager = (TelephonyManager)context.GetSystemService(Context.TelephonyService);
-        //    telManager.Listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
-        //}
+        
         public override void OnCallStateChanged([GeneratedEnum] CallState state, string incomingNumber)
         {
             base.OnCallStateChanged(state, incomingNumber);
