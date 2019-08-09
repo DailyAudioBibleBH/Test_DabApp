@@ -159,7 +159,7 @@ namespace DABApp
                 activityHolder.IsVisible = false;
                 giving = false;
             }
-		}
+        }
 
         public void Unsubscribe()
         {
