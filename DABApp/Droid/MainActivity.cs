@@ -28,6 +28,8 @@ using Android.Views.Accessibility;
 using Android.Support.V4.Content;
 using Android;
 using Android.Support.V4.App;
+using Android.Telephony;
+using DABApp.Droid.DependencyServices;
 
 namespace DABApp.Droid
 {
@@ -36,10 +38,11 @@ namespace DABApp.Droid
     [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
+        CallReceiver callReceiver;
 
         protected override void OnCreate(Bundle bundle)
         {
-            SQLitePCL.Batteries.Init();//Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
+            SQLitePCL.Batteries.Init(); //Setting up the SQLite database to be Serialized prevents a lot of errors when using the database so regularly.
             SQLitePCL.raw.sqlite3_shutdown();
             SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
             SQLitePCL.raw.sqlite3_enable_shared_cache(1);
@@ -89,6 +92,11 @@ namespace DABApp.Droid
                     RequestedOrientation = ScreenOrientation.Portrait;
                 }
             });
+
+            //Reciever for detecting android phone states, incoming/outgoing calls
+            callReceiver = new CallReceiver();
+            TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
+            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);
         }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)

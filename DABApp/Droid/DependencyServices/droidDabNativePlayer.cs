@@ -17,6 +17,9 @@ using System.IO;
 using Math = System.Math;
 using Android.Media;
 
+using DABApp.Droid.DependencyServices;
+using Android.Telephony;
+
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {

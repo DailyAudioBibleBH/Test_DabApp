@@ -39,6 +39,7 @@ namespace DABApp.DabAudio
         private double _episodeDuration = 1; //Estimated duration of the episode
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
+        private bool shouldResumePlay = false;
 
 
 
@@ -63,7 +64,7 @@ namespace DABApp.DabAudio
             timer.AutoReset = true;
             timer.Stop(); //Don't use it till we need it.
         }
-        
+
 
         /* Event Handlers */
         public event EventHandler EpisodeDataChanged;
@@ -355,7 +356,8 @@ namespace DABApp.DabAudio
             get
             {
                 //Return if the player is ready to go.
-                if (GlobalResources.CurrentEpisodeId >0)
+                //Changed from > to >= to have play/pause work correctly on DabRecordingPage
+                if (GlobalResources.CurrentEpisodeId >= 0)
                 {
                     return true;
                 }
@@ -418,6 +420,24 @@ namespace DABApp.DabAudio
                     return ImageSource.FromFile("ic_play_circle_outline_white_3x.png");
                 }
             }
+        }
+
+        public bool ShouldResumePlay()
+        {
+            return shouldResumePlay;
+        }
+
+        public void ResumePlay()
+        {
+            shouldResumePlay = false;
+            player.Play();
+        }
+
+        //Pause method for if a call was interrupted 
+        public void PauseForCall()
+        {
+            shouldResumePlay = true;
+            player.Pause();
         }
 
 

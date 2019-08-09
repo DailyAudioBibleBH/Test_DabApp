@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using System.Diagnostics;
-using Xamarin.Forms.PlatformConfiguration;
-using DABApp.Interfaces;
 
 namespace DABApp
 {
-
     public partial class App : Application
     {
+        ContentAPI contentAPI = new ContentAPI();
+        ContentConfig contentConfig = new ContentConfig();
         public App()
         {
             if (AuthenticationAPI.GetTestMode())
@@ -20,13 +19,12 @@ namespace DABApp
             InitializeComponent();
 
             FlowListView.Init();
-
+            List<Versions> versionList = new List<Versions>();
+            versionList = contentConfig.versions;
+            contentAPI.GetModes();
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
-                //Check Current Version Number
-                IAppVersionName service = DependencyService.Get<IAppVersionName>();
-                string versionName = service.GetVersionName();                
-                if (AuthenticationAPI.CheckToken())  //&& ContentConfig.Instance.blocktext.mode == null) //Check to see if the user is logged in. Do we need this second part?
+                if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
                 {
                     MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
                 }

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabSignUpPage" xmlns:generic="clr-namespace:System;assembly=mscorlib"	xmlns:local="clr-namespace:DABApp;" >
-	<ContentPage.Content>
-		<StackLayout x:Name="Container" Padding="10" Spacing="10">
-			<local:HtmlLabel Text="{Binding signUp}"/>
-			<Label Text="First Name" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
-			<Label Text="Last Name" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="LastName" Completed="OnLastNameCompleted"/>
-			<Label Text="Email Address" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
-			<Label Text="Password" FontSize="Micro"/>
-			<local:DarkKeyboardEntry x:Name="Password" IsPassword="true" Completed="OnSignUp"/>
-			<StackLayout Orientation="Horizontal">
-        <Switch x:Name="Agreement" VerticalOptions="Start">
-          <Switch.AutomationProperties.Name>
-            <OnPlatform x:TypeArguments="generic:String" iOS="I agree to the Daily Audio Bible Terms of Service."/>
-          </Switch.AutomationProperties.Name>
-        </Switch>
-				<local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>
-			</StackLayout>
-			<Button x:Name="SignUp" Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
-		</StackLayout>
-	</ContentPage.Content>
+    <ContentPage.Content>
+        <StackLayout x:Name="Container" Padding="10" Spacing="10">
+            <local:HtmlLabel Text="{Binding signUp}"/>
+            <Label Text="First Name" FontSize="Micro"/>
+            <Entry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
+            <Label Text="Last Name" FontSize="Micro"/>
+            <Entry x:Name="LastName" Completed="OnLastNameCompleted"/>
+            <Label Text="Email Address" FontSize="Micro"/>
+            <Entry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
+            <Label Text="Password" FontSize="Micro"/>
+            <Entry x:Name="Password" IsPassword="true" Completed="OnSignUp"/>
+            <StackLayout Orientation="Horizontal">
+                <Switch x:Name="Agreement" VerticalOptions="Start">
+                    <Switch.AutomationProperties.Name>
+                        <OnPlatform x:TypeArguments="generic:String" iOS="I agree to the Daily Audio Bible Terms of Service."/>
+                    </Switch.AutomationProperties.Name>
+                </Switch>
+                <local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>
+            </StackLayout>
+            <Button x:Name="SignUp" Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
+        </StackLayout>
+    </ContentPage.Content>
 </local:DabBaseContentPage>
+    
+
