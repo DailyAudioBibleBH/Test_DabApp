@@ -92,7 +92,7 @@ namespace DABApp
 							await DisplayAlert(authentication, "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
 						}
 						else {
-							await DisplayAlert("An unexpected error has been occurred while processing your request. Please check your connection and try again. Technical details:", authentication, "OK");
+							await DisplayAlert("Unexpected Error",$"An unexpected error has been occurred while processing your request. Please check your connection and try again. Technical details: {authentication}", "OK");
 						}
 					}
 				}
