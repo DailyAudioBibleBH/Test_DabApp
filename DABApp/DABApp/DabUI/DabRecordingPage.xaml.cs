@@ -426,7 +426,8 @@ namespace DABApp
             Timer.BindingContext = player;
             var converter = new StringConverter();
             converter.onRecord = true;
-            Timer.SetBinding(Label.TextProperty, new Binding("Duration", BindingMode.Default, converter, null, null, player));
+            //Timer.SetBinding(Label.TextProperty, new Binding("Duration", BindingMode.Default, converter, null, null, player));
+            Timer.Text = "2:00";
             SeekBar.Value = player.CurrentPosition;
             SeekBar.IsVisible = true;
             c0.Width = new GridLength(2, GridUnitType.Star);
