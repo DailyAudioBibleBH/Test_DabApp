@@ -429,14 +429,14 @@ namespace DABApp.DabAudio
         public void ResumePlay()
         {
             shouldResumePlay = false;
-            nativePlayer.Play();
+            Play();
         }
 
         //Pause method for if a call was interrupted 
         public void PauseForCall()
         {
             shouldResumePlay = true;
-            nativePlayer.Pause();
+            Pause();
         }
 
 
