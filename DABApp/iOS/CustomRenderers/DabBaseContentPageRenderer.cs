@@ -10,6 +10,7 @@ using SlideOverKit.iOS;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using Color = Xamarin.Forms.Color;
 
 //Attach this class to the ContentPage renderer
 [assembly: ExportRenderer(typeof(DabBaseContentPage), typeof(DabBaseContentPageRenderer))]

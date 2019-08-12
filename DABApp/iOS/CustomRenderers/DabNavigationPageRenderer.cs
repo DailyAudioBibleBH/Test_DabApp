@@ -7,6 +7,7 @@ using DABApp.iOS;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using Color = Xamarin.Forms.Color;
 
 //Attach this class to the NavigationPage renderer
 [assembly: ExportRenderer(typeof(NavigationPage), typeof(DabNavigationPageRenderer))]
