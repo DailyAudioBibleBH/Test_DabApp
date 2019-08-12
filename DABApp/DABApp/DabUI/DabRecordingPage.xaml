@@ -17,9 +17,9 @@
                     <!--Instructions - auto size (1 line)-->
                     <RowDefinition x:Name="r5" Height="Auto" />
                     <!--Submit Button - Fixed height-->
-                    <RowDefinition x:Name="r6" Height="60" />
+                    <RowDefinition x:Name="r6" Height="62" />
                     <!--Cancel Buttons - FIxed height-->
-                    <RowDefinition x:Name="r7" Height="60" />
+                    <RowDefinition x:Name="r7" Height="62" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition x:Name="c0" Width="0" />
