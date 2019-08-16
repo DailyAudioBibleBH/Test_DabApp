@@ -248,6 +248,14 @@ namespace DABApp.DabAudio
 
         }
 
+        //Method that can be called from outside the player to notify bound elements to update their status.
+        public void NotifyPlayStateChanged()
+        {
+            OnPropertyChanged("PlayPauseButtonImageBig");
+            OnPropertyChanged("CurrentPosition");
+            OnPropertyChanged("RemainingSeconds");
+            OnPropertyChanged("CurrentProgressPercentage");
+        }
 
         public void Pause()
         {

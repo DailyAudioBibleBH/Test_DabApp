@@ -68,7 +68,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        this.Play();
+                        dabplayer.Play();
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -82,7 +82,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        this.Pause();
+                        dabplayer.Pause();
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)

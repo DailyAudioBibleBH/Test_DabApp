@@ -58,6 +58,10 @@ namespace DABApp
 
         protected override async void OnResume()
         {
+            if (GlobalResources.playerPodcast != null)
+            {
+                GlobalResources.playerPodcast.NotifyPlayStateChanged();
+            }
             JournalTracker.Current.Open = true;
             if (Device.RuntimePlatform == Device.iOS)
             {
