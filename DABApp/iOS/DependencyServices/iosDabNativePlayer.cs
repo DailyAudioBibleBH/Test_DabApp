@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using AVFoundation;
 using DABApp.DabAudio;
@@ -17,12 +18,15 @@ namespace DABApp.iOS
         MPNowPlayingInfo nowPlayingInfo;
 
 
+        public iosDabNativePlayer()
+        {
+            Debug.WriteLine("Creating iosDabNativePlayer");
+        }
 
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
 
             dabplayer = Player;
-
             AVAudioSession.SharedInstance().SetActive(true);
             AVAudioSession.SharedInstance().SetCategory(AVAudioSessionCategory.Playback);
 
@@ -135,7 +139,8 @@ namespace DABApp.iOS
 
         /// Length of audio in seconds
         public double Duration
-        { get
+        {
+            get
             {
                 return player == null ? 0 : player.CurrentItem.Asset.Duration.Seconds;
             }
@@ -143,7 +148,8 @@ namespace DABApp.iOS
 
         /// Current position of audio in seconds
         public double CurrentPosition
-        { get
+        {
+            get
             {
                 return player == null ? 0 : player.CurrentItem.CurrentTime.Seconds;
             }
@@ -158,7 +164,8 @@ namespace DABApp.iOS
 
         /// Indicates if the currently loaded audio file is playing
         public bool IsPlaying
-        { get
+        {
+            get
             {
                 return player == null ? false : (Math.Abs(player.Rate) > double.Epsilon);
             }
@@ -166,7 +173,8 @@ namespace DABApp.iOS
 
         /// Indicates if the position of the loaded audio file can be updated - always returns true on iOS
         public bool CanSeek
-        { get
+        {
+            get
             {
                 return player == null ? false : true;
             }
@@ -227,7 +235,7 @@ namespace DABApp.iOS
 
         void DeletePlayer()
         {
-            Stop();
+            Pause();
 
             if (player != null)
             {
@@ -254,10 +262,21 @@ namespace DABApp.iOS
 
 
             if (IsPlaying)
-                //Go back to the beginning
+            {
+                //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
                 player.Seek(new CoreMedia.CMTime(0, 1));
+            }
+            else if (player.CurrentTime >= player.CurrentItem.Duration)
+            {
+                //Start over from the beginning if at the end of the file
+                player.Seek(new CoreMedia.CMTime(0, 1));
+                player.Play();
+            }
             else
+            {
+                //Play from where we're at
                 player?.Play();
+            }
         }
 
         /// Pause playback if playing (does not resume)

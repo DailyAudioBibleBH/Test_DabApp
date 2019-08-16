@@ -51,7 +51,9 @@ namespace DABApp.DabAudio
             
             
             //Connect the native player interface
-            nativePlayer = DependencyService.Get<IDabNativePlayer>();
+            //nativePlayer = DependencyService.Get<IDabNativePlayer>();
+            nativePlayer = DependencyService.Get<IDabNativePlayer>(DependencyFetchTarget.NewInstance);
+            
             nativePlayer.Init(this, IntegrateWithLockScreen);
             //Set up events tied to the player
             nativePlayer.PlaybackEnded += Player_PlaybackEnded;
@@ -87,7 +89,7 @@ namespace DABApp.DabAudio
         void Player_PlaybackEnded(object sender, EventArgs e)
         {
             //Go back to the beginning
-            Seek(0);
+            //Seek(0);
             //Handle playback ending (update button image)
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
@@ -259,11 +261,10 @@ namespace DABApp.DabAudio
 
         public void Pause()
         {
+            UpdateEpisodeDataOnStop(); //Episode has been stopped
             nativePlayer.Pause();
             timer.Stop();
             OnPropertyChanged("PlayPauseButtonImageBig");
-
-            UpdateEpisodeDataOnStop(); //Episode has been stopped
         }
 
         public void Play()
