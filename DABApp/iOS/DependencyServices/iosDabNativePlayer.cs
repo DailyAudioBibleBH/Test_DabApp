@@ -209,6 +209,7 @@ namespace DABApp.iOS
         }
 
         private NSObject _OnPlaybackEndedHandle;
+
         bool PreparePlayer()
         {
             if (player != null)
@@ -225,12 +226,41 @@ namespace DABApp.iOS
                 //Register for a notification that playback ended
                 _OnPlaybackEndedHandle = NSNotificationCenter.DefaultCenter.AddObserver(AVPlayerItem.DidPlayToEndTimeNotification, OnPlaybackEnded);
 
+                //Register for a notification that playback was interupted
+                AVAudioSession.Notifications.ObserveInterruption(OnPlaybackInterupted);
+
+
                 //Prepare to play the file by play/pausing it
                 player.Play();
                 player.Pause();
             }
 
             return (player == null) ? false : true;
+        }
+
+        private void OnPlaybackInterupted(object sender, AVAudioSessionInterruptionEventArgs e)
+        {
+            //Handle player interupttions by a call. Only fires if the player is currently playing
+               switch (e.InterruptionType)
+            {
+                case AVAudioSessionInterruptionType.Began:
+                    if (dabplayer.IsReady)
+                    {
+                        if (dabplayer.IsPlaying)
+                        {
+                            dabplayer.PauseForCall();
+                        }
+                    }
+                    break;
+                case AVAudioSessionInterruptionType.Ended:
+                    if (dabplayer.IsReady && !dabplayer.IsPlaying && dabplayer.ShouldResumePlay())
+                    {
+                        dabplayer.ResumePlay();
+                    }
+                    break;
+
+            }
+            
         }
 
         void DeletePlayer()
@@ -247,6 +277,8 @@ namespace DABApp.iOS
                 player = null;
             }
         }
+
+      
 
         //Playback has ended - raise event
         private void OnPlaybackEnded(NSNotification notification)
