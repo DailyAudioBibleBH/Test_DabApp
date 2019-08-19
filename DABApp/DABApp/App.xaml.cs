@@ -58,6 +58,11 @@ namespace DABApp
 
         protected override async void OnResume()
         {
+            if (GlobalResources.playerPodcast != null)
+            {
+                //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
+                GlobalResources.playerPodcast.NotifyPlayStateChanged();
+            }
             JournalTracker.Current.Open = true;
             if (Device.RuntimePlatform == Device.iOS)
             {

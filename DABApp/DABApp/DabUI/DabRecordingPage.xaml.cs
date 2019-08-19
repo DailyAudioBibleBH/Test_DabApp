@@ -30,6 +30,12 @@ namespace DABApp
         {
             InitializeComponent();
 
+            //Pause the main player, if it's playing
+            if (GlobalResources.playerPodcast.IsPlaying)
+            {
+                GlobalResources.playerPodcast.Pause();
+            }
+
             // TODO: Set up bindings removed from XAML:
             // Timer Text < RecordingTime           
             // Record Source < RecordImageUrl
@@ -330,7 +336,7 @@ namespace DABApp
             }
             if (player.IsPlaying)
             {
-                player.Stop();
+                player.Pause();
             }
             base.OnDisappearing();
         }
