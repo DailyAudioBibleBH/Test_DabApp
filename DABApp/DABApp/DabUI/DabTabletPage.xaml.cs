@@ -519,11 +519,13 @@ namespace DABApp
                 //Favorite button
                 favorite.BindingContext = episode;
                 favorite.SetBinding(Image.SourceProperty, "favoriteSource");
+                favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
                 //Completed button
                 Completed.BindingContext = episode;
                 Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
                 //Journal Title
