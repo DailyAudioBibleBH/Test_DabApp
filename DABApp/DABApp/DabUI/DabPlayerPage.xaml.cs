@@ -19,6 +19,7 @@ namespace DABApp
         bool IsGuest;
         static double original;
         dbEpisodes _episode;
+        DabEpisodesPage dabEpisodes;
 
         public DabPlayerPage(dbEpisodes episode, Reading Reading)
         {
@@ -370,7 +371,7 @@ namespace DABApp
             //Load the file if not already loaded.
             if (Episode.Episode.id != GlobalResources.CurrentEpisodeId)
             {
-                if (! player.Load(Episode.Episode))
+                if (!player.Load(Episode.Episode))
                 {
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
                     //TODO: Ensure nothing breaks if this happens.
@@ -511,28 +512,42 @@ namespace DABApp
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
+            player.UpdateEpisodeDataOnStop();
         }
 
         //User listens to (or unlistens to) an episode
-        void OnListened(object o, EventArgs e)
+        async void OnListened(object o, EventArgs e)
         {
-            //Switch the value of listened to
-            Episode.listenedToVisible = !Episode.listenedToVisible;
-
-            if (Episode.listenedToVisible)
+            if (Episode.Episode.is_listened_to == "listened")
             {
                 //Mark episode as listened to
-                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
-                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
+                Episode.Episode.is_listened_to = "";
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
             }
             else
             {
                 //Mark episode as not listened to
-                PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
-                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
+                Episode.Episode.is_listened_to = "listened";
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
             //TODO: Bind accessibiliyt text
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
+            //Switch the value of listened to
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                Episode.listenedToVisible = !Episode.listenedToVisible;
+            });
+
+            player.UpdateEpisodeDataOnStop();
+        }
+
+        //User listens to (or unlistens to) an episode
+        void OnVisibleChanged(object o, EventArgs e)
+        {
+            //Switch the value of listened to
+            Episode.listenedToVisible = !Episode.listenedToVisible;
         }
     }
 }
