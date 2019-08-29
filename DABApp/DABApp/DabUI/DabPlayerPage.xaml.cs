@@ -8,7 +8,6 @@ using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
-using Android.Content;
 
 namespace DABApp
 {
