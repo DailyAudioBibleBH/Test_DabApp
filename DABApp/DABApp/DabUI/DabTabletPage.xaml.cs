@@ -737,16 +737,15 @@ namespace DABApp
         {
             if (episode.Episode.is_listened_to == "listened")
             {
-                episode.Episode.is_listened_to = "";
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, "");
                 await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "");
             }
             else
             {
-                episode.Episode.is_listened_to = "listened";
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id);
                 await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
             }
+            episode.listenedToVisible = !episode.listenedToVisible;
             //TODO: Fix completed image
             //Completed.Image = episode.listenedToSource;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
