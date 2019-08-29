@@ -355,6 +355,7 @@ namespace DABApp.Droid
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
         DroidDabNativePlayer droid = new DroidDabNativePlayer();
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);

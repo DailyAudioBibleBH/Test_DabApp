@@ -352,6 +352,7 @@
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\CallReceiver.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
+    <Compile Include="DependencyServices\MediaButtonBroadcastReceiver.cs" />
     <Compile Include="DependencyServices\RecordService.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

@@ -267,6 +267,18 @@ namespace DABApp.DabAudio
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
 
+        public void PlayPauseBluetooth()
+        {
+            if (IsPlaying)
+            {
+                nativePlayer.Pause();
+            }
+            else
+            {
+                nativePlayer.Play();
+            }
+        }
+
         public void Play()
         {
             if (IsPlaying)

@@ -8,6 +8,7 @@ using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
+using Android.Content;
 
 namespace DABApp
 {
@@ -30,6 +31,7 @@ namespace DABApp
             Episode = new EpisodeViewModel(episode);
             _episode = episode;
 
+            
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player
