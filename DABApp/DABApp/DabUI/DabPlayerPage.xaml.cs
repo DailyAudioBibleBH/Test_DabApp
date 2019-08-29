@@ -512,7 +512,6 @@ namespace DABApp
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
-            player.UpdateEpisodeDataOnStop();
         }
 
         //User listens to (or unlistens to) an episode
@@ -521,26 +520,21 @@ namespace DABApp
             if (Episode.Episode.is_listened_to == "listened")
             {
                 //Mark episode as listened to
-                Episode.Episode.is_listened_to = "";
+                //Episode.Episode.is_listened_to = "";
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
                 await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
             }
             else
             {
                 //Mark episode as not listened to
-                Episode.Episode.is_listened_to = "listened";
+                //Episode.Episode.is_listened_to = "listened";
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
                 await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
+            //Switch the value of listened to
+            Episode.listenedToVisible = !Episode.listenedToVisible;
             //TODO: Bind accessibiliyt text
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            //Switch the value of listened to
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                Episode.listenedToVisible = !Episode.listenedToVisible;
-            });
-
-            player.UpdateEpisodeDataOnStop();
         }
 
         //User listens to (or unlistens to) an episode
