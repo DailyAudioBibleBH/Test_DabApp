@@ -47,7 +47,7 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
             });
-            Device.StartTimer(TimeSpan.FromMinutes(5), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 TimedActions();
                 return true;
