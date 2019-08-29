@@ -28,7 +28,7 @@ namespace DABApp.iOS
             var err = audioSession.SetCategory(AVAudioSessionCategory.Record); //Need to set this back to playback when done.
             err = audioSession.SetActive(true);
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var fileName = Path.Combine(doc, $"DABRecording_{DateTime.Now.ToString("yyyyMMddHHmmss").Replace("/", string.Empty).Replace(" ", string.Empty).Replace(":", string.Empty)}.m4a");
+            var fileName = Path.Combine(doc, $"DABRecording_{DateTime.Now.ToString("yyyyMMddHHmmss").Replace("/", string.Empty).Replace(" ", string.Empty).Replace(":", string.Empty)}.wav");
             var settings = new AudioSettings();
             var error = new NSError();
             recorder = AVAudioRecorder.Create(new NSUrl(fileName), settings, out error);
