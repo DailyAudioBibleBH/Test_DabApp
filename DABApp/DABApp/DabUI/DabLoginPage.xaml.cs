@@ -146,7 +146,7 @@ namespace DABApp
                 }
                 else
                 {
-                    await DisplayAlert("Login Failed", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                    await DisplayAlert("Login Failed", result, "OK");
                 }
             }
             Login.IsEnabled = true;
