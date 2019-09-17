@@ -737,8 +737,8 @@ namespace DABApp
         public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
             if (!GuestStatus.Current.IsGuestLogin)
-                //TODO: Journal?
-                //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            //TODO: Journal?
+            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
                 if (notGetting)
                 {
@@ -873,6 +873,16 @@ namespace DABApp
                 db.Update(newMode);
             }
             else db.InsertOrReplace(newMode);
+        }
+
+        public static string CurrentToken
+        //Return the current token
+        {
+            get
+            {
+                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                return TokenSettings?.Value;
+            }
         }
     }
 }
