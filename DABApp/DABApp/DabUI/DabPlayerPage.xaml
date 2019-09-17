@@ -252,14 +252,31 @@
                                HorizontalTextAlignment="End"
                                HorizontalOptions="EndAndExpand" />
                     </StackLayout>
-                    <local:DarkKeyboardEditor x:Name="JournalContent"
+                      <!--<local:DarkKeyboardEditor x:Name="JournalContent"
                                               Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}"
                                               TextChanged="OnJournalChanged"
                                               Focused="OnEdit"
                                               Unfocused="OffEdit"
                                               FontSize="Small"
-                                              HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}" />
+                                              HeightRequest="{Binding Source={x:Static local:JournalTracker.Current}, Path=EntryHeight}" />-->
+                    <local:DarkKeyboardEditor x:Name="JournalContent"
+                                              
+                                              TextChanged="OnJournalChanged"
+                                              Focused="OnEdit"
+                                              Unfocused="OffEdit"
+                                              FontSize="Small"
+                                               />
+
                     <Label x:Name="JournalWarning"
+                           Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
+                           Style="{StaticResource warningLabelStyle}"
+                           VerticalOptions="EndAndExpand"
+                           AutomationProperties.IsInAccessibleTree="true">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnReconnect" />
+                        </Label.GestureRecognizers>
+                    </Label>
+                     <!--<Label x:Name="JournalWarning"
                            Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
                            Style="{StaticResource warningLabelStyle}"
                            IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}"
@@ -268,7 +285,7 @@
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnReconnect" />
                         </Label.GestureRecognizers>
-                    </Label>
+                    </Label>-->
                     <BoxView x:Name="spacer"
                              Style="{StaticResource SpacerStyle}" />
                 </StackLayout>
