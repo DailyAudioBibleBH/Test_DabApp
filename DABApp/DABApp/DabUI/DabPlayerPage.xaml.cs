@@ -84,6 +84,7 @@ namespace DABApp
             //Connect to the journal and set up events
             journalSocket = new DabJournalSocket();
             journalSocket.InitAndConnect();
+            journalSocket.JoinRoom(episode.PubDate);
 
             //TODO: Don't think we need these events anymore, they are handled by the class
             //JournalTracker.Current.socket.Disconnect += OnDisconnect;

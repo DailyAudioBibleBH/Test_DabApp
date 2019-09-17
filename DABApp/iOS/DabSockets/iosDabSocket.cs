@@ -130,5 +130,12 @@ namespace DABApp.iOS.DabSockets
         {
             sock.Connect();
         }
+
+        public void Emit(string Command, object Data)
+        {
+            sock.Emit(Command, Data);
+        }
+
+
     }
 }

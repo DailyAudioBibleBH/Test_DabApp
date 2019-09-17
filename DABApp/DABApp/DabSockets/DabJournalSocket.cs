@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
 
 namespace DABApp.DabSockets
@@ -9,6 +10,8 @@ namespace DABApp.DabSockets
     public class DabJournalSocket: INotifyPropertyChanged
     {
         IDabSocket sock;
+        string currentContent;
+        DateTime currentDate;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,6 +59,34 @@ namespace DABApp.DabSockets
             
         }
 
+        public bool UpdateJournal (DateTime date, string content)
+        {
+            var room = date.ToString("yyyy-MM-dd");
+            var token = AuthenticationAPI.CurrentToken;
+            var help = new DabJournalSocketHelper(content, room, token);
+            var data = JObject.FromObject(help);
+            sock.Emit("key", data);
+
+            return true;
+
+        }
+
+        public bool JoinRoom(DateTime date)
+        {
+
+            var room = date.ToString("yyyy-MM-dd");
+            var token = AuthenticationAPI.CurrentToken;
+
+            var help = new DabJournalSocketHelper(room, token);
+            var data = JObject.FromObject(help);
+            sock.Emit("join", data);
+
+            currentDate = date;
+
+            return true;
+
+        }
+
         //IsConnected returns a bool indicating whether the socket is currently connected.
         //This is a bindable property
         public bool IsConnected
@@ -63,6 +94,21 @@ namespace DABApp.DabSockets
             get
             {
                 return sock.IsConnected;
+            }
+        }
+
+        public string Content
+        {
+            get
+            {
+                return currentContent;
+            }
+            set
+            {
+                currentContent = value;
+                UpdateJournal(currentDate, value);
+                OnPropertyChanged("Content");
+                
             }
         }
 
@@ -97,7 +143,9 @@ namespace DABApp.DabSockets
                 case "auth_error": //Error with authentication
                     Sock_ErrorOccured(e.eventName, e.data);
                     break;
-                case "update": //Error with update
+                case "update": //update happened externally
+                    currentContent = e.data.ToString();
+                    OnPropertyChanged("Content");
                     break;
                 default:
                     break;
