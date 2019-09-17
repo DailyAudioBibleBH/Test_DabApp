@@ -14,20 +14,5 @@ namespace DABApp
         void Emit(string Command, object Data); //Send generic data to the socket
         bool IsConnected { get; }
         event EventHandler<DabSocketEventHandler> DabSocketEvent;
-
-
-        //void Join(string date);
-        //void Key(string html, string date);
-        //string content { get;}
-        //bool ExternalUpdate { get; set;}
-        //bool IsJoined { get; }
-        //      event EventHandler contentChanged;
-        //event EventHandler Disconnect;
-        //event EventHandler Reconnect;
-        //event EventHandler Reconnecting;
-        //event EventHandler Room_Error;
-        //event EventHandler Auth_Error;
-        //event EventHandler Join_Error;
-        //      event EventHandler OnForcefulLogout;
     }
 }

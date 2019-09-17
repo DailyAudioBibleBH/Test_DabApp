@@ -21,7 +21,7 @@ namespace DABApp
         static double original;
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
-        DabJournalSocket journalSocket;
+        DabJournalService journal;
 
         public DabPlayerPage(dbEpisodes episode, Reading Reading)
         {
@@ -82,9 +82,9 @@ namespace DABApp
             }
 
             //Connect to the journal and set up events
-            journalSocket = new DabJournalSocket();
-            journalSocket.InitAndConnect();
-            journalSocket.JoinRoom(episode.PubDate);
+            journal = new DabJournalService();
+            journal.InitAndConnect();
+            journal.JoinRoom(episode.PubDate);
 
             //TODO: Don't think we need these events anymore, they are handled by the class
             //JournalTracker.Current.socket.Disconnect += OnDisconnect;
@@ -342,9 +342,11 @@ namespace DABApp
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
-                //Journal Title
+                //Journal
                 JournalTitle.BindingContext = Episode;
                 JournalTitle.SetBinding(Label.TextProperty, "title");
+                JournalContent.BindingContext = journal;
+                JournalContent.SetBinding(Editor.TextProperty, "Content");
             }
 
             if (BindToPlayer)

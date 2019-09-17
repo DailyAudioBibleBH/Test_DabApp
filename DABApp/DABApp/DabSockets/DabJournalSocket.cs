@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace DABApp.DabSockets
 {
-    public class DabJournalSocket : INotifyPropertyChanged
+    public class DabJournalService : INotifyPropertyChanged
     {
         IDabSocket sock;
         string currentContent;
@@ -17,7 +17,7 @@ namespace DABApp.DabSockets
         public event PropertyChangedEventHandler PropertyChanged;
 
         //Create a journalling socket basec on an instance of a generic socket
-        public DabJournalSocket()
+        public DabJournalService()
         {
             //INIT THE SOCKET
 
