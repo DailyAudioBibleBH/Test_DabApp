@@ -104,7 +104,7 @@ namespace DABApp
                             }
                             else
                             {
-                                await DisplayAlert("Error", url, "OK");
+                                await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
                             }
                             NavigationPage _nav = new NavigationPage(new DabChannelsPage());
                             _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
@@ -141,7 +141,7 @@ namespace DABApp
                     }
                     else
                     {
-                        await DisplayAlert("Error", result, "OK");
+                        await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
                     }
                 }
                 else

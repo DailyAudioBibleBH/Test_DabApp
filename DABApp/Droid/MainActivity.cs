@@ -30,6 +30,7 @@ using Android;
 using Android.Support.V4.App;
 using Android.Telephony;
 using DABApp.Droid.DependencyServices;
+using Android.Media;
 
 namespace DABApp.Droid
 {
@@ -56,9 +57,14 @@ namespace DABApp.Droid
 
             base.OnCreate(bundle);
 
+            var am = (AudioManager)this.GetSystemService(AudioService);
+            var componentName = new ComponentName(PackageName, new MediaButtonBroadcastReceiver().ComponentName);
+            am.RegisterMediaButtonEventReceiver(componentName);
+
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            DependencyService.Register<SocketService>();
+            //TODO: Replace for journal?
+            //DependencyService.Register<SocketService>();
             DependencyService.Register<FileManagement>();
             DependencyService.Register<StripeApiManagement>();
             DependencyService.Register<RivetsService>();
@@ -96,7 +102,7 @@ namespace DABApp.Droid
             //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();
             TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
-            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);
+            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);           
         }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)

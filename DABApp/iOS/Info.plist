@@ -73,11 +73,11 @@
 	<string>We use your microphone to share prayer requests with the DAB Community</string>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>CFBundleShortVersionString</key>
-	<string>1.1.8</string>
 	<key>FirebaseAppDelegatProxyEnabled</key>
 	<string>No</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.1.12</string>
 	<key>CFBundleVersion</key>
-	<string>20190811</string>
+	<string>20190829</string>
 </dict>
 </plist>

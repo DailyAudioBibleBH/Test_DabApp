@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabTabletPage" xmlns:local="clr-namespace:DABApp;" xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS" xmlns:generic="clr-namespace:System;assembly=mscorlib">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          x:Class="DABApp.DabTabletPage"
+                          xmlns:local="clr-namespace:DABApp;"
+                          xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                          xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
+                          xmlns:generic="clr-namespace:System;assembly=mscorlib">
     <local:DabBaseContentPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -7,92 +14,202 @@
         </ResourceDictionary>
     </local:DabBaseContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowSpacing="0" ColumnSpacing="0">
+        <Grid RowSpacing="0"
+              ColumnSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition x:Name="BesidesPlayer" Height="2*" />
+                <RowDefinition x:Name="BesidesPlayer"
+                               Height="2*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <!--<StackLayout Grid.Row="0" Grid.ColumnSpan="2">-->
-            <RelativeLayout Grid.Row="0" Grid.ColumnSpan="2">
-                <ff:CachedImage x:Name="BackgroundImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" AutomationProperties.IsInAccessibleTree="false" />
-                <StackLayout Padding="25" x:Name="PlayerOverlay" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+            <RelativeLayout Grid.Row="0"
+                            Grid.ColumnSpan="2">
+                <ff:CachedImage x:Name="BackgroundImage"
+                                Aspect="AspectFill"
+                                RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                                RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"
+                                AutomationProperties.IsInAccessibleTree="false" />
+                <StackLayout Padding="25"
+                             x:Name="PlayerOverlay"
+                             RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                             RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
                     <StackLayout.AutomationProperties.IsInAccessibleTree>
-                        <OnPlatform x:TypeArguments="x:Boolean" iOS="false" Android="true" />
+                        <OnPlatform x:TypeArguments="x:Boolean"
+                                    iOS="false"
+                                    Android="true" />
                     </StackLayout.AutomationProperties.IsInAccessibleTree>
-                    <StackLayout x:Name="PlayerLabels" VerticalOptions="CenterAndExpand">
-                        <Label x:Name="lblEpisodeTitle" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="30" Style="{StaticResource playerLabelStyle}" />
-                        <Label x:Name="lblChannelTitle" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="11" Style="{StaticResource playerLabelStyle}" Opacity=".5" />
-                        <Label x:Name="EpDescription" HorizontalOptions="Center" HorizontalTextAlignment="Center" FontSize="13" Style="{StaticResource playerLabelStyle}" Margin="40, 10, 40, 0" />
+                    <StackLayout x:Name="PlayerLabels"
+                                 VerticalOptions="CenterAndExpand">
+                        <Label x:Name="lblEpisodeTitle"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontSize="30"
+                               Style="{StaticResource playerLabelStyle}" />
+                        <Label x:Name="lblChannelTitle"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontSize="11"
+                               Style="{StaticResource playerLabelStyle}"
+                               Opacity=".5" />
+                        <Label x:Name="EpDescription"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontSize="13"
+                               Style="{StaticResource playerLabelStyle}"
+                               Margin="40, 10, 40, 0" />
                     </StackLayout>
-                    <local:DabSeekBar x:Name="SeekBar" Minimum="0" VerticalOptions="EndAndExpand" Margin="50, 0, 50, 0" />
-                    <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand" x:Name="TimeStrings" Margin="50, 0, 50, 0">
-                        <Label x:Name="lblCurrentPosition"  HorizontalOptions="StartAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
-                        <Label x:Name="lblRemainingTime" HorizontalOptions="EndAndExpand" Style="{StaticResource playerLabelStyle}" FontSize="Small" />
+                    <local:DabSeekBar x:Name="SeekBar"
+                                      Minimum="0"
+                                      VerticalOptions="EndAndExpand"
+                                      Margin="50, 0, 50, 0" />
+                    <StackLayout Orientation="Horizontal"
+                                 VerticalOptions="StartAndExpand"
+                                 x:Name="TimeStrings"
+                                 Margin="50, 0, 50, 0">
+                        <Label x:Name="lblCurrentPosition"
+                               HorizontalOptions="StartAndExpand"
+                               Style="{StaticResource playerLabelStyle}"
+                               FontSize="Small" />
+                        <Label x:Name="lblRemainingTime"
+                               HorizontalOptions="EndAndExpand"
+                               Style="{StaticResource playerLabelStyle}"
+                               FontSize="Small" />
                     </StackLayout>
-                    <Grid VerticalOptions="StartAndExpand" x:Name="PlayerControls">
+                    <Grid VerticalOptions="StartAndExpand"
+                          x:Name="PlayerControls">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="LeftVoid" Width="24*" />
+                            <ColumnDefinition x:Name="LeftVoid"
+                                              Width="24*" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="10*" />
                             <ColumnDefinition Width="50" />
-                            <ColumnDefinition x:Name="RightVoid" Width="24*" />
+                            <ColumnDefinition x:Name="RightVoid"
+                                              Width="24*" />
                         </Grid.ColumnDefinitions>
-                        <Image x:Name="backwardButton" Source="ic_replay_30_white_3x.png" Grid.Row="0" Grid.Column="1" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Back 30 seconds" AutomationProperties.IsInAccessibleTree="true">
+                        <Image x:Name="backwardButton"
+                               Source="ic_replay_30_white_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Back 30 seconds"
+                               AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnBack30" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="PlayPause" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
+                        <Image x:Name="PlayPause"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               HeightRequest="90"
+                               WidthRequest="90"
+                               AutomationProperties.HelpText="Play Pause"
+                               AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnPlay" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="Initializer" IsVisible="false" Source="ic_play_circle_outline_white_3x.png" Grid.Row="0" Grid.Column="2" HeightRequest="90" WidthRequest="90" AutomationProperties.HelpText="Play Pause" AutomationProperties.IsInAccessibleTree="true">
+                        <Image x:Name="Initializer"
+                               IsVisible="false"
+                               Source="ic_play_circle_outline_white_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               HeightRequest="90"
+                               WidthRequest="90"
+                               AutomationProperties.HelpText="Play Pause"
+                               AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnInitialized" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="forwardButton" Source="ic_forward_30_white_3x.png" Grid.Row="0" Grid.Column="3" HeightRequest="25" WidthRequest="25" Margin="5" AutomationProperties.HelpText="Forward 30 seconds" AutomationProperties.IsInAccessibleTree="true">
+                        <Image x:Name="forwardButton"
+                               Source="ic_forward_30_white_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="3"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Forward 30 seconds"
+                               AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnForward30" />
                             </Image.GestureRecognizers>
                         </Image>
                     </Grid>
-                    <Grid VerticalOptions="EndAndExpand" x:Name="ExtraControls" Padding="0, 0, 5, 0">
+                    <Grid VerticalOptions="EndAndExpand"
+                          x:Name="ExtraControls"
+                          Padding="0, 0, 5, 0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition x:Name="CenterVoid" Width="4*" />
+                            <ColumnDefinition x:Name="CenterVoid"
+                                              Width="4*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="{DynamicResource MarkCompletedBackground}" CornerRadius="15" Padding="20, 5, 20, 5">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="0">
-                                <Button x:Name="Completed" Style="{StaticResource imageButtonStyle}" Clicked="OnListened" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true"  />
-                                <Label Text="Mark as Listened" FontSize="Small" VerticalOptions="CenterAndExpand" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="true">
+                        <Frame Grid.Row="0"
+                               Grid.Column="0"
+                               BackgroundColor="{DynamicResource MarkCompletedBackground}"
+                               CornerRadius="15"
+                               Padding="20, 5, 20, 5">
+                            <StackLayout Orientation="Horizontal"
+                                         HorizontalOptions="FillAndExpand"
+                                         Padding="0">
+                                <Button x:Name="Completed"
+                                        Style="{StaticResource imageButtonStyle}"
+                                        Clicked="OnListened"
+                                        WidthRequest="20"
+                                        HeightRequest="20"
+                                        AutomationProperties.IsInAccessibleTree="true" />
+                                <Label Text="Mark as Listened"
+                                       FontSize="Small"
+                                       VerticalOptions="CenterAndExpand"
+                                       Style="{StaticResource playerLabelStyle}"
+                                       AutomationProperties.IsInAccessibleTree="true">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnListened" />
                                     </Label.GestureRecognizers>
                                 </Label>
                             </StackLayout>
                         </Frame>
-                        <local:PlayerImage x:Name="favorite" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="2" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" >
+                        <local:PlayerImage x:Name="favorite"
+                                           Style="{StaticResource imageButtonStyle}"
+                                           Grid.Row="0"
+                                           Grid.Column="2"
+                                           WidthRequest="20"
+                                           HeightRequest="20"
+                                           AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFavorite" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
-                        <local:AudioOutputView x:Name="Output" WidthRequest="20" HeightRequest="20" Grid.Row="0" Grid.Column="3" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.HelpText="Change Audio Output" />
-                        <local:PlayerImage x:Name="Share" Source="ic_share_white_3x.png" Style="{StaticResource imageButtonStyle}" Grid.Row="0" Grid.Column="4" WidthRequest="20" HeightRequest="20" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Share">
+                        <local:AudioOutputView x:Name="Output"
+                                               WidthRequest="20"
+                                               HeightRequest="20"
+                                               Grid.Row="0"
+                                               Grid.Column="3"
+                                               AutomationProperties.IsInAccessibleTree="true"
+                                               AutomationProperties.HelpText="Change Audio Output" />
+                        <local:PlayerImage x:Name="Share"
+                                           Source="ic_share_white_3x.png"
+                                           Style="{StaticResource imageButtonStyle}"
+                                           Grid.Row="0"
+                                           Grid.Column="4"
+                                           WidthRequest="20"
+                                           HeightRequest="20"
+                                           AutomationProperties.IsInAccessibleTree="true"
+                                           AutomationProperties.Name="Share">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnShare" />
                             </Image.GestureRecognizers>
@@ -101,25 +218,46 @@
                 </StackLayout>
             </RelativeLayout>
             <!--</StackLayout>-->
-            <StackLayout Grid.Row="1" Grid.Column="0" Padding="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
+            <StackLayout Grid.Row="1"
+                         Grid.Column="0"
+                         Padding="10"
+                         BackgroundColor="{DynamicResource InputBackgroundColor}">
                 <ContentView Padding="10, 0, 0, 0">
-                    <Label FontSize="Small" Text="Channels" Style="{StaticResource secondaryLabelStyle}" FontAttributes="Bold" />
+                    <Label FontSize="Small"
+                           Text="Channels"
+                           Style="{StaticResource secondaryLabelStyle}"
+                           FontAttributes="Bold" />
                 </ContentView>
-                <ListView x:Name="ChannelsList" BackgroundColor="Transparent" ItemSelected="OnChannel" HasUnevenRows="true">
+                <ListView x:Name="ChannelsList"
+                          BackgroundColor="Transparent"
+                          ItemSelected="OnChannel"
+                          HasUnevenRows="true">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout Padding="10">
-                                    <Label x:Name="lblChannelsListTitle" Text="{Binding title}" FontSize="Medium" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                    <Label x:Name="lblChannelsListTitle"
+                                           Text="{Binding title}"
+                                           FontSize="Medium"
+                                           VerticalOptions="Center"
+                                           Style="{StaticResource playerLabelStyle}"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation" />
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
-            <StackLayout Grid.Row="1" Grid.Column="1">
-                <StackLayout x:Name="SegControlContainer" Padding="20, 20, 20, 0" Spacing="10">
-                    <controls:SegmentedControl x:Name="SegControl" TintColor="White" SelectedSegment="0" SelectedTextColor="{DynamicResource PageBackgroundColor}">
+            <StackLayout Grid.Row="1"
+                         Grid.Column="1">
+                <StackLayout x:Name="SegControlContainer"
+                             Padding="20, 20, 20, 0"
+                             Spacing="10">
+                    <controls:SegmentedControl x:Name="SegControl"
+                                               TintColor="White"
+                                               SelectedSegment="0"
+                                               SelectedTextColor="{DynamicResource PageBackgroundColor}">
                         <controls:SegmentedControl.Children>
                             <controls:SegmentedControlOption Text="Archive" />
                             <controls:SegmentedControlOption Text="Read" />
@@ -129,12 +267,31 @@
                     <!--          <BoxView x:Name="Divider" HeightRequest="1" HorizontalOptions="FillAndExpand" Color="{DynamicResource InputBackgroundColor}" />-->
                     <!--<Frame Style="{StaticResource secondaryFrameStyle}"/>-->
                 </StackLayout>
-                <StackLayout x:Name="Archive" IsVisible="true">
-                    <ListView x:Name="EpisodeList" Style="{StaticResource EpisodeMenuStyle}" HasUnevenRows="true" ItemTapped="OnEpisode" IsPullToRefreshEnabled="true" Refreshing="OnRefresh" CachingStrategy="RecycleElementAndDataTemplate">
+                <StackLayout x:Name="Archive"
+                             IsVisible="true">
+                    <ListView x:Name="EpisodeList"
+                              Style="{StaticResource EpisodeMenuStyle}"
+                              HasUnevenRows="true"
+                              ItemTapped="OnEpisode"
+                              IsPullToRefreshEnabled="true"
+                              Refreshing="OnRefresh"
+                              CachingStrategy="RecycleElementAndDataTemplate">
                         <ListView.Header>
-                            <StackLayout Orientation="Horizontal" x:Name="ArchiveHeader" BackgroundColor="{DynamicResource PageBackgroundColor}">
-                                <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="Start" WidthRequest="140" Style="{StaticResource monthPickerStyle}" Margin="0, 10, 20, 10" AutomationProperties.IsInAccessibleTree="true" />
-                                <Image Source="more_horiz" HorizontalOptions="EndAndExpand" WidthRequest="40" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="Filters">
+                            <StackLayout Orientation="Horizontal"
+                                         x:Name="ArchiveHeader"
+                                         BackgroundColor="{DynamicResource PageBackgroundColor}">
+                                <Picker x:Name="Months"
+                                        SelectedIndexChanged="OnMonthSelected"
+                                        HorizontalOptions="Start"
+                                        WidthRequest="140"
+                                        Style="{StaticResource monthPickerStyle}"
+                                        Margin="0, 10, 20, 10"
+                                        AutomationProperties.IsInAccessibleTree="true" />
+                                <Image Source="more_horiz"
+                                       HorizontalOptions="EndAndExpand"
+                                       WidthRequest="40"
+                                       AutomationProperties.IsInAccessibleTree="true"
+                                       AutomationProperties.Name="Filters">
                                     <Image.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnFilters" />
                                     </Image.GestureRecognizers>
@@ -148,8 +305,13 @@
                             <DataTemplate>
                                 <local:DabViewCell>
                                     <ViewCell.ContextActions>
-                                        <MenuItem Clicked="OnListListened" Text="Completed" CommandParameter="{Binding .}" IsDestructive="true" />
-                                        <MenuItem Clicked="OnListFavorite" Text="Favorite" CommandParameter="{Binding .}" />
+                                        <MenuItem Clicked="OnListListened"
+                                                  Text="Completed"
+                                                  CommandParameter="{Binding .}"
+                                                  IsDestructive="true" />
+                                        <MenuItem Clicked="OnListFavorite"
+                                                  Text="Favorite"
+                                                  CommandParameter="{Binding .}" />
                                     </ViewCell.ContextActions>
                                     <Grid Padding="20,10,20,10">
                                         <Grid.RowDefinitions>
@@ -163,46 +325,140 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <BoxView Color="Transparent" IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" />
-                                        <Image Source="ic_done_listened_3x.png" IsVisible="{Binding listenedToVisible}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center" />
-                                        <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true" />
-                                        <Image IsVisible="{Binding favoriteVisible}" Source="ic_star_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="2" />
-                                        <Image IsVisible="{Binding hasJournalVisible}" Source="pencil_white.png" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Grid.RowSpan="2" Grid.Column="3" />
-                                        <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation" />
-                                        <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.RowSpan="2" Grid.Column="4" />
+                                        <BoxView Color="Transparent"
+                                                 IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}"
+                                                 Grid.RowSpan="2"
+                                                 Grid.Column="0"
+                                                 WidthRequest="20"
+                                                 HeightRequest="20"
+                                                 VerticalOptions="Center" />
+                                        <Image Source="ic_done_listened_3x.png"
+                                               IsVisible="{Binding listenedToVisible}"
+                                               Grid.RowSpan="2"
+                                               Grid.Column="0"
+                                               WidthRequest="20"
+                                               HeightRequest="20"
+                                               VerticalOptions="Center" />
+                                        <local:DabLabel Text="{Binding title}"
+                                                        FontSize="Medium"
+                                                        HorizontalOptions="Start"
+                                                        Grid.Row="0"
+                                                        Grid.Column="1"
+                                                        Style="{StaticResource playerLabelStyle}"
+                                                        FontAttributes="Bold"
+                                                        IsTitle="true" />
+                                        <Image IsVisible="{Binding favoriteVisible}"
+                                               Source="ic_star_white.png"
+                                               Opacity=".5"
+                                               HeightRequest="15"
+                                               Aspect="AspectFit"
+                                               Grid.RowSpan="2"
+                                               Grid.Column="2" />
+                                        <Image IsVisible="{Binding hasJournalVisible}"
+                                               Source="pencil_white.png"
+                                               Opacity=".5"
+                                               HeightRequest="15"
+                                               Aspect="AspectFit"
+                                               Grid.RowSpan="2"
+                                               Grid.Column="3" />
+                                        <local:DabLabel Text="{Binding description}"
+                                                        FontSize="Micro"
+                                                        Grid.Row="1"
+                                                        Grid.Column="1"
+                                                        Style="{StaticResource secondaryLabelStyle}"
+                                                        LineBreakMode="TailTruncation" />
+                                        <local:CircularProgressControl Progress="{Binding downloadProgress}"
+                                                                       ProgressVisible="{Binding progressVisible}"
+                                                                       DownloadVisible="{Binding downloadVisible}"
+                                                                       HeightRequest="15"
+                                                                       Grid.RowSpan="2"
+                                                                       Grid.Column="4" />
                                     </Grid>
                                 </local:DabViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackLayout>
-                <StackLayout x:Name="Read" IsVisible="false" Padding="20, 20, 20, 20" VerticalOptions="StartAndExpand" BackgroundColor="{DynamicResource ReadBackgroundColor}">
+                <StackLayout x:Name="Read"
+                             IsVisible="false"
+                             Padding="20, 20, 20, 20"
+                             VerticalOptions="StartAndExpand"
+                             BackgroundColor="{DynamicResource ReadBackgroundColor}">
                     <ScrollView>
                         <StackLayout>
-                            <Label x:Name="ReadTitle" FontSize="Medium" Style="{StaticResource secondaryLabelStyle}" />
-                            <Label x:Name="ReadExcerpts" FontSize="Small" Style="{StaticResource secondaryLabelStyle}" />
-                            <Label x:Name="AltWarning" IsVisible="false" FontSize="Micro" Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
-                            <local:HtmlLabel x:Name="ReadText" VerticalOptions="FillAndExpand" />
+                            <Label x:Name="ReadTitle"
+                                   FontSize="Medium"
+                                   Style="{StaticResource secondaryLabelStyle}" />
+                            <Label x:Name="ReadExcerpts"
+                                   FontSize="Small"
+                                   Style="{StaticResource secondaryLabelStyle}" />
+                            <Label x:Name="AltWarning"
+                                   IsVisible="false"
+                                   FontSize="Micro"
+                                   Text="Due to copyright restrictions, the passage displayed here may be different than the passage being read." />
+                            <local:HtmlLabel x:Name="ReadText"
+                                             VerticalOptions="FillAndExpand" />
                         </StackLayout>
                     </ScrollView>
                 </StackLayout>
-                <StackLayout x:Name="LoginJournal" IsVisible="false" VerticalOptions="StartAndExpand" Padding="20" Spacing="20">
-                    <Label Text="You need to be logged in to use this feature." FontSize="Large" FontAttributes="Bold" />
-                    <Label Text="Create an account and join us each day as we read through the bible every year." FontSize="Medium" />
-                    <Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}" />
+                <StackLayout x:Name="LoginJournal"
+                             IsVisible="false"
+                             VerticalOptions="StartAndExpand"
+                             Padding="20"
+                             Spacing="20">
+                    <Label Text="You need to be logged in to use this feature."
+                           FontSize="Large"
+                           FontAttributes="Bold" />
+                    <Label Text="Create an account and join us each day as we read through the bible every year."
+                           FontSize="Medium" />
+                    <Button x:Name="Login"
+                            Text="Log in"
+                            Clicked="OnLogin"
+                            Style="{StaticResource highlightedButtonStyle}" />
                 </StackLayout>
-                <StackLayout x:Name="Journal" IsVisible="false" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="20, 0, 20, 20">
+                <StackLayout x:Name="Journal"
+                             IsVisible="false"
+                             VerticalOptions="FillAndExpand"
+                             HorizontalOptions="FillAndExpand"
+                             Padding="20, 0, 20, 20">
                     <StackLayout Orientation="Horizontal">
-                        <Label x:Name="JournalTitle" FontSize="Micro" />
-                        <Label x:Name="AboutFormat" Text="About Formatted Text" FontSize="Micro" TextColor="{StaticResource InputBackgroundColor}" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand" />
+                        <Label x:Name="JournalTitle"
+                               FontSize="Micro" />
+                        <Label x:Name="AboutFormat"
+                               Text="About Formatted Text"
+                               FontSize="Micro"
+                               TextColor="{StaticResource InputBackgroundColor}"
+                               HorizontalTextAlignment="End"
+                               HorizontalOptions="EndAndExpand" />
                     </StackLayout>
-                    <local:DarkKeyboardEditor x:Name="JournalContent" Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}" HeightRequest="650" TextChanged="OnJournalChanged" Focused="OnEdit" Unfocused="OffEdit" />
-                    <Label x:Name="JournalWarning" Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect." Style="{StaticResource warningLabelStyle}" IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}">
+                    <!--<local:DarkKeyboardEditor x:Name="JournalContent"
+                                              Text="{Binding Source={x:Static local:JournalTracker.Current}, Path=Content}"
+                                              HeightRequest="650"
+                                              TextChanged="OnJournalChanged"
+                                              Focused="OnEdit"
+                                              Unfocused="OffEdit" />
+                    <Label x:Name="JournalWarning"
+                           Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
+                           Style="{StaticResource warningLabelStyle}"
+                           IsVisible="{Binding Source={x:Static local:JournalTracker.Current}, Path=IsConnected, Converter={StaticResource inverser}}">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnReconnect" />
+                        </Label.GestureRecognizers>
+                    </Label>-->
+                    <local:DarkKeyboardEditor x:Name="JournalContent"
+                                              HeightRequest="650"
+                                              TextChanged="OnJournalChanged"
+                                              Focused="OnEdit"
+                                              Unfocused="OffEdit" />
+                    <Label x:Name="JournalWarning"
+                           Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
+                           Style="{StaticResource warningLabelStyle}">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnReconnect" />
                         </Label.GestureRecognizers>
                     </Label>
-                    <BoxView x:Name="spacer" Style="{StaticResource SpacerStyle}" />
+                    <BoxView x:Name="spacer"
+                             Style="{StaticResource SpacerStyle}" />
                 </StackLayout>
             </StackLayout>
         </Grid>

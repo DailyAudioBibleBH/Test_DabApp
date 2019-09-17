@@ -47,7 +47,7 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
             });
-            Device.StartTimer(TimeSpan.FromMinutes(5), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 TimedActions();
                 return true;
@@ -71,7 +71,8 @@ namespace DABApp
             {
                 if (chosen.id != GlobalResources.CurrentEpisodeId)
                 {
-                    JournalTracker.Current.Content = null;
+                    //TODO: Replace this with sync
+                    //JournalTracker.Current.Content = null;
                 }
                 //Push the new player page
                 await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));

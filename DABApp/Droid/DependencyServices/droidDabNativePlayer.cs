@@ -201,7 +201,9 @@ namespace DABApp.Droid
 
         void DeletePlayer()
         {
-            Stop();
+            Pause();
+            //Replaced stop with pause to help 2 players work side by side.
+            //Stop();
 
             if (player != null)
             {
@@ -237,9 +239,22 @@ namespace DABApp.Droid
 
             if (IsPlaying)
             {
+                //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
                 Pause();
                 Seek(0);
             }
+            else if (player.CurrentPosition >= player.Duration)
+            {
+                //Start over from the beginning if at the end of the file
+                player.Pause();
+                Seek(0);
+            }
+            else
+            {
+                //Play from where we're at
+         
+            }
+
 
             player.Start();
         }
@@ -340,6 +355,7 @@ namespace DABApp.Droid
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
         DroidDabNativePlayer droid = new DroidDabNativePlayer();
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
