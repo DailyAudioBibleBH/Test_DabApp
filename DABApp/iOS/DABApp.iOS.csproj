@@ -344,6 +344,7 @@
     <Folder Include="Assets.xcassets\airplay.imageset\" />
     <Folder Include="Assets.xcassets\down_arrow.imageset\" />
     <Folder Include="Assets.xcassets\ic_play_circle_outline_white.png.imageset\" />
+    <Folder Include="DabSockets\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -397,6 +398,7 @@
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DependencyServices\iosDabNativePlayer.cs" />
+    <Compile Include="DabSockets\iosDabSocket.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

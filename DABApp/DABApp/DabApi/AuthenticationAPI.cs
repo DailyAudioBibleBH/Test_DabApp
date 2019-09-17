@@ -91,7 +91,8 @@ namespace DABApp
                         //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
                         GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
                     }
-                    JournalTracker.Current.Connect(token.value);
+                    //TODO: Replacew this with sync
+                    //JournalTracker.Current.Connect(token.value);
                     if (!string.IsNullOrEmpty(token.user_avatar)) GuestStatus.Current.AvatarUrl = token.user_avatar;
                     return "Success";
                 }
@@ -112,7 +113,7 @@ namespace DABApp
 
         public static bool CheckToken(int days = 0)//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
-             var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+            var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
 
             if (expiration == null)
             {
@@ -124,29 +125,31 @@ namespace DABApp
             {
                 return false;
             }
-            var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-            if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-            {
-                JournalTracker.Current.Connect(token.Value);
-            }
+            //TODO: Replacew this with sync
+            //var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
+            //if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
+            //{
+            //    JournalTracker.Current.Connect(token.Value);
+            //}
             return true;
         }
 
-        public static void ConnectJournal()//Connecting Journal Tracker when user logs in.  Done here because of access to the database Token setting.
-        {
-            try
-            {
-                if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-                {
-                    var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                    JournalTracker.Current.Connect(token.Value);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception caught in AuthenticationAPI.ConnectJournal(): {e.Message}");
-            }
-        }
+        //TODO: Replacew this with sync
+        //public static void ConnectJournal()//Connecting Journal Tracker when user logs in.  Done here because of access to the database Token setting.
+        //{
+        //    try
+        //    {
+        //        if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
+        //        {
+        //            var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
+        //            JournalTracker.Current.Connect(token.Value);
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Debug.WriteLine($"Exception caught in AuthenticationAPI.ConnectJournal(): {e.Message}");
+        //    }
+        //}
 
         public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.
         {
@@ -188,7 +191,8 @@ namespace DABApp
                     //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
                     GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
                 }
-                JournalTracker.Current.Connect(TokenSettings.Value);
+                //TODO: Replacew this with sync
+                //JournalTracker.Current.Connect(TokenSettings.Value);
                 return "";
             }
             catch (Exception e)
@@ -273,7 +277,8 @@ namespace DABApp
                 ExpirationSettings.Value = token.expires;
                 await adb.UpdateAsync(TokenSettings);
                 await adb.UpdateAsync(ExpirationSettings);
-                JournalTracker.Current.Connect(token.value);
+                //TODO: Replace this with sync
+                //JournalTracker.Current.Connect(token.value);
                 return true;
             }
             catch (Exception e)
@@ -676,7 +681,11 @@ namespace DABApp
 
         public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
         {
-            if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            //TODO: Replace this with sync
+
+
+            if (!GuestStatus.Current.IsGuestLogin)
+            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
 
                 if (notPosting)
@@ -727,7 +736,9 @@ namespace DABApp
 
         public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
-            if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            if (!GuestStatus.Current.IsGuestLogin)
+                //TODO: Journal?
+                //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
             {
                 if (notGetting)
                 {
@@ -814,8 +825,8 @@ namespace DABApp
                 //}
                 //else
                 //{
-                if(saved != null)
-                { 
+                if (saved != null)
+                {
                     if (!(saved.stop_time == episode.stop_time && saved.is_favorite == episode.is_favorite && saved.is_listened_to == episode.is_listened_to && saved.has_journal == episode.has_journal))
                     {
                         saved.stop_time = episode.stop_time;

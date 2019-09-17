@@ -63,7 +63,8 @@ namespace DABApp.Droid
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
-            DependencyService.Register<SocketService>();
+            //TODO: Replace for journal?
+            //DependencyService.Register<SocketService>();
             DependencyService.Register<FileManagement>();
             DependencyService.Register<StripeApiManagement>();
             DependencyService.Register<RivetsService>();

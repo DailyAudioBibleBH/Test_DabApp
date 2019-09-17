@@ -104,17 +104,18 @@ namespace DABApp
 
 
             //Journal area
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                //Join the journal channel
-                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
-            Journal.BindingContext = episode;
-            JournalTracker.Current.socket.Disconnect += OnDisconnect;
-            JournalTracker.Current.socket.Reconnecting += OnReconnecting;
-            JournalTracker.Current.socket.Room_Error += OnRoom_Error;
-            JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
-            JournalTracker.Current.socket.Join_Error += OnJoin_Error;
+            //TODO: Replace for journal?
+            //if (!GuestStatus.Current.IsGuestLogin)
+            //{
+            //    //Join the journal channel
+            //    JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
+            //Journal.BindingContext = episode;
+            //JournalTracker.Current.socket.Disconnect += OnDisconnect;
+            //JournalTracker.Current.socket.Reconnecting += OnReconnecting;
+            //JournalTracker.Current.socket.Room_Error += OnRoom_Error;
+            //JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
+            //JournalTracker.Current.socket.Join_Error += OnJoin_Error;
 
             //Keyboard events on iOS for Journal
             if (Device.RuntimePlatform == "iOS")
@@ -205,8 +206,10 @@ namespace DABApp
             activityHolder.IsVisible = true;
             var newEp = (EpisodeViewModel)e.Item;
 
-            //Join the journal channel
-            JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
+
+            ////TODO: Replace for journal?
+            ////Join the journal channel
+            //JournalTracker.Current.Join(newEp.Episode.PubDate.ToString("yyyy-MM-dd"));
 
             // Make sure we have a file to play
             if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
@@ -218,7 +221,8 @@ namespace DABApp
 
                 if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
-                    JournalTracker.Current.Content = null;
+                    //TODO: Replace for journal?
+                    //JournalTracker.Current.Content = null;
                     SetVisibility(false);
                 }
                 else
@@ -290,7 +294,9 @@ namespace DABApp
                         await SetReading();
 
                         //Load the journal for the episode
-                        JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
+                        //TODO: Replace for journal?
+                        //JournalTracker.Current.Join(Episodes.First().PubDate.ToString("yyyy-MM-dd"));
+
 
                     }
                     else
@@ -384,10 +390,11 @@ namespace DABApp
                     Journal.IsVisible = true;
                 }
             }
-            if (episode != null && !GuestStatus.Current.IsGuestLogin)
-            {
-                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
+            ////TODO: Replace for journal?
+            //if (episode != null && !GuestStatus.Current.IsGuestLogin)
+            //{
+            //    JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
             if (Initializer.IsVisible)
             {
                 Initializer.Focus();
@@ -481,10 +488,11 @@ namespace DABApp
             BindControls(true, true);
 
             //Set up journal
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
+            ////TODO: Replace for journal?
+            //if (!GuestStatus.Current.IsGuestLogin)
+            //{
+            //    JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
 
             //Start playing if they pushed the play button
             if (o != null)
@@ -564,106 +572,115 @@ namespace DABApp
         }
 
 
-
+        //TODO: Replace for journal?
         void OnJournalChanged(object o, EventArgs e)
         {
-            if (JournalContent.IsFocused)
-            {
-                JournalTracker.Current.Update(episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-            }
+            //if (JournalContent.IsFocused)
+            //{
+            //    JournalTracker.Current.Update(episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+            //}
         }
 
+        //TODO: Replace for journal?
         void OnDisconnect(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
-            //});
-            Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
+            ////});
+            //Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
         }
 
+        //TODO: Replace for journal?
         async void OnReconnect(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
+            ////});
+            //JournalWarning.IsEnabled = false;
+            //AuthenticationAPI.ConnectJournal();
+            //Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
+            //await Task.Delay(1000);
+            //if (!JournalTracker.Current.IsConnected)
             //{
-            //	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-            //});
-            JournalWarning.IsEnabled = false;
-            AuthenticationAPI.ConnectJournal();
-            Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
-            await Task.Delay(1000);
-            if (!JournalTracker.Current.IsConnected)
-            {
-                await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
-            }
-            JournalWarning.IsEnabled = true;
+            //    await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
+            //}
+            //JournalWarning.IsEnabled = true;
         }
 
+        //TODO: Replace for journal?
         void OnReconnecting(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
-            //});
-            Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
+            ////});
+            //Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
         }
 
+        //TODO: Replace for journal?
         void OnRoom_Error(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
-            //});
-            Debug.WriteLine($"Room Error: {o.ToString()}");
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
+            ////});
+            //Debug.WriteLine($"Room Error: {o.ToString()}");
         }
 
+        //TODO: Replace for journal?
         void OnAuth_Error(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
-            //});
-            Debug.WriteLine($"Auth Error: {o.ToString()}");
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
+            ////});
+            //Debug.WriteLine($"Auth Error: {o.ToString()}");
         }
 
+        //TODO: Replace for journal?
         void OnJoin_Error(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
-            //});
-            Debug.WriteLine($"Join error: {o.ToString()}");
+            ////Device.BeginInvokeOnMainThread(() =>
+            ////{
+            ////	DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
+            ////});
+            //Debug.WriteLine($"Join error: {o.ToString()}");
         }
 
+        //TODO: Replace for journal?
         void OnEdit(object o, EventArgs e)
         {
-            JournalTracker.Current.socket.ExternalUpdate = false;
+            //JournalTracker.Current.socket.ExternalUpdate = false;
         }
 
+        //TODO: Replace for journal?
         void OffEdit(object o, EventArgs e)
         {
-            JournalTracker.Current.socket.ExternalUpdate = true;
-            if (!JournalTracker.Current.socket.IsJoined)
-            {
-                JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
+            //JournalTracker.Current.socket.ExternalUpdate = true;
+            //if (!JournalTracker.Current.socket.IsJoined)
+            //{
+            //    JournalTracker.Current.Join(episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
         }
 
+        //TODO: Replace for journal?
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
-            if (JournalTracker.Current.Open && original != 0)
-            {
-                spacer.HeightRequest = e.Visible ? e.Height : 0;
-                if (e.IsExternalKeyboard)
-                {
-                    JournalContent.HeightRequest = original;
-                }
-                else
-                {
-                    JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
-                }
-                //lastKeyboardStatus = e.IsExternalKeyboard;
-            }
+            //if (JournalTracker.Current.Open && original != 0)
+            //{
+            //    spacer.HeightRequest = e.Visible ? e.Height : 0;
+            //    if (e.IsExternalKeyboard)
+            //    {
+            //        JournalContent.HeightRequest = original;
+            //    }
+            //    else
+            //    {
+            //        JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
+            //    }
+            //    //lastKeyboardStatus = e.IsExternalKeyboard;
+            //}
         }
 
         async void OnPlaybackStopped(object o, EventArgs e)

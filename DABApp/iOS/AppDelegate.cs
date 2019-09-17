@@ -52,7 +52,8 @@ namespace DABApp.iOS
 
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.DependencyService.Register<ShareIntent>();
-            DependencyService.Register<SocketService>();
+            //TODO: Replace for journal?
+            //DependencyService.Register<SocketService>();
             DependencyService.Register<KeyboardHelper>();
             DependencyService.Register<RecordService>();
             DependencyService.Register<AnalyticsService>();
