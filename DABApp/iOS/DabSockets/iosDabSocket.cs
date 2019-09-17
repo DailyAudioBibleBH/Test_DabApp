@@ -78,7 +78,7 @@ namespace DABApp.iOS.DabSockets
             //A requested event has fired - notify the calling app so it can handle it.
 
             //Notify the listener
-            DabSocketEvent?.Invoke(this, new DabSocketEventHandler(s, data));
+            DabSocketEvent?.Invoke(this, new DabSocketEventHandler(s, data.ToString()));
 
             return data;
         }
@@ -88,7 +88,7 @@ namespace DABApp.iOS.DabSockets
             //Socket is reconnecting
 
             //Notify the listener
-            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnecting", data));
+            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnecting", data.ToString()));
 
             //Return
             return data;
@@ -100,7 +100,7 @@ namespace DABApp.iOS.DabSockets
             isConnected = true;
 
             //Notify the listener
-            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnected", data));
+            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnected", data.ToString()));
 
             //Return
             return data;
@@ -112,7 +112,7 @@ namespace DABApp.iOS.DabSockets
             isConnected = false;
 
             //Notify the listener
-            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("disconnected", data));
+            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("disconnected", data.ToString()));
 
             //Return
             return data;

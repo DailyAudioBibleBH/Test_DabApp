@@ -1,19 +1,22 @@
 ﻿using System;
 namespace DABApp.DabSockets
 {
-    public class DabJournalSocketHelper
+    //This class helps build JSON objects for passing back and forth to the journal socket
+
+    public class DabJournalObject
     {
         public string html { get; set; }
         public string date { get; set; }
         public string token { get; set; }
+        public string content { get; set; }
 
-        public DabJournalSocketHelper(string Date, string Token)
+        public DabJournalObject(string Date, string Token)
         {
             date = Date;
             token = Token;
         }
 
-        public DabJournalSocketHelper(string Html, string Date, string Token)
+        public DabJournalObject(string Html, string Date, string Token)
         {
             html = Html;
             date = Date;

@@ -5,12 +5,12 @@
     {
 
         public string eventName;
-        public object data;
+        public string data;
 
         public DabSocketEventHandler()
         { }
 
-        public DabSocketEventHandler(string EventName, object Data)
+        public DabSocketEventHandler(string EventName, string Data)
         {
             //Init with values
             eventName = EventName;

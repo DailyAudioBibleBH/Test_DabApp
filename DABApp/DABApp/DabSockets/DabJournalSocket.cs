@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
 
 namespace DABApp.DabSockets
 {
-    public class DabJournalSocket: INotifyPropertyChanged
+    public class DabJournalSocket : INotifyPropertyChanged
     {
         IDabSocket sock;
         string currentContent;
@@ -34,7 +35,8 @@ namespace DABApp.DabSockets
             if (GlobalResources.TestMode)
             {
                 uri = config.app_settings.stage_journal_link;
-            } else
+            }
+            else
             {
                 uri = config.app_settings.prod_journal_link;
             }
@@ -56,16 +58,18 @@ namespace DABApp.DabSockets
             sock.Connect();
 
             return true;
-            
+
         }
 
-        public bool UpdateJournal (DateTime date, string content)
+        public bool UpdateJournal(DateTime date, string content)
         {
+            //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
-            var help = new DabJournalSocketHelper(content, room, token);
-            var data = JObject.FromObject(help);
-            sock.Emit("key", data);
+            var data = new DabJournalObject(content, room, token);
+            var json = JObject.FromObject(data);
+            //Send data to the socket
+            sock.Emit("key", json);
 
             return true;
 
@@ -73,14 +77,14 @@ namespace DABApp.DabSockets
 
         public bool JoinRoom(DateTime date)
         {
-
+            //Joins a room for a specific date
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
-
-            var help = new DabJournalSocketHelper(room, token);
-            var data = JObject.FromObject(help);
-            sock.Emit("join", data);
-
+            var data = new DabJournalObject(room, token);
+            var json = JObject.FromObject(data);
+            //Send data to the socket
+            sock.Emit("join", json);
+            //Store the date we're using
             currentDate = date;
 
             return true;
@@ -108,7 +112,7 @@ namespace DABApp.DabSockets
                 currentContent = value;
                 UpdateJournal(currentDate, value);
                 OnPropertyChanged("Content");
-                
+
             }
         }
 
@@ -122,7 +126,7 @@ namespace DABApp.DabSockets
 
             //Take action on the event
             switch (e.eventName.ToLower())
-                {
+            {
                 case "disconnected": //Socket disconnected
                     break;
                 case "connected": //Socket connected
@@ -144,6 +148,7 @@ namespace DABApp.DabSockets
                     Sock_ErrorOccured(e.eventName, e.data);
                     break;
                 case "update": //update happened externally
+                    DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(e.data);
                     currentContent = e.data.ToString();
                     OnPropertyChanged("Content");
                     break;
