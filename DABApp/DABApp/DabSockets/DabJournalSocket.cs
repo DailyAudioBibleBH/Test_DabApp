@@ -149,7 +149,7 @@ namespace DABApp.DabSockets
                     break;
                 case "update": //update happened externally
                     DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(e.data);
-                    currentContent = e.data.ToString();
+                    currentContent = data.content;
                     OnPropertyChanged("Content");
                     break;
                 default:
