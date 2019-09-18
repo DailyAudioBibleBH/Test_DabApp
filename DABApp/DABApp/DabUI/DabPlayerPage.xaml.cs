@@ -349,6 +349,8 @@ namespace DABApp
                 JournalTitle.SetBinding(Label.TextProperty, "title");
                 JournalContent.BindingContext = journal;
                 JournalContent.SetBinding(Editor.TextProperty, "Content");
+                JournalWarning.BindingContext = journal;
+                JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
             }
 
             if (BindToPlayer)
