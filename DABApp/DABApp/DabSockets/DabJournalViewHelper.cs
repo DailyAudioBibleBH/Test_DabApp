@@ -19,12 +19,12 @@ namespace DABApp.DabSockets
             Current = new DabJournalViewHelper();
             if (Device.RuntimePlatform == Device.iOS)
             {
-                Current.EntryHeight = DeviceInfo.Hardware.ScreenHeight * .6;
+                Current.EntryHeight = DeviceInfo.Hardware.ScreenHeight * .5;
             }
             else
             {
                 var modified = DeviceInfo.Hardware.ScreenHeight / GlobalResources.Instance.AndroidDensity;
-                Current.EntryHeight = modified * .6;
+                Current.EntryHeight = modified * .5;
             }
         }
 

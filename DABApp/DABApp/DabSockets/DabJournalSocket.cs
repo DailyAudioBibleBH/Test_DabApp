@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Android.Content;
+using Android.Views.InputMethods;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
@@ -57,7 +59,7 @@ namespace DABApp.DabSockets
 
             //Connect the socket
             sock.Connect();
-
+           
             return true;
 
         }
@@ -107,7 +109,6 @@ namespace DABApp.DabSockets
         {
             get
             {
-
                 return sock == null ? true : !sock.IsConnected;
             }
         }

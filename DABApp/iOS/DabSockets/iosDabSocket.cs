@@ -69,9 +69,6 @@ namespace DABApp.iOS.DabSockets
                 isInitialized = false;
                 isConnected = false;
             }
-
-            
-
         }
 
         private object OnEvent(string s, object data)

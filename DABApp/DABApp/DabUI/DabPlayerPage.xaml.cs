@@ -349,6 +349,7 @@ namespace DABApp
                 JournalTitle.SetBinding(Label.TextProperty, "title");
                 JournalContent.BindingContext = journal;
                 JournalContent.SetBinding(Editor.TextProperty, "Content");
+                JournalContent.SetBinding(Editor.IsEnabledProperty, "IsConnected");
                 JournalWarning.BindingContext = journal;
                 JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
             }
@@ -507,7 +508,7 @@ namespace DABApp
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
             //TODO: Replace for journal?
-            //if (JournalTracker.Current.Open)
+            //if (DabJournalService.Current.Open)
             //{
             //    spacer.HeightRequest = e.Visible ? e.Height : 0;
             //    if (e.IsExternalKeyboard)
