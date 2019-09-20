@@ -32,7 +32,10 @@ namespace DABApp
             Episode = new EpisodeViewModel(episode);
             _episode = episode;
 
-            
+            //Prepare an empty journal object (needed early for binding purposes)
+            journal = new DabJournalService();
+
+
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player
@@ -82,7 +85,6 @@ namespace DABApp
             }
 
             //Connect to the journal and set up events
-            journal = new DabJournalService();
             journal.InitAndConnect();
             journal.JoinRoom(episode.PubDate);
 
@@ -347,6 +349,8 @@ namespace DABApp
                 JournalTitle.SetBinding(Label.TextProperty, "title");
                 JournalContent.BindingContext = journal;
                 JournalContent.SetBinding(Editor.TextProperty, "Content");
+                JournalWarning.BindingContext = journal;
+                JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
             }
 
             if (BindToPlayer)

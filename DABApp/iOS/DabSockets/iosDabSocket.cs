@@ -50,6 +50,7 @@ namespace DABApp.iOS.DabSockets
                 isInitialized = true;
 
                 //Set up standard events
+                sock.On("connect",data => OnConnect(data));
                 sock.On("disconnect", data => OnDisconnect(data));
                 sock.On("reconnect", data => OnReconnect(data));
                 sock.On("reconnecting", data => OnReconnecting(data));
@@ -101,6 +102,18 @@ namespace DABApp.iOS.DabSockets
 
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnected", data.ToString()));
+
+            //Return
+            return data;
+        }
+
+        private object OnConnect(object data)
+        {
+            //Socket has connected (1st time)
+            isConnected = true;
+
+            //Notify the listener
+            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
 
             //Return
             return data;

@@ -48,11 +48,12 @@ namespace DABApp.DabSockets
             events.Add("auth_error");
             events.Add("update");
 
+            //Register for notifications from the socket
+            sock.DabSocketEvent += Sock_DabSocketEvent;
+
             //Init the socket
             sock.Init(uri, events);
 
-            //Register for notifications from the socket
-            sock.DabSocketEvent += Sock_DabSocketEvent;
 
             //Connect the socket
             sock.Connect();
@@ -62,7 +63,7 @@ namespace DABApp.DabSockets
         }
 
         public bool UpdateJournal(DateTime date, string content)
-        {
+         {
             //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
@@ -97,7 +98,17 @@ namespace DABApp.DabSockets
         {
             get
             {
-                return sock.IsConnected;
+                return sock == null? false : sock.IsConnected;
+            }
+        }
+
+        //Opposite of IsConnected used for binding reasons.
+        public bool IsDisconnected
+        {
+            get
+            {
+
+                return sock == null ? true : !sock.IsConnected;
             }
         }
 
@@ -128,12 +139,13 @@ namespace DABApp.DabSockets
             switch (e.eventName.ToLower())
             {
                 case "disconnected": //Socket disconnected
+                    Sock_Disconnected(e.data);
                     break;
                 case "connected": //Socket connected
                     Sock_Connected(e.data);
                     break;
                 case "reconnecting": //Socket reconnecting
-                    //Do nothing for now
+                    //do nothing for now
                     break;
                 case "reconnected": //Socket reconnected
                     Sock_Connected(e.data);
@@ -148,13 +160,29 @@ namespace DABApp.DabSockets
                     Sock_ErrorOccured(e.eventName, e.data);
                     break;
                 case "update": //update happened externally
-                    DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(e.data);
-                    currentContent = e.data.ToString();
-                    OnPropertyChanged("Content");
+                    Sock_ExternalUpdateOccured(e.eventName, e.data);
                     break;
                 default:
                     break;
             }
+        }
+
+        private void Sock_ExternalUpdateOccured(string eventName, string json)
+        {
+            DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(json);
+            currentContent = data.content;
+            OnPropertyChanged("Content");
+            OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
+        }
+
+        private void Sock_Disconnected(string data)
+        {
+            //The socket got disconnected.
+
+            //Notify UI
+            OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
         }
 
         private void Sock_ErrorOccured(string eventName, object data)
@@ -168,6 +196,7 @@ namespace DABApp.DabSockets
             }
 
             OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
         }
 
         private void Sock_Connected(object data)
@@ -176,10 +205,11 @@ namespace DABApp.DabSockets
 
             //Notify UI
             OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
         }
 
         /* Events to handle Binding */
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        public virtual void OnPropertyChanged(string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null)

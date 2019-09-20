@@ -10,6 +10,11 @@ namespace DABApp.DabSockets
         public string token { get; set; }
         public string content { get; set; }
 
+        public DabJournalObject()
+        {
+
+        }
+
         public DabJournalObject(string Date, string Token)
         {
             date = Date;
