@@ -63,7 +63,7 @@ namespace DABApp.DabSockets
         }
 
         public bool UpdateJournal(DateTime date, string content)
-        {
+         {
             //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
@@ -209,7 +209,7 @@ namespace DABApp.DabSockets
         }
 
         /* Events to handle Binding */
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        public virtual void OnPropertyChanged(string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null)
