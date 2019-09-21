@@ -189,16 +189,6 @@ namespace DABApp.DabSockets
 
             currentContent = content;
 
-
-            //currentContent = new Converter().Convert(data.content);
-            //currentContent = currentContent.Replace("\n", "");
-            ////Replace extra \n\n with \n
-            //currentContent = currentContent.Replace("\n\n", "\n");
-            ////trim off a leading \n
-            //if (currentContent.StartsWith("\n"))
-            //{
-            //    currentContent = currentContent.Substring(1);
-            //}
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
