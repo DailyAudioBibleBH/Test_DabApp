@@ -448,6 +448,7 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
+            
             //Device.BeginInvokeOnMainThread(() =>
             //{
             //  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");

@@ -7,6 +7,7 @@ using Android.Views.InputMethods;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
+using Html2Markdown;
 
 namespace DABApp.DabSockets
 {
@@ -122,6 +123,7 @@ namespace DABApp.DabSockets
             set
             {
                 currentContent = value;
+
                 UpdateJournal(currentDate, value);
                 OnPropertyChanged("Content");
 
@@ -171,7 +173,16 @@ namespace DABApp.DabSockets
         private void Sock_ExternalUpdateOccured(string eventName, string json)
         {
             DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(json);
-            currentContent = data.content;
+            currentContent = new Converter().Convert(data.content);
+            currentContent = currentContent.Replace("\n", "");
+            //Replace extra \n\n with \n
+            currentContent = currentContent.Replace("\n\n", "\n");
+            //trim off a leading \n
+            if (currentContent.StartsWith("\n"))
+            {
+                currentContent = currentContent.Substring(1);
+            }
+            data.content = currentContent;
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");

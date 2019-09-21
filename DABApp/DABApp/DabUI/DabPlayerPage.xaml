@@ -270,7 +270,7 @@
                            VerticalOptions="EndAndExpand"
                            AutomationProperties.IsInAccessibleTree="true">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnReconnect" />
+                            <TapGestureRecognizer Tapped="OnReconnect"/>
                         </Label.GestureRecognizers>
                     </Label>
                     <BoxView x:Name="spacer"
