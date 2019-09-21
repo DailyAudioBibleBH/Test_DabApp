@@ -18,6 +18,7 @@ namespace DABApp.DabSockets
         DateTime currentDate;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public string content { get; set;}
 
         //Create a journalling socket basec on an instance of a generic socket
         public DabJournalService()
@@ -173,16 +174,31 @@ namespace DABApp.DabSockets
         private void Sock_ExternalUpdateOccured(string eventName, string json)
         {
             DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(json);
-            currentContent = new Converter().Convert(data.content);
-            currentContent = currentContent.Replace("\n", "");
+            
+            string html = data.content;
+            //get rid of line breaks in the HTML
+            html = html.Replace("\n", "");
+            content = new Converter().Convert(html);
             //Replace extra \n\n with \n
-            currentContent = currentContent.Replace("\n\n", "\n");
+            content = content.Replace("\n\n", "\n");
             //trim off a leading \n
-            if (currentContent.StartsWith("\n"))
+            if (content.StartsWith("\n"))
             {
-                currentContent = currentContent.Substring(1);
+                content = content.Substring(1);
             }
-            data.content = currentContent;
+
+            currentContent = content;
+
+
+            //currentContent = new Converter().Convert(data.content);
+            //currentContent = currentContent.Replace("\n", "");
+            ////Replace extra \n\n with \n
+            //currentContent = currentContent.Replace("\n\n", "\n");
+            ////trim off a leading \n
+            //if (currentContent.StartsWith("\n"))
+            //{
+            //    currentContent = currentContent.Substring(1);
+            //}
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
