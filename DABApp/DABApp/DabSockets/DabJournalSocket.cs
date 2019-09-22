@@ -195,7 +195,7 @@ namespace DABApp.DabSockets
         }
 
         private void Sock_Disconnected(string data)
-        {
+         {
             //The socket got disconnected.
 
             //Notify UI
