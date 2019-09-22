@@ -289,9 +289,9 @@ namespace DABApp
             {
                 //TODO: Put this back in for journal
                 //Set up padding for the journal tab with the keyboard
-                //int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
-                //JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-                //original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+                int paddingMulti = journal.IsConnected ? 4 : 6;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+                original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
 
             if (LoginJournal.IsVisible || Journal.IsVisible)
@@ -509,18 +509,18 @@ namespace DABApp
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
             //TODO: Replace for journal?
-            //if (DabJournalService.Current.Open)
-            //{
-            //    spacer.HeightRequest = e.Visible ? e.Height : 0;
-            //    if (e.IsExternalKeyboard)
-            //    {
-            //        JournalContent.HeightRequest = original;
-            //    }
-            //    else
-            //    {
-            //        JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
-            //    }
-            //}
+            if (journal.IsConnected)
+            {
+                spacer.HeightRequest = e.Visible ? e.Height : 0;
+                if (e.IsExternalKeyboard)
+                {
+                    JournalContent.HeightRequest = original;
+                }
+                else
+                {
+                    JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
+                }
+            }
         }
 
         //Player failed
