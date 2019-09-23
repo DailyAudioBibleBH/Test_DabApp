@@ -448,7 +448,9 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
-            
+            journal.InitAndConnect();
+            //IDabSocket sock = DependencyService.Get<IDabSocket>(DependencyFetchTarget.NewInstance);
+            //sock.Connect();
             //Device.BeginInvokeOnMainThread(() =>
             //{
             //  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
