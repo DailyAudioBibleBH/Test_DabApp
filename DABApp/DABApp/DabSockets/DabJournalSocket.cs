@@ -20,6 +20,7 @@ namespace DABApp.DabSockets
         DabJournalViewHelper viewHelper;
         public event PropertyChangedEventHandler PropertyChanged;
         public string content { get; set;}
+        public bool ExternalUpdate { get; set; }
 
         //Create a journalling socket basec on an instance of a generic socket
         public DabJournalService()
@@ -64,16 +65,14 @@ namespace DABApp.DabSockets
 
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;
-
-            //Init the socket
-            sock.Init(uri, events);
-
-
-            //Connect the socket
-            sock.Connect();
+           
+           //Init the socket
+           sock.Init(uri, events);
+            
+           //Connect the socket
+           sock.Connect();
            
             return true;
-
         }
 
         public bool UpdateJournal(DateTime date, string content)
@@ -84,9 +83,11 @@ namespace DABApp.DabSockets
             var data = new DabJournalObject(content, room, token);
             data.html = CommonMark.CommonMarkConverter.Convert(content);
             var json = JObject.FromObject(data);
-            //Send data to the socket           
-            sock.Emit("key", json);
-
+            //Send data to the socket 
+            if (!ExternalUpdate)
+            {
+                sock.Emit("key", json);
+            }
             return true;
         }
 
@@ -97,8 +98,11 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
-            //Send data to the socket
-            sock.Emit("join", json);
+            if (!ExternalUpdate)
+            {
+                //Send data to the socket
+                sock.Emit("join", json);
+            }       
             //Store the date we're using
             currentDate = date;
 
@@ -247,8 +251,5 @@ namespace DABApp.DabSockets
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public bool ExternalUpdate { get; set; } = true;
-
     }
 }
