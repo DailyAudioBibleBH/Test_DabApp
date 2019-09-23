@@ -17,7 +17,7 @@ namespace DABApp.DabSockets
         IDabSocket sock;
         string currentContent;
         DateTime currentDate;
-
+        DabJournalViewHelper viewHelper;
         public event PropertyChangedEventHandler PropertyChanged;
         public string content { get; set;}
 
@@ -31,6 +31,10 @@ namespace DABApp.DabSockets
         public void Reconnect()
         {
             sock.Connect();
+            if (sock.IsConnected)
+            {
+                
+            }
         }
 
         public bool InitAndConnect()
@@ -73,7 +77,7 @@ namespace DABApp.DabSockets
         }
 
         public bool UpdateJournal(DateTime date, string content)
-         {
+        {
             //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
@@ -117,8 +121,9 @@ namespace DABApp.DabSockets
         {
             get
             {
-                return sock == null ? true : !sock.IsConnected;
+                return sock == null ? true : !sock.IsConnected;               
             }
+
         }
 
         public string Content
@@ -140,7 +145,7 @@ namespace DABApp.DabSockets
         private void Sock_DabSocketEvent(object sender, DabSocketEventHandler e)
         {
             //An event has been fired by the socket. Respond accordingly
-
+            viewHelper = new DabJournalViewHelper();
 
             //Log the event to the debugger
             Debug.WriteLine($"{e.eventName} was fired with {e.data}");
@@ -178,24 +183,26 @@ namespace DABApp.DabSockets
             }
         }
 
-        private void Sock_ExternalUpdateOccured(string eventName, string json)
+        public void Sock_ExternalUpdateOccured(string eventName, string json)
         {
             DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(json);
-            
-            string html = data.content;
-            //get rid of line breaks in the HTML
-            html = html.Replace("\n", "");
-            content = new Converter().Convert(html);
-            //Replace extra \n\n with \n
-            content = content.Replace("\n\n", "\n");
-            //trim off a leading \n
-            if (content.StartsWith("\n"))
+            if (ExternalUpdate)
             {
-                content = content.Substring(1);
+                string html = data.content;
+                //get rid of line breaks in the HTML
+                html = html.Replace("\n", "");
+                content = new Converter().Convert(html);
+                //Replace extra \n\n with \n
+                content = content.Replace("\n\n", "\n");
+                //trim off a leading \n
+                if (content.StartsWith("\n"))
+                {
+                    content = content.Substring(1);
+                }
+
+                currentContent = content;
             }
-
-            currentContent = content;
-
+           
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
@@ -240,5 +247,8 @@ namespace DABApp.DabSockets
             if (handler != null)
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public bool ExternalUpdate { get; set; } = true;
+
     }
 }

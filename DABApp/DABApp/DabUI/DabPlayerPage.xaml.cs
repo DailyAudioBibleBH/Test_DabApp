@@ -257,16 +257,18 @@ namespace DABApp
         //Journal data changed outside the app
         void OnJournalChanged(object o, EventArgs e)
         {
-            //if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
-            //{
-            //    JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-            //}
+            if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
+            {
+                journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
+                //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+            }
         }
 
         //TODO: These need replaced and linked back to journal
         //Journal was edited
         void OnEdit(object o, EventArgs e)
         {
+            journal.ExternalUpdate = false;
             //JournalTracker.Current.socket.ExternalUpdate = false;
         }
 
@@ -274,6 +276,11 @@ namespace DABApp
         //Journal editing finished?
         void OffEdit(object o, EventArgs e)
         {
+            journal.ExternalUpdate = true;
+            if (!journal.IsConnected)
+            {
+                journal.Reconnect();
+            }
             //JournalTracker.Current.socket.ExternalUpdate = true;
             //if (!JournalTracker.Current.IsJoined)
             //{
@@ -308,10 +315,11 @@ namespace DABApp
                 }
             }
             //TODO: Replace for journal?
-            //if (!GuestStatus.Current.IsGuestLogin && !JournalTracker.Current.IsJoined)
-            //{
-            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            //}
+            if (!GuestStatus.Current.IsGuestLogin && !journal.IsConnected)
+            {
+                journal.Reconnect();
+                //JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            }
         }
 
         void BindControls(bool BindToEpisode, bool BindToPlayer)
