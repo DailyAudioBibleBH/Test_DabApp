@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
 using Html2Markdown;
 
+
 namespace DABApp.DabSockets
 {
     public class DabJournalService : INotifyPropertyChanged
@@ -77,12 +78,12 @@ namespace DABApp.DabSockets
             var room = date.ToString("yyyy-MM-dd");
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(content, room, token);
+            data.html = CommonMark.CommonMarkConverter.Convert(content);
             var json = JObject.FromObject(data);
-            //Send data to the socket
+            //Send data to the socket           
             sock.Emit("key", json);
 
             return true;
-
         }
 
         public bool JoinRoom(DateTime date)
