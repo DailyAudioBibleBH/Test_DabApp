@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using Android.Content;
-using Android.Views.InputMethods;
+//using Android.Content;
+//using Android.Views.InputMethods;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
@@ -25,6 +25,11 @@ namespace DABApp.DabSockets
         {
             //INIT THE SOCKET
 
+        }
+
+        public void Reconnect()
+        {
+            sock.Connect();
         }
 
         public bool InitAndConnect()
@@ -149,6 +154,7 @@ namespace DABApp.DabSockets
                     Sock_Connected(e.data);
                     break;
                 case "reconnecting": //Socket reconnecting
+                    sock.Connect();
                     //do nothing for now
                     break;
                 case "reconnected": //Socket reconnected
