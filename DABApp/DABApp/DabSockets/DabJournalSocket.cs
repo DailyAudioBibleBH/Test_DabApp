@@ -19,7 +19,7 @@ namespace DABApp.DabSockets
         DateTime currentDate;
         DabJournalViewHelper viewHelper;
         public event PropertyChangedEventHandler PropertyChanged;
-        public string content { get; set;}
+        public string content { get; set; }
         public bool ExternalUpdate = true;
 
         //Create a journalling socket basec on an instance of a generic socket
@@ -34,7 +34,7 @@ namespace DABApp.DabSockets
             sock.Connect();
             if (sock.IsConnected)
             {
-                
+
             }
         }
 
@@ -65,13 +65,13 @@ namespace DABApp.DabSockets
 
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;
-           
-           //Init the socket
-           sock.Init(uri, events);
-            
-           //Connect the socket
-           sock.Connect();
-           
+
+            //Init the socket
+            sock.Init(uri, events);
+
+            //Connect the socket
+            sock.Connect();
+
             return true;
         }
 
@@ -82,6 +82,8 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(content, room, token);
             data.html = CommonMark.CommonMarkConverter.Convert(content);
+            var test = data.html;
+            var test2 = data.content;
             var json = JObject.FromObject(data);
             //Send data to the socket 
             if (!ExternalUpdate)
@@ -98,16 +100,14 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
-            //if (!ExternalUpdate)
-            //{
-                //Send data to the socket
-                sock.Emit("join", json);
-            //}       
+
+            //Send data to the socket
+            sock.Emit("join", json);
+
             //Store the date we're using
             currentDate = date;
 
             return true;
-
         }
 
         //IsConnected returns a bool indicating whether the socket is currently connected.
@@ -116,7 +116,7 @@ namespace DABApp.DabSockets
         {
             get
             {
-                return sock == null? false : sock.IsConnected;
+                return sock == null ? false : sock.IsConnected;
             }
         }
 
@@ -125,7 +125,7 @@ namespace DABApp.DabSockets
         {
             get
             {
-                return sock == null ? true : !sock.IsConnected;               
+                return sock == null ? true : !sock.IsConnected;
             }
 
         }
@@ -206,14 +206,14 @@ namespace DABApp.DabSockets
 
                 currentContent = content;
             }
-           
+
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
         }
 
         private void Sock_Disconnected(string data)
-         {
+        {
             //The socket got disconnected.
 
             //Notify UI
