@@ -20,7 +20,7 @@ namespace DABApp.DabSockets
         DabJournalViewHelper viewHelper;
         public event PropertyChangedEventHandler PropertyChanged;
         public string content { get; set;}
-        public bool ExternalUpdate { get; set; }
+        public bool ExternalUpdate = true;
 
         //Create a journalling socket basec on an instance of a generic socket
         public DabJournalService()
@@ -98,11 +98,11 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
-            if (!ExternalUpdate)
-            {
+            //if (!ExternalUpdate)
+            //{
                 //Send data to the socket
                 sock.Emit("join", json);
-            }       
+            //}       
             //Store the date we're using
             currentDate = date;
 

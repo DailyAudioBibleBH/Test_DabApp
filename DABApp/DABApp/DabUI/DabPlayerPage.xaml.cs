@@ -457,6 +457,13 @@ namespace DABApp
         async void OnReconnect(object o, EventArgs e)
         {
             journal.Reconnect();
+            journal.JoinRoom(Episode.Episode.PubDate);
+
+            if (journal.IsConnected)
+            {
+                JournalWarning.IsVisible = false;
+                JournalContent.IsEnabled = true;
+            }
             //IDabSocket sock = DependencyService.Get<IDabSocket>(DependencyFetchTarget.NewInstance);
             //sock.Connect();
             //Device.BeginInvokeOnMainThread(() =>
