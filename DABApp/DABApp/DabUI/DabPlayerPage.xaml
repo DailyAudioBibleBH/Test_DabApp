@@ -256,7 +256,7 @@
                     <!--IsEnabled="{Binding Source={x:Binding socket:DabJournalService.Current}, Path=IsConnected}"-->
 
                     <local:DarkKeyboardEditor x:Name="JournalContent"
-                                              HeightRequest="{Binding Source={x:Static socket:DabJournalViewHelper.Current}, Path=EntryHeight}"
+                                              VerticalOptions="StartAndExpand"
                                               TextChanged="OnJournalChanged"
                                               Focused="OnEdit"
                                               Unfocused="OffEdit"
@@ -267,7 +267,7 @@
                            Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
                            Style="{StaticResource warningLabelStyle}"
                            FontSize="Medium"
-                           VerticalOptions="EndAndExpand"
+                           VerticalOptions="End"
                            AutomationProperties.IsInAccessibleTree="true">
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnReconnect"/>

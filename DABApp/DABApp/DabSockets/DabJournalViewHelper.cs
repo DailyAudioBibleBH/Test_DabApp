@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Acr.DeviceInfo;
 using Xamarin.Forms;
 
@@ -37,8 +39,16 @@ namespace DABApp.DabSockets
             set
             {
                 _EntryHeight = value;
-                service.OnPropertyChanged("EntryHeight"); 
+                OnPropertyChanged("EntryHeight"); 
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

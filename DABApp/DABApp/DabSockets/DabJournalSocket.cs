@@ -17,7 +17,6 @@ namespace DABApp.DabSockets
         IDabSocket sock;
         string currentContent;
         DateTime currentDate;
-        DabJournalViewHelper viewHelper;
         public event PropertyChangedEventHandler PropertyChanged;
         public string content { get; set; }
         public bool ExternalUpdate = true;
@@ -142,7 +141,6 @@ namespace DABApp.DabSockets
         private void Sock_DabSocketEvent(object sender, DabSocketEventHandler e)
         {
             //An event has been fired by the socket. Respond accordingly
-            viewHelper = new DabJournalViewHelper();
 
             //Log the event to the debugger
             Debug.WriteLine($"{e.eventName} was fired with {e.data}");

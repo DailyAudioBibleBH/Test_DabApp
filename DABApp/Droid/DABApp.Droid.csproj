@@ -354,6 +354,7 @@
     <Compile Include="CustomRenderers\HtmlLabelRenderer.cs" />
     <Compile Include="CustomRenderers\ImageCircleRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
+    <Compile Include="DabSockets\droidDabSocket.cs" />
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\CallReceiver.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
