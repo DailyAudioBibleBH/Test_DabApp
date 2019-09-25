@@ -26,16 +26,11 @@ namespace DABApp.DabSockets
         public DabJournalService()
         {
             //INIT THE SOCKET
-
         }
 
         public void Reconnect()
         {
             sock.Connect();
-            if (sock.IsConnected)
-            {
-
-            }
         }
 
         public bool InitAndConnect()
@@ -100,10 +95,8 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
-
             //Send data to the socket
             sock.Emit("join", json);
-
             //Store the date we're using
             currentDate = date;
 
