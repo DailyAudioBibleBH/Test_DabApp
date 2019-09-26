@@ -76,8 +76,6 @@ namespace DABApp.DabSockets
             var token = AuthenticationAPI.CurrentToken;
             var data = new DabJournalObject(content, room, token);
             data.html = CommonMark.CommonMarkConverter.Convert(content);
-            var test = data.html;
-            var test2 = data.content;
             var json = JObject.FromObject(data);
             //Send data to the socket 
             if (!ExternalUpdate)
