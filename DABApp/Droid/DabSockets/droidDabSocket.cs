@@ -16,7 +16,7 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(DroidDabSocket))]
 namespace DABApp.Droid.DabSockets
 {
-    class DroidDabSocket : IDabSocket
+    public class DroidDabSocket : IDabSocket
     {
         bool isInitialized = false;
         bool isConnected = false;
