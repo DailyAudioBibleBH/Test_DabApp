@@ -296,7 +296,15 @@ namespace DABApp
             {
                 //TODO: Put this back in for journal
                 //Set up padding for the journal tab with the keyboard
-                int paddingMulti = journal.IsConnected ? 4 : 6;
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+                original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+            }
+            if (Device.RuntimePlatform == "Android")
+            {
+                //TODO: Put this back in for journal
+                //Set up padding for the journal tab with the keyboard
+                int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
                 original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
