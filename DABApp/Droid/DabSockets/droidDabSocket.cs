@@ -17,7 +17,7 @@ using Xamarin.Forms;
 namespace DABApp.Droid.DabSockets
 {
     public class DroidDabSocket : IDabSocket
-    {{
+    {
 
         bool isConnected = false;
         Socket sock;
