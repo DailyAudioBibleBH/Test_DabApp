@@ -9,26 +9,32 @@ using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
 using Html2Markdown;
 
+/* This is the DAB Journal Service that drives the journalling system of the DAB App.
+ * It uses native iDabSocket objects to maintain a connection to the socket
+ * This socket registers for several custom events such as "update" so it knows when
+ * the journal has been updated externally.
+ */
 
 namespace DABApp.DabSockets
 {
     public class DabJournalService : INotifyPropertyChanged
     {
-        IDabSocket sock;
-        string currentContent;
-        DateTime currentDate;
-        public event PropertyChangedEventHandler PropertyChanged;
-        public string content { get; set; }
-        public bool ExternalUpdate = true;
+        IDabSocket sock; //The socket connection
+        string currentContent; //Current content of the journal
+        DateTime currentDate; //Current date of the journal
+        public event PropertyChangedEventHandler PropertyChanged; //For binding
+        public string content { get; set; } //Bindable content property (internal use)
+        public bool ExternalUpdate = true; //Helps us only update content when externally updated
 
         //Create a journalling socket basec on an instance of a generic socket
         public DabJournalService()
         {
-            //INIT THE SOCKET
+            //Nothing to do here
         }
 
         public void Reconnect()
         {
+            //Reconnect the socket if needed
             sock.Connect();
         }
 
@@ -120,6 +126,7 @@ namespace DABApp.DabSockets
 
         }
 
+        //Bindable content - send it off to the server if it's being changed.
         public string Content
         {
             get
@@ -153,7 +160,6 @@ namespace DABApp.DabSockets
                     Sock_Connected(e.data);
                     break;
                 case "reconnecting": //Socket reconnecting
-                    sock.Connect();
                     //do nothing for now
                     break;
                 case "reconnected": //Socket reconnected
@@ -178,17 +184,20 @@ namespace DABApp.DabSockets
 
         public void Sock_ExternalUpdateOccured(string eventName, string json)
         {
+            //The journal was updated externally.
             DabJournalObject data = JsonConvert.DeserializeObject<DabJournalObject>(json);
             if (ExternalUpdate)
             {
                 string html = data.content;
+
+                //Convert the content from HTML to MarkDown
                 //get rid of line breaks in the HTML
                 html = html.Replace("\n", "");
                 content = new Converter().Convert(html);
                 //Replace extra \n\n with \n
                 content = content.Replace("\n\n", "\n");
                 //trim off a leading \n
-                if (content.StartsWith("\n"))
+                if (content.StartsWith("\n",StringComparison.CurrentCulture))
                 {
                     content = content.Substring(1);
                 }
@@ -196,6 +205,7 @@ namespace DABApp.DabSockets
                 currentContent = content;
             }
 
+            //Notify UI that things have changed (assume we are now connected)
             OnPropertyChanged("Content");
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
@@ -214,10 +224,11 @@ namespace DABApp.DabSockets
         {
             //The socket has encountenered an error. Take appropriate action.
 
-            //For now, disconnect and don't reconnect
+            //For now, disconnect and then try to reconnect
             if (sock.IsConnected)
             {
                 sock.Disconnect();
+                sock.Connect();
             }
 
             OnPropertyChanged("IsConnected");

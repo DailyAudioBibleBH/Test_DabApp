@@ -17,8 +17,8 @@ using Xamarin.Forms;
 namespace DABApp.Droid.DabSockets
 {
     public class DroidDabSocket : IDabSocket
-    {
-        bool isInitialized = false;
+    {{
+
         bool isConnected = false;
         Socket sock;
 
@@ -28,6 +28,7 @@ namespace DABApp.Droid.DabSockets
         {
         }
 
+        //Returns current connection state of the socket.
         public bool IsConnected
         {
             get
@@ -36,27 +37,19 @@ namespace DABApp.Droid.DabSockets
             }
         }
 
-        public void Connect(string token)
-        {
-            //Make sure the socket is initialized
-            if (!isInitialized) throw new Exception("You must initialize the socket before using it");
-            sock.Connect();
-
-        }
-
+        //Init the socket with a URI and register for events we want to know about.
         public void Init(string Uri, List<String> events)
         {
             //Initialize the socket
             try
             {
                 sock = IO.Socket(Uri);
-                isInitialized = true;
 
                 //Set up standard events
                 sock.On("connect", data => OnConnect(data));
                 sock.On("disconnect", data => OnDisconnect(data));
                 sock.On("reconnect", data => OnReconnect(data));
-                sock.On("reconnecting", data => OnReconnecting(data));
+                sock.On("reconnecting", data => OnEvent("reconnecting", data)); //Use basic OnEvent since nothing is "done" yet
 
 
                 //Set up custom events requested by the caller
@@ -69,7 +62,8 @@ namespace DABApp.Droid.DabSockets
             }
             catch (Exception ex)
             {
-                isInitialized = false;
+                //Init failed 
+                sock = null;
                 isConnected = false;
             }
         }
@@ -84,16 +78,6 @@ namespace DABApp.Droid.DabSockets
             return data;
         }
 
-        private object OnReconnecting(object data)
-        {
-            //Socket is reconnecting
-
-            //Notify the listener
-            DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnecting", data.ToString()));
-
-            //Return
-            return data;
-        }
 
         private object OnReconnect(object data)
         {
@@ -109,7 +93,7 @@ namespace DABApp.Droid.DabSockets
 
         private object OnConnect(object data)
         {
-            //Socket has connected (1st time)
+            //Socket has connected (1st time probably)
             isConnected = true;
 
             //Notify the listener
@@ -133,6 +117,7 @@ namespace DABApp.Droid.DabSockets
 
         public void Disconnect()
         {
+            //Disconnect the socket
             if (IsConnected)
             {
                 sock.Disconnect();
@@ -141,11 +126,13 @@ namespace DABApp.Droid.DabSockets
 
         public void Connect()
         {
+            //Connect the socket
             sock.Connect();
         }
 
         public void Emit(string Command, object Data)
         {
+            //Send data to the socket
             sock.Emit(Command, Data);
         }
     }
