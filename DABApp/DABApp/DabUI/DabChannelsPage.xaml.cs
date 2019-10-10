@@ -7,6 +7,7 @@ using DLToolkit.Forms.Controls;
 using FFImageLoading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -58,16 +59,9 @@ namespace DABApp
                 return true;
             });
 
+            //Connect to the SyncService
+            DabSyncService.Instance.Init();
 
-            //TODO: Replace this with sync
-            //Device.StartTimer(TimeSpan.FromMinutes(5), () =>
-            //{
-            //    if (!JournalTracker.Current.IsConnected)
-            //    {
-            //        ConnectJournal();
-            //    }
-            //    return true;
-            //});
         }
 
         void PostLogs()
