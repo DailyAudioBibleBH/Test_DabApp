@@ -366,6 +366,7 @@
     <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabMenuItemRenderer.cs" />
     <Compile Include="CustomRenderers\DabStackLayoutRenderer.cs" />
+    <Compile Include="DabSockets\iosWebSocket.cs" />
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
     <Compile Include="DependencyServices\RecordService.cs" />
