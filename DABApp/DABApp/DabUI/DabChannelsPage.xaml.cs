@@ -61,7 +61,7 @@ namespace DABApp
 
             //Connect to the SyncService
             DabSyncService.Instance.Init();
-
+            DabSyncService.Instance.Connect();
         }
 
         void PostLogs()

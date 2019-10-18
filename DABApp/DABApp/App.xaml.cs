@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using System.Diagnostics;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -48,6 +49,7 @@ namespace DABApp
 
         protected override async void OnSleep()
         {
+            DabSyncService.Instance.Disconnect();
             if (Device.RuntimePlatform == "iOS")
             {
                 AuthenticationAPI.PostActionLogs();
@@ -59,6 +61,9 @@ namespace DABApp
 
         protected override async void OnResume()
         {
+            DabSyncService.Instance.Init();
+            DabSyncService.Instance.Connect();
+
             if (GlobalResources.playerPodcast != null)
             {
                 //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)

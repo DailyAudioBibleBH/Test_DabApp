@@ -19,7 +19,7 @@ namespace DABApp.DabSockets
 
 
         public static DabSyncService Instance = new DabSyncService();
-        IDabSocket sock; //The socket connection
+        IWebSocket sock; //The socket connection
         public event PropertyChangedEventHandler PropertyChanged;
 
         private DabSyncService()
@@ -32,7 +32,7 @@ namespace DABApp.DabSockets
             //Set up the socket and connect it so it can be used throughout the app.
 
             //Create socket
-            sock = DependencyService.Get<IDabSocket>(DependencyFetchTarget.NewInstance);
+            sock = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
 
             //Get the URL to use
             var appSettings = ContentConfig.Instance.app_settings;
@@ -43,6 +43,10 @@ namespace DABApp.DabSockets
             //Create a list of events to monitor
             List<String> events = new List<String>();
             //events.Add("");
+            events.Add("room_error");
+            events.Add("join_error");
+            events.Add("auth_error");
+            events.Add("update");
 
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;
@@ -51,10 +55,19 @@ namespace DABApp.DabSockets
             sock.Init(uri, events);
 
             //Connect the socket
-            sock.Connect();
+            //sock.Connect();           
 
             return true;
+        }
 
+        public void Connect()
+        {
+            sock.Connect();
+        }
+
+        public void Disconnect()
+        {
+            sock.Disconnect();
         }
 
         private void Sock_DabSocketEvent(object sender, DabSocketEventHandler e)
@@ -67,9 +80,87 @@ namespace DABApp.DabSockets
             //Take action on the event
             switch (e.eventName.ToLower())
             {
+                case "disconnected": //Socket disconnected
+                    Sock_Disconnected(e.data);
+                    break;
+                case "connected": //Socket connected
+                    Sock_Connected(e.data);
+                    break;
+                case "reconnecting": //Socket reconnecting
+                    //do nothing for now
+                    break;
+                case "reconnected": //Socket reconnected
+                    Sock_Connected(e.data);
+                    break;
+                case "room_error": //Error with a room
+                    Sock_ErrorOccured(e.eventName, e.data);
+                    break;
+                case "join_error": //Error joining
+                    Sock_ErrorOccured(e.eventName, e.data);
+                    break;
+                case "auth_error": //Error with authentication
+                    Sock_ErrorOccured(e.eventName, e.data);
+                    break;
                 default:
                     break;
             }
+        }
+
+        //IsConnected returns a bool indicating whether the socket is currently connected.
+        //This is a bindable property
+        public bool IsConnected
+        {
+            get
+            {
+                return sock == null ? false : sock.IsConnected;
+            }
+        }
+
+        //Opposite of IsConnected used for binding reasons.
+        public bool IsDisconnected
+        {
+            get
+            {
+                return sock == null ? true : !sock.IsConnected;
+            }
+
+        }
+
+        private void Sock_Disconnected(string data)
+        {
+            //The socket got disconnected.
+
+            //Notify UI
+            OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
+            if (!IsConnected)
+            {
+                sock.Connect();
+            }
+        }
+
+        private void Sock_ErrorOccured(string eventName, object data)
+        {
+            //The socket has encountenered an error. Take appropriate action.
+
+            //For now, disconnect and then try to reconnect
+            if (sock.IsConnected)
+            {
+                sock.Disconnect();
+                sock.Connect();
+            }
+
+            OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
+        }
+
+        private void Sock_Connected(object data)
+        {
+            //The socket has connected or reconnected. Take appropriate action
+
+            //Notify UI
+            OnPropertyChanged("IsConnected");
+            OnPropertyChanged("IsDisconnected");
         }
 
         /* Events to handle Binding */
