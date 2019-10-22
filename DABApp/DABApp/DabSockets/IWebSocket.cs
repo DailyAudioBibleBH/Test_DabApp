@@ -10,7 +10,6 @@ namespace DABApp.DabSockets
         void Connect(); //Connect
         void Send();
         void Disconnect(); //Disconnect
-        void Emit(string Command, object Data); //Send generic data to the socket
         bool IsConnected { get; }
         event EventHandler<DabSocketEventHandler> DabSocketEvent;
     }

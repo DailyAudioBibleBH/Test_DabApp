@@ -44,26 +44,10 @@ namespace DABApp.Droid.DabSockets
             //Initialize the socket
             try
             {
-                sock = new WebSocket(Uri);
+                sock = new WebSocket(Uri, "graphql-ws");
                 sock.OnOpen += (sender, data) => { OnConnect(data); };
                 sock.OnMessage += (sender, data) => { };
                 sock.OnClose += (sender, data) => { OnDisconnect(data); };
-
-                //sock.ConnectAsync();
-                //Set up standard events
-                //sock.On("connect", data => OnConnect(data));
-                //sock.On("disconnect", data => OnDisconnect(data));
-                //sock.On("reconnect", data => OnReconnect(data));
-                //sock.On("reconnecting", data => OnEvent("reconnecting", data)); //Use basic OnEvent since nothing is "done" yet
-
-
-                //Set up custom events requested by the caller
-                //foreach (string s in events)
-                //{
-                //    sock.On(s, data => OnEvent(s, data));
-                //}
-
-
             }
             catch (Exception ex)
             {
@@ -100,7 +84,6 @@ namespace DABApp.Droid.DabSockets
         {
             //Socket has connected (1st time probably)
             isConnected = true;
-            var test = sock;
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
             //Return
@@ -138,12 +121,6 @@ namespace DABApp.Droid.DabSockets
         {
             //Connect the socket
             sock.ConnectAsync();
-        }
-
-        public void Emit(string Command, object Data)
-        {
-            //Send data to the socket
-            //sock.Emit(Command, Data);
         }
     }
 }
