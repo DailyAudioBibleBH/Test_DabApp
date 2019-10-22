@@ -36,7 +36,7 @@ namespace DABApp.iOS.DabSockets
         }
 
         //Init the socket with a URI and register for events we want to know about.
-        public void Init(string Uri, List<String> events)
+        public void Init(string Uri)
         {
             //Initialize the socket
             try

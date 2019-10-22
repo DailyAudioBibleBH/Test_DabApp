@@ -40,22 +40,11 @@ namespace DABApp.DabSockets
             //need to add wss:// since it just gives us the address here
             uri = $"wss://{uri}";
 
-            //Create a list of events to monitor
-            List<String> events = new List<String>();
-            //events.Add("");
-            events.Add("room_error");
-            events.Add("join_error");
-            events.Add("auth_error");
-            events.Add("update");
-
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;
 
             //Init the socket
-            sock.Init(uri, events);
-
-            //Connect the socket
-            //sock.Connect();           
+            sock.Init(uri);
 
             return true;
         }
@@ -133,10 +122,6 @@ namespace DABApp.DabSockets
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
-            if (!IsConnected)
-            {
-                sock.Connect();
-            }
         }
 
         private void Sock_ErrorOccured(string eventName, object data)
@@ -171,5 +156,4 @@ namespace DABApp.DabSockets
                 handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-
 }

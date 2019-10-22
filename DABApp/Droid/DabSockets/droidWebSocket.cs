@@ -39,7 +39,7 @@ namespace DABApp.Droid.DabSockets
         }
 
         //Init the socket with a URI and register for events we want to know about.
-        public void Init(string Uri, List<String> events)
+        public void Init(string Uri)
         {
             //Initialize the socket
             try
@@ -83,6 +83,7 @@ namespace DABApp.Droid.DabSockets
         private object OnConnect(object data)
         {
             //Socket has connected (1st time probably)
+            System.Diagnostics.Debug.WriteLine("Sync Socket Connected");
             isConnected = true;
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
