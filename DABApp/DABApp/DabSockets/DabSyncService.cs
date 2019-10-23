@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SQLite;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace DABApp.DabSockets
@@ -21,6 +25,7 @@ namespace DABApp.DabSockets
         public static DabSyncService Instance = new DabSyncService();
         IWebSocket sock; //The socket connection
         public event PropertyChangedEventHandler PropertyChanged;
+        SQLiteConnection db = DabData.database;
 
         private DabSyncService()
         {
@@ -81,12 +86,6 @@ namespace DABApp.DabSockets
                 case "reconnected": //Socket reconnected
                     Sock_Connected(e.data);
                     break;
-                case "room_error": //Error with a room
-                    Sock_ErrorOccured(e.eventName, e.data);
-                    break;
-                case "join_error": //Error joining
-                    Sock_ErrorOccured(e.eventName, e.data);
-                    break;
                 case "auth_error": //Error with authentication
                     Sock_ErrorOccured(e.eventName, e.data);
                     break;
@@ -146,6 +145,11 @@ namespace DABApp.DabSockets
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
+            dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            Payload token = new Payload(Token.Value);
+            var JsonIn = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+
+            sock.Send(JsonIn);
         }
 
         /* Events to handle Binding */

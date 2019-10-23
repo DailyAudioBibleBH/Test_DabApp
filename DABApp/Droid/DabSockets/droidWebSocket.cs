@@ -46,7 +46,7 @@ namespace DABApp.Droid.DabSockets
             {
                 sock = new WebSocket(Uri, "graphql-ws");
                 sock.OnOpen += (sender, data) => { OnConnect(data); };
-                sock.OnMessage += (sender, data) => { };
+                sock.OnMessage += (sender, data) => { OnMessage(data); };
                 sock.OnClose += (sender, data) => { OnDisconnect(data); };
             }
             catch (Exception ex)
@@ -55,6 +55,11 @@ namespace DABApp.Droid.DabSockets
                 sock = null;
                 isConnected = false;
             }
+        }
+
+        private void OnMessage(MessageEventArgs data)
+        {
+            throw new NotImplementedException();
         }
 
         private object OnEvent(string s, object data)
@@ -112,9 +117,9 @@ namespace DABApp.Droid.DabSockets
             }
         }
 
-        public void Send()
+        public void Send(string JsonIn)
         {
-            sock.Send("test");
+            sock.Send(JsonIn);
         }
 
 

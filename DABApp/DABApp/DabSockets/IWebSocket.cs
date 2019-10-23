@@ -8,7 +8,7 @@ namespace DABApp.DabSockets
     {
         void Init(string Uri); //Init the socket connection
         void Connect(); //Connect
-        void Send();
+        void Send(string JsonIn);
         void Disconnect(); //Disconnect
         bool IsConnected { get; }
         event EventHandler<DabSocketEventHandler> DabSocketEvent;
