@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
@@ -684,12 +687,12 @@ namespace DABApp
             //TODO: Replace this with sync
 
 
-            if (!GuestStatus.Current.IsGuestLogin)
-            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
 
                 if (notPosting)
                 {
+                    string listenedTo;
                     notPosting = false;
                     dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                     var actions = db.Table<dbPlayerActions>().ToList();
@@ -698,22 +701,38 @@ namespace DABApp
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
-                            HttpClient client = new HttpClient();
-                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                            events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
-                            var JsonIn = JsonConvert.SerializeObject(events);
-                            var content = new StringContent(JsonIn);
-                            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                            var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
-                            string JsonOut = await result.Content.ReadAsStringAsync();
-                            if (JsonOut != "1")
+                            foreach (var i in actions)
                             {
-                                throw new Exception(JsonOut);
+                                if (i.listened_status == "listened")
+                                {
+                                    listenedTo = "true";
+                                }
+                                else
+                                {
+                                    listenedTo = "false";
+                                }
+                                var variables = new Variables();
+                                var query = "mutation {\n            logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ") {\n                episodeId\n                listen\n                position\n                favorite\n                entryDate\n            }\n        }";
+                                var payload = new WebSocketHelper.Payload(query, variables);
+                                var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", payload));
+                                DabSyncService.Instance.Send(JsonIn);
                             }
-                            foreach (var action in actions)
-                            {
-                                await adb.DeleteAsync(action);
-                            }
+                            //HttpClient client = new HttpClient();
+                            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                            //events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
+                            //var JsonIn = JsonConvert.SerializeObject(events);
+                            //var content = new StringContent(JsonIn);
+                            //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                            //var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
+                            //string JsonOut = await result.Content.ReadAsStringAsync();
+                            //if (JsonOut != "1")
+                            //{
+                            //    throw new Exception(JsonOut);
+                            //}
+                            //foreach (var action in actions)
+                            //{
+                            //    await adb.DeleteAsync(action);
+                            //}
                         }
                         catch (Exception e)
                         {

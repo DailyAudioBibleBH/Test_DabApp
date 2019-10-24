@@ -64,6 +64,11 @@ namespace DABApp.DabSockets
             sock.Disconnect();
         }
 
+        public void Send(string JsonIn)
+        {
+            sock.Send(JsonIn);
+        }
+
         private void Sock_DabSocketEvent(object sender, DabSocketEventHandler e)
         {
             //An event has been fired by the socket. Respond accordingly

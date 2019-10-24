@@ -59,6 +59,8 @@ namespace DABApp.Droid.DabSockets
 
         private void OnMessage(MessageEventArgs data)
         {
+            System.Diagnostics.Debug.WriteLine("/n/n");
+            System.Diagnostics.Debug.WriteLine(data.Data);
             throw new NotImplementedException();
         }
 
