@@ -715,6 +715,7 @@ namespace DABApp
                                 var query = "mutation {\n            logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ") {\n                episodeId\n                listen\n                position\n                favorite\n                entryDate\n            }\n        }";
                                 var payload = new WebSocketHelper.Payload(query, variables);
                                 var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", payload));
+                                
                                 DabSyncService.Instance.Send(JsonIn);
                             }
                             //HttpClient client = new HttpClient();

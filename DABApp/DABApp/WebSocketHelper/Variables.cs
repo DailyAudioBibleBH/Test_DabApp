@@ -6,5 +6,6 @@ namespace DABApp.WebSocketHelper
 {
     public class Variables
     {
+    
     }
 }
