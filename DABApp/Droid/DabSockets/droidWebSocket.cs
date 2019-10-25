@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WebSocketSharp;
 using Android.App;
 using Android.Content;
 using Android.OS;
@@ -12,6 +11,7 @@ using Android.Widget;
 using DABApp.Droid.DabSockets;
 using Xamarin.Forms;
 using DABApp.DabSockets;
+using WebSocket4Net;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -45,9 +45,9 @@ namespace DABApp.Droid.DabSockets
             try
             {
                 sock = new WebSocket(Uri, "graphql-ws");
-                sock.OnOpen += (sender, data) => { OnConnect(data); };
-                sock.OnMessage += (sender, data) => { OnMessage(data); };
-                sock.OnClose += (sender, data) => { OnDisconnect(data); };
+                sock.Opened += (sender, data) => { OnConnect(data); };
+                sock.MessageReceived += (sender, data) => { OnMessage(data); };
+                sock.Closed += (sender, data) => { OnDisconnect(data); };
             }
             catch (Exception ex)
             {
@@ -57,11 +57,10 @@ namespace DABApp.Droid.DabSockets
             }
         }
 
-        private void OnMessage(MessageEventArgs data)
+        private void OnMessage(MessageReceivedEventArgs data)
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
-            System.Diagnostics.Debug.WriteLine(data.Data);
-            throw new NotImplementedException();
+            System.Diagnostics.Debug.WriteLine(data.Message);
         }
 
         private object OnEvent(string s, object data)
@@ -128,7 +127,7 @@ namespace DABApp.Droid.DabSockets
         public void Connect()
         {
             //Connect the socket
-            sock.ConnectAsync();
+            sock.Open();
         }
     }
 }
