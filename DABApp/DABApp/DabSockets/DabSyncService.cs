@@ -43,7 +43,7 @@ namespace DABApp.DabSockets
             var appSettings = ContentConfig.Instance.app_settings;
             string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
             //need to add wss:// since it just gives us the address here
-            uri = $"wss://" + uri + "?x-token=" + AuthenticationAPI.CurrentToken + "}";
+            uri = $"wss://{uri}";
 
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;

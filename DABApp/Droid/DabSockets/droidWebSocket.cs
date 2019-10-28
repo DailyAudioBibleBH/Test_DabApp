@@ -44,7 +44,10 @@ namespace DABApp.Droid.DabSockets
             //Initialize the socket
             try
             {
-                sock = new WebSocket(Uri, "graphql-ws");
+                var cookies = new List<KeyValuePair<string, string>>();
+                var extension = new List<KeyValuePair<string, string>>();
+                extension.Add(new KeyValuePair<string, string>("x-token", AuthenticationAPI.CurrentToken.ToString()));
+                sock = new WebSocket(Uri, "graphql-ws");//, customHeaderItems:extension);
                 sock.Opened += (sender, data) => { OnConnect(data); };
                 sock.MessageReceived += (sender, data) => { OnMessage(data); };
                 sock.Closed += (sender, data) => { OnDisconnect(data); };

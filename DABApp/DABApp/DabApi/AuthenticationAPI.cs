@@ -21,6 +21,7 @@ namespace DABApp
 
         static bool notPosting = true;
         static bool notGetting = true;
+        static bool favorite; 
 
         public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.
         {
@@ -703,20 +704,57 @@ namespace DABApp
                             LoggedEvents events = new LoggedEvents();
                             foreach (var i in actions)
                             {
-                                if (i.listened_status == "listened")
+                                switch (i.ActionType)
                                 {
-                                    listenedTo = "true";
+                                    case "favorite": //Favorited an episode
+                                        if (i.Favorite == true)
+                                            favorite = true;
+                                        else
+                                            favorite = false;
+                                        var favVariables = new Variables();
+                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        favQuery = favQuery.Replace("True", "true");
+                                        favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
+                                        var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
+                                        var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
+
+                                        DabSyncService.Instance.Send(favJsonIn);
+                                        break;
+                                    case "listened": //Marked as listened
+                                        if (i.listened_status == "listened")
+                                            listenedTo = "true";
+                                        else
+                                            listenedTo = "false";
+
+                                        var lisVariables = new Variables();
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
+                                        var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
+
+                                        DabSyncService.Instance.Send(lisJsonIn);
+                                        break;
+                                    case "pause": //Saving player position to socket on pause
+                                        var posVariables = new Variables();
+                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
+                                        var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
+
+                                        DabSyncService.Instance.Send(posJsonIn);
+                                        break;
+                                    case "entryDate": //When event happened
+                                        var entVariables = new Variables();
+                                        string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString();
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + i.ActionDateTime + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
+                                        var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
+
+                                        DabSyncService.Instance.Send(entJsonIn);
+                                        break;
+                                    case "updatedAt": //If null, updates to time of call
+                                        break;
+                                    default:
+                                        break;
                                 }
-                                else
-                                {
-                                    listenedTo = "false";
-                                }
-                                var variables = new Variables();
-                                var query = "mutation {\n            logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ") {\n                episodeId\n                listen\n                position\n                favorite\n                entryDate\n            }\n        }";
-                                var payload = new WebSocketHelper.Payload(query, variables);
-                                var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", payload));
-                                
-                                DabSyncService.Instance.Send(JsonIn);
                             }
                             //HttpClient client = new HttpClient();
                             //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
