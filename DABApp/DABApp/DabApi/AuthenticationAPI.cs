@@ -675,6 +675,7 @@ namespace DABApp
                     db.Insert(actionLog);
                 }
                 else await adb.InsertAsync(actionLog);
+                await PostActionLogs();
             }
             catch (Exception e)
             {
