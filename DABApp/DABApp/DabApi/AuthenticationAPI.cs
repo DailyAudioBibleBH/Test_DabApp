@@ -703,6 +703,7 @@ namespace DABApp
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
+
                             foreach (var i in actions)
                             {
                                 switch (i.ActionType)
@@ -743,9 +744,9 @@ namespace DABApp
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
                                     case "entryDate": //When event happened
+                                        string entEntryDate = i.ActionDateTime.UtcDateTime.ToString("o");
                                         var entVariables = new Variables();
-                                        string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + i.ActionDateTime + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ") {episodeId listen position favorite entryDate}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 
