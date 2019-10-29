@@ -7,11 +7,12 @@ namespace DABApp.DabSockets
     public class Payload
     {
         //public string __invalid_name__x-token { get; set; }
-        public string x_token {get; set;}
+        [Newtonsoft.Json.JsonProperty(PropertyName = "x-token")]
+        public string xtoken {get; set;}
 
-        public Payload(string x_token)
+        public Payload(string xtoken)
         {
-            this.x_token = x_token;
+            this.xtoken = xtoken;
         }
     }
 }

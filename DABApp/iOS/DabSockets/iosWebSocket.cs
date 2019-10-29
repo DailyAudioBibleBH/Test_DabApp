@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WebSocketSharp;
 
 using Foundation;
 using UIKit;
 using DABApp.DabSockets;
 using Xamarin.Forms;
 using DABApp.iOS.DabSockets;
+using WebSocket4Net;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -17,7 +17,7 @@ namespace DABApp.iOS.DabSockets
     {
 
         bool isConnected = false;
-        WebSocket sock;
+        WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
 
         public iosWebSocket()
@@ -41,10 +41,10 @@ namespace DABApp.iOS.DabSockets
             //Initialize the socket
             try
             {
-                sock = new WebSocket(Uri, "graphql-ws");
-                sock.OnOpen += (sender, data) => { OnConnect(data); };
-                sock.OnMessage += (sender, data) => { OnMessage(data); };
-                sock.OnClose += (sender, data) => { OnDisconnect(data); };
+                sock = new WebSocket4Net.WebSocket(Uri, "graphql-ws");
+                sock.Opened += (sender, data) => { OnConnect(data); };
+                sock.MessageReceived += (sender, data) => { OnMessage(data); };
+                sock.Closed += (sender, data) => { OnDisconnect(data); };
             }
             catch (Exception ex)
             {
@@ -54,9 +54,10 @@ namespace DABApp.iOS.DabSockets
             }
         }
 
-        private void OnMessage(MessageEventArgs data)
+        private void OnMessage(MessageReceivedEventArgs data)
         {
-            throw new NotImplementedException();
+            System.Diagnostics.Debug.WriteLine("/n/n");
+            System.Diagnostics.Debug.WriteLine(data.Message);
         }
 
         private object OnEvent(string s, object data)
@@ -124,7 +125,7 @@ namespace DABApp.iOS.DabSockets
         public void Connect()
         {
             //Connect the socket
-            sock.ConnectAsync();
+            sock.Open();
         }
     }
 }

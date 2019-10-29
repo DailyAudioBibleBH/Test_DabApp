@@ -756,22 +756,11 @@ namespace DABApp
                                         break;
                                 }
                             }
-                            //HttpClient client = new HttpClient();
-                            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                            //events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
-                            //var JsonIn = JsonConvert.SerializeObject(events);
-                            //var content = new StringContent(JsonIn);
-                            //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                            //var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
-                            //string JsonOut = await result.Content.ReadAsStringAsync();
-                            //if (JsonOut != "1")
-                            //{
-                            //    throw new Exception(JsonOut);
-                            //}
-                            //foreach (var action in actions)
-                            //{
-                            //    await adb.DeleteAsync(action);
-                            //}
+                            foreach (var action in actions)
+                            {
+                                await adb.DeleteAsync(action);
+                            }
+
                         }
                         catch (Exception e)
                         {

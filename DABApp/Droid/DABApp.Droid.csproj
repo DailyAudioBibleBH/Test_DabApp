@@ -367,8 +367,6 @@
     <Compile Include="DABApp.cs" />
     <Compile Include="DabData\SQLite_Droid.cs" />
     <Compile Include="SplashScreen.cs" />
-    <Compile Include="DependencyServices\SocketService.cs" />
-    <Compile Include="DependencyServices\SocketHelper.cs" />
     <Compile Include="DabApi\FileManagement.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
