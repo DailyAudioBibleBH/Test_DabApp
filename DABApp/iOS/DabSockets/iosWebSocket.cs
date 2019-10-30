@@ -69,7 +69,11 @@ namespace DABApp.iOS.DabSockets
             System.Diagnostics.Debug.WriteLine(data.Message);
             if (data.Message.Contains("actionLogged"))
             {
+                
                 var test2 = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
+                var action = test2.payload.data.actionLogged.action;
+                
+                AuthenticationAPI.CreateNewActionLog(action.episodeId, test2.type, action.position, action.listen.ToString(), action.favorite);
             }
         }
 
