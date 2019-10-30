@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
 using System;
@@ -152,9 +153,14 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
             Payload token = new Payload(Token.Value);
-            var JsonIn = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+            var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+            sock.Send(ConnectInit);
 
-            sock.Send(JsonIn);
+            var variables = new Variables();
+            var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
+            WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
+            var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
+            sock.Send(SubscriptionInit);
         }
 
         /* Events to handle Binding */

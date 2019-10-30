@@ -45,6 +45,7 @@ namespace DABApp.iOS.DabSockets
                 sock.Opened += (sender, data) => { OnConnect(data); };
                 sock.MessageReceived += (sender, data) => { OnMessage(data); };
                 sock.Closed += (sender, data) => { OnDisconnect(data); };
+                sock.DataReceived += (sender, data) => { OnData(data); };
             }
             catch (Exception ex)
             {
@@ -52,6 +53,12 @@ namespace DABApp.iOS.DabSockets
                 sock = null;
                 isConnected = false;
             }
+        }
+
+        private void OnData(DataReceivedEventArgs data)
+        {
+            System.Diagnostics.Debug.WriteLine("/n/n");
+            System.Diagnostics.Debug.WriteLine(data.Data);
         }
 
         private void OnMessage(MessageReceivedEventArgs data)
