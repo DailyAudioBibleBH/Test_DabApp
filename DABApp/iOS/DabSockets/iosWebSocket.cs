@@ -9,6 +9,8 @@ using DABApp.DabSockets;
 using Xamarin.Forms;
 using DABApp.iOS.DabSockets;
 using WebSocket4Net;
+using Newtonsoft.Json;
+using DABApp.LoggedActionHelper;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -65,6 +67,10 @@ namespace DABApp.iOS.DabSockets
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
             System.Diagnostics.Debug.WriteLine(data.Message);
+            if (data.Message.Contains("actionLogged"))
+            {
+                var test2 = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
+            }
         }
 
         private object OnEvent(string s, object data)
