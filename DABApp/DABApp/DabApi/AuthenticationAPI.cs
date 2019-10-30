@@ -686,12 +686,8 @@ namespace DABApp
 
         public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
         {
-            //TODO: Replace this with sync
-
-
             if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
-
                 if (notPosting)
                 {
                     string listenedTo;
@@ -709,13 +705,13 @@ namespace DABApp
                                 var updatedAt = DateTime.UtcNow.ToString("o");
                                 switch (i.ActionType)
                                 {
-                                    case "favorite": //Favorited an episode
+                                    case "favorite": //Favorited an episode mutation
                                         if (i.Favorite == true)
                                             favorite = true;
                                         else
                                             favorite = false;
                                         var favVariables = new Variables();
-                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
                                         favQuery = favQuery.Replace("True", "true");
                                         favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
                                         var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
@@ -723,37 +719,35 @@ namespace DABApp
 
                                         DabSyncService.Instance.Send(favJsonIn);
                                         break;
-                                    case "listened": //Marked as listened
+                                    case "listened": //Marked as listened mutation
                                         if (i.listened_status == "listened")
                                             listenedTo = "true";
                                         else
                                             listenedTo = "false";
 
                                         var lisVariables = new Variables();
-                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; 
                                         var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
                                         break;
-                                    case "pause": //Saving player position to socket on pause
+                                    case "pause": //Saving player position to socket on pause mutation
                                         var posVariables = new Variables();
-                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}";
                                         var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
                                         var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
 
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
-                                    case "entryDate": //When event happened
+                                    case "entryDate": //When event happened mutation
                                         string entEntryDate = i.ActionDateTime.UtcDateTime.ToString("o");
                                         var entVariables = new Variables();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 
                                         DabSyncService.Instance.Send(entJsonIn);
-                                        break;
-                                    case "updatedAt": //If null, updates to time of call
                                         break;
                                     default:
                                         break;
@@ -763,7 +757,6 @@ namespace DABApp
                             {
                                 await adb.DeleteAsync(action);
                             }
-
                         }
                         catch (Exception e)
                         {
