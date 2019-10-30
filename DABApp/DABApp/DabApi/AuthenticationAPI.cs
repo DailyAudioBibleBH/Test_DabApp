@@ -706,6 +706,7 @@ namespace DABApp
 
                             foreach (var i in actions)
                             {
+                                var updatedAt = DateTime.UtcNow.ToString("o");
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode
@@ -714,7 +715,7 @@ namespace DABApp
                                         else
                                             favorite = false;
                                         var favVariables = new Variables();
-                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ") {id userId episodeId listen position favorite entryDate updatedAt createdAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
                                         favQuery = favQuery.Replace("True", "true");
                                         favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
                                         var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
@@ -729,7 +730,7 @@ namespace DABApp
                                             listenedTo = "false";
 
                                         var lisVariables = new Variables();
-                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ") {id userId episodeId listen position favorite entryDate updatedAt createdAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
                                         var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
@@ -737,7 +738,7 @@ namespace DABApp
                                         break;
                                     case "pause": //Saving player position to socket on pause
                                         var posVariables = new Variables();
-                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ") {id userId episodeId listen position favorite entryDate updatedAt createdAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
                                         var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
                                         var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
 
@@ -746,7 +747,7 @@ namespace DABApp
                                     case "entryDate": //When event happened
                                         string entEntryDate = i.ActionDateTime.UtcDateTime.ToString("o");
                                         var entVariables = new Variables();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ") {id userId episodeId listen position favorite entryDate updatedAt createdAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; //  + ", position: " + i.PlayerTime + ", favorite: " + i.Favorite.ToString().ToLower()
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 
