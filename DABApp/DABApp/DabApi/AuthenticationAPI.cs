@@ -718,6 +718,7 @@ namespace DABApp
                                         var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
 
                                         DabSyncService.Instance.Send(favJsonIn);
+                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, "is_favorite");
                                         break;
                                     case "listened": //Marked as listened mutation
                                         if (i.listened_status == "listened")
@@ -731,6 +732,7 @@ namespace DABApp
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
+                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, "");
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
                                         var posVariables = new Variables();
