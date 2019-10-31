@@ -12,6 +12,9 @@ using DABApp.Droid.DabSockets;
 using Xamarin.Forms;
 using DABApp.DabSockets;
 using WebSocket4Net;
+using Newtonsoft.Json;
+using DABApp.LoggedActionHelper;
+using DABApp.WebSocketHelper;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -22,6 +25,9 @@ namespace DABApp.Droid.DabSockets
         bool isConnected = false;
         WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
+        string actionType;
+        bool listenedTo;
+
 
         public droidWebSocket()
         {
@@ -64,6 +70,39 @@ namespace DABApp.Droid.DabSockets
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
             System.Diagnostics.Debug.WriteLine(data.Message);
+            if (data.Message.Contains("actionLogged"))
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                var actionObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message, settings);
+                var firstInstance = PlayerFeedAPI.GetEpisode(actionObject.payload.data.actionLogged.action.episodeId);
+                FirstEpisodeCompare firstEpObject = new FirstEpisodeCompare(firstInstance.is_listened_to, (int)firstInstance.stop_time, firstInstance.is_favorite);
+                var action = actionObject.payload.data.actionLogged.action;
+                if (firstEpObject.listen == "listened")
+                    listenedTo = true;
+                else
+                    listenedTo = false;
+
+                if (firstEpObject.favorite != action.favorite)
+                {
+                    actionType = "favorite";
+                }
+                else if (listenedTo != action.listen)
+                {
+                    actionType = "listened";
+                }
+                else if (firstEpObject.position != action.position)
+                {
+                    actionType = "pause";
+                }
+
+                //Need to figure out action type
+                AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
+            }
         }
 
         private object OnEvent(string s, object data)
