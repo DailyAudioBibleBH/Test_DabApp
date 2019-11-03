@@ -664,7 +664,8 @@ namespace DABApp
                 actionLog.PlayerTime = playTime;
                 actionLog.ActionType = actionType;
                 actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
-                actionLog.listened_status = actionType == "listened" ? listened : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to;
+                //check this
+                actionLog.listened_status = actionType == "listened" ? listened : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
                 var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 if (user != null)
                 {
@@ -718,7 +719,7 @@ namespace DABApp
                                         var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
 
                                         DabSyncService.Instance.Send(favJsonIn);
-                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, "is_favorite");
+                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
                                         break;
                                     case "listened": //Marked as listened mutation
                                         if (i.listened_status == "listened")
@@ -732,7 +733,7 @@ namespace DABApp
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
-                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, "");
+                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
                                         var posVariables = new Variables();
@@ -851,13 +852,13 @@ namespace DABApp
             //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
-            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == "listened").ToList();
+            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == true).ToList();
             foreach (dbEpisodes p in potential)
             {
                 if (!episodes.Any(x => x.id == p.id))
                 {
                     p.is_favorite = false;
-                    p.is_listened_to = "";
+                    p.is_listened_to = false;
                     update.Add(p);
                 }
             }

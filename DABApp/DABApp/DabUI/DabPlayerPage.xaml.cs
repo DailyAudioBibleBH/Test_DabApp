@@ -560,25 +560,26 @@ namespace DABApp
         {
             Episode.favoriteVisible = !Episode.favoriteVisible;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
+            PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, true, null, null);
             AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
         }
 
         //User listens to (or unlistens to) an episode
         async void OnListened(object o, EventArgs e)
         {
-            if (Episode.Episode.is_listened_to == "listened")
+            if (Episode.Episode.is_listened_to == true)
             {
                 //Mark episode as listened to
                 //Episode.Episode.is_listened_to = "";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
+                //check this
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, true, null, null, null);
                 await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
             }
             else
             {
                 //Mark episode as not listened to
                 //Episode.Episode.is_listened_to = "listened";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, false, null, null, null);
                 await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
             }
             //Switch the value of listened to

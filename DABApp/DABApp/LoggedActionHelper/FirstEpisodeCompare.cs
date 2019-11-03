@@ -6,11 +6,11 @@ namespace DABApp.WebSocketHelper
 {
     public class FirstEpisodeCompare
     {
-        public string listen { get; set; }
+        public bool listen { get; set; }
         public int position { get; set; }
         public bool favorite { get; set; }
 
-        public FirstEpisodeCompare(string listen, int position, bool favorite)
+        public FirstEpisodeCompare(bool listen, int position, bool favorite)
         {
             this.listen = listen;
             this.position = position;

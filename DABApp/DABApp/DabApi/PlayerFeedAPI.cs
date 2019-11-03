@@ -169,7 +169,7 @@ namespace DABApp
                                      join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
                                      where !episode.is_downloaded //not downloaded
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
-                                                           && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != "listened") //not listened to or system not set to delete listened to episodes
+                                                           && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != true) //not listened to or system not set to delete listened to episodes
                                      orderby episode.PubDate descending
                                      select episode;
             episodesToShowDownload = EpisodesToDownload.ToList();
@@ -293,30 +293,46 @@ namespace DABApp
             Debug.WriteLine($"Episodes for {resource.title} Deleted");
         }
 
-        public static async Task UpdateEpisodeProperty(int episodeId, string propertyName = null)
+        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition)
         {
             try
             {
                 var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
-                switch (propertyName)
+                if (isListened != null)
                 {
-                    case null:
-                        episode.is_listened_to = "listened";
-                        break;
-                    case "is_favorite":
-                        episode.is_favorite = !episode.is_favorite;
-                        break;
-                    case "has_journal":
-                        episode.has_journal = !episode.has_journal;
-                        if (Device.Idiom == TargetIdiom.Tablet)
-                        {
-                            MessagingCenter.Send<string>("Update", "Update");
-                        }
-                        break;
-                    case "":
-                        episode.is_listened_to = "";
-                        break;
+                    episode.is_listened_to = (bool)isListened;
                 }
+                if (isFavorite.HasValue)
+                {
+                    episode.is_favorite = (bool)isFavorite;
+                }
+                if (hasJournal.HasValue)
+                {
+                    episode.has_journal = (bool)hasJournal;
+                }
+                if (playerPosition.HasValue)
+                {
+                    //
+                }
+                //switch (propertyName)
+                //{
+                //    case null:
+                //        episode.is_listened_to = true;
+                //        break;
+                //    case "is_favorite":
+                //        episode.is_favorite = !episode.is_favorite;
+                //        break;
+                //    case "has_journal":
+                //        episode.has_journal = !episode.has_journal;
+                //        if (Device.Idiom == TargetIdiom.Tablet)
+                //        {
+                //            MessagingCenter.Send<string>("Update", "Update");
+                //        }
+                //        break;
+                //    case "":
+                //        episode.is_listened_to = false;
+                //        break;
+                //}
                 await adb.UpdateAsync(episode);
             }
             catch (Exception e)
@@ -358,7 +374,7 @@ namespace DABApp
                 {
                     var eps = from x in db.Table<dbEpisodes>()
                               where x.is_downloaded  //downloaded episodes
-                                          && (x.is_listened_to == "listened" || x.PubDate < cutoffTime)
+                                          && (x.is_listened_to == true || x.PubDate < cutoffTime)
                               select x;
                     episodesToDelete = eps.ToList();
                 }

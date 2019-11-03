@@ -75,14 +75,15 @@ namespace DABApp
 
         public bool listenedToVisible
         {
+            //check this
             get
             {
-                return unTouched = Episode.is_listened_to == "listened" ? true : false;
+                return unTouched = Episode.is_listened_to == true ? true : false;
             }
             set
             {
                 unTouched = value;
-                Episode.is_listened_to = unTouched ? "listened" : "";
+                Episode.is_listened_to = unTouched ? true : false;
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");

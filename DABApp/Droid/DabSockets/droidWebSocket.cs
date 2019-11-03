@@ -82,10 +82,10 @@ namespace DABApp.Droid.DabSockets
                 var firstInstance = PlayerFeedAPI.GetEpisode(actionObject.payload.data.actionLogged.action.episodeId);
                 FirstEpisodeCompare firstEpObject = new FirstEpisodeCompare(firstInstance.is_listened_to, (int)firstInstance.stop_time, firstInstance.is_favorite);
                 var action = actionObject.payload.data.actionLogged.action;
-                if (firstEpObject.listen == "listened")
-                    listenedTo = true;
-                else
-                    listenedTo = false;
+                //if (firstEpObject.listen == "listened")
+                //    listenedTo = true;
+                //else
+                //    listenedTo = false;
 
                 if (firstEpObject.favorite != action.favorite)
                 {
