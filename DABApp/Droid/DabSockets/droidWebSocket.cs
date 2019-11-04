@@ -92,7 +92,7 @@ namespace DABApp.Droid.DabSockets
                     actionType = "favorite";
                     await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
                 }
-                else if (listenedTo != action.listen)
+                else if (firstEpObject.listen != action.listen)
                 {
                     actionType = "listened";
                     await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
