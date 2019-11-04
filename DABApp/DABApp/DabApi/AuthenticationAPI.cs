@@ -722,7 +722,7 @@ namespace DABApp
                                         await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
                                         break;
                                     case "listened": //Marked as listened mutation
-                                        if (i.listened_status == "listened")
+                                        if (i.listened_status == "True" || i.listened_status == "listened")
                                             listenedTo = "true";
                                         else
                                             listenedTo = "false";

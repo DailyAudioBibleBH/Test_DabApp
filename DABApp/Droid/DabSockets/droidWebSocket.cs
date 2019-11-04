@@ -66,7 +66,7 @@ namespace DABApp.Droid.DabSockets
             }
         }
 
-        private void OnMessage(MessageReceivedEventArgs data)
+        private async void OnMessage(MessageReceivedEventArgs data)
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
             System.Diagnostics.Debug.WriteLine(data.Message);
@@ -90,18 +90,22 @@ namespace DABApp.Droid.DabSockets
                 if (firstEpObject.favorite != action.favorite)
                 {
                     actionType = "favorite";
+                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
                 }
                 else if (listenedTo != action.listen)
                 {
                     actionType = "listened";
+                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
                 }
                 else if (firstEpObject.position != action.position)
                 {
                     actionType = "pause";
+                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
                 }
-
-                //Need to figure out action type
-                AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, action.position, action.listen.ToString(), action.favorite);
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No action type found for websocket");
+                }
             }
         }
 
