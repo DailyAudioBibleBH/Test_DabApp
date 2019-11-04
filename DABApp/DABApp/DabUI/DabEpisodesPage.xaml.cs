@@ -99,14 +99,14 @@ namespace DABApp
             if (ep.is_listened_to == true)
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, false);
                 model.listenedToVisible = false;
 
             }
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, true);
                 model.listenedToVisible = true;
             }
         }

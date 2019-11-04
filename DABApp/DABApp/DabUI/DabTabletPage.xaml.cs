@@ -766,7 +766,7 @@ namespace DABApp
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, false);
             }
             else
             {
@@ -779,7 +779,7 @@ namespace DABApp
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, true);
             }
         }
 
@@ -789,12 +789,12 @@ namespace DABApp
             {
                 //check opposite of this 
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, false, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "");
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, false);
             }
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, true, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, true);
             }
             episode.listenedToVisible = !episode.listenedToVisible;
             //TODO: Fix completed image

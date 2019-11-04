@@ -74,7 +74,7 @@ namespace DABApp.iOS.DabSockets
                 var action = test2.payload.data.actionLogged.action;
                 
                 //Need to figure out action type
-                AuthenticationAPI.CreateNewActionLog(action.episodeId, test2.type, action.position, action.listen.ToString(), action.favorite);
+                AuthenticationAPI.CreateNewActionLog(action.episodeId, test2.type, action.position, action.listen, action.favorite);
             }
         }
 

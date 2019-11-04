@@ -573,14 +573,14 @@ namespace DABApp
                 //Episode.Episode.is_listened_to = "";
                 //check this
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, true, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, false);
             }
             else
             {
                 //Mark episode as not listened to
                 //Episode.Episode.is_listened_to = "listened";
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, false, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, true);
             }
             //Switch the value of listened to
             Episode.listenedToVisible = !Episode.listenedToVisible;

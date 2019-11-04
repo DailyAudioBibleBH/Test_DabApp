@@ -652,7 +652,7 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, string listened, bool? favorite = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, bool? listened, bool? favorite = null)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
@@ -665,7 +665,7 @@ namespace DABApp
                 actionLog.ActionType = actionType;
                 actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
                 //check this
-                actionLog.listened_status = actionType == "listened" ? listened : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
+                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
                 var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 if (user != null)
                 {
