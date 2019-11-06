@@ -312,6 +312,7 @@ namespace DABApp
                 }
                 if (playerPosition.HasValue)
                 {
+                    episode.start_time = playerPosition.Value;
                     //
                 }
                 //switch (propertyName)

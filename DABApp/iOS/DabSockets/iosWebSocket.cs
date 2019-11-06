@@ -72,9 +72,9 @@ namespace DABApp.iOS.DabSockets
                 
                 var test2 = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
                 var action = test2.payload.data.actionLogged.action;
-                
+
                 //Need to figure out action type
-                AuthenticationAPI.CreateNewActionLog(action.episodeId, test2.type, action.position, action.listen, action.favorite);
+                PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
             }
         }
 
