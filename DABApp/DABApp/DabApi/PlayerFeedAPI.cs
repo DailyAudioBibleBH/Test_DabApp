@@ -312,7 +312,15 @@ namespace DABApp
                 }
                 if (playerPosition.HasValue)
                 {
-                    episode.start_time = playerPosition.Value;
+                    episode.stop_time = playerPosition.Value;
+                    episode.remaining_time = (episode.Duration - episode.stop_time).ToString();
+                    if (GlobalResources.CurrentEpisodeId == episode.id)
+                    {
+                        //update the active player
+                        GlobalResources.playerPodcast.Seek(episode.stop_time);
+                    }
+
+                    
                     //
                 }
                 //switch (propertyName)
