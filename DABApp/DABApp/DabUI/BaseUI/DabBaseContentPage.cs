@@ -16,6 +16,11 @@ namespace DABApp
         //public StackLayout activityHolder { get; set;}
         bool giving;
 
+        //TODO: Create a method or something that pages that inherit from this can receive and do what they need to do:
+        //Episode list - reload list like pull down
+        //player page - BindCOntrols to episode
+        //tablet page - reload list, bind controls
+
 		public DabBaseContentPage()
 		{
 			//Default Page properties

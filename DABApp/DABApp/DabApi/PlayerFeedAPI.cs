@@ -323,6 +323,9 @@ namespace DABApp
                     
                     //
                 }
+
+                //TODO: Loop through app.current.mainpage(navigationpage).stack and call a method / event notifying each page episodes have changed.
+
                 //switch (propertyName)
                 //{
                 //    case null:
