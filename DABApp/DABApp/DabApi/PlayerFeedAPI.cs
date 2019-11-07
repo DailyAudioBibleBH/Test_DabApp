@@ -320,32 +320,35 @@ namespace DABApp
                         GlobalResources.playerPodcast.Seek(episode.stop_time);
                     }
 
-                    
+
                     //
                 }
 
                 //TODO: Loop through app.current.mainpage(navigationpage).stack and call a method / event notifying each page episodes have changed.
-
-                //switch (propertyName)
-                //{
-                //    case null:
-                //        episode.is_listened_to = true;
-                //        break;
-                //    case "is_favorite":
-                //        episode.is_favorite = !episode.is_favorite;
-                //        break;
-                //    case "has_journal":
-                //        episode.has_journal = !episode.has_journal;
-                //        if (Device.Idiom == TargetIdiom.Tablet)
-                //        {
-                //            MessagingCenter.Send<string>("Update", "Update");
-                //        }
-                //        break;
-                //    case "":
-                //        episode.is_listened_to = false;
-                //        break;
-                //}
-                await adb.UpdateAsync(episode);
+                foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
+                {
+                    DabBaseContentPage.UpdatePlayerEpisodeData();
+                    //switch (propertyName)
+                    //{
+                    //    case null:
+                    //        episode.is_listened_to = true;
+                    //        break;
+                    //    case "is_favorite":
+                    //        episode.is_favorite = !episode.is_favorite;
+                    //        break;
+                    //    case "has_journal":
+                    //        episode.has_journal = !episode.has_journal;
+                    //        if (Device.Idiom == TargetIdiom.Tablet)
+                    //        {
+                    //            MessagingCenter.Send<string>("Update", "Update");
+                    //        }
+                    //        break;
+                    //    case "":
+                    //        episode.is_listened_to = false;
+                    //        break;
+                    //}
+                    await adb.UpdateAsync(episode);
+                }
             }
             catch (Exception e)
             {
