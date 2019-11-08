@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Plugin.Connectivity;
@@ -85,6 +86,11 @@ namespace DABApp
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
             EpisodeList.IsEnabled = true;
+
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
+            {
+                TimedActions();
+            });
         }
 
         public void OnMonthSelected(object o, EventArgs e) {
@@ -120,6 +126,8 @@ namespace DABApp
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
             model.favoriteVisible = !ep.is_favorite;
         }
+
+        
 
         async Task Refresh()
         {

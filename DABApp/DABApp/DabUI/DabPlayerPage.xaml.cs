@@ -118,6 +118,11 @@ namespace DABApp
             infoJ.Add("episode_name", episode.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
 
+            MessagingCenter.Subscribe<string>("BindControls", "BindControls", (obj) =>
+            {
+                BindControls(true, true);
+            });
+
         }
 
         //Play or Pause the episode (not the same as the init play button)

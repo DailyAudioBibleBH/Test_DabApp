@@ -319,8 +319,6 @@ namespace DABApp
                         //update the active player
                         GlobalResources.playerPodcast.Seek(episode.stop_time);
                     }
-
-
                     //
                 }
 
