@@ -48,6 +48,17 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
             });
+
+            //Subscribe to GraphQL alerts for refresh
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    TimedActions();
+                });
+
+            });
+
             Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 TimedActions();
