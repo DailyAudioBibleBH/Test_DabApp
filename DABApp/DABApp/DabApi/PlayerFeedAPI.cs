@@ -325,9 +325,8 @@ namespace DABApp
                 }
 
                 //TODO: Loop through app.current.mainpage(navigationpage).stack and call a method / event notifying each page episodes have changed.
-                foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
-                {
-                    DabBaseContentPage.UpdatePlayerEpisodeData();
+                //foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
+                //{
                     //switch (propertyName)
                     //{
                     //    case null:
@@ -347,8 +346,9 @@ namespace DABApp
                     //        episode.is_listened_to = false;
                     //        break;
                     //}
-                    await adb.UpdateAsync(episode);
-                }
+                //}
+                await adb.UpdateAsync(episode);
+                DabBaseContentPage.UpdatePlayerEpisodeData();
             }
             catch (Exception e)
             {
