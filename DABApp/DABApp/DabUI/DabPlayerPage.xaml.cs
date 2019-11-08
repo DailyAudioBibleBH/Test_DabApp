@@ -118,9 +118,13 @@ namespace DABApp
             infoJ.Add("episode_name", episode.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
 
-            MessagingCenter.Subscribe<string>("BindControls", "BindControls", (obj) =>
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
             {
-                BindControls(true, true);
+                Device.BeginInvokeOnMainThread(() =>
+               {
+                   BindControls(true, true);
+               });
+              
             });
 
         }
@@ -340,6 +344,11 @@ namespace DABApp
             if (BindToEpisode)
             {
                 //BINDINGS TO EPISODE
+
+                //get a fresh reference to the episode
+                dbEpisodes ep = PlayerFeedAPI.GetEpisode(Episode.Episode.id.Value);
+                Episode = new EpisodeViewModel(ep);
+
 
                 //Episode Title
                 lblTitle.BindingContext = Episode;

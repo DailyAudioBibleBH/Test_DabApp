@@ -346,7 +346,7 @@ namespace DABApp
                     //}
                 //}
                 await adb.UpdateAsync(episode);
-                DabBaseContentPage.UpdatePlayerEpisodeData();
+                MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
             }
             catch (Exception e)
             {

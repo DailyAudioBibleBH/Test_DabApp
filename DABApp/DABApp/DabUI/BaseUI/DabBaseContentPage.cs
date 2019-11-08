@@ -174,7 +174,7 @@ namespace DABApp
         public static void UpdatePlayerEpisodeData()
         {
             MessagingCenter.Send<string>("Refresh", "Refresh");
-            MessagingCenter.Send<string>("BindControls", "BindControls");
+            
             //DabPlayerPage.BindControls(true, true);
             //DabTabletPage.BindControls(true, true);
             //DabTabletPage.OnRefresh();
