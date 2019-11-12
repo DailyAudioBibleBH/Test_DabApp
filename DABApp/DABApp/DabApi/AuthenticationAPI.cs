@@ -707,10 +707,6 @@ namespace DABApp
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
-                                        if (i.Favorite == true)
-                                            favorite = true;
-                                        else
-                                            favorite = false;
                                         var favVariables = new Variables();
                                         var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
                                         favQuery = favQuery.Replace("True", "true");
@@ -719,7 +715,7 @@ namespace DABApp
                                         var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
 
                                         DabSyncService.Instance.Send(favJsonIn);
-                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
+                                        //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
                                         break;
                                     case "listened": //Marked as listened mutation
                                         if (i.listened_status == "True" || i.listened_status == "listened")
@@ -733,7 +729,7 @@ namespace DABApp
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
-                                        await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
+                                        //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
                                         var posVariables = new Variables();

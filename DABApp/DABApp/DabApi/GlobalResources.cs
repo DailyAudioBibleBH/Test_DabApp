@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20190527a";
+                return "20191112";
                 //20190527a - Added extended audio data to dbEpisodes
             }
         }

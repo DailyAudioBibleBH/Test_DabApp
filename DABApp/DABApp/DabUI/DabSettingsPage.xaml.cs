@@ -57,16 +57,15 @@ namespace DABApp
         {
             LogOut.IsEnabled = false;
             player.Stop();
-           var nav = new NavigationPage(new DabLoginPage());
+            var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
             if (await AuthenticationAPI.LogOut())
             {
-                Navigation.PushModalAsync(nav);
+                await Navigation.PushModalAsync(nav);
             }
             else
             {
-                //await DisplayAlert("OH NO!", "Something went wrong, Sorry.", "OK");
-                Navigation.PushModalAsync(nav);
+                await Navigation.PushModalAsync(nav);
             }
         }
 
