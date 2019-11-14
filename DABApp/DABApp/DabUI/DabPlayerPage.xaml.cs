@@ -88,12 +88,6 @@ namespace DABApp
             journal.InitAndConnect();
             journal.JoinRoom(episode.PubDate);
 
-            //TODO: Don't think we need these events anymore, they are handled by the class
-            //JournalTracker.Current.socket.Disconnect += OnDisconnect;
-            //JournalTracker.Current.socket.Reconnecting += OnReconnecting;
-            //JournalTracker.Current.socket.Room_Error += OnRoom_Error;
-            //JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
-            //JournalTracker.Current.socket.Join_Error += OnJoin_Error;
             if (Device.RuntimePlatform == "iOS")
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
@@ -120,32 +114,14 @@ namespace DABApp
 
             MessagingCenter.Subscribe<string>("dabapp", "SocketConnected", (obj) =>
             {
-                //if (JournalWarning.IsVisible != false)                
-                //    JournalWarning.IsVisible = false;
-                //if (JournalContent.IsEnabled != true)
-                //    JournalContent.IsEnabled = true;
-                
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-                //if (JournalContent.Height < 500)
-                //{
-                //    JournalContent.HeightRequest = JournalContent.Height + 90;
-                //}                
             });
 
             MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
             {
-                //if (JournalWarning.IsVisible != true)
-                //    JournalWarning.IsVisible = true;
-                //if (JournalContent.IsEnabled != false)
-                //    JournalContent.IsEnabled = false;
                  int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-               
-                //if (JournalContent.Height > 500)
-                //{
-                //    JournalContent.HeightRequest = JournalContent.Height - 90;
-                //}                                            
             });
         }
 
@@ -496,27 +472,7 @@ namespace DABApp
                 JournalContent.IsEnabled = true;
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-                //if (JournalContent.Height < 500)
-                //{
-                //    JournalContent.HeightRequest = JournalContent.Height + 90;
-                //}
             }
-            //IDabSocket sock = DependencyService.Get<IDabSocket>(DependencyFetchTarget.NewInstance);
-            //sock.Connect();
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-            //});
-            //TODO: Replace for journal?
-            //JournalWarning.IsEnabled = false;
-            //AuthenticationAPI.ConnectJournal();
-            //Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
-            //await Task.Delay(1000);
-            //if (!JournalTracker.Current.IsConnected)
-            //{
-            //    await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
-            //}
-            //JournalWarning.IsEnabled = true;
         }
 
         //Journal reconnecting
