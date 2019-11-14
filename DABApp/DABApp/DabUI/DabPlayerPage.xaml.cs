@@ -120,21 +120,32 @@ namespace DABApp
 
             MessagingCenter.Subscribe<string>("dabapp", "SocketConnected", (obj) =>
             {
-                if (JournalContent.Height < 500)
-                {
-                    JournalContent.HeightRequest = JournalContent.Height + 90;
-                }                
+                //if (JournalWarning.IsVisible != false)                
+                //    JournalWarning.IsVisible = false;
+                //if (JournalContent.IsEnabled != true)
+                //    JournalContent.IsEnabled = true;
+                
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+                //if (JournalContent.Height < 500)
+                //{
+                //    JournalContent.HeightRequest = JournalContent.Height + 90;
+                //}                
             });
 
             MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
             {
-                 
-                JournalWarning.IsVisible = true;
-                JournalContent.IsEnabled = false;
-                if (JournalContent.Height > 500)
-                {
-                    JournalContent.HeightRequest = JournalContent.Height - 90;
-                }                                            
+                //if (JournalWarning.IsVisible != true)
+                //    JournalWarning.IsVisible = true;
+                //if (JournalContent.IsEnabled != false)
+                //    JournalContent.IsEnabled = false;
+                 int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+               
+                //if (JournalContent.Height > 500)
+                //{
+                //    JournalContent.HeightRequest = JournalContent.Height - 90;
+                //}                                            
             });
         }
 
@@ -483,10 +494,12 @@ namespace DABApp
             {
                 JournalWarning.IsVisible = false;
                 JournalContent.IsEnabled = true;
-                if (JournalContent.Height < 500)
-                {
-                    JournalContent.HeightRequest = JournalContent.Height + 90;
-                }
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+                //if (JournalContent.Height < 500)
+                //{
+                //    JournalContent.HeightRequest = JournalContent.Height + 90;
+                //}
             }
             //IDabSocket sock = DependencyService.Get<IDabSocket>(DependencyFetchTarget.NewInstance);
             //sock.Connect();
@@ -555,11 +568,11 @@ namespace DABApp
                 spacer.HeightRequest = e.Visible ? e.Height : 0;
                 if (e.IsExternalKeyboard)
                 {
-                    JournalContent.HeightRequest = original;
+                    JournalContent.HeightRequest = original + 100;
                 }
                 else
-                {
-                    JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
+                {                   
+                    JournalContent.HeightRequest = e.Visible ? original - e.Height + 50 : original + 100;
                 }
             }
         }
