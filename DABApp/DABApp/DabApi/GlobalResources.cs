@@ -207,6 +207,7 @@ namespace DABApp
 
             set
             {
+                //Change this to real last action date
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
                 string actionDate = "\"" + DateTime.UtcNow.ToString("o") + "\"";
                 LastActionsSettings.Value = actionDate;
