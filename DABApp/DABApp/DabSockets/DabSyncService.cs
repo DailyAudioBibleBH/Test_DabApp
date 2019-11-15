@@ -161,6 +161,13 @@ namespace DABApp.DabSockets
             WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
             var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
             sock.Send(SubscriptionInit);
+
+            var date = "\"2019-11-13T16:46:05.000Z\"";
+            var updateEpisodesQuery = "query{ lastActions(date: " + date + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+            var payload2 = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", payload2));
+            sock.Send(JsonIn);
+
         }
 
         /* Events to handle Binding */
