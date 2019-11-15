@@ -185,6 +185,35 @@ namespace DABApp
             }
         }
 
+        public static string GetLastActionDate
+        {
+            get
+            {
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                if (LastActionsSettings == null)
+                {
+                    string actionDate = "\"" + DateTime.MinValue.ToUniversalTime().ToString("o") + "\"";
+                    LastActionsSettings = new dbSettings();
+                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Value = actionDate;
+                    db.Insert(LastActionsSettings);
+                    return LastActionsSettings.Value;
+                }
+                else
+                {
+                    return LastActionsSettings.Value;
+                }
+            }
+
+            set
+            {
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                string actionDate = "\"" + DateTime.UtcNow.ToString("o") + "\"";
+                LastActionsSettings.Value = actionDate;
+                actionDate = value;
+            }
+        }
+
         public static string UserAvatar
         {
             get
