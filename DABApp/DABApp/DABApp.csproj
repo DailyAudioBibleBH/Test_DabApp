@@ -162,6 +162,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="DabAudio\iSimpleAudioPlayer.cs" />
+    <Compile Remove="DabData\EpisodeActionQueue.cs" />
+    <Compile Remove="WebSocketHelper\EpisodeActionQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
