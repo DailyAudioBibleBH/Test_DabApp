@@ -196,7 +196,7 @@ namespace DABApp
                     LastActionsSettings = new dbSettings();
                     LastActionsSettings.Key = "ActionDate";
                     LastActionsSettings.Value = actionDate;
-                    db.Insert(LastActionsSettings);
+                    db.InsertOrReplace(LastActionsSettings);
                     return LastActionsSettings.Value;
                 }
                 else
@@ -209,9 +209,12 @@ namespace DABApp
             {
                 //Change this to real last action date
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                string actionDate = "\"" + DateTime.UtcNow.ToString("o") + "\"";
+                string actionDate2 = "\"" + DateTime.UtcNow.ToString("o") + "\"";
+                DateTime convertActionDate = Convert.ToDateTime(value);
+                string actionDate = "\"" + convertActionDate.ToUniversalTime().ToString("o") + "\"";
+                LastActionsSettings.Key = "ActionDate";
                 LastActionsSettings.Value = actionDate;
-                actionDate = value;
+                db.InsertOrReplace(LastActionsSettings);
             }
         }
 

@@ -5,6 +5,9 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Rg.Plugins.Popup.Contracts;
 using SlideOverKit;
@@ -146,6 +149,13 @@ namespace DABApp
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
+
+            var variables = new Variables();
+            var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+            DabSyncService.Instance.Send(JsonIn);
+
             await AuthenticationAPI.PostActionLogs();
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
