@@ -150,6 +150,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
+            //Grabbing episode member data
             var variables = new Variables();
             var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
             var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);

@@ -168,7 +168,6 @@ namespace DABApp.DabSockets
             var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
             sock.Send(JsonIn);
             GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
-
         }
 
         /* Events to handle Binding */

@@ -11,6 +11,7 @@ using DABApp.iOS.DabSockets;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using DABApp.LoggedActionHelper;
+using DABApp.LastActionsHelper;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -70,11 +71,15 @@ namespace DABApp.iOS.DabSockets
             if (data.Message.Contains("actionLogged"))
             {
                 
-                var test2 = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
-                var action = test2.payload.data.actionLogged.action;
+                var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
+                var action = actionLoggedObject.payload.data.actionLogged.action;
 
                 //Need to figure out action type
                 PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+            }
+            else if (data.Message.Contains("lastActions"))
+            {
+                var lastActionsObject = JsonConvert.DeserializeObject<LastActionsRootObject>(data.Message);
             }
         }
 

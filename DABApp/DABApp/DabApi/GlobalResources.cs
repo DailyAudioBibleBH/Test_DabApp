@@ -208,10 +208,10 @@ namespace DABApp
             set
             {
                 //Change this to real last action date
+                string actionDate = "\"" + DateTime.MinValue.ToUniversalTime().ToString("o") + "\"";  //test variable
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                string actionDate2 = "\"" + DateTime.UtcNow.ToString("o") + "\"";
                 DateTime convertActionDate = Convert.ToDateTime(value);
-                string actionDate = "\"" + convertActionDate.ToUniversalTime().ToString("o") + "\"";
+                //string actionDate = "\"" + convertActionDate.ToUniversalTime().ToString("o") + "\"";
                 LastActionsSettings.Key = "ActionDate";
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
