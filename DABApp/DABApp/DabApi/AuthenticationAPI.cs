@@ -778,13 +778,11 @@ namespace DABApp
 
         public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
-            if (!GuestStatus.Current.IsGuestLogin)
             //TODO: Journal?
-            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
                 if (notGetting)
                 {
-
                     notGetting = false;
                     var start = DateTime.Now;
                     var settings = await adb.Table<dbSettings>().ToListAsync();
@@ -803,6 +801,7 @@ namespace DABApp
                             var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
                             string JsonOut = await result.Content.ReadAsStringAsync();
                             MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+
                             if (container.code == "rest_forbidden")
                             {
                                 throw new Exception($"server returned following error code:{container.code} with message: {container.message}");

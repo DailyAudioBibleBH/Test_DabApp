@@ -12,6 +12,8 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using DABApp.LoggedActionHelper;
 using DABApp.LastActionsHelper;
+using Org.Json;
+using SQLite;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -22,6 +24,8 @@ namespace DABApp.iOS.DabSockets
         bool isConnected = false;
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 
         public iosWebSocket()
         {
@@ -79,7 +83,16 @@ namespace DABApp.iOS.DabSockets
             }
             else if (data.Message.Contains("lastActions"))
             {
+                var savedEps = adb.Table<dbEpisodes>().ToListAsync();
+                List<Edge> actionsList = new List<Edge>();
                 var lastActionsObject = JsonConvert.DeserializeObject<LastActionsRootObject>(data.Message);
+                foreach (var item in lastActionsObject.payload.data.lastActions.edges)
+                {
+                    actionsList.Add(item);
+                }
+
+                //var myLinqQuery = from actions in actionsList
+                //                  where actions.id == 
             }
         }
 
