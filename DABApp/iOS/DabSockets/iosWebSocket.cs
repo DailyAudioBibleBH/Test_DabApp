@@ -12,7 +12,6 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using DABApp.LoggedActionHelper;
 using DABApp.LastActionsHelper;
-using Org.Json;
 using SQLite;
 
 [assembly: Dependency(typeof(iosWebSocket))]
@@ -68,7 +67,7 @@ namespace DABApp.iOS.DabSockets
             System.Diagnostics.Debug.WriteLine(data.Data);
         }
 
-        private void OnMessage(MessageReceivedEventArgs data)
+        private async void OnMessage(MessageReceivedEventArgs data)
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
             System.Diagnostics.Debug.WriteLine(data.Message);
@@ -79,7 +78,7 @@ namespace DABApp.iOS.DabSockets
                 var action = actionLoggedObject.payload.data.actionLogged.action;
 
                 //Need to figure out action type
-                PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+                await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
             }
             else if (data.Message.Contains("lastActions"))
             {
@@ -90,9 +89,10 @@ namespace DABApp.iOS.DabSockets
                 {
                     actionsList.Add(item);
                 }
-
-                //var myLinqQuery = from actions in actionsList
-                //                  where actions.id == 
+                foreach (var item in actionsList)
+                {
+                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, null, item.position);
+                }
             }
         }
 

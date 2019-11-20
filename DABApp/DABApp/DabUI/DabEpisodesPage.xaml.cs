@@ -68,6 +68,7 @@ namespace DABApp
                 return true;
             });
 
+            
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
@@ -154,6 +155,14 @@ namespace DABApp
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
+
+            Variables variables = new Variables();
+            var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+            DabSyncService.Instance.Send(JsonIn);
+            GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
+
             if (_resource.availableOffline)
             {
                 Task.Run(async () => {

@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 
 namespace DABApp
 {
@@ -575,7 +577,7 @@ namespace DABApp
             Episode.favoriteVisible = !Episode.favoriteVisible;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);           
         }
 
         //User listens to (or unlistens to) an episode

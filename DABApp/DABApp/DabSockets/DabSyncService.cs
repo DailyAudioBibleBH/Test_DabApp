@@ -163,11 +163,12 @@ namespace DABApp.DabSockets
             sock.Send(SubscriptionInit);
 
             //Grab existing episode data
-            var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
-            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
-            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
-            sock.Send(JsonIn);
-            GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
+            //Error about unopened database
+            //var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+            //var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+            //var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+            //DabSyncService.Instance.Send(JsonIn);
+            //GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
         }
 
         /* Events to handle Binding */
