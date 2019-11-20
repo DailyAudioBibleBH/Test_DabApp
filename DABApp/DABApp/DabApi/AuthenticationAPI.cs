@@ -793,30 +793,36 @@ namespace DABApp
                         Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
                         try
                         {
-                            HttpClient client = new HttpClient();
-                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                            var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
-                            var content = new StringContent(JsonIn);
-                            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                            var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
-                            string JsonOut = await result.Content.ReadAsStringAsync();
-                            MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+                            Variables variables = new Variables();
+                            var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+                            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+                            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+                            DabSyncService.Instance.Send(JsonIn);
 
-                            if (container.code == "rest_forbidden")
-                            {
-                                throw new Exception($"server returned following error code:{container.code} with message: {container.message}");
-                            }
-                            else
-                            {
-                                // Clean up null EpisodeIds
-                                Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
-                                container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
-                                Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
-                                Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
-                                //Save member data
-                                await SaveMemberData(container.episodes);//Saving member data to SQLite database.
-                                Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
-                            }
+                            //HttpClient client = new HttpClient();
+                            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                            //var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
+                            //var content = new StringContent(JsonIn);
+                            //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                            //var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
+                            //string JsonOut = await result.Content.ReadAsStringAsync();
+                            //MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
+
+                            //if (container.code == "rest_forbidden")
+                            //{
+                            //    throw new Exception($"server returned following error code:{container.code} with message: {container.message}");
+                            //}
+                            //else
+                            //{
+                            // Clean up null EpisodeIds
+                            //Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
+                            //container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
+                            //Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
+                            //Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
+                            ////Save member data
+                            //await SaveMemberData(container.episodes);//Saving member data to SQLite database.
+                            //Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
+                            //}
                             notGetting = true;
                             return true;
                         }
