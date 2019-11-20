@@ -51,8 +51,8 @@ namespace DABApp
             }
             else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
 
-            /* SET UP TIMERS */
-
+            /* SET UP TIMERS (run once initially)*/
+            TimedActions();
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
             {
                 TimedActions();
@@ -151,16 +151,18 @@ namespace DABApp
             }
             //Clean up old episodes
             PlayerFeedAPI.CleanUpEpisodes();
+
+            //Download new episodes
             Task.Run(async () =>
             {
-                //Download new episodes
                 await PlayerFeedAPI.DownloadEpisodes();
             });
+
+            //Send data to the server
             if (GlobalResources.GetUserName() != "Guest Guest")
             {
                 Task.Run(async () =>
                 {
-                    //Send data to the server
                     await AuthenticationAPI.PostActionLogs();
                     await AuthenticationAPI.GetMemberData();
                 });

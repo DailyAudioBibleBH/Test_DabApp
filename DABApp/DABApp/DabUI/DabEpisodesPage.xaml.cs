@@ -156,7 +156,7 @@ namespace DABApp
             await AuthenticationAPI.GetMemberData();
             TimedActions();
 
-            GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
+            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
             if (_resource.availableOffline)
             {

@@ -15,5 +15,20 @@ namespace DABApp.LastActionsHelper
         public string entryDate { get; set; }
         public DateTime updatedAt { get; set; }
         public DateTime createdAt { get; set; }
+
+        //Calculate whether item has a journal or not from the entry date
+        public bool? hasJournal
+        {
+            get
+            {
+                if (entryDate == null)
+                {
+                    return false;
+                } else
+                {
+                    return true;
+                }
+            }
+        }
     }
 }

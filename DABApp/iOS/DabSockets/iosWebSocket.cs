@@ -80,19 +80,22 @@ namespace DABApp.iOS.DabSockets
                 //Need to figure out action type
                 await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
             }
+            //process incoming lastActions
             else if (data.Message.Contains("lastActions"))
             {
-                var savedEps = adb.Table<dbEpisodes>().ToListAsync();
-                List<Edge> actionsList = new List<Edge>();
-                var lastActionsObject = JsonConvert.DeserializeObject<LastActionsRootObject>(data.Message);
-                foreach (var item in lastActionsObject.payload.data.lastActions.edges)
+                List<Edge> actionsList = new List<Edge>();  //list of actions
+                LastActionsRootObject lastActionsObject = JsonConvert.DeserializeObject<LastActionsRootObject>(data.Message);
+                foreach (Edge item in lastActionsObject.payload.data.lastActions.edges) //loop throgh them all and update episode data (without sending episode changed messages)
                 {
-                    actionsList.Add(item);
+                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position,false);
                 }
-                foreach (var item in actionsList)
+                //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                if (lastActionsObject.payload.data.lastActions.edges.Count> 0)
                 {
-                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, null, item.position);
+                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                 }
+                //store a new last action date
+                GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
             }
         }
 

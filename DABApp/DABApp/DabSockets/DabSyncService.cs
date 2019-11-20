@@ -156,11 +156,15 @@ namespace DABApp.DabSockets
             var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
             sock.Send(ConnectInit);
 
+            //Subscribe for action logs
             var variables = new Variables();
             var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
             WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
             var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
             sock.Send(SubscriptionInit);
+
+            //get recent actions when we get a connection made
+            var gmd = AuthenticationAPI.GetMemberData().Result;
 
             //Grab existing episode data
             //Error about unopened database

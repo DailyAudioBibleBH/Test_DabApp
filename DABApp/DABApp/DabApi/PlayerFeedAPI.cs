@@ -192,7 +192,7 @@ namespace DABApp
             if (!DownloadIsRunning)
             {
                 FileManager fm = new FileManager();
-                    fm.keepDownloading = true;
+                fm.keepDownloading = true;
                 DownloadIsRunning = true;
                 var episodesToDownload = new List<dbEpisodes>();
                 episodesToDownload = episodesToShowDownload;
@@ -293,60 +293,54 @@ namespace DABApp
             Debug.WriteLine($"Episodes for {resource.title} Deleted");
         }
 
-        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition)
+        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition, bool RaiseEpisodeDataChanged = true)
         {
             try
             {
-                var episode = db.Table<dbEpisodes>().Single(x => x.id == episodeId);
-                if (isListened != null)
+                //find the epissode
+                var episode = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episodeId);
+                if (episode != null) //only update episodes we have in the database
                 {
-                    episode.is_listened_to = (bool)isListened;
-                }
-                if (isFavorite.HasValue)
-                {
-                    episode.is_favorite = (bool)isFavorite;
-                }
-                if (hasJournal.HasValue)
-                {
-                    episode.has_journal = (bool)hasJournal;
-                }
-                if (playerPosition.HasValue)
-                {
-                    episode.stop_time = playerPosition.Value;
-                    episode.remaining_time = (episode.Duration - episode.stop_time).ToString();
-                    if (GlobalResources.CurrentEpisodeId == episode.id)
+                    //listened
+                    if (isListened != null)
                     {
-                        //update the active player
-                        GlobalResources.playerPodcast.Seek(episode.stop_time);
+                        episode.is_listened_to = (bool)isListened;
                     }
-                    //
+                    //favorite
+                    if (isFavorite.HasValue)
+                    {
+                        episode.is_favorite = (bool)isFavorite;
+                    }
+                    //has journal
+                    if (hasJournal.HasValue)
+                    {
+                        episode.has_journal = (bool)hasJournal;
+                    }
+                    //player position
+                    if (playerPosition.HasValue)
+                    {
+                        episode.stop_time = playerPosition.Value;
+                        episode.remaining_time = (episode.Duration - episode.stop_time).ToString();
+                        if (GlobalResources.CurrentEpisodeId == episode.id)
+                        {
+                            //update the active player
+                            GlobalResources.playerPodcast.Seek(episode.stop_time);
+                        }
+                        //
+                    }
+                    //save data to the database
+                    await adb.UpdateAsync(episode);
+                } else
+                {
+                    //TODO: Remove this - for debugging only
+                    Debug.WriteLine($"Episode {episodeId} could not be found in the database and won't be updated.");
                 }
 
-                //TODO: Loop through app.current.mainpage(navigationpage).stack and call a method / event notifying each page episodes have changed.
-                //foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
-                //{
-                    //switch (propertyName)
-                    //{
-                    //    case null:
-                    //        episode.is_listened_to = true;
-                    //        break;
-                    //    case "is_favorite":
-                    //        episode.is_favorite = !episode.is_favorite;
-                    //        break;
-                    //    case "has_journal":
-                    //        episode.has_journal = !episode.has_journal;
-                    //        if (Device.Idiom == TargetIdiom.Tablet)
-                    //        {
-                    //            MessagingCenter.Send<string>("Update", "Update");
-                    //        }
-                    //        break;
-                    //    case "":
-                    //        episode.is_listened_to = false;
-                    //        break;
-                    //}
-                //}
-                await adb.UpdateAsync(episode);
-                MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                //Notify listening pages that episode data has changed 
+                if (RaiseEpisodeDataChanged)
+                {
+                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                }
             }
             catch (Exception e)
             {
@@ -405,7 +399,7 @@ namespace DABApp
                     try
                     {
                         FileManager fm = new FileManager();
-                        if (fm.DeleteEpisode(episode.id.ToString(),episode.File_extension))
+                        if (fm.DeleteEpisode(episode.id.ToString(), episode.File_extension))
                         {
                             Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
                             episode.is_downloaded = false;

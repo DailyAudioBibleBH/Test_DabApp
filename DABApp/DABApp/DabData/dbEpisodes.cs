@@ -9,7 +9,7 @@ namespace DABApp
 {
     public class dbEpisodes
     {
-        [PrimaryKey]
+        [PrimaryKey, Indexed]
         public int? id { get; set; }
         public string title { get; set; }
         public string description { get; set; }

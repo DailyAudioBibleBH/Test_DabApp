@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20191112";
+                return "20191116";
                 //20190527a - Added extended audio data to dbEpisodes
             }
         }
@@ -185,33 +185,37 @@ namespace DABApp
             }
         }
 
-        public static string GetLastActionDate
+        public static DateTime LastActionDate
+           //Last action check date in GMT (get/set universal time)
         {
             get
             {
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
                 if (LastActionsSettings == null)
                 {
-                    string actionDate = "\"" + DateTime.MinValue.ToUniversalTime().ToString("o") + "\"";
+                    DateTime actionDate = DateTime.MinValue.ToUniversalTime();
                     LastActionsSettings = new dbSettings();
                     LastActionsSettings.Key = "ActionDate";
-                    LastActionsSettings.Value = actionDate;
+                    LastActionsSettings.Value = actionDate.ToString();
                     db.InsertOrReplace(LastActionsSettings);
-                    return LastActionsSettings.Value;
+                    return actionDate;
                 }
                 else
                 {
-                    return LastActionsSettings.Value;
+                    return DateTime.Parse(LastActionsSettings.Value);
                 }
             }
 
             set
             {
-                //Change this to real last action date
-                string actionDate = "\"" + DateTime.MinValue.ToUniversalTime().ToString("o") + "\"";  //test variable
+#if DEBUG
+                //TODO: Change don't use datetime.min in debug either once we are getting action date as actions loaded.
+                value = DateTime.MinValue;
+#endif
+
+                //Store the value sent in the database
+                string actionDate = value.ToString();
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                DateTime convertActionDate = Convert.ToDateTime(value);
-                //string actionDate = "\"" + convertActionDate.ToUniversalTime().ToString("o") + "\"";
                 LastActionsSettings.Key = "ActionDate";
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
