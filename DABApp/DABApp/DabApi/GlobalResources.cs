@@ -208,11 +208,6 @@ namespace DABApp
 
             set
             {
-#if DEBUG
-                //TODO: Change don't use datetime.min in debug either once we are getting action date as actions loaded.
-                value = DateTime.MinValue;
-#endif
-
                 //Store the value sent in the database
                 string actionDate = value.ToString();
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
