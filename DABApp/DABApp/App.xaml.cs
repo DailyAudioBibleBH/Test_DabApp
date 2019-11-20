@@ -49,33 +49,49 @@ namespace DABApp
 
         protected override async void OnSleep()
         {
-            DabSyncService.Instance.Disconnect();
-            if (Device.RuntimePlatform == "iOS")
+            try
             {
-                AuthenticationAPI.PostActionLogs();
+
+                DabSyncService.Instance.Disconnect();
+                if (Device.RuntimePlatform == "iOS")
+                {
+                    AuthenticationAPI.PostActionLogs();
+                }
+                else await AuthenticationAPI.PostActionLogs();
+
             }
-            else await AuthenticationAPI.PostActionLogs();
-            //TODO: Replace this with sync
-            //JournalTracker.Current.Open = false;
+            catch (Exception ex)
+            {
+
+            }
         }
 
         protected override async void OnResume()
         {
-            DabSyncService.Instance.Init();
-            DabSyncService.Instance.Connect();
+            try
+            {
 
-            if (GlobalResources.playerPodcast != null)
-            {
-                //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
-                GlobalResources.playerPodcast.NotifyPlayStateChanged();
+
+                DabSyncService.Instance.Init();
+                DabSyncService.Instance.Connect();
+
+                if (GlobalResources.playerPodcast != null)
+                {
+                    //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
+                    GlobalResources.playerPodcast.NotifyPlayStateChanged();
+                }
+                //TODO: Replace this with sync
+                //JournalTracker.Current.Open = true;
+                if (Device.RuntimePlatform == Device.iOS)
+                {
+                    AuthenticationAPI.GetMemberData();
+                }
+                await AuthenticationAPI.GetMemberData();
             }
-            //TODO: Replace this with sync
-            //JournalTracker.Current.Open = true;
-            if (Device.RuntimePlatform == Device.iOS)
+            catch (Exception ex)
             {
-                AuthenticationAPI.GetMemberData();
+
             }
-            await AuthenticationAPI.GetMemberData();
         }
 
 

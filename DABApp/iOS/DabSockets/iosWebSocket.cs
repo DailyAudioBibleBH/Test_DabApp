@@ -14,6 +14,7 @@ using DABApp.LoggedActionHelper;
 using DABApp.LastActionsHelper;
 using SQLite;
 
+
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
 {
@@ -69,33 +70,61 @@ namespace DABApp.iOS.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
-            System.Diagnostics.Debug.WriteLine("/n/n");
-            System.Diagnostics.Debug.WriteLine(data.Message);
-            if (data.Message.Contains("actionLogged"))
+            try
             {
-                
-                var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
-                var action = actionLoggedObject.payload.data.actionLogged.action;
 
-                //Need to figure out action type
-                await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+
+                System.Diagnostics.Debug.WriteLine("/n/n");
+                System.Diagnostics.Debug.WriteLine(data.Message);
+                if (data.Message.Contains("actionLogged"))
+                {
+
+                    var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
+                    var action = actionLoggedObject.payload.data.actionLogged.action;
+
+                    //Need to figure out action type
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+                }
+                //process incoming lastActions
+                else if (data.Message.Contains("lastActions"))
+                {
+                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
+                    if (actionsObject.payload.data.lastActions != null)
+                    {
+                        foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                        {
+                            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                        }
+                        //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                        if (actionsObject.payload.data.lastActions.edges.Count > 0)
+                        {
+                            MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        }
+                    }
+                    //store a new last action date
+                    GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                }
+                else if (data.Message.Contains("actions"))
+                {
+                    //process incoming new episode data
+                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
+                    if (actionsObject.payload.data.actions != null) //make sure we got somethign back
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
+                        foreach (Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
+                        {
+                            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                          
+                        }
+                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
+                    }
+                }
             }
-            //process incoming lastActions
-            else if (data.Message.Contains("lastActions"))
+            catch (Exception ex)
             {
-                List<Edge> actionsList = new List<Edge>();  //list of actions
-                LastActionsRootObject lastActionsObject = JsonConvert.DeserializeObject<LastActionsRootObject>(data.Message);
-                foreach (Edge item in lastActionsObject.payload.data.lastActions.edges) //loop throgh them all and update episode data (without sending episode changed messages)
-                {
-                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position,false);
-                }
-                //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
-                if (lastActionsObject.payload.data.lastActions.edges.Count> 0)
-                {
-                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                }
-                //store a new last action date
-                GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
             }
         }
 
@@ -130,7 +159,7 @@ namespace DABApp.iOS.DabSockets
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
             //Return
-            
+
             return data;
         }
 

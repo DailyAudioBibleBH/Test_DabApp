@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DABApp.LastActionsHelper
 {
-    public class LastActions
+    public class Actions
     {
         public List<Edge> edges { get; set; }
     }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DABApp.LastActionsHelper
 {
-    public class LastActionsRootObject
+    public class ActionsRootObject
     {
         public string type { get; set; }
         public Payload payload { get; set; }

@@ -6,6 +6,7 @@ namespace DABApp.LastActionsHelper
 {
     public class Data
     {
-        public LastActions lastActions { get; set; }
+        public Actions lastActions { get; set; }
+        public Actions actions { get; set; }
     }
 }

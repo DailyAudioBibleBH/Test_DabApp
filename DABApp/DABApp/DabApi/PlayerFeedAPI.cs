@@ -11,6 +11,8 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using Plugin.Connectivity;
 using System.Linq;
+using DABApp.WebSocketHelper;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -38,6 +40,7 @@ namespace DABApp
                 var result = /*GlobalResources.TestMode ? await client.GetAsync(resource.feedUrl) :*/ await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
                 string jsonOut = await result.Content.ReadAsStringAsync();
                 var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
+                List<int> episodesToGetActionsFor = new List<int>();
                 if (Episodes == null)
                 {
                     return "Server Error";
@@ -49,24 +52,30 @@ namespace DABApp
                 var start = DateTime.Now;
                 foreach (var e in Episodes)
                 {
-                    //var existing = existingEpisodes.SingleOrDefault(x => x.id == e.id);
-                    //if (existing == null)
-                    //{
-                    //    await adb.InsertOrReplaceAsync(e);
-                    //}
-                    //else
-                    //{
-                    //    e.is_listened_to = existing.is_listened_to;
-                    //    e.has_journal = existing.has_journal;
-                    //    e.is_favorite = existing.is_favorite;
-                    //    e.stop_time = existing.stop_time;
-                    //    await adb.UpdateAsync(e);
-                    //}
                     if (!existingEpisodeIds.Contains(e.id))
                     {
+                        //adding an episode to the database
                         await adb.InsertOrReplaceAsync(e);
+
+                        //add episode to list of episodes to query actions from
+                        episodesToGetActionsFor.Add(e.id.Value);
                     }
                 }
+
+                //send off request to get new episode data
+                //Send last action query to the websocket
+                int c = episodesToGetActionsFor.Count();
+                if (c > 0)
+                {
+                    Variables variables = new Variables();
+                    Debug.WriteLine($"Getting actions for {c} new episodes...");
+                    var newEpisodeQuery = "query{ actions(episodeIds: " + JsonConvert.SerializeObject(episodesToGetActionsFor) + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+                    var newEpisodePayload = new WebSocketHelper.Payload(newEpisodeQuery, variables);
+                    var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", newEpisodePayload));
+                    DabSyncService.Instance.Send(JsonIn);
+                }
+
+
                 Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
                 foreach (var old in existingEpisodes)
                 {
@@ -330,7 +339,8 @@ namespace DABApp
                     }
                     //save data to the database
                     await adb.UpdateAsync(episode);
-                } else
+                }
+                else
                 {
                     //TODO: Remove this - for debugging only
                     Debug.WriteLine($"Episode {episodeId} could not be found in the database and won't be updated.");

@@ -152,20 +152,23 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-            Payload token = new Payload(Token.Value);
-            var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
-            sock.Send(ConnectInit);
+            if (Token != null) //if user hasn't logged in this may not be valid.
+            {
+                Payload token = new Payload(Token.Value);
+                var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+                sock.Send(ConnectInit);
 
-            //Subscribe for action logs
-            var variables = new Variables();
-            var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
-            WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
-            var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
-            sock.Send(SubscriptionInit);
+                //Subscribe for action logs
+                var variables = new Variables();
+                var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
+                WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
+                var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
+                sock.Send(SubscriptionInit);
 
-            //get recent actions when we get a connection made
-            var gmd = AuthenticationAPI.GetMemberData().Result;
+                //get recent actions when we get a connection made
+                var gmd = AuthenticationAPI.GetMemberData().Result;
 
+            }
             //Grab existing episode data
             //Error about unopened database
             //var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
