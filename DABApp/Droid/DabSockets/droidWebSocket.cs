@@ -15,18 +15,19 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using DABApp.LoggedActionHelper;
 using DABApp.WebSocketHelper;
+using DABApp.LastActionsHelper;
+using Edge = DABApp.LastActionsHelper.Edge;
+using SQLite;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
 {
     public class droidWebSocket : IWebSocket
     {
-
         bool isConnected = false;
-        WebSocket sock;
+        WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
-        string actionType;
-        bool listenedTo;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
         public droidWebSocket()
@@ -50,13 +51,11 @@ namespace DABApp.Droid.DabSockets
             //Initialize the socket
             try
             {
-                var cookies = new List<KeyValuePair<string, string>>();
-                var extension = new List<KeyValuePair<string, string>>();
-                extension.Add(new KeyValuePair<string, string>("x-token", AuthenticationAPI.CurrentToken.ToString()));
-                sock = new WebSocket(Uri, "graphql-ws");//, customHeaderItems:extension);
+                sock = new WebSocket4Net.WebSocket(Uri, "graphql-ws");
                 sock.Opened += (sender, data) => { OnConnect(data); };
                 sock.MessageReceived += (sender, data) => { OnMessage(data); };
                 sock.Closed += (sender, data) => { OnDisconnect(data); };
+                sock.DataReceived += (sender, data) => { OnData(data); };
             }
             catch (Exception ex)
             {
@@ -66,46 +65,66 @@ namespace DABApp.Droid.DabSockets
             }
         }
 
-        private async void OnMessage(MessageReceivedEventArgs data)
+        private void OnData(DataReceivedEventArgs data)
         {
             System.Diagnostics.Debug.WriteLine("/n/n");
-            System.Diagnostics.Debug.WriteLine(data.Message);
-            if (data.Message.Contains("actionLogged"))
+            System.Diagnostics.Debug.WriteLine(data.Data);
+        }
+
+        private async void OnMessage(MessageReceivedEventArgs data)
+        {
+            try
             {
-                var settings = new JsonSerializerSettings
+                System.Diagnostics.Debug.WriteLine("/n/n");
+                System.Diagnostics.Debug.WriteLine(data.Message);
+                if (data.Message.Contains("actionLogged"))
                 {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    MissingMemberHandling = MissingMemberHandling.Ignore
-                };
+                    var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
+                    var action = actionLoggedObject.payload.data.actionLogged.action;
 
-                var actionObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message, settings);
-                var firstInstance = PlayerFeedAPI.GetEpisode(actionObject.payload.data.actionLogged.action.episodeId);
-                FirstEpisodeCompare firstEpObject = new FirstEpisodeCompare(firstInstance.is_listened_to, (int)firstInstance.stop_time, firstInstance.is_favorite);
-                var action = actionObject.payload.data.actionLogged.action;
-                //if (firstEpObject.listen == "listened")
-                //    listenedTo = true;
-                //else
-                //    listenedTo = false;
+                    //Need to figure out action type
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+                }
+                //process incoming lastActions
+                else if (data.Message.Contains("lastActions"))
+                {
+                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
+                    if (actionsObject.payload.data.lastActions != null)
+                    {
+                        foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                        {
+                            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                        }
+                        //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                        if (actionsObject.payload.data.lastActions.edges.Count > 0)
+                        {
+                            MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        }
+                    }
+                    //store a new last action date
+                    GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                }
+                else if (data.Message.Contains("actions"))
+                {
+                    //process incoming new episode data
+                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
+                    if (actionsObject.payload.data.actions != null) //make sure we got somethign back
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
+                        foreach (Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
+                        {
+                            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
 
-                if (firstEpObject.favorite != action.favorite)
-                {
-                    actionType = "favorite";
-                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, (int)action.position, action.listen, action.favorite);
+                        }
+                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
+                    }
                 }
-                else if (firstEpObject.listen != action.listen)
-                {
-                    actionType = "listened";
-                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, (int)action.position, action.listen, action.favorite);
-                }
-                else if (firstEpObject.position != action.position)
-                {
-                    actionType = "pause";
-                    await AuthenticationAPI.CreateNewActionLog(action.episodeId, actionType, (int)action.position, action.listen, action.favorite);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("No action type found for websocket");
-                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
             }
         }
 
@@ -135,11 +154,12 @@ namespace DABApp.Droid.DabSockets
         private object OnConnect(object data)
         {
             //Socket has connected (1st time probably)
-            System.Diagnostics.Debug.WriteLine("Sync Socket Connected");
             isConnected = true;
+            var test = sock;
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
             //Return
+
             return data;
         }
 
