@@ -591,13 +591,19 @@ namespace DABApp
             }
         }
 
-
         //TODO: Replace for journal?
-        void OnJournalChanged(object o, EventArgs e)
+        async void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)
             {
                 journal.UpdateJournal(episode.Episode.PubDate, JournalContent.Text);
+                if (episode.Episode.has_journal == false)
+                {
+                    episode.Episode.has_journal = true;
+                    episode.hasJournalVisible = true;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
+                }
             }
         }
 
@@ -763,7 +769,7 @@ namespace DABApp
             favorite.Source = episode.favoriteSource;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
             favorite.IsEnabled = true;
             favorite.Opacity = 1;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
@@ -785,7 +791,7 @@ namespace DABApp
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, false);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
             }
             else
             {
@@ -798,7 +804,7 @@ namespace DABApp
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, true);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
             }
         }
 
@@ -823,7 +829,7 @@ namespace DABApp
             episode.listenedToVisible = !episode.listenedToVisible;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, episode.Episode.is_listened_to);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to);
         }
 
         async void OnListFavorite(object o, EventArgs e)
@@ -838,7 +844,7 @@ namespace DABApp
             }
             model.favoriteVisible = !ep.is_favorite;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
         }
 
         protected override void OnSizeAllocated(double width, double height)

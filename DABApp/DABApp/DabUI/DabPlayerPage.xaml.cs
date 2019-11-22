@@ -282,7 +282,7 @@ namespace DABApp
                     Episode.Episode.has_journal = true;
                     Episode.hasJournalVisible = true;
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
                 }
             }        
         }
@@ -564,7 +564,7 @@ namespace DABApp
             Episode.favoriteVisible = !Episode.favoriteVisible;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);           
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);           
         }
 
         //User listens to (or unlistens to) an episode
@@ -577,7 +577,7 @@ namespace DABApp
             Episode.listenedToVisible = !Episode.listenedToVisible;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, Episode.Episode.is_listened_to);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.is_listened_to);
             
             //TODO: Bind accessibiliyt text
         }
