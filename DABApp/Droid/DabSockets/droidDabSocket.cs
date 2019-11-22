@@ -84,6 +84,9 @@ namespace DABApp.Droid.DabSockets
             //Socket has reconnected
             isConnected = true;
 
+            //Update UI
+            MessagingCenter.Send<string>("dabapp", "SocketConnected");
+
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("reconnected", data.ToString()));
 
@@ -95,6 +98,9 @@ namespace DABApp.Droid.DabSockets
         {
             //Socket has connected (1st time probably)
             isConnected = true;
+
+            //Update UI
+            MessagingCenter.Send<string>("dabapp", "SocketConnected");
 
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
@@ -110,6 +116,9 @@ namespace DABApp.Droid.DabSockets
 
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("disconnected", data.ToString()));
+
+            //Update the UI
+            MessagingCenter.Send<string>("dabapp", "SocketDisconnected");
 
             //Return
             return data;

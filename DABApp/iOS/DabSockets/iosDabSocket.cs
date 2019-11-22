@@ -91,8 +91,13 @@ namespace DABApp.iOS.DabSockets
             //Socket has connected (1st time probably)
             isConnected = true;
 
+            //Update UI
+            MessagingCenter.Send<string>("dabapp", "SocketConnected");
+
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
+
+            
 
             //Return
             return data;
@@ -105,6 +110,9 @@ namespace DABApp.iOS.DabSockets
 
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("disconnected", data.ToString()));
+
+            //Update the UI
+            MessagingCenter.Send<string>("dabapp", "SocketDisconnected");
 
             //Return
             return data;

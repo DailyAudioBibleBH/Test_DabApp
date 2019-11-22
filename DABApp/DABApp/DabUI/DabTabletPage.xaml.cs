@@ -387,6 +387,7 @@ namespace DABApp
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            BindControls(true, true); //rebind controls when clicking on miniplayer
             if (Device.RuntimePlatform == "iOS")
             {
                 JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height

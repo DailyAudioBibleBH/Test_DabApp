@@ -352,8 +352,9 @@ namespace DABApp
                 PodcastEmail podcastEmail = GlobalResources.Instance.PodcastEmails[Destination.SelectedIndex];
 
                 //Start a new mail message with proper destination emails
-                var mailMessage = new MailMessage("noreply@c2itconsulting.net", podcastEmail.Email);
-                mailMessage.Bcc.Add("alerts_dab@c2itconsulting.net");
+                var mailSender = new MailAddress("noreply@c2itconsulting.net", "DAB App Recordings");
+                var mailMessage = new MailMessage(mailSender,new MailAddress(podcastEmail.Email));
+                //mailMessage.Bcc.Add("alerts_dab@c2itconsulting.net"); //Removed C2IT from email alerts in 1.1.13
 
                 //Build the message content
                 mailMessage.Subject = $"{podcastEmail.Podcast} Audio Recording: {GlobalResources.GetUserName()} at {DateTime.Now.ToString()}";

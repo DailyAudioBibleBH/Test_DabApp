@@ -55,16 +55,17 @@ namespace DABApp.iOS
             var label = new UILabel();
             var color = Element.TextColor;
 			string textColor = string.Format("#{0:X2}{1:X2}{2:X2}", (int)(color.R * 255.0), (int)(color.G * 255.0), (int)(color.B * 255.0));
-			var fontName = Element.FontFamily != null ? Element.FontFamily : label.Font.Name;
-			var fontSize = Element.FontSize;
-			string tableStyle = "table{color:white}";
-			string aStyle = "a{color:grey}";
-			string htmlContents = $"<span style=\"font-family:'{fontName}'; color:{textColor}; font-size:{fontSize}\"><style>{tableStyle}</style><style>{aStyle}</style>{Element.Text}</span>";
-			var attr = new NSAttributedStringDocumentAttributes();
-			var nsError = new NSError();
-			attr.DocumentType = NSDocumentType.HTML;
+            UIStringAttributes fontName = new UIStringAttributes();  //Grabbing correct font after iOS 13 update
+            fontName.Font = UIKit.UIFont.PreferredBody;
+            var fontSize = Element.FontSize;
+            string tableStyle = "table{color:white}";
+            string aStyle = "a{color:grey}";
+            string htmlContents = $"<span style=\"font-family:'{fontName.Font.FamilyName}'; color:{textColor}; font-size:{fontSize}\"><style>{tableStyle}</style><style>{aStyle}</style>{Element.Text}</span>";
+            var attr = new NSAttributedStringDocumentAttributes();
+            var nsError = new NSError();
+            attr.DocumentType = NSDocumentType.HTML;
 
-			var myHtmlData = NSData.FromString(htmlContents, NSStringEncoding.Unicode);
+            var myHtmlData = NSData.FromString(htmlContents, NSStringEncoding.Unicode);
 			//Control.Lines = 0;
 			//Control.Text = null;
             Control.BackgroundColor = Element.BackgroundColor.ToUIColor();
