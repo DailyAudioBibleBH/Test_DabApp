@@ -740,9 +740,10 @@ namespace DABApp
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
                                     case "entryDate": //When event happened mutation
-                                        string entEntryDate = i.ActionDateTime.UtcDateTime.ToString("o");
+                                        //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
+                                        string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                                         var entVariables = new Variables();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: " + entEntryDate + ", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 

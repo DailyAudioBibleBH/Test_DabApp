@@ -271,13 +271,20 @@ namespace DABApp
 
         //TODO: These need replaced and linked back to journal
         //Journal data changed outside the app
-        void OnJournalChanged(object o, EventArgs e)
+        async void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
             {
                 journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
                 //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-            }
+                if (Episode.Episode.has_journal == false)
+                {
+                    Episode.Episode.has_journal = true;
+                    Episode.hasJournalVisible = true;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
+                }
+            }        
         }
 
         //TODO: These need replaced and linked back to journal
@@ -297,21 +304,6 @@ namespace DABApp
             {
                 journal.Reconnect();
             }
-
-            if (JournalContent.Text.Length > 0)
-            {
-                Episode.Episode.has_journal = true;
-                Episode.hasJournalVisible = true;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
-            }
-            else
-            {
-                Episode.Episode.has_journal = false;
-                Episode.hasJournalVisible = false;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, false, null);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
-            }           
         }
 
         //Form appears
