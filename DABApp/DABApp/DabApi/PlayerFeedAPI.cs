@@ -310,7 +310,6 @@ namespace DABApp
                 var episode = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episodeId);
                 if (episode != null) //only update episodes we have in the database
                 {
-                    var test = adb.GetConnection();
                     //listened
                     if (isListened != null)
                     {
@@ -339,7 +338,7 @@ namespace DABApp
                         //
                     }
                     //save data to the database
-                    await adb.UpdateAsync(episode);
+                    db.Update(episode);
                 }
                 else
                 {

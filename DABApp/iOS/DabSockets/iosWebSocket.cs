@@ -81,9 +81,15 @@ namespace DABApp.iOS.DabSockets
 
                     var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
                     var action = actionLoggedObject.payload.data.actionLogged.action;
+                    bool hasJournal;
+
+                    if (action.entryDate != null)
+                        hasJournal = true;
+                    else
+                        hasJournal = false;
 
                     //Need to figure out action type
-                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, null, action.position);
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
                 }
                 //process incoming lastActions
                 else if (data.Message.Contains("lastActions"))
@@ -155,7 +161,6 @@ namespace DABApp.iOS.DabSockets
         {
             //Socket has connected (1st time probably)
             isConnected = true;
-            var test = sock;
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
             //Return

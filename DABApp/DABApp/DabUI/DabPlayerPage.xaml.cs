@@ -290,18 +290,28 @@ namespace DABApp
 
         //TODO: These need replaced and linked back to journal
         //Journal editing finished?
-        void OffEdit(object o, EventArgs e)
+        async void OffEdit(object o, EventArgs e)
         {
             journal.ExternalUpdate = true;
             if (!journal.IsConnected)
             {
                 journal.Reconnect();
             }
-            //JournalTracker.Current.socket.ExternalUpdate = true;
-            //if (!JournalTracker.Current.IsJoined)
-            //{
-            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            //}
+
+            if (JournalContent.Text.Length > 0)
+            {
+                Episode.Episode.has_journal = true;
+                Episode.hasJournalVisible = true;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
+            }
+            else
+            {
+                Episode.Episode.has_journal = false;
+                Episode.hasJournalVisible = false;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, false, null);
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", Episode.Episode.stop_time, null, null);
+            }           
         }
 
         //Form appears
