@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20190527a";
+                return "20191116";
                 //20190527a - Added extended audio data to dbEpisodes
             }
         }
@@ -182,6 +182,38 @@ namespace DABApp
             else
             {
                 return FirstNameSettings.Value + " " + LastNameSettings.Value;
+            }
+        }
+
+        public static DateTime LastActionDate
+           //Last action check date in GMT (get/set universal time)
+        {
+            get
+            {
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                if (LastActionsSettings == null)
+                {
+                    DateTime actionDate = DateTime.MinValue.ToUniversalTime();
+                    LastActionsSettings = new dbSettings();
+                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Value = actionDate.ToString();
+                    db.InsertOrReplace(LastActionsSettings);
+                    return actionDate;
+                }
+                else
+                {
+                    return DateTime.Parse(LastActionsSettings.Value);
+                }
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                string actionDate = value.ToString();
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                LastActionsSettings.Key = "ActionDate";
+                LastActionsSettings.Value = actionDate;
+                db.InsertOrReplace(LastActionsSettings);
             }
         }
 

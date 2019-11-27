@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
@@ -18,6 +21,7 @@ namespace DABApp
 
         static bool notPosting = true;
         static bool notGetting = true;
+        static bool favorite; 
 
         public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.
         {
@@ -648,7 +652,7 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double playTime, string listened, bool? favorite = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
@@ -657,10 +661,11 @@ namespace DABApp
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
-                actionLog.PlayerTime = playTime;
+                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).stop_time;
                 actionLog.ActionType = actionType;
                 actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
-                actionLog.listened_status = actionType == "listened" ? listened : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to;
+                //check this
+                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
                 var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 if (user != null)
                 {
@@ -671,6 +676,7 @@ namespace DABApp
                     db.Insert(actionLog);
                 }
                 else await adb.InsertAsync(actionLog);
+                await PostActionLogs();
             }
             catch (Exception e)
             {
@@ -681,34 +687,71 @@ namespace DABApp
 
         public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
         {
-            //TODO: Replace this with sync
-
-
-            if (!GuestStatus.Current.IsGuestLogin)
-            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
-
                 if (notPosting)
                 {
+                    string listenedTo;
                     notPosting = false;
                     dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                     var actions = db.Table<dbPlayerActions>().ToList();
-                    if (TokenSettings != null && actions.Count > 0)
+                    if (TokenSettings != null && actions.Count > 0) 
                     {
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
-                            HttpClient client = new HttpClient();
-                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                            events.data = PlayerEpisodeAction.ParsePlayerActions(actions);
-                            var JsonIn = JsonConvert.SerializeObject(events);
-                            var content = new StringContent(JsonIn);
-                            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                            var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logevents", content);
-                            string JsonOut = await result.Content.ReadAsStringAsync();
-                            if (JsonOut != "1")
+
+                            foreach (var i in actions)
                             {
-                                throw new Exception(JsonOut);
+                                var updatedAt = DateTime.UtcNow.ToString("o");
+                                switch (i.ActionType)
+                                {
+                                    case "favorite": //Favorited an episode mutation
+                                        var favVariables = new Variables();
+                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
+                                        favQuery = favQuery.Replace("True", "true");
+                                        favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
+                                        var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
+                                        var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
+
+                                        DabSyncService.Instance.Send(favJsonIn);
+                                        //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
+                                        break;
+                                    case "listened": //Marked as listened mutation
+                                        if (i.listened_status == "True" || i.listened_status == "listened")
+                                            listenedTo = "true";
+                                        else
+                                            listenedTo = "false";
+
+                                        var lisVariables = new Variables();
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; 
+                                        var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
+                                        var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
+
+                                        DabSyncService.Instance.Send(lisJsonIn);
+                                        //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
+                                        break;
+                                    case "pause": //Saving player position to socket on pause mutation
+                                        var posVariables = new Variables();
+                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}";
+                                        var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
+                                        var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
+
+                                        DabSyncService.Instance.Send(posJsonIn);
+                                        break;
+                                    case "entryDate": //When event happened mutation
+                                        //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
+                                        string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
+                                        var entVariables = new Variables();
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
+                                        var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
+                                        var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
+
+                                        DabSyncService.Instance.Send(entJsonIn);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
                             foreach (var action in actions)
                             {
@@ -736,13 +779,10 @@ namespace DABApp
 
         public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
-            if (!GuestStatus.Current.IsGuestLogin)
-            //TODO: Journal?
-            //if (!GuestStatus.Current.IsGuestLogin && JournalTracker.Current.Open)
+            if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
                 if (notGetting)
                 {
-
                     notGetting = false;
                     var start = DateTime.Now;
                     var settings = await adb.Table<dbSettings>().ToListAsync();
@@ -753,29 +793,14 @@ namespace DABApp
                         Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
                         try
                         {
-                            HttpClient client = new HttpClient();
-                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                            var JsonIn = JsonConvert.SerializeObject(EmailSettings.Value);
-                            var content = new StringContent(JsonIn);
-                            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                            var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/data");
-                            string JsonOut = await result.Content.ReadAsStringAsync();
-                            MemberData container = JsonConvert.DeserializeObject<MemberData>(JsonOut);
-                            if (container.code == "rest_forbidden")
-                            {
-                                throw new Exception($"server returned following error code:{container.code} with message: {container.message}");
-                            }
-                            else
-                            {
-                                // Clean up null EpisodeIds
-                                Debug.WriteLine($"Pre Cleanup Episode Count: {container.episodes.Count()}");
-                                container.episodes = container.episodes.Where(x => x.id != null).ToList(); //Get rid of null episodes
-                                Debug.WriteLine($"Post Cleanup Episode Count: {container.episodes.Count()}");
-                                Debug.WriteLine($"Got member data from auth API {(DateTime.Now - start).TotalMilliseconds}");
-                                //Save member data
-                                await SaveMemberData(container.episodes);//Saving member data to SQLite database.
-                                Debug.WriteLine($"Done Saving Member data {(DateTime.Now - start).TotalMilliseconds}");
-                            }
+                            //Send last action query to the websocket
+                            Variables variables = new Variables();
+                            Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
+                            var updateEpisodesQuery = "query{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+                            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+                            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+                            DabSyncService.Instance.Send(JsonIn);
+
                             notGetting = true;
                             return true;
                         }
@@ -806,13 +831,13 @@ namespace DABApp
             //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
-            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == "listened").ToList();
+            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == true).ToList();
             foreach (dbEpisodes p in potential)
             {
                 if (!episodes.Any(x => x.id == p.id))
                 {
                     p.is_favorite = false;
-                    p.is_listened_to = "";
+                    p.is_listened_to = false;
                     update.Add(p);
                 }
             }

@@ -162,12 +162,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="DabAudio\iSimpleAudioPlayer.cs" />
+    <Compile Remove="DabData\EpisodeActionQueue.cs" />
+    <Compile Remove="WebSocketHelper\EpisodeActionQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DabAudio\" />
     <Folder Include="Resources\" />
     <Folder Include="DabNotifications\" />
-    <Folder Include="DabSockets\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\star.png" />

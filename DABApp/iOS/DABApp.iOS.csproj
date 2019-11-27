@@ -32,6 +32,7 @@
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <Optimize>true</Optimize>
@@ -46,7 +47,8 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>Automatic:AppStore</CodesignProvision>
+    <CodesignProvision>C2IT Provision Profile 20190515</CodesignProvision>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>pdbonly</DebugType>
@@ -61,6 +63,7 @@
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,6 +88,7 @@
     <CodesignExtraArgs />
     <CodesignResourceRules />
     <CodesignProvision>iOS Team Provisioning Profile: com.dailyaudiobible.dabapp</CodesignProvision>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />
@@ -144,6 +148,9 @@
     </Reference>
     <Reference Include="MarkDownDeep.iOS">
       <HintPath>..\Components\MarkDownDeep-1.1.1\lib\ios-unified\MarkDownDeep.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
@@ -363,6 +370,7 @@
     <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabMenuItemRenderer.cs" />
     <Compile Include="CustomRenderers\DabStackLayoutRenderer.cs" />
+    <Compile Include="DabSockets\iosWebSocket.cs" />
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
     <Compile Include="DependencyServices\RecordService.cs" />
