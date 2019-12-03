@@ -46,7 +46,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>C2IT Provision Profile 20190515</CodesignProvision>
+    <CodesignProvision>Automatic:AppStore</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>pdbonly</DebugType>
@@ -96,6 +96,9 @@
     </Reference>
     <Reference Include="Acr.DeviceInfo.Interface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Acr.DeviceInfo.4.0.3\lib\Xamarin.iOS10\Acr.DeviceInfo.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonMark, Version=0.1.0.0, Culture=neutral, PublicKeyToken=001ef8810438905d, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonMark.NET.0.15.1\lib\portable-net45+wp80+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\CommonMark.dll</HintPath>
     </Reference>
     <Reference Include="DLToolkit.Forms.Controls.FlowListView, Version=1.0.6237.31064, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DLToolkit.Forms.Controls.FlowListView.2.0.4\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DLToolkit.Forms.Controls.FlowListView.dll</HintPath>
@@ -193,8 +196,8 @@
     <Reference Include="Stripe">
       <HintPath>..\Components\stripe-1.0.7\lib\ios-unified\Stripe.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSocket.ClientEngine, Version=0.9.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
-      <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.9.0\lib\netstandard1.3\SuperSocket.ClientEngine.dll</HintPath>
+    <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\netstandard1.3\SuperSocket.ClientEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -217,8 +220,8 @@
     <Reference Include="WebP.Touch, Version=1.0.6443.32796, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WebP.Touch.1.0.4\lib\Xamarin.iOS10\WebP.Touch.dll</HintPath>
     </Reference>
-    <Reference Include="WebSocket4Net, Version=0.15.1.10, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebSocket4Net.0.15.1\lib\netstandard1.3\WebSocket4Net.dll</HintPath>
+    <Reference Include="WebSocket4Net, Version=0.15.2.11, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebSocket4Net.0.15.2\lib\netstandard1.3\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.2.5.1.527436\lib\Xamarin.iOS10\Xamarin.Forms.Core.dll</HintPath>
@@ -397,6 +400,7 @@
     <Compile Include="CustomRenderers\DabEditorRenderer.cs" />
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DependencyServices\iosDabNativePlayer.cs" />
+    <Compile Include="DabSockets\iosDabSocket.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />

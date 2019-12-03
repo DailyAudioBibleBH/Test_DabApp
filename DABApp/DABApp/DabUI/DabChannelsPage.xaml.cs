@@ -58,14 +58,16 @@ namespace DABApp
                 return true;
             });
 
-            Device.StartTimer(TimeSpan.FromMinutes(5), () =>
-            {
-                if (!JournalTracker.Current.IsConnected)
-                {
-                    ConnectJournal();
-                }
-                return true;
-            });
+
+            //TODO: Replace this with sync
+            //Device.StartTimer(TimeSpan.FromMinutes(5), () =>
+            //{
+            //    if (!JournalTracker.Current.IsConnected)
+            //    {
+            //        ConnectJournal();
+            //    }
+            //    return true;
+            //});
         }
 
         void PostLogs()
@@ -171,11 +173,12 @@ namespace DABApp
             }
         }
 
-        void ConnectJournal()
-        {
-            //Reconnect the journal
-            AuthenticationAPI.ConnectJournal();
-        }
+        ////TODO: Don't think we need this
+        //void ConnectJournal()
+        //{
+        //    //Reconnect the journal
+        //    AuthenticationAPI.ConnectJournal();
+        //}
 
         protected override async void OnAppearing()
         {

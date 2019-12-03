@@ -8,7 +8,7 @@ using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
-using Android.Content;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -21,6 +21,7 @@ namespace DABApp
         static double original;
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
+        DabJournalService journal;
 
         public DabPlayerPage(dbEpisodes episode, Reading Reading)
         {
@@ -31,7 +32,10 @@ namespace DABApp
             Episode = new EpisodeViewModel(episode);
             _episode = episode;
 
-            
+            //Prepare an empty journal object (needed early for binding purposes)
+            journal = new DabJournalService();
+
+
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player
@@ -80,12 +84,10 @@ namespace DABApp
                 ReadExcerpts.Text = String.Join(", ", reading.excerpts);
             }
 
-            //Connect to theƒƒjournal
-            JournalTracker.Current.socket.Disconnect += OnDisconnect;
-            JournalTracker.Current.socket.Reconnecting += OnReconnecting;
-            JournalTracker.Current.socket.Room_Error += OnRoom_Error;
-            JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
-            JournalTracker.Current.socket.Join_Error += OnJoin_Error;
+            //Connect to the journal and set up events
+            journal.InitAndConnect();
+            journal.JoinRoom(episode.PubDate);
+
             if (Device.RuntimePlatform == "iOS")
             {
                 KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
@@ -110,6 +112,17 @@ namespace DABApp
             infoJ.Add("episode_name", episode.title);
             DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
 
+            MessagingCenter.Subscribe<string>("dabapp", "SocketConnected", (obj) =>
+            {
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+            });
+
+            MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
+            {
+                 int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+            });
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -244,42 +257,52 @@ namespace DABApp
             Login.IsEnabled = true;
         }
 
+
+        //TODO: These need replaced and linked back to journal
         //Journal data changed outside the app
         void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
             {
-                JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
+                journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
+                //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
             }
         }
 
+        //TODO: These need replaced and linked back to journal
         //Journal was edited
         void OnEdit(object o, EventArgs e)
         {
-            JournalTracker.Current.socket.ExternalUpdate = false;
+            journal.ExternalUpdate = false;
+            //JournalTracker.Current.socket.ExternalUpdate = false;
         }
 
+        //TODO: These need replaced and linked back to journal
         //Journal editing finished?
         void OffEdit(object o, EventArgs e)
         {
-            JournalTracker.Current.socket.ExternalUpdate = true;
-            if (!JournalTracker.Current.IsJoined)
+            journal.ExternalUpdate = true;
+            if (!journal.IsConnected)
             {
-                JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+                journal.Reconnect();
             }
+            //JournalTracker.Current.socket.ExternalUpdate = true;
+            //if (!JournalTracker.Current.IsJoined)
+            //{
+            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
         }
 
         //Form appears
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            if (Device.RuntimePlatform == "iOS")
-            {
-                //Set up padding for the journal tab with the keyboard
-                int paddingMulti = JournalTracker.Current.IsConnected ? 4 : 6;
-                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-                original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
-            }
+
+            //TODO: Put this back in for journal
+            //Set up padding for the journal tab with the keyboard
+            int paddingMulti = journal.IsConnected ? 4 : 8;
+            JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+            original = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
 
             if (LoginJournal.IsVisible || Journal.IsVisible)
             {
@@ -294,9 +317,11 @@ namespace DABApp
                     Journal.IsVisible = true;
                 }
             }
-            if (!GuestStatus.Current.IsGuestLogin && !JournalTracker.Current.IsJoined)
+            //TODO: Replace for journal?
+            if (!GuestStatus.Current.IsGuestLogin && !journal.IsConnected)
             {
-                JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+                journal.Reconnect();
+                //JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
             }
         }
 
@@ -330,9 +355,14 @@ namespace DABApp
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
-                //Journal Title
+                //Journal
                 JournalTitle.BindingContext = Episode;
                 JournalTitle.SetBinding(Label.TextProperty, "title");
+                JournalContent.BindingContext = journal;
+                JournalContent.SetBinding(Editor.TextProperty, "Content");
+                JournalContent.SetBinding(Editor.IsEnabledProperty, "IsConnected");
+                JournalWarning.BindingContext = journal;
+                JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
             }
 
             if (BindToPlayer)
@@ -389,10 +419,11 @@ namespace DABApp
             //Bind controls for playback
             BindControls(true, true);
 
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            }
+            ////TODO: Replace for journal?
+            //if (!GuestStatus.Current.IsGuestLogin)
+            //{
+            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
+            //}
 
             //Start playing if they pushed the play button
             if (o != null)
@@ -428,19 +459,20 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //  DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-            //});
-            JournalWarning.IsEnabled = false;
-            AuthenticationAPI.ConnectJournal();
-            Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
+            journal.Reconnect();
+            journal.JoinRoom(Episode.Episode.PubDate);
             await Task.Delay(1000);
-            if (!JournalTracker.Current.IsConnected)
+            if (!journal.IsConnected)
             {
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
-            JournalWarning.IsEnabled = true;
+            if (journal.IsConnected)
+            {
+                JournalWarning.IsVisible = false;
+                JournalContent.IsEnabled = true;
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
+            }
         }
 
         //Journal reconnecting
@@ -486,16 +518,17 @@ namespace DABApp
         //Keyboard appears or disappears
         void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
         {
-            if (JournalTracker.Current.Open)
+            //TODO: Replace for journal?
+            if (journal.IsConnected)
             {
                 spacer.HeightRequest = e.Visible ? e.Height : 0;
                 if (e.IsExternalKeyboard)
                 {
-                    JournalContent.HeightRequest = original;
+                    JournalContent.HeightRequest = original + 100;
                 }
                 else
-                {
-                    JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
+                {                   
+                    JournalContent.HeightRequest = e.Visible ? original - e.Height + 50 : original + 100;
                 }
             }
         }

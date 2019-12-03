@@ -12,8 +12,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Acr.DeviceInfo" version="4.0.3" Version="4.0.3" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="DLToolkit.Forms.Controls.FlowListView" version="2.0.4" Version="2.0.4" />
     <PackageReference Include="HockeySDK.Xamarin" version="5.1.2" Version="5.1.2" />
+    <PackageReference Include="Html2Markdown" Version="3.2.1.341" />
     <PackageReference Include="Microsoft.Bcl" version="1.1.10" Version="1.1.10" />
     <PackageReference Include="Microsoft.Bcl.Build" version="1.0.14" Version="1.0.14" />
     <PackageReference Include="Microsoft.Net.Http" version="2.2.29" Version="2.2.29" />
@@ -165,13 +167,14 @@
     <Folder Include="DabAudio\" />
     <Folder Include="Resources\" />
     <Folder Include="DabNotifications\" />
+    <Folder Include="DabSockets\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\star.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Mono.Android">
-      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
+      <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -53,7 +53,8 @@ namespace DABApp
                 AuthenticationAPI.PostActionLogs();
             }
             else await AuthenticationAPI.PostActionLogs();
-            JournalTracker.Current.Open = false;
+            //TODO: Replace this with sync
+            //JournalTracker.Current.Open = false;
         }
 
         protected override async void OnResume()
@@ -63,7 +64,8 @@ namespace DABApp
                 //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
                 GlobalResources.playerPodcast.NotifyPlayStateChanged();
             }
-            JournalTracker.Current.Open = true;
+            //TODO: Replace this with sync
+            //JournalTracker.Current.Open = true;
             if (Device.RuntimePlatform == Device.iOS)
             {
                 AuthenticationAPI.GetMemberData();
