@@ -111,7 +111,7 @@ namespace DABApp.iOS.DabSockets
                     //store a new last action date
                     GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                 }
-                else if (data.Message.Contains("actions"))
+                else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {
                     //process incoming new episode data
                     List<Edge> actionsList = new List<Edge>();  //list of actions
