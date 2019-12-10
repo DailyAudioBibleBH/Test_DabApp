@@ -11,10 +11,10 @@ namespace DABApp
 
         [PrimaryKey, Indexed]
         public int EpisodeId { get; set; }
-        public bool IsListenedTo { get; set; }
-        public double CurrentPosition { get; set; } = 0;
-        public bool IsFavorite { get; set; }
-        public bool HasJournal { get; set; }
+        public bool? IsListenedTo { get; set; }
+        public double? CurrentPosition { get; set; } = 0;
+        public bool? IsFavorite { get; set; }
+        public bool? HasJournal { get; set; }
 
         public dbUserEpisodeMeta()
         {

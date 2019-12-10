@@ -342,8 +342,20 @@ namespace DABApp
                 }
                 else
                 {
-                    //TODO: Remove this - for debugging only
-                    Debug.WriteLine($"Episode {episodeId} could not be found in the database and won't be updated.");
+                    //Store the record in the user-episode meta table for later use
+                    dbUserEpisodeMeta meta = db.Table<dbUserEpisodeMeta>().SingleOrDefault(x => x.EpisodeId == episodeId);
+                    if (meta == null)
+                    {
+                        meta = new dbUserEpisodeMeta();
+                        meta.EpisodeId = episodeId; 
+                    }
+                    meta.CurrentPosition = playerPosition;
+                    meta.HasJournal = hasJournal;
+                    meta.IsFavorite = isFavorite;
+                    meta.IsListenedTo = isListened;
+
+                    db.InsertOrReplace(meta);
+                    Debug.WriteLine($"Added episode {episodeId} to meta table for later use...");
                 }
 
                 //Notify listening pages that episode data has changed 
