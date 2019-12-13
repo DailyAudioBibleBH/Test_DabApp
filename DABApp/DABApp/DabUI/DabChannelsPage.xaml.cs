@@ -141,7 +141,7 @@ namespace DABApp
 
         void TimedActions()
         {
-            if (!AuthenticationAPI.CheckToken(0))
+            if (!AuthenticationAPI.CheckToken())
             {
                 Task.Run(async () =>
                 {

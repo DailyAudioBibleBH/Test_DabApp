@@ -115,9 +115,10 @@ namespace DABApp
             }
         }
 
-        public static bool CheckToken(int days = 0)//Checking API given token which determines if user needs to log back in after a set amount of time.
+        public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
             var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+            int days = ContentConfig.Instance.options.token_life;
 
             if (expiration == null)
             {

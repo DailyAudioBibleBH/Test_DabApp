@@ -212,6 +212,8 @@ namespace DABApp
         public List<Versions> versions { get; set; }
         public AppSettings app_settings { get; set; }
 
+        public Options options { get; set; }
+
 		public async Task cachImages() 
 		{ 
 			var channelView = Instance.views.Single(x => x.title == "Channels");
@@ -369,6 +371,12 @@ namespace DABApp
         public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
         public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
         public string stage_service_link { get; set; }
+    }
+
+    public class Options
+    {
+        public int token_life { get; set; }
+        public int log_position_interval { get; set; }
     }
 
     /* Converter class to convert short month names to long names */
