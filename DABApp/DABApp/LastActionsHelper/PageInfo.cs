@@ -4,9 +4,9 @@ using System.Text;
 
 namespace DABApp.LastActionsHelper
 {
-    public class Actions
+    public class PageInfo
     {
-        public List<Edge> edges { get; set; }
-        public PageInfo pageInfo { get; set; }
+        public bool hasNextPage { get; set; }
+        public object endCursor { get; set; }
     }
 }
