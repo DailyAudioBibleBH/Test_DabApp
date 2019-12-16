@@ -461,7 +461,7 @@ namespace DABApp
         //Share the episode
         void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.id.ToString());
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.PubDate.ToString("MMddyyyy"));
         }
 
         //Journal disconnected
