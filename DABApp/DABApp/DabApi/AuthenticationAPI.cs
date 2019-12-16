@@ -796,7 +796,7 @@ namespace DABApp
                             //Send last action query to the websocket
                             Variables variables = new Variables();
                             Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                            var updateEpisodesQuery = "query{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                            var updateEpisodesQuery = "{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
                             var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
                             var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
                             DabSyncService.Instance.Send(JsonIn);
