@@ -671,11 +671,27 @@ namespace DABApp
                 {
                     actionLog.UserEmail = user.Value;
                 }
+
+                //Android - Delete all existing action logs for this episode.
+                var rowcoutn = db.Delete<dbPlayerActions>(episodeId);
+
+                var test = db.Table<dbPlayerActions>().ToList();
+                
+
+                //Insert new action log
                 if (Device.RuntimePlatform == "Android")
                 {
+
+                    //Android - add nw
                     db.Insert(actionLog);
                 }
-                else await adb.InsertAsync(actionLog);
+
+                else
+                {//Apple - asnc
+                        //Add new episode action log
+                    await adb.InsertAsync(actionLog);
+                }
+                var actions = db.Table<dbPlayerActions>().ToList();
                 await PostActionLogs();
             }
             catch (Exception e)
@@ -695,11 +711,18 @@ namespace DABApp
                     notPosting = false;
                     dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                     var actions = db.Table<dbPlayerActions>().ToList();
+                    
                     if (TokenSettings != null && actions.Count > 0) 
                     {
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
+                            List<dbPlayerActions> updatedEpisodeStates = new List<dbPlayerActions>();
+                            //var query = actions.GroupBy(x => x.EpisodeId)
+                            //                .Where(g => g.Count() > 1)
+                            //                .OrderByDescending(x => x.Key)
+                            //                .Select(y => y)
+                            //                .ToList();
 
                             foreach (var i in actions)
                             {
