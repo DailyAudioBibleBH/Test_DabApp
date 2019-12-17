@@ -676,7 +676,14 @@ namespace DABApp
                 var rowcoutn = db.Delete<dbPlayerActions>(episodeId);
 
                 var test = db.Table<dbPlayerActions>().ToList();
-                
+
+                foreach (var i in test)
+                {
+                    if (i.EpisodeId == episodeId && i.ActionType == actionType)
+                    {
+                        db.Delete(i);
+                    }
+                }
 
                 //Insert new action log
                 if (Device.RuntimePlatform == "Android")
@@ -691,7 +698,6 @@ namespace DABApp
                         //Add new episode action log
                     await adb.InsertAsync(actionLog);
                 }
-                var actions = db.Table<dbPlayerActions>().ToList();
                 await PostActionLogs();
             }
             catch (Exception e)
@@ -717,16 +723,11 @@ namespace DABApp
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
-                            List<dbPlayerActions> updatedEpisodeStates = new List<dbPlayerActions>();
-                            //var query = actions.GroupBy(x => x.EpisodeId)
-                            //                .Where(g => g.Count() > 1)
-                            //                .OrderByDescending(x => x.Key)
-                            //                .Select(y => y)
-                            //                .ToList();
-
+                           
                             foreach (var i in actions)
                             {
                                 var updatedAt = DateTime.UtcNow.ToString("o");
+                                
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
@@ -747,7 +748,7 @@ namespace DABApp
                                             listenedTo = "false";
 
                                         var lisVariables = new Variables();
-                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; 
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}";
                                         var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
@@ -766,7 +767,7 @@ namespace DABApp
                                         //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                                         var entVariables = new Variables();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 
