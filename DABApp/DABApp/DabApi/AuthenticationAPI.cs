@@ -673,11 +673,9 @@ namespace DABApp
                 }
 
                 //Android - Delete all existing action logs for this episode.
-                var rowcoutn = db.Delete<dbPlayerActions>(episodeId);
+                var actionList = db.Table<dbPlayerActions>().ToList();
 
-                var test = db.Table<dbPlayerActions>().ToList();
-
-                foreach (var i in test)
+                foreach (var i in actionList)
                 {
                     if (i.EpisodeId == episodeId && i.ActionType == actionType)
                     {
