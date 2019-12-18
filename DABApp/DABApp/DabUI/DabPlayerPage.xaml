@@ -7,7 +7,8 @@
                           xmlns:socket="clr-namespace:DABApp.DabSockets;assembly=DABApp"
                           xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
                           xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
-                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                          >
     <t:MenuContainerPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -190,11 +191,12 @@
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Share" />
                     </Grid>
-                    <StackLayout VerticalOptions="End"
+                    <StackLayout x:Name="iPhoneXLayout"> 
+                        <StackLayout x:Name="footerLayout"
+                                 VerticalOptions="End"
                                  HorizontalOptions="FillAndExpand"
                                  Orientation="Horizontal"
-                                 BackgroundColor="{DynamicResource MarkCompletedBackground}"
-                                 Padding="0, 10, 0, 10">
+                                 BackgroundColor="{DynamicResource MarkCompletedBackground}">
                         <Button x:Name="Completed"
                                 Style="{StaticResource imageButtonStyle}"
                                 HorizontalOptions="EndAndExpand"
@@ -213,6 +215,7 @@
                         </local:PlayerLabel>
                     </StackLayout>
                 </StackLayout>
+                    </StackLayout>
                 <StackLayout x:Name="Read"
                              IsVisible="false"
                              Padding="20, 20, 20, 20"

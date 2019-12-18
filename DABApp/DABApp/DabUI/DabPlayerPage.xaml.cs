@@ -37,7 +37,12 @@ namespace DABApp
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
 
-
+            if (GlobalResources.Instance.IsiPhoneX)
+            {
+                iPhoneXLayout.Margin = new Thickness(0, 0, 0, 35);
+                footerLayout.Padding = new Thickness(0, 0, 0, -8);
+                footerLayout.BackgroundColor = Color.Transparent;
+            }
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player

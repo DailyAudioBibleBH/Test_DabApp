@@ -36,6 +36,7 @@
     <PackageReference Include="Xamarin.FFImageLoading.Forms" version="2.2.25" Version="2.2.25" />
     <PackageReference Include="Xamarin.Forms" version="2.5.1.527436" Version="2.5.1.527436" />
     <PackageReference Include="Plugin.FirebasePushNotification" Version="2.3.5" />
+    <PackageReference Include="Microsoft.AppCenter" Version="2.6.4" />
   </ItemGroup>
 
   <ItemGroup>
