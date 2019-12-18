@@ -139,6 +139,11 @@ namespace DABApp
               
             });
 
+            //Play-Pause button binding
+            //Moved here to take away flicker when favoriting and marking an episode as listened to 
+            PlayPause.BindingContext = player;
+            PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -419,9 +424,7 @@ namespace DABApp
                     player.Seek(SeekBar.Value);
                 };
 
-                //Play-Pause button
-                PlayPause.BindingContext = player;
-                PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+                
             }
         }
 
