@@ -700,7 +700,6 @@ namespace DABApp
             }
             catch (Exception e)
             {
-                HockeyApp.MetricsManager.TrackEvent($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
                 Debug.WriteLine($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
             }
         }

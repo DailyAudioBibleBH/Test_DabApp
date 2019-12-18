@@ -4,7 +4,6 @@ using System.Linq;
 using DLToolkit.Forms.Controls;
 using FFImageLoading.Forms.Touch;
 using Foundation;
-using HockeyApp.iOS;
 using SegmentedControl.FormsPlugin.iOS;
 using SQLite;
 using UIKit;
@@ -20,6 +19,9 @@ using MediaPlayer;
 using Plugin.FirebasePushNotification;
 using DABApp.DabNotifications;
 using AVFoundation;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace DABApp.iOS
 {
@@ -44,11 +46,6 @@ namespace DABApp.iOS
             //Popup INit
             Rg.Plugins.Popup.Popup.Init();
 
-            //HockeyApp Init
-            var manager = BITHockeyManager.SharedHockeyManager;
-            manager.Configure("71f3b832d6bc47f3a1f96bbda4669815");
-            manager.StartManager();
-            manager.Authenticator.AuthenticateInstallation();
 
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.DependencyService.Register<ShareIntent>();
@@ -123,7 +120,7 @@ namespace DABApp.iOS
         public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, UIWindow forWindow)
         {
             //Detect Orientation of device
-            if (Device.Idiom == TargetIdiom.Phone)
+            if (Xamarin.Forms.Device.Idiom == TargetIdiom.Phone)
             {
                 return UIInterfaceOrientationMask.Portrait;
             }

@@ -17,8 +17,6 @@ using Xamarin.Forms.Platform.Android;
 using Android.Graphics;
 using Android.Support.V4.Media.Session;
 using FFImageLoading.Forms.Droid;
-using HockeyApp.Android;
-using HockeyApp.Android.Metrics;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
@@ -31,6 +29,10 @@ using Android.Support.V4.App;
 using Android.Telephony;
 using DABApp.Droid.DependencyServices;
 using Android.Media;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Device = Xamarin.Forms.Device;
 
 namespace DABApp.Droid
 {
@@ -76,7 +78,6 @@ namespace DABApp.Droid
             CachedImageRenderer.Init();
 
             SQLite_Droid.Assets = this.Assets;
-            MetricsManager.Register(Application, "63fbcb2c3fcd4491b6c380f75d2e0d4d");
             var metrics = new DisplayMetrics();
             WindowManager.DefaultDisplay.GetRealMetrics(metrics);
             GlobalResources.Instance.ScreenSize = (int)(metrics.HeightPixels / metrics.Density);
@@ -119,7 +120,6 @@ namespace DABApp.Droid
         protected override void OnResume()
         {
             base.OnResume();
-            //CrashManager.Register(this, "63fbcb2c3fcd4491b6c380f75d2e0d4d"); //Why is this here? Is it registering a crash on being woke back up?
         }
 
         public override void OnBackPressed()

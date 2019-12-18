@@ -25,7 +25,6 @@ namespace DABApp.Droid
         public override void OnCreate()
         {
             base.OnCreate();
-            
             AppContext = this.ApplicationContext;
 
             SQLite_Droid.Assets = this.Assets;
