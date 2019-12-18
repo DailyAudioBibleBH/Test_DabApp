@@ -196,7 +196,8 @@
                                  VerticalOptions="End"
                                  HorizontalOptions="FillAndExpand"
                                  Orientation="Horizontal"
-                                 BackgroundColor="{DynamicResource MarkCompletedBackground}">
+                                 BackgroundColor="{DynamicResource MarkCompletedBackground}"
+                                 Padding="0, 10, 0, 10">
                         <Button x:Name="Completed"
                                 Style="{StaticResource imageButtonStyle}"
                                 HorizontalOptions="EndAndExpand"
