@@ -201,13 +201,14 @@
                         <Button x:Name="Completed"
                                 Style="{StaticResource imageButtonStyle}"
                                 HorizontalOptions="EndAndExpand"
-                                HeightRequest="20"
-                                WidthRequest="20"
+                                HeightRequest="30"
+                                WidthRequest="30"
                                 Clicked="OnListened"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Is Episode Listened To?" />
                         <local:PlayerLabel HorizontalOptions="StartAndExpand"
                                            Text="Mark as Listened"
+                                           VerticalOptions="CenterAndExpand"
                                            Style="{StaticResource playerLabelStyle}"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Label.GestureRecognizers>

@@ -40,8 +40,8 @@ namespace DABApp
 
             if (GlobalResources.Instance.IsiPhoneX)
             {
-                iPhoneXLayout.Margin = new Thickness(0, 0, 0, 35);
-                footerLayout.Padding = new Thickness(0, 0, 0, -8);
+                iPhoneXLayout.Margin = new Thickness(0, 0, 0, 10);
+                //footerLayout.Padding = new Thickness(0, 0, 0, -8);
                 footerLayout.BackgroundColor = Color.Transparent;
             }
             //Show or hide player controls
