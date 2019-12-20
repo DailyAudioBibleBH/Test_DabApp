@@ -29,6 +29,8 @@ namespace DABApp
         {
             InitializeComponent();
 
+            throw new Exception($"fake exception");
+
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
