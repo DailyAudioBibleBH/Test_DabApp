@@ -30,8 +30,6 @@ namespace DABApp
         {
             InitializeComponent();
 
-            Crashes.GenerateTestCrash();
-
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
