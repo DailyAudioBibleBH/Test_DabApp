@@ -82,7 +82,8 @@ namespace DABApp.iOS
 
             LoadApplication(new App());
 
-
+            // AppCenter Crash & Analytic Reporting
+            AppCenter.Start("71f3b832-d6bc-47f3-a1f9-6bbda4669815", typeof(Analytics), typeof(Crashes));
 
 
             /* END AUDIO PLAYER DEFAULTS
