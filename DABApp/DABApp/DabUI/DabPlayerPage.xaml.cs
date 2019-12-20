@@ -11,6 +11,7 @@ using DABApp.DabAudio;
 using DABApp.DabSockets;
 using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
+using Microsoft.AppCenter.Crashes;
 
 namespace DABApp
 {
@@ -37,7 +38,12 @@ namespace DABApp
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
 
-
+            if (GlobalResources.Instance.IsiPhoneX)
+            {
+                iPhoneXLayout.Margin = new Thickness(0, 0, 0, 10);
+                //footerLayout.Padding = new Thickness(0, 0, 0, -8);
+                footerLayout.BackgroundColor = Color.Transparent;
+            }
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player
@@ -134,6 +140,11 @@ namespace DABApp
               
             });
 
+            //Play-Pause button binding
+            //Moved here to take away flicker when favoriting and marking an episode as listened to 
+            PlayPause.BindingContext = player;
+            PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -148,6 +159,11 @@ namespace DABApp
                 else
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
             }
             else
@@ -155,6 +171,11 @@ namespace DABApp
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
                 else
                 {
@@ -404,9 +425,7 @@ namespace DABApp
                     player.Seek(SeekBar.Value);
                 };
 
-                //Play-Pause button
-                PlayPause.BindingContext = player;
-                PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+                
             }
         }
 
@@ -461,7 +480,7 @@ namespace DABApp
         //Share the episode
         void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.id.ToString());
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.PubDate.ToString("MMddyyyy"));
         }
 
         //Journal disconnected

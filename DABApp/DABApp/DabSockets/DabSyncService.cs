@@ -27,6 +27,8 @@ namespace DABApp.DabSockets
         IWebSocket sock; //The socket connection
         public event PropertyChangedEventHandler PropertyChanged;
         SQLiteConnection db = DabData.database;
+        string origin;
+
 
         private DabSyncService()
         {
@@ -154,7 +156,19 @@ namespace DABApp.DabSockets
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
             if (Token != null) //if user hasn't logged in this may not be valid.
             {
-                Payload token = new Payload(Token.Value);
+                if(Device.RuntimePlatform == Device.Android)
+                {
+                    origin = "c2it-android";
+                }
+                else if (Device.RuntimePlatform == Device.iOS)
+                {
+                    origin = "c2it-ios";
+                }
+                else
+                {
+                    origin = "could not determine runtime platform";
+                }
+                Payload token = new Payload(Token.Value, origin);
                 var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
                 sock.Send(ConnectInit);
 
@@ -169,13 +183,6 @@ namespace DABApp.DabSockets
                 var gmd = AuthenticationAPI.GetMemberData().Result;
 
             }
-            //Grab existing episode data
-            //Error about unopened database
-            //var updateEpisodesQuery = "query{ lastActions(date: " + GlobalResources.GetLastActionDate + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
-            //var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
-            //var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
-            //DabSyncService.Instance.Send(JsonIn);
-            //GlobalResources.GetLastActionDate = DateTime.UtcNow.ToString();
         }
 
         /* Events to handle Binding */

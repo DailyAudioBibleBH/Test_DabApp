@@ -7,7 +7,8 @@
                           xmlns:socket="clr-namespace:DABApp.DabSockets;assembly=DABApp"
                           xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
                           xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
-                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                          >
     <t:MenuContainerPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -190,7 +191,9 @@
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Share" />
                     </Grid>
-                    <StackLayout VerticalOptions="End"
+                    <StackLayout x:Name="iPhoneXLayout"> 
+                        <StackLayout x:Name="footerLayout"
+                                 VerticalOptions="End"
                                  HorizontalOptions="FillAndExpand"
                                  Orientation="Horizontal"
                                  BackgroundColor="{DynamicResource MarkCompletedBackground}"
@@ -198,13 +201,14 @@
                         <Button x:Name="Completed"
                                 Style="{StaticResource imageButtonStyle}"
                                 HorizontalOptions="EndAndExpand"
-                                HeightRequest="20"
-                                WidthRequest="20"
+                                HeightRequest="30"
+                                WidthRequest="30"
                                 Clicked="OnListened"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Is Episode Listened To?" />
                         <local:PlayerLabel HorizontalOptions="StartAndExpand"
                                            Text="Mark as Listened"
+                                           VerticalOptions="CenterAndExpand"
                                            Style="{StaticResource playerLabelStyle}"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Label.GestureRecognizers>
@@ -213,6 +217,7 @@
                         </local:PlayerLabel>
                     </StackLayout>
                 </StackLayout>
+                    </StackLayout>
                 <StackLayout x:Name="Read"
                              IsVisible="false"
                              Padding="20, 20, 20, 20"

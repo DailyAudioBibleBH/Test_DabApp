@@ -96,7 +96,7 @@ namespace DABApp.Droid.DabSockets
                 {
                     List<Edge> actionsList = new List<Edge>();  //list of actions
                     ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
-                    if (actionsObject.payload.data.lastActions != null)
+                    if (actionsObject.payload.data.lastActions.pageInfo.hasNextPage == true)
                     {
                         foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
                         {
@@ -107,9 +107,32 @@ namespace DABApp.Droid.DabSockets
                         {
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
+                        //Send last action query to the websocket
+                        Variables variables = new Variables();
+                        System.Diagnostics.Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
+                        var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + actionsObject.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                        var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
+                        var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+                        DabSyncService.Instance.Send(JsonIn);
                     }
-                    //store a new last action date
-                    GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                    else
+                    {
+                        if (actionsObject.payload.data.lastActions != null)
+                        {
+                            foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                            {
+                                await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                            }
+                            //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                            if (actionsObject.payload.data.lastActions.edges.Count > 0)
+                            {
+                                MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                            }
+                        }
+
+                        //store a new last action date
+                        GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                    }                  
                 }
                 else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {

@@ -115,10 +115,10 @@ namespace DABApp
             }
         }
 
-        public static bool CheckToken(int days = 0)//Checking API given token which determines if user needs to log back in after a set amount of time.
+        public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
             var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
-
+            int days = ContentConfig.Instance.options.token_life;
             if (expiration == null)
             {
                 return false;
@@ -671,16 +671,35 @@ namespace DABApp
                 {
                     actionLog.UserEmail = user.Value;
                 }
+
+                //Android - Delete all existing action logs for this episode.
+                var actionList = db.Table<dbPlayerActions>().ToList();
+
+                foreach (var i in actionList)
+                {
+                    if (i.EpisodeId == episodeId && i.ActionType == actionType)
+                    {
+                        db.Delete(i);
+                    }
+                }
+
+                //Insert new action log
                 if (Device.RuntimePlatform == "Android")
                 {
+
+                    //Android - add nw
                     db.Insert(actionLog);
                 }
-                else await adb.InsertAsync(actionLog);
+
+                else
+                {//Apple - asnc
+                        //Add new episode action log
+                    await adb.InsertAsync(actionLog);
+                }
                 await PostActionLogs();
             }
             catch (Exception e)
             {
-                HockeyApp.MetricsManager.TrackEvent($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
                 Debug.WriteLine($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
             }
         }
@@ -695,15 +714,17 @@ namespace DABApp
                     notPosting = false;
                     dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                     var actions = db.Table<dbPlayerActions>().ToList();
+                    
                     if (TokenSettings != null && actions.Count > 0) 
                     {
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
-
+                           
                             foreach (var i in actions)
                             {
                                 var updatedAt = DateTime.UtcNow.ToString("o");
+                                
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
@@ -724,7 +745,7 @@ namespace DABApp
                                             listenedTo = "false";
 
                                         var lisVariables = new Variables();
-                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}"; 
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}";
                                         var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
                                         var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
 
@@ -743,7 +764,7 @@ namespace DABApp
                                         //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                                         var entVariables = new Variables();
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}"; 
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
                                         var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
                                         var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
 
@@ -796,7 +817,7 @@ namespace DABApp
                             //Send last action query to the websocket
                             Variables variables = new Variables();
                             Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                            var updateEpisodesQuery = "query{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
+                            var updateEpisodesQuery = "{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
                             var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
                             var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
                             DabSyncService.Instance.Send(JsonIn);

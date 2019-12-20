@@ -4,6 +4,10 @@ using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using System.Diagnostics;
 using DABApp.DabSockets;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Device = Xamarin.Forms.Device;
 
 namespace DABApp
 {
@@ -45,6 +49,7 @@ namespace DABApp
         protected override void OnStart()
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("app_startup", "start_date", DateTime.Now.ToShortDateString());
+            AppCenter.Start("ios=71f3b832-d6bc-47f3-a1f9-6bbda4669815;" + "android=63fbcb2c-3fcd-4491-b6c3-80f75d2e0d4d;", typeof(Analytics), typeof(Crashes));
         }
 
         protected override async void OnSleep()
