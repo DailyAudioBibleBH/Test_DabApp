@@ -11,6 +11,7 @@ using DABApp.DabAudio;
 using DABApp.DabSockets;
 using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
+using Microsoft.AppCenter.Crashes;
 
 namespace DABApp
 {
@@ -29,7 +30,7 @@ namespace DABApp
         {
             InitializeComponent();
 
-            throw new Exception($"fake exception");
+            Crashes.GenerateTestCrash();
 
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
