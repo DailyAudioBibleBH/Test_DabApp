@@ -172,8 +172,8 @@
                                 Clicked="OnFavorite"
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                WidthRequest="15"
-                                HeightRequest="15"
+                                WidthRequest="45"
+                                HeightRequest="45"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Is Episode Favorited?" />
                         <local:AudioOutputView x:Name="Output"
@@ -187,8 +187,8 @@
                                 Style="{StaticResource imageButtonStyle}"
                                 Grid.Row="0"
                                 Grid.Column="2"
-                                WidthRequest="10"
-                                HeightRequest="10"
+                                WidthRequest="35"
+                                HeightRequest="35"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Share" />
                     </Grid>
