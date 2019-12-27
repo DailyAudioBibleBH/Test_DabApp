@@ -496,6 +496,8 @@
     <BundleResource Include="Resources\seekbaricon%403x.png" />
     <BundleResource Include="Resources\ic_done_listened_3x.png" />
     <BundleResource Include="GoogleService-Info.plist" />
+    <BundleResource Include="Resources\ic_check_box_teal_new_3x.png" />
+    <BundleResource Include="Resources\ic_check_box_white_new_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
