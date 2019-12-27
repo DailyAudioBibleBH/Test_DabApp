@@ -142,7 +142,11 @@ namespace DABApp
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
+                    //Get fresh reference to the episode
+                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
                     BindControls(true, true);
+                    //Bind episode data in the list
+                    TimedActions();
                 });
 
             }); 
