@@ -818,6 +818,40 @@ namespace DABApp
             }
         }
 
+        async void OnListFavorite(object o, EventArgs e)
+        {
+            var mi = ((Xamarin.Forms.MenuItem)o);
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
+            //start new
+            if (ep.is_favorite == true)
+            {
+                model.favoriteVisible = false;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_favorite = false;
+                    //TODO: Fix completed image
+                    //Completed.Image = episode.listenedToSource;
+                    //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
+                    favorite.Source = episode.favoriteSource;
+                }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, false);
+            }
+            else
+            {
+                model.favoriteVisible = true;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, false, null, null);
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_favorite = true;
+                    //AutomationProperties.SetHelpText()
+                    favorite.Source = episode.favoriteSource;
+                }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, true);
+            }
+        }
+
         async void OnListened(object o, EventArgs e)
         {
             //if (episode.Episode.is_listened_to == true)
@@ -840,21 +874,6 @@ namespace DABApp
             AutomationProperties.SetName(Completed, episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to);
-        }
-
-        async void OnListFavorite(object o, EventArgs e)
-        {
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            if (ep.id == episode.Episode.id)
-            {
-                episode.favoriteVisible = !ep.is_favorite;
-                favorite.Source = episode.favoriteSource;
-            }
-            model.favoriteVisible = !ep.is_favorite;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
         }
 
         protected override void OnSizeAllocated(double width, double height)
