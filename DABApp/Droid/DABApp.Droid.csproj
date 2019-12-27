@@ -461,7 +461,7 @@
     <AndroidAsset Include="Assets\FetteEngD.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_white_3x.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_teal_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_outline_blank_white_3x.png" />
