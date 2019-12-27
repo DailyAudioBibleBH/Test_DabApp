@@ -77,7 +77,7 @@ namespace DABApp
 
         void OnOffline(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
             }
@@ -85,7 +85,7 @@ namespace DABApp
 
         void OnReset(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabResetListenedToStatusPage());
             }
@@ -93,7 +93,7 @@ namespace DABApp
 
         void OnAppInfo(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabAppInfoPage());
             }
@@ -101,7 +101,7 @@ namespace DABApp
 
         async void OnProfile(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
 
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
@@ -117,7 +117,7 @@ namespace DABApp
 
         void OnAddresses(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabAddressManagementPage());
             }
@@ -125,7 +125,7 @@ namespace DABApp
 
         async void OnWallet(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
@@ -147,7 +147,7 @@ namespace DABApp
 
         async void OnDonations(object o, EventArgs e)
         {
-            if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+            if(GlobalResources.ShouldUseSplitScreen == false)
             {
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");

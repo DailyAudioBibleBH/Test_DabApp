@@ -299,6 +299,23 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
+
+        public static bool ShouldUseSplitScreen
+        {
+            get
+            {
+                if(Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform=="Android")
+                {
+                    //Phones and Android Devices
+                    return false;
+                } else
+                {
+                    //iPad's only - eventually - we want this to be true
+                    //TODO: Return True for Ipads
+                    return false;
+                }
+            }
+        }
     }
 
 }
