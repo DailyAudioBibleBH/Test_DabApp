@@ -20,6 +20,7 @@
             <local:BackgroundImage x:Name="BackgroundImage"
                                    Aspect="AspectFill"
                                    RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                                   RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
                                    AutomationProperties.IsInAccessibleTree="false" />
             <StackLayout x:Name="Container"
                          VerticalOptions="FillAndExpand"
@@ -171,8 +172,8 @@
                                 Clicked="OnFavorite"
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                WidthRequest="15"
-                                HeightRequest="15"
+                                WidthRequest="45"
+                                HeightRequest="45"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Is Episode Favorited?" />
                         <local:AudioOutputView x:Name="Output"
@@ -186,17 +187,18 @@
                                 Style="{StaticResource imageButtonStyle}"
                                 Grid.Row="0"
                                 Grid.Column="2"
-                                WidthRequest="10"
-                                HeightRequest="10"
+                                WidthRequest="35"
+                                HeightRequest="35"
                                 AutomationProperties.IsInAccessibleTree="true"
                                 AutomationProperties.Name="Share" />
                     </Grid>
-                    <StackLayout x:Name="iPhoneXLayout"> 
+                    <StackLayout x:Name="iPhoneXLayout"
+                                 BackgroundColor="{DynamicResource MarkCompletedBackground}"> 
                         <StackLayout x:Name="footerLayout"
                                  VerticalOptions="End"
                                  HorizontalOptions="FillAndExpand"
                                  Orientation="Horizontal"
-                                 BackgroundColor="{DynamicResource MarkCompletedBackground}"
+                                 BackgroundColor="Transparent"
                                  Padding="0, 10, 0, 10">
                         <Button x:Name="Completed"
                                 Style="{StaticResource imageButtonStyle}"
@@ -208,6 +210,7 @@
                                 AutomationProperties.Name="Is Episode Listened To?" />
                         <local:PlayerLabel HorizontalOptions="StartAndExpand"
                                            Text="Mark as Listened"
+                                           FontAttributes="Bold"
                                            VerticalOptions="CenterAndExpand"
                                            Style="{StaticResource playerLabelStyle}"
                                            AutomationProperties.IsInAccessibleTree="true">

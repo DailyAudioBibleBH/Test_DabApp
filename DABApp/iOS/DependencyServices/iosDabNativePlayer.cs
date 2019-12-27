@@ -102,7 +102,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        dabplayer.Skip(15); //icon says 15 seconds
+                        dabplayer.Skip(10); //icon says 15 seconds
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -117,7 +117,7 @@ namespace DABApp.iOS
                 {
                     try
                     {
-                        dabplayer.Skip(-15); //icon says 15 seconds
+                        dabplayer.Skip(-10); //icon says 15 seconds
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)

@@ -40,7 +40,8 @@ namespace DABApp
 
             if (GlobalResources.Instance.IsiPhoneX)
             {
-                iPhoneXLayout.Margin = new Thickness(0, 0, 0, 10);
+                iPhoneXLayout.Margin = new Thickness(0, 0, 0, -20);
+                iPhoneXLayout.HeightRequest += 80;
                 //footerLayout.Padding = new Thickness(0, 0, 0, -8);
                 footerLayout.BackgroundColor = Color.Transparent;
             }

@@ -160,10 +160,11 @@ namespace DABApp
             {
                 if (listenedToVisible)
                 {
-                    return ImageSource.FromFile("ic_check_box_white_3x.png");
+                    return ImageSource.FromFile("ic_check_box_teal_3x.png");
                 }
                 else
                 {
+                    
                     return ImageSource.FromFile("ic_check_box_outline_blank_white_3x.png");
                 }
             }

@@ -47,7 +47,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
-    <CodesignProvision>C2IT Provision Profile 20190515</CodesignProvision>
+    <CodesignProvision>Chet MBP Distribution Profile</CodesignProvision>
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
@@ -496,6 +496,8 @@
     <BundleResource Include="Resources\seekbaricon%403x.png" />
     <BundleResource Include="Resources\ic_done_listened_3x.png" />
     <BundleResource Include="GoogleService-Info.plist" />
+    <BundleResource Include="Resources\ic_check_box_teal_new_3x.png" />
+    <BundleResource Include="Resources\ic_check_box_white_new_3x.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
@@ -540,6 +542,9 @@
     <BundleResource Include="Resources\record_btn.png" />
     <BundleResource Include="Resources\microphone.png" />
     <BundleResource Include="Resources\stop.png" />
+    <BundleResource Include="Resources\ic_check_box_white_new_3x.png" />
+    <BundleResource Include="Resources\ic_check_box_teal_new_3x.png" />
+    <BundleResource Include="Resources\ic_check_box_teal_3x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

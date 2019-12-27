@@ -137,7 +137,7 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.is_favorite, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
             model.favoriteVisible = !ep.is_favorite;
         }
