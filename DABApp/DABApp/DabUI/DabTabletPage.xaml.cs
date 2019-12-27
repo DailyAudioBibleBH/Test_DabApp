@@ -362,6 +362,11 @@ namespace DABApp
                 else //Play if paused
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
             }
             else
@@ -374,6 +379,11 @@ namespace DABApp
                 }
                 //start playback
                 player.Play();
+                Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                {
+                    AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                    return true;
+                });
             }
         }
 
