@@ -94,6 +94,7 @@ namespace DABApp
             favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
+            BindControls(true, true);
 
 
             //Reading area
