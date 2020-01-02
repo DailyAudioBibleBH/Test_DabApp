@@ -784,31 +784,23 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == true)
+            //start new
+
+            model.listenedToVisible = !ep.is_listened_to;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.listenedToVisible, null, null, null);
+            //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+            if (ep.id == episode.Episode.id)
             {
-                model.listenedToVisible = false;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.is_listened_to = false;
-                    //TODO: Fix completed image
-                    //Completed.Image = episode.listenedToSource;
-                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
+                episode.Episode.is_listened_to = !episode.Episode.is_listened_to;
+                //TODO: Fix completed image
+                //Completed.Image = episode.listenedToSource;
+                AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to, null);
             }
             else
             {
-                model.listenedToVisible = true;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.is_listened_to = true;
-                    //TODO: Fix completed image
-                    //Completed.Image = episode.listenedToSource;
-                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listenee", null, !episode.Episode.is_listened_to, null);
+
             }
         }
 
