@@ -75,7 +75,7 @@ namespace DABApp
             DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
 
             Settings.IsEnabled = false;
-			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+			if (GlobalResources.ShouldUseSplitScreen)
 			{
                Navigation.PushAsync(new DabTabletSettingsPage());
 			}

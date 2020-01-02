@@ -29,8 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20190527a";
-                //20190527a - Added extended audio data to dbEpisodes
+                return "20191210-AddedUserEpisodeMeta-b";
             }
         }
 
@@ -185,6 +184,38 @@ namespace DABApp
             }
         }
 
+        public static DateTime LastActionDate
+           //Last action check date in GMT (get/set universal time)
+        {
+            get
+            {
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                if (LastActionsSettings == null)
+                {
+                    DateTime actionDate = DateTime.MinValue.ToUniversalTime();
+                    LastActionsSettings = new dbSettings();
+                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Value = actionDate.ToString();
+                    db.InsertOrReplace(LastActionsSettings);
+                    return actionDate;
+                }
+                else
+                {
+                    return DateTime.Parse(LastActionsSettings.Value);
+                }
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                string actionDate = value.ToString();
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                LastActionsSettings.Key = "ActionDate";
+                LastActionsSettings.Value = actionDate;
+                db.InsertOrReplace(LastActionsSettings);
+            }
+        }
+
         public static string UserAvatar
         {
             get
@@ -268,6 +299,23 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
+
+        public static bool ShouldUseSplitScreen
+        {
+            get
+            {
+                if(Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform=="Android")
+                {
+                    //Phones and Android Devices
+                    return false;
+                } else
+                {
+                    //iPad's only - eventually - we want this to be true
+                    //TODO: Return True for Ipads
+                    return false;
+                }
+            }
+        }
     }
 
 }

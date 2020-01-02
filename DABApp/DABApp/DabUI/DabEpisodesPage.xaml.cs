@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Rg.Plugins.Popup.Contracts;
 using SlideOverKit;
@@ -47,12 +51,24 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
             });
+
+            //Subscribe to GraphQL alerts for refresh
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    TimedActions();
+                });
+
+            });
+
             Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 TimedActions();
                 return true;
             });
 
+            
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
@@ -85,6 +101,11 @@ namespace DABApp
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
             EpisodeList.IsEnabled = true;
+
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
+            {
+                TimedActions();
+            });
         }
 
         public void OnMonthSelected(object o, EventArgs e) {
@@ -96,17 +117,17 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == "listened")
+            if (ep.is_listened_to == true)
             {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
                 model.listenedToVisible = false;
 
             }
             else
             {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
                 model.listenedToVisible = true;
             }
         }
@@ -116,10 +137,12 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.is_favorite, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
             model.favoriteVisible = !ep.is_favorite;
         }
+
+        
 
         async Task Refresh()
         {
@@ -127,10 +150,14 @@ namespace DABApp
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
+
             await AuthenticationAPI.PostActionLogs();
             await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
+
+            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+
             if (_resource.availableOffline)
             {
                 Task.Run(async () => {

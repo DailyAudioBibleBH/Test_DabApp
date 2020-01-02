@@ -15,8 +15,13 @@ namespace DABApp
         //public ActivityIndicator activity { get; set;}
         //public StackLayout activityHolder { get; set;}
         bool giving;
+        Resource _resource = new Resource();
+        //TODO: Create a method or something that pages that inherit from this can receive and do what they need to do:
+        //Episode list - reload list like pull down
+        //player page - BindCOntrols to episode
+        //tablet page - reload list, bind controls
 
-		public DabBaseContentPage()
+        public DabBaseContentPage()
 		{
 			//Default Page properties
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
@@ -93,8 +98,8 @@ namespace DABApp
             }
 		}
 
-		async void OnGive(object o, EventArgs e) 
-		{
+        async void OnGive(object sender, EventArgs e)
+        {
             //Send info to Firebase analytics that user tapped an action we track
             var info = new Dictionary<string, string>();
             info.Add("title", "give");
@@ -159,6 +164,40 @@ namespace DABApp
                 activityHolder.IsVisible = false;
                 giving = false;
             }
+        }
+
+        //TODO: Create a method or something that pages that inherit from this can receive and do what they need to do:
+        //Episode list - reload list like pull down
+        //player page - BindCOntrols to episode
+        //tablet page - reload list, bind controls
+
+        public static void UpdatePlayerEpisodeData()
+        {
+            MessagingCenter.Send<string>("Refresh", "Refresh");
+            
+            //DabPlayerPage.BindControls(true, true);
+            //DabTabletPage.BindControls(true, true);
+            //DabTabletPage.OnRefresh();
+
+            //foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
+            //{
+            //Resource _resource = new Resource();
+            //DabEpisodesPage episodesPage = new DabEpisodesPage(_resource);
+            //await episodesPage.Refresh();
+            //await AuthenticationAPI.PostActionLogs();
+            //await PlayerFeedAPI.GetEpisodes(_resource);
+            //await AuthenticationAPI.GetMemberData();
+            ////episodesPage.TimedActions();
+            //if (_resource.availableOffline)
+            //{
+            //    Task.Run(async () =>
+            //    {
+            //        await PlayerFeedAPI.DownloadEpisodes();
+            //        //CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+            //        //circularProgressControl.HandleDownloadVisibleChanged(true);
+            //    });
+            //}
+            //}
         }
 
         public void Unsubscribe()

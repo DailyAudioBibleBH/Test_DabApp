@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
+using Microsoft.AppCenter.Crashes;
 
 namespace DABApp
 {
@@ -35,7 +38,13 @@ namespace DABApp
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
 
-
+            if (GlobalResources.Instance.IsiPhoneX)
+            {
+                iPhoneXLayout.Margin = new Thickness(0, 0, 0, -20);
+                iPhoneXLayout.HeightRequest += 80;
+                //footerLayout.Padding = new Thickness(0, 0, 0, -8);
+                footerLayout.BackgroundColor = Color.Transparent;
+            }
             //Show or hide player controls
 
             //first episode being played, bind controls to episode and player
@@ -123,6 +132,20 @@ namespace DABApp
                  int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+               {
+                   BindControls(true, true);
+               });
+              
+            });
+
+            //Play-Pause button binding
+            //Moved here to take away flicker when favoriting and marking an episode as listened to 
+            PlayPause.BindingContext = player;
+            PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -137,6 +160,11 @@ namespace DABApp
                 else
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
             }
             else
@@ -144,6 +172,11 @@ namespace DABApp
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
                 else
                 {
@@ -260,13 +293,20 @@ namespace DABApp
 
         //TODO: These need replaced and linked back to journal
         //Journal data changed outside the app
-        void OnJournalChanged(object o, EventArgs e)
+        async void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
             {
                 journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
                 //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-            }
+                if (Episode.Episode.has_journal == false)
+                {
+                    Episode.Episode.has_journal = true;
+                    Episode.hasJournalVisible = true;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
+                }
+            }        
         }
 
         //TODO: These need replaced and linked back to journal
@@ -279,18 +319,13 @@ namespace DABApp
 
         //TODO: These need replaced and linked back to journal
         //Journal editing finished?
-        void OffEdit(object o, EventArgs e)
+        async void OffEdit(object o, EventArgs e)
         {
             journal.ExternalUpdate = true;
             if (!journal.IsConnected)
             {
                 journal.Reconnect();
             }
-            //JournalTracker.Current.socket.ExternalUpdate = true;
-            //if (!JournalTracker.Current.IsJoined)
-            //{
-            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            //}
         }
 
         //Form appears
@@ -330,6 +365,11 @@ namespace DABApp
             if (BindToEpisode)
             {
                 //BINDINGS TO EPISODE
+
+                //get a fresh reference to the episode
+                dbEpisodes ep = PlayerFeedAPI.GetEpisode(Episode.Episode.id.Value);
+                Episode = new EpisodeViewModel(ep);
+
 
                 //Episode Title
                 lblTitle.BindingContext = Episode;
@@ -386,9 +426,7 @@ namespace DABApp
                     player.Seek(SeekBar.Value);
                 };
 
-                //Play-Pause button
-                PlayPause.BindingContext = player;
-                PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+                
             }
         }
 
@@ -443,7 +481,7 @@ namespace DABApp
         //Share the episode
         void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.id.ToString());
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.PubDate.ToString("MMddyyyy"));
         }
 
         //Journal disconnected
@@ -541,35 +579,27 @@ namespace DABApp
         }
 
         //User favorites (or unfavorites) an episode
-        void OnFavorite(object o, EventArgs e)
+        async void OnFavorite(object o, EventArgs e)
         {
             Episode.favoriteVisible = !Episode.favoriteVisible;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "is_favorite");
-            AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", Episode.Episode.stop_time, null, Episode.Episode.is_favorite);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);           
         }
 
         //User listens to (or unlistens to) an episode
         async void OnListened(object o, EventArgs e)
         {
-            if (Episode.Episode.is_listened_to == "listened")
-            {
-                //Mark episode as listened to
-                //Episode.Episode.is_listened_to = "";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, "");
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "");
-            }
-            else
-            {
-                //Mark episode as not listened to
-                //Episode.Episode.is_listened_to = "listened";
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", Episode.Episode.stop_time, "listened");
-            }
-            //Switch the value of listened to
+            
+            //Mark episode as listened to
+            //Episode.Episode.is_listened_to = "";
+            //check this
             Episode.listenedToVisible = !Episode.listenedToVisible;
-            //TODO: Bind accessibiliyt text
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.is_listened_to);
+            
+            //TODO: Bind accessibiliyt text
         }
 
         //User listens to (or unlistens to) an episode

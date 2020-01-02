@@ -94,6 +94,7 @@ namespace DABApp
             favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
+            BindControls(true, true);
 
 
             //Reading area
@@ -138,6 +139,18 @@ namespace DABApp
             };
             AboutFormat.GestureRecognizers.Add(tapper);
 
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    //Get fresh reference to the episode
+                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                    BindControls(true, true);
+                    //Bind episode data in the list
+                    TimedActions();
+                });
+
+            }); 
         }
 
         void Handle_SegControlValueChanged(object sender, System.EventArgs e)
@@ -354,6 +367,11 @@ namespace DABApp
                 else //Play if paused
                 {
                     player.Play();
+                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                    {
+                        AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                        return true;
+                    });
                 }
             }
             else
@@ -366,13 +384,18 @@ namespace DABApp
                 }
                 //start playback
                 player.Play();
+                Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+                {
+                    AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                    return true;
+                });
             }
         }
 
         //Share the episode
         void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.id.ToString());
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.PubDate.ToString("MMddyyyy"));
         }
 
         //Page appears event
@@ -583,13 +606,19 @@ namespace DABApp
             }
         }
 
-
         //TODO: Replace for journal?
-        void OnJournalChanged(object o, EventArgs e)
+        async void OnJournalChanged(object o, EventArgs e)
         {
             if (JournalContent.IsFocused)
             {
                 journal.UpdateJournal(episode.Episode.PubDate, JournalContent.Text);
+                if (episode.Episode.has_journal == false)
+                {
+                    episode.Episode.has_journal = true;
+                    episode.hasJournalVisible = true;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
+                }
             }
         }
 
@@ -738,17 +767,27 @@ namespace DABApp
 
         async void OnFavorite(object o, EventArgs e)
         {
+            //favorite.IsEnabled = false;
+            //favorite.Opacity = .5;
+            //episode.Episode.is_favorite = !episode.Episode.is_favorite;
+            //favorite.Source = episode.favoriteSource;
+            //await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, true, null, null);
+            //await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
+            //favorite.Opacity = 1;
+            //favorite.IsEnabled = true;
+            //AutomationProperties.SetName(favorite, episode.favoriteAccessible);
+            ////EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
+            //TimedActions();
             favorite.IsEnabled = false;
             favorite.Opacity = .5;
-            episode.Episode.is_favorite = !episode.Episode.is_favorite;
+            episode.favoriteVisible = !episode.favoriteVisible;
             favorite.Source = episode.favoriteSource;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
-            favorite.Opacity = 1;
-            favorite.IsEnabled = true;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+            favorite.IsEnabled = true;
+            favorite.Opacity = 1;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-            TimedActions();
         }
 
         async void OnListListened(object o, EventArgs e)
@@ -756,51 +795,32 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == "listened")
+            if (ep.is_listened_to == true)
             {
                 model.listenedToVisible = false;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "");
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_listened_to = "";
+                    episode.Episode.is_listened_to = false;
                     //TODO: Fix completed image
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
             }
             else
             {
                 model.listenedToVisible = true;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_listened_to = "listened";
+                    episode.Episode.is_listened_to = true;
                     //TODO: Fix completed image
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                 }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", ep.stop_time, "listened");
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
             }
-        }
-
-        async void OnListened(object o, EventArgs e)
-        {
-            if (episode.Episode.is_listened_to == "listened")
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, "");
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "");
-            }
-            else
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, "listened");
-            }
-            episode.listenedToVisible = !episode.listenedToVisible;
-            //TODO: Fix completed image
-            //Completed.Image = episode.listenedToSource;
-            AutomationProperties.SetName(Completed, episode.listenAccessible);
-            TimedActions();
         }
 
         async void OnListFavorite(object o, EventArgs e)
@@ -808,14 +828,57 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.id == episode.Episode.id)
+            //start new
+            if (ep.is_favorite == true)
             {
-                episode.favoriteVisible = !ep.is_favorite;
-                favorite.Source = episode.favoriteSource;
+                model.favoriteVisible = false;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_favorite = false;
+                    //TODO: Fix completed image
+                    //Completed.Image = episode.listenedToSource;
+                    //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
+                    favorite.Source = episode.favoriteSource;
+                }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, false);
             }
-            model.favoriteVisible = !ep.is_favorite;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, "is_favorite");
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", ep.stop_time, null, !ep.is_favorite);
+            else
+            {
+                model.favoriteVisible = true;
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, false, null, null);
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_favorite = true;
+                    //AutomationProperties.SetHelpText()
+                    favorite.Source = episode.favoriteSource;
+                }
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, true);
+            }
+        }
+
+        async void OnListened(object o, EventArgs e)
+        {
+            //if (episode.Episode.is_listened_to == true)
+            //{
+            //    //check opposite of this 
+            //    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, false, null, null, null);
+            //    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, false);
+            //}
+            //else
+            //{
+            //    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, true, null, null, null);
+            //    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, true);
+            //}
+            //episode.listenedToVisible = !episode.listenedToVisible;
+            ////TODO: Fix completed image
+            ////Completed.Image = episode.listenedToSource;
+            //AutomationProperties.SetName(Completed, episode.listenAccessible);
+            //TimedActions();
+            episode.listenedToVisible = !episode.listenedToVisible;
+            AutomationProperties.SetName(Completed, episode.listenAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to);
         }
 
         protected override void OnSizeAllocated(double width, double height)

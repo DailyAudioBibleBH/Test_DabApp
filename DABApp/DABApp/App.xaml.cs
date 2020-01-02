@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
 using System.Diagnostics;
+using DABApp.DabSockets;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using Device = Xamarin.Forms.Device;
 
 namespace DABApp
 {
@@ -44,33 +49,54 @@ namespace DABApp
         protected override void OnStart()
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("app_startup", "start_date", DateTime.Now.ToShortDateString());
+            AppCenter.Start("ios=71f3b832-d6bc-47f3-a1f9-6bbda4669815;" + "android=63fbcb2c-3fcd-4491-b6c3-80f75d2e0d4d;", typeof(Analytics), typeof(Crashes));
         }
 
         protected override async void OnSleep()
         {
-            if (Device.RuntimePlatform == "iOS")
+            try
             {
-                AuthenticationAPI.PostActionLogs();
+
+                DabSyncService.Instance.Disconnect();
+                if (Device.RuntimePlatform == "iOS")
+                {
+                    AuthenticationAPI.PostActionLogs();
+                }
+                else await AuthenticationAPI.PostActionLogs();
+
             }
-            else await AuthenticationAPI.PostActionLogs();
-            //TODO: Replace this with sync
-            //JournalTracker.Current.Open = false;
+            catch (Exception ex)
+            {
+
+            }
         }
 
         protected override async void OnResume()
         {
-            if (GlobalResources.playerPodcast != null)
+            try
             {
-                //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
-                GlobalResources.playerPodcast.NotifyPlayStateChanged();
+
+
+                DabSyncService.Instance.Init();
+                DabSyncService.Instance.Connect();
+
+                if (GlobalResources.playerPodcast != null)
+                {
+                    //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
+                    GlobalResources.playerPodcast.NotifyPlayStateChanged();
+                }
+                //TODO: Replace this with sync
+                //JournalTracker.Current.Open = true;
+                if (Device.RuntimePlatform == Device.iOS)
+                {
+                    AuthenticationAPI.GetMemberData();
+                }
+                await AuthenticationAPI.GetMemberData();
             }
-            //TODO: Replace this with sync
-            //JournalTracker.Current.Open = true;
-            if (Device.RuntimePlatform == Device.iOS)
+            catch (Exception ex)
             {
-                AuthenticationAPI.GetMemberData();
+
             }
-            await AuthenticationAPI.GetMemberData();
         }
 
 

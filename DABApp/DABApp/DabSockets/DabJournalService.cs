@@ -123,7 +123,6 @@ namespace DABApp.DabSockets
             {
                 return sock == null ? true : !sock.IsConnected;
             }
-
         }
 
         //Bindable content - send it off to the server if it's being changed.

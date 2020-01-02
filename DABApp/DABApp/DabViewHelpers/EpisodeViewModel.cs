@@ -75,14 +75,15 @@ namespace DABApp
 
         public bool listenedToVisible
         {
+            //check this
             get
             {
-                return unTouched = Episode.is_listened_to == "listened" ? true : false;
+                return unTouched = Episode.is_listened_to == true ? true : false;
             }
             set
             {
                 unTouched = value;
-                Episode.is_listened_to = unTouched ? "listened" : "";
+                Episode.is_listened_to = unTouched ? true : false;
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");
@@ -159,10 +160,11 @@ namespace DABApp
             {
                 if (listenedToVisible)
                 {
-                    return ImageSource.FromFile("ic_check_box_white_3x.png");
+                    return ImageSource.FromFile("ic_check_box_teal_3x.png");
                 }
                 else
                 {
+                    
                     return ImageSource.FromFile("ic_check_box_outline_blank_white_3x.png");
                 }
             }
