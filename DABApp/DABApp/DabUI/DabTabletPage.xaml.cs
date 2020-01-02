@@ -767,24 +767,13 @@ namespace DABApp
 
         async void OnFavorite(object o, EventArgs e)
         {
-            //favorite.IsEnabled = false;
-            //favorite.Opacity = .5;
-            //episode.Episode.is_favorite = !episode.Episode.is_favorite;
-            //favorite.Source = episode.favoriteSource;
-            //await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, true, null, null);
-            //await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", episode.Episode.stop_time, null, episode.Episode.is_favorite);
-            //favorite.Opacity = 1;
-            //favorite.IsEnabled = true;
-            //AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            ////EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-            //TimedActions();
             favorite.IsEnabled = false;
             favorite.Opacity = .5;
             episode.favoriteVisible = !episode.favoriteVisible;
             favorite.Source = episode.favoriteSource;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
             favorite.IsEnabled = true;
             favorite.Opacity = 1;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
@@ -829,31 +818,24 @@ namespace DABApp
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             //start new
-            if (ep.is_favorite == true)
+
+            model.favoriteVisible = !ep.is_favorite;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.favoriteVisible, null, null);
+            //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+            if (ep.id == episode.Episode.id)
             {
-                model.favoriteVisible = false;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.is_favorite = false;
-                    //TODO: Fix completed image
-                    //Completed.Image = episode.listenedToSource;
-                    //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
-                    favorite.Source = episode.favoriteSource;
-                }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, false);
+                episode.Episode.is_favorite = !episode.Episode.is_favorite;
+                //TODO: Fix completed image
+                //Completed.Image = episode.listenedToSource;
+                //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
+                favorite.Source = episode.favoriteSource;
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+
             }
             else
             {
-                model.favoriteVisible = true;
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, false, null, null);
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.is_favorite = true;
-                    //AutomationProperties.SetHelpText()
-                    favorite.Source = episode.favoriteSource;
-                }
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, true);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
+
             }
         }
 
