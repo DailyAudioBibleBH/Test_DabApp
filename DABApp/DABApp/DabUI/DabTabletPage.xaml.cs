@@ -799,7 +799,7 @@ namespace DABApp
             }
             else
             {
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listenee", null, !episode.Episode.is_listened_to, null);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, !episode.Episode.is_listened_to, null);
 
             }
         }
