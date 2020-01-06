@@ -787,19 +787,20 @@ namespace DABApp
             //start new
 
             model.listenedToVisible = !ep.is_listened_to;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.listenedToVisible, null, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.listenedToVisible, null, null, null, false);
             //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
             if (ep.id == episode.Episode.id)
             {
-                episode.Episode.is_listened_to = !episode.Episode.is_listened_to;
+                episode.Episode.is_listened_to = model.listenedToVisible;
                 //TODO: Fix completed image
-                //Completed.Image = episode.listenedToSource;
+                Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+
                 AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to, null);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.listenedToVisible, null);
             }
             else
             {
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, !episode.Episode.is_listened_to, null);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.listenedToVisible, null);
 
             }
         }
@@ -812,21 +813,21 @@ namespace DABApp
             //start new
 
             model.favoriteVisible = !ep.is_favorite;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.favoriteVisible, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.favoriteVisible, null, null, false);
             //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
             if (ep.id == episode.Episode.id)
             {
-                episode.Episode.is_favorite = !episode.Episode.is_favorite;
+                episode.Episode.is_favorite = model.favoriteVisible;
                 //TODO: Fix completed image
                 //Completed.Image = episode.listenedToSource;
                 //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
                 favorite.Source = episode.favoriteSource;
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.favoriteVisible);
 
             }
             else
             {
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.favoriteVisible);
 
             }
         }
