@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <local:DabBaseContentPage xmlns:local="clr-namespace:DABApp" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" x:Class="DABApp.DabRecordingPage">
+    <!--Removed Styles that were breaking code after updating xamarin forms. Before, they were just getting ignored anyways.-->
     <t:MenuContainerPage.Content>
         <ScrollView>
             <Grid>
