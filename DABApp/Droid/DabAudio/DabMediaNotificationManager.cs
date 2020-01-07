@@ -4,7 +4,7 @@ using Android.Content;
 using Android.Graphics;
 using Android.Support.V4.App;
 using Android.Support.V4.Media.Session;
-using NotificationCompat = Android.Support.V7.App.NotificationCompat;
+//using NotificationCompat = Android.Support.V7.App.NotificationCompat;
 
 //TODO: Recreate all of this woce with SimpleAudioPlayer
 

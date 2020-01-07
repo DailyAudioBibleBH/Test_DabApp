@@ -27,7 +27,7 @@ namespace DABApp
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
 			Title = "DAILY AUDIO BIBLE";
 			//Control template (adds the player bar)
-			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
+			ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
 			RelativeLayout container = new RelativeLayout();
 			ControlTemplate = playerBarTemplate;
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);

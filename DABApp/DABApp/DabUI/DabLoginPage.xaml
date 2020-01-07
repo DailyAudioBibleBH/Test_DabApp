@@ -11,7 +11,7 @@
 			<Label Text="Password" FontSize="Micro" VerticalOptions="Center" AutomationProperties.IsInAccessibleTree="true"/>
 			<Entry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
 			<Frame/>
-			<Button x:Name="Login" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
+			<Button x:Name="Login" HeightRequest="40" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
 			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
 				<Button x:Name="btnForgot" Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
 				<Button x:Name="GuestLogin" Text="Log in as Guest" Clicked="OnGuestLogin" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>

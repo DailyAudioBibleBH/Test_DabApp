@@ -33,6 +33,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
+using ImageButton = Android.Widget.ImageButton;
 
 namespace DABApp.Droid
 {
@@ -155,7 +156,7 @@ namespace DABApp.Droid
 
                 var record = (ImageButton)newMenu.FindViewById(Resource.Id.item3);
                 record.ContentDescription = "Record Button";
-                record.Click += (sender, e) => { MessagingCenter.Send<string>("Record", "Record"); };
+                record.Click += (sender, e) => { MessagingCenter.Send("Record", "Record"); };
 
                 var text = (TextView)newMenu.FindViewById(Resource.Id.textView1);
                 text.SetTextColor(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());

@@ -28,11 +28,11 @@
                 <RelativeLayout x:Name="bannerContainer" Grid.ColumnSpan="2" Grid.Row="0" VerticalOptions="FillAndExpand">
                     <ff:CachedImage x:Name="banner" Aspect="Fill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
                     <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                        <local:PlayerLabel x:Name="Title" Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}" AutomationProperties.IsInAccessibleTree="True" />
+                        <local:PlayerLabel x:Name="Title" Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="True" />
                     </StackLayout>
                 </RelativeLayout>
                 <StackLayout Padding="20, 5, 20, 0" Grid.Row="1" Grid.ColumnSpan="2" IsClippedToBounds="true">
-                    <local:PlayerLabel x:Name="Instructions" Style="{StaticResource playerLabelStyle}" FontSize="Medium" LineBreakMode="WordWrap" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  Follow the prompts below to record, review and submit your prayer request or good news of answered prayer." />
+                    <local:PlayerLabel x:Name="Instructions" FontSize="Medium" LineBreakMode="WordWrap" Text="The Daily Audio Bible community is unique in that we are spread all over the world but because of prayer, the miles between us vanish.  Follow the prompts below to record, review and submit your prayer request or good news of answered prayer." />
                 </StackLayout>
                 <!--<Button Text="Play" Clicked="OnPlay" />
                 <Button Text="Submit" Clicked="OnSubmit"/>-->
@@ -44,12 +44,12 @@
                 <StackLayout Grid.Row="3" Grid.ColumnSpan="2">
                     <Label x:Name="Timer" HorizontalOptions="Center" />
                 </StackLayout>
-                <local:PlayerImage x:Name="Record" Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource imageButtonStyle}" WidthRequest="65" AutomationProperties.Name="Record Stop Play Pause" AutomationProperties.IsInAccessibleTree="True" />
+                <local:PlayerImage x:Name="Record" Grid.Row="4" Grid.ColumnSpan="2" WidthRequest="65" AutomationProperties.Name="Record Stop Play Pause" AutomationProperties.IsInAccessibleTree="True" />
                 <local:PlayerLabel x:Name="lblGuide" Grid.Row="5" Grid.ColumnSpan="2" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" FontSize="Small" />
-                <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit"  VerticalOptions="EndAndExpand" Style="{StaticResource highlightedButtonStyle}" Grid.Row="6"
+                <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit"  VerticalOptions="EndAndExpand" Grid.Row="6"
                 Grid.ColumnSpan="2" AutomationProperties.Name="Submit" />
                 <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" FontSize="Large" VerticalOptions="EndAndExpand" />
-                <Button x:Name="Cancel" Text="Cancel" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" FontSize="Large" VerticalOptions="EndAndExpand" />
+                <Button x:Name="Cancel" Text="Cancel" HeightRequest="40" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" FontSize="Large" VerticalOptions="EndAndExpand" />
                 <local:ConfirmationPicker x:Name="Destination" Title="Select which podcast your recording should be sent to." IsEnabled="False" IsVisible="False" />
             </Grid>
         </ScrollView>
