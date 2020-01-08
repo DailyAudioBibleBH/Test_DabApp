@@ -22,7 +22,10 @@ namespace DABApp.iOS
                 field = new UITextView();
                 field.ScrollEnabled = false;
                 SetNativeControl(field);
-                Control.Editable = false;
+                if (Control != null)
+                {
+                    Control.Editable = false;
+                }
                 if (Element != null)
                 {
                     Control.UserInteractionEnabled = ((HtmlLabel)Element).IsSelectable;

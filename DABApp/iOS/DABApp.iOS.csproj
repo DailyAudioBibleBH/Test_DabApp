@@ -188,12 +188,6 @@
     <Reference Include="Rg.Plugins.Popup.IOS, Version=1.1.4.158, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rg.Plugins.Popup.1.1.4.158-pre\lib\Xamarin.IOS\Rg.Plugins.Popup.IOS.dll</HintPath>
     </Reference>
-    <Reference Include="SlideOverKit, Version=1.0.6135.18790, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SlideOverKit.2.1.4\lib\Xamarin.iOS10\SlideOverKit.dll</HintPath>
-    </Reference>
-    <Reference Include="SlideOverKit.iOS, Version=1.0.6135.18893, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SlideOverKit.2.1.4\lib\Xamarin.iOS10\SlideOverKit.iOS.dll</HintPath>
-    </Reference>
     <Reference Include="SocketIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SocketIoClientDotNet.1.0.5\lib\netstandard1.3\SocketIoClientDotNet.dll</HintPath>
     </Reference>
@@ -268,6 +262,12 @@
     </Reference>
     <Reference Include="Plugin.FirebasePushNotification">
       <HintPath>..\packages\Plugin.FirebasePushNotification.2.3.5\lib\Xamarin.iOS10\Plugin.FirebasePushNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="SlideOverKit">
+      <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\Xamarin.iOS10\SlideOverKit.dll</HintPath>
+    </Reference>
+    <Reference Include="SlideOverKit.iOS">
+      <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\Xamarin.iOS10\SlideOverKit.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
