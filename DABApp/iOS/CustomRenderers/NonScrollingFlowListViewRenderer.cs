@@ -12,7 +12,10 @@ namespace DABApp.iOS
 		protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
 		{
 			base.OnElementChanged(e);
-			Control.ScrollEnabled = false;
-		}
+            if (Control != null)
+            {
+                Control.ScrollEnabled = false;
+            }
+        }
 	}
 }
