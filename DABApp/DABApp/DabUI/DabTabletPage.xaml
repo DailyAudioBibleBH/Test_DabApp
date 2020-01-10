@@ -5,8 +5,7 @@
                           xmlns:local="clr-namespace:DABApp;assembly=DABApp"
                           xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
                           xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-                          xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
-                          xmlns:generic="clr-namespace:System;assembly=mscorlib">
+                          >
     <local:DabBaseContentPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -184,7 +183,7 @@
                             </StackLayout>
                         </Frame>
                         <local:PlayerImage x:Name="favorite"
-                                           Style="{StaticResource imageButtonStyle}"
+                                           
                                            Grid.Row="0"
                                            Grid.Column="2"
                                            WidthRequest="20"
@@ -203,7 +202,7 @@
                                                AutomationProperties.HelpText="Change Audio Output" />
                         <local:PlayerImage x:Name="Share"
                                            Source="ic_share_white_3x.png"
-                                           Style="{StaticResource imageButtonStyle}"
+                                           
                                            Grid.Row="0"
                                            Grid.Column="4"
                                            WidthRequest="20"
@@ -388,10 +387,12 @@
                         <StackLayout>
                             <Label x:Name="ReadTitle"
                                    FontSize="Medium"
-                                   Style="{StaticResource secondaryLabelStyle}" />
+                                   Style="{StaticResource secondaryLabelStyle}"
+                                   />
                             <Label x:Name="ReadExcerpts"
                                    FontSize="Small"
-                                   Style="{StaticResource secondaryLabelStyle}" />
+                                   Style="{StaticResource secondaryLabelStyle}"
+                                   />
                             <Label x:Name="AltWarning"
                                    IsVisible="false"
                                    FontSize="Micro"
@@ -414,7 +415,8 @@
                     <Button x:Name="Login"
                             Text="Log in"
                             Clicked="OnLogin"
-                            Style="{StaticResource highlightedButtonStyle}" />
+                            Style="{StaticResource highlightedButtonStyle}"
+                            />
                 </StackLayout>
                 <StackLayout x:Name="Journal"
                              IsVisible="false"
@@ -452,13 +454,16 @@
                                               Unfocused="OffEdit" />
                     <Label x:Name="JournalWarning"
                            Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
-                           Style="{StaticResource warningLabelStyle}">
+                           FontSize="Medium"
+                           Style="{StaticResource warningLabelStyle}"
+                           >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnReconnect" />
                         </Label.GestureRecognizers>
                     </Label>
                     <BoxView x:Name="spacer"
-                             Style="{StaticResource SpacerStyle}" />
+                             Style="{StaticResource SpacerStyle}"
+                             />
                 </StackLayout>
             </StackLayout>
         </Grid>
