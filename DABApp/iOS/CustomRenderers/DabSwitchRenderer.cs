@@ -15,8 +15,11 @@ namespace DABApp.iOS
 		{
 			base.OnElementChanged(e);
 
-			Control.OnTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
-		}
+            if (Control != null)
+            {
+                Control.OnTintColor = ((Color)App.Current.Resources["HighlightColor"]).ToUIColor();
+            }
+        }
 
 	}
 }
