@@ -25,7 +25,7 @@ namespace DABApp
 
         public bool? IsListenedTo { get; set; } //whether or not the object has been marked listened to
 
-        public bool? CurrentPosition { get; set; } //current position of the object for playback
+        public double? CurrentPosition { get; set; } //current position of the object for playback
 
         public bool? IsFavorite { get; set; } //whether or not the object is favorited
 
