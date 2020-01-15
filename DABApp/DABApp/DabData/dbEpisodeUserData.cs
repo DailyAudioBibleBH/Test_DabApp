@@ -18,7 +18,8 @@ namespace DABApp
 
     {
         [Indexed]
-        public int UserId { get; set; } //the user id (PK tied with episode id)
+        public string UserName { get; set; } //the user's unique identifier (PK tied with episode id)
+
         [Indexed]
         public int EpisodeId { get; set; } //the episode id (PK tied with user id)
 
