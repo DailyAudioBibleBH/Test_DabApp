@@ -25,7 +25,10 @@ namespace DABApp
         {
             Episode = episode;
             description = episode.description;
-            title = $"{episode.title} | {episode.id}";
+            title = $"{episode.title}";
+#if DEBUG
+            title += $" - {episode.id}";
+#endif
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
             FileManager fm = new FileManager();
@@ -75,7 +78,9 @@ namespace DABApp
             }
         }
 
+
         public bool IsListenedTo
+            //Get / set the IsLitened to property of the user episode
         {
             //check this
             get
@@ -104,6 +109,7 @@ namespace DABApp
         }
 
         public bool IsFavorite
+            //get / set the IsFavorite property of the episode
         {
             get
             {
