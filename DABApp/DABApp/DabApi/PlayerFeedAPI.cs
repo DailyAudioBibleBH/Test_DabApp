@@ -317,7 +317,7 @@ namespace DABApp
             Debug.WriteLine($"Episodes for {resource.title} Deleted");
         }
 
-        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition, bool RaiseEpisodeDataChanged = true)
+        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? IsFavorite, bool? hasJournal, int? playerPosition, bool RaiseEpisodeDataChanged = true)
         {
             try
             {
@@ -331,9 +331,9 @@ namespace DABApp
                         episode.UserData.IsListenedTo = (bool)isListened;
                     }
                     //favorite
-                    if (isFavorite.HasValue)
+                    if (IsFavorite.HasValue)
                     {
-                        episode.UserData.IsFavorite = (bool)isFavorite;
+                        episode.UserData.IsFavorite = (bool)IsFavorite;
                     }
                     //has journal
                     if (hasJournal.HasValue)
@@ -374,7 +374,7 @@ namespace DABApp
                     }
                     data.CurrentPosition = playerPosition == null ? 0 : playerPosition.Value;
                     data.HasJournal = hasJournal == null ? false : hasJournal.Value; 
-                    data.IsFavorite = isFavorite == null ? false : isFavorite.Value;
+                    data.IsFavorite = IsFavorite == null ? false : IsFavorite.Value;
                     data.IsListenedTo = isListened == null ? false : isListened.Value;
 
                     db.InsertOrReplace(data);

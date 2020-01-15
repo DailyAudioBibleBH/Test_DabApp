@@ -88,8 +88,8 @@ namespace DABApp
                 var ud = Episode.UserData;
                 ud.IsListenedTo = value;
                 DabData.database.Update(ud);
-                OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("IsListenedTo");
+                OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("listenAccessible");
             }
         }
@@ -103,16 +103,19 @@ namespace DABApp
             set { throw new Exception("You cannot set this directly"); }
         }
 
-        public bool isFavorite
+        public bool IsFavorite
         {
             get
             {
-                return Episode.UserData.IsFavorite;
+                var ud = Episode.UserData;
+                return ud.IsFavorite;
             }
             set
             {
-                Episode.UserData.IsFavorite = value;
-                OnPropertyChanged("isFavorite");
+                var ud = Episode.UserData;
+                ud.IsFavorite = value;
+                DabData.database.Update(ud);
+                OnPropertyChanged("IsFavorite");
                 OnPropertyChanged("favoriteSource");
                 OnPropertyChanged("favoriteAccessible");
             }

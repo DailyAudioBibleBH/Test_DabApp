@@ -581,9 +581,9 @@ namespace DABApp
         //User favorites (or unfavorites) an episode
         async void OnFavorite(object o, EventArgs e)
         {
-            Episode.isFavorite = !Episode.isFavorite;
+            Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.isFavorite, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.IsFavorite, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite);           
         }
 

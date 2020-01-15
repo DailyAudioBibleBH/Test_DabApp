@@ -780,10 +780,10 @@ namespace DABApp
             //TimedActions();
             favorite.IsEnabled = false;
             favorite.Opacity = .5;
-            episode.isFavorite = !episode.isFavorite;
+            episode.IsFavorite = !episode.IsFavorite;
             favorite.Source = episode.favoriteSource;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.isFavorite, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.IsFavorite, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
             favorite.IsEnabled = true;
             favorite.Opacity = 1;
@@ -831,7 +831,7 @@ namespace DABApp
             //start new
             if (ep.UserData.IsFavorite == true)
             {
-                model.isFavorite = false;
+                model.IsFavorite = false;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
                 if (ep.id == episode.Episode.id)
                 {
@@ -845,7 +845,7 @@ namespace DABApp
             }
             else
             {
-                model.isFavorite = true;
+                model.IsFavorite = true;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, false, null, null);
                 if (ep.id == episode.Episode.id)
                 {

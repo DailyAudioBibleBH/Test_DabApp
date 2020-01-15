@@ -347,7 +347,7 @@
                                                         Style="{StaticResource playerLabelStyle}"
                                                         FontAttributes="Bold"
                                                         IsTitle="true" />
-                                        <Image IsVisible="{Binding isFavorite}"
+                                        <Image IsVisible="{Binding IsFavorite}"
                                                Source="ic_star_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
