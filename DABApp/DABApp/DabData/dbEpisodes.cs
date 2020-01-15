@@ -150,7 +150,7 @@ namespace DABApp
 
         //Storage of reference to the database element for this
         //episodes user data
-        //private dbEpisodeUserData _UserData;
+        private dbEpisodeUserData _UserData;
 
         [Ignore]
         public dbEpisodeUserData UserData
@@ -158,12 +158,12 @@ namespace DABApp
         {
             get
             {
-                //if (_UserData != null)
-                //{
-                //    return _UserData;
-                //}
-                //else
-                //{
+                if (_UserData != null)
+                {
+                    return _UserData;
+                }
+                else
+                {
                     int episodeId = 0;
                     string userName = "";
                     SQLiteConnection db;
@@ -174,16 +174,16 @@ namespace DABApp
                         userName = GlobalResources.GetUserEmail();
                         db = DabData.database; //TODO - Verify this doesn't get overused
 
-                        dbEpisodeUserData data = db.Table<dbEpisodeUserData>()
+                       _UserData = db.Table<dbEpisodeUserData>()
                             .SingleOrDefault(x => x.EpisodeId == id && x.UserName == userName);
 
                         //Throw an exception if no data retrievied
                         //This is not an error, but we'll let the exception handler handle it
                         //and return an empty object
-                        if (data == null)
+                        if (_UserData == null)
                         {
                         //Generate a new record and save it for whenever we need to work with it
-                        data = new dbEpisodeUserData()
+                        _UserData = new dbEpisodeUserData()
                             {
                                 EpisodeId = episodeId,
                                 UserName = userName,
@@ -192,15 +192,15 @@ namespace DABApp
                                 HasJournal = false,
                                 CurrentPosition = 0
                             };
-                            db.Insert(data);
+                            db.Insert(_UserData);
                             Debug.WriteLine($"Added empty UED {episodeId}/{userName}");
-                            return data;
+                            return _UserData;
                         }
                         else
                         {
 
                             //Return the matching data
-                            return data;
+                            return _UserData;
                         }
                     }
                     catch (Exception ex)
@@ -211,7 +211,7 @@ namespace DABApp
 
                         return null;
                     }
-                //}
+                }
 
 
             }

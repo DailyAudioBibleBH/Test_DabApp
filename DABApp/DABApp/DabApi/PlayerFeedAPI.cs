@@ -360,6 +360,7 @@ namespace DABApp
                     }
                     //save data to the database
                     db.Update(episode);
+                    db.Update(episode.UserData);
                 }
                 else
                 {
