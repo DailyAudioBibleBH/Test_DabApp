@@ -31,12 +31,12 @@ namespace DABApp
         public string channel_title { get; set; }
         public string channel_description { get; set; }
         public bool is_downloaded { get; set; } = false;
-        public bool is_listened_to { get; set; }
+        //public bool is_listened_to { get; set; }
         public double start_time { get; set; } = 0;
-        public double stop_time { get; set; } = 0;
+        //public double stop_time { get; set; } = 0;
         public string remaining_time { get; set; } = "01:00";
-        public bool is_favorite { get; set; }
-        public bool has_journal { get; set; }
+        //public bool is_favorite { get; set; }
+        //public bool has_journal { get; set; }
         public bool progressVisible { get; set; }
 
         public long? audio_size { get; set; } //Size of the file in bytes

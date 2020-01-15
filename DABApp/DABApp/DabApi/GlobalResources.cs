@@ -29,7 +29,8 @@ namespace DABApp
         {
             get
             {
-                return "20191210-AddedUserEpisodeMeta-b";
+                //return "20191210-AddedUserEpisodeMeta-b";
+                return "20200115 - Added dbEpisodeUserData - Removed dbUserEpisodeMeta - Updated dbEpisode";
             }
         }
 
