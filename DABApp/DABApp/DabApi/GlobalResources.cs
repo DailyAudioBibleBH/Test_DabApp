@@ -25,15 +25,15 @@ namespace DABApp
         /* This string determins the database version. 
          * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
          */
-        private static string appSessionId;
+        //private static string appSessionId;
         public static string DBVersion
         {
             get
             {
-                if (appSessionId == null) { appSessionId = DateTime.Now.Ticks.ToString(); }
+                //if (appSessionId == null) { appSessionId = DateTime.Now.Ticks.ToString(); }
                 //return "20191210-AddedUserEpisodeMeta-b";
                 //TODO: Replace this - forces new database every time.
-                return appSessionId;
+                //return appSessionId;
                 return "20200115 - Added dbEpisodeUserData - Removed dbUserEpisodeMeta - Updated dbEpisode";
             }
         }
@@ -194,12 +194,13 @@ namespace DABApp
         {
             get
             {
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                string actionDateKey = $"ActionDate_{GlobalResources.GetUserEmail()}";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == actionDateKey);
                 if (LastActionsSettings == null)
                 {
                     DateTime actionDate = DateTime.MinValue.ToUniversalTime();
                     LastActionsSettings = new dbSettings();
-                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Key = actionDateKey;
                     LastActionsSettings.Value = actionDate.ToString();
                     db.InsertOrReplace(LastActionsSettings);
                     return actionDate;
@@ -213,9 +214,10 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
+                string actionDateKey = $"ActionDate_{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                LastActionsSettings.Key = "ActionDate";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == actionDateKey);
+                LastActionsSettings.Key = actionDateKey;
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
             }
