@@ -177,7 +177,7 @@ namespace DABApp
             }
         }
 
-        public bool hasJournalVisible
+        public bool HasJournal
         {
             get
             {
@@ -186,7 +186,7 @@ namespace DABApp
             set
             {
                 Episode.UserData.HasJournal = value;
-                OnPropertyChanged("hasJournalVisible");
+                OnPropertyChanged("HasJournal");
             }
         }
 

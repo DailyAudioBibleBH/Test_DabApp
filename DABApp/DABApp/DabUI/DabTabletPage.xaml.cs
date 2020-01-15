@@ -615,7 +615,7 @@ namespace DABApp
                 if (episode.Episode.UserData.HasJournal == false)
                 {
                     episode.Episode.UserData.HasJournal = true;
-                    episode.hasJournalVisible = true;
+                    episode.HasJournal = true;
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
                 }
