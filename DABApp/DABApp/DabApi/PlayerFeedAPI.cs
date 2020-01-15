@@ -40,7 +40,7 @@ namespace DABApp
                 var result = /*GlobalResources.TestMode ? await client.GetAsync(resource.feedUrl) :*/ await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
                 string jsonOut = await result.Content.ReadAsStringAsync();
                 var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
-                var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
+                //var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
                 List<int> episodesToGetActionsFor = new List<int>();
                 if (Episodes == null)
                 {
@@ -55,19 +55,19 @@ namespace DABApp
                 {
                     if (!existingEpisodeIds.Contains(e.id))
                     {
-                        //get user-episode meta data from the database if we have it
-                        dbUserEpisodeMeta meta = EpisodeMeta.SingleOrDefault(x => x.EpisodeId == e.id);
-                        if (meta != null)
-                        {
-                            e.stop_time = (meta.CurrentPosition == null) ? 0 : meta.CurrentPosition.Value;
-                            e.is_favorite = (meta.IsFavorite == null) ? false : meta.IsFavorite.Value;
-                            e.has_journal = (meta.HasJournal == null) ? false : meta.HasJournal.Value;
-                            e.is_listened_to = (meta.IsListenedTo == null) ? false : meta.IsListenedTo.Value;
-                            Debug.WriteLine($"Loaded episode user meta for {e.id}");
-                        } else
-                        {
-                            Debug.WriteLine($"No user meta for {e.id}");
-                        }
+                        ////get user-episode meta data from the database if we have it
+                        //dbUserEpisodeMeta meta = EpisodeMeta.SingleOrDefault(x => x.EpisodeId == e.id);
+                        //if (meta != null)
+                        //{
+                        //    e.stop_time = (meta.CurrentPosition == null) ? 0 : meta.CurrentPosition.Value;
+                        //    e.is_favorite = (meta.IsFavorite == null) ? false : meta.IsFavorite.Value;
+                        //    e.has_journal = (meta.HasJournal == null) ? false : meta.HasJournal.Value;
+                        //    e.is_listened_to = (meta.IsListenedTo == null) ? false : meta.IsListenedTo.Value;
+                        //    Debug.WriteLine($"Loaded episode user meta for {e.id}");
+                        //} else
+                        //{
+                        //    Debug.WriteLine($"No user meta for {e.id}");
+                        //}
 
                         //adding an episode to the database
                         await adb.InsertOrReplaceAsync(e);
