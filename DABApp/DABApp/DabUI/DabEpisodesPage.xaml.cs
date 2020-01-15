@@ -140,7 +140,7 @@ namespace DABApp
             var ud = ep.UserData;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, ud.IsFavorite, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, ud.IsFavorite);
-            model.favoriteVisible = ud.IsFavorite;
+            model.isFavorite = ud.IsFavorite;
         }
 
         

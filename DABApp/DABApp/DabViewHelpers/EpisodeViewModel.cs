@@ -103,7 +103,7 @@ namespace DABApp
             set { throw new Exception("You cannot set this directly"); }
         }
 
-        public bool favoriteVisible
+        public bool isFavorite
         {
             get
             {
@@ -112,7 +112,7 @@ namespace DABApp
             set
             {
                 Episode.UserData.IsFavorite = value;
-                OnPropertyChanged("favoriteVisible");
+                OnPropertyChanged("isFavorite");
                 OnPropertyChanged("favoriteSource");
                 OnPropertyChanged("favoriteAccessible");
             }

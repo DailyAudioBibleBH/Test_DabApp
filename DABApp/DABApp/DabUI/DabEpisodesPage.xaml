@@ -49,7 +49,7 @@
                 <Image Source="ic_done_listened_3x.png" IsVisible="{Binding IsListenedTo}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
                 <StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
                   <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true" LineBreakMode="TailTruncation"/>
-                  <Image IsVisible="{Binding favoriteVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
+                  <Image IsVisible="{Binding isFavorite}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
                   <Image IsVisible="{Binding hasJournalVisible}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
                 </StackLayout>
                 <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
