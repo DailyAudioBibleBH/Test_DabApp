@@ -148,52 +148,69 @@ namespace DABApp
             }
         }
 
+        //Storage of reference to the database element for this
+        //episodes user data
+        private dbEpisodeUserData _UserData;
+
         [Ignore]
         public dbEpisodeUserData UserData
         //User-specific episode data for this episode
         {
             get
             {
-                int episodeId = 0;
-                string userName = "";
-                SQLiteConnection db;
-
-                try
+                if (_UserData != null)
                 {
-
-                    episodeId = id.Value;
-                    userName = GlobalResources.GetUserName();
-                    db = DabData.database; //TODO - Verify this doesn't get overused
-
-                    var data = db.Table<dbEpisodeUserData>()
-                        .SingleOrDefault(x => x.EpisodeId == id && x.UserName == userName);
-
-                    //Throw an exception if no data retrievied
-                    //This is not an error, but we'll let the exception handler handle it
-                    //and return an empty object
-                    if (data == null)
-                    {
-                        throw new Exception($"User-Specific Episode data does not exist for user '{userName}' and episode {episodeId}.");
-                    }
-
-                    //Return the matching data
-                    return data;
+                    return _UserData;
                 }
-                catch (Exception ex)
+                else
                 {
-                    //User-specific episode data could not be found or failed for some reason. Return an empty record
+                    int episodeId = 0;
+                    string userName = "";
+                    SQLiteConnection db;
 
-                    Debug.WriteLine($"User-Specific episode data could not be found: {ex.Message}");
-
-                    return new dbEpisodeUserData()
+                    try
                     {
-                        EpisodeId = episodeId,
-                        UserName = userName,
-                        IsFavorite = false,
-                        IsListenedTo = false,
-                        HasJournal = false,
-                        CurrentPosition = 0
-                    };
+                        episodeId = id.Value;
+                        userName = GlobalResources.GetUserEmail();
+                        db = DabData.database; //TODO - Verify this doesn't get overused
+
+                        _UserData = db.Table<dbEpisodeUserData>()
+                            .SingleOrDefault(x => x.EpisodeId == id && x.UserName == userName);
+
+                        //Throw an exception if no data retrievied
+                        //This is not an error, but we'll let the exception handler handle it
+                        //and return an empty object
+                        if (_UserData == null)
+                        {
+                            //Generate a new record and save it for whenever we need to work with it
+                            _UserData = new dbEpisodeUserData()
+                            {
+                                EpisodeId = episodeId,
+                                UserName = userName,
+                                IsFavorite = false,
+                                IsListenedTo = false,
+                                HasJournal = false,
+                                CurrentPosition = 0
+                            };
+                            db.InsertOrReplace(_UserData);
+                            Debug.WriteLine($"Added empty UED {episodeId}/{userName}");
+                            return _UserData;
+                        }
+                        else
+                        {
+
+                            //Return the matching data
+                            return _UserData;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //User-specific episode data could not be found or failed for some reason. Return an empty record
+
+                        Debug.WriteLine($"User-Specific episode data could not be found: {ex.Message}");
+
+                        return null;
+                    }
                 }
 
 

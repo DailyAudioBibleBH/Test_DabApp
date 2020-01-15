@@ -25,11 +25,15 @@ namespace DABApp
         /* This string determins the database version. 
          * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
          */
+        private static string appSessionId;
         public static string DBVersion
         {
             get
             {
+                if (appSessionId == null) { appSessionId = DateTime.Now.Ticks.ToString(); }
                 //return "20191210-AddedUserEpisodeMeta-b";
+                //TODO: Replace this - forces new database every time.
+                return appSessionId;
                 return "20200115 - Added dbEpisodeUserData - Removed dbUserEpisodeMeta - Updated dbEpisode";
             }
         }

@@ -140,7 +140,7 @@ namespace DABApp
             var ud = ep.UserData;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, ud.IsFavorite, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, ud.IsFavorite);
-            model.favoriteVisible = ud.IsFavorite.Value;
+            model.favoriteVisible = ud.IsFavorite;
         }
 
         
@@ -197,8 +197,8 @@ namespace DABApp
             }
             EpisodeList.ItemsSource = _Episodes = Episodes
                 .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                 .Select(x => new EpisodeViewModel(x)).ToList();
                 Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
         }

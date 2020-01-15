@@ -442,13 +442,13 @@ namespace DABApp
             Login.IsEnabled = false;
             player.Pause(); if ((string)Months.SelectedItem == "My Favorites")
             {
-                EpisodeList.ItemsSource = Episodes.Where(x => x.is_favorite == true);
+                EpisodeList.ItemsSource = Episodes.Where(x => x.UserData.IsFavorite == true);
             }
             else
             {
                 if ((string)Months.SelectedItem == "My Journals")
                 {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.has_journal == true);
+                    EpisodeList.ItemsSource = Episodes.Where(x => x.UserData.HasJournal == true);
                 }
                 else
                 {
@@ -513,7 +513,7 @@ namespace DABApp
             }
 
             //Go to starting position
-            player.Seek(episode.Episode.stop_time);
+            player.Seek(episode.Episode.UserData.CurrentPosition);
 
             //Bind controls for playback
             BindControls(true, true);
@@ -612,9 +612,9 @@ namespace DABApp
             if (JournalContent.IsFocused)
             {
                 journal.UpdateJournal(episode.Episode.PubDate, JournalContent.Text);
-                if (episode.Episode.has_journal == false)
+                if (episode.Episode.UserData.HasJournal == false)
                 {
-                    episode.Episode.has_journal = true;
+                    episode.Episode.UserData.HasJournal = true;
                     episode.hasJournalVisible = true;
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
@@ -784,7 +784,7 @@ namespace DABApp
             favorite.Source = episode.favoriteSource;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
             favorite.IsEnabled = true;
             favorite.Opacity = 1;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
@@ -795,13 +795,13 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == true)
+            if (ep.UserData.IsListenedTo == true)
             {
                 model.listenedToVisible = false;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_listened_to = false;
+                    episode.Episode.UserData.IsListenedTo = false;
                     //TODO: Fix completed image
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
@@ -814,7 +814,7 @@ namespace DABApp
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_listened_to = true;
+                    episode.Episode.UserData.IsListenedTo = true;
                     //TODO: Fix completed image
                     //Completed.Image = episode.listenedToSource;
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
@@ -829,13 +829,13 @@ namespace DABApp
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
             //start new
-            if (ep.is_favorite == true)
+            if (ep.UserData.IsFavorite == true)
             {
                 model.favoriteVisible = false;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_favorite = false;
+                    episode.Episode.UserData.IsFavorite = false;
                     //TODO: Fix completed image
                     //Completed.Image = episode.listenedToSource;
                     //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
@@ -849,7 +849,7 @@ namespace DABApp
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, false, null, null);
                 if (ep.id == episode.Episode.id)
                 {
-                    episode.Episode.is_favorite = true;
+                    episode.Episode.UserData.IsFavorite = true;
                     //AutomationProperties.SetHelpText()
                     favorite.Source = episode.favoriteSource;
                 }
@@ -878,7 +878,7 @@ namespace DABApp
             episode.listenedToVisible = !episode.listenedToVisible;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.is_listened_to);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -974,8 +974,8 @@ namespace DABApp
             }
             EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
                 .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                 .Select(x => new EpisodeViewModel(x)));
             if (episode != null)
             {
