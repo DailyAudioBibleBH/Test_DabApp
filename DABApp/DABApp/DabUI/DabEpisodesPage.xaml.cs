@@ -117,7 +117,7 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == true)
+            if (ep.UserData.IsListenedTo == true)
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
@@ -137,9 +137,10 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.is_favorite, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
-            model.favoriteVisible = !ep.is_favorite;
+            var ud = ep.UserData;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, ud.IsFavorite, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, ud.IsFavorite);
+            model.favoriteVisible = ud.IsFavorite.Value;
         }
 
         
