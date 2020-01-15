@@ -25,7 +25,7 @@ namespace DABApp
         {
             Episode = episode;
             description = episode.description;
-            title = episode.title;
+            title = $"{episode.title} | {episode.id}";
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
             FileManager fm = new FileManager();
@@ -33,6 +33,8 @@ namespace DABApp
             fm.EpisodeCompleted += DownloadStarted;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }
+
+       
 
         public bool downloadVisible
         {
@@ -78,12 +80,14 @@ namespace DABApp
             //check this
             get
             {
-                return unTouched = Episode.UserData.IsListenedTo == true ? true : false;
+                var ud = Episode.UserData;
+                return ud.IsListenedTo;
             }
             set
             {
-                unTouched = value;
-                Episode.UserData.IsListenedTo = unTouched ? true : false;
+                var ud = Episode.UserData;
+                ud.IsListenedTo = value;
+                DabData.database.Update(ud);
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");

@@ -17,6 +17,9 @@ namespace DABApp
 
 
     {
+        [PrimaryKey, AutoIncrement]
+        public long RecordId { get; set; }
+
         [Indexed]
         public string UserName { get; set; } //the user's unique identifier (PK tied with episode id)
 
