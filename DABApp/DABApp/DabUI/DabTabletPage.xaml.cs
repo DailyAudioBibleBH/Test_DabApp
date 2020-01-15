@@ -797,7 +797,7 @@ namespace DABApp
             var ep = model.Episode;
             if (ep.UserData.IsListenedTo == true)
             {
-                model.listenedToVisible = false;
+                model.IsListenedTo = false;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
@@ -810,7 +810,7 @@ namespace DABApp
             }
             else
             {
-                model.listenedToVisible = true;
+                model.IsListenedTo = true;
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
                 if (ep.id == episode.Episode.id)
                 {
@@ -870,14 +870,14 @@ namespace DABApp
             //    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, true, null, null, null);
             //    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, true);
             //}
-            //episode.listenedToVisible = !episode.listenedToVisible;
+            //episode.IsListenedTo = !episode.IsListenedTo;
             ////TODO: Fix completed image
             ////Completed.Image = episode.listenedToSource;
             //AutomationProperties.SetName(Completed, episode.listenAccessible);
             //TimedActions();
-            episode.listenedToVisible = !episode.listenedToVisible;
+            episode.IsListenedTo = !episode.IsListenedTo;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, null, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 

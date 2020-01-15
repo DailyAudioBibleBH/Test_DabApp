@@ -326,14 +326,14 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <BoxView Color="Transparent"
-                                                 IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}"
+                                                 IsVisible="{Binding IsListenedTo, Converter={StaticResource inverser}}"
                                                  Grid.RowSpan="2"
                                                  Grid.Column="0"
                                                  WidthRequest="20"
                                                  HeightRequest="20"
                                                  VerticalOptions="Center" />
                                         <Image Source="ic_done_listened_3x.png"
-                                               IsVisible="{Binding listenedToVisible}"
+                                               IsVisible="{Binding IsListenedTo}"
                                                Grid.RowSpan="2"
                                                Grid.Column="0"
                                                WidthRequest="20"

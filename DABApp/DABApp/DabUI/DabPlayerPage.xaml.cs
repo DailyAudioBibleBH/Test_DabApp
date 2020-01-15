@@ -594,9 +594,9 @@ namespace DABApp
             //Mark episode as listened to
             //Episode.Episode.is_listened_to = "";
             //check this
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, null, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo);
             
             //TODO: Bind accessibiliyt text
@@ -606,7 +606,7 @@ namespace DABApp
         void OnVisibleChanged(object o, EventArgs e)
         {
             //Switch the value of listened to
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
         }
     }
 }

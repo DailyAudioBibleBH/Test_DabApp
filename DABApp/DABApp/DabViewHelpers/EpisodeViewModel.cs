@@ -75,7 +75,7 @@ namespace DABApp
             }
         }
 
-        public bool listenedToVisible
+        public bool IsListenedTo
         {
             //check this
             get
@@ -89,7 +89,7 @@ namespace DABApp
                 ud.IsListenedTo = value;
                 DabData.database.Update(ud);
                 OnPropertyChanged("listenedToSource");
-                OnPropertyChanged("listenedToVisible");
+                OnPropertyChanged("IsListenedTo");
                 OnPropertyChanged("listenAccessible");
             }
         }
@@ -98,7 +98,7 @@ namespace DABApp
         {
             get
             {
-                return listenedToVisible ? "listen to status Completed": "listen to status not completed";
+                return IsListenedTo ? "listen to status Completed": "listen to status not completed";
             }
             set { throw new Exception("You cannot set this directly"); }
         }
@@ -162,7 +162,7 @@ namespace DABApp
         {
             get
             {
-                if (listenedToVisible)
+                if (IsListenedTo)
                 {
                     return ImageSource.FromFile("ic_check_box_teal_3x.png");
                 }

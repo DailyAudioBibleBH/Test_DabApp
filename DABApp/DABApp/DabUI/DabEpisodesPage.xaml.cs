@@ -121,14 +121,14 @@ namespace DABApp
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
-                model.listenedToVisible = false;
+                model.IsListenedTo = false;
 
             }
             else
             {
                 await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
-                model.listenedToVisible = true;
+                model.IsListenedTo = true;
             }
         }
 
