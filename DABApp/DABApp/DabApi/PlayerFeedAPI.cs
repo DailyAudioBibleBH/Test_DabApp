@@ -377,7 +377,7 @@ namespace DABApp
                     data.IsFavorite = IsFavorite == null ? false : IsFavorite.Value;
                     data.IsListenedTo = isListened == null ? false : isListened.Value;
 
-                    db.InsertOrReplace(data);
+                    db.Insert(data);
                     Debug.WriteLine($"Added episode {episodeId}/{userName} to episode data table for later use...");
                 }
 
