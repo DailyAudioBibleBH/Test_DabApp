@@ -96,6 +96,10 @@ namespace DABApp
                 giveButton.Clicked += OnGive;
                 this.ToolbarItems.Add(giveButton);
             }
+            else
+            {
+                MessagingCenter.Send("Setup", "Setup");
+            }
 		}
 
         async void OnGive(object sender, EventArgs e)

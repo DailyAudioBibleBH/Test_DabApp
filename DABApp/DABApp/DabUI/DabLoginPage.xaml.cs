@@ -68,7 +68,6 @@ namespace DABApp
             var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
             if (result == "Success")
             {
-                MessagingCenter.Send<string>("Setup", "Setup");
                 GuestStatus.Current.IsGuestLogin = false;
                 await AuthenticationAPI.GetMemberData();
                 if (_fromPlayer)
@@ -111,8 +110,9 @@ namespace DABApp
                     {
                         NavigationPage _nav = new NavigationPage(new DabChannelsPage());
                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                        Application.Current.MainPage = _nav;
-                        await Navigation.PopToRootAsync();
+                        //Application.Current.MainPage = _nav;
+                        await Navigation.PushAsync(_nav);
+                        MessagingCenter.Send<string>("Setup", "Setup");
                     }
                 }
             }
