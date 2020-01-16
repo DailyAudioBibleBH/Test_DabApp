@@ -107,12 +107,19 @@ namespace DABApp
                         }
                     }
                     else
-                    {
-                        NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+                    {                     
+                        DabChannelsPage _nav = new DabChannelsPage();
                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                         //Application.Current.MainPage = _nav;
                         await Navigation.PushAsync(_nav);
                         MessagingCenter.Send<string>("Setup", "Setup");
+
+                        //Delete nav stack so user cant back into login screen
+                        var existingPages = Navigation.NavigationStack.ToList();
+                        foreach (var page in existingPages)
+                        {
+                            Navigation.RemovePage(page);
+                        }
                     }
                 }
             }
