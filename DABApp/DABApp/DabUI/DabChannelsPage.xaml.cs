@@ -23,8 +23,9 @@ namespace DABApp
 
         public DabChannelsPage()
         {
-            InitializeComponent();           
-
+            InitializeComponent();
+            //Take away back button on navbar
+            NavigationPage.SetHasBackButton(this, false);
             ////Choose a different control template to disable built in scroll view
             //ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
             //this.ControlTemplate = playerBarTemplate;
@@ -178,9 +179,7 @@ namespace DABApp
         protected override async void OnAppearing()
         {
             //Show toolbar items for android
-            MessagingCenter.Send<string>("Setup", "Setup");
-            //Take away back button
-            NavigationPage.SetHasBackButton(this, false);
+            MessagingCenter.Send<string>("Setup", "Setup");           
             
             foreach (var r in ChannelView.resources)
             {
