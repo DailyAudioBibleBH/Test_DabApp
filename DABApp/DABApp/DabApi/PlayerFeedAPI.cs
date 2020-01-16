@@ -379,7 +379,7 @@ namespace DABApp
                     Debug.WriteLine($"Added episode {episodeId} to meta table for later use...");
                 }
 
-                //Notify listening pages that episode data has changed 
+                //Notify listening pages that episode data has changed
                 if (RaiseEpisodeDataChanged)
                 {
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
