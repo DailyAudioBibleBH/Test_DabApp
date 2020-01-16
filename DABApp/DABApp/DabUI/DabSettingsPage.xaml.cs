@@ -59,13 +59,14 @@ namespace DABApp
             player.Stop();
             var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+            Application.Current.MainPage = nav;
             if (await AuthenticationAPI.LogOut())
             {
-                await Navigation.PushModalAsync(nav);
+                await Navigation.PopToRootAsync();
             }
             else
             {
-                await Navigation.PushModalAsync(nav);
+                await Navigation.PopToRootAsync();
             }
         }
 

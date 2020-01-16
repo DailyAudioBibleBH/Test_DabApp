@@ -52,6 +52,15 @@ namespace DABApp.Droid
             SQLitePCL.raw.sqlite3_enable_shared_cache(1);
             SQLitePCL.raw.sqlite3_initialize();
 
+            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) =>
+            {
+                LoadCustomToolBar();
+                if (Device.Idiom == TargetIdiom.Phone)
+                {
+                    RequestedOrientation = ScreenOrientation.Portrait;
+                }
+            });
+
             //Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
 
@@ -92,14 +101,7 @@ namespace DABApp.Droid
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
-            MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) =>
-            {
-                LoadCustomToolBar();
-                if (Device.Idiom == TargetIdiom.Phone)
-                {
-                    RequestedOrientation = ScreenOrientation.Portrait;
-                }
-            });
+            
 
             //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();
