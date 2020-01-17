@@ -186,36 +186,6 @@ namespace DABApp
             }
         }
 
-        //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
-        public static DateTime GetLastEpisodeQueryDate(int ChannelId)
-        {
-            //Last episode query date by channel in GMT
-            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
-            if (LastEpisodeQuerySettings == null)
-            {
-                DateTime episodeQueryDate = DateTime.UtcNow;
-                LastEpisodeQuerySettings = new dbSettings();
-                LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate" + ChannelId;
-                LastEpisodeQuerySettings.Value = episodeQueryDate.ToString();
-                db.InsertOrReplace(LastEpisodeQuerySettings);
-                return episodeQueryDate;
-            }
-            else
-            {
-                return DateTime.Parse(LastEpisodeQuerySettings.Value);
-            }
-        }
-
-        public static void SetLastEpisodeQueryDate(DateTime lastEpisodeQueryDate, int ChannelId)
-        {
-            //Store the value sent to database
-            string episodeQueryDate = lastEpisodeQueryDate.ToString();
-            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
-            LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate" + ChannelId;
-            LastEpisodeQuerySettings.Value = episodeQueryDate;
-            db.InsertOrReplace(LastEpisodeQuerySettings);
-        }
-
         //public static DateTime LastEpisodeQueryDate
         //{
         //    //Last episode query date by channel in GMT
@@ -249,12 +219,49 @@ namespace DABApp
         //    }
         //}
 
+        //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
+        public static DateTime GetLastEpisodeQueryDate(int ChannelId)
+        {
+            //Last episode query date by channel in GMT
+            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
+            
+            
+            return DateTime.MinValue.ToUniversalTime();
+            //uncomment line once done testing
+            //return DateTime.Parse(LastEpisodeQuerySettings.Value);
+            
+        }
+
+        public static void SetLastEpisodeQueryDate(int ChannelId)
+        {
+            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
+
+            //figure why this has always been true so far
+            if (LastEpisodeQuerySettings == null)
+            {
+                DateTime episodeQueryDate = DateTime.MinValue.ToUniversalTime();
+                LastEpisodeQuerySettings = new dbSettings();
+                LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate" + ChannelId;
+                LastEpisodeQuerySettings.Value = episodeQueryDate.ToString();
+                db.InsertOrReplace(LastEpisodeQuerySettings);
+            }
+            else
+            {
+                //Store the value sent to database
+                string episodeQueryDate = DateTime.UtcNow.ToString();
+                LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate" + ChannelId;
+                LastEpisodeQuerySettings.Value = episodeQueryDate;
+                db.InsertOrReplace(LastEpisodeQuerySettings);
+            }
+        }
+
         public static DateTime LastActionDate
            //Last action check date in GMT (get/set universal time)
         {
             get
             {
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                
                 if (LastActionsSettings == null)
                 {
                     DateTime actionDate = DateTime.MinValue.ToUniversalTime();

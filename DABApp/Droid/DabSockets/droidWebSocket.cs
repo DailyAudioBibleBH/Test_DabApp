@@ -18,6 +18,7 @@ using DABApp.WebSocketHelper;
 using DABApp.LastActionsHelper;
 using Edge = DABApp.LastActionsHelper.Edge;
 using SQLite;
+using DABApp.LastEpisodeDateQueryHelper;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -133,6 +134,25 @@ namespace DABApp.Droid.DabSockets
                         //store a new last action date
                         GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                     }                  
+                }
+                else if (data.Message.Contains("updatedEpisodes"))
+                {
+                    List<LastEpisodeDateQueryHelper.Edge> episodesList = new List<LastEpisodeDateQueryHelper.Edge>();
+                    LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeQueryRootObject>(data.Message);
+                    if (episodesObject.payload.data.updatedEpisodes.pageInfo.hasNextPage == true)
+                    {
+                        //loop through and do stuff
+                    }
+                    else
+                    {
+                        if (episodesObject.payload.data.updatedEpisodes != null)
+                        {
+                            //do something
+                        } 
+                    }
+
+                    //store a new episode query date
+                    GlobalResources.SetLastEpisodeQueryDate(227); //Need to grab ChannelId
                 }
                 else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {
