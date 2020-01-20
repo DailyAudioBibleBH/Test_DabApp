@@ -242,7 +242,7 @@ namespace DABApp
                 DateTime episodeQueryDate = DateTime.MinValue.ToUniversalTime();
                 LastEpisodeQuerySettings = new dbSettings();
                 LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate" + ChannelId;
-                LastEpisodeQuerySettings.Value = episodeQueryDate.ToString();
+                LastEpisodeQuerySettings.Value = DateTime.UtcNow.ToString();
                 db.InsertOrReplace(LastEpisodeQuerySettings);
             }
             else

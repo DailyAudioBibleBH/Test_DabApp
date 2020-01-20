@@ -137,7 +137,6 @@ namespace DABApp.Droid.DabSockets
                 }
                 else if (data.Message.Contains("updatedEpisodes"))
                 {
-                    List<LastEpisodeDateQueryHelper.Edge> episodesList = new List<LastEpisodeDateQueryHelper.Edge>();
                     LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeQueryRootObject>(data.Message);
                     if (episodesObject.payload.data.updatedEpisodes.pageInfo.hasNextPage == true)
                     {
