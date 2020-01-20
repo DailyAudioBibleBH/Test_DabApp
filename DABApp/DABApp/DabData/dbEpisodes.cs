@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DABApp.LastEpisodeDateQueryHelper;
 using SQLite;
 using Xamarin.Forms;
 
@@ -9,6 +10,29 @@ namespace DABApp
 {
     public class dbEpisodes
     {
+        public dbEpisodes()
+        {
+
+        }
+
+        public dbEpisodes(Edge edge)
+        {
+            id = edge.episodeId;
+            title = edge.title;
+            description = edge.description;
+            author = edge.author;
+            PubDate = edge.date;
+            url = edge.audioURL;
+            audio_size = edge.audioSize;
+            audio_type = edge.audioType;
+            audio_duration = edge.audioDuration.ToString();
+            read_link = edge.readURL;
+            stop_time = edge.stop_time;
+            is_favorite = edge.is_favorite;
+            has_journal = edge.has_journal;
+            is_listened_to = edge.is_listened_to;
+        }
+
         [PrimaryKey, Indexed]
         public int? id { get; set; }
         public string title { get; set; }

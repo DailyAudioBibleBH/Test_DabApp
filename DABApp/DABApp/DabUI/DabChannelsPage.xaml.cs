@@ -8,6 +8,8 @@ using FFImageLoading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 
 namespace DABApp
 {
@@ -81,7 +83,7 @@ namespace DABApp
             var reading = await PlayerFeedAPI.GetReading(episode.read_link);
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                await PlayerFeedAPI.GetEpisodes(_resource); //Get episodes prior to pushing up the TabletPage
+                //await PlayerFeedAPI.GetEpisodes(_resource); //Get episodes prior to pushing up the TabletPage
                 await Navigation.PushAsync(new DabTabletPage(_resource));
             }
             else
@@ -102,19 +104,29 @@ namespace DABApp
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
 
+            GlobalResources.Instance.resource = _resource;
+
             //Wait indicator
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
+            string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id).ToString("o");
+            Variables variables = new Variables();
+            Debug.WriteLine($"Getting episodes by ChannelId");
+            var episodesByChannelQuery = "query { updatedEpisodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+            var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
+            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
+            DabSyncService.Instance.Send(JsonIn);
+
             //Selected resource
             var selected = (Resource)e.Item;
             selected.IsNotSelected = .5;
             var resource = (Resource)e.Item;
-            var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
-            if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
-            {
+            //var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
+            //if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
+            //{
                 //Navigate to the appropriate player page 
                 if (Device.Idiom == TargetIdiom.Tablet)
                 {
@@ -124,8 +136,8 @@ namespace DABApp
                 {
                     await Navigation.PushAsync(new DabEpisodesPage(resource));
                 }
-            }
-            else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
+            //}
+            //else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
             selected.IsNotSelected = 1.0;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;

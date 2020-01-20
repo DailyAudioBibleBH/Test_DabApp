@@ -27,5 +27,10 @@ namespace DABApp.LastEpisodeDateQueryHelper
         public object shareURL { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
+
+        public double stop_time { get; set; } = 0;
+        public bool is_favorite { get; set; }
+        public bool has_journal { get; set; }
+        public bool is_listened_to { get; set; }
     }
 }

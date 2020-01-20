@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -69,7 +70,7 @@ namespace DABApp
             });
 
             
-        }
+        }       
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
@@ -152,7 +153,7 @@ namespace DABApp
             activityHolder.IsVisible = true;
 
             await AuthenticationAPI.PostActionLogs();
-            await PlayerFeedAPI.GetEpisodes(_resource);
+            //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
 

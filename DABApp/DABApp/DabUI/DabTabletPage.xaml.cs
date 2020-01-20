@@ -294,7 +294,7 @@ namespace DABApp
                 BackgroundImage.Source = _resource.images.backgroundTablet;
 
                 //Load the list if episodes for the channel.
-                await PlayerFeedAPI.GetEpisodes(_resource);
+                //await PlayerFeedAPI.GetEpisodes(_resource);
 
                 //Get the list of episodes from the resource
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
@@ -913,7 +913,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             await AuthenticationAPI.PostActionLogs();
-            await PlayerFeedAPI.GetEpisodes(_resource);
+            //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
             TimedActions();
