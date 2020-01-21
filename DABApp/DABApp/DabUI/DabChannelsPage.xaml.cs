@@ -104,7 +104,9 @@ namespace DABApp
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
 
-            GlobalResources.Instance.resource = _resource;
+            GlobalResources.Instance.resource = (Resource)e.Item;
+            ContentConfig.Instance.resource = (Resource)e.Item;
+            _resource = (Resource)e.Item;
 
             //Wait indicator
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");

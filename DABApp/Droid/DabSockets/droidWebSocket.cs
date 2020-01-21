@@ -137,21 +137,24 @@ namespace DABApp.Droid.DabSockets
                 }
                 else if (data.Message.Contains("updatedEpisodes"))
                 {
-                    LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeQueryRootObject>(data.Message);
+                    var resource = GlobalResources.Instance.resource;
+                    LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
+
                     if (episodesObject.payload.data.updatedEpisodes.pageInfo.hasNextPage == true)
                     {
+                        await PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                         //loop through and do stuff
                     }
                     else
                     {
                         if (episodesObject.payload.data.updatedEpisodes != null)
                         {
+                            await PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                             //do something
-                        } 
+                        }
                     }
-
                     //store a new episode query date
-                    GlobalResources.SetLastEpisodeQueryDate(227); //Need to grab ChannelId
+                    GlobalResources.SetLastEpisodeQueryDate(resource.id);
                 }
                 else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {

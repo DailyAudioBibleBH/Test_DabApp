@@ -19,6 +19,7 @@ namespace DABApp
         {
             id = edge.episodeId;
             title = edge.title;
+            channel_title = channel_title;
             description = edge.description;
             author = edge.author;
             PubDate = edge.date;

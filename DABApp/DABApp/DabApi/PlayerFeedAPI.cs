@@ -29,6 +29,10 @@ namespace DABApp
         public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
         {
             //GetEpisodes(resource);
+            foreach (var item in db.Table<dbEpisodes>())
+            {
+                Debug.WriteLine(item.title + item.channel_title);
+            }
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
@@ -36,12 +40,8 @@ namespace DABApp
         {
             try
             {
-                //var client = new HttpClient();
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-                //var result = /*GlobalResources.TestMode ? await client.GetAsync(resource.feedUrl) :*/ await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
-                //string jsonOut = await result.Content.ReadAsStringAsync();
-                //var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
-
+                var channel = ContentConfig.Instance.resource;
                 var allEpisodes = episodesObject.payload.data.updatedEpisodes.edges.ToList();
                 List<LastEpisodeDateQueryHelper.Edge> currentEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
 
@@ -59,7 +59,7 @@ namespace DABApp
                 {
                     return "Server Error";
                 }
-                var code = resource.title == "Daily Audio Bible" ? "dab" : resource.title.ToLower();
+                var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
                 var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_code == code).ToList();
                 var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
                 var newEpisodeIds = currentEpisodes.Select(x => x.episodeId);
@@ -84,8 +84,14 @@ namespace DABApp
                         }
 
                         dbEpisodes episode = new dbEpisodes(e);
+                        episode.channel_title = channel.title;
+                        episode.channel_description = channel.description;
+                        episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
+                        //episode.channel_description = ContentConfig.Instance.resource.description;
 
                         //adding an episode to the database
+                        //episode.channel_title = "Daily Audio Bible";
+
                         await adb.InsertOrReplaceAsync(episode);
 
                         //add episode to list of episodes to query actions from
