@@ -19,10 +19,11 @@ namespace DABApp
         {
             id = edge.episodeId;
             title = edge.title;
-            channel_title = channel_title;
             description = edge.description;
             author = edge.author;
             PubDate = edge.date;
+            //PubMonth = edge.date.Month.ToString();
+            PubYear = edge.date.Year;
             url = edge.audioURL;
             audio_size = edge.audioSize;
             audio_type = edge.audioType;
