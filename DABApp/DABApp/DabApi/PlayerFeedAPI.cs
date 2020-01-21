@@ -29,10 +29,6 @@ namespace DABApp
         public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
         {
             //GetEpisodes(resource);
-            foreach (var item in db.Table<dbEpisodes>())
-            {
-                Debug.WriteLine(item.title + item.channel_title);
-            }
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
@@ -83,19 +79,16 @@ namespace DABApp
                             Debug.WriteLine($"No user meta for {e.episodeId}");
                         }
 
+                        //build out rest of episodes object since we don't get this from websocket
                         dbEpisodes episode = new dbEpisodes(e);
                         episode.channel_title = channel.title;
                         episode.channel_description = channel.description;
                         episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-                        //episode.channel_description = ContentConfig.Instance.resource.description;
-
-                        //adding an episode to the database
-                        //episode.channel_title = "Daily Audio Bible";
+                        episode.PubMonth = getMonth(e.date);
+                        episode.PubDay = e.date.Day;
 
                         await adb.InsertOrReplaceAsync(episode);
 
-                        //add episode to list of episodes to query actions from
-                        //episodesToGetActionsFor.Add(e.episodeId);
                     }
                 }
 
@@ -142,6 +135,39 @@ namespace DABApp
             {
                 Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
                 return ex.Message;
+            }
+        }
+
+        public static string getMonth(DateTime e)
+        {
+            switch (e.Month)
+            {
+                case (1):
+                    return "Jan";
+                case (2):
+                    return "Feb";
+                case (3):
+                    return "Mar";
+                case (4):
+                    return "Apr";
+                case (5):
+                    return "May";
+                case (6):
+                    return "Jun";
+                case (7):
+                    return "Jul";
+                case (8):
+                    return "Aug";
+                case (9):
+                    return "Sep";
+                case (10):
+                    return "Oct";
+                case (11):
+                    return "Nov";
+                case (12):
+                    return "Dec";
+                default:
+                    return "";
             }
         }
 

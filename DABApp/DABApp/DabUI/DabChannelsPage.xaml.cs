@@ -103,7 +103,7 @@ namespace DABApp
         //Navigate to a specific channel
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
-
+            //save instance of channel object to use throughout app
             GlobalResources.Instance.resource = (Resource)e.Item;
             ContentConfig.Instance.resource = (Resource)e.Item;
             _resource = (Resource)e.Item;
@@ -114,6 +114,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
+            //send websocket message to get episodes by channel
             string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id).ToString("o");
             Variables variables = new Variables();
             Debug.WriteLine($"Getting episodes by ChannelId");
@@ -126,20 +127,17 @@ namespace DABApp
             var selected = (Resource)e.Item;
             selected.IsNotSelected = .5;
             var resource = (Resource)e.Item;
-            //var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
-            //if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
-            //{
-                //Navigate to the appropriate player page 
-                if (Device.Idiom == TargetIdiom.Tablet)
-                {
-                    await Navigation.PushAsync(new DabTabletPage(resource));
-                }
-                else
-                {
-                    await Navigation.PushAsync(new DabEpisodesPage(resource));
-                }
-            //}
-            //else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
+            
+            //Navigate to the appropriate player page 
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                await Navigation.PushAsync(new DabTabletPage(resource));
+            }
+            else
+            {
+                await Navigation.PushAsync(new DabEpisodesPage(resource));
+            }
+            
             selected.IsNotSelected = 1.0;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;

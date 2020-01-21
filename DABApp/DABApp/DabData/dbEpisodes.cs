@@ -22,7 +22,6 @@ namespace DABApp
             description = edge.description;
             author = edge.author;
             PubDate = edge.date;
-            //PubMonth = edge.date.Month.ToString();
             PubYear = edge.date.Year;
             url = edge.audioURL;
             audio_size = edge.audioSize;
