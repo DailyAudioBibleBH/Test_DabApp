@@ -47,6 +47,7 @@ namespace DABApp
 			_database.CreateTable<dbEpisodes>();
 			_database.CreateTable<dbPlayerActions>();
             _database.CreateTable<dbUserEpisodeMeta>();
+            _database.CreateTable <dbChannels>();
 		}
 
 		public static void ResetDatabases()
