@@ -137,19 +137,35 @@ namespace DABApp.Droid.DabSockets
                 }
                 else if (data.Message.Contains("updatedEpisodes"))
                 {
-                    var resource = GlobalResources.Instance.resource;
+                    Resource resource = GlobalResources.Instance.resource;
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
 
                     if (episodesObject.payload.data.updatedEpisodes.pageInfo.hasNextPage == true)
                     {
-                        await PlayerFeedAPI.GetEpisodes(resource, episodesObject);
+                        foreach (var item in episodesObject.payload.data.updatedEpisodes.edges)
+                        {
+                            allEpisodes.Add(item);
+                        }
+                        //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
+                        //send websocket message to get episodes by channel
+                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                        Variables variables = new Variables();
+                        Debug.WriteLine($"Getting episodes by ChannelId");
+                        var episodesByChannelQuery = "query { updatedEpisodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ", cursor: \"" + episodesObject.payload.data.updatedEpisodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
+                        var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
+                        DabSyncService.Instance.Send(JsonIn);
                         //loop through and do stuff
                     }
                     else
                     {
+                        foreach (var item in episodesObject.payload.data.updatedEpisodes.edges)
+                        {
+                            allEpisodes.Add(item);
+                        }
                         if (episodesObject.payload.data.updatedEpisodes != null)
                         {
-                            await PlayerFeedAPI.GetEpisodes(resource, episodesObject);
+                            await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
                             //do something
                         }
                     }

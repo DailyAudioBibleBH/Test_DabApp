@@ -115,7 +115,7 @@ namespace DABApp
             activityHolder.IsVisible = true;
 
             //send websocket message to get episodes by channel
-            string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id).ToString("o");
+            string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
             Variables variables = new Variables();
             Debug.WriteLine($"Getting episodes by ChannelId");
             var episodesByChannelQuery = "query { updatedEpisodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";

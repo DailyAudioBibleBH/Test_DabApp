@@ -188,41 +188,8 @@ namespace DABApp
             }
         }
 
-        //public static DateTime LastEpisodeQueryDate
-        //{
-        //    //Last episode query date by channel in GMT
-        //    get
-        //    {
-        //        dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate");
-        //        if (LastEpisodeQuerySettings == null)
-        //        {
-        //            DateTime episodeQueryDate = DateTime.UtcNow;
-        //            LastEpisodeQuerySettings = new dbSettings();
-        //            LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate";
-        //            LastEpisodeQuerySettings.Value = episodeQueryDate.ToString();
-        //            db.InsertOrReplace(LastEpisodeQuerySettings);
-        //            return episodeQueryDate;
-        //        }
-        //        else
-        //        {
-        //            return DateTime.Parse(LastEpisodeQuerySettings.Value);
-        //        }
-
-        //    }
-
-        //    set
-        //    {
-        //        //Store the value sent to database
-        //        string episodeQueryDate = value.ToString();
-        //        dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate");
-        //        LastEpisodeQuerySettings.Key = "LastEpisodeQueryDate";
-        //        LastEpisodeQuerySettings.Value = episodeQueryDate;
-        //        db.InsertOrReplace(LastEpisodeQuerySettings);
-        //    }
-        //}
-
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
-        public static DateTime GetLastEpisodeQueryDate(int ChannelId)
+        public static string GetLastEpisodeQueryDate(int ChannelId)
         {
             //Last episode query date by channel in GMT
             dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
@@ -231,15 +198,13 @@ namespace DABApp
                 DateTime queryDate = DateTime.MinValue.ToUniversalTime();
                 LastEpisodeQuerySettings = new dbSettings();
                 LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
-                LastEpisodeQuerySettings.Value = queryDate.ToString();
+                LastEpisodeQuerySettings.Value = queryDate.ToString("o");
                 db.InsertOrReplace(LastEpisodeQuerySettings);
-                //return queryDate;
-                return DateTime.MinValue.ToUniversalTime();
+                return queryDate.ToString("o");
             }
             else
             {
-                //return DateTime.Parse(LastEpisodeQuerySettings.Value);
-                return DateTime.MinValue.ToUniversalTime();
+                return LastEpisodeQuerySettings.Value;
             }
         }
 
@@ -248,14 +213,14 @@ namespace DABApp
             dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
 
             //Store the value sent in the database
-            string queryDate = DateTime.UtcNow.ToString();
+            string queryDate = DateTime.UtcNow.ToString("o");
             LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
             LastEpisodeQuerySettings.Value = queryDate;
             db.InsertOrReplace(LastEpisodeQuerySettings);
         }
 
         public static DateTime LastActionDate
-           //Last action check date in GMT (get/set universal time)
+        //Last action check date in GMT (get/set universal time)
         {
             get
             {

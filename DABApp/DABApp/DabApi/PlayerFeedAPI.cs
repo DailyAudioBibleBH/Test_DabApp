@@ -32,16 +32,16 @@ namespace DABApp
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
-        public static async Task<string> GetEpisodes(Resource resource, LastEpisodeQueryRootObject episodesObject)
+        public static async Task<string> GetEpisodes(Resource resource, List<LastEpisodeDateQueryHelper.Edge> episodesList)
         {
             try
             {
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
                 var channel = ContentConfig.Instance.resource;
-                var allEpisodes = episodesObject.payload.data.updatedEpisodes.edges.ToList();
+    
                 List<LastEpisodeDateQueryHelper.Edge> currentEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
 
-                foreach (var item in allEpisodes)
+                foreach (var item in episodesList)
                 {
                     if (item.date >= Convert.ToDateTime(fromDate))
                     {
