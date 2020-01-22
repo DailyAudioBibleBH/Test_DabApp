@@ -6,6 +6,6 @@ namespace DABApp.LastEpisodeDateQueryHelper
 {
     public class Data
     {
-        public UpdatedEpisodes updatedEpisodes { get; set; }
+        public Episodes episodes { get; set; }
     }
 }

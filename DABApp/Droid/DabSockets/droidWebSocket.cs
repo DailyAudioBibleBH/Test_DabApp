@@ -29,6 +29,7 @@ namespace DABApp.Droid.DabSockets
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
 
 
         public droidWebSocket()
@@ -135,14 +136,14 @@ namespace DABApp.Droid.DabSockets
                         GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                     }                  
                 }
-                else if (data.Message.Contains("updatedEpisodes"))
+                else if (data.Message.Contains("\"episodes\""))
                 {
-                    Resource resource = GlobalResources.Instance.resource;
+                    var resource = GlobalResources.Instance.resource;
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
 
-                    if (episodesObject.payload.data.updatedEpisodes.pageInfo.hasNextPage == true)
+                    if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
-                        foreach (var item in episodesObject.payload.data.updatedEpisodes.edges)
+                        foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
                         }
@@ -150,8 +151,8 @@ namespace DABApp.Droid.DabSockets
                         //send websocket message to get episodes by channel
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
                         Variables variables = new Variables();
-                        Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { updatedEpisodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ", cursor: \"" + episodesObject.payload.data.updatedEpisodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        System.Diagnostics.Debug.WriteLine($"Getting episodes by ChannelId");
+                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ", cursor: \"" + episodesObject.payload.data.updatedEpisodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                         var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
@@ -159,11 +160,11 @@ namespace DABApp.Droid.DabSockets
                     }
                     else
                     {
-                        foreach (var item in episodesObject.payload.data.updatedEpisodes.edges)
+                        foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
                         }
-                        if (episodesObject.payload.data.updatedEpisodes != null)
+                        if (episodesObject.payload.data.episodes != null)
                         {
                             await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
                             //do something
