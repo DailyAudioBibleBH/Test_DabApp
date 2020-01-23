@@ -17,13 +17,13 @@ using DABApp.WebSocketHelper;
 using System.Diagnostics;
 using DataReceivedEventArgs = WebSocket4Net.DataReceivedEventArgs;
 using DABApp.ChannelWebSocketHelper;
+using DABApp.LastEpisodeDateQueryHelper;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
 {
     class iosWebSocket : IWebSocket
     {
-
         bool isConnected = false;
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
@@ -31,6 +31,7 @@ namespace DABApp.iOS.DabSockets
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
         static SQLiteConnection db = DabData.database;
         int channelId;
+        dbChannels channel = new dbChannels();
 
         public iosWebSocket()
         {
@@ -105,11 +106,11 @@ namespace DABApp.iOS.DabSockets
                 //process incoming lastActions
                 else if (data.Message.Contains("lastActions"))
                 {
-                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
                     ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
                     if (actionsObject.payload.data.lastActions.pageInfo.hasNextPage == true)
                     {
-                        foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
                         {
                             await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
                         }
@@ -130,7 +131,7 @@ namespace DABApp.iOS.DabSockets
                     {
                         if (actionsObject.payload.data.lastActions != null)
                         {
-                            foreach (Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                            foreach (LastActionsHelper.Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
                             {
                                 await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
                             }
@@ -148,12 +149,12 @@ namespace DABApp.iOS.DabSockets
                 else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {
                     //process incoming new episode data
-                    List<Edge> actionsList = new List<Edge>();  //list of actions
+                    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
                     ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(data.Message);
                     if (actionsObject.payload.data.actions != null) //make sure we got somethign back
                     {
                         System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
-                        foreach (Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
+                        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
                         {
                             await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
                           
@@ -163,8 +164,7 @@ namespace DABApp.iOS.DabSockets
                 }
                 else if (data.Message.Contains("\"episodes\""))
                 {
-                    LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
-                    
+                    LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);                   
 
                     if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
@@ -173,7 +173,6 @@ namespace DABApp.iOS.DabSockets
                             allEpisodes.Add(item);
                             channelId = item.channelId;
                         }
-                        var test = channelId;
                         //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                         //send websocket message to get episodes by channel
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
@@ -190,10 +189,21 @@ namespace DABApp.iOS.DabSockets
                         foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
+                            channelId = item.channelId;
                         }
+                        var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
+                        foreach (var item in channels)
+                        {
+                            if (item.channelId == channelId)
+                            {
+                                channel = item;
+                            }
+                        }
+                        var test = channelId;
+                        var test2 = channel;
                         if (episodesObject.payload.data.episodes != null)
                         {
-                            //await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
+                            await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             //do something
                         }
                     }

@@ -19,6 +19,7 @@ namespace DABApp
 {
     public class PlayerFeedAPI
     {
+
         static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         static bool DownloadIsRunning = false;
@@ -32,12 +33,11 @@ namespace DABApp
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
-        public static async Task<string> GetEpisodes(Resource resource, List<LastEpisodeDateQueryHelper.Edge> episodesList)
+        public static async Task<string> GetEpisodes(List<Edge> episodesList, dbChannels channel)
         {
             try
             {
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-                var channel = ContentConfig.Instance.resource;
     
                 List<LastEpisodeDateQueryHelper.Edge> currentEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
 
@@ -82,7 +82,7 @@ namespace DABApp
                         //build out rest of episodes object since we don't get this from websocket
                         dbEpisodes episode = new dbEpisodes(e);
                         episode.channel_title = channel.title;
-                        episode.channel_description = channel.description;
+                        //episode.channel_description = channel.;
                         episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
                         episode.PubMonth = getMonth(e.date);
                         episode.PubDay = e.date.Day;
@@ -115,10 +115,12 @@ namespace DABApp
                     }
                 }
                 Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-                if (resource.availableOffline && Device.Idiom == TargetIdiom.Tablet)
-                {
-                    Task.Run(async () => { await DownloadEpisodes(); });
-                }
+                //took resource out for now
+                //if (resource.availableOffline && Device.Idiom == TargetIdiom.Tablet)
+                //{
+                //    Task.Run(async () => { await DownloadEpisodes(); });
+                //}
+
                 //var b = await AuthenticationAPI.GetMemberData();//This slows down everything
                 //if (!b)
                 //{
