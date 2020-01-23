@@ -1,14 +1,17 @@
 ﻿using System;
+using SQLite;
+
 namespace DABApp
 {
+    [Table("Channel")]
     public class dbChannels
     {
-        public dbChannels()
-        {
-        }
+        [PrimaryKey, Indexed]
         public string id { get; set; }
+        [Indexed]
         public int channelId { get; set; }
         public string key { get; set; }
+        [Indexed]
         public string title { get; set; }
         public string imageURL { get; set; }
         public int rolloverMonth { get; set; }

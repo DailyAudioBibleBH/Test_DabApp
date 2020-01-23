@@ -3,8 +3,6 @@ namespace DABApp.ChannelWebSocketHelper
 {
     public class Payload
     {
-        public Payload()
-        {
-        }
+        public Data data { get; set; }
     }
 }

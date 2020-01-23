@@ -171,6 +171,7 @@
     <Folder Include="DabAudio\" />
     <Folder Include="Resources\" />
     <Folder Include="DabNotifications\" />
+    <Folder Include="ChannelWebSocketHelper\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\star.png" />

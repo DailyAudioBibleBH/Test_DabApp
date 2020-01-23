@@ -16,6 +16,7 @@ using SQLite;
 using DABApp.WebSocketHelper;
 using System.Diagnostics;
 using DataReceivedEventArgs = WebSocket4Net.DataReceivedEventArgs;
+using DABApp.ChannelWebSocketHelper;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -28,6 +29,7 @@ namespace DABApp.iOS.DabSockets
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
+        static SQLiteConnection db = DabData.database;
 
         public iosWebSocket()
         {
@@ -90,6 +92,16 @@ namespace DABApp.iOS.DabSockets
 
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
+                }
+                else if (data.Message.Contains("\"data\":{\"channels\""))
+                {
+                    ChannelWebSocketRootObject channelsObject = JsonConvert.DeserializeObject<ChannelWebSocketRootObject>(data.Message);
+                    foreach (var item in channelsObject.payload.data.channels)
+                    {
+                        await adb.InsertOrReplaceAsync(item);
+                    }
+
+                    //var test = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
                 }
                 //process incoming lastActions
                 else if (data.Message.Contains("lastActions"))

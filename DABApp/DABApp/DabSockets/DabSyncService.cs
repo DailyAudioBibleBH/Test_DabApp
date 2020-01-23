@@ -179,6 +179,13 @@ namespace DABApp.DabSockets
                 var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
                 sock.Send(SubscriptionInit);
 
+                //Send request for channels lists
+                var channelVariables = new Variables();
+                var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
+                WebSocketHelper.Payload channelPayload = new WebSocketHelper.Payload(channelQuery, channelVariables);
+                var channelInit = JsonConvert.SerializeObject(new WebSocketCommunication("start", channelPayload));
+                sock.Send(channelInit);
+
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
 
