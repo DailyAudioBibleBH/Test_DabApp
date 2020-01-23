@@ -199,8 +199,6 @@ namespace DABApp.iOS.DabSockets
                                 channel = item;
                             }
                         }
-                        var test = channelId;
-                        var test2 = channel;
                         if (episodesObject.payload.data.episodes != null)
                         {
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);

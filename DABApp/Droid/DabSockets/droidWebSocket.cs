@@ -29,8 +29,10 @@ namespace DABApp.Droid.DabSockets
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        static SQLiteConnection db = DabData.database;
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
         int channelId;
+        dbChannels channel = new dbChannels();
 
         public droidWebSocket()
         {
@@ -140,7 +142,6 @@ namespace DABApp.Droid.DabSockets
                 {
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
 
-
                     if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
                         foreach (var item in episodesObject.payload.data.episodes.edges)
@@ -148,7 +149,6 @@ namespace DABApp.Droid.DabSockets
                             allEpisodes.Add(item);
                             channelId = item.channelId;
                         }
-                        var test = channelId;
                         //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                         //send websocket message to get episodes by channel
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
@@ -165,10 +165,19 @@ namespace DABApp.Droid.DabSockets
                         foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
+                            channelId = item.channelId;
+                        }
+                        var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
+                        foreach (var item in channels)
+                        {
+                            if (item.channelId == channelId)
+                            {
+                                channel = item;
+                            }
                         }
                         if (episodesObject.payload.data.episodes != null)
                         {
-                            //await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
+                            await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             //do something
                         }
                     }
