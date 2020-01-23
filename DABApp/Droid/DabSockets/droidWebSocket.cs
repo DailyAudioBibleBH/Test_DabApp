@@ -30,7 +30,7 @@ namespace DABApp.Droid.DabSockets
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
-
+        int channelId;
 
         public droidWebSocket()
         {
@@ -83,7 +83,7 @@ namespace DABApp.Droid.DabSockets
                 {
                     var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(data.Message);
                     var action = actionLoggedObject.payload.data.actionLogged.action;
-                    bool hasJournal; 
+                    bool hasJournal;
 
                     if (action.entryDate != null)
                         hasJournal = true;
@@ -134,25 +134,27 @@ namespace DABApp.Droid.DabSockets
 
                         //store a new last action date
                         GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-                    }                  
+                    }
                 }
                 else if (data.Message.Contains("\"episodes\""))
                 {
-                    var resource = GlobalResources.Instance.resource;
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
+
 
                     if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
                         foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
+                            channelId = item.channelId;
                         }
+                        var test = channelId;
                         //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                         //send websocket message to get episodes by channel
-                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
                         Variables variables = new Variables();
                         System.Diagnostics.Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ", cursor: \"" + episodesObject.payload.data.updatedEpisodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + episodesObject.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                         var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
@@ -166,12 +168,12 @@ namespace DABApp.Droid.DabSockets
                         }
                         if (episodesObject.payload.data.episodes != null)
                         {
-                            await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
+                            //await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
                             //do something
                         }
                     }
                     //store a new episode query date
-                    GlobalResources.SetLastEpisodeQueryDate(resource.id);
+                    GlobalResources.SetLastEpisodeQueryDate(channelId);
                 }
                 else if (data.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
                 {

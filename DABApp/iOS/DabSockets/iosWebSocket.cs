@@ -30,6 +30,7 @@ namespace DABApp.iOS.DabSockets
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
         static SQLiteConnection db = DabData.database;
+        int channelId;
 
         public iosWebSocket()
         {
@@ -100,8 +101,6 @@ namespace DABApp.iOS.DabSockets
                     {
                         await adb.InsertOrReplaceAsync(item);
                     }
-
-                    //var test = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
                 }
                 //process incoming lastActions
                 else if (data.Message.Contains("lastActions"))
@@ -164,21 +163,23 @@ namespace DABApp.iOS.DabSockets
                 }
                 else if (data.Message.Contains("\"episodes\""))
                 {
-                    var resource = GlobalResources.Instance.resource;
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);
                     
+
                     if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
                         foreach (var item in episodesObject.payload.data.episodes.edges)
                         {
                             allEpisodes.Add(item);
+                            channelId = item.channelId;
                         }
+                        var test = channelId;
                         //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
                         //send websocket message to get episodes by channel
-                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
                         Variables variables = new Variables();
                         Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ", cursor: \"" + episodesObject.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + episodesObject.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                         var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
@@ -192,12 +193,12 @@ namespace DABApp.iOS.DabSockets
                         }
                         if (episodesObject.payload.data.episodes != null)
                         {
-                            await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
+                            //await PlayerFeedAPI.GetEpisodes(resource, allEpisodes);
                             //do something
                         }
                     }
                     //store a new episode query date
-                    GlobalResources.SetLastEpisodeQueryDate(resource.id);
+                    GlobalResources.SetLastEpisodeQueryDate(channelId);
                 }
             }
             catch (Exception ex)

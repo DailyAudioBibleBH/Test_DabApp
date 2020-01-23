@@ -103,11 +103,6 @@ namespace DABApp
         //Navigate to a specific channel
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
-            //save instance of channel object to use throughout app
-            GlobalResources.Instance.resource = (Resource)e.Item;
-            ContentConfig.Instance.resource = (Resource)e.Item;
-            _resource = (Resource)e.Item;
-
             //Wait indicator
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
