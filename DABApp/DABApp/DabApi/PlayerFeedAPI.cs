@@ -43,9 +43,13 @@ namespace DABApp
 
                 foreach (var item in episodesList)
                 {
-                    if (item.date >= Convert.ToDateTime(fromDate))
+                    if (item.date >= Convert.ToDateTime(fromDate) && item.channelId == channel.channelId)
                     {
                         currentEpisodes.Add(item);
+                    }
+                    else
+                    {
+                        currentEpisodes.Remove(item);
                     }
                 }
                 

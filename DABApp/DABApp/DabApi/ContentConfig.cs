@@ -211,7 +211,6 @@ namespace DABApp
 		public List<View> views { get; set; } //views
         public List<Versions> versions { get; set; }
         public AppSettings app_settings { get; set; }
-		public Resource resource { get; set; }
 
 		public Options options { get; set; }
 
