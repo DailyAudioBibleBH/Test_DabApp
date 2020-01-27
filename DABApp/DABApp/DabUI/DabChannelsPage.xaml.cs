@@ -10,6 +10,7 @@ using System.Diagnostics;
 using DABApp.DabSockets;
 using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
+using SQLite;
 
 namespace DABApp
 {
@@ -22,6 +23,7 @@ namespace DABApp
         private double _width;
         private double _height;
         private int number;
+        static SQLiteConnection db = DabData.database;
 
         public DabChannelsPage()
         {
@@ -157,7 +159,8 @@ namespace DABApp
                 });
             }
             //Clean up old episodes
-            PlayerFeedAPI.CleanUpEpisodes();
+            var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
+            //PlayerFeedAPI.CleanUpEpisodes();
 
             //Download new episodes
             Task.Run(async () =>

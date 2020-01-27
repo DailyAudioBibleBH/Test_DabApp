@@ -164,6 +164,7 @@ namespace DABApp.iOS.DabSockets
                 }
                 else if (data.Message.Contains("\"episodes\""))
                 {
+                    var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
                     LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(data.Message);                   
 
                     if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
@@ -202,6 +203,7 @@ namespace DABApp.iOS.DabSockets
                         if (episodesObject.payload.data.episodes != null)
                         {
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
+                            MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                             //do something
                         }
                     }

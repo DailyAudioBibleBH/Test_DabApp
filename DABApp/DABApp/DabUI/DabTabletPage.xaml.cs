@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Acr.DeviceInfo;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.WebSocketHelper;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -88,7 +90,7 @@ namespace DABApp
             else
             {
                 //Pick the first episode
-                episode = new EpisodeViewModel(Episodes.First());
+                //episode = new EpisodeViewModel(Episodes.First());
             }
             //Bind to the active episode
             favorite.BindingContext = episode;
@@ -116,7 +118,10 @@ namespace DABApp
             {
                 //Join the journal channel
                 journal.InitAndConnect();
-                journal.JoinRoom(episode.Episode.PubDate);
+                if (episode != null)
+                {
+                    journal.JoinRoom(episode.Episode.PubDate);
+                }
             }
             //Journal.BindingContext = episode;
             //JournalTracker.Current.socket.Disconnect += OnDisconnect;
@@ -144,13 +149,22 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //Get fresh reference to the episode
-                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                    if (episode != null)
+                    {
+                        episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                    }
                     BindControls(true, true);
                     //Bind episode data in the list
                     TimedActions();
                 });
 
-            }); 
+            });
+
+            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+            {
+                TimedActions();
+                return true;
+            });
         }
 
         void Handle_SegControlValueChanged(object sender, System.EventArgs e)
@@ -294,44 +308,16 @@ namespace DABApp
                 BackgroundImage.Source = _resource.images.backgroundTablet;
 
                 //Load the list if episodes for the channel.
-                //await PlayerFeedAPI.GetEpisodes(_resource);
-
-                //Get the list of episodes from the resource
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-                TimedActions();
 
-                //Prep the new episode (don't play yet though0
-                episode = new EpisodeViewModel(Episodes.FirstOrDefault());
-                if (episode != null)
-                {
-                    if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
-                    {
-                        //Prep player tab
-                        BindControls(true, false);
-                        SetVisibility(false);
-
-                        //PRep reading tab
-                        await SetReading();
-
-                        //Load the journal for the episode
-                        //TODO: Replace for journal?
-                        journal.JoinRoom(Episodes.First().PubDate);
-
-
-                    }
-                    else
-                    {
-                        //Current episode 
-                        SetVisibility(true);
-                    }
-                }
-                else
-                {
-                    //TODO: Handle no episodes available
-                }
-
-                //TODO: Fix completed image
-                //Completed.Image = episode.listenedToSource;
+                // send websocket message to get episodes by channel
+                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
+                Variables variables = new Variables();
+                Debug.WriteLine($"Getting episodes by ChannelId");
+                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
+                var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
+                DabSyncService.Instance.Send(JsonIn);
             }
             else
             {
@@ -767,15 +753,19 @@ namespace DABApp
 
         async void OnFavorite(object o, EventArgs e)
         {
-            favorite.IsEnabled = false;
-            favorite.Opacity = .5;
             episode.favoriteVisible = !episode.favoriteVisible;
-            favorite.Source = episode.favoriteSource;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
-            favorite.IsEnabled = true;
-            favorite.Opacity = 1;
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
+            //favorite.IsEnabled = false;
+            //favorite.Opacity = .5;
+            //episode.favoriteVisible = !episode.favoriteVisible;
+            //favorite.Source = episode.favoriteSource;
+            //AutomationProperties.SetName(favorite, episode.favoriteAccessible);
+            //await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
+            //await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
+            //favorite.IsEnabled = true;
+            //favorite.Opacity = 1;
             //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
         }
 
@@ -917,6 +907,9 @@ namespace DABApp
             await AuthenticationAPI.GetMemberData();
             episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
             TimedActions();
+
+            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;

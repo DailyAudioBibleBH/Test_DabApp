@@ -200,7 +200,7 @@ namespace DABApp
                 .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
                 .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
                 .Select(x => new EpisodeViewModel(x)).ToList();
-                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+            Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
         }
     }
 }
