@@ -19,6 +19,7 @@ using DABApp.LastActionsHelper;
 using Edge = DABApp.LastActionsHelper.Edge;
 using SQLite;
 using DABApp.LastEpisodeDateQueryHelper;
+using DABApp.ChannelWebSocketHelper;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -94,6 +95,15 @@ namespace DABApp.Droid.DabSockets
 
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
+                }
+                //save channels to channels table in db
+                else if (data.Message.Contains("\"data\":{\"channels\""))
+                {
+                    ChannelWebSocketRootObject channelsObject = JsonConvert.DeserializeObject<ChannelWebSocketRootObject>(data.Message);
+                    foreach (var item in channelsObject.payload.data.channels)
+                    {
+                        await adb.InsertOrReplaceAsync(item);
+                    }
                 }
                 //process incoming lastActions
                 else if (data.Message.Contains("lastActions"))
