@@ -179,13 +179,6 @@ namespace DABApp
             }
         }
 
-        ////TODO: Don't think we need this
-        //void ConnectJournal()
-        //{
-        //    //Reconnect the journal
-        //    AuthenticationAPI.ConnectJournal();
-        //}
-
         protected override async void OnAppearing()
         {
             //Show toolbar items for android

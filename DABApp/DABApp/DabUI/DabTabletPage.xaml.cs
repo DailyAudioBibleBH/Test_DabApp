@@ -123,13 +123,7 @@ namespace DABApp
                     journal.JoinRoom(episode.Episode.PubDate);
                 }
             }
-            //Journal.BindingContext = episode;
-            //JournalTracker.Current.socket.Disconnect += OnDisconnect;
-            //JournalTracker.Current.socket.Reconnecting += OnReconnecting;
-            //JournalTracker.Current.socket.Room_Error += OnRoom_Error;
-            //JournalTracker.Current.socket.Auth_Error += OnAuth_Error;
-            //JournalTracker.Current.socket.Join_Error += OnJoin_Error;
-
+            
             //Keyboard events on iOS for Journal
             if (Device.RuntimePlatform == "iOS")
             {
@@ -586,9 +580,6 @@ namespace DABApp
                 //Play-Pause button
                 PlayPause.BindingContext = player;
                 PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
-
-
-
             }
         }
 
@@ -611,10 +602,6 @@ namespace DABApp
         //TODO: Replace for journal?
         void OnDisconnect(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("Disconnected from journal server.", $"For journal changes to be saved you must be connected to the server.  Error: {o.ToString()}", "OK");
-            //});
             Debug.WriteLine($"Disoconnected from journal server: {o.ToString()}");
             JournalWarning.IsEnabled = true;
         }
@@ -622,20 +609,6 @@ namespace DABApp
         //TODO: Replace for journal?
         async void OnReconnect(object o, EventArgs e)
         {
-            //Device.BeginInvokeOnMainThread(() =>
-            //{
-            //	DisplayAlert("Reconnected to journal server.", $"Journal changes will now be saved. {o.ToString()}", "OK");
-            //});
-            //JournalWarning.IsEnabled = false;
-            //journal.Reconnect();
-            //Debug.WriteLine($"Reconnected to journal server: {o.ToString()}");
-            //await Task.Delay(1000);
-            //if (!journal.IsConnected)
-            //{
-            //    await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
-            //}
-            //JournalWarning.IsEnabled = true;
-
             journal.Reconnect();
             journal.JoinRoom(episode.Episode.PubDate);
 
@@ -707,11 +680,6 @@ namespace DABApp
             {
                 journal.Reconnect();
             }
-            //JournalTracker.Current.socket.ExternalUpdate = true;
-            //if (!JournalTracker.Current.IsJoined)
-            //{
-            //    JournalTracker.Current.Join(Episode.Episode.PubDate.ToString("yyyy-MM-dd"));
-            //}
         }
 
         //TODO: Replace for journal?
@@ -757,16 +725,6 @@ namespace DABApp
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.is_favorite);
-            //favorite.IsEnabled = false;
-            //favorite.Opacity = .5;
-            //episode.favoriteVisible = !episode.favoriteVisible;
-            //favorite.Source = episode.favoriteSource;
-            //AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            //await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.favoriteVisible, null, null);
-            //await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, !episode.Episode.is_favorite);
-            //favorite.IsEnabled = true;
-            //favorite.Opacity = 1;
-            //EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
         }
 
         async void OnListListened(object o, EventArgs e)
@@ -791,7 +749,6 @@ namespace DABApp
             else
             {
                 await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.listenedToVisible, null);
-
             }
         }
 
@@ -824,22 +781,6 @@ namespace DABApp
 
         async void OnListened(object o, EventArgs e)
         {
-            //if (episode.Episode.is_listened_to == true)
-            //{
-            //    //check opposite of this 
-            //    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, false, null, null, null);
-            //    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, false);
-            //}
-            //else
-            //{
-            //    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, true, null, null, null);
-            //    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", episode.Episode.stop_time, true);
-            //}
-            //episode.listenedToVisible = !episode.listenedToVisible;
-            ////TODO: Fix completed image
-            ////Completed.Image = episode.listenedToSource;
-            //AutomationProperties.SetName(Completed, episode.listenAccessible);
-            //TimedActions();
             episode.listenedToVisible = !episode.listenedToVisible;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.listenedToVisible, null, null, null);
@@ -903,7 +844,6 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
             await AuthenticationAPI.PostActionLogs();
-            //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
             TimedActions();
