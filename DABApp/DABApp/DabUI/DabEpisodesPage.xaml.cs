@@ -63,7 +63,7 @@ namespace DABApp
 
             });
 
-            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
             {
                 TimedActions();
                 return true;
@@ -118,19 +118,9 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == true)
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null, false);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
-                model.listenedToVisible = false;
-
-            }
-            else
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null, false);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
-                model.listenedToVisible = true;
-            }
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, !ep.is_listened_to, null, null, null, false);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, !ep.is_listened_to);
+            model.listenedToVisible = !ep.is_listened_to;
         }
 
         public async void OnFavorite(object o, EventArgs e)
