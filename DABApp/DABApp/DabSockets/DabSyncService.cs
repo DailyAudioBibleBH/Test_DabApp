@@ -39,7 +39,7 @@ namespace DABApp.DabSockets
 
         int channelId;
         dbChannels channel = new dbChannels();
-        List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
+        List<DabGraphQlEpisode> allEpisodes = new List<DabGraphQlEpisode>();
 
 
 
@@ -77,11 +77,12 @@ namespace DABApp.DabSockets
 
             try
             {
-                if (e.Message.Contains("actionLogged"))
-                {
+                var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
-                    var actionLoggedObject = JsonConvert.DeserializeObject<ActionLoggedRootObject>(e.Message);
-                    var action = actionLoggedObject.payload.data.actionLogged.action;
+                //Action logged elsewhere
+                if (root.payload?.data?.actionLogged != null)
+                {
+                    var action = root.payload.data.actionLogged.action;
                     bool hasJournal;
 
                     if (action.entryDate != null)
@@ -92,48 +93,48 @@ namespace DABApp.DabSockets
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
                 }
-                else if (e.Message.Contains("\"data\":{\"channels\""))
+                else if (root.data?.channels != null)
                 {
-                    ChannelWebSocketRootObject channelsObject = JsonConvert.DeserializeObject<ChannelWebSocketRootObject>(e.Message);
-                    foreach (var item in channelsObject.payload.data.channels)
+                    foreach (var item in root.data.channels)
                     {
                         await adb.InsertOrReplaceAsync(item);
                     }
                 }
                 //process incoming lastActions
-                else if (e.Message.Contains("lastActions"))
+                else if (root.payload?.data?.lastActions != null)
                 {
-                    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
-                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(e.Message);
-                    if (actionsObject.payload.data.lastActions.pageInfo.hasNextPage == true)
+                    List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
+                    if (root.payload.data.lastActions.pageInfo.hasNextPage == true)
                     {
-                        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                        foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
                         {
                             await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
                         }
                         //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
-                        if (actionsObject.payload.data.lastActions.edges.Count > 0)
+                        if (root.payload.data.lastActions.edges.Count > 0)
                         {
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
+
                         //Send last action query to the websocket
+                        //TODO: Come back and clean up with GraphQl objects
                         Variables variables = new Variables();
                         System.Diagnostics.Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                        var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + actionsObject.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                        var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + root.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
                         var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
                         DabSyncService.Instance.Send(JsonIn);
                     }
                     else
                     {
-                        if (actionsObject.payload.data.lastActions != null)
+                        if (root.payload.data.lastActions != null)
                         {
-                            foreach (LastActionsHelper.Edge item in actionsObject.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                            foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
                             {
                                 await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
                             }
                             //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
-                            if (actionsObject.payload.data.lastActions.edges.Count > 0)
+                            if (root.payload.data.lastActions.edges.Count > 0)
                             {
                                 MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                             }
@@ -143,52 +144,47 @@ namespace DABApp.DabSockets
                         GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                     }
                 }
-                else if (e.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
-                {
-                    //process incoming new episode data
-                    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
-                    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(e.Message);
-                    if (actionsObject.payload.data.actions != null) //make sure we got somethign back
-                    {
-                        System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
-                        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
-                        {
-                            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                //else if (e.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
+                //{
+                //    //process incoming new episode data
+                //    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
+                //    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(e.Message);
+                //    if (actionsObject.payload.data.actions != null) //make sure we got somethign back
+                //    {
+                //        System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
+                //        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
+                //        {
+                //            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
 
-                        }
-                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
+                //        }
+                //        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
+                //    }
+                //}
+                else if (root.data.episodes != null)
+                {
+                    //var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
+                    //LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(e.Message);
+
+                    foreach (var item in root.payload.data.episodes.edges)
+                    {
+                        allEpisodes.Add(item);
+                        channelId = item.channelId;
                     }
-                }
-                else if (e.Message.Contains("\"episodes\""))
-                {
-                    var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
-                    LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(e.Message);
 
-                    if (episodesObject.payload.data.episodes.pageInfo.hasNextPage == true)
+                    //Take action based on more pages or not
+                    if (root.payload.data.episodes.pageInfo.hasNextPage == true)
                     {
-                        foreach (var item in episodesObject.payload.data.episodes.edges)
-                        {
-                            allEpisodes.Add(item);
-                            channelId = item.channelId;
-                        }
-                        //PlayerFeedAPI.GetEpisodes(resource, episodesObject);
-                        //send websocket message to get episodes by channel
+                        //More pages, go get them
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
                         Variables variables = new Variables();
                         Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + episodesObject.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                         var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
-                        //loop through and do stuff
                     }
-                    else
-                    {
-                        foreach (var item in episodesObject.payload.data.episodes.edges)
-                        {
-                            allEpisodes.Add(item);
-                            channelId = item.channelId;
-                        }
+                    else {
+                        //Last page, let UI know
                         var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
                         foreach (var item in channels)
                         {
@@ -197,13 +193,14 @@ namespace DABApp.DabSockets
                                 channel = item;
                             }
                         }
-                        if (episodesObject.payload.data.episodes != null)
+                        if (root.payload.data.episodes != null)
                         {
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                             //do something
                         }
                     }
+
                     //store a new episode query date
                     GlobalResources.SetLastEpisodeQueryDate(channelId);
                 }

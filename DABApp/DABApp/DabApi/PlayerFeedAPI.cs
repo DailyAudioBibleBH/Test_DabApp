@@ -33,13 +33,13 @@ namespace DABApp
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
-        public static async Task<string> GetEpisodes(List<Edge> episodesList, dbChannels channel)
+        public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
         {
             try
             {
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
     
-                List<LastEpisodeDateQueryHelper.Edge> currentEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
+                List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
 
                 foreach (var item in episodesList)
                 {

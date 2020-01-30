@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using DABApp.DabSockets;
 using DABApp.LastEpisodeDateQueryHelper;
 using SQLite;
 using Xamarin.Forms;
@@ -15,23 +16,23 @@ namespace DABApp
 
         }
 
-        public dbEpisodes(Edge edge)
+        public dbEpisodes(DabGraphQlEpisode episode)
         {
-            id = edge.episodeId;
-            title = edge.title;
-            description = edge.description;
-            author = edge.author;
-            PubDate = edge.date;
-            PubYear = edge.date.Year;
-            url = edge.audioURL;
-            audio_size = edge.audioSize;
-            audio_type = edge.audioType;
-            audio_duration = edge.audioDuration.ToString();
-            read_link = edge.readURL;
-            stop_time = edge.stop_time;
-            is_favorite = edge.is_favorite;
-            has_journal = edge.has_journal;
-            is_listened_to = edge.is_listened_to;
+            id = episode.episodeId;
+            title = episode.title;
+            description = episode.description;
+            author = episode.author;
+            PubDate = episode.date;
+            PubYear = episode.date.Year;
+            url = episode.audioURL;
+            audio_size = episode.audioSize;
+            audio_type = episode.audioType;
+            audio_duration = episode.audioDuration.ToString();
+            read_link = episode.readURL;
+            stop_time = episode.stop_time;
+            is_favorite = episode.is_favorite;
+            has_journal = episode.has_journal;
+            is_listened_to = episode.is_listened_to;
         }
 
         [PrimaryKey, Indexed]
