@@ -50,11 +50,17 @@ namespace DABApp.DabSockets
 
             //Register for notifications from the socket
             sock.DabSocketEvent += Sock_DabSocketEvent;
+            sock.DabGraphQlMessage += Sock_DabGraphQlMessage;
 
             //Init the socket
             sock.Init(uri);
 
             return true;
+        }
+
+        private void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+        {
+            Debug.WriteLine($"Shared code graph ql message: {e.message}");
         }
 
         public void Connect()

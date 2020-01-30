@@ -27,6 +27,8 @@ namespace DABApp.iOS.DabSockets
         bool isConnected = false;
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
+        public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage;
+
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
         static SQLiteConnection db = DabData.database;
@@ -76,6 +78,8 @@ namespace DABApp.iOS.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
+            DabGraphQlMessage?.Invoke(this, new DabGraphQlMessageEventHandler(data.Message));
+
             try
             {
                 System.Diagnostics.Debug.WriteLine("/n/n");

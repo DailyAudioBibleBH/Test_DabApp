@@ -11,7 +11,8 @@ namespace DABApp.DabSockets
         void Send(string JsonIn);
         void Disconnect(); //Disconnect
         bool IsConnected { get; }
-        event EventHandler<DabSocketEventHandler> DabSocketEvent;
+        event EventHandler<DabSocketEventHandler> DabSocketEvent; //raised when generic websocket events happen
+        event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage; //raised with graph ql sends a message
     }
 }
 

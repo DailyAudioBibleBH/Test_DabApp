@@ -29,6 +29,8 @@ namespace DABApp.Droid.DabSockets
         bool isConnected = false;
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
+        public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage;
+
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         static SQLiteConnection db = DabData.database;
         List<LastEpisodeDateQueryHelper.Edge> allEpisodes = new List<LastEpisodeDateQueryHelper.Edge>();
@@ -78,6 +80,8 @@ namespace DABApp.Droid.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
+            DabGraphQlMessage?.Invoke(this, new DabGraphQlMessageEventHandler(data.Message));
+
             try
             {
                 System.Diagnostics.Debug.WriteLine("/n/n");
