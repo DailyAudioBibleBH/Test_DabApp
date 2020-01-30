@@ -23,10 +23,10 @@ namespace DABApp.DabSockets
     {
         public int userId { get; set; }
         public int episodeId { get; set; }
-        public bool listen { get; set; }
-        public int position { get; set; }
-        public bool favorite { get; set; }
-        public string entryDate { get; set; }
+        public bool? listen { get; set; }
+        public int? position { get; set; }
+        public bool? favorite { get; set; }
+        public object entryDate { get; set; }
     }
 
     public class DabGraphQlActionLogged
@@ -37,7 +37,7 @@ namespace DABApp.DabSockets
     public class DabGraphQlData
     {
         public DabGraphQlActionLogged actionLogged { get; set; } //Actions Logged
-        public List<DabGraphQlChannel> channels { get; set; } //Channels
+        public List<Channel> channels { get; set; } //Channels
         public DabGraphQlLastActions lastActions { get; set; } //Last Actions
         public DabGraphQlEpisodes episodes { get; set; } //Episodes
     }
@@ -56,8 +56,8 @@ namespace DABApp.DabSockets
 
     }
 
-
-    public class DabGraphQlChannel
+    //Changed name of class so db could find it easily
+    public class Channel
     {
         public string id { get; set; }
         public int channelId { get; set; }

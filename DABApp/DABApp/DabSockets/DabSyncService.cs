@@ -93,9 +93,9 @@ namespace DABApp.DabSockets
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
                 }
-                else if (root.data?.channels != null)
+                else if (root.payload?.data?.channels != null)
                 {
-                    foreach (var item in root.data.channels)
+                    foreach (var item in root.payload.data.channels)
                     {
                         await adb.InsertOrReplaceAsync(item);
                     }
@@ -160,7 +160,7 @@ namespace DABApp.DabSockets
                 //        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
                 //    }
                 //}
-                else if (root.data.episodes != null)
+                else if (root.payload?.data?.episodes != null)
                 {
                     //var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
                     //LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(e.Message);
