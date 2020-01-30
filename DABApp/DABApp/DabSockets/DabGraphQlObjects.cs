@@ -3,7 +3,7 @@ namespace DABApp.DabSockets
 {
     public class DabGraphQlMessageEventHandler
     {
-        public string message;
+        public string Message;
 
         public DabGraphQlMessageEventHandler()
         { }
@@ -11,7 +11,7 @@ namespace DABApp.DabSockets
         public DabGraphQlMessageEventHandler(string message)
         {
             //Init with values
-            this.message = message;
+            this.Message = message;
         }
     }
 }
