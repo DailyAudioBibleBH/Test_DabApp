@@ -304,11 +304,17 @@ namespace DABApp.DabSockets
                 var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
                 sock.Send(ConnectInit);
 
-                //Subscribe for action logs
+                //Subscribe to action logs
                 var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
                 DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
                 var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
-                sock.Send(SubscriptionInit);
+                sock.Send(SubscriptionInit); 
+
+                //Subscribe for new episodes
+                var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
+                DabGraphQlPayload newEpisodePayload = new DabGraphQlPayload(newEpisodeQuery, variables);
+                var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload));
+                sock.Send(SubscriptionNewEpisode);
 
                 //Send request for channels lists
                 var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
