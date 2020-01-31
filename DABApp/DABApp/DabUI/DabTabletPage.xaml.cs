@@ -4,10 +4,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Acr.DeviceInfo;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -21,6 +19,7 @@ namespace DABApp
     public partial class DabTabletPage : DabBaseContentPage
     {
         DabPlayer player = GlobalResources.playerPodcast; //Reference to the global podcast player object
+        DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
         Resource _resource; //The current resource (initially passed from the channels page)
         IEnumerable<dbEpisodes> Episodes; //List of episodes for current channel
         ObservableCollection<EpisodeViewModel> list;
@@ -306,11 +305,10 @@ namespace DABApp
 
                 // send websocket message to get episodes by channel
                 string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
-                Variables variables = new Variables();
                 Debug.WriteLine($"Getting episodes by ChannelId");
                 var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
-                var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
+                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
                 DabSyncService.Instance.Send(JsonIn);
             }
             else

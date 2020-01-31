@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
@@ -18,6 +16,9 @@ namespace DABApp
     {
         static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+        static DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
+
 
         static bool notPosting = true;
         static bool notGetting = true;
@@ -728,12 +729,11 @@ namespace DABApp
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
-                                        var favVariables = new Variables();
                                         var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
                                         favQuery = favQuery.Replace("True", "true");
                                         favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
-                                        var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
-                                        var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
+                                        var favPayload = new DabGraphQlPayload(favQuery, variables);
+                                        var favJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", favPayload));
 
                                         DabSyncService.Instance.Send(favJsonIn);
                                         //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
@@ -744,29 +744,26 @@ namespace DABApp
                                         else
                                             listenedTo = "false";
 
-                                        var lisVariables = new Variables();
                                         var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}";
-                                        var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
-                                        var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
+                                        var lisPayload = new DabGraphQlPayload(lisQuery, variables);
+                                        var lisJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
                                         //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
-                                        var posVariables = new Variables();
                                         var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}";
-                                        var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
-                                        var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
+                                        var posPayload = new DabGraphQlPayload(posQuery, variables);
+                                        var posJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", posPayload));
 
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
                                     case "entryDate": //When event happened mutation
                                         //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
-                                        var entVariables = new Variables();
                                         var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
-                                        var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
-                                        var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
+                                        var entPayload = new DabGraphQlPayload(entQuery, variables);
+                                        var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
 
                                         DabSyncService.Instance.Send(entJsonIn);
                                         break;
@@ -815,11 +812,10 @@ namespace DABApp
                         try
                         {
                             //Send last action query to the websocket
-                            Variables variables = new Variables();
                             Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
                             var updateEpisodesQuery = "{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
-                            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+                            var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
+                            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
                             DabSyncService.Instance.Send(JsonIn);
 
                             notGetting = true;

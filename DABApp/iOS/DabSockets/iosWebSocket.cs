@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Foundation;
-using UIKit;
 using DABApp.DabSockets;
 using Xamarin.Forms;
 using DABApp.iOS.DabSockets;
 using WebSocket4Net;
-using Newtonsoft.Json;
-using DABApp.LoggedActionHelper;
-using DABApp.LastActionsHelper;
-using SQLite;
-using DABApp.WebSocketHelper;
-using System.Diagnostics;
 using DataReceivedEventArgs = WebSocket4Net.DataReceivedEventArgs;
-using DABApp.ChannelWebSocketHelper;
-using DABApp.LastEpisodeDateQueryHelper;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -28,13 +14,6 @@ namespace DABApp.iOS.DabSockets
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage;
-
-
-        public iosWebSocket()
-        {
-        }
-
-
 
         //Returns current connection state of the socket.
         public bool IsConnected

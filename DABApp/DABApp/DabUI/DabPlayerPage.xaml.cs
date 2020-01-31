@@ -2,16 +2,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SlideOverKit;
 using Xamarin.Forms;
-using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
-using Newtonsoft.Json;
-using Microsoft.AppCenter.Crashes;
 
 namespace DABApp
 {

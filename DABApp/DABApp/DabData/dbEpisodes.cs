@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DABApp.DabSockets;
-using DABApp.LastEpisodeDateQueryHelper;
 using SQLite;
 using Xamarin.Forms;
 

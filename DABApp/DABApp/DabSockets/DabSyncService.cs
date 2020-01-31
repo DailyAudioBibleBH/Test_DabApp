@@ -1,8 +1,4 @@
-﻿using DABApp.ChannelWebSocketHelper;
-using DABApp.LastActionsHelper;
-using DABApp.LoggedActionHelper;
-using DABApp.WebSocketHelper;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLite;
 using System;
@@ -34,13 +30,14 @@ namespace DABApp.DabSockets
 
         SQLiteConnection db = DabData.database;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        DabGraphQlVariables variables = new DabGraphQlVariables();
 
         string origin;
 
         int channelId;
         dbChannels channel = new dbChannels();
         List<DabGraphQlEpisode> allEpisodes = new List<DabGraphQlEpisode>();
-
+        DabEpisodesPage episodesPage;
 
 
         private DabSyncService()
@@ -113,16 +110,16 @@ namespace DABApp.DabSockets
                         //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
                         if (root.payload.data.lastActions.edges.Count > 0)
                         {
+                            //TODO I would like to take messaging center out of here but need to figure how to grab resource parameter
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
 
                         //Send last action query to the websocket
                         //TODO: Come back and clean up with GraphQl objects
-                        Variables variables = new Variables();
                         System.Diagnostics.Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
                         var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + root.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                        var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
-                        var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
+                        var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
+                        var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
                         DabSyncService.Instance.Send(JsonIn);
                     }
                     else
@@ -144,27 +141,8 @@ namespace DABApp.DabSockets
                         GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                     }
                 }
-                //else if (e.Message.Contains("actions")) //Should no longer be needed since we store user episode meta
-                //{
-                //    //process incoming new episode data
-                //    List<LastActionsHelper.Edge> actionsList = new List<LastActionsHelper.Edge>();  //list of actions
-                //    ActionsRootObject actionsObject = JsonConvert.DeserializeObject<ActionsRootObject>(e.Message);
-                //    if (actionsObject.payload.data.actions != null) //make sure we got somethign back
-                //    {
-                //        System.Diagnostics.Debug.WriteLine($"Received {actionsObject.payload.data.actions.edges.Count} actions...");
-                //        foreach (LastActionsHelper.Edge item in actionsObject.payload.data.actions.edges.OrderByDescending(x => x.createdAt))//loop throgh them all in most recent order first and update episode data (without sending episode changed messages)
-                //        {
-                //            await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
-
-                //        }
-                //        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged"); //tell listeners episodes have changed.
-                //    }
-                //}
                 else if (root.payload?.data?.episodes != null)
                 {
-                    //var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
-                    //LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject episodesObject = JsonConvert.DeserializeObject<LastEpisodeDateQueryHelper.LastEpisodeQueryRootObject>(e.Message);
-
                     foreach (var item in root.payload.data.episodes.edges)
                     {
                         allEpisodes.Add(item);
@@ -176,11 +154,10 @@ namespace DABApp.DabSockets
                     {
                         //More pages, go get them
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
-                        Variables variables = new Variables();
                         Debug.WriteLine($"Getting episodes by ChannelId");
                         var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                        var episodesByChannelPayload = new WebSocketHelper.Payload(episodesByChannelQuery, variables);
-                        var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", episodesByChannelPayload));
+                        var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                        var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
                     }
                     else {
@@ -328,17 +305,15 @@ namespace DABApp.DabSockets
                 sock.Send(ConnectInit);
 
                 //Subscribe for action logs
-                var variables = new Variables();
                 var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
-                WebSocketHelper.Payload payload = new WebSocketHelper.Payload(query, variables);
-                var SubscriptionInit = JsonConvert.SerializeObject(new WebSocketSubscription("start", payload));
+                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
+                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
                 sock.Send(SubscriptionInit);
 
                 //Send request for channels lists
-                var channelVariables = new Variables();
                 var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
-                WebSocketHelper.Payload channelPayload = new WebSocketHelper.Payload(channelQuery, channelVariables);
-                var channelInit = JsonConvert.SerializeObject(new WebSocketCommunication("start", channelPayload));
+                DabGraphQlPayload channelPayload = new DabGraphQlPayload(channelQuery, variables);
+                var channelInit = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", channelPayload));
                 sock.Send(channelInit);
 
                 //get recent actions when we get a connection made

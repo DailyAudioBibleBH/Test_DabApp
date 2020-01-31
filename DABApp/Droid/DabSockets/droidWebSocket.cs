@@ -1,25 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using DABApp.Droid.DabSockets;
 using Xamarin.Forms;
 using DABApp.DabSockets;
 using WebSocket4Net;
-using Newtonsoft.Json;
-using DABApp.LoggedActionHelper;
-using DABApp.WebSocketHelper;
-using DABApp.LastActionsHelper;
-using Edge = DABApp.LastActionsHelper.Edge;
-using SQLite;
-using DABApp.LastEpisodeDateQueryHelper;
-using DABApp.ChannelWebSocketHelper;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -30,12 +13,6 @@ namespace DABApp.Droid.DabSockets
         WebSocket4Net.WebSocket sock;
         public event EventHandler<DabSocketEventHandler> DabSocketEvent;
         public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage;
-
-        public droidWebSocket()
-        {
-        }
-
-
 
         //Returns current connection state of the socket.
         public bool IsConnected

@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
-using Newtonsoft.Json;
 using Plugin.Connectivity;
-using Rg.Plugins.Popup.Contracts;
-using SlideOverKit;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -175,7 +166,7 @@ namespace DABApp
             TimedActions();
         }
 
-        void TimedActions()
+        public void TimedActions()
         {
             if (_resource.AscendingSort)
             {

@@ -45,6 +45,19 @@ namespace DABApp.DabSockets
     public class DabGraphQlPayload
     {
         public DabGraphQlData data { get; set; } //Actions Logged, Last Actions
+        public string query { get; set; }
+        public DabGraphQlVariables variables {get; set;}
+
+        public DabGraphQlPayload()
+        {
+
+        }
+
+        public DabGraphQlPayload(string query, DabGraphQlVariables variables)
+        {
+            this.query = query;
+            this.variables = variables;
+        }
     }
 
     public class DabGraphQlRootObject
@@ -145,5 +158,30 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlVariables
     { }
+
+    public class DabGraphQlCommunication
+    {
+        public string type { get; set; }
+        public DabGraphQlPayload payload { get; set; }
+
+        public DabGraphQlCommunication(string type, DabGraphQlPayload payload)
+        {
+            this.type = type;
+            this.payload = payload;
+        }
+    }
+
+    public class DabGraphQlSubscription
+    {
+        public string type { get; set; }
+        public DabGraphQlPayload payload { get; set; }
+        public string id { get; set; }
+
+        public DabGraphQlSubscription(string type, DabGraphQlPayload payload)
+        {
+            this.type = type;
+            this.payload = payload;
+        }
+    }
 
 }

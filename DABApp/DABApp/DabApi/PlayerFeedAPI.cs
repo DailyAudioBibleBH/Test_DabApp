@@ -11,9 +11,7 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using Plugin.Connectivity;
 using System.Linq;
-using DABApp.WebSocketHelper;
 using DABApp.DabSockets;
-using DABApp.LastEpisodeDateQueryHelper;
 
 namespace DABApp
 {
