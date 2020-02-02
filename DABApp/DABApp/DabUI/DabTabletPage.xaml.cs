@@ -533,6 +533,10 @@ namespace DABApp
                 EpDescription.BindingContext = episode;
                 EpDescription.SetBinding(Label.TextProperty, "description");
 
+                //Episode Notes
+                EpNotes.BindingContext = episode;
+                EpNotes.SetBinding(Label.TextProperty, "notes");
+
                 //Favorite button
                 favorite.BindingContext = episode;
                 favorite.SetBinding(Image.SourceProperty, "favoriteSource");

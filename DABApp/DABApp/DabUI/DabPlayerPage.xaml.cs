@@ -378,6 +378,10 @@ namespace DABApp
                 lblDescription.BindingContext = Episode;
                 lblDescription.SetBinding(Label.TextProperty, "description");
 
+                //Episodes Notes
+                lblNotes.BindingContext = Episode;
+                lblNotes.SetBinding(Label.TextProperty, "notes");
+
                 //Favorite button
                 Favorite.BindingContext = Episode;
                 Favorite.SetBinding(Button.ImageProperty, "favoriteSource");

@@ -60,6 +60,12 @@
                                FontSize="13"
                                Style="{StaticResource playerLabelStyle}"
                                Margin="40, 10, 40, 0" />
+                        <Label x:Name="EpNotes"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontSize="13"
+                               Style="{StaticResource playerLabelStyle}"
+                               Margin="40, 10, 40, 0" />
                     </StackLayout>
                     <local:DabSeekBar x:Name="SeekBar"
                                       Minimum="0"

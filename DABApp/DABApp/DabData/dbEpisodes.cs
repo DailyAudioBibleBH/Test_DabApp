@@ -27,6 +27,7 @@ namespace DABApp
             audio_size = episode.audioSize;
             audio_type = episode.audioType;
             audio_duration = episode.audioDuration.ToString();
+            notes = episode.notes;
             read_link = episode.readURL;
             stop_time = episode.stop_time;
             is_favorite = episode.is_favorite;
@@ -46,6 +47,7 @@ namespace DABApp
             audio_size = triggerEpisodeSubscription.audioSize;
             audio_type = triggerEpisodeSubscription.audioType;
             audio_duration = triggerEpisodeSubscription.audioDuration.ToString();
+            notes = triggerEpisodeSubscription.notes;
             read_link = triggerEpisodeSubscription.readURL;
             stop_time = 0;
             is_favorite = false;
@@ -73,6 +75,7 @@ namespace DABApp
         [Indexed]
         public string channel_code { get; set; }
         public string channel_title { get; set; }
+        public string notes { get; set; }
         public string channel_description { get; set; }
         public bool is_downloaded { get; set; } = false;
         public bool is_listened_to { get; set; }

@@ -73,6 +73,15 @@
                                                Style="{StaticResource playerLabelStyle}"
                                                AutomationProperties.IsInAccessibleTree="true" />
                         </ContentView>
+                        <ContentView Padding="40, 10, 40, 0">
+                            <local:PlayerLabel x:Name="lblNotes"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               FontSize="Small"
+                                               Style="{StaticResource playerLabelStyle}"
+                                               AutomationProperties.IsInAccessibleTree="true" />
+                        </ContentView>
+
                     </StackLayout>
                     <local:DabSeekBar x:Name="SeekBar"
                                       HorizontalOptions="FillAndExpand"
