@@ -29,7 +29,8 @@ namespace DABApp
 			}
 			_donations = donations;
 			_fromLogin = fromLogin;
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{

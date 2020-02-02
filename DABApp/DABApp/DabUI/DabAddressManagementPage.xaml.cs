@@ -10,7 +10,7 @@ namespace DABApp
 		public DabAddressManagementPage()
 		{
 			InitializeComponent();
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android"){
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 		}

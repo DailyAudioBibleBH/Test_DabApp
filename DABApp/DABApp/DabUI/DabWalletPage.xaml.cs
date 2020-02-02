@@ -14,7 +14,8 @@ namespace DABApp
 		public DabWalletPage(Card[] cards)
 		{
 			InitializeComponent();
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			_cards = cards;
