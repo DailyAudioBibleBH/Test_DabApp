@@ -94,23 +94,6 @@ namespace DABApp
                     }
                 }
 
-                //Dont need this with websocket
-                //Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
-                //foreach (var old in existingEpisodes)
-                //{
-                //    if (!newEpisodeIds.Contains((int)old.id))
-                //    {
-                //        //await adb.DeleteAsync(old);
-                //    }
-                //}
-                //Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-
-                //took resource out for now
-                //if (resource.availableOffline && Device.Idiom == TargetIdiom.Tablet)
-                //{
-                //    Task.Run(async () => { await DownloadEpisodes(); });
-                //}
-
                 Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
                 return "OK";
             }

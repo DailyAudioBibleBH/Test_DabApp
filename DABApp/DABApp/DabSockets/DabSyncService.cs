@@ -181,6 +181,12 @@ namespace DABApp.DabSockets
                     //store a new episode query date
                     GlobalResources.SetLastEpisodeQueryDate(channelId);
                 }
+                else if (root.payload?.data?.triggerEpisodeSubscription != null)
+                {
+                    dbEpisodes newEpisode = new dbEpisodes(root.payload.data.triggerEpisodeSubscription);
+                    await adb.InsertAsync(newEpisode);
+                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                }
             }
             catch (Exception ex)
             {

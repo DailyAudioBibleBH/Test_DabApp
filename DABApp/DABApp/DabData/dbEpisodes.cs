@@ -34,6 +34,25 @@ namespace DABApp
             is_listened_to = episode.is_listened_to;
         }
 
+        public dbEpisodes(TriggerEpisodeSubscription triggerEpisodeSubscription)
+        {
+            id = triggerEpisodeSubscription.episodeId;
+            title = triggerEpisodeSubscription.title;
+            description = triggerEpisodeSubscription.description;
+            author = triggerEpisodeSubscription.author;
+            PubDate = triggerEpisodeSubscription.date;
+            PubYear = triggerEpisodeSubscription.date.Year;
+            url = triggerEpisodeSubscription.audioURL;
+            audio_size = triggerEpisodeSubscription.audioSize;
+            audio_type = triggerEpisodeSubscription.audioType;
+            audio_duration = triggerEpisodeSubscription.audioDuration.ToString();
+            read_link = triggerEpisodeSubscription.readURL;
+            stop_time = 0;
+            is_favorite = false;
+            has_journal = false;
+            is_listened_to = false;
+        }
+
         [PrimaryKey, Indexed]
         public int? id { get; set; }
         public string title { get; set; }
