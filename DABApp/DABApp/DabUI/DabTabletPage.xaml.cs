@@ -472,44 +472,50 @@ namespace DABApp
             //Initialize an episode for playback. This may fire when initially loading
             //the page if the first playback, or it may wait until they press the fake "play" button
             //to start an episode after a different one is loaded.
-
-            Initializer.IsVisible = false; //Hide the init button
-
-
-            //Load the file if not already loaded
-            if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
+            if (episode == null)
             {
-                if (!player.Load(episode.Episode))
+                episode = new EpisodeViewModel(Episodes.First());
+            }
+            //Load the file if not already loaded
+            if (episode != null)
+            {
+                Initializer.IsVisible = false; //Hide the init button
+
+                if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
                 {
-                    DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                    //TODO: Ensure nothing breaks if this happens.
-                    return;
+                    if (!player.Load(episode.Episode))
+                    {
+                        DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                        //TODO: Ensure nothing breaks if this happens.
+                        return;
+                    }
+
+                    //Store episode data across app
+                    GlobalResources.CurrentEpisodeId = (int)episode.Episode.id;
                 }
 
-                //Store episode data across app
-                GlobalResources.CurrentEpisodeId = (int)episode.Episode.id;
+                //Go to starting position
+                player.Seek(episode.Episode.stop_time);
+
+                //Bind controls for playback
+                BindControls(true, true);
+
+                //Set up journal
+                ////TODO: Replace for journal?
+                if (!GuestStatus.Current.IsGuestLogin)
+                {
+                    journal.JoinRoom(episode.Episode.PubDate);
+                }
+
+                //Start playing if they pushed the play button
+                if (o != null)
+                {
+                    player.Play();
+                }
+
+                SetVisibility(true); //Adjust visibility of controls
             }
 
-            //Go to starting position
-            player.Seek(episode.Episode.stop_time);
-
-            //Bind controls for playback
-            BindControls(true, true);
-
-            //Set up journal
-            ////TODO: Replace for journal?
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                journal.JoinRoom(episode.Episode.PubDate);
-            }
-
-            //Start playing if they pushed the play button
-            if (o != null)
-            {
-                player.Play();
-            }
-
-            SetVisibility(true); //Adjust visibility of controls
 
         }
 
@@ -737,20 +743,28 @@ namespace DABApp
             //start new
 
             model.listenedToVisible = !ep.is_listened_to;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.listenedToVisible, null, null, null, false);
-            //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-            if (ep.id == episode.Episode.id)
+            if (episode == null)
             {
-                episode.Episode.is_listened_to = model.listenedToVisible;
-                //TODO: Fix completed image
-                Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
-
-                AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.listenedToVisible, null);
+                episode = new EpisodeViewModel(Episodes.First());
             }
-            else
+            if (episode != null)
             {
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.listenedToVisible, null);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.listenedToVisible, null, null, null, false);
+                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_listened_to = model.listenedToVisible;
+                    //TODO: Fix completed image
+                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+
+                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.listenedToVisible, null);
+                }
+                else
+                {
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.listenedToVisible, null);
+                }
             }
         }
 
@@ -762,22 +776,30 @@ namespace DABApp
             //start new
 
             model.favoriteVisible = !ep.is_favorite;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.favoriteVisible, null, null, false);
-            //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-            if (ep.id == episode.Episode.id)
-            {
-                episode.Episode.is_favorite = model.favoriteVisible;
-                //TODO: Fix completed image
-                //Completed.Image = episode.listenedToSource;
-                //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
-                favorite.Source = episode.favoriteSource;
-                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.favoriteVisible);
 
+            if (episode == null)
+            {
+                episode = new EpisodeViewModel(Episodes.First());
             }
-            else
+            if (episode != null)
             {
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.favoriteVisible);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.favoriteVisible, null, null, false);
+                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.is_favorite = model.favoriteVisible;
+                    //TODO: Fix completed image
+                    //Completed.Image = episode.listenedToSource;
+                    //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
+                    favorite.Source = episode.favoriteSource;
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.favoriteVisible);
 
+                }
+                else
+                {
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.favoriteVisible);
+
+                }
             }
         }
 
