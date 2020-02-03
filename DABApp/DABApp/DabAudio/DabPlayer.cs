@@ -40,6 +40,8 @@ namespace DABApp.DabAudio
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
         private bool shouldResumePlay = false;
+        private bool hasPrevious;
+        private bool hasNext;
 
 
 
@@ -98,6 +100,37 @@ namespace DABApp.DabAudio
         /********************************
         ISimpleAudioPlayer Implementation 
         ********************************/
+        public int NextEpisode
+        {
+            get
+            {
+                if (hasNext == true)
+                {
+                    //get next episode
+                    return 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        }
+
+        public int PreviousEpisode
+        {
+            get
+            {
+                if (hasPrevious == true)
+                {
+                    //get previous episde
+                    return 1;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+        }
 
         public double Duration
         {

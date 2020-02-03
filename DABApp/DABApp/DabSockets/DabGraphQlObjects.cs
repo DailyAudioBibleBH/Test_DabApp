@@ -34,6 +34,11 @@ namespace DABApp.DabSockets
         public DabGraphQlAction action { get; set; }
     }
 
+    public class TokenRemoved
+    {
+        public string token { get; set; }
+    }
+
     public class DabGraphQlData
     {
         public DabGraphQlActionLogged actionLogged { get; set; } //Actions Logged
@@ -41,6 +46,7 @@ namespace DABApp.DabSockets
         public DabGraphQlLastActions lastActions { get; set; } //Last Actions
         public DabGraphQlEpisodes episodes { get; set; } //Episodes
         public TriggerEpisodeSubscription triggerEpisodeSubscription { get; set; } //New Episodes
+        public TokenRemoved tokenRemoved { get; set; } //Forceful logout
     }
 
     public class DabGraphQlPayload

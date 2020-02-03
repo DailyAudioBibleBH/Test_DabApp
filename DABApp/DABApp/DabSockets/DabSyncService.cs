@@ -187,6 +187,14 @@ namespace DABApp.DabSockets
                     await adb.InsertAsync(newEpisode);
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                 }
+                else if (root.payload?.data?.tokenRemoved != null)
+                {
+                    //Expire the token (should log the user out?)
+                    SQLiteConnection db = DabData.database;
+                    var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                    expiration.Value = DateTime.Now.AddSeconds(-1).ToString();
+                    db.Update(expiration);
+                }
             }
             catch (Exception ex)
             {

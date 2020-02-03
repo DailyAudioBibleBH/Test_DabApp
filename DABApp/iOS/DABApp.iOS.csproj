@@ -545,6 +545,8 @@
     <BundleResource Include="Resources\ic_check_box_white_new_3x.png" />
     <BundleResource Include="Resources\ic_check_box_teal_new_3x.png" />
     <BundleResource Include="Resources\ic_check_box_teal_3x.png" />
+    <BundleResource Include="Resources\baseline_skip_previous_white_2x.png" />
+    <BundleResource Include="Resources\baseline_skip_next_white_2x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
