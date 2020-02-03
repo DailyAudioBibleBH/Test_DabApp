@@ -42,7 +42,8 @@
                                     Android="true" />
                     </StackLayout.AutomationProperties.IsInAccessibleTree>
                     <StackLayout x:Name="PlayerLabels"
-                                 VerticalOptions="CenterAndExpand">
+                                 VerticalOptions="CenterAndExpand"
+                                 Margin="-10">
                         <Label x:Name="lblEpisodeTitle"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"
@@ -65,7 +66,7 @@
                                HorizontalTextAlignment="Center"
                                FontSize="13"
                                Style="{StaticResource playerLabelStyle}"
-                               Margin="40, 10, 40, 0" />
+                               Margin="40, 0, 40, 10" />
                     </StackLayout>
                     <local:DabSeekBar x:Name="SeekBar"
                                       Minimum="0"
