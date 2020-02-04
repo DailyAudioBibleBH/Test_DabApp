@@ -118,7 +118,7 @@
                             <ColumnDefinition Width="17*" />
                         </Grid.ColumnDefinitions>
                         <local:PlayerImage x:Name="previousButton"
-                                           Source="baseline_skip_previous_white_2x.png"
+                                           Source="baseline_skip_previous_white_48pt_3x.png"
                                            Grid.Row="0"
                                            Grid.Column="1"
                                            HeightRequest="25"
@@ -127,7 +127,7 @@
                                            AutomationProperties.HelpText="Back 30 seconds"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnBack30" />
+                                <TapGestureRecognizer Tapped="OnPrevious" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:PlayerImage x:Name="backwardButton"
@@ -181,7 +181,7 @@
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:PlayerImage x:Name="nextButton"
-                                           Source="baseline_skip_next_white_2x.png"
+                                           Source="baseline_skip_next_white_48pt_3x.png"
                                            Grid.Row="0"
                                            Grid.Column="5"
                                            HeightRequest="25"
@@ -190,7 +190,7 @@
                                            AutomationProperties.HelpText="Forward 30 seconds"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnForward30" />
+                                <TapGestureRecognizer Tapped="OnNext" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                     </Grid>

@@ -190,10 +190,11 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.tokenRemoved != null)
                 {
                     //Expire the token (should log the user out?)
-                    SQLiteConnection db = DabData.database;
-                    var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                    dbSettings expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
                     expiration.Value = DateTime.Now.AddSeconds(-1).ToString();
                     db.Update(expiration);
+                    Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
+                    await AuthenticationAPI.LogOut();
                 }
             }
             catch (Exception ex)
@@ -322,7 +323,13 @@ namespace DABApp.DabSockets
                 var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
                 DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
                 var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
-                sock.Send(SubscriptionInit); 
+                sock.Send(SubscriptionInit);
+
+                //Subscribe to token removed/forceful logout
+                var tokenRemovedQuery = "subscription { tokenRemoved { token } }";
+                DabGraphQlPayload tokenRemovedPayload = new DabGraphQlPayload(tokenRemovedQuery, variables);
+                var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload));
+                sock.Send(SubscriptionRemoveToken);
 
                 //Subscribe for new episodes
                 var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";

@@ -157,10 +157,7 @@ namespace DABApp
                         await AuthenticationAPI.ExchangeToken();
                 });
             }
-            //Clean up old episodes
-            var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
-            //PlayerFeedAPI.CleanUpEpisodes();
-
+            
             //Download new episodes
             Task.Run(async () =>
             {

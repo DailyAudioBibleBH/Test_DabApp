@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using SQLite;
 
 namespace DABApp
 {
@@ -141,6 +142,9 @@ namespace DABApp
             PlayPause.BindingContext = player;
             PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
 
+            nextButton.IsEnabled = player.hasNext;
+            previousButton.IsEnabled = player.hasPrevious;
+
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -179,6 +183,18 @@ namespace DABApp
                 }
 
             }
+        }
+
+        //Go to previous episode
+        void OnPrevious(object o, EventArgs e)
+        {
+            //do something
+        }
+
+        //Go to next episode
+        void OnNext(object o, EventArgs e)
+        {
+            //do something
         }
 
         //Go back 30 seconds
