@@ -106,10 +106,10 @@
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
-                               AutomationProperties.HelpText="Back 30 seconds"
+                               AutomationProperties.HelpText="Back to previous episode"
                                AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnBack30" />
+                                <TapGestureRecognizer Tapped="OnPrevious" />
                             </Image.GestureRecognizers>
                         </Image>
                         <Image x:Name="backwardButton"
@@ -169,10 +169,10 @@
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
-                               AutomationProperties.HelpText="Forward 30 seconds"
+                               AutomationProperties.HelpText="Go to next episode"
                                AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnForward30" />
+                                <TapGestureRecognizer Tapped="OnNext" />
                             </Image.GestureRecognizers>
                         </Image>
                     </Grid>
