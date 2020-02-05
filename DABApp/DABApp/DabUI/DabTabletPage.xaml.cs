@@ -86,11 +86,7 @@ namespace DABApp
             {
                 episode = new EpisodeViewModel(Episode);
             }
-            else
-            {
-                //Pick the first episode
-                //episode = new EpisodeViewModel(Episodes.First());
-            }
+           
             //Bind to the active episode
             favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
@@ -720,6 +716,8 @@ namespace DABApp
             TimeStrings.Opacity = opa;
             backwardButton.Opacity = opa;
             forwardButton.Opacity = opa;
+            nextButton.Opacity = opa;
+            previousButton.Opacity = opa;
             //Output.IsVisible = par;
             //Share.IsVisible = par;
             //favorite.IsVisible = par;
