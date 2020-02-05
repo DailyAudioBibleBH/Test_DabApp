@@ -91,15 +91,15 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="LeftVoid"
-                                              Width="24*" />
+                            <ColumnDefinition x:Name="LeftVoid" Width="24*" />
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="10*" />
                             <ColumnDefinition Width="50" />
-                            <ColumnDefinition x:Name="RightVoid"
-                                              Width="24*" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition x:Name="RightVoid" Width="24*" />
                         </Grid.ColumnDefinitions>
-                        <Image x:Name="backwardButton"
+                        <Image x:Name="previousButton"
                                Source="ic_replay_30_white_3x.png"
                                Grid.Row="0"
                                Grid.Column="1"
@@ -112,9 +112,22 @@
                                 <TapGestureRecognizer Tapped="OnBack30" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="PlayPause"
+                        <Image x:Name="backwardButton"
+                               Source="ic_replay_30_white_3x.png"
                                Grid.Row="0"
                                Grid.Column="2"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Back 30 seconds"
+                               AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnBack30" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image x:Name="PlayPause"
+                               Grid.Row="0"
+                               Grid.Column="3"
                                HeightRequest="90"
                                WidthRequest="90"
                                AutomationProperties.HelpText="Play Pause"
@@ -127,7 +140,7 @@
                                IsVisible="false"
                                Source="ic_play_circle_outline_white_3x.png"
                                Grid.Row="0"
-                               Grid.Column="2"
+                               Grid.Column="3"
                                HeightRequest="90"
                                WidthRequest="90"
                                AutomationProperties.HelpText="Play Pause"
@@ -139,7 +152,20 @@
                         <Image x:Name="forwardButton"
                                Source="ic_forward_30_white_3x.png"
                                Grid.Row="0"
-                               Grid.Column="3"
+                               Grid.Column="4"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Forward 30 seconds"
+                               AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnForward30" />
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image x:Name="skipButton"
+                               Source="ic_forward_30_white_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="5"
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
