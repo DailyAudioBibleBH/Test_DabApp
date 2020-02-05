@@ -100,7 +100,7 @@
                             <ColumnDefinition x:Name="RightVoid" Width="24*" />
                         </Grid.ColumnDefinitions>
                         <Image x:Name="previousButton"
-                               Source="ic_replay_30_white_3x.png"
+                               Source="baseline_skip_previous_white_48pt_3x.png"
                                Grid.Row="0"
                                Grid.Column="1"
                                HeightRequest="25"
@@ -162,8 +162,8 @@
                                 <TapGestureRecognizer Tapped="OnForward30" />
                             </Image.GestureRecognizers>
                         </Image>
-                        <Image x:Name="skipButton"
-                               Source="ic_forward_30_white_3x.png"
+                        <Image x:Name="nextButton"
+                               Source="baseline_skip_next_white_48pt_3x.png"
                                Grid.Row="0"
                                Grid.Column="5"
                                HeightRequest="25"
