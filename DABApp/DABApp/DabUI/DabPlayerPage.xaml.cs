@@ -160,9 +160,16 @@ namespace DABApp
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
             list = new ObservableCollection<EpisodeViewModel>(savedEps.Select(x => new EpisodeViewModel(x)));
 
-            nextEpisode = list.OrderBy(x => x.Episode.PubDate).First(x => x.Episode.PubDate >= Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
-            previousEpisode = list.OrderBy(x => x.Episode.PubDate).Last(x => x.Episode.PubDate <= Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
-            var test = "test";
+            nextEpisode = list.OrderBy(x => x.Episode.PubDate).FirstOrDefault(x => x.Episode.PubDate > Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            previousEpisode = list.OrderBy(x => x.Episode.PubDate).LastOrDefault(x => x.Episode.PubDate < Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            if (nextEpisode == null)
+                nextButton.Opacity = .5;
+            else
+                nextButton.Opacity = 1;
+            if (previousEpisode == null)
+                previousButton.Opacity = .5;
+            else
+                previousButton.Opacity = 1;
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -206,17 +213,23 @@ namespace DABApp
         //Go to previous episode
         void OnPrevious(object o, EventArgs e)
         {
-            Episode = previousEpisode;
+            if (previousEpisode != null)
+            {
+                Episode = previousEpisode;
+            }
             GetNextPreviousEpisodes(Episode);
-            //do something
+            BindControls(true, true);
         }
 
         //Go to next episode
         void OnNext(object o, EventArgs e)
         {
-            Episode = nextEpisode;
+            if (nextEpisode != null)
+            {
+                Episode = nextEpisode;
+            }
             GetNextPreviousEpisodes(Episode);
-            //do something
+            BindControls(true, true);
         }
 
         //Go back 30 seconds
@@ -425,6 +438,15 @@ namespace DABApp
                 Favorite.SetBinding(Button.ImageProperty, "favoriteSource");
                 Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
+
+                //Next button
+                //nextButton.BindingContext = Episode;
+                //nextButton.SetBinding(Button.OpacityProperty, "nextOpacity");
+
+                ////Previous button
+                //previousButton.BindingContext = Episode;
+                //previousButton.SetBinding(Button.OpacityProperty, "previousOpacity");
+
 
                 //Completed button
                 Completed.BindingContext = Episode;
