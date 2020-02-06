@@ -125,7 +125,7 @@
                                            HeightRequest="25"
                                            WidthRequest="25"
                                            Aspect="AspectFit"
-                                           AutomationProperties.HelpText="Back 30 seconds"
+                                           AutomationProperties.HelpText="Back to previous episode"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnPrevious" />
@@ -141,7 +141,7 @@
                                            AutomationProperties.HelpText="Back 30 seconds"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnPrevious" />
+                                <TapGestureRecognizer Tapped="OnBack30" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:PlayerImage x:Name="PlayPause"
@@ -178,7 +178,7 @@
                                            AutomationProperties.HelpText="Forward 30 seconds"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnNext" />
+                                <TapGestureRecognizer Tapped="OnForward30" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:PlayerImage x:Name="nextButton"

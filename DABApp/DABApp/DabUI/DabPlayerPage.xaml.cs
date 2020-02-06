@@ -149,10 +149,6 @@ namespace DABApp
             //Moved here to take away flicker when favoriting and marking an episode as listened to 
             PlayPause.BindingContext = player;
             PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
-
-            nextButton.IsEnabled = player.hasNext;
-            previousButton.IsEnabled = player.hasPrevious;
-
         }
 
         async void GetNextPreviousEpisodes(EpisodeViewModel _episode)
