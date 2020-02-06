@@ -32,7 +32,7 @@ namespace DABApp
             fm.EpisodeDownloading += UpdateDownload;
             fm.EpisodeCompleted += DownloadStarted;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
-        }
+        }      
 
         public bool downloadVisible
         {

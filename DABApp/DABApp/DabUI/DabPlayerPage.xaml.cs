@@ -8,11 +8,14 @@ using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
 using SQLite;
+using System.Collections.ObjectModel;
 
 namespace DABApp
 {
     public partial class DabPlayerPage : DabBaseContentPage
     {
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        ObservableCollection<EpisodeViewModel> list;
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
         string backgroundImage;
@@ -29,7 +32,10 @@ namespace DABApp
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
+       
             _episode = episode;
+
+            GetEpisodes(Episode);
 
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
@@ -145,6 +151,36 @@ namespace DABApp
             nextButton.IsEnabled = player.hasNext;
             previousButton.IsEnabled = player.hasPrevious;
 
+        }
+
+        async void GetEpisodes(EpisodeViewModel _episode)
+        {
+            var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
+            list = new ObservableCollection<EpisodeViewModel>(savedEps.Select(x => new EpisodeViewModel(x)));
+            var newList = new ObservableCollection<EpisodeViewModel>();
+            foreach (var item in list)
+            {
+                if (item.channelTitle == _episode.channelTitle)
+                {
+                    newList.Add(item);
+                }
+            }
+            //newList.OrderByDescending(x => x.Episode.PubDate);
+            //var test = newList.IndexOf(_episode);
+
+            int index;
+            foreach (var item in newList)
+            {
+                if (item.Episode.id == _episode.Episode.id)
+                {
+                    index = newList.IndexOf(item);
+                }
+            }
+
+            var currentIndex = list.IndexOf(_episode);
+            var previousEpIndex = currentIndex + 1;
+            var nextEpIndex = currentIndex - 1;
+            var count = list.Count();
         }
 
         //Play or Pause the episode (not the same as the init play button)
