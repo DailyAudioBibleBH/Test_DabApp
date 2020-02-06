@@ -18,6 +18,8 @@ namespace DABApp
         ObservableCollection<EpisodeViewModel> list;
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
+        EpisodeViewModel nextEpisode;
+        EpisodeViewModel previousEpisode;
         string backgroundImage;
         bool IsGuest;
         static double original;
@@ -32,7 +34,7 @@ namespace DABApp
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
-       
+
             _episode = episode;
 
             GetEpisodes(Episode);
@@ -131,7 +133,7 @@ namespace DABApp
 
             MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
             {
-                 int paddingMulti = journal.IsConnected ? 4 : 8;
+                int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
             MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
@@ -140,7 +142,7 @@ namespace DABApp
                {
                    BindControls(true, true);
                });
-              
+
             });
 
             //Play-Pause button binding
@@ -157,30 +159,10 @@ namespace DABApp
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
             list = new ObservableCollection<EpisodeViewModel>(savedEps.Select(x => new EpisodeViewModel(x)));
-            var newList = new ObservableCollection<EpisodeViewModel>();
-            foreach (var item in list)
-            {
-                if (item.channelTitle == _episode.channelTitle)
-                {
-                    newList.Add(item);
-                }
-            }
-            //newList.OrderByDescending(x => x.Episode.PubDate);
-            //var test = newList.IndexOf(_episode);
 
-            int index;
-            foreach (var item in newList)
-            {
-                if (item.Episode.id == _episode.Episode.id)
-                {
-                    index = newList.IndexOf(item);
-                }
-            }
-
-            var currentIndex = list.IndexOf(_episode);
-            var previousEpIndex = currentIndex + 1;
-            var nextEpIndex = currentIndex - 1;
-            var count = list.Count();
+            nextEpisode = list.OrderBy(x => x.Episode.PubDate).First(x => x.Episode.PubDate >= Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            previousEpisode = list.OrderBy(x => x.Episode.PubDate).Last(x => x.Episode.PubDate <= Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            var test = "test";
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -353,7 +335,7 @@ namespace DABApp
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
                     await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
                 }
-            }        
+            }
         }
 
         //TODO: These need replaced and linked back to journal
@@ -477,7 +459,7 @@ namespace DABApp
                     player.Seek(SeekBar.Value);
                 };
 
-                
+
             }
         }
 
@@ -616,7 +598,7 @@ namespace DABApp
                     JournalContent.HeightRequest = original + 100;
                 }
                 else
-                {                   
+                {
                     JournalContent.HeightRequest = e.Visible ? original - e.Height + 50 : original + 100;
                 }
             }
@@ -635,13 +617,13 @@ namespace DABApp
             Episode.favoriteVisible = !Episode.favoriteVisible;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);           
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);
         }
 
         //User listens to (or unlistens to) an episode
         async void OnListened(object o, EventArgs e)
         {
-            
+
             //Mark episode as listened to
             //Episode.Episode.is_listened_to = "";
             //check this
@@ -649,7 +631,7 @@ namespace DABApp
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
             await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.is_listened_to);
-            
+
             //TODO: Bind accessibiliyt text
         }
 
