@@ -37,7 +37,7 @@ namespace DABApp
 
             _episode = episode;
 
-            GetEpisodes(Episode);
+            GetNextPreviousEpisodes(Episode);
 
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
@@ -155,7 +155,7 @@ namespace DABApp
 
         }
 
-        async void GetEpisodes(EpisodeViewModel _episode)
+        async void GetNextPreviousEpisodes(EpisodeViewModel _episode)
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
             list = new ObservableCollection<EpisodeViewModel>(savedEps.Select(x => new EpisodeViewModel(x)));
@@ -206,12 +206,16 @@ namespace DABApp
         //Go to previous episode
         void OnPrevious(object o, EventArgs e)
         {
+            Episode = previousEpisode;
+            GetNextPreviousEpisodes(Episode);
             //do something
         }
 
         //Go to next episode
         void OnNext(object o, EventArgs e)
         {
+            Episode = nextEpisode;
+            GetNextPreviousEpisodes(Episode);
             //do something
         }
 
