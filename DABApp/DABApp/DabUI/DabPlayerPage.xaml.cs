@@ -214,6 +214,7 @@ namespace DABApp
                 Episode = previousEpisode;
             }
             GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
             BindControls(true, true);
         }
 
@@ -225,6 +226,7 @@ namespace DABApp
                 Episode = nextEpisode;
             }
             GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
             BindControls(true, true);
         }
 
