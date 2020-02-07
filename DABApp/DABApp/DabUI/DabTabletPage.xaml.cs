@@ -1077,7 +1077,19 @@ namespace DABApp
             activityHolder.IsVisible = true;
             await AuthenticationAPI.PostActionLogs();
             await AuthenticationAPI.GetMemberData();
-            episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+            if (episode == null)
+            {
+                episode = new EpisodeViewModel(Episodes.First());
+                currentIndex = 0;
+                count = list.Count();
+                previousEpisode = list.ElementAt(currentIndex + 1);
+                nextEpisode = null;
+                nextButton.IsEnabled = false;
+            }
+            else
+            {
+                episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+            }
             TimedActions();
 
             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
