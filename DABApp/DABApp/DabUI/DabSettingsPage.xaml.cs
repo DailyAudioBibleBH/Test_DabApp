@@ -53,7 +53,23 @@ namespace DABApp
 
         }
 
-        async void OnLogOut(object o, EventArgs e)
+        public async void OnForceLogout()
+        {
+            LogOut.IsEnabled = false;
+            var nav = new NavigationPage(new DabLoginPage());
+            nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+            Application.Current.MainPage = nav;
+            if (await AuthenticationAPI.LogOut())
+            {
+                await Navigation.PopToRootAsync();
+            }
+            else
+            {
+                await Navigation.PopToRootAsync();
+            }
+        }
+
+        public async void OnLogOut(object o, EventArgs e)
         {
             LogOut.IsEnabled = false;
             player.Stop();

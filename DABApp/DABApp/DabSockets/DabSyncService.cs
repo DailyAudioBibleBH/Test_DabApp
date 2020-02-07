@@ -187,14 +187,15 @@ namespace DABApp.DabSockets
                     await adb.InsertAsync(newEpisode);
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                 }
-                else if (root.payload?.data?.tokenRemoved != null)
+                else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
                     //Expire the token (should log the user out?)
                     dbSettings expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
                     expiration.Value = DateTime.Now.AddSeconds(-1).ToString();
                     db.Update(expiration);
+                    sock.Disconnect();
+                    Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
                     Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
-                    await AuthenticationAPI.LogOut();
                 }
             }
             catch (Exception ex)
@@ -320,7 +321,7 @@ namespace DABApp.DabSockets
                 sock.Send(ConnectInit);
 
                 //Subscribe to action logs
-                var query = "subscription {\n actionLogged {\n action {\n userId\n episodeId\n listen\n position\n favorite\n entryDate\n }\n }\n }";
+                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
                 DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
                 var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
                 sock.Send(SubscriptionInit);
