@@ -43,41 +43,5 @@ namespace DABApp.Droid
                 };
             }
         }
-
-        protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
-        {
-            //Set up colors
-            base.OnElementChanged(e);
-            if (Control != null)
-            {
-                Control.Thumb.SetTint(((Xamarin.Forms.Color)Application.Current.Resources["PlayerLabelColor"]).ToAndroid());
-                Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)Application.Current.Resources["PlayerLabelColor"]).ToAndroid());
-
-                //Connect touch events
-                //TODO: Set thjis up - it's not working right now.
-                var element = (DabSeekBar)e.NewElement;
-                var seekBar = Control;
-                seekBar.StartTrackingTouch += (sender, args) =>
-                {
-                    element.Touched(this, EventArgs.Empty);
-                };
-                //Control.Touch += (sender, er) =>
-                //{
-                //    element.Touched(sender, er);
-                //};
-
-                //Control.StopTrackingTouch += (sender, er) =>
-                //{
-                //    //TODO: Wire this up.
-                //    bool playing = GlobalResources.playerPodcast.IsPlaying;
-                //    GlobalResources.playerPodcast.Pause();
-                //    element.Touched(sender, er);
-                //    if (playing)
-                //    {
-                //        GlobalResources.playerPodcast.Play();
-                //    }
-                //};
-            }
-        }
     }
 }

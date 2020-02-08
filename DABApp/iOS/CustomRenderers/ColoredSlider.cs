@@ -17,13 +17,23 @@ namespace DABApp.iOS
 			if (e.NewElement == null) return;
 
 			if (Control != null) {
+                var slider = Control;
+                var element = (DabSeekBar)Element;
 				Control.MaximumTrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
 				Control.MinimumTrackTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
                 Control.SetThumbImage(UIImage.FromFile("seekbaricon.png"), UIControlState.Normal);
-				var element = (DabSeekBar)e.NewElement;
-				Control.AllTouchEvents += (sender, er) => {
-					element.Touched(sender, er);
-				};
+                slider.TouchDown += (sender, args) =>
+                {
+                    element.TouchDownEvent(this, EventArgs.Empty);
+                };
+                slider.TouchUpInside += (sender, args) =>
+                {
+                    element.TouchUpEvent(this, EventArgs.Empty);
+                };
+                slider.TouchUpOutside += (sender, args) =>
+                {
+                    element.TouchUpEvent(this, EventArgs.Empty);
+                };
 			}
 		}
 	}
