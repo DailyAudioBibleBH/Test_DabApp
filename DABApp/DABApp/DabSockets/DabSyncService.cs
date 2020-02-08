@@ -174,7 +174,6 @@ namespace DABApp.DabSockets
                         {
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                            //do something
                         }
                     }
 
