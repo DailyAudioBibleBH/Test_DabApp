@@ -83,7 +83,9 @@ namespace DABApp
             set
             {
                 unTouched = value;
-                Episode.UserData.IsListenedTo = value ;
+                var data = Episode.UserData;
+                data.IsListenedTo = value ;
+                data.Save();
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("IsListenedTo");
                 OnPropertyChanged("listenAccessible");
@@ -107,7 +109,9 @@ namespace DABApp
             }
             set
             {
-                Episode.UserData.IsFavorite = value;
+                var data = Episode.UserData;
+                data.IsFavorite = value;
+                data.Save();
                 OnPropertyChanged("IsFavorite");
                 OnPropertyChanged("favoriteSource");
                 OnPropertyChanged("favoriteAccessible");
@@ -179,6 +183,7 @@ namespace DABApp
             set
             {
                 Episode.UserData.HasJournal = value;
+                Episode.UserData.Save();
                 OnPropertyChanged("HasJournal");
             }
         }

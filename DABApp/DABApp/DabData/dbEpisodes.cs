@@ -231,7 +231,17 @@ namespace DABApp
                     //and return an empty object
                     if (data == null)
                     {
-                        throw new Exception($"User-Specific Episode data does not exist for user '{userName}' and episode {episodeId}.");
+                        //make one and add it to the database
+                        data = new dbEpisodeUserData()
+                        {
+                            EpisodeId = episodeId,
+                            UserName = userName,
+                            IsFavorite = false,
+                            IsListenedTo = false,
+                            HasJournal = false,
+                            CurrentPosition = 0
+                        };
+                        db.InsertOrReplace(data);
                     }
 
                     //Return the matching data
@@ -241,17 +251,9 @@ namespace DABApp
                 {
                     //User-specific episode data could not be found or failed for some reason. Return an empty record
 
-                    Debug.WriteLine($"User-Specific episode data could not be found: {ex.Message}");
-
-                    return new dbEpisodeUserData()
-                    {
-                        EpisodeId = episodeId,
-                        UserName = userName,
-                        IsFavorite = false,
-                        IsListenedTo = false,
-                        HasJournal = false,
-                        CurrentPosition = 0
-                    };
+                    Debug.WriteLine($"User-Specific episode data could not be found and couldn't be created: {ex.ToString()}");
+                    return null;
+                   
                 }
 
 

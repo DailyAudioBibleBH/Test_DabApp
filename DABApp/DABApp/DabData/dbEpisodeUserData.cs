@@ -17,6 +17,9 @@ namespace DABApp
 
 
     {
+        [AutoIncrement, PrimaryKey]
+        public long RecordId { get; set; }
+
         [Indexed]
         public string UserName { get; set; } //the user id (PK tied with episode id)
         [Indexed]
@@ -30,7 +33,11 @@ namespace DABApp
 
         public bool HasJournal { get; set; } //whether or not the object has an associated journal tied to it
 
+        public void Save()
+        {
+            SQLiteConnection db = DabData.database;
+            db.Update(this);
 
-
+        }
     }
 }
