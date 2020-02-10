@@ -78,12 +78,12 @@ namespace DABApp
             //check this
             get
             {
-                return unTouched = Episode.is_listened_to == true ? true : false;
+                return unTouched = Episode.UserData.IsListenedTo;
             }
             set
             {
                 unTouched = value;
-                Episode.is_listened_to = unTouched ? true : false;
+                Episode.UserData.IsListenedTo = value ;
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("listenedToVisible");
                 OnPropertyChanged("listenAccessible");
@@ -103,11 +103,11 @@ namespace DABApp
         {
             get
             {
-                return Episode.is_favorite;
+                return Episode.UserData.IsFavorite;
             }
             set
             {
-                Episode.is_favorite = value;
+                Episode.UserData.IsFavorite = value;
                 OnPropertyChanged("favoriteVisible");
                 OnPropertyChanged("favoriteSource");
                 OnPropertyChanged("favoriteAccessible");
@@ -122,7 +122,7 @@ namespace DABApp
                 //Return the appropiate image representing if an episode is a favorite or not
                 if (Device.RuntimePlatform == Device.iOS || Device.Idiom == TargetIdiom.Tablet)
                 {
-                    if (Episode.is_favorite)
+                    if (Episode.UserData.IsFavorite)
                     {
                         return ImageSource.FromFile("ic_star_white_3x.png");
                     }
@@ -132,7 +132,7 @@ namespace DABApp
                 }
                 else
                 {
-                    if (Episode.is_favorite)
+                    if (Episode.UserData.IsFavorite)
                     {
                         return ImageSource.FromFile("ic_star_white.png");
                     } else
@@ -149,7 +149,7 @@ namespace DABApp
         {
             get
             {
-                return Episode.is_favorite ? "favorite status favorited": "favorite status not favorited";
+                return Episode.UserData.IsFavorite ? "favorite status favorited": "favorite status not favorited";
             }
             set { throw new Exception("You cannot set this directly"); }
         }
@@ -174,11 +174,11 @@ namespace DABApp
         {
             get
             {
-                return Episode.has_journal;
+                return Episode.UserData.HasJournal;
             }
             set
             {
-                Episode.has_journal = value;
+                Episode.UserData.HasJournal = value;
                 OnPropertyChanged("hasJournalVisible");
             }
         }

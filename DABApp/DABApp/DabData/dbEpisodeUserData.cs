@@ -22,13 +22,13 @@ namespace DABApp
         [Indexed]
         public int EpisodeId { get; set; } //the episode id (PK tied with user id)
 
-        public bool? IsListenedTo { get; set; } //whether or not the object has been marked listened to
+        public bool IsListenedTo { get; set; } //whether or not the object has been marked listened to
 
-        public double? CurrentPosition { get; set; } //current position of the object for playback
+        public double CurrentPosition { get; set; } //current position of the object for playback
 
-        public bool? IsFavorite { get; set; } //whether or not the object is favorited
+        public bool IsFavorite { get; set; } //whether or not the object is favorited
 
-        public bool? HasJournal { get; set; } //whether or not the object has an associated journal tied to it
+        public bool HasJournal { get; set; } //whether or not the object has an associated journal tied to it
 
 
 

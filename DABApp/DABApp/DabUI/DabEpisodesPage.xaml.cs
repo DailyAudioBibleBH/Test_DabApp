@@ -109,9 +109,9 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, !ep.is_listened_to, null, null, null, false);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, !ep.is_listened_to);
-            model.listenedToVisible = !ep.is_listened_to;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, !ep.UserData.IsListenedTo, null, null, null, false);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, !ep.UserData.IsListenedTo);
+            model.listenedToVisible = !ep.UserData.IsListenedTo;
         }
 
         public async void OnFavorite(object o, EventArgs e)
@@ -119,9 +119,9 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.is_favorite, null, null, false);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
-            model.favoriteVisible = !ep.is_favorite;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.UserData.IsFavorite, null, null, false);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.UserData.IsFavorite);
+            model.favoriteVisible = !ep.UserData.IsFavorite;
         }
 
         
@@ -178,8 +178,8 @@ namespace DABApp
             }
             EpisodeList.ItemsSource = _Episodes = Episodes
                 .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                 .Select(x => new EpisodeViewModel(x)).ToList();
             Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
         }

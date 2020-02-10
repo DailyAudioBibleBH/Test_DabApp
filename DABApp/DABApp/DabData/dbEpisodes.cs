@@ -35,8 +35,8 @@ namespace DABApp
             //has_journal = episode.has_journal;
             //is_listened_to = episode.is_listened_to;
             UserData.CurrentPosition = episode.stop_time;
-            UserData.IsFavorite = episode.favorite;
-            UserData.HasJournal = episode.hasJournal;
+            UserData.IsFavorite = (episode.favorite != null) ? episode.favorite.Value : false;
+            UserData.HasJournal = (episode.hasJournal != null) ? episode.hasJournal.Value : false;
             UserData.IsListenedTo = episode.is_listened_to;
             //TODO: Save UserData?
 
@@ -220,7 +220,7 @@ namespace DABApp
                 {
 
                     episodeId = id.Value;
-                    userName = GlobalResources.GetUserName();
+                    userName = GlobalResources.GetUserEmail();
                     db = DabData.database; //TODO - Verify this doesn't get overused
 
                     var data = db.Table<dbEpisodeUserData>()
