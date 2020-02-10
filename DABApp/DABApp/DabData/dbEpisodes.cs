@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using DABApp.DabSockets;
@@ -29,10 +30,16 @@ namespace DABApp
             audio_duration = episode.audioDuration.ToString();
             notes = episode.notes;
             read_link = episode.readURL;
-            stop_time = episode.stop_time;
-            is_favorite = episode.is_favorite;
-            has_journal = episode.has_journal;
-            is_listened_to = episode.is_listened_to;
+            //stop_time = episode.stop_time;
+            //is_favorite = episode.is_favorite;
+            //has_journal = episode.has_journal;
+            //is_listened_to = episode.is_listened_to;
+            UserData.CurrentPosition = episode.stop_time;
+            UserData.IsFavorite = episode.favorite;
+            UserData.HasJournal = episode.hasJournal;
+            UserData.IsListenedTo = episode.is_listened_to;
+            //TODO: Save UserData?
+
         }
 
         public dbEpisodes(TriggerEpisodeSubscription triggerEpisodeSubscription)
@@ -49,10 +56,15 @@ namespace DABApp
             audio_duration = triggerEpisodeSubscription.audioDuration.ToString();
             notes = triggerEpisodeSubscription.notes;
             read_link = triggerEpisodeSubscription.readURL;
-            stop_time = 0;
-            is_favorite = false;
-            has_journal = false;
-            is_listened_to = false;
+            //stop_time = 0;
+            //is_favorite = false;
+            //has_journal = false;
+            //is_listened_to = false;
+            UserData.CurrentPosition = 0;
+            UserData.IsFavorite = false;
+            UserData.HasJournal = false;
+            UserData.IsListenedTo = false;
+            //TODO: SaveUserData?
         }
 
         [PrimaryKey, Indexed]
@@ -78,12 +90,12 @@ namespace DABApp
         public string notes { get; set; }
         public string channel_description { get; set; }
         public bool is_downloaded { get; set; } = false;
-        public bool is_listened_to { get; set; }
+        //public bool is_listened_to { get; set; } //Replaced with UserData
         public double start_time { get; set; } = 0;
-        public double stop_time { get; set; } = 0;
+        //public double stop_time { get; set; } = 0; //Replaced with UserData
         public string remaining_time { get; set; } = "01:00";
-        public bool is_favorite { get; set; }
-        public bool has_journal { get; set; }
+        //public bool is_favorite { get; set; } //Replaced with UserData
+        //public bool has_journal { get; set; } //Replaced with UserData
         public bool progressVisible { get; set; }
 
         public long? audio_size { get; set; } //Size of the file in bytes
@@ -193,6 +205,60 @@ namespace DABApp
                 }
             }
         }
+
+        [Ignore]
+        public dbEpisodeUserData UserData
+        //User-specific episode data for this episode
+        {
+            get
+            {
+                int episodeId = 0;
+                string userName = "";
+                SQLiteConnection db;
+
+                try
+                {
+
+                    episodeId = id.Value;
+                    userName = GlobalResources.GetUserName();
+                    db = DabData.database; //TODO - Verify this doesn't get overused
+
+                    var data = db.Table<dbEpisodeUserData>()
+                        .SingleOrDefault(x => x.EpisodeId == id && x.UserName == userName);
+
+                    //Throw an exception if no data retrievied
+                    //This is not an error, but we'll let the exception handler handle it
+                    //and return an empty object
+                    if (data == null)
+                    {
+                        throw new Exception($"User-Specific Episode data does not exist for user '{userName}' and episode {episodeId}.");
+                    }
+
+                    //Return the matching data
+                    return data;
+                }
+                catch (Exception ex)
+                {
+                    //User-specific episode data could not be found or failed for some reason. Return an empty record
+
+                    Debug.WriteLine($"User-Specific episode data could not be found: {ex.Message}");
+
+                    return new dbEpisodeUserData()
+                    {
+                        EpisodeId = episodeId,
+                        UserName = userName,
+                        IsFavorite = false,
+                        IsListenedTo = false,
+                        HasJournal = false,
+                        CurrentPosition = 0
+                    };
+                }
+
+
+            }
+        }
+
+
 
     }
 }

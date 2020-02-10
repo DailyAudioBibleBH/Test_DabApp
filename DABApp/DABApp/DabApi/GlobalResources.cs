@@ -29,9 +29,7 @@ namespace DABApp
         {
             get
             {
-                //New - make sure this is the right place to change
-                return "20200129-AddedUserEpisodeMeta-b";
-                //return "20191210-AddedUserEpisodeMeta-b";
+                return "20200210";
             }
         }
 
