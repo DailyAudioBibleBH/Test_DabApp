@@ -358,14 +358,14 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <BoxView Color="Transparent"
-                                                 IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}"
+                                                 IsVisible="{Binding IsListenedTo, Converter={StaticResource inverser}}"
                                                  Grid.RowSpan="2"
                                                  Grid.Column="0"
                                                  WidthRequest="20"
                                                  HeightRequest="20"
                                                  VerticalOptions="Center" />
                                         <Image Source="ic_done_listened_3x.png"
-                                               IsVisible="{Binding listenedToVisible}"
+                                               IsVisible="{Binding IsListenedTo}"
                                                Grid.RowSpan="2"
                                                Grid.Column="0"
                                                WidthRequest="20"
@@ -379,14 +379,14 @@
                                                         Style="{StaticResource playerLabelStyle}"
                                                         FontAttributes="Bold"
                                                         IsTitle="true" />
-                                        <Image IsVisible="{Binding favoriteVisible}"
+                                        <Image IsVisible="{Binding IsFavorite}"
                                                Source="ic_star_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
                                                Aspect="AspectFit"
                                                Grid.RowSpan="2"
                                                Grid.Column="2" />
-                                        <Image IsVisible="{Binding hasJournalVisible}"
+                                        <Image IsVisible="{Binding HasJournal}"
                                                Source="pencil_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"

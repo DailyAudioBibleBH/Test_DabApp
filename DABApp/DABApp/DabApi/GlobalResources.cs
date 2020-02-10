@@ -25,12 +25,11 @@ namespace DABApp
         /* This string determins the database version. 
          * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
          */
-        private static long buildticks = 0;
-        public static string DBVersion
+        public static string DBVersion 
         {
             get
             {
-                return "20200210b";
+                return "20200210c";
             }
         }
 

@@ -111,7 +111,7 @@ namespace DABApp
             var ep = model.Episode;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, !ep.UserData.IsListenedTo, null, null, null, false);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, !ep.UserData.IsListenedTo);
-            model.listenedToVisible = !ep.UserData.IsListenedTo;
+            model.IsListenedTo = !ep.UserData.IsListenedTo;
         }
 
         public async void OnFavorite(object o, EventArgs e)
@@ -121,7 +121,7 @@ namespace DABApp
             var ep = model.Episode;
             await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.UserData.IsFavorite, null, null, false);
             await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.UserData.IsFavorite);
-            model.favoriteVisible = !ep.UserData.IsFavorite;
+            model.IsFavorite = !ep.UserData.IsFavorite;
         }
 
         
