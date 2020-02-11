@@ -218,6 +218,9 @@ namespace DABApp
             GetNextPreviousEpisodes(Episode);
             player.Load(Episode.Episode);
             BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.stop_time);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
         //Go to next episode
@@ -230,6 +233,9 @@ namespace DABApp
             GetNextPreviousEpisodes(Episode);
             player.Load(Episode.Episode);
             BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.stop_time);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
         //Go back 30 seconds

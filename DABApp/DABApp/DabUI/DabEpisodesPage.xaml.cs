@@ -54,13 +54,11 @@ namespace DABApp
 
             });
 
-            Device.StartTimer(TimeSpan.FromSeconds(15), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
             {
                 TimedActions();
                 return true;
-            });
-
-            
+            });           
         }       
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
