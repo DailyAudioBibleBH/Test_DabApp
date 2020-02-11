@@ -219,7 +219,7 @@ namespace DABApp
             player.Load(Episode.Episode);
             BindControls(true, true);
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
             GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
@@ -234,7 +234,7 @@ namespace DABApp
             player.Load(Episode.Episode);
             BindControls(true, true);
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
             GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
