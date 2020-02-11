@@ -54,7 +54,7 @@ namespace DABApp
 
             });
 
-            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(15), () =>
             {
                 TimedActions();
                 return true;
