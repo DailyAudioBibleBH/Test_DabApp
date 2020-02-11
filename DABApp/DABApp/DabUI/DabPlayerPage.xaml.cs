@@ -657,7 +657,7 @@ namespace DABApp
             Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsFavorite);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo);
 
             //TODO: Bind accessibiliyt text
         }

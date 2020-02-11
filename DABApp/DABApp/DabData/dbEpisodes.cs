@@ -206,12 +206,21 @@ namespace DABApp
             }
         }
 
+        private dbEpisodeUserData _UserData;
+
         [Ignore]
         public dbEpisodeUserData UserData
         //User-specific episode data for this episode
         {
             get
             {
+                //return the existing object if we already have it.
+                if(_UserData != null)
+                {
+                    return _UserData;
+                } 
+
+                //go get new UserData if needed
                 int episodeId = 0;
                 string userName = "";
                 SQLiteConnection db;
@@ -239,12 +248,14 @@ namespace DABApp
                             IsFavorite = false,
                             IsListenedTo = false,
                             HasJournal = false,
-                            CurrentPosition = 0
+                            CurrentPosition = 0,
                         };
                         db.InsertOrReplace(data);
+                        data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == id && x.UserName == userName);
                     }
 
                     //Return the matching data
+                    _UserData = data;
                     return data;
                 }
                 catch (Exception ex)

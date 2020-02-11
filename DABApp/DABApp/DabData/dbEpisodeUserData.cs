@@ -17,7 +17,13 @@ namespace DABApp
 
 
     {
-        [AutoIncrement, PrimaryKey]
+
+        public dbEpisodeUserData()
+        {
+            RecordId = DateTime.Now.Ticks;
+        }
+
+        [Indexed, PrimaryKey]
         public long RecordId { get; set; }
 
         [Indexed]
