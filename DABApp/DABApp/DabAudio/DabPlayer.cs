@@ -42,8 +42,6 @@ namespace DABApp.DabAudio
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
         private bool shouldResumePlay = false;
-        public bool hasPrevious;
-        public bool hasNext;
         static SQLiteConnection db = DabData.database;
 
 
@@ -99,40 +97,40 @@ namespace DABApp.DabAudio
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
 
-        public int NextEpisode
-        {
-            get
-            {
-                if (hasNext == true) //if there is another episode set hasNext to true then return the next episodes id
-                {
-                    //get next episode
-                    return 1;
-                }
-                else // set hasNext to false and not sure what to return yet 
-                {
-                    return 1;
-                }
-            }
-        }
+        //public int NextEpisode
+        //{
+        //    get
+        //    {
+        //        if (hasNext == true) //if there is another episode set hasNext to true then return the next episodes id
+        //        {
+        //            //get next episode
+        //            return 1;
+        //        }
+        //        else // set hasNext to false and not sure what to return yet 
+        //        {
+        //            return 1;
+        //        }
+        //    }
+        //}
 
-        public int PreviousEpisode
-        {
-            get
-            {
-                var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
+        //public int PreviousEpisode
+        //{
+        //    get
+        //    {
+        //        var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
 
-                if (hasPrevious == true) //If there is a previous episode set hasPrevious to true then return previous episodes id
-                {
-                    //get previous episde
-                    return 1;
-                }
-                else
-                {
-                    //set has previous to false;
-                    return 1;
-                }
-            }
-        }
+        //        if (hasPrevious == true) //If there is a previous episode set hasPrevious to true then return previous episodes id
+        //        {
+        //            //get previous episde
+        //            return 1;
+        //        }
+        //        else
+        //        {
+        //            //set has previous to false;
+        //            return 1;
+        //        }
+        //    }
+        //}
 
         /********************************
         ISimpleAudioPlayer Implementation 
@@ -499,7 +497,5 @@ namespace DABApp.DabAudio
             shouldResumePlay = true;
             Pause();
         }
-
-
     }
 }

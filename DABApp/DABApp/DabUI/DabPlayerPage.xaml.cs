@@ -72,6 +72,8 @@ namespace DABApp
                 PlayPause.IsVisible = false;
                 backwardButton.Opacity = 0;
                 forwardButton.Opacity = 0;
+                nextButton.IsVisible = false;
+                previousButton.IsVisible = false;
                 Initializer.IsVisible = true;
             }
 
@@ -216,6 +218,9 @@ namespace DABApp
             GetNextPreviousEpisodes(Episode);
             player.Load(Episode.Episode);
             BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.stop_time);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
         //Go to next episode
@@ -228,6 +233,9 @@ namespace DABApp
             GetNextPreviousEpisodes(Episode);
             player.Load(Episode.Episode);
             BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.stop_time);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
         //Go back 30 seconds
@@ -437,15 +445,6 @@ namespace DABApp
                 Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
-                //Next button
-                //nextButton.BindingContext = Episode;
-                //nextButton.SetBinding(Button.OpacityProperty, "nextOpacity");
-
-                ////Previous button
-                //previousButton.BindingContext = Episode;
-                //previousButton.SetBinding(Button.OpacityProperty, "previousOpacity");
-
-
                 //Completed button
                 Completed.BindingContext = Episode;
                 Completed.SetBinding(Button.ImageProperty, "listenedToSource");
@@ -536,6 +535,8 @@ namespace DABApp
             PlayPause.IsVisible = true;
             backwardButton.Opacity = 1;
             forwardButton.Opacity = 1;
+            previousButton.IsVisible = true;
+            nextButton.IsVisible = true;
         }
 
         //Share the episode

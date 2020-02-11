@@ -159,7 +159,7 @@
                                            IsVisible="false"
                                            Source="ic_play_circle_outline_white_3x.png"
                                            Grid.Row="0"
-                                           Grid.Column="2"
+                                           Grid.Column="3"
                                            HeightRequest="100"
                                            WidthRequest="100"
                                            AutomationProperties.HelpText="Play Pause"

@@ -681,6 +681,7 @@ namespace DABApp
                 previousEpisode = list.ElementAt(currentIndex + 1);
                 nextEpisode = null;
                 nextButton.IsEnabled = false;
+                nextButton.Opacity = .5;
             }
             //Load the file if not already loaded
             if (episode != null)
@@ -930,8 +931,16 @@ namespace DABApp
             TimeStrings.Opacity = opa;
             backwardButton.Opacity = opa;
             forwardButton.Opacity = opa;
-            nextButton.Opacity = opa;
-            previousButton.Opacity = opa;
+            if (nextEpisode == null && par == true)
+                nextButton.Opacity = .5;
+            else
+                nextButton.Opacity = opa;
+            if (previousEpisode == null && par == true)
+                previousButton.Opacity = .5;
+            else
+                previousButton.Opacity = opa;
+            //nextButton.Opacity = nextEpisode == null ? 1 : 0; 
+            //previousButton.Opacity = opa;
             //Output.IsVisible = par;
             //Share.IsVisible = par;
             //favorite.IsVisible = par;
