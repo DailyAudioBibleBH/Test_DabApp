@@ -335,6 +335,7 @@ namespace DABApp.DabSockets
                 sock.Send(SubscriptionRemoveToken);
 
                 //Subscribe to token removed/forceful logout
+                //First subscription after ConnectInit is not working so send the same subscription again
                 var tokenRemovedQuery2 = "subscription { tokenRemoved { token } }";
                 DabGraphQlPayload tokenRemovedPayload2 = new DabGraphQlPayload(tokenRemovedQuery2, variables);
                 var SubscriptionRemoveToken2 = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload2));
