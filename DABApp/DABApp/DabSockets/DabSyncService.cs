@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Xamarin.Forms;
 
 namespace DABApp.DabSockets
@@ -327,17 +328,17 @@ namespace DABApp.DabSockets
                 var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
                 sock.Send(ConnectInit);
 
-                //Subscribe to action logs
-                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
-                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
-                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
-                sock.Send(SubscriptionInit);
-
                 //Subscribe to token removed/forceful logout
                 var tokenRemovedQuery = "subscription { tokenRemoved { token } }";
                 DabGraphQlPayload tokenRemovedPayload = new DabGraphQlPayload(tokenRemovedQuery, variables);
                 var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload));
                 sock.Send(SubscriptionRemoveToken);
+
+                //Subscribe to token removed/forceful logout
+                var tokenRemovedQuery2 = "subscription { tokenRemoved { token } }";
+                DabGraphQlPayload tokenRemovedPayload2 = new DabGraphQlPayload(tokenRemovedQuery2, variables);
+                var SubscriptionRemoveToken2 = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload2));
+                sock.Send(SubscriptionRemoveToken2);
 
                 //Subscribe for new episodes
                 var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
@@ -350,6 +351,12 @@ namespace DABApp.DabSockets
                 DabGraphQlPayload channelPayload = new DabGraphQlPayload(channelQuery, variables);
                 var channelInit = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", channelPayload));
                 sock.Send(channelInit);
+
+                //Subscribe to action logs
+                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
+                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
+                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
+                sock.Send(SubscriptionInit);
 
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
