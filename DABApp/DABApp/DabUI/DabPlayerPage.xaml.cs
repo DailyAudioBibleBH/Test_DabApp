@@ -219,7 +219,7 @@ namespace DABApp
             player.Load(Episode.Episode);
             BindControls(true, true);
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
             GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
@@ -234,7 +234,7 @@ namespace DABApp
             player.Load(Episode.Episode);
             BindControls(true, true);
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
             GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
@@ -351,10 +351,10 @@ namespace DABApp
             {
                 journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
                 //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-                if (Episode.Episode.has_journal == false)
+                if (Episode.Episode.UserData.HasJournal == false)
                 {
-                    Episode.Episode.has_journal = true;
-                    Episode.hasJournalVisible = true;
+                    Episode.Episode.UserData.HasJournal = true;
+                    Episode.HasJournal = true;
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
                     await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
                 }
@@ -511,7 +511,7 @@ namespace DABApp
             }
 
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
 
             //Bind controls for playback
             BindControls(true, true);
@@ -642,10 +642,10 @@ namespace DABApp
         //User favorites (or unfavorites) an episode
         async void OnFavorite(object o, EventArgs e)
         {
-            Episode.favoriteVisible = !Episode.favoriteVisible;
+            Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.IsFavorite, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite);
         }
 
         //User listens to (or unlistens to) an episode
@@ -655,10 +655,10 @@ namespace DABApp
             //Mark episode as listened to
             //Episode.Episode.is_listened_to = "";
             //check this
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.is_listened_to);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, null, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo);
 
             //TODO: Bind accessibiliyt text
         }
@@ -667,7 +667,7 @@ namespace DABApp
         void OnVisibleChanged(object o, EventArgs e)
         {
             //Switch the value of listened to
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
         }
     }
 }

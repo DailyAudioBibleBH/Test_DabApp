@@ -4,6 +4,7 @@ using Xamarin.Forms;
 using DABApp.iOS.DabSockets;
 using WebSocket4Net;
 using DataReceivedEventArgs = WebSocket4Net.DataReceivedEventArgs;
+using System.Diagnostics;
 
 [assembly: Dependency(typeof(iosWebSocket))]
 namespace DABApp.iOS.DabSockets
@@ -112,6 +113,7 @@ namespace DABApp.iOS.DabSockets
 
         public void Send(string JsonIn)
         {
+            Debug.WriteLine("Sending to socket:" + JsonIn);
             sock.Send(JsonIn);
         }
 

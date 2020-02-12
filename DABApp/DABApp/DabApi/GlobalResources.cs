@@ -25,13 +25,11 @@ namespace DABApp
         /* This string determins the database version. 
          * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
          */
-        public static string DBVersion
+        public static string DBVersion 
         {
             get
             {
-                //New - make sure this is the right place to change
-                return "20200129-AddedUserEpisodeMeta-b";
-                //return "20191210-AddedUserEpisodeMeta-b";
+                return "20200211e";
             }
         }
 
@@ -161,6 +159,7 @@ namespace DABApp
 
         public static string GetUserEmail()
         {
+            var settings = db.Table<dbSettings>().ToList();
             dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
             if (EmailSettings == null)
             {

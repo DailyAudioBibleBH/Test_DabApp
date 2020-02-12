@@ -668,11 +668,11 @@ namespace DABApp
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
-                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).stop_time;
+                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.CurrentPosition;
                 actionLog.ActionType = actionType;
-                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
+                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsFavorite;
                 //check this
-                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
+                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsListenedTo.ToString();
                 var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 if (user != null)
                 {
@@ -854,13 +854,13 @@ namespace DABApp
             //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
-            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == true).ToList();
+            var potential = savedEps.Where(x => x.UserData.IsFavorite == true || x.UserData.IsListenedTo == true).ToList();
             foreach (dbEpisodes p in potential)
             {
                 if (!episodes.Any(x => x.id == p.id))
                 {
-                    p.is_favorite = false;
-                    p.is_listened_to = false;
+                    p.UserData.IsFavorite = false;
+                    p.UserData.IsListenedTo = false;
                     update.Add(p);
                 }
             }
@@ -875,12 +875,12 @@ namespace DABApp
                 //{
                 if (saved != null)
                 {
-                    if (!(saved.stop_time == episode.stop_time && saved.is_favorite == episode.is_favorite && saved.is_listened_to == episode.is_listened_to && saved.has_journal == episode.has_journal))
+                    if (!(saved.UserData.CurrentPosition == episode.UserData.CurrentPosition && saved.UserData.IsFavorite == episode.UserData.IsFavorite && saved.UserData.IsListenedTo == episode.UserData.IsListenedTo && saved.UserData.HasJournal == episode.UserData.HasJournal))
                     {
-                        saved.stop_time = episode.stop_time;
-                        saved.is_favorite = episode.is_favorite;
-                        saved.is_listened_to = episode.is_listened_to;
-                        saved.has_journal = episode.has_journal;
+                        saved.UserData.CurrentPosition = episode.UserData.CurrentPosition;
+                        saved.UserData.IsFavorite = episode.UserData.IsFavorite;
+                        saved.UserData.IsListenedTo = episode.UserData.IsListenedTo;
+                        saved.UserData.HasJournal = episode.UserData.HasJournal;
                         update.Add(saved);
                     }
                 }

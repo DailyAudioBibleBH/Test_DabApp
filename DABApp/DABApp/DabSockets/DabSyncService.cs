@@ -77,8 +77,13 @@ namespace DABApp.DabSockets
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
+                //Generic keep alive
+                if (root.type=="ka")
+                {
+                    //Nothing to see here...
+                }
                 //Action logged elsewhere
-                if (root.payload?.data?.actionLogged != null)
+                else if (root.payload?.data?.actionLogged != null)
                 {
                     var action = root.payload.data.actionLogged.action;
                     bool hasJournal;
