@@ -54,6 +54,12 @@ namespace DABApp
             }
             else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
 
+            
+
+            //Connect to the SyncService
+            DabSyncService.Instance.Init();
+            DabSyncService.Instance.Connect();
+
             /* SET UP TIMERS (run once initially)*/
             TimedActions();
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
@@ -61,10 +67,6 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-
-            //Connect to the SyncService
-            DabSyncService.Instance.Init();
-            DabSyncService.Instance.Connect();
         }
 
         void PostLogs()
@@ -150,12 +152,16 @@ namespace DABApp
         void TimedActions()
         {
             if (!AuthenticationAPI.CheckToken())
-            {
-                Task.Run(async () =>
+            {               
+                //Send request for new token
+                if (DabSyncService.Instance.IsConnected)
                 {
-                        //Try to exchange token for a fresh one
-                        await AuthenticationAPI.ExchangeToken();
-                });
+                    DabGraphQlVariables variables = new DabGraphQlVariables();
+                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                    DabSyncService.Instance.Send(tokenJsonIn);
+                }
             }
             
             //Download new episodes

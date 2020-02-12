@@ -196,6 +196,14 @@ namespace DABApp.DabSockets
                     Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
                     Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
                 }
+                else if (root.payload?.data?.updateToken?.token != null)
+                {
+                    dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+                    TokenSettings.Value = root.payload.data.updateToken.token;
+                    await adb.UpdateAsync(TokenSettings);
+                    Instance.Init();
+                    Instance.Connect();
+                }
             }
             catch (Exception ex)
             {

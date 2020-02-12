@@ -47,6 +47,7 @@ namespace DABApp.DabSockets
         public DabGraphQlEpisodes episodes { get; set; } //Episodes
         public TriggerEpisodeSubscription triggerEpisodeSubscription { get; set; } //New Episodes
         public TokenRemoved tokenRemoved { get; set; } //Forceful logout
+        public DabGraphQlUpdateToken updateToken { get; set; }
     }
 
     public class DabGraphQlPayload
@@ -65,6 +66,11 @@ namespace DABApp.DabSockets
             this.query = query;
             this.variables = variables;
         }
+    }
+
+    public class DabGraphQlUpdateToken
+    {
+        public string token { get; set; }
     }
 
     public class DabGraphQlRootObject

@@ -259,38 +259,44 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> ExchangeToken()//Gets new token from the API App uses this whenever user arrives onto channels page and the current token is expired.
-        {
-            try
-            {
-                dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/exchangetoken", content);
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-                APIToken token = container.token;
-                if (container.token == null)
-                {
-                    throw new Exception($"Error Exchanging Token: {container.message}");
-                }
-                TokenSettings.Value = token.value;
-                ExpirationSettings.Value = token.expires;
-                await adb.UpdateAsync(TokenSettings);
-                await adb.UpdateAsync(ExpirationSettings);
-                //TODO: Replace this with sync
-                //JournalTracker.Current.Connect(token.value);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
+        //public static async Task<bool> ExchangeToken()//Gets new token from the API App uses this whenever user arrives onto channels page and the current token is expired.
+        //{
+        //    try
+        //    {
+
+        //        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+        //        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+        //        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+        //        DabSyncService.Instance.Send(tokenJsonIn);
+
+        //        dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
+        //        dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
+        //        //HttpClient client = new HttpClient();
+        //        //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+        //        var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
+        //        var content = new StringContent(JsonIn);
+        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        //        var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/exchangetoken", content);
+        //        string JsonOut = await result.Content.ReadAsStringAsync();
+        //        APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+        //        APIToken token = container.token;
+        //        if (container.token == null)
+        //        {
+        //            throw new Exception($"Error Exchanging Token: {container.message}");
+        //        }
+        //        TokenSettings.Value = token.value;
+        //        ExpirationSettings.Value = token.expires;
+        //        await adb.UpdateAsync(TokenSettings);
+        //        await adb.UpdateAsync(ExpirationSettings);
+        //        //TODO: Replace this with sync
+        //        //JournalTracker.Current.Connect(token.value);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return false;
+        //    }
+        //}
 
         public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
         {
