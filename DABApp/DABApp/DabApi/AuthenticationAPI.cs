@@ -120,7 +120,10 @@ namespace DABApp
         {
             var creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
             int days = ContentConfig.Instance.options.token_life;
-            if (creation.Value == null) return false;
+            if (creation == null || creation.Value == null)
+            {
+                return false;
+            }
             DateTime creationDate = DateTime.Parse(creation.Value);
             if (DateTime.Now > creationDate.AddDays(days))
             {
