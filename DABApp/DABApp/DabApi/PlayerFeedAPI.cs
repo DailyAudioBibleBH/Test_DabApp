@@ -558,7 +558,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -566,7 +566,7 @@ namespace DABApp
                 var token = new APIToken
                 {
                     value = TokenSettings.Value,
-                    expires = ExpirationSettings.Value,
+                    expires = CreationSettings.Value,
                     user_email = EmailSettings.Value,
                     user_first_name = FirstNameSettings.Value,
                     user_last_name = LastNameSettings.Value,

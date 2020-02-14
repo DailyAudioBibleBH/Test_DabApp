@@ -195,9 +195,10 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
                     //Expire the token (should log the user out?)
-                    dbSettings expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
-                    expiration.Value = DateTime.Now.AddSeconds(-1).ToString();
-                    db.Update(expiration);
+                    ContentConfig.Instance.options.token_life = 0;
+                    dbSettings creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                    creation.Value = DateTime.Now.AddSeconds(-1).ToString();
+                    db.Update(creation);
                     sock.Disconnect();
                     Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
                     Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");

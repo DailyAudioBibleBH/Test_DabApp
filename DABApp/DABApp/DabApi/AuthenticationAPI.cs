@@ -29,7 +29,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -51,12 +51,12 @@ namespace DABApp
                     {
                         TokenSettings.Value = "";
                         EmailSettings.Value = "Guest";
-                        ExpirationSettings.Value = DateTime.Now.ToString();
+                        CreationSettings.Value = DateTime.Now.ToString();
                         FirstNameSettings.Value = "";
                         LastNameSettings.Value = "";
                         AvatarSettings.Value = "";
                         IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-                        settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+                        settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
                     }
                     GuestLogin();
@@ -85,13 +85,13 @@ namespace DABApp
                     {
                         if (EmailSettings.Value != email) GuestLogin();
                         TokenSettings.Value = token.value;
-                        ExpirationSettings.Value = token.expires;
+                        CreationSettings.Value = token.expires;
                         EmailSettings.Value = token.user_email;
                         FirstNameSettings.Value = token.user_first_name;
                         LastNameSettings.Value = token.user_last_name;
                         AvatarSettings.Value = token.user_avatar;
                         IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-                        settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+                        settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
                         //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
                         GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
@@ -118,15 +118,11 @@ namespace DABApp
 
         public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
-            var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+            var creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
             int days = ContentConfig.Instance.options.token_life;
-            if (expiration == null)
-            {
-                return false;
-            }
-            if (expiration.Value == null) return false;
-            DateTime expirationDate = DateTime.Parse(expiration.Value);
-            if (expirationDate <= DateTime.Now.AddDays(days))
+            if (creation.Value == null) return false;
+            DateTime creationDate = DateTime.Parse(creation.Value);
+            if (DateTime.Now > creationDate.AddDays(days))
             {
                 return false;
             }
@@ -161,7 +157,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -186,12 +182,12 @@ namespace DABApp
                 else
                 {
                     TokenSettings.Value = token.value;
-                    ExpirationSettings.Value = token.expires;
+                    CreationSettings.Value = token.expires;
                     EmailSettings.Value = token.user_email;
                     FirstNameSettings.Value = token.user_first_name;
                     LastNameSettings.Value = token.user_last_name;
                     AvatarSettings.Value = token.user_avatar;
-                    IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+                    IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                     await adb.UpdateAllAsync(settings);
                     //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
                     GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
@@ -235,7 +231,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
                 var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
@@ -246,15 +242,15 @@ namespace DABApp
                 {
                     throw new Exception($"Error Logging Out: {result.StatusCode}");
                 }
-                ExpirationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(ExpirationSettings);
+                CreationSettings.Value = DateTime.MinValue.ToString();
+                await adb.UpdateAsync(CreationSettings);
                 return true;
             }
             catch (Exception e)
             {
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                ExpirationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(ExpirationSettings);
+                dbSettings CreationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
+                CreationSettings.Value = DateTime.MinValue.ToString();
+                await adb.UpdateAsync(CreationSettings);
                 return false;
             }
         }
@@ -334,7 +330,7 @@ namespace DABApp
             try//Edits member data used on DABProfileManagementPage
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -352,12 +348,12 @@ namespace DABApp
                     throw new Exception(container.message);
                 }
                 TokenSettings.Value = token.value;
-                ExpirationSettings.Value = token.expires;
+                CreationSettings.Value = token.expires;
                 EmailSettings.Value = token.user_email;
                 FirstNameSettings.Value = token.user_first_name;
                 LastNameSettings.Value = token.user_last_name;
                 await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
-                await adb.UpdateAsync(ExpirationSettings);
+                await adb.UpdateAsync(CreationSettings);
                 await adb.UpdateAsync(EmailSettings);
                 await adb.UpdateAsync(FirstNameSettings);
                 await adb.UpdateAsync(LastNameSettings);
@@ -635,9 +631,9 @@ namespace DABApp
             var TokenSettings = new dbSettings();
             TokenSettings.Key = "Token";
             TokenSettings.Value = token.value;
-            var ExpirationSettings = new dbSettings();
-            ExpirationSettings.Key = "TokenExpiration";
-            ExpirationSettings.Value = token.expires;
+            var CreationSettings = new dbSettings();
+            CreationSettings.Key = "TokenCreation";
+            CreationSettings.Value = token.expires;
             var EmailSettings = new dbSettings();
             EmailSettings.Key = "Email";
             EmailSettings.Value = token.user_email;
@@ -651,7 +647,7 @@ namespace DABApp
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
             db.InsertOrReplace(TokenSettings);
-            db.InsertOrReplace(ExpirationSettings);
+            db.InsertOrReplace(CreationSettings);
             db.InsertOrReplace(EmailSettings);
             db.InsertOrReplace(FirstNameSettings);
             db.InsertOrReplace(LastNameSettings);
