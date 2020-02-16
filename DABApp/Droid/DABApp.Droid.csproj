@@ -367,6 +367,7 @@
     <Compile Include="DabSockets\droidWebSocket.cs" />
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\CallReceiver.cs" />
+    <Compile Include="DependencyServices\DroidAudioFocus.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
     <Compile Include="DependencyServices\MediaButtonBroadcastReceiver.cs" />
     <Compile Include="DependencyServices\RecordService.cs" />

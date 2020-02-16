@@ -19,6 +19,7 @@ using Android.Media;
 
 using DABApp.Droid.DependencyServices;
 using Android.Telephony;
+using Android.Runtime;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -26,7 +27,7 @@ namespace DABApp.Droid
 
 
 
-    public class DroidDabNativePlayer : IDabNativePlayer
+    public class DroidDabNativePlayer : Activity, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
     {
 
         //Based on Xamarin.Android documentation:
@@ -36,6 +37,7 @@ namespace DABApp.Droid
 
         static readonly int NOTIFICATION_ID = 1000;
         static readonly string CHANNEL_ID = "location_notification";
+        //DroidAudioFocus droidFocus = new DroidAudioFocus();
 
         DabPlayer dabplayer;
 
@@ -43,6 +45,28 @@ namespace DABApp.Droid
         {
             player = new Android.Media.MediaPlayer() { };
             player.Completion += OnPlaybackEnded;
+        }
+
+        public bool RequestAudioFocus()
+        {
+            AudioManager audioManager = (AudioManager)GetSystemService(AudioService);
+            AudioFocusRequest audioFocusRequest;
+            if (Build.VERSION.SdkInt > BuildVersionCodes.O)
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain)
+                .SetAudioAttributes(new AudioAttributes.Builder().SetLegacyStreamType(Android.Media.Stream.Music).Build()).SetOnAudioFocusChangeListener(this)
+                .Build());
+            }
+            else
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(this, Android.Media.Stream.Music, AudioFocus.Gain);
+            }
+
+            if (audioFocusRequest == AudioFocusRequest.Granted)
+            {
+                return true;
+            }
+            return false;
         }
 
         //Static method to create a single notification channel;
@@ -82,12 +106,18 @@ namespace DABApp.Droid
 
                 dabplayer.EpisodeDataChanged += (sender, e) =>
                 {
+                    
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
                     Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
+                    //Intent audioFocusIntent = new Intent(Application.Context, typeof(AudioFocusActivity));
+                    
                     // Create a PendingIntent; 
                     const int pendingIntentId = 0;
                     const int firstPendingIntentId = 1;
+                    //const int audioFocusIntentId = 2;
+                    //PendingIntent audioFocusPendingIntent =
+                    //    PendingIntent.GetActivity(Application.Context, audioFocusIntentId, audioFocusIntent, 0);
                     PendingIntent firstPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
                     PendingIntent pendingIntent =
@@ -109,12 +139,18 @@ namespace DABApp.Droid
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+
+                    //StartActivity(audioFocusIntent);  causes trying to invoke virtual method on 
+                    //null object reference when code and code above is uncommented
+
                 };
 
                 dabplayer.EpisodeProgressChanged += (object sender, EventArgs e) =>
                 {
 
                 };
+
+                
             }
         }
 
@@ -346,19 +382,102 @@ namespace DABApp.Droid
 
             GC.SuppressFinalize(this);
         }
+
+        public void OnAudioFocusChange([GeneratedEnum] AudioFocus focusChange)
+        {
+            switch (focusChange)
+            {
+                case AudioFocus.Gain:
+                    Play();
+                    //Gain when other Music Player app releases the audio service   
+                    break;
+                case AudioFocus.Loss:
+                    //We have lost focus stop!   
+                    Stop();
+                    break;
+                case AudioFocus.LossTransient:
+                    //We have lost focus for a short time, but likely to resume so pause   
+                    Pause();
+                    break;
+                case AudioFocus.LossTransientCanDuck:
+                    //We have lost focus but should till play at a muted 10% volume   
+                    SetVolume(.1);
+                    break;
+            }
+        }
+    }
+
+    [Activity]
+    public class AudioFocusActivity : Activity, AudioManager.IOnAudioFocusChangeListener
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        DroidDabNativePlayer droid = new DroidDabNativePlayer();
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            RequestAudioFocus();
+        }
+
+        public bool RequestAudioFocus()
+        {
+            AudioManager audioManager = (AudioManager)GetSystemService(AudioService);
+            AudioFocusRequest audioFocusRequest;
+            if (Build.VERSION.SdkInt > BuildVersionCodes.O)
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain)
+                .SetAudioAttributes(new AudioAttributes.Builder().SetLegacyStreamType(Android.Media.Stream.Music).Build()).SetOnAudioFocusChangeListener(this)
+                .Build());
+            }
+            else
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(this, Android.Media.Stream.Music, AudioFocus.Gain);
+            }
+
+            if (audioFocusRequest == AudioFocusRequest.Granted)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public void OnAudioFocusChange([GeneratedEnum] AudioFocus focusChange)
+        {
+            switch (focusChange)
+            {
+                case AudioFocus.Gain:
+                    player.Play();
+                    //Gain when other Music Player app releases the audio service   
+                    break;
+                case AudioFocus.Loss:
+                    //We have lost focus stop!   
+                    player.Stop();
+                    break;
+                case AudioFocus.LossTransient:
+                    //We have lost focus for a short time, but likely to resume so pause   
+                    player.Pause();
+                    break;
+                case AudioFocus.LossTransientCanDuck:
+                    //We have lost focus but should till play at a muted 10% volume   
+                    //player.SetVolume(.1);
+                    break;
+            }
+        }
     }
 
 
     [Activity]
-    public class SecondActivity : Activity
+    public class SecondActivity :  Activity, AudioManager.IOnAudioFocusChangeListener
     {
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
-        DroidDabNativePlayer droid = new DroidDabNativePlayer();
+        
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+
 
             if (player.IsReady)
             {
@@ -369,6 +488,7 @@ namespace DABApp.Droid
                 else
                 {
                     player.Play();
+                    RequestAudioFocus();
                 }
             }
             else
@@ -376,6 +496,7 @@ namespace DABApp.Droid
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                    RequestAudioFocus();
                 }
                 else
                 {
@@ -384,9 +505,53 @@ namespace DABApp.Droid
 
             }
 
-            Finish();
+            Finish();          
+        }
+
+        public bool RequestAudioFocus()
+        {
+            AudioManager audioManager = (AudioManager)GetSystemService(AudioService);
+            AudioFocusRequest audioFocusRequest;
+            if (Build.VERSION.SdkInt > BuildVersionCodes.O)
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain)
+                .SetAudioAttributes(new AudioAttributes.Builder().SetLegacyStreamType(Android.Media.Stream.Music).Build()).SetOnAudioFocusChangeListener(this)
+                .Build());
+            }
+            else
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(this, Android.Media.Stream.Music, AudioFocus.Gain);
+            }
+
+            if (audioFocusRequest == AudioFocusRequest.Granted)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        public void OnAudioFocusChange([GeneratedEnum] AudioFocus focusChange)
+        {
+            switch (focusChange)
+            {
+                case AudioFocus.Gain:
+                    player.Play();
+                    //Gain when other Music Player app releases the audio service   
+                    break;
+                case AudioFocus.Loss:
+                    //We have lost focus stop!   
+                    player.Stop();
+                    break;
+                case AudioFocus.LossTransient:
+                    //We have lost focus for a short time, but likely to resume so pause   
+                    player.Pause();
+                    break;
+                case AudioFocus.LossTransientCanDuck:
+                    //We have lost focus but should till play at a muted 10% volume   
+                    //player.SetVolume(.1);
+                    break;
+            }
         }
     }
-
-
 }

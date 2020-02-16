@@ -34,13 +34,14 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
+using DABApp.DabAudio;
 
 namespace DABApp.Droid
 {
 
     [Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
     [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity //, AudioManager.IOnAudioFocusChangeListener
     {
         CallReceiver callReceiver;
 
@@ -68,6 +69,8 @@ namespace DABApp.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
+
+            //RequestAudioFocus();
 
             var am = (AudioManager)this.GetSystemService(AudioService);
             var componentName = new ComponentName(PackageName, new MediaButtonBroadcastReceiver().ComponentName);
@@ -241,5 +244,52 @@ namespace DABApp.Droid
                 ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.RecordAudio }, 1);
             }
         }
+
+        //public bool RequestAudioFocus()
+        //{
+        //    AudioManager audioManager = (AudioManager)GetSystemService(AudioService);
+        //    AudioFocusRequest audioFocusRequest;
+        //    if (Build.VERSION.SdkInt > BuildVersionCodes.O)
+        //    {
+        //        audioFocusRequest = audioManager.RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain)
+        //        .SetAudioAttributes(new AudioAttributes.Builder().SetLegacyStreamType(Android.Media.Stream.Music).Build()).SetOnAudioFocusChangeListener(this)
+        //        .Build());
+        //    }
+        //    else
+        //    {
+        //        audioFocusRequest = audioManager.RequestAudioFocus(this, Android.Media.Stream.Music, AudioFocus.Gain);
+        //    }
+
+        //    if (audioFocusRequest == AudioFocusRequest.Granted)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
+        //public void OnAudioFocusChange([GeneratedEnum] AudioFocus focusChange)
+        //{
+        //    DabPlayer player = GlobalResources.playerPodcast;
+
+        //    switch (focusChange)
+        //    {
+        //        case AudioFocus.Gain:
+        //            player.Play();
+        //            //Gain when other Music Player app releases the audio service   
+        //            break;
+        //        case AudioFocus.Loss:
+        //            //We have lost focus stop!   
+        //            player.Stop();
+        //            break;
+        //        case AudioFocus.LossTransient:
+        //            //We have lost focus for a short time, but likely to resume so pause   
+        //            player.Pause();
+        //            break;
+        //        case AudioFocus.LossTransientCanDuck:
+        //            //We have lost focus but should till play at a muted 10% volume   
+        //            //player.SetVolume(.1);
+        //            break;
+        //    }
+        //}
     }
 }
