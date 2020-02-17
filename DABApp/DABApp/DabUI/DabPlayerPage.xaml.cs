@@ -133,6 +133,16 @@ namespace DABApp
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
 
+            MessagingCenter.Subscribe<string>("droid", "skip", (obj) =>
+            {
+                OnNext();
+            });
+
+            MessagingCenter.Subscribe<string>("droid", "previous", (obj) =>
+            {
+                OnPrevious();
+            });
+
             MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
             {
                 int paddingMulti = journal.IsConnected ? 4 : 8;
@@ -223,8 +233,38 @@ namespace DABApp
             GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
         }
 
+        //method for android lock screen controls
+        void OnPrevious()
+        {
+            if (previousEpisode != null)
+            {
+                Episode = previousEpisode;
+            }
+            GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
+            BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+        }
+
         //Go to next episode
-        void OnNext(object o, EventArgs e)
+        public void OnNext(object o, EventArgs e)
+        {
+            if (nextEpisode != null)
+            {
+                Episode = nextEpisode;
+            }
+            GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
+            BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+        }
+
+        //method for android lock screen controls
+        public void OnNext()
         {
             if (nextEpisode != null)
             {

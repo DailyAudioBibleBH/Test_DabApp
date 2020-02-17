@@ -20,6 +20,8 @@ using Android.Media;
 using DABApp.Droid.DependencyServices;
 using Android.Telephony;
 using Android.Runtime;
+using System.Drawing;
+using Android.Graphics;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -126,27 +128,43 @@ namespace DABApp.Droid
 
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                    Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
+                    Intent playPauseIntent = new Intent(Application.Context, typeof(PlayPauseActivity));
+                    Intent skipIntent = new Intent(Application.Context, typeof(SkipActivity));
+                    Intent previousIntent = new Intent(Application.Context, typeof(PreviousActivity));
 
                     // Create a PendingIntent; 
                     const int pendingIntentId = 0;
                     const int firstPendingIntentId = 1;
+                    const int skipPendingIntentId = 2;
+                    const int previousPendingIntentId = 3;
                    
-                    PendingIntent firstPendingIntent =
+                    PendingIntent backToAppPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
-                    PendingIntent pendingIntent =
+                    PendingIntent playPausePendingIntent =
                         PendingIntent.GetActivity(Application.Context, pendingIntentId, playPauseIntent, 0);
+                    PendingIntent skipPendingIntent =
+                        PendingIntent.GetActivity(Application.Context, skipPendingIntentId, skipIntent, 0);
+                    PendingIntent previousPendingIntent =
+                        PendingIntent.GetActivity(Application.Context, previousPendingIntentId, previousIntent, 0);
 
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
                                             .SetMediaSession(mSession.SessionToken)
-                                            .SetShowActionsInCompactView(0))
+                                            .SetShowCancelButton(true)
+                                            .SetShowActionsInCompactView(0, 1, 2)
+                                            .SetCancelButtonIntent(backToAppPendingIntent))
+                                  .SetProgress(player.Duration, player.CurrentPosition, true)
                                   .SetVisibility(NotificationCompat.VisibilityPublic)
-                                  .SetContentIntent(firstPendingIntent) // Start up this activity when the user clicks the intent.
+                                  .SetContentIntent(backToAppPendingIntent) // Start up this activity when the user clicks the intent.
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
-                                  .AddAction(Resource.Drawable.ic_media_play_pause, "Play", pendingIntent)
+                                  .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
+                                  .AddAction(Resource.Drawable.baseline_skip_previous_white_48pt_3x, "Previous", previousPendingIntent)
+                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play", playPausePendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_skip_next_white_48pt_3x, "Skip", skipPendingIntent)
+                                  .SetShowWhen(false)
+                                  .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
                                   .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
 
@@ -389,7 +407,7 @@ namespace DABApp.Droid
     }
 
     [Activity]
-    public class SecondActivity : Activity
+    public class PlayPauseActivity : Activity
     {
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
@@ -414,6 +432,78 @@ namespace DABApp.Droid
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                }
+                else
+                {
+                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
+
+            }
+
+            Finish();
+        }
+    }
+
+    [Activity]
+    public class SkipActivity : Activity
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        EpisodeViewModel Episode;
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            bool playing = player.IsPlaying;
+
+            if (player.IsReady)
+            {
+                MessagingCenter.Send<string>("droid", "skip");
+                if (playing)
+                    player.Play();
+            }
+            else
+            {
+                if (player.Load(Episode.Episode))
+                {
+                    MessagingCenter.Send<string>("droid", "skip");
+                    if (playing)
+                        player.Play();
+                }
+                else
+                {
+                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
+
+            }
+
+            Finish();
+        }
+    }
+
+    [Activity]
+    public class PreviousActivity : Activity
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        EpisodeViewModel Episode;
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            bool playing = player.IsPlaying;
+
+            if (player.IsReady)
+            {
+                MessagingCenter.Send<string>("droid", "previous");
+                if (playing)
+                    player.Play();
+            }
+            else
+            {
+                if (player.Load(Episode.Episode))
+                {
+                    MessagingCenter.Send<string>("droid", "previous");
+                    if(playing)
+                        player.Play();
                 }
                 else
                 {
