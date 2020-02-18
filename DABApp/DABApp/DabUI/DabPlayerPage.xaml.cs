@@ -236,16 +236,17 @@ namespace DABApp
         //method for android lock screen controls
         void OnPrevious()
         {
-            if (previousEpisode != null)
-            {
-                Episode = previousEpisode;
-            }
-            GetNextPreviousEpisodes(Episode);
-            player.Load(Episode.Episode);
-            BindControls(true, true);
-            //Goto the starting position of the episode
-            player.Seek(Episode.Episode.UserData.CurrentPosition);
-            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+            //if (previousEpisode != null)
+            //{
+            //    Episode = previousEpisode;
+            //}
+            //GetNextPreviousEpisodes(Episode);
+            //player.Load(Episode.Episode);
+            //BindControls(true, true);
+            ////Goto the starting position of the episode
+            //player.Seek(Episode.Episode.UserData.CurrentPosition);
+            //GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+            player.Seek(player.CurrentPosition - 30);
         }
 
         //Go to next episode
@@ -266,16 +267,17 @@ namespace DABApp
         //method for android lock screen controls
         public void OnNext()
         {
-            if (nextEpisode != null)
-            {
-                Episode = nextEpisode;
-            }
-            GetNextPreviousEpisodes(Episode);
-            player.Load(Episode.Episode);
-            BindControls(true, true);
-            //Goto the starting position of the episode
-            player.Seek(Episode.Episode.UserData.CurrentPosition);
-            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+            //if (nextEpisode != null)
+            //{
+            //    Episode = nextEpisode;
+            //}
+            //GetNextPreviousEpisodes(Episode);
+            //player.Load(Episode.Episode);
+            //BindControls(true, true);
+            ////Goto the starting position of the episode
+            //player.Seek(Episode.Episode.UserData.CurrentPosition);
+            //GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+            player.Seek(player.CurrentPosition + 30);
         }
 
         //Go back 30 seconds

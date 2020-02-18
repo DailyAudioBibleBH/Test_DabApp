@@ -160,9 +160,9 @@ namespace DABApp.Droid
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
-                                  .AddAction(Resource.Drawable.baseline_skip_previous_white_48pt_3x, "Previous", previousPendingIntent)
-                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play", playPausePendingIntent)
-                                  .AddAction(Resource.Drawable.baseline_skip_next_white_48pt_3x, "Skip", skipPendingIntent)
+                                  .AddAction(Resource.Drawable.ic_replay_30_white_3x, "Backward 30", previousPendingIntent)
+                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play or Pause", playPausePendingIntent)
+                                  .AddAction(Resource.Drawable.ic_forward_30_white_3x, "Forward 30", skipPendingIntent)
                                   .SetShowWhen(false)
                                   .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
