@@ -22,11 +22,12 @@ using Android.Telephony;
 using Android.Runtime;
 using System.Drawing;
 using Android.Graphics;
+using Android.Support.V4.Media;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {
-    public class DroidDabNativePlayer : Java.Lang.Object, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
+    public class DroidDabNativePlayer : Service, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
     {
 
         //Based on Xamarin.Android documentation:
@@ -110,11 +111,20 @@ namespace DABApp.Droid
             notificationManager.CreateNotificationChannel(channel);
         }
 
+        IBinder binder;
+
+        public override IBinder OnBind(Intent intent)
+        {
+            binder = new MediaPlayerServiceBinder(this);
+            return binder;
+        }
+
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
             dabplayer = Player;
             var mSession = new MediaSessionCompat(Application.Context, "MusicService");
             mSession.SetFlags(MediaSessionCompat.FlagHandlesMediaButtons | MediaSessionCompat.FlagHandlesTransportControls);
+
             var controller = mSession.Controller;
             var description = GlobalResources.playerPodcast;
 
@@ -137,7 +147,7 @@ namespace DABApp.Droid
                     const int firstPendingIntentId = 1;
                     const int skipPendingIntentId = 2;
                     const int previousPendingIntentId = 3;
-                   
+
                     PendingIntent backToAppPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
                     PendingIntent playPausePendingIntent =
@@ -171,6 +181,34 @@ namespace DABApp.Droid
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+
+                    mSession.Active = true;
+                    mSession.SetCallback(new MediaSessionCallback((MediaPlayerServiceBinder)binder));
+
+                    //Building the lock screen
+                    MediaMetadataCompat.Builder lockBuilder = new MediaMetadataCompat.Builder()
+                            .PutString(MediaMetadata.MetadataKeyAlbum, GlobalResources.playerPodcast.ChannelTitle)
+                            .PutString(MediaMetadata.MetadataKeyArtist, "DAB")
+                            .PutString(MediaMetadata.MetadataKeyTitle, GlobalResources.playerPodcast.EpisodeTitle);
+
+                    PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    .SetActions(
+                        PlaybackStateCompat.ActionPause |
+                        PlaybackStateCompat.ActionPlay |
+                        PlaybackStateCompat.ActionPlayPause |
+                        PlaybackStateCompat.ActionSkipToNext |
+                        PlaybackStateCompat.ActionSkipToPrevious |
+                        PlaybackStateCompat.ActionStop
+                    )
+                    .SetState(PlaybackStateCompat.StatePlaying, player.CurrentPosition, 1.0f, SystemClock.ElapsedRealtime());
+
+                    mSession.SetPlaybackState(stateBuilder.Build());
+
+                    lockBuilder.PutBitmap(MediaMetadata.MetadataKeyAlbumArt, BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon));
+
+                    mSession.SetMetadata(lockBuilder.Build());
+
+
                 };
 
                 dabplayer.EpisodeProgressChanged += (object sender, EventArgs e) =>
@@ -490,7 +528,7 @@ namespace DABApp.Droid
             if (player.IsReady)
             {
                 MessagingCenter.Send<string>("droid", "previous");
-                
+
             }
             else
             {
@@ -506,6 +544,67 @@ namespace DABApp.Droid
             }
 
             Finish();
+        }
+    }
+
+    public class MediaSessionCallback : MediaSessionCompat.Callback
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        static DroidDabNativePlayer droid = new DroidDabNativePlayer();
+        private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder(droid);
+        public MediaSessionCallback(MediaPlayerServiceBinder service)
+        {
+            mediaPlayerService = service;
+        }
+
+        public override void OnPause()
+        {
+            if (player.IsPlaying)
+                player.Pause();
+            else
+                player.Play();
+            //player.Pause();
+            //mediaPlayerService.GetMediaPlayerService().Pause();
+            base.OnPause();
+        }
+
+        public override void OnPlay()
+        {
+            mediaPlayerService.GetMediaPlayerService().Play();
+            base.OnPlay();
+        }
+
+        //public override void OnSkipToNext()
+        //{
+        //    mediaPlayerService.GetMediaPlayerService().PlayNext();
+        //    base.OnSkipToNext();
+        //}
+
+        //public override void OnSkipToPrevious()
+        //{
+        //    mediaPlayerService.GetMediaPlayerService().PlayPrevious();
+        //    base.OnSkipToPrevious();
+        //}
+
+        public override void OnStop()
+        {
+            mediaPlayerService.GetMediaPlayerService().Stop();
+            base.OnStop();
+        }
+    }
+
+    public class MediaPlayerServiceBinder : Binder
+    {
+        private DroidDabNativePlayer service;
+
+        public MediaPlayerServiceBinder(DroidDabNativePlayer service)
+        {
+            this.service = service;
+        }
+
+        public DroidDabNativePlayer GetMediaPlayerService()
+        {
+            return service;
         }
     }
 }
