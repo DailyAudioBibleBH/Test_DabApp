@@ -160,9 +160,9 @@ namespace DABApp.Droid
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
-                                  .AddAction(Resource.Drawable.ic_replay_30_white_3x, "Backward 30", previousPendingIntent)
-                                  .AddAction(Resource.Drawable.ic_media_play_dark, "Play or Pause", playPausePendingIntent)
-                                  .AddAction(Resource.Drawable.ic_forward_30_white_3x, "Forward 30", skipPendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_play_arrow_white_36, "Play or Pause", playPausePendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_forward_30_white_36, "Forward 30", skipPendingIntent)
                                   .SetShowWhen(false)
                                   .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
@@ -458,16 +458,12 @@ namespace DABApp.Droid
             if (player.IsReady)
             {
                 MessagingCenter.Send<string>("droid", "skip");
-                if (playing)
-                    player.Play();
             }
             else
             {
                 if (player.Load(Episode.Episode))
                 {
                     MessagingCenter.Send<string>("droid", "skip");
-                    if (playing)
-                        player.Play();
                 }
                 else
                 {
@@ -494,16 +490,13 @@ namespace DABApp.Droid
             if (player.IsReady)
             {
                 MessagingCenter.Send<string>("droid", "previous");
-                if (playing)
-                    player.Play();
+                
             }
             else
             {
                 if (player.Load(Episode.Episode))
                 {
                     MessagingCenter.Send<string>("droid", "previous");
-                    if(playing)
-                        player.Play();
                 }
                 else
                 {
