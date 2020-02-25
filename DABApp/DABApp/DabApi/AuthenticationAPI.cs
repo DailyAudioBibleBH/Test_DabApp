@@ -230,6 +230,7 @@ namespace DABApp
             }
         }
 
+        public static async Task<bool> LogOut()//Logs the user out.
         {
             try
             {
