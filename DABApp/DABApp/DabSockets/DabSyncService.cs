@@ -39,6 +39,8 @@ namespace DABApp.DabSockets
         List<DabGraphQlEpisode> allEpisodes = new List<DabGraphQlEpisode>();
         DabEpisodesPage episodesPage;
 
+        List<int> subscriptionIds = new List<int>();
+
 
         private DabSyncService()
         {
@@ -216,6 +218,28 @@ namespace DABApp.DabSockets
 
         public void Disconnect()
         {
+
+
+            //Unsubscribe from all subscriptions
+            foreach(int id in subscriptionIds)
+            {
+                var jSub = $"{{\"type\":\"stop\",\"id\":\"{id}\",\"payload\":\"null\"}}";
+                sock.Send(jSub);
+            }
+
+            //Log the user out, if they are logged in.
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)\",\"variables\":{}}}";
+                Send(jLogout);
+            }
+
+
+            //Terminate the connection before disconnecting it.
+            var jTerm = "{\"type\":\"connection_terminate\"}";
+            sock.Send(jTerm);
+
+            //Disconnect the socket
             sock.Disconnect();
         }
 
