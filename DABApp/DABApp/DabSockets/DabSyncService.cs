@@ -216,7 +216,7 @@ namespace DABApp.DabSockets
             sock.Connect();
         }
 
-        public void Disconnect()
+        public void Disconnect(bool LogOutUser)
         {
 
 
@@ -228,13 +228,15 @@ namespace DABApp.DabSockets
             }
             subscriptionIds.Clear();
 
-            //Log the user out, if they are logged in.
-            if (!GuestStatus.Current.IsGuestLogin)
-            {
-                var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)\",\"variables\":{}}}";
-                Send(jLogout);
+            //Log the user out, if requested and they are logged in.
+            if (LogOutUser)
+            { 
+                if (!GuestStatus.Current.IsGuestLogin)
+                {
+                    var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)\",\"variables\":{}}}";
+                    Send(jLogout);
+                }
             }
-
 
             //Terminate the connection before disconnecting it.
             var jTerm = "{\"type\":\"connection_terminate\"}";
