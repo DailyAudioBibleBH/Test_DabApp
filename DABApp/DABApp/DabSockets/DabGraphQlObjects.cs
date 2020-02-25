@@ -182,12 +182,13 @@ namespace DABApp.DabSockets
     {
         public string type { get; set; }
         public DabGraphQlPayload payload { get; set; }
-        public string id { get; set; }
+        public int id { get; set; }
 
-        public DabGraphQlSubscription(string type, DabGraphQlPayload payload)
+        public DabGraphQlSubscription(string type, DabGraphQlPayload payload, int id)
         {
             this.type = type;
             this.payload = payload;
+            this.id = id;
         }
     }
 
