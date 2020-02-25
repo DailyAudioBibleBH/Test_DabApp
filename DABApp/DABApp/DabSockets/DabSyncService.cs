@@ -233,7 +233,7 @@ namespace DABApp.DabSockets
             { 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)\",\"variables\":{}}}";
+                    var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)}\",\"variables\":{}}}";
                     Send(jLogout);
                 }
             }

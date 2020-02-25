@@ -236,16 +236,17 @@ namespace DABApp
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
                 dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
-                var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new Exception($"Error Logging Out: {result.StatusCode}");
-                }
+                //HttpClient client = new HttpClient();
+                //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
+                //var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
+                //var content = new StringContent(JsonIn);
+                //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                //var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
+                //if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                //{
+                //    throw new Exception($"Error Logging Out: {result.StatusCode}");
+                //}
+                DabSyncService.Instance.Disconnect(true);
                 ExpirationSettings.Value = DateTime.MinValue.ToString();
                 await adb.UpdateAsync(ExpirationSettings);
                 return true;
