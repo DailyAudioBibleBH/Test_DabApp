@@ -368,10 +368,9 @@ namespace DABApp
                         data.CurrentPosition = playerPosition.Value;
                     }
 
-                    db.InsertOrReplace(data);
-                    Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
-
                 }
+                db.InsertOrReplace(data);
+                Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
                 //Notify listening pages that episode data has changed
                 if (RaiseEpisodeDataChanged)
