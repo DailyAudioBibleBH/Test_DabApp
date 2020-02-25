@@ -887,11 +887,12 @@ namespace DABApp
 
         static void GuestLogin()//Deletes all user episode data when a guest logs in.
         {
-            var episodes = db.Table<dbEpisodes>();
-            if (episodes.Count() > 0)
-            {
-                db.DeleteAll<dbEpisodes>();
-            }
+            ////This is no longer needed because user data is kept separate from episodes
+            //var episodes = db.Table<dbEpisodes>();
+            //if (episodes.Count() > 0)
+            //{
+            //    db.DeleteAll<dbEpisodes>();
+            //}
         }
 
         public static bool GetTestMode()
