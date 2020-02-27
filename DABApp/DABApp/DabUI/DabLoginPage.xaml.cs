@@ -18,6 +18,7 @@ namespace DABApp
         private double _width;
         private double _height;
         bool GraphQlLoginRequestInProgress = false;
+        bool GraphQlLoginComplete = false;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -68,6 +69,8 @@ namespace DABApp
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
+            if (GraphQlLoginComplete) return; //get out of here once login is complete;
+
             Device.InvokeOnMainThreadAsync(async () => {
 
                 SQLiteConnection db = DabData.database;
@@ -103,7 +106,7 @@ namespace DABApp
                     else if (root?.payload?.data?.user != null)
                     {
                         //We got back user data!
-
+                        GraphQlLoginComplete = true; //stop processing success messages.
                         //Save the data
                         dbSettings sEmail = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                         dbSettings sFirstName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");

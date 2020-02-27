@@ -248,16 +248,22 @@ namespace DABApp
             try
             {
                 //Clear DB Settings
-                dbSettings sToken = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings sExpire = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
+                dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings sExpire = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                if (sToken == null) sToken = new dbSettings() { Key = "Token" };
+                if (sExpire == null) sExpire = new dbSettings() { Key = "TokenExpiration" };
                 sToken.Value = null;
                 sExpire.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(sToken);
-                await adb.UpdateAsync(sExpire);
+                await adb.InsertOrReplaceAsync(sToken);
+                await adb.InsertOrReplaceAsync(sExpire);
 
                 //Disconnect from service and reconnect without authentication
                 DabSyncService.Instance.Disconnect(true);
-                DabSyncService.Instance.Connect(); //Reconnect but without a token.
+                Task.Factory.StartNew(() =>
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    DabSyncService.Instance.Connect();
+                });
                 return true;
             }
             catch (Exception e)
