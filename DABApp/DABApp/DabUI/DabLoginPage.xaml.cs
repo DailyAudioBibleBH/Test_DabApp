@@ -119,7 +119,7 @@ namespace DABApp
                         sEmail.Value = root.payload.data.user.email;
                         sFirstName.Value = root.payload.data.user.firstName;
                         sLastName.Value = root.payload.data.user.lastName;
-                        sAvatar.Value = "https://player.dailyaudiobible.com/assets/img/favicon.ico"; //TODO: Get this
+                        sAvatar.Value = ""http://placehold.it/10x10""; //TODO: Get this from socket or other calculation
                         db.InsertOrReplace(sEmail);
                         db.InsertOrReplace(sFirstName);
                         db.InsertOrReplace(sLastName);
