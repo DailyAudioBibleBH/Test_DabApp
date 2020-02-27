@@ -27,6 +27,7 @@ namespace DABApp.DabSockets
         IWebSocket sock; //The socket connection
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage; //Event so others can listen in on events.
 
         SQLiteConnection db = DabData.database;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -73,6 +74,8 @@ namespace DABApp.DabSockets
         private async void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
             Debug.WriteLine($"Shared code graph ql message: {e.Message}");
+
+            DabGraphQlMessage?.Invoke(this, e);
 
             try
             {
@@ -325,6 +328,29 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
         }
 
+        public void PrepConnectionWithTokenAndOrigin(string Token)
+        {
+            string origin;
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                origin = "c2it-android";
+            }
+            else if (Device.RuntimePlatform == Device.iOS)
+            {
+                origin = "c2it-ios";
+            }
+            else
+            {
+                origin = "could not determine runtime platform";
+            }
+
+
+            Payload token = new Payload(Token, origin);
+            var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+            sock.Send(ConnectInit);
+
+        }
+
         private void Sock_Connected(object data)
         {
             //The socket has connected or reconnected. Take appropriate action
@@ -335,21 +361,9 @@ namespace DABApp.DabSockets
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
             if (Token != null) //if user hasn't logged in this may not be valid.
             {
-                if(Device.RuntimePlatform == Device.Android)
-                {
-                    origin = "c2it-android";
-                }
-                else if (Device.RuntimePlatform == Device.iOS)
-                {
-                    origin = "c2it-ios";
-                }
-                else
-                {
-                    origin = "could not determine runtime platform";
-                }
-                Payload token = new Payload(Token.Value, origin);
-                var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
-                sock.Send(ConnectInit);
+
+                //Init the connection
+                PrepConnectionWithTokenAndOrigin(Token.Value);
 
                 //Subscribe to action logs - SUB 1
                 var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";

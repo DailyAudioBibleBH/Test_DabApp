@@ -62,9 +62,9 @@ namespace DABApp
                 return true;
             });
 
-            //Connect to the SyncService
-            DabSyncService.Instance.Init();
-            DabSyncService.Instance.Connect();
+            ////Connect to the SyncService
+            //DabSyncService.Instance.Init();
+            //DabSyncService.Instance.Connect();
         }
 
         void PostLogs()

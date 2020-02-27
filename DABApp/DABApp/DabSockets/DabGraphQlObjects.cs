@@ -47,13 +47,49 @@ namespace DABApp.DabSockets
         public DabGraphQlEpisodes episodes { get; set; } //Episodes
         public TriggerEpisodeSubscription triggerEpisodeSubscription { get; set; } //New Episodes
         public TokenRemoved tokenRemoved { get; set; } //Forceful logout
+        public GraphQlLoginUser loginUser { get; set; }
+        public GraphQlUser user { get; set; }
     }
+
+    public class GraphQlUser
+    {
+        public int wpId { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string email { get; set; }
+    }
+
+    public class GraphQlLoginUser
+    {
+        public string token { get; set; }
+    }
+
+    public class GraphQlError
+    {
+        public string message { get; set; }
+        public List<GraphQlLocation> locations { get; set; }
+        public List<string> path { get; set; }
+        public GraphQlExtensions extensions { get; set; }
+    }
+
+    public class GraphQlLocation
+    {
+        public int line { get; set; }
+        public int column { get; set; }
+    }
+
+    public class GraphQlExtensions
+    {
+        public string code { get; set; }
+    }
+
 
     public class DabGraphQlPayload
     {
         public DabGraphQlData data { get; set; } //Actions Logged, Last Actions
         public string query { get; set; }
         public DabGraphQlVariables variables {get; set;}
+        public List<GraphQlError> errors { get; set; }
 
         public DabGraphQlPayload()
         {
