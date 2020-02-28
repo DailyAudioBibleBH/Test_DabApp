@@ -31,29 +31,6 @@ namespace DABApp
 			RelativeLayout container = new RelativeLayout();
 			ControlTemplate = playerBarTemplate;
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-			//activityHolder = new StackLayout()
-			//
-			//	Opacity = 0.5,
-			//	BackgroundColor = Color.Gray,
-			//	IsVisible = true
-			//};
-			//activity = new ActivityIndicator()
-			//{
-			//	IsRunning = true,
-			//	IsVisible = true,
-			//	VerticalOptions = LayoutOptions.CenterAndExpand,
-			//	HorizontalOptions = LayoutOptions.CenterAndExpand,
-			//	Color = Color.White
-			//};
-			//container.Children.Add(activityHolder, Constraint.RelativeToParent((parent) => { return parent.Width; }), Constraint.RelativeToParent((parent) => { return parent.Height; }));
-			//container.Children.Add(activity, Constraint.RelativeToParent((parent) => { return parent.Width; }), Constraint.RelativeToParent((parent) => { return parent.Height; }));
-
-			//ContentView view = new ContentView()
-			//{
-			//	Content = container,
-			//	ControlTemplate = playerBarTemplate
-			//};
-			//Content = view;
 
 			//Navigation properties
 			Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
@@ -179,29 +156,6 @@ namespace DABApp
         {
             MessagingCenter.Send<string>("Refresh", "Refresh");
             
-            //DabPlayerPage.BindControls(true, true);
-            //DabTabletPage.BindControls(true, true);
-            //DabTabletPage.OnRefresh();
-
-            //foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
-            //{
-            //Resource _resource = new Resource();
-            //DabEpisodesPage episodesPage = new DabEpisodesPage(_resource);
-            //await episodesPage.Refresh();
-            //await AuthenticationAPI.PostActionLogs();
-            //await PlayerFeedAPI.GetEpisodes(_resource);
-            //await AuthenticationAPI.GetMemberData();
-            ////episodesPage.TimedActions();
-            //if (_resource.availableOffline)
-            //{
-            //    Task.Run(async () =>
-            //    {
-            //        await PlayerFeedAPI.DownloadEpisodes();
-            //        //CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-            //        //circularProgressControl.HandleDownloadVisibleChanged(true);
-            //    });
-            //}
-            //}
         }
 
         public void Unsubscribe()

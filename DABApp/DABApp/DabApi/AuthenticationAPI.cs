@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DABApp;
 using DABApp.DabSockets;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
@@ -64,42 +65,16 @@ namespace DABApp
                 }
                 else
                 {
-                    HttpClient client = new HttpClient();//Getting all login user info from the Authentication API
-                    var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
-                    var content = new StringContent(JsonIn);
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                    var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member", content);
-                    //if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new HttpRequestException(result.ReasonPhrase);
-                    string JsonOut = await result.Content.ReadAsStringAsync();
-                    APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-                    APIToken token = container.token;
-                    if (container.code == "login_error")
-                    {
-                        return container.message;
-                    }
-                    if (TokenSettings == null || EmailSettings == null)
-                    {
-                        CreateSettings(token);
-                    }
-                    else//Setting database settings for user based on what is returned by the Authentication API.
-                    {
-                        if (EmailSettings.Value != email) GuestLogin();
-                        TokenSettings.Value = token.value;
-                        CreationSettings.Value = token.expires;
-                        EmailSettings.Value = token.user_email;
-                        FirstNameSettings.Value = token.user_first_name;
-                        LastNameSettings.Value = token.user_last_name;
-                        AvatarSettings.Value = token.user_avatar;
-                        IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-                        settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-                        await adb.UpdateAllAsync(settings);
-                        //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
-                        GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
-                    }
-                    //TODO: Replacew this with sync
-                    //JournalTracker.Current.Connect(token.value);
-                    if (!string.IsNullOrEmpty(token.user_avatar)) GuestStatus.Current.AvatarUrl = token.user_avatar;
-                    return "Success";
+                    //Initiate log in with web socket
+                    /*
+                      mutation {
+                      loginUser(email: "djtest@lutd.io", password: "asdfasdf", version: 1) {token}}
+                     */
+
+                    string jLogin = $"mutation {{loginUser(email: \"{email}\", password: \"{password}\", version: 1) {{token}}}}";
+                    var pLogin = new DabGraphQlPayload(jLogin, variables);
+                    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+                    return "Request Sent"; //Let the caller know we're waitin gfor a reply from GraphQL.
                 }
             }
             catch (Exception e)
@@ -129,31 +104,9 @@ namespace DABApp
             {
                 return false;
             }
-            //TODO: Replacew this with sync
-            //var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-            //if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-            //{
-            //    JournalTracker.Current.Connect(token.Value);
-            //}
+
             return true;
         }
-
-        //TODO: Replacew this with sync
-        //public static void ConnectJournal()//Connecting Journal Tracker when user logs in.  Done here because of access to the database Token setting.
-        //{
-        //    try
-        //    {
-        //        if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-        //        {
-        //            var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-        //            JournalTracker.Current.Connect(token.Value);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Debug.WriteLine($"Exception caught in AuthenticationAPI.ConnectJournal(): {e.Message}");
-        //    }
-        //}
 
         public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.
         {
@@ -233,69 +186,38 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings CreationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
-                var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                //Clear DB Settings
+                dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings sExpire = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                if (sToken == null) sToken = new dbSettings() { Key = "Token" };
+                if (sExpire == null) sExpire = new dbSettings() { Key = "TokenCreation" };
+                sToken.Value = null;
+                sExpire.Value = DateTime.MinValue.ToString();
+                await adb.InsertOrReplaceAsync(sToken);
+                await adb.InsertOrReplaceAsync(sExpire);
+
+                //Disconnect from service and reconnect without authentication
+                DabSyncService.Instance.Disconnect(true);
+                Task.Factory.StartNew(() =>
                 {
-                    throw new Exception($"Error Logging Out: {result.StatusCode}");
-                }
-                CreationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(CreationSettings);
+                    System.Threading.Thread.Sleep(1000);
+                    DabSyncService.Instance.Connect();
+                });
+
+                
                 return true;
             }
             catch (Exception e)
             {
-                dbSettings CreationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
-                CreationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(CreationSettings);
+                dbSettings sToken = db.Table<dbSettings>().Single(x => x.Key == "Token");
+                dbSettings sExpire = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
+                sToken.Value = null;
+                sExpire.Value = DateTime.MinValue.ToString();
+                await adb.UpdateAsync(sToken);
+                await adb.UpdateAsync(sExpire);
                 return false;
             }
         }
-
-        //public static async Task<bool> ExchangeToken()//Gets new token from the API App uses this whenever user arrives onto channels page and the current token is expired.
-        //{
-        //    try
-        //    {
-
-        //        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-        //        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-        //        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-        //        DabSyncService.Instance.Send(tokenJsonIn);
-
-        //        dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-        //        dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-        //        //HttpClient client = new HttpClient();
-        //        //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-        //        var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-        //        var content = new StringContent(JsonIn);
-        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        //        var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/exchangetoken", content);
-        //        string JsonOut = await result.Content.ReadAsStringAsync();
-        //        APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-        //        APIToken token = container.token;
-        //        if (container.token == null)
-        //        {
-        //            throw new Exception($"Error Exchanging Token: {container.message}");
-        //        }
-        //        TokenSettings.Value = token.value;
-        //        ExpirationSettings.Value = token.expires;
-        //        await adb.UpdateAsync(TokenSettings);
-        //        await adb.UpdateAsync(ExpirationSettings);
-        //        //TODO: Replace this with sync
-        //        //JournalTracker.Current.Connect(token.value);
-        //        return true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return false;
-        //    }
-        //}
 
         public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
         {
@@ -891,11 +813,12 @@ namespace DABApp
 
         static void GuestLogin()//Deletes all user episode data when a guest logs in.
         {
-            var episodes = db.Table<dbEpisodes>();
-            if (episodes.Count() > 0)
-            {
-                db.DeleteAll<dbEpisodes>();
-            }
+            ////This is no longer needed because user data is kept separate from episodes
+            //var episodes = db.Table<dbEpisodes>();
+            //if (episodes.Count() > 0)
+            //{
+            //    db.DeleteAll<dbEpisodes>();
+            //}
         }
 
         public static bool GetTestMode()

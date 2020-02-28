@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20200214e";
+                return "20200226e";
             }
         }
 
@@ -221,13 +221,14 @@ namespace DABApp
         {
             get
             {
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
                 
                 if (LastActionsSettings == null)
                 {
                     DateTime actionDate = DateTime.MinValue.ToUniversalTime();
                     LastActionsSettings = new dbSettings();
-                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Key = settingsKey;
                     LastActionsSettings.Value = actionDate.ToString();
                     db.InsertOrReplace(LastActionsSettings);
                     return actionDate;
@@ -241,9 +242,10 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
+                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                LastActionsSettings.Key = "ActionDate";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                LastActionsSettings.Key = settingsKey;
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
             }

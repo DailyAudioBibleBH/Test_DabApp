@@ -1,8 +1,13 @@
-﻿using DABApp.Interfaces;
+﻿using DABApp.DabSockets;
+using DABApp.Interfaces;
+using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -14,6 +19,8 @@ namespace DABApp
         int TapNumber = 0;
         private double _width;
         private double _height;
+        bool GraphQlLoginRequestInProgress = false;
+        bool GraphQlLoginComplete = false;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -52,11 +59,171 @@ namespace DABApp
             {
                 Container.Padding = 100;
             }
+
+
             //MessagingCenter.Subscribe<string>("OptimizationWarning", "OptimizationWarning", (obj) => {
             //    DisplayAlert("Background Playback", "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", "OK");
             //});
 
+            DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
+
         }
+
+        private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+        {
+            if (GraphQlLoginComplete) return; //get out of here once login is complete;
+
+            Device.InvokeOnMainThreadAsync(async () => {
+
+                SQLiteConnection db = DabData.database;
+
+
+                //Message received from the Graph QL - deal with those related to login messages!
+                try
+                {
+                    var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+                    if (root?.payload?.data?.loginUser != null)
+                    {
+
+                        //Store the token
+                        dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                        if (sToken == null)
+                        {
+                            sToken = new dbSettings() { Key = "Token" };
+                        }
+                        sToken.Value = root.payload.data.loginUser.token;
+                        db.InsertOrReplace(sToken);
+
+
+
+                        //Reset the connection with the new token
+                        DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+
+                        //Send a request for updated user data
+                        string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                        var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+                        DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+
+                    }
+                    else if (root?.payload?.data?.user != null)
+                    {
+                        //We got back user data!
+                        GraphQlLoginComplete = true; //stop processing success messages.
+                        //Save the data
+                        dbSettings sEmail = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+                        dbSettings sFirstName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
+                        dbSettings sLastName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+                        dbSettings sAvatar = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                        if (sEmail == null) sEmail = new dbSettings() { Key = "Email" };
+                        if (sFirstName == null) sFirstName = new dbSettings() { Key = "FirstName" };
+                        if (sLastName == null) sLastName = new dbSettings() { Key = "LastName" };
+                        if (sAvatar == null) sAvatar = new dbSettings() { Key = "Avatar" };
+                        sEmail.Value = root.payload.data.user.email;
+                        sFirstName.Value = root.payload.data.user.firstName;
+                        sLastName.Value = root.payload.data.user.lastName;
+                        sAvatar.Value = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
+                        db.InsertOrReplace(sEmail);
+                        db.InsertOrReplace(sFirstName);
+                        db.InsertOrReplace(sLastName);
+                        db.InsertOrReplace(sAvatar);
+
+
+
+                        GraphQlLoginRequestInProgress = false;
+                        
+                        GuestStatus.Current.IsGuestLogin = false;
+                        await AuthenticationAPI.GetMemberData();
+                        if (_fromPlayer)
+                        {
+                            await Navigation.PopModalAsync();
+                        }
+                        else
+                        {
+                            if (_fromDonation)
+                            {
+                                var dons = await AuthenticationAPI.GetDonations();
+                                if (dons.Length == 1)
+                                {
+                                    var url = await PlayerFeedAPI.PostDonationAccessToken();
+                                    if (url.StartsWith("http"))
+                                    {
+                                        DependencyService.Get<IRivets>().NavigateTo(url);
+                                    }
+                                    else
+                                    {
+                                        await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
+                                    }
+                                    NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+                                    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                    Application.Current.MainPage = _nav;
+                                    await Navigation.PopToRootAsync();
+                                }
+                                else
+                                {
+                                    NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
+                                    _navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                    Application.Current.MainPage = _navs;
+                                    await Navigation.PopToRootAsync();
+                                }
+                            }
+                            else
+                            {
+                                DabChannelsPage _nav = new DabChannelsPage();
+                                _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                //Application.Current.MainPage = _nav;
+                                await Navigation.PushAsync(_nav);
+                                MessagingCenter.Send<string>("Setup", "Setup");
+
+                                //Delete nav stack so user cant back into login screen
+                                var existingPages = Navigation.NavigationStack.ToList();
+                                foreach (var page in existingPages)
+                                {
+                                    Navigation.RemovePage(page);
+                                }
+                            }
+                        }
+                    }
+
+                    else if (root?.payload?.errors?.First() != null)
+                    {
+                        if (GraphQlLoginRequestInProgress == true)
+                        {
+                            //We have a login error!
+                            await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                            GraphQlLoginRequestInProgress = false;
+                        }
+                    }
+                    else
+                    {
+                        //Some other GraphQL message we don't care about here.
+                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //Some other GraphQL message we don't care about here.
+
+                }
+            });
+
+        }
+
+        public string CalculateMD5Hash(string email)
+        {
+            // step 1, calculate MD5 hash from input
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(email);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
+        }
+
 
         async void OnLogin(object o, EventArgs e)
         {
@@ -65,64 +232,13 @@ namespace DABApp
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
-            var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text);
-            if (result == "Success")
+            var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+            if (result == "Request Sent")
             {
-                GuestStatus.Current.IsGuestLogin = false;
-                await AuthenticationAPI.GetMemberData();
-                if (_fromPlayer)
-                {
-                    await Navigation.PopModalAsync();
-                }
-                else
-                {
-                    if (_fromDonation)
-                    {
-                        var dons = await AuthenticationAPI.GetDonations();
-                        if (dons.Length == 1)
-                        {
-                            var url = await PlayerFeedAPI.PostDonationAccessToken();
-                            if (url.StartsWith("http"))
-                            {
-                                DependencyService.Get<IRivets>().NavigateTo(url);
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
-                            }
-                            NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            Application.Current.MainPage = _nav;
-                            await Navigation.PopToRootAsync();
-                        }
-                        else
-                        {
-                            NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
-                            _navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            Application.Current.MainPage = _navs;
-                            await Navigation.PopToRootAsync();
-                            //NavigationPage nav = new NavigationPage(new DabManageDonationsPage(dons));
-                            //nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            //await Navigation.PushModalAsync(nav);
-                        }
-                    }
-                    else
-                    {                     
-                        DabChannelsPage _nav = new DabChannelsPage();
-                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                        //Application.Current.MainPage = _nav;
-                        await Navigation.PushAsync(_nav);
-                        MessagingCenter.Send<string>("Setup", "Setup");
-
-                        //Delete nav stack so user cant back into login screen
-                        var existingPages = Navigation.NavigationStack.ToList();
-                        foreach (var page in existingPages)
-                        {
-                            Navigation.RemovePage(page);
-                        }
-                    }
-                }
+                //Wait for the reply from GraphQl before proceeding.
+                GraphQlLoginRequestInProgress = true;
             }
+           
             else
             {
                 if (result.Contains("Error"))
@@ -363,24 +479,5 @@ namespace DABApp
                 }
             }
         }
-
-        //protected override void OnSizeAllocated(double width, double height)
-        //{
-        //    double oldwidth = _width;
-        //    base.OnSizeAllocated(width, height);
-        //    if (Equals(_width, width) && Equals(_height, height)) return;
-        //    _width = width;
-        //    _height = height;
-        //    if (Equals(oldwidth, -1)) return;
-        //    if (width > height)
-        //    {
-        //        Logo.WidthRequest = Device.RuntimePlatform == "Android" ? 300 : 400;
-        //        Logo.VerticalOptions = LayoutOptions.Start;
-        //    }
-        //    else
-        //    {
-        //        Logo.VerticalOptions = LayoutOptions.EndAndExpand;
-        //    }
-        //}
     }
 }

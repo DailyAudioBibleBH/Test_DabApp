@@ -28,6 +28,7 @@ namespace DABApp.DabSockets
         IWebSocket sock; //The socket connection
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage; //Event so others can listen in on events.
 
         SQLiteConnection db = DabData.database;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -39,6 +40,8 @@ namespace DABApp.DabSockets
         dbChannels channel = new dbChannels();
         List<DabGraphQlEpisode> allEpisodes = new List<DabGraphQlEpisode>();
         DabEpisodesPage episodesPage;
+
+        List<int> subscriptionIds = new List<int>();
 
 
         private DabSyncService()
@@ -72,6 +75,8 @@ namespace DABApp.DabSockets
         private async void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
             Debug.WriteLine($"Shared code graph ql message: {e.Message}");
+
+            DabGraphQlMessage?.Invoke(this, e);
 
             try
             {
@@ -224,8 +229,33 @@ namespace DABApp.DabSockets
             sock.Connect();
         }
 
-        public void Disconnect()
+        public void Disconnect(bool LogOutUser)
         {
+
+
+            //Unsubscribe from all subscriptions
+            foreach(int id in subscriptionIds)
+            {
+                var jSub = $"{{\"type\":\"stop\",\"id\":\"{id}\",\"payload\":\"null\"}}";
+                sock.Send(jSub);
+            }
+            subscriptionIds.Clear();
+
+            //Log the user out, if requested and they are logged in.
+            if (LogOutUser)
+            { 
+                if (!GuestStatus.Current.IsGuestLogin)
+                {
+                    var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)}\",\"variables\":{}}}";
+                    Send(jLogout);
+                }
+            }
+
+            //Terminate the connection before disconnecting it.
+            var jTerm = "{\"type\":\"connection_terminate\"}";
+            sock.Send(jTerm);
+
+            //Disconnect the socket
             sock.Disconnect();
         }
 
@@ -308,6 +338,29 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
         }
 
+        public void PrepConnectionWithTokenAndOrigin(string Token)
+        {
+            string origin;
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                origin = "c2it-android";
+            }
+            else if (Device.RuntimePlatform == Device.iOS)
+            {
+                origin = "c2it-ios";
+            }
+            else
+            {
+                origin = "could not determine runtime platform";
+            }
+
+
+            Payload token = new Payload(Token, origin);
+            var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+            sock.Send(ConnectInit);
+
+        }
+
         private void Sock_Connected(object data)
         {
             //The socket has connected or reconnected. Take appropriate action
@@ -318,52 +371,37 @@ namespace DABApp.DabSockets
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
             if (Token != null) //if user hasn't logged in this may not be valid.
             {
-                if(Device.RuntimePlatform == Device.Android)
-                {
-                    origin = "c2it-android";
-                }
-                else if (Device.RuntimePlatform == Device.iOS)
-                {
-                    origin = "c2it-ios";
-                }
-                else
-                {
-                    origin = "could not determine runtime platform";
-                }
-                Payload token = new Payload(Token.Value, origin);
-                var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
-                sock.Send(ConnectInit);
 
-                //Subscribe to token removed/forceful logout
+                //Init the connection
+                PrepConnectionWithTokenAndOrigin(Token.Value);
+
+                //Subscribe to action logs - SUB 1
+                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
+                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
+                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload,1));
+                subscriptionIds.Add(1);
+                sock.Send(SubscriptionInit);
+
+                //Subscribe to token removed/forceful logout - SUB 2
                 var tokenRemovedQuery = "subscription { tokenRemoved { token } }";
                 DabGraphQlPayload tokenRemovedPayload = new DabGraphQlPayload(tokenRemovedQuery, variables);
-                var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload));
+                var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload,2));
+                subscriptionIds.Add(2);
                 sock.Send(SubscriptionRemoveToken);
-
-                //Subscribe to token removed/forceful logout
-                //First subscription after ConnectInit is not working so send the same subscription again
-                var tokenRemovedQuery2 = "subscription { tokenRemoved { token } }";
-                DabGraphQlPayload tokenRemovedPayload2 = new DabGraphQlPayload(tokenRemovedQuery2, variables);
-                var SubscriptionRemoveToken2 = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload2));
-                sock.Send(SubscriptionRemoveToken2);
 
                 //Subscribe for new episodes
                 var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
                 DabGraphQlPayload newEpisodePayload = new DabGraphQlPayload(newEpisodeQuery, variables);
-                var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload));
+                var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload,3));
+                subscriptionIds.Add(3);
                 sock.Send(SubscriptionNewEpisode);
 
-                //Send request for channels lists
+                //Send request for channels lists - SUB 4
                 var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
                 DabGraphQlPayload channelPayload = new DabGraphQlPayload(channelQuery, variables);
-                var channelInit = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", channelPayload));
+                var channelInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", channelPayload,4));
+                subscriptionIds.Add(4);
                 sock.Send(channelInit);
-
-                //Subscribe to action logs
-                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
-                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
-                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload));
-                sock.Send(SubscriptionInit);
 
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;

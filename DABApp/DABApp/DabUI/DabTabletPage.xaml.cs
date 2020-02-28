@@ -842,47 +842,7 @@ namespace DABApp
             }
         }
 
-        //TODO: Replace for journal?
-        //void OnReconnecting(object o, EventArgs e)
-        //{
-        //    //Device.BeginInvokeOnMainThread(() =>
-        //    //{
-        //    //	DisplayAlert("Reconnecting to journal server.", $"On successful reconnection changes to journal will be saved. {o.ToString()}", "OK");
-        //    //});
-        //    Debug.WriteLine($"Reconnecting to journal server: {o.ToString()}");
-        //}
-
-        ////TODO: Replace for journal?
-        //void OnRoom_Error(object o, EventArgs e)
-        //{
-        //    //Device.BeginInvokeOnMainThread(() =>
-        //    //{
-        //    //	DisplayAlert("A room error has occured.", $"The journal server has sent back a room error. Error: {o.ToString()}", "OK");
-        //    //});
-        //    Debug.WriteLine($"Room Error: {o.ToString()}");
-        //}
-
-        ////TODO: Replace for journal?
-        //void OnAuth_Error(object o, EventArgs e)
-        //{
-        //    //Device.BeginInvokeOnMainThread(() =>
-        //    //{
-        //    //	DisplayAlert("An auth error has occured.", $"The journal server has sent back an authentication error.  Try logging back in.  Error: {o.ToString()}", "OK");
-        //    //});
-        //    Debug.WriteLine($"Auth Error: {o.ToString()}");
-        //}
-
-        ////TODO: Replace for journal?
-        //void OnJoin_Error(object o, EventArgs e)
-        //{
-        //    //Device.BeginInvokeOnMainThread(() =>
-        //    //{
-        //    //	DisplayAlert("A join error has occured.", $"The journal server has sent back a join error. Error: {o.ToString()}", "OK");
-        //    //});
-        //    Debug.WriteLine($"Join error: {o.ToString()}");
-        //}
-
-        //TODO: These need replaced and linked back to journal
+        
         //Journal was edited
         void OnEdit(object o, EventArgs e)
         {
@@ -1009,9 +969,6 @@ namespace DABApp
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
-                    //TODO: Fix completed image
-                    //Completed.Image = episode.listenedToSource;
-                    //AutomationProperties.SetHelpText(Completed, episode.favoriteAccessible);
                     favorite.Source = episode.favoriteSource;
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
 
@@ -1146,10 +1103,6 @@ namespace DABApp
             if (episode != null)
             {
                 favorite.Source = episode.favoriteSource;
-                //TODO: Fix completed Image
-                //Completed.Image = episode.listenedToSource;
-
-                
             }
         }
     }

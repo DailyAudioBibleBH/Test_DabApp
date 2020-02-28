@@ -269,19 +269,7 @@ namespace DABApp
         //method for android lock screen controls
         public void OnNext()
         {
-            //if (nextEpisode != null)
-            //{
-            //    Episode = nextEpisode;
-            //}
-            //GetNextPreviousEpisodes(Episode);
-            //player.Load(Episode.Episode);
-            //BindControls(true, true);
-            ////Goto the starting position of the episode
-            //player.Seek(Episode.Episode.UserData.CurrentPosition);
-            //GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
             player.Seek(player.CurrentPosition + 30);
-            //if (player.IsPlaying)
-            //    player.Play();
         }
 
         //Go back 30 seconds

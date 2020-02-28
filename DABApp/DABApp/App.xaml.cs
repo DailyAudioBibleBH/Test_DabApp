@@ -24,11 +24,17 @@ namespace DABApp
             InitializeComponent();
 
             FlowListView.Init();
+
             List<Versions> versionList = new List<Versions>();
             versionList = contentConfig.versions;
             contentAPI.GetModes();
+
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                //Connect to SyncSocket
+                DabSyncService.Instance.Init();
+                DabSyncService.Instance.Connect();
+
                 if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
                 {
                     MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
@@ -57,7 +63,7 @@ namespace DABApp
             try
             {
 
-                DabSyncService.Instance.Disconnect();
+                DabSyncService.Instance.Disconnect(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
                     AuthenticationAPI.PostActionLogs();

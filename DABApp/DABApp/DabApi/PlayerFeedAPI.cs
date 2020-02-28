@@ -66,21 +66,6 @@ namespace DABApp
                 {
                     if (!existingEpisodeIds.Contains(e.episodeId))
                     {
-                        ////get user-episode meta data from the database if we have it
-                        //dbUserEpisodeMeta meta = EpisodeMeta.SingleOrDefault(x => x.EpisodeId == e.episodeId);
-                        //if (meta != null)
-                        //{
-                        //    e.stop_time = (meta.CurrentPosition == null) ? 0 : meta.CurrentPosition.Value;
-                        //    e.is_favorite = (meta.IsFavorite == null) ? false : meta.IsFavorite.Value;
-                        //    e.has_journal = (meta.HasJournal == null) ? false : meta.HasJournal.Value;
-                        //    e.is_listened_to = (meta.IsListenedTo == null) ? false : meta.IsListenedTo.Value;
-                        //    Debug.WriteLine($"Loaded episode user meta for {e.episodeId}");
-                        //}
-                        //else
-                        //{
-                        //    Debug.WriteLine($"No user meta for {e.episodeId}");
-                        //}
-
                         //build out rest of episodes object since we don't get this from websocket
                         dbEpisodes episode = new dbEpisodes(e);
                         episode.channel_title = channel.title;
@@ -90,7 +75,6 @@ namespace DABApp
                         episode.PubDay = e.date.Day;
 
                         await adb.InsertOrReplaceAsync(episode);
-
                     }
                 }
 
@@ -368,10 +352,9 @@ namespace DABApp
                         data.CurrentPosition = playerPosition.Value;
                     }
 
-                    db.InsertOrReplace(data);
-                    Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
-
                 }
+                db.InsertOrReplace(data);
+                Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
                 //Notify listening pages that episode data has changed
                 if (RaiseEpisodeDataChanged)
