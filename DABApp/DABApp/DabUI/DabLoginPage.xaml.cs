@@ -94,8 +94,6 @@ namespace DABApp
                         sToken.Value = root.payload.data.loginUser.token;
                         db.InsertOrReplace(sToken);
 
-
-
                         //Reset the connection with the new token
                         DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
 
@@ -126,8 +124,6 @@ namespace DABApp
                         db.InsertOrReplace(sFirstName);
                         db.InsertOrReplace(sLastName);
                         db.InsertOrReplace(sAvatar);
-
-
 
                         GraphQlLoginRequestInProgress = false;
                         

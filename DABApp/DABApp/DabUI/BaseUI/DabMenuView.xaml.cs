@@ -40,6 +40,7 @@ namespace DABApp
             BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
             OnAvatarChanged(this, new EventArgs());
 			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
+			UserName.Text = GlobalResources.GetUserName();
 		}
 
 		void OnSignUp(object o, EventArgs e) {
@@ -145,39 +146,7 @@ namespace DABApp
                     RemovePages();
                     break;
             }
-			//if (item.title == "Channels")
-			//{
-			//	await Navigation.PopToRootAsync();
-			//	if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-			//}
-			//else {
-				
-			//	if (item.title == "Prayer Wall")
-			//	{
-			//		//var fo = await ContentAPI.GetForum(view);
-			//		if (Device.Idiom == TargetIdiom.Tablet)
-			//		{
-			//			await Navigation.PushAsync(new DabForumTabletTopicPage(view));
-			//		}
-			//		else
-			//		{
-			//			await Navigation.PushAsync(new DabForumPhoneTopicList(view));
-			//		}
-			//		RemovePages();
-			//	}
-			//	else
-			//	{
-			//		if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
-			//		{
-			//			await Navigation.PushAsync(new DabParentChildGrid(view));
-			//		}
-			//		else
-			//		{
-			//			await Navigation.PushAsync(new DabContentView(view));
-			//		}
-			//		RemovePages();
-			//	}
-			//}
+			
 			pageList.SelectedItem = null;
 		}
 
