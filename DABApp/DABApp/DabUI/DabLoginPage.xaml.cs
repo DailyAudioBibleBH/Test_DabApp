@@ -66,12 +66,17 @@ namespace DABApp
             //});
 
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
-
+            
         }
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
-            if (GraphQlLoginComplete) return; //get out of here once login is complete;
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            if (GraphQlLoginComplete)
+            {
+                return; //get out of here once login is complete;
+            } 
 
             Device.InvokeOnMainThreadAsync(async () => {
 
@@ -147,6 +152,8 @@ namespace DABApp
                                     }
                                     else
                                     {
+                                        activity.IsVisible = false;
+                                        activityHolder.IsVisible = false;
                                         await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
                                     }
                                     NavigationPage _nav = new NavigationPage(new DabChannelsPage());
@@ -184,6 +191,8 @@ namespace DABApp
                     {
                         if (GraphQlLoginRequestInProgress == true)
                         {
+                            activity.IsVisible = false;
+                            activityHolder.IsVisible = false;
                             //We have a login error!
                             await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
                             GraphQlLoginRequestInProgress = false;
@@ -237,6 +246,8 @@ namespace DABApp
            
             else
             {
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
                 if (result.Contains("Error"))
                 {
                     if (result.Contains("Http"))
@@ -254,8 +265,7 @@ namespace DABApp
                 }
             }
             Login.IsEnabled = true;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+
         }
 
         void OnForgot(object o, EventArgs e)
