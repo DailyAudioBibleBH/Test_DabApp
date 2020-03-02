@@ -196,6 +196,7 @@ namespace DABApp.DabSockets
                     dbEpisodes newEpisode = new dbEpisodes(root.payload.data.triggerEpisodeSubscription);
                     await adb.InsertAsync(newEpisode);
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                    MessagingCenter.Send<string>("Update", "Update");
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
