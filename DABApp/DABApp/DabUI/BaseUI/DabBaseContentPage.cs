@@ -139,7 +139,7 @@ namespace DABApp
                         }
                         else await Navigation.PushAsync(new DabManageDonationsPage(dons));
                     }
-                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
                 }
                 activity.IsVisible = false;
                 activityHolder.IsVisible = false;
