@@ -912,8 +912,16 @@ namespace DABApp
         {
             episode.IsFavorite = !episode.IsFavorite;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.IsFavorite, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
+        }
+
+        async void OnListened(object o, EventArgs e)
+        {
+            episode.IsListenedTo = !episode.IsListenedTo;
+            AutomationProperties.SetName(Completed, episode.listenAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 
         async void OnListListened(object o, EventArgs e)
@@ -930,7 +938,7 @@ namespace DABApp
             }
             if (episode != null)
             {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.IsListenedTo, null, null, null, false);
+                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
                 //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
 
                 if (ep.id == episode.Episode.id)
@@ -979,14 +987,6 @@ namespace DABApp
 
                 }
             }
-        }
-
-        async void OnListened(object o, EventArgs e)
-        {
-            episode.IsListenedTo = !episode.IsListenedTo;
-            AutomationProperties.SetName(Completed, episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 
         protected override void OnSizeAllocated(double width, double height)
