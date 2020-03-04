@@ -21,6 +21,7 @@ namespace DABApp
         private double _height;
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
+        SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -98,6 +99,16 @@ namespace DABApp
                         }
                         sToken.Value = root.payload.data.loginUser.token;
                         db.InsertOrReplace(sToken);
+
+                        //Update Token Life
+                        ContentConfig.Instance.options.token_life = 5;
+                        dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                        if (sTokenCreationDate == null)
+                        {
+                            sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                        }
+                        sTokenCreationDate.Value = DateTime.Now.ToString();
+                        db.InsertOrReplace(sTokenCreationDate);
 
                         //Reset the connection with the new token
                         DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
@@ -206,6 +217,7 @@ namespace DABApp
                 }
                 catch (Exception ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                     //Some other GraphQL message we don't care about here.
 
                 }

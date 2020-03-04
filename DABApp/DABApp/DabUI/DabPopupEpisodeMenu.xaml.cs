@@ -99,11 +99,12 @@ namespace DABApp
             Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
         }
 
-        public void OnOffline(object o, ToggledEventArgs e)
+        void OnOffline(object o, ToggledEventArgs e)
         {
             if (initialized || !Resource.availableOffline)
             {
-                Resource.availableOffline = e.Value;
+                bool pre = e.Value;
+                Resource.availableOffline = pre;
                 Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
                 if (e.Value)
                 {
