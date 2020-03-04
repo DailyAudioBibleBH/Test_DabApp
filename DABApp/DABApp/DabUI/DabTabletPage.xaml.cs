@@ -92,6 +92,10 @@ namespace DABApp
             {
                 episode = new EpisodeViewModel(Episode);
             }
+            else
+            {
+                episode = new EpisodeViewModel(Episodes.First());
+            }
            
             //Bind to the active episode
             favorite.BindingContext = episode;
