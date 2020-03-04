@@ -131,14 +131,6 @@
       <HintPath>..\packages\Xam.Plugin.Connectivity.3.0.2\lib\MonoAndroid10\Plugin.Connectivity.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Rg.Plugins.Popup, Version=1.1.4.158, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.1.4.158-pre\lib\MonoAndroid\Rg.Plugins.Popup.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Rg.Plugins.Popup.Droid, Version=1.1.4.158, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.1.4.158-pre\lib\MonoAndroid\Rg.Plugins.Popup.Droid.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -335,6 +327,12 @@
     </Reference>
     <Reference Include="SlideOverKit.Droid">
       <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\MonoAndroid10\SlideOverKit.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.2.0.223\lib\MonoAndroid\Rg.Plugins.Popup.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.Droid">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.2.0.223\lib\MonoAndroid\Rg.Plugins.Popup.Droid.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

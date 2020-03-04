@@ -402,9 +402,13 @@ namespace DABApp
                 {
                     var eps = from x in db.Table<dbEpisodes>()
                               where x.is_downloaded  //downloaded episodes
-                                          && (x.UserData.IsListenedTo == true || x.PubDate < cutoffTime)
                               select x;
-                    episodesToDelete = eps.ToList();
+                    //simplified query and added foreach iteration since query was giving null object reference on x.userdata.islistenedto
+                    foreach (var item in eps)
+                    {
+                        if (item.UserData.IsListenedTo == true || item.PubDate < cutoffTime)
+                            episodesToDelete.Add(item);
+                    }
                 }
                 else
                 {

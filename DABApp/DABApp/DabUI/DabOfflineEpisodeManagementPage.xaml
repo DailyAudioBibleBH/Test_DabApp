@@ -23,36 +23,18 @@
                                 <Image x:Name="ThirdIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" />
                             </StackLayout>
                         </ViewCell>
-                        <!--<ViewCell AutomationId="FourDays" Tapped="OnDurationPicked">
-                            <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-                                <Label Text="Four Days" VerticalOptions="Center"/>
-                                <Image x:Name="FourthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
-                            </StackLayout>
-                        </ViewCell>-->
                         <ViewCell AutomationId="OneWeek" Tapped="OnDurationPicked">
                             <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
                                 <Label Text="One Week" VerticalOptions="Center" />
                                 <Image x:Name="FifthIcon" IsVisible="false" Source="ic_done_white_3x.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand" HeightRequest="20" WidthRequest="20" />
                             </StackLayout>
                         </ViewCell>
-                        <!--<ViewCell AutomationId="OneMonth" Tapped="OnDurationPicked">
-                            <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-                                <Label Text="One Month" VerticalOptions="Center"/>
-                                <Image x:Name="SixthIcon" IsVisible="false" Source="ic_done_white.png" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
-                            </StackLayout>
-                        </ViewCell>-->
                         <ViewCell>
                             <StackLayout Padding="10,5,10,5">
                                 <Label Text="Choose how long episodes should remain stored locally when a channel is made available offline." FontSize="Micro" TextColor="#6D6D72" />
                             </StackLayout>
                         </ViewCell>
                         <SwitchCell x:Name="AfterListening" Text="Delete episodes after listening" OnChanged="OnDeleteAfterListening" />
-                        <!--<ViewCell>
-                            <StackLayout Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-                                <Label Text="Delete episodes after listening" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-                                <Switch x:Name="AfterListening" Toggled="OnDeleteAfterListening" VerticalOptions="Start" HorizontalOptions="EndAndExpand"/>
-                            </StackLayout>
-                        </ViewCell>-->
                     </TableSection>
                 </TableRoot>
             </TableView>

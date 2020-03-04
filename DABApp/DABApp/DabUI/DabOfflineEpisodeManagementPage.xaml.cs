@@ -39,9 +39,9 @@ namespace DABApp
 		}
 
 		void OnDeleteAfterListening(object o, ToggledEventArgs e) {
-			var pre = e.Value;
+            bool pre = e.Value;
 			OfflineEpisodeSettings.Instance.DeleteAfterListening = pre;
-			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
+            PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 
 		void OnDurationPicked(object o, EventArgs e) {

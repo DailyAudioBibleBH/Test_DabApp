@@ -196,23 +196,42 @@ namespace DABApp.DabSockets
                     dbEpisodes newEpisode = new dbEpisodes(root.payload.data.triggerEpisodeSubscription);
                     await adb.InsertAsync(newEpisode);
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                    MessagingCenter.Send<string>("Update", "Update");
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
                     //Expire the token (should log the user out?)
-                    ContentConfig.Instance.options.token_life = 0;
-                    dbSettings creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                    creation.Value = DateTime.Now.AddSeconds(-1).ToString();
-                    db.Update(creation);
+                    dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                    if (sTokenCreationDate == null)
+                    {
+                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                    }
+                    sTokenCreationDate.Value = DateTime.Now.AddDays(5).ToString();
+                    db.Update(sTokenCreationDate);
                     sock.Disconnect();
                     Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
                     Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
                 }
                 else if (root.payload?.data?.updateToken?.token != null)
                 {
-                    dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                    TokenSettings.Value = root.payload.data.updateToken.token;
-                    await adb.UpdateAsync(TokenSettings);
+                    //Update Token
+                    dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                    if (sToken == null)
+                    {
+                        sToken = new dbSettings() { Key = "Token" };
+                    }
+                    sToken.Value = root.payload.data.updateToken.token;
+                    await adb.UpdateAsync(sToken);
+
+                    //Update Token Life
+                    dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                    if (sTokenCreationDate == null)
+                    {
+                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                    }
+                    sTokenCreationDate.Value = DateTime.Now.ToString();
+                    db.InsertOrReplace(sTokenCreationDate);
+
                     Instance.Init();
                     Instance.Connect();
                 }
@@ -221,7 +240,6 @@ namespace DABApp.DabSockets
             {
                 System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
             }
-
         }
 
         public void Connect()

@@ -181,12 +181,6 @@
     <Reference Include="Plugin.Iconize.iOS, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.Iconize.1.0.10\lib\Xamarin.iOS10\Plugin.Iconize.iOS.dll</HintPath>
     </Reference>
-    <Reference Include="Rg.Plugins.Popup, Version=1.1.4.158, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.1.4.158-pre\lib\Xamarin.IOS\Rg.Plugins.Popup.dll</HintPath>
-    </Reference>
-    <Reference Include="Rg.Plugins.Popup.IOS, Version=1.1.4.158, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rg.Plugins.Popup.1.1.4.158-pre\lib\Xamarin.IOS\Rg.Plugins.Popup.IOS.dll</HintPath>
-    </Reference>
     <Reference Include="SocketIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SocketIoClientDotNet.1.0.5\lib\netstandard1.3\SocketIoClientDotNet.dll</HintPath>
     </Reference>
@@ -267,6 +261,12 @@
     </Reference>
     <Reference Include="SlideOverKit.iOS">
       <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\Xamarin.iOS10\SlideOverKit.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.2.0.223\lib\Xamarin.IOS\Rg.Plugins.Popup.dll</HintPath>
+    </Reference>
+    <Reference Include="Rg.Plugins.Popup.IOS">
+      <HintPath>..\packages\Rg.Plugins.Popup.1.2.0.223\lib\Xamarin.IOS\Rg.Plugins.Popup.IOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
