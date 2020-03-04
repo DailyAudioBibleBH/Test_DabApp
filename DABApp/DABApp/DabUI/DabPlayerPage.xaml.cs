@@ -678,7 +678,7 @@ namespace DABApp
         {
             Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.IsFavorite, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
             await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite);
         }
 
@@ -691,7 +691,7 @@ namespace DABApp
             //check this
             Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, null, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
             await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo);
 
             //TODO: Bind accessibiliyt text
