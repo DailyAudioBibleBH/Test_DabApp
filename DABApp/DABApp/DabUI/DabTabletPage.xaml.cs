@@ -94,7 +94,10 @@ namespace DABApp
             }
             else
             {
-                episode = new EpisodeViewModel(Episodes.First());
+                if (Episodes.Count() > 0)
+                {
+                    episode = new EpisodeViewModel(Episodes.First());
+                }
             }
            
             //Bind to the active episode
