@@ -70,7 +70,7 @@ namespace DABApp
             BackgroundImage.Source = backgroundImage;
             Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
-            //Break episode months out into a list
+            //break episodes months out into list
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {

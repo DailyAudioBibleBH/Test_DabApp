@@ -244,40 +244,48 @@ namespace DABApp
 
         async void OnLogin(object o, EventArgs e)
         {
-            Login.IsEnabled = false;
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
-            if (result == "Request Sent")
+            try
             {
-                //Wait for the reply from GraphQl before proceeding.
-                GraphQlLoginRequestInProgress = true;
-            }
-           
-            else
-            {
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
-                if (result.Contains("Error"))
+                Login.IsEnabled = false;
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+                if (result == "Request Sent")
                 {
-                    if (result.Contains("Http"))
+                    //Wait for the reply from GraphQl before proceeding.
+                    GraphQlLoginRequestInProgress = true;
+                }
+
+                else
+                {
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    if (result.Contains("Error"))
                     {
-                        await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                        if (result.Contains("Http"))
+                        {
+                            await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                        }
+                        else
+                        {
+                            await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                        }
                     }
                     else
                     {
-                        await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                        await DisplayAlert("Login Failed", result, "OK");
                     }
                 }
-                else
-                {
-                    await DisplayAlert("Login Failed", result, "OK");
-                }
+                Login.IsEnabled = true;
             }
-            Login.IsEnabled = true;
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
+                Navigation.PushAsync(new DabLoginPage());
+            }
         }
 
         void OnForgot(object o, EventArgs e)
