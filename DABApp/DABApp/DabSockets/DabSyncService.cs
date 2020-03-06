@@ -154,6 +154,7 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.episodes != null)
                 {
+                    MessagingCenter.Send<string>("WaitUI", "StartWaitUI");
                     foreach (var item in root.payload.data.episodes.edges)
                     {
                         allEpisodes.Add(item);
@@ -186,10 +187,12 @@ namespace DABApp.DabSockets
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
+                        MessagingCenter.Send<string>("WaitUI", "StopWaitUI");
                     }
 
                     //store a new episode query date
                     GlobalResources.SetLastEpisodeQueryDate(channelId);
+                    //stop wait ui on episodes page
                 }
                 else if (root.payload?.data?.triggerEpisodeSubscription != null)
                 {

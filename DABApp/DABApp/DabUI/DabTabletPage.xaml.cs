@@ -70,7 +70,7 @@ namespace DABApp
             BackgroundImage.Source = backgroundImage;
             Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
-            //Break episode months out into a list
+            //break episodes months out into list
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
@@ -91,6 +91,13 @@ namespace DABApp
             if (Episode != null)
             {
                 episode = new EpisodeViewModel(Episode);
+            }
+            else
+            {
+                if (Episodes.Count() > 0)
+                {
+                    episode = new EpisodeViewModel(Episodes.First());
+                }
             }
            
             //Bind to the active episode
@@ -173,7 +180,7 @@ namespace DABApp
             }
             switch (SegControl.SelectedSegment)
             {
-                case 0: //READ
+                case 0: //ARCHIVE
                     //Show Episode List Only
                     Archive.IsVisible = true;
                     //Hide Read
@@ -190,12 +197,24 @@ namespace DABApp
                     //Hide Journal
                     LoginJournal.IsVisible = false;
                     Journal.IsVisible = false;
-                    //Send info to Firebase analytics that user tapped the read tab
-                    var info = new Dictionary<string, string>();
-                    info.Add("channel", episode.Episode.channel_title);
-                    info.Add("episode_date", episode.Episode.PubDate.ToString());
-                    info.Add("episode_name", episode.title);
-                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
+                    if (episode == null && Episodes.Count() > 0)
+                    {
+                        episode = new EpisodeViewModel(Episodes.First());
+                    }
+                    if (episode != null)
+                    {
+                        TimedActions();
+                        //Send info to Firebase analytics that user tapped the read tab
+                        var info = new Dictionary<string, string>();
+                        info.Add("channel", episode.Episode.channel_title);
+                        info.Add("episode_date", episode.Episode.PubDate.ToString());
+                        info.Add("episode_name", episode.title);
+                        DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_read", info);
+                    }
+                    else
+                    {
+                        Archive.Focus();
+                    }
                     break;
                 case 2: //JOURNAL
                     //Hide episode list
@@ -213,12 +232,19 @@ namespace DABApp
                         Journal.IsVisible = true;
                         LoginJournal.IsVisible = false;
                     }
-                    //Send info to Firebase analytics that user tapped the journal tab
-                    var infoJ = new Dictionary<string, string>();
-                    infoJ.Add("channel", episode.Episode.channel_title);
-                    infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
-                    infoJ.Add("episode_name", episode.Episode.title);
-                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_journal", infoJ);
+                    if (episode == null && Episodes.Count() > 0) 
+                    {
+                        episode = new EpisodeViewModel(Episodes.First());
+                    }
+                    if (episode != null)
+                    {
+                        //Send info to Firebase analytics that user tapped the journal tab
+                        var infoJ = new Dictionary<string, string>();
+                        infoJ.Add("channel", episode.Episode.channel_title);
+                        infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
+                        infoJ.Add("episode_name", episode.Episode.title);
+                        DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_journal", infoJ);
+                    }
                     break;
             }
         }
@@ -271,7 +297,6 @@ namespace DABApp
 
                 //Bind episode data to the new episode (not the player though)
                 BindControls(true, false);
-
                 if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
                 {
                     //TODO: Replace for journal?
@@ -828,9 +853,12 @@ namespace DABApp
         //TODO: Replace for journal?
         async void OnReconnect(object o, EventArgs e)
         {
+            
             journal.Reconnect();
-            journal.JoinRoom(episode.Episode.PubDate);
-
+            if (episode != null)
+            {
+                journal.JoinRoom(episode.Episode.PubDate);
+            }
             if (journal.IsConnected)
             {
                 JournalWarning.IsVisible = false;
@@ -908,45 +936,24 @@ namespace DABApp
             Initializer.IsVisible = !par;
         }
 
+        
+
+        async void OnListened(object o, EventArgs e)
+        {
+            episode.IsListenedTo = !episode.IsListenedTo;
+            AutomationProperties.SetName(Completed, episode.listenAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
+        }
+
+        
+
         async void OnFavorite(object o, EventArgs e)
         {
             episode.IsFavorite = !episode.IsFavorite;
             AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, episode.IsFavorite, null, null);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
-        }
-
-        async void OnListListened(object o, EventArgs e)
-        {
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            //start new
-
-            model.IsListenedTo = !ep.UserData.IsListenedTo;
-            if (episode == null)
-            {
-                episode = new EpisodeViewModel(Episodes.First());
-            }
-            if (episode != null)
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, model.IsListenedTo, null, null, null, false);
-                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
-                    //TODO: Fix completed image
-                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
-
-                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
-                }
-                else
-                {
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
-                }
-            }
         }
 
         async void OnListFavorite(object o, EventArgs e)
@@ -964,29 +971,52 @@ namespace DABApp
             }
             if (episode != null)
             {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.IsFavorite, null, null, false);
-                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+                
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
                     favorite.Source = episode.favoriteSource;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
-
                 }
                 else
                 {
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.IsFavorite);
-
                 }
             }
         }
 
-        async void OnListened(object o, EventArgs e)
+        async void OnListListened(object o, EventArgs e)
         {
-            episode.IsListenedTo = !episode.IsListenedTo;
-            AutomationProperties.SetName(Completed, episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
+            var mi = ((Xamarin.Forms.MenuItem)o);
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
+            //start new
+
+            model.IsListenedTo = !ep.UserData.IsListenedTo;
+            if (episode == null)
+            {
+                episode = new EpisodeViewModel(Episodes.First());
+            }
+            if (episode != null)
+            {
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
+                    //TODO: Fix completed image
+                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+
+                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
+                }
+                else
+                {
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
+                }
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)

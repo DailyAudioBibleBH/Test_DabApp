@@ -81,69 +81,76 @@ namespace DABApp
 
         async void OnGive(object sender, EventArgs e)
         {
-            //Send info to Firebase analytics that user tapped an action we track
-            var info = new Dictionary<string, string>();
-            info.Add("title", "give");
-            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
-
-            if (!giving)
+            try
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
-                giving = true;
-                if (GuestStatus.Current.IsGuestLogin)
+                //Send info to Firebase analytics that user tapped an action we track
+                var info = new Dictionary<string, string>();
+                info.Add("title", "give");
+                DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
+                if (!giving)
                 {
-                    if (CrossConnectivity.Current.IsConnected)
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activity.IsVisible = true;
+                    activityHolder.IsVisible = true;
+                    giving = true;
+                    if (GuestStatus.Current.IsGuestLogin)
                     {
-                        var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
-                        if (choice)
+                        if (CrossConnectivity.Current.IsConnected)
                         {
-                            var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
-                            nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            await Navigation.PushModalAsync(nav);
-                        }
-                    }
-                    else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
-                }
-                else
-                {
-                    var num = 15000;
-                    var t = AuthenticationAPI.GetDonations();
-                    Donation[] dons = new Donation[] { };
-                    if (t == await Task.WhenAny(t, Task.Delay(num)))
-                    {
-                        dons = await AuthenticationAPI.GetDonations();
-                    }
-                    else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
-                    if (dons != null)
-                    {
-                        if (dons.Length == 1)
-                        {
-                            String url = "";
-                            var ask = PlayerFeedAPI.PostDonationAccessToken();
-                            if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                            var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+                            if (choice)
                             {
-                                url = await PlayerFeedAPI.PostDonationAccessToken();
-                            }
-                            else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
-                            if (url.StartsWith("http"))
-                            {
-                                DependencyService.Get<IRivets>().NavigateTo(url);
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", url, "OK");
+                                var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
+                                nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                await Navigation.PushModalAsync(nav);
                             }
                         }
-                        else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
-                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                    else
+                    {
+                        var num = 15000;
+                        var t = AuthenticationAPI.GetDonations();
+                        Donation[] dons = new Donation[] { };
+                        if (t == await Task.WhenAny(t, Task.Delay(num)))
+                        {
+                            dons = await AuthenticationAPI.GetDonations();
+                        }
+                        else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
+                        if (dons != null)
+                        {
+                            if (dons.Length == 1)
+                            {
+                                String url = "";
+                                var ask = PlayerFeedAPI.PostDonationAccessToken();
+                                if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                                {
+                                    url = await PlayerFeedAPI.PostDonationAccessToken();
+                                }
+                                else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
+                                if (url.StartsWith("http"))
+                                {
+                                    DependencyService.Get<IRivets>().NavigateTo(url);
+                                }
+                                else
+                                {
+                                    await DisplayAlert("Error", url, "OK");
+                                }
+                            }
+                            else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        }
+                        else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
+                    }
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    giving = false;
                 }
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
-                giving = false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 

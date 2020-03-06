@@ -106,47 +106,55 @@ namespace DABApp
         //Navigate to a specific channel
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
-            //Wait indicator
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-
-            //Selected resource
-            var selected = (Resource)e.Item;
-            selected.IsNotSelected = .5;
-            var resource = (Resource)e.Item;
-
-            //send websocket message to get episodes by channel
-            string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
-            DabGraphQlVariables variables = new DabGraphQlVariables();
-            Debug.WriteLine($"Getting episodes by ChannelId");
-            var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-            var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-            string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-            DabSyncService.Instance.Send(JsonIn);
-
-            //Navigate to the appropriate player page 
-            if (Device.Idiom == TargetIdiom.Tablet)
+            try
             {
-                await Navigation.PushAsync(new DabTabletPage(resource));
+                //Wait indicator
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+
+                //Selected resource
+                var selected = (Resource)e.Item;
+                selected.IsNotSelected = .5;
+                var resource = (Resource)e.Item;
+
+                //send websocket message to get episodes by channel
+                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                DabGraphQlVariables variables = new DabGraphQlVariables();
+                Debug.WriteLine($"Getting episodes by ChannelId");
+                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                DabSyncService.Instance.Send(JsonIn);
+
+                //Navigate to the appropriate player page 
+                if (Device.Idiom == TargetIdiom.Tablet)
+                {
+                    await Navigation.PushAsync(new DabTabletPage(resource));
+                }
+                else
+                {
+                    await Navigation.PushAsync(new DabEpisodesPage(resource));
+                }
+
+                selected.IsNotSelected = 1.0;
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+
+                //Send info to Firebase analytics that user accessed a channel
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("channel", resource.title);
+                DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
+
+                //TODO: Subscribe to a channel
             }
-            else
+            catch (Exception ex)
             {
-                await Navigation.PushAsync(new DabEpisodesPage(resource));
+                Debug.WriteLine(ex.Message);
+                await DisplayAlert("Database Busy", "You may have a lot of user data being loaded. Wait a minute and try again.", "Ok");
+                Navigation.PushAsync(new DabChannelsPage());
             }
-            
-            selected.IsNotSelected = 1.0;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
-
-            //Send info to Firebase analytics that user accessed a channel
-            var infoJ = new Dictionary<string, string>();
-            infoJ.Add("channel", resource.title);
-            DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
-
-            //TODO: Subscribe to a channel
-
         }
 
         void TimedActions()
