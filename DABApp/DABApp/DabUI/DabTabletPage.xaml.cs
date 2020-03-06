@@ -951,20 +951,17 @@ namespace DABApp
             if (episode != null)
             {
                 
-                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
                     favorite.Source = episode.favoriteSource;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
-
                 }
                 else
                 {
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.IsFavorite);
-
                 }
             }
         }
@@ -983,9 +980,6 @@ namespace DABApp
             }
             if (episode != null)
             {
-                
-                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
@@ -993,12 +987,12 @@ namespace DABApp
                     Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
 
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
                 }
                 else
                 {
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
                 }
             }
