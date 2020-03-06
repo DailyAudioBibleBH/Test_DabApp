@@ -925,38 +925,7 @@ namespace DABApp
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 
-        async void OnListListened(object o, EventArgs e)
-        {
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            //start new
-
-            model.IsListenedTo = !ep.UserData.IsListenedTo;
-            if (episode == null)
-            {
-                episode = new EpisodeViewModel(Episodes.First());
-            }
-            if (episode != null)
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
-
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
-                    //TODO: Fix completed image
-                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
-
-                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
-                }
-                else
-                {
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
-                }
-            }
-        }
+        
 
         async void OnFavorite(object o, EventArgs e)
         {
@@ -996,6 +965,41 @@ namespace DABApp
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
                     await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.IsFavorite);
 
+                }
+            }
+        }
+
+        async void OnListListened(object o, EventArgs e)
+        {
+            var mi = ((Xamarin.Forms.MenuItem)o);
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
+            //start new
+
+            model.IsListenedTo = !ep.UserData.IsListenedTo;
+            if (episode == null)
+            {
+                episode = new EpisodeViewModel(Episodes.First());
+            }
+            if (episode != null)
+            {
+                
+                //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
+
+                if (ep.id == episode.Episode.id)
+                {
+                    episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
+                    //TODO: Fix completed image
+                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+
+                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
+                }
+                else
+                {
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
                 }
             }
         }
