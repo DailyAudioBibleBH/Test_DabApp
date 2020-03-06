@@ -915,13 +915,7 @@ namespace DABApp
             Initializer.IsVisible = !par;
         }
 
-        async void OnFavorite(object o, EventArgs e)
-        {
-            episode.IsFavorite = !episode.IsFavorite;
-            AutomationProperties.SetName(favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
-        }
+        
 
         async void OnListened(object o, EventArgs e)
         {
@@ -964,6 +958,14 @@ namespace DABApp
             }
         }
 
+        async void OnFavorite(object o, EventArgs e)
+        {
+            episode.IsFavorite = !episode.IsFavorite;
+            AutomationProperties.SetName(favorite, episode.favoriteAccessible);
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
+        }
+
         async void OnListFavorite(object o, EventArgs e)
         {
             var mi = ((Xamarin.Forms.MenuItem)o);
@@ -979,17 +981,19 @@ namespace DABApp
             }
             if (episode != null)
             {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, model.IsFavorite, null, null, false);
+                
                 //await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, true, null, null);
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
                     favorite.Source = episode.favoriteSource;
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
 
                 }
                 else
                 {
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, true);
                     await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.IsFavorite);
 
                 }
