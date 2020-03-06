@@ -201,8 +201,8 @@
                                 <Button x:Name="Completed"
                                         Style="{StaticResource imageButtonStyle}"
                                         Clicked="OnListened"
-                                        WidthRequest="20"
-                                        HeightRequest="20"
+                                        WidthRequest="25"
+                                        HeightRequest="25"
                                         AutomationProperties.IsInAccessibleTree="true" />
                                 <Label Text="Mark as Listened"
                                        FontSize="Small"
@@ -219,16 +219,16 @@
                                            
                                            Grid.Row="0"
                                            Grid.Column="2"
-                                           WidthRequest="20"
-                                           HeightRequest="20"
+                                           WidthRequest="25"
+                                           HeightRequest="25"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFavorite" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:AudioOutputView x:Name="Output"
-                                               WidthRequest="20"
-                                               HeightRequest="20"
+                                               WidthRequest="25"
+                                               HeightRequest="25"
                                                Grid.Row="0"
                                                Grid.Column="3"
                                                AutomationProperties.IsInAccessibleTree="true"
@@ -238,8 +238,8 @@
                                            
                                            Grid.Row="0"
                                            Grid.Column="4"
-                                           WidthRequest="20"
-                                           HeightRequest="20"
+                                           WidthRequest="25"
+                                           HeightRequest="25"
                                            AutomationProperties.IsInAccessibleTree="true"
                                            AutomationProperties.Name="Share">
                             <Image.GestureRecognizers>

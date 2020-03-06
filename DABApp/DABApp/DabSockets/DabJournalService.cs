@@ -35,7 +35,14 @@ namespace DABApp.DabSockets
         public void Reconnect()
         {
             //Reconnect the socket if needed
-            sock.Connect();
+            if (sock == null)
+            {
+                InitAndConnect();
+            }
+            else
+            {
+                sock.Connect();
+            }
         }
 
         public bool InitAndConnect()
