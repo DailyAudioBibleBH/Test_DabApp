@@ -81,7 +81,6 @@ namespace DABApp
             Months.SelectedIndex = 0;
 
             //Run timed actions and subscribe to events to update them
-            TimedActions();
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
                 TimedActions();
@@ -105,7 +104,6 @@ namespace DABApp
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
             BindControls(true, true);
-
 
             //Reading area
             ReadText.EraseText = true;
@@ -159,13 +157,6 @@ namespace DABApp
                     //Bind episode data in the list
                     TimedActions();
                 });
-
-            });
-
-            Device.StartTimer(TimeSpan.FromSeconds(3), () =>
-            {
-                TimedActions();
-                return true;
             });
         }
 
@@ -203,7 +194,6 @@ namespace DABApp
                     }
                     if (episode != null)
                     {
-                        TimedActions();
                         //Send info to Firebase analytics that user tapped the read tab
                         var info = new Dictionary<string, string>();
                         info.Add("channel", episode.Episode.channel_title);
@@ -571,11 +561,7 @@ namespace DABApp
                 else //Play if paused
                 {
                     player.Play();
-                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                    {
-                        AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                        return true;
-                    });
+                    
                 }
             }
             else
@@ -588,12 +574,12 @@ namespace DABApp
                 }
                 //start playback
                 player.Play();
-                Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                {
-                    AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                    return true;
-                });
             }
+            Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+            {
+                AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                return true;
+            });
         }
 
         //Share the episode
