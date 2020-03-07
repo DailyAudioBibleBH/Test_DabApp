@@ -28,7 +28,7 @@ namespace DABApp
 
             });
 
-            //Subscribe to stopping wait ui
+            //Subscribe to starting wait ui
             MessagingCenter.Subscribe<string>("WaitUI", "StartWaitUI", (obj) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -106,11 +106,6 @@ namespace DABApp
                 activity.IsVisible = false;
                 activityHolder.IsVisible = false;
                 EpisodeList.IsEnabled = true;
-
-                MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
-                {
-                    TimedActions();
-                });
             }
             catch (Exception ex)
             {

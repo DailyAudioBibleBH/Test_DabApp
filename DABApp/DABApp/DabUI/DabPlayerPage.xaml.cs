@@ -151,9 +151,9 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
-               {
+                {
                    BindControls(true, true);
-               });
+                });
 
             });
 

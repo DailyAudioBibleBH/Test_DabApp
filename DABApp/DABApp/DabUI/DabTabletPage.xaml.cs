@@ -35,6 +35,8 @@ namespace DABApp
         int previousEpIndex;
         int nextEpIndex;
         int count;
+        
+        
 
 
         //Open up the page and optionally init it with an episode
