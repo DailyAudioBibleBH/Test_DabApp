@@ -100,12 +100,13 @@ namespace DABApp
                     episode = new EpisodeViewModel(Episodes.First());
                 }
             }
-           
+            
             //Bind to the active episode
             Favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
             BindControls(true, true);
+            
 
             //Reading area
             ReadText.EraseText = true;
@@ -969,7 +970,7 @@ namespace DABApp
 
             model.IsFavorite= !ep.UserData.IsFavorite;
 
-            if (episode == null)
+            if (episode == null && Episodes.Count() > 0)
             {
                 episode = new EpisodeViewModel(Episodes.First());
             }
@@ -999,7 +1000,7 @@ namespace DABApp
             //start new
 
             model.IsListenedTo = !ep.UserData.IsListenedTo;
-            if (episode == null)
+            if (episode == null && Episodes.Count() > 0)
             {
                 episode = new EpisodeViewModel(Episodes.First());
             }
@@ -1081,7 +1082,7 @@ namespace DABApp
             activityHolder.IsVisible = true;
             await AuthenticationAPI.PostActionLogs();
             await AuthenticationAPI.GetMemberData();
-            if (episode == null)
+            if (episode == null && Episodes.Count() > 0)
             {
                 episode = new EpisodeViewModel(Episodes.First());
                 currentIndex = 0;
