@@ -102,7 +102,7 @@ namespace DABApp
             }
            
             //Bind to the active episode
-            favorite.BindingContext = episode;
+            Favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
             BindControls(true, true);
@@ -764,9 +764,9 @@ namespace DABApp
                 EpNotes.SetBinding(Label.TextProperty, "notes");
 
                 //Favorite button
-                favorite.BindingContext = episode;
-                favorite.SetBinding(Image.SourceProperty, "favoriteSource");
-                favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
+                Favorite.BindingContext = episode;
+                Favorite.SetBinding(Image.SourceProperty, "favoriteSource");
+                Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
                 //Completed button
@@ -917,9 +917,10 @@ namespace DABApp
                 previousButton.Opacity = opa;
             //nextButton.Opacity = nextEpisode == null ? 1 : 0; 
             //previousButton.Opacity = opa;
-            //Output.IsVisible = par;
-            //Share.IsVisible = par;
-            //favorite.IsVisible = par;
+            Output.IsVisible = par;
+            Share.IsVisible = par;
+            Favorite.IsVisible = par;
+            ListenedFrame.IsVisible = par;
             PlayPause.IsVisible = par;
             Initializer.IsVisible = !par;
         }
@@ -939,7 +940,7 @@ namespace DABApp
         async void OnFavorite(object o, EventArgs e)
         {
             episode.IsFavorite = !episode.IsFavorite;
-            AutomationProperties.SetName(favorite, episode.favoriteAccessible);
+            AutomationProperties.SetName(Favorite, episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
         }
@@ -963,7 +964,7 @@ namespace DABApp
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
-                    favorite.Source = episode.favoriteSource;
+                    Favorite.Source = episode.favoriteSource;
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
                 }
@@ -1120,7 +1121,7 @@ namespace DABApp
 
             if (episode != null)
             {
-                favorite.Source = episode.favoriteSource;
+                Favorite.Source = episode.favoriteSource;
             }
         }
     }
