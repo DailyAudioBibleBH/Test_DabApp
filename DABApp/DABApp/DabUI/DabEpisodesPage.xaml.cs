@@ -71,13 +71,7 @@ namespace DABApp
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
-            });           
-
-            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
-            {
-                TimedActions();
-                return true;
-            });           
+            });                      
         }       
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
