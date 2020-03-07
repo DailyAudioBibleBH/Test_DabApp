@@ -116,6 +116,11 @@ namespace DABApp
                 selected.IsNotSelected = .5;
                 var resource = (Resource)e.Item;
 
+                if (DabSyncService.Instance.IsDisconnected)
+                {
+                    DabSyncService.Instance.Connect();
+                }
+
                 //send websocket message to get episodes by channel
                 string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
                 DabGraphQlVariables variables = new DabGraphQlVariables();

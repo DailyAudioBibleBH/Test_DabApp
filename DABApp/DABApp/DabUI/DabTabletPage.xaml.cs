@@ -686,7 +686,7 @@ namespace DABApp
             //Initialize an episode for playback. This may fire when initially loading
             //the page if the first playback, or it may wait until they press the fake "play" button
             //to start an episode after a different one is loaded.
-            if (episode == null)
+            if (episode == null && Episodes.Count() > 0)
             {
                 episode = new EpisodeViewModel(Episodes.First());
                 currentIndex = 0;
@@ -735,8 +735,23 @@ namespace DABApp
 
                 SetVisibility(true); //Adjust visibility of controls
             }
-
-
+            else if (!AuthenticationAPI.CheckToken())
+            {
+                //Episodes may be null because websocket is denying because of bad token
+                //Send request for new token
+                if (DabSyncService.Instance.IsConnected)
+                {
+                    DabGraphQlVariables variables = new DabGraphQlVariables();
+                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                    DabSyncService.Instance.Send(tokenJsonIn);
+                }
+            }
+            else
+            {
+                DisplayAlert("One second, we're loading your episodes", "If problem presists, log out and log back in to refresh your token", "Ok");
+            }
         }
 
 
