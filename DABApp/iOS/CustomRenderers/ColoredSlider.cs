@@ -8,7 +8,7 @@ using Xamarin.Forms.Platform.iOS;
 [assembly: ExportRenderer(typeof(DabSeekBar), typeof(ColoredSlider))]
 namespace DABApp.iOS
 {
-	public class ColoredSlider: SliderRenderer
+	public class ColoredSlider : SliderRenderer
 	{
 		protected override void OnElementChanged(ElementChangedEventArgs<Slider> e)
 		{
@@ -16,24 +16,15 @@ namespace DABApp.iOS
 
 			if (e.NewElement == null) return;
 
-			if (Control != null) {
-                var slider = Control;
-                var element = (DabSeekBar)Element;
+			if (Control != null)
+			{
 				Control.MaximumTrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
 				Control.MinimumTrackTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
-                Control.SetThumbImage(UIImage.FromFile("seekbaricon.png"), UIControlState.Normal);
-                slider.TouchDown += (sender, args) =>
-                {
-                    element.TouchDownEvent(this, EventArgs.Empty);
-                };
-                slider.TouchUpInside += (sender, args) =>
-                {
-                    element.TouchUpEvent(this, EventArgs.Empty);
-                };
-                slider.TouchUpOutside += (sender, args) =>
-                {
-                    element.TouchUpEvent(this, EventArgs.Empty);
-                };
+				Control.SetThumbImage(UIImage.FromFile("seekbaricon.png"), UIControlState.Normal);
+				var element = (DabSeekBar)e.NewElement;
+				Control.AllTouchEvents += (sender, er) => {
+					element.Touched(sender, er);
+				};
 			}
 		}
 	}
