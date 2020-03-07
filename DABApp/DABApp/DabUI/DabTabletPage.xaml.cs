@@ -751,7 +751,7 @@ namespace DABApp
             }
             else
             {
-                DisplayAlert("One second, we're loading your episodes", "If problem presists, log out and log back in to refresh your token", "Ok");
+                DisplayAlert("One second", "We're loading your episodes", "Ok");
             }
         }
 
