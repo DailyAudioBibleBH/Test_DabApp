@@ -18,7 +18,6 @@ namespace DABApp
         View ChannelView;
         dbEpisodes episode;
         Resource _resource;
-        bool IsUnInitialized = true;
         private double _width;
         private double _height;
         private int number;
@@ -52,9 +51,7 @@ namespace DABApp
             {
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
-            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
-
-            
+            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;            
 
             //Connect to the SyncService
             DabSyncService.Instance.Init();
