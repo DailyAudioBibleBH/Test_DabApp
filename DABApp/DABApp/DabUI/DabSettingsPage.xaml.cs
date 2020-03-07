@@ -59,14 +59,8 @@ namespace DABApp
             var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
             Application.Current.MainPage = nav;
-            if (await AuthenticationAPI.LogOut())
-            {
-                await Navigation.PopToRootAsync();
-            }
-            else
-            {
-                await Navigation.PopToRootAsync();
-            }
+            await Navigation.PopToRootAsync();
+            await AuthenticationAPI.LogOut();
         }
 
         public async void OnLogOut(object o, EventArgs e)
@@ -76,14 +70,8 @@ namespace DABApp
             var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
             Application.Current.MainPage = nav;
-            if (await AuthenticationAPI.LogOut())
-            {
-                await Navigation.PopToRootAsync();
-            }
-            else
-            {
-                await Navigation.PopToRootAsync();
-            }
+            await Navigation.PopToRootAsync();
+            await AuthenticationAPI.LogOut();
         }
 
         protected override void OnDisappearing()

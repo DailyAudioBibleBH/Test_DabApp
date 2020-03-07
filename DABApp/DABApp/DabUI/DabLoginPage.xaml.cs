@@ -61,13 +61,7 @@ namespace DABApp
                 Container.Padding = 100;
             }
 
-
-            //MessagingCenter.Subscribe<string>("OptimizationWarning", "OptimizationWarning", (obj) => {
-            //    DisplayAlert("Background Playback", "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", "OK");
-            //});
-
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
-            
         }
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
