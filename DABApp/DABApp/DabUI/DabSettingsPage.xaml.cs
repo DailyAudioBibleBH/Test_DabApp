@@ -82,70 +82,91 @@ namespace DABApp
 
         void OnOffline(object o, EventArgs e)
         {
-            Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
+            }
         }
 
         void OnReset(object o, EventArgs e)
         {
-            Navigation.PushAsync(new DabResetListenedToStatusPage());
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                Navigation.PushAsync(new DabResetListenedToStatusPage());
+            }
         }
 
         void OnAppInfo(object o, EventArgs e)
         {
-            Navigation.PushAsync(new DabAppInfoPage());
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                Navigation.PushAsync(new DabAppInfoPage());
+            }
         }
 
         async void OnProfile(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var result = await AuthenticationAPI.GetMember();
-            await Navigation.PushAsync(new DabProfileManagementPage());
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var result = await AuthenticationAPI.GetMember();
+                await Navigation.PushAsync(new DabProfileManagementPage());
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+            }
             
         }
 
         void OnAddresses(object o, EventArgs e)
         {
-            Navigation.PushAsync(new DabAddressManagementPage());
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                Navigation.PushAsync(new DabAddressManagementPage());
+            }
         }
 
         async void OnWallet(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var result = await AuthenticationAPI.GetWallet();
-            if (result != null)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                await Navigation.PushAsync(new DabWalletPage(result));
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var result = await AuthenticationAPI.GetWallet();
+                if (result != null)
+                {
+                    await Navigation.PushAsync(new DabWalletPage(result));
+                }
+                else
+                {
+                    await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                }
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
             }
-            else
-            {
-                await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-            }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
         }
 
         async void OnDonations(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var don = await AuthenticationAPI.GetDonations();
-            if (don != null)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                await Navigation.PushAsync(new DabManageDonationsPage(don));
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var don = await AuthenticationAPI.GetDonations();
+                if (don != null)
+                {
+                    await Navigation.PushAsync(new DabManageDonationsPage(don));
+                }
+                else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
             }
-            else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace DABApp
 		public DabOfflineEpisodeManagementPage()
 		{
 			InitializeComponent();
-            if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android") { NavigationPage.SetHasNavigationBar(this, false); }
+            if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
 			//base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			DabViewHelper.InitDabForm(this);
 			switch (OfflineEpisodeSettings.Instance.Duration)
