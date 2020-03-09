@@ -369,166 +369,192 @@ namespace DABApp
         async void OnPrevious(object o, EventArgs e)
         //Handle the selection of a different episode
         {
-            //Load the episode
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            labelHolder.IsVisible = true;
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var newEp = previousEpisode;
-            currentIndex = currentIndex + 1;
-            previousEpIndex = currentIndex + 1;
-            nextEpIndex = currentIndex - 1;
-            count = list.Count();
-
-            if (previousEpIndex < count)
+            try
             {
-                previousEpisode = list.ElementAt(previousEpIndex);
-                previousButton.IsEnabled = true;
-            }
-            else
-            {
-                previousEpisode = null;
-                previousButton.IsEnabled = false;
-            }
-            if (nextEpIndex >= 0)
-            {
-                nextEpisode = list.ElementAt(nextEpIndex);
-                nextButton.IsEnabled = true;
-            }
-            else
-            {
-                nextEpisode = null;
-                nextButton.IsEnabled = false;
-            }
+                //Load the episode
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                labelHolder.IsVisible = true;
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var newEp = previousEpisode;
+                currentIndex = currentIndex + 1;
+                previousEpIndex = currentIndex + 1;
+                nextEpIndex = currentIndex - 1;
+                count = list.Count();
 
-            ////TODO: Replace for journal?
-            ////Join the journal channel
-            journal.JoinRoom(newEp.Episode.PubDate);
-
-            // Make sure we have a file to play
-            if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
-            {
-                episode = newEp;
-
-                //Bind episode data to the new episode (not the player though)
-                BindControls(true, false);
-
-                if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
+                if (previousEpIndex < count)
                 {
-                    //TODO: Replace for journal?
-                    journal.Content = null;
-                    SetVisibility(false);
+                    previousEpisode = list.ElementAt(previousEpIndex);
+                    previousButton.IsEnabled = true;
                 }
                 else
                 {
-                    SetVisibility(true);
+                    previousEpisode = null;
+                    previousButton.IsEnabled = false;
                 }
-                EpisodeList.SelectedItem = null;
-                await SetReading();
+                if (nextEpIndex >= 0)
+                {
+                    nextEpisode = list.ElementAt(nextEpIndex);
+                    nextButton.IsEnabled = true;
+                }
+                else
+                {
+                    nextEpisode = null;
+                    nextButton.IsEnabled = false;
+                }              
 
-                //Send info to Firebase analytics that user accessed and episode
-                var infoJ = new Dictionary<string, string>();
-                infoJ.Add("channel", episode.Episode.channel_title);
-                infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
-                infoJ.Add("episode_name", episode.Episode.title);
-                DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
+                // Make sure we have a file to play
+                if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
+                {
+                    episode = newEp;
+
+                    //Bind episode data to the new episode (not the player though)
+                    BindControls(true, false);
+
+                    ////TODO: Replace for journal?
+                    ////Join the journal channel
+                    journal.JoinRoom(episode.Episode.PubDate);
+
+                    if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
+                    {
+                        //TODO: Replace for journal?
+                        journal.Content = null;
+                        SetVisibility(false);
+                    }
+                    else
+                    {
+                        SetVisibility(true);
+                    }
+                    EpisodeList.SelectedItem = null;
+                    await SetReading();
+
+                    //Send info to Firebase analytics that user accessed and episode
+                    var infoJ = new Dictionary<string, string>();
+                    infoJ.Add("channel", episode.Episode.channel_title);
+                    infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
+                    infoJ.Add("episode_name", episode.Episode.title);
+                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
+                }
+                else
+                {
+                    await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+                }
+                //TODO: Set completed image
+                //Completed.Image = episode.listenedToSource;
+                labelHolder.IsVisible = false;
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+                player.Pause();
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
-            }
-            //TODO: Set completed image
-            //Completed.Image = episode.listenedToSource;
-            labelHolder.IsVisible = false;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
-            player.Pause();
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                labelHolder.IsVisible = false;
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+            }            
         }
 
         //Go to next episode
         async void OnNext(object o, EventArgs e)
         //Handle the selection of a different episode
         {
-            //Load the episode
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            labelHolder.IsVisible = true;
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var newEp = nextEpisode;
-            currentIndex = currentIndex - 1;
-            previousEpIndex = currentIndex + 1;
-            nextEpIndex = currentIndex - 1;
-            count = list.Count();
-
-
-            if (previousEpIndex < count)
+            try
             {
-                previousEpisode = list.ElementAt(previousEpIndex);
-                previousButton.IsEnabled = true;
-            }
-            else
-            {
-                previousEpisode = null;
-                previousButton.IsEnabled = false;
-            }
-            if (nextEpIndex >= 0)
-            {
-                nextEpisode = list.ElementAt(nextEpIndex);
-                nextButton.IsEnabled = true;
-            }
-            else
-            {
-                nextEpisode = null;
-                nextButton.IsEnabled = false;
-            }
+                //Load the episode
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                labelHolder.IsVisible = true;
+                activity.IsVisible = true;
+                activityHolder.IsVisible = true;
+                var newEp = nextEpisode;
+                currentIndex = currentIndex - 1;
+                previousEpIndex = currentIndex + 1;
+                nextEpIndex = currentIndex - 1;
+                count = list.Count();
 
 
-            ////TODO: Replace for journal?
-            ////Join the journal channel
-            journal.JoinRoom(newEp.Episode.PubDate);
-
-            // Make sure we have a file to play
-            if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
-            {
-                episode = newEp;
-
-                //Bind episode data to the new episode (not the player though)
-                BindControls(true, false);
-
-                if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
+                if (previousEpIndex < count)
                 {
-                    //TODO: Replace for journal?
-                    journal.Content = null;
-                    SetVisibility(false);
+                    previousEpisode = list.ElementAt(previousEpIndex);
+                    previousButton.IsEnabled = true;
                 }
                 else
                 {
-                    SetVisibility(true);
+                    previousEpisode = null;
+                    previousButton.IsEnabled = false;
                 }
-                EpisodeList.SelectedItem = null;
-                await SetReading();
+                if (nextEpIndex >= 0)
+                {
+                    nextEpisode = list.ElementAt(nextEpIndex);
+                    nextButton.IsEnabled = true;
+                }
+                else
+                {
+                    nextEpisode = null;
+                    nextButton.IsEnabled = false;
+                }
 
-                //Send info to Firebase analytics that user accessed and episode
-                var infoJ = new Dictionary<string, string>();
-                infoJ.Add("channel", episode.Episode.channel_title);
-                infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
-                infoJ.Add("episode_name", episode.Episode.title);
-                DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
+
+
+                // Make sure we have a file to play
+                if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
+                {
+                    episode = newEp;
+
+                    //Bind episode data to the new episode (not the player though)
+                    BindControls(true, false);
+
+                    ////TODO: Replace for journal?
+                    ////Join the journal channel
+                    journal.JoinRoom(episode.Episode.PubDate);
+
+                    if (GlobalResources.CurrentEpisodeId != episode.Episode.id)
+                    {
+                        //TODO: Replace for journal?
+                        journal.Content = null;
+                        SetVisibility(false);
+                    }
+                    else
+                    {
+                        SetVisibility(true);
+                    }
+                    EpisodeList.SelectedItem = null;
+                    await SetReading();
+
+                    //Send info to Firebase analytics that user accessed and episode
+                    var infoJ = new Dictionary<string, string>();
+                    infoJ.Add("channel", episode.Episode.channel_title);
+                    infoJ.Add("episode_date", episode.Episode.PubDate.ToString());
+                    infoJ.Add("episode_name", episode.Episode.title);
+                    DependencyService.Get<IAnalyticsService>().LogEvent("player_episode_selected", infoJ);
+                }
+                else
+                {
+                    await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+                }
+                //TODO: Set completed image
+                //Completed.Image = episode.listenedToSource;
+                labelHolder.IsVisible = false;
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
+                player.Pause();
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played while offline download them before going offline.", "OK");
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                labelHolder.IsVisible = false;
+                activity.IsVisible = false;
+                activityHolder.IsVisible = false;
             }
-            //TODO: Set completed image
-            //Completed.Image = episode.listenedToSource;
-            labelHolder.IsVisible = false;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
-            player.Pause();
+            
         }
         //Go back 30 seconds
         void OnBack30(object o, EventArgs e)
@@ -687,69 +713,77 @@ namespace DABApp
             //Initialize an episode for playback. This may fire when initially loading
             //the page if the first playback, or it may wait until they press the fake "play" button
             //to start an episode after a different one is loaded.
-            if (episode == null && Episodes.Count() > 0)
+            try
             {
-                episode = new EpisodeViewModel(Episodes.First());
-                currentIndex = 0;
-                count = list.Count();
-                previousEpisode = list.ElementAt(currentIndex + 1);
-                nextEpisode = null;
-                nextButton.IsEnabled = false;
-                nextButton.Opacity = .5;
-            }
-            //Load the file if not already loaded
-            if (episode != null)
-            {
-                Initializer.IsVisible = false; //Hide the init button
-
-                if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
+                if (episode == null && Episodes.Count() > 0)
                 {
-                    if (!player.Load(episode.Episode))
+                    episode = new EpisodeViewModel(Episodes.First());
+                    currentIndex = 0;
+                    count = list.Count();
+                    previousEpisode = list.ElementAt(currentIndex + 1);
+                    previousButton.Opacity = 0;
+                    nextEpisode = null;
+                    nextButton.IsEnabled = false;
+                    nextButton.Opacity = .5;
+                }
+                //Load the file if not already loaded
+                if (episode != null)
+                {
+                    Initializer.IsVisible = false; //Hide the init button
+
+                    if (episode.Episode.id != GlobalResources.CurrentEpisodeId)
                     {
-                        DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                        //TODO: Ensure nothing breaks if this happens.
-                        return;
+                        if (!player.Load(episode.Episode))
+                        {
+                            DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                            //TODO: Ensure nothing breaks if this happens.
+                            return;
+                        }
+
+                        //Store episode data across app
+                        GlobalResources.CurrentEpisodeId = (int)episode.Episode.id;
                     }
 
-                    //Store episode data across app
-                    GlobalResources.CurrentEpisodeId = (int)episode.Episode.id;
+                    //Go to starting position
+                    player.Seek(episode.Episode.UserData.CurrentPosition);
+
+                    //Bind controls for playback
+                    BindControls(true, true);
+
+                    //Set up journal
+                    ////TODO: Replace for journal?
+                    if (!GuestStatus.Current.IsGuestLogin)
+                    {
+                        journal.JoinRoom(episode.Episode.PubDate);
+                    }
+
+                    //Start playing if they pushed the play button
+                    if (o != null)
+                    {
+                        player.Play();
+                    }
+
+                    SetVisibility(true); //Adjust visibility of controls
                 }
-
-                //Go to starting position
-                player.Seek(episode.Episode.UserData.CurrentPosition);
-
-                //Bind controls for playback
-                BindControls(true, true);
-
-                //Set up journal
-                ////TODO: Replace for journal?
-                if (!GuestStatus.Current.IsGuestLogin)
+                else if (!AuthenticationAPI.CheckToken())
                 {
-                    journal.JoinRoom(episode.Episode.PubDate);
+                    //Episodes may be null because websocket is denying because of bad token
+                    //Send request for new token
+                    if (DabSyncService.Instance.IsConnected)
+                    {
+                        DabGraphQlVariables variables = new DabGraphQlVariables();
+                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                        DabSyncService.Instance.Send(tokenJsonIn);
+                    }
                 }
-
-                //Start playing if they pushed the play button
-                if (o != null)
+                else
                 {
-                    player.Play();
+                    DisplayAlert("One second", "We're loading your episodes", "Ok");
                 }
-
-                SetVisibility(true); //Adjust visibility of controls
             }
-            else if (!AuthenticationAPI.CheckToken())
-            {
-                //Episodes may be null because websocket is denying because of bad token
-                //Send request for new token
-                if (DabSyncService.Instance.IsConnected)
-                {
-                    DabGraphQlVariables variables = new DabGraphQlVariables();
-                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                    DabSyncService.Instance.Send(tokenJsonIn);
-                }
-            }
-            else
+            catch (Exception ex)
             {
                 DisplayAlert("One second", "We're loading your episodes", "Ok");
             }
@@ -931,14 +965,14 @@ namespace DABApp
                 previousButton.Opacity = .5;
             else
                 previousButton.Opacity = opa;
-            //nextButton.Opacity = nextEpisode == null ? 1 : 0; 
-            //previousButton.Opacity = opa;
             Output.IsVisible = par;
             Share.IsVisible = par;
             Favorite.IsVisible = par;
             ListenedFrame.IsVisible = par;
             PlayPause.IsVisible = par;
             Initializer.IsVisible = !par;
+            nextButton.IsVisible = true;
+            previousButton.IsVisible = true;
         }
 
         
