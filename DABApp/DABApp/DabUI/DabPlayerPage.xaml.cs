@@ -151,9 +151,9 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
-               {
+                {
                    BindControls(true, true);
-               });
+                });
 
             });
 
@@ -192,11 +192,6 @@ namespace DABApp
                 else
                 {
                     player.Play();
-                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                    {
-                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                        return true;
-                    });
                 }
             }
             else
@@ -204,18 +199,17 @@ namespace DABApp
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
-                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                    {
-                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                        return true;
-                    });
                 }
                 else
                 {
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
                 }
-
             }
+            Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+            {
+                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                return true;
+            });
         }
 
         //Go to previous episode
@@ -511,6 +505,11 @@ namespace DABApp
                 SeekBar.BindingContext = player;
                 SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
                 SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+
+                SeekBar.UserInteraction += (object sender, EventArgs e) =>
+                {
+                    player.Seek(SeekBar.Value);
+                };
                 
                 SeekBar.TouchUp += (object sender, EventArgs e) =>
                 {

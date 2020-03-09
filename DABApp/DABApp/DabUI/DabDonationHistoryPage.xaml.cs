@@ -18,7 +18,7 @@ namespace DABApp
 			else {
 				MessagingCenter.Send<string>("Remove", "Remove");
 			}
-			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+			if (GlobalResources.ShouldUseSplitScreen)
             {
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);

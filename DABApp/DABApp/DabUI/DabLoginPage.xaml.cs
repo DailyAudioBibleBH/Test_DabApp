@@ -61,13 +61,7 @@ namespace DABApp
                 Container.Padding = 100;
             }
 
-
-            //MessagingCenter.Subscribe<string>("OptimizationWarning", "OptimizationWarning", (obj) => {
-            //    DisplayAlert("Background Playback", "This app needs to disable some battery optimization features to accommodate playback when your device goes to sleep. Please tap 'Yes' on the following prompt to give this permission.", "OK");
-            //});
-
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
-            
         }
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
@@ -185,7 +179,7 @@ namespace DABApp
                                 DabChannelsPage _nav = new DabChannelsPage();
                                 _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                 //Application.Current.MainPage = _nav;
-                                await Navigation.PushAsync(_nav);
+                                await Navigation.PushAsync(_nav); 
                                 MessagingCenter.Send<string>("Setup", "Setup");
 
                                 //Delete nav stack so user cant back into login screen

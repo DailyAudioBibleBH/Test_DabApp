@@ -249,10 +249,7 @@ namespace DABApp
                 {
                     await DownloadEpisodes();
                 }
-                //if (Device.Idiom == TargetIdiom.Tablet)
-                //{
-                //	Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-                //}
+                
                 return true;
             }
             else

@@ -191,12 +191,14 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Frame Grid.Row="0"
+                        <Frame x:Name="ListenedFrame"
+                               Grid.Row="0"
                                Grid.Column="0"
                                BackgroundColor="{DynamicResource MarkCompletedBackground}"
                                CornerRadius="15"
                                Padding="20, 5, 20, 5">
-                            <StackLayout Orientation="Horizontal"
+                            <StackLayout 
+                                         Orientation="Horizontal"
                                          HorizontalOptions="FillAndExpand"
                                          Padding="0">
                                 <Button x:Name="Completed"
@@ -216,7 +218,7 @@
                                 </Label>
                             </StackLayout>
                         </Frame>
-                        <local:PlayerImage x:Name="favorite"
+                        <local:PlayerImage x:Name="Favorite"
                                            
                                            Grid.Row="0"
                                            Grid.Column="2"

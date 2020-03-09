@@ -28,7 +28,7 @@ namespace DABApp
 
             });
 
-            //Subscribe to stopping wait ui
+            //Subscribe to starting wait ui
             MessagingCenter.Subscribe<string>("WaitUI", "StartWaitUI", (obj) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
@@ -71,13 +71,7 @@ namespace DABApp
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
                 TimedActions();
-            });           
-
-            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
-            {
-                TimedActions();
-                return true;
-            });           
+            });                      
         }       
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
@@ -112,11 +106,6 @@ namespace DABApp
                 activity.IsVisible = false;
                 activityHolder.IsVisible = false;
                 EpisodeList.IsEnabled = true;
-
-                MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
-                {
-                    TimedActions();
-                });
             }
             catch (Exception ex)
             {
@@ -201,12 +190,15 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            EpisodeList.ItemsSource = _Episodes = Episodes
+            if (Episodes.Count() > 0)
+            {
+                EpisodeList.ItemsSource = _Episodes = Episodes
                 .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
                 .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                 .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                 .Select(x => new EpisodeViewModel(x)).ToList();
-            Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+            }
         }
     }
 }

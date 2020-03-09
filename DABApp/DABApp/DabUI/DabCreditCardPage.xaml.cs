@@ -20,7 +20,7 @@ namespace DABApp
 			int end = (DateTime.Now.Year - start) + 50;
 			List<string> years = Enumerable.Range(start, end).Select(x => x.ToString()).ToList();
 			Year.ItemsSource = years;
-			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+			if (GlobalResources.ShouldUseSplitScreen)
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}

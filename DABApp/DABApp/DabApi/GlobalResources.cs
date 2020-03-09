@@ -157,6 +157,25 @@ namespace DABApp
             }
         }
 
+        public static bool ShouldUseSplitScreen
+        {
+            get
+            {
+                if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+                {
+                    //Phones and Android Devices
+                    return false;
+                }
+                else
+                {
+                    //iPad's only - eventually - we want this to be true
+                    //TODO: Return True for Ipads
+                    return false;
+                }
+            }
+        }
+
+
         public static string GetUserEmail()
         {
             var settings = db.Table<dbSettings>().ToList();

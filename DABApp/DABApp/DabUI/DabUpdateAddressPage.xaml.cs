@@ -12,7 +12,7 @@ namespace DABApp
 		public DabUpdateAddressPage(Address address, Country[] countries, bool IsShipping)
 		{
 			InitializeComponent();
-			if (Device.Idiom == TargetIdiom.Tablet && Device.RuntimePlatform != "Android")
+			if (GlobalResources.ShouldUseSplitScreen)
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
