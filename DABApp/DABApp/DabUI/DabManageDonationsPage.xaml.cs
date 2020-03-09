@@ -71,6 +71,7 @@ namespace DABApp
 					{
 						monthly.IsVisible = false;
 						once.Text = "Give";
+						once.HeightRequest = 40;
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
 					}
 					once.WidthRequest = 150;
@@ -188,6 +189,7 @@ namespace DABApp
 							Labels[2].Text = null;
 							Buttons[0].IsVisible = false;
 							Buttons[1].Text = "Give";
+							Buttons[1].HeightRequest = 40;
 						}
 					}
 				}

@@ -49,7 +49,7 @@
 			<Label Text="Country" FontSize="Micro"/>
 			<Picker x:Name="Country" Title=" - " TextColor="{DynamicResource TextColor}" SelectedIndexChanged="OnCountrySelected"/>
 			<Label x:Name="CountryWarning" Text="Country field is required." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
-			<Button Text="Save" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
+            <Button Text="Save" HeightRequest="40" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

@@ -17,7 +17,7 @@
 			<Entry x:Name="NewPassword" IsPassword="true" Completed="OnNewPasswordCompleted"/>
 			<Label Text="Confirm New Password" FontSize="Micro"/>
 			<Entry x:Name="ConfirmNewPassword" IsPassword="true" Completed="OnSave"/>
-			<Button x:Name="Save" Text="Save" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSave"/>
+            <Button x:Name="Save" HeightRequest="40" Text="Save" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSave"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

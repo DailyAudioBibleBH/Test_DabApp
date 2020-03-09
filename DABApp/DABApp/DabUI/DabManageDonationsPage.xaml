@@ -6,7 +6,7 @@
 			<Label Text="My Donations" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
 			</StackLayout>
 			<StackLayout Padding="10" Spacing="10">
-			<Button Text="Show Donation History" Clicked="OnHistory"/>
+                <Button Text="Show Donation History" HeightRequest="40" Clicked="OnHistory"/>
 			</StackLayout>
 		</StackLayout>
 	</ContentPage.Content>
