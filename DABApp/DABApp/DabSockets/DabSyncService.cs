@@ -410,7 +410,7 @@ namespace DABApp.DabSockets
                 subscriptionIds.Add(2);
                 sock.Send(SubscriptionRemoveToken);
 
-                //Subscribe for new episodes
+                //Subscribe for new episodes SUB 3
                 var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
                 DabGraphQlPayload newEpisodePayload = new DabGraphQlPayload(newEpisodeQuery, variables);
                 var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload,3));
@@ -423,6 +423,20 @@ namespace DABApp.DabSockets
                 var channelInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", channelPayload,4));
                 subscriptionIds.Add(4);
                 sock.Send(channelInit);
+
+                //Subscribe to badge data SUB 5
+                var newBadgeQuery = "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }";
+                DabGraphQlPayload newBadgePayload = new DabGraphQlPayload(newBadgeQuery, variables);
+                var SubscriptionBadgeData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgePayload, 5));
+                subscriptionIds.Add(5);
+                sock.Send(SubscriptionBadgeData);
+
+                //Subscribe to progress data SUB 6
+                var newProgressQuery = "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }";
+                DabGraphQlPayload newProgressPayload = new DabGraphQlPayload(newProgressQuery, variables);
+                var SubscriptionProgressData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newProgressPayload, 6));
+                subscriptionIds.Add(6);
+                sock.Send(SubscriptionProgressData);
 
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
