@@ -251,8 +251,7 @@ namespace DABApp.DabSockets
                         sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
                     }
                     //Update date last time checked for badges
-                    //sBadgeUpdateSettings.Value = DateTime.MinValue.ToString();
-                    sBadgeUpdateSettings.Value = DateTime.Now.ToString();
+                    sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
                     db.InsertOrReplace(sBadgeUpdateSettings);
                 }
             }
@@ -457,8 +456,9 @@ namespace DABApp.DabSockets
 
                 //Send request for all badges since given date
                 //change this so it isn't min all the time
-                string badgeDate = GlobalResources.BadgesUpdatedDate.ToString("o");
-                var updatedBadgesQuery = "query { updatedBadges(date: \"" + badgeDate + "\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                string badgeDate1 = GlobalResources.BadgesUpdatedDate.ToString();
+                string badgeDate2 = GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\"";
+                var updatedBadgesQuery = "query { updatedBadges(date: \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
                 var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
                 //do we need to 
