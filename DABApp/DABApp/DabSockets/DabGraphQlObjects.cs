@@ -51,6 +51,13 @@ namespace DABApp.DabSockets
         public GraphQlUser user { get; set; }
         public DabGraphQlUpdateToken updateToken { get; set; }
         public DabGraphQlUpdatedBadges updatedBadges { get; set; }
+        public DabGraphQlUpdatedProgress updatedProgress { get; set; }
+    }
+
+    public class DabGraphQlUpdatedProgress
+    {
+        public List<dbBadgeProgress> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
     public class DabGraphQlUpdatedBadges

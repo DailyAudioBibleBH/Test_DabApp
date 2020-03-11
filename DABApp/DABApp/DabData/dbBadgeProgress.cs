@@ -10,7 +10,7 @@ namespace DABApp
         [PrimaryKey, NotNull]
         public int id { get; set; }
         [NotNull]
-        public string userName { get; set; }
+        public string data { get; set; }
         [Indexed, NotNull]
         public int badgeId { get; set; }
         [NotNull]

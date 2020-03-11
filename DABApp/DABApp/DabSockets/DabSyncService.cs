@@ -254,6 +254,22 @@ namespace DABApp.DabSockets
                     sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
                     db.InsertOrReplace(sBadgeUpdateSettings);
                 }
+                else if (root.payload?.data?.updatedProgress != null)
+                {
+                    foreach (var item in root.payload.data.updatedProgress.edges)
+                    {
+                        await adb.InsertOrReplaceAsync(item);
+                    }
+                    string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                    dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                    if (sBadgeProgressSettings == null)
+                    {
+                        sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+                    }
+                    //Update date last time checked for badges
+                    sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                    db.InsertOrReplace(sBadgeProgressSettings);
+                }
             }
             catch (Exception ex)
             {
@@ -455,15 +471,18 @@ namespace DABApp.DabSockets
                 sock.Send(SubscriptionProgressData);
 
                 //Send request for all badges since given date
-                //change this so it isn't min all the time
-                string badgeDate1 = GlobalResources.BadgesUpdatedDate.ToString();
-                string badgeDate2 = GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\"";
                 var updatedBadgesQuery = "query { updatedBadges(date: \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
                 var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
-                //do we need to 
                 subscriptionIds.Add(7);
                 sock.Send(badgeInit);
+
+                //Send request for user badge progress since given date
+                var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent data seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
+                var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 8));
+                subscriptionIds.Add(8);
+                sock.Send(progressInit);
 
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
