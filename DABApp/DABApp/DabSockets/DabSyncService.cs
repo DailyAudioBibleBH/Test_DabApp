@@ -238,6 +238,16 @@ namespace DABApp.DabSockets
                     Instance.Init();
                     Instance.Connect();
                 }
+                else if (root.payload?.data?.updatedBadges != null)
+                {
+                    dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
+                    if (sBadgeUpdateSettings == null)
+                    {
+                        sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
+                    }
+                    sBadgeUpdateSettings.Value = DateTime.Now.ToString();
+                    db.InsertOrReplace(sBadgeUpdateSettings);
+                }
             }
             catch (Exception ex)
             {

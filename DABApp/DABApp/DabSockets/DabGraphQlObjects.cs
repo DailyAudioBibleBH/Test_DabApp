@@ -50,6 +50,13 @@ namespace DABApp.DabSockets
         public GraphQlLoginUser loginUser { get; set; }
         public GraphQlUser user { get; set; }
         public DabGraphQlUpdateToken updateToken { get; set; }
+        public DabGraphQlUpdatedBadges updatedBadges { get; set; }
+    }
+
+    public class DabGraphQlUpdatedBadges
+    {
+        public List<DabGraphQlBadges> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
     public class GraphQlUser
@@ -145,6 +152,20 @@ namespace DABApp.DabSockets
     {
         public bool hasNextPage { get; set; }
         public object endCursor { get; set; }
+    }
+
+    public class DabGraphQlBadges
+    {
+        public int badgeId { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public string imageURL { get; set; }
+        public string type { get; set; }
+        public string method { get; set; }
+        public string data { get; set; }
+        public bool visible { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 
     public class DabGraphQlEpisodes
