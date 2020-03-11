@@ -440,8 +440,8 @@ namespace DABApp.DabSockets
 
                 //Send request for all badges since given date
                 //change this so it isn't min all the time
-                GlobalResources.BadgesUpdatedDate = DateTime.MinValue;
-                var updatedBadgesQuery = "query { updatedBadges(date:  \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                string badgeDate = GlobalResources.BadgesUpdatedDate.ToString("o");
+                var updatedBadgesQuery = "query { updatedBadges(date: \"" + badgeDate + "\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
                 var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
                 //do we need to 

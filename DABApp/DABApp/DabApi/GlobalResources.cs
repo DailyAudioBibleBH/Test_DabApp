@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20200227e";
+                return "20200241e";
             }
         }
 
@@ -248,7 +248,7 @@ namespace DABApp
                     DateTime badgeDate = DateTime.MinValue.ToUniversalTime();
                     BadgeUpdateSettings = new dbSettings();
                     BadgeUpdateSettings.Key = settingsKey;
-                    BadgeUpdateSettings.Value = badgeDate.ToString();
+                    BadgeUpdateSettings.Value = badgeDate.ToString("o");
                     db.InsertOrReplace(BadgeUpdateSettings);
                     return badgeDate;
                 }
@@ -261,7 +261,7 @@ namespace DABApp
             {
                 //Store the value sent in the database
                 string settingsKey = "BadgeUpdateDate";
-                string badgeDate = value.ToString();
+                string badgeDate = value.ToString("o");
                 dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
                 BadgeUpdateSettings.Key = settingsKey;
                 BadgeUpdateSettings.Value = badgeDate;

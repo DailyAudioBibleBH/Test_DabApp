@@ -17,8 +17,7 @@ namespace DABApp
         public string imageURL { get; set; }
         public string type { get; set; }
         public string method { get; set; }
-        [Ignore]
-        public object data { get; set; }
+        public string data { get; set; }
         [NotNull]
         public bool visible { get; set; }
         [NotNull]
