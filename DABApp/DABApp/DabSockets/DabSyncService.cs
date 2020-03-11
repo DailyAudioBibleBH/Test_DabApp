@@ -240,11 +240,18 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.updatedBadges != null)
                 {
+                    //add badges to db
+                    foreach (var item in root.payload.data.updatedBadges.edges)
+                    {
+                        await adb.InsertOrReplaceAsync(item);
+                    };
                     dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
                     if (sBadgeUpdateSettings == null)
                     {
                         sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
                     }
+                    //Update date last time checked for badges
+                    //sBadgeUpdateSettings.Value = DateTime.MinValue.ToString();
                     sBadgeUpdateSettings.Value = DateTime.Now.ToString();
                     db.InsertOrReplace(sBadgeUpdateSettings);
                 }

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace DABApp
 {
+    [Table("Badge")]
     public class dbBadges
     {
         [PrimaryKey, NotNull]

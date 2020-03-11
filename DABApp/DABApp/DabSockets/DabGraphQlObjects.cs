@@ -55,7 +55,7 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlUpdatedBadges
     {
-        public List<DabGraphQlBadges> edges { get; set; }
+        public List<Badge> edges { get; set; }
         public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
@@ -154,7 +154,7 @@ namespace DABApp.DabSockets
         public object endCursor { get; set; }
     }
 
-    public class DabGraphQlBadges
+    public class Badge
     {
         public int badgeId { get; set; }
         public string name { get; set; }
