@@ -438,6 +438,16 @@ namespace DABApp.DabSockets
                 subscriptionIds.Add(6);
                 sock.Send(SubscriptionProgressData);
 
+                //Send request for all badges since given date
+                //change this so it isn't min all the time
+                GlobalResources.BadgesUpdatedDate = DateTime.MinValue;
+                var updatedBadgesQuery = "query { updatedBadges(date:  \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
+                var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
+                //do we need to 
+                subscriptionIds.Add(7);
+                sock.Send(badgeInit);
+
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
 

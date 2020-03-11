@@ -235,6 +235,40 @@ namespace DABApp
             db.InsertOrReplace(LastEpisodeQuerySettings);
         }
 
+        //Last badge check date in GMT (get/set universal time)
+        public static DateTime BadgesUpdatedDate
+        {
+            get
+            {
+                string settingsKey = "BadgeUpdateDate";
+                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+
+                if (BadgeUpdateSettings == null)
+                {
+                    DateTime badgeDate = DateTime.MinValue.ToUniversalTime();
+                    BadgeUpdateSettings = new dbSettings();
+                    BadgeUpdateSettings.Key = settingsKey;
+                    BadgeUpdateSettings.Value = badgeDate.ToString();
+                    db.InsertOrReplace(BadgeUpdateSettings);
+                    return badgeDate;
+                }
+                else
+                {
+                    return DateTime.Parse(BadgeUpdateSettings.Value);
+                }
+            }
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = "BadgeUpdateDate";
+                string badgeDate = value.ToString();
+                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                BadgeUpdateSettings.Key = settingsKey;
+                BadgeUpdateSettings.Value = badgeDate;
+                db.InsertOrReplace(BadgeUpdateSettings);
+            }
+        }
+
         public static DateTime LastActionDate
         //Last action check date in GMT (get/set universal time)
         {
