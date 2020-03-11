@@ -269,6 +269,41 @@ namespace DABApp
             }
         }
 
+        public static DateTime BadgeProgressUpdatesDate
+        //Last badge progress check date in GMT (get/set universal time)
+        {
+            get
+            {
+                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+
+                if (BadgeProgressSettings == null)
+                {
+                    DateTime progressDate = DateTime.MinValue.ToUniversalTime();
+                    BadgeProgressSettings = new dbSettings();
+                    BadgeProgressSettings.Key = settingsKey;
+                    BadgeProgressSettings.Value = progressDate.ToString();
+                    db.InsertOrReplace(BadgeProgressSettings);
+                    return progressDate;
+                }
+                else
+                {
+                    return DateTime.Parse(BadgeProgressSettings.Value);
+                }
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                string progressDate = value.ToString();
+                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                BadgeProgressSettings.Key = settingsKey;
+                BadgeProgressSettings.Value = progressDate;
+                db.InsertOrReplace(BadgeProgressSettings);
+            }
+        }
+
         public static DateTime LastActionDate
         //Last action check date in GMT (get/set universal time)
         {
