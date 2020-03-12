@@ -20,7 +20,7 @@ namespace DABApp
 			pages = new List<string>();
 			pages.Add("About");
 			pages.Add("Settings");
-            pages.Add("Send Audio Recording");
+			pages.Add("Send Audio Recording");
 			InitializeComponent();
 
 			// You must set IsFullScreen in this case, 
@@ -120,7 +120,11 @@ namespace DABApp
                     await Navigation.PopToRootAsync();
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
-                case "Prayer Wall":
+				case "Achievements":
+					await Navigation.PopToRootAsync();
+					if(Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+					break;
+				case "Prayer Wall":
                     if (Device.Idiom == TargetIdiom.Tablet)
                     {
                         await Navigation.PushAsync(new DabForumTabletTopicPage(view));

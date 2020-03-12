@@ -78,9 +78,9 @@ namespace DABApp.DabSockets
 
             DabGraphQlMessage?.Invoke(this, e);
 
-            if (e.Message.Contains("updatedProgress"))
+            foreach (var item in ContentConfig.Instance.views)
             {
-                System.Diagnostics.Debug.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(item.title);
             }
 
             try

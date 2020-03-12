@@ -171,6 +171,7 @@ namespace DABApp
 		public List<Resource> resources { get; set; }
 		public int id { get; set; } //id of the view, as the nav will reference it
 		public string title { get; set; } //title of the view
+		public string deepLink { get; set; }
 		public Banner banner { get; set; } //banner information for the view
 		public string description { get; set; } //HTML text
 		public string content { get; set; } //HTML text
