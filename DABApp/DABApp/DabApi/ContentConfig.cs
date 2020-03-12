@@ -211,7 +211,6 @@ namespace DABApp
 		public List<View> views { get; set; } //views
         public List<Versions> versions { get; set; }
         public AppSettings app_settings { get; set; }
-
 		public Options options { get; set; }
 
 		public async Task cachImages() 
@@ -377,7 +376,8 @@ namespace DABApp
     {
         public int token_life { get; set; }
         public int log_position_interval { get; set; }
-    }
+		public int progress_year { get; set; }
+	}
 
     /* Converter class to convert short month names to long names */
     public static class MonthConverter

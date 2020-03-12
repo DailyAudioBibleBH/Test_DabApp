@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20200245e";
+                return "20200246e";
             }
         }
 
@@ -250,7 +250,7 @@ namespace DABApp
                     BadgeUpdateSettings.Key = settingsKey;
                     BadgeUpdateSettings.Value = badgeDate.ToString();
                     db.InsertOrReplace(BadgeUpdateSettings);
-                    return badgeDate;
+                    return DateTime.Parse(BadgeUpdateSettings.Value);
                 }
                 else
                 {
@@ -284,7 +284,7 @@ namespace DABApp
                     BadgeProgressSettings.Key = settingsKey;
                     BadgeProgressSettings.Value = progressDate.ToString();
                     db.InsertOrReplace(BadgeProgressSettings);
-                    return progressDate;
+                    return DateTime.Parse(BadgeProgressSettings.Value);
                 }
                 else
                 {

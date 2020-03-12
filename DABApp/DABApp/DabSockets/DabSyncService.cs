@@ -78,6 +78,11 @@ namespace DABApp.DabSockets
 
             DabGraphQlMessage?.Invoke(this, e);
 
+            if (e.Message.Contains("updatedProgress"))
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
             try
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
