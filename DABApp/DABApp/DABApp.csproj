@@ -59,6 +59,9 @@
     <None Update="DabUI\DabAboutPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="DabUI\DabAchievementsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="DabUI\DabAddressManagementPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -179,5 +182,10 @@
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="DabUI\DabAchievementsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

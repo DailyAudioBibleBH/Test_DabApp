@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
+using DABApp.DabUI;
 using FFImageLoading;
 using SlideOverKit;
 using Xamarin.Forms;
@@ -20,6 +21,7 @@ namespace DABApp
 			pages = new List<string>();
 			pages.Add("About");
 			pages.Add("Settings");
+			pages.Add("Achievements");
 			pages.Add("Send Audio Recording");
 			InitializeComponent();
 
@@ -108,6 +110,8 @@ namespace DABApp
 			Nav item = (Nav)e.Item;
             View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
 
+			var test = ContentConfig.Instance.views;
+
 
             //Send info to Firebase analytics that user tapped a menu item
             var info = new Dictionary<string, string>();
@@ -121,7 +125,7 @@ namespace DABApp
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
 				case "Achievements":
-					await Navigation.PopToRootAsync();
+					await Navigation.PushAsync(new DabAchievementsPage());
 					if(Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
 					break;
 				case "Prayer Wall":
