@@ -22,6 +22,7 @@ namespace DABApp
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        static SQLiteConnection db = DabData.database;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -386,20 +387,20 @@ namespace DABApp
                         break;
                     case 2:
                         //Use display alert with cancel and ok buttons
-                        var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
-                        mr2.ContinueWith((t1) =>
-                        {
-                            switch (t1.Result)
-                            {
-                                case true:
-                                    modeResponseCode = mode.buttons.Last().key;
-                                    break;
-                                case false:
-                                    modeResponseCode = mode.buttons.First().key;
-                                    break;
-                            }
-                            HandleModeResponse(modeResponseCode);
-                        });
+                        //var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+                        //mr2.ContinueWith((t1) =>
+                        //{
+                        //    switch (t1.Result)
+                        //    {
+                        //        case true:
+                        //            modeResponseCode = mode.buttons.Last().key;
+                        //            break;
+                        //        case false:
+                        //            modeResponseCode = mode.buttons.First().key;
+                        //            break;
+                        //    }
+                        //    HandleModeResponse(modeResponseCode);
+                        //});
 
                         break;
                     default:
@@ -418,46 +419,46 @@ namespace DABApp
         private void HandleModeResponse(string modeResponseCode)
         //Handle the user's response to the maintenance mode prompt 
         {
-            switch (modeResponseCode)
-            {
-                case "update": //update app
-                               //Open up a page to update the app.
-                    var url = string.Empty;
-                    var appId = string.Empty;
-                    if (Device.RuntimePlatform == "iOS") //Apple
-                    {
-                        appId = "1215838266"; //TODO: Verify this is the right code
-                        url = $"itms-apps://itunes.apple.com/app/id{appId}";
-                    }
-                    else //Android
-                    {
-                        //TODO: Test this
-                        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
-                        url = $"https://play.google.com/store/apps/details?id={appId}";
-                    }
+            //switch (modeResponseCode)
+            //{
+                //case "update": //update app
+                //               //Open up a page to update the app.
+                //    var url = string.Empty;
+                //    var appId = string.Empty;
+                //    if (Device.RuntimePlatform == "iOS") //Apple
+                //    {
+                //        appId = "1215838266"; //TODO: Verify this is the right code
+                //        url = $"itms-apps://itunes.apple.com/app/id{appId}";
+                //    }
+                //    else //Android
+                //    {
+                //        //TODO: Test this
+                //        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
+                //        url = $"https://play.google.com/store/apps/details?id={appId}";
+                //    }
 
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        //Does not do anything on iOS Debugger.
-                        Device.OpenUri(new Uri(url));
-                    });
-                    DisableAllInputs("Restart app after updating.");
-
-
-                    break;
-                case "guest": //login as guest
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        OnGuestLogin(null, null);
-                    });
-                    break;
-                case "ok": //ok button signifies it's currently offline
-                           //Disable inputs
-                    DisableAllInputs("Shutdown app and try again later.");
-                    break;
+                //    Device.BeginInvokeOnMainThread(() =>
+                //    {
+                //        //Does not do anything on iOS Debugger.
+                //        Device.OpenUri(new Uri(url));
+                //    });
+                //    DisableAllInputs("Restart app after updating.");
 
 
-            }
+                //    break;
+                //case "guest": //login as guest
+                //    Device.BeginInvokeOnMainThread(() =>
+                //    {
+                //        OnGuestLogin(null, null);
+                //    });
+                //    break;
+                //case "ok": //ok button signifies it's currently offline
+                //           //Disable inputs
+                //    DisableAllInputs("Shutdown app and try again later.");
+                //    break;
+
+
+            //}
         }
 
         private void DisableAllInputs(string MainButtonText)
@@ -497,6 +498,7 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
