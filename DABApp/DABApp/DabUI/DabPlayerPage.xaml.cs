@@ -152,7 +152,7 @@ namespace DABApp
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                   BindControls(true, true);
+                    BindControls(true, true);
                 });
 
             });
@@ -170,14 +170,28 @@ namespace DABApp
 
             nextEpisode = list.OrderBy(x => x.Episode.PubDate).FirstOrDefault(x => x.Episode.PubDate > Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
             previousEpisode = list.OrderBy(x => x.Episode.PubDate).LastOrDefault(x => x.Episode.PubDate < Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            //prep next episode link
             if (nextEpisode == null)
+            {
                 nextButton.Opacity = .5;
+                nextButton.IsEnabled = false;
+            }
             else
+            {
                 nextButton.Opacity = 1;
+                nextButton.IsEnabled = true;
+            }
+            //prep previous episode link
             if (previousEpisode == null)
+            {
                 previousButton.Opacity = .5;
+                previousButton.IsEnabled = false;
+            }
             else
+            {
                 previousButton.Opacity = 1;
+                previousButton.IsEnabled = true;
+            }
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -510,7 +524,7 @@ namespace DABApp
                 {
                     player.Seek(SeekBar.Value);
                 };
-                
+
                 SeekBar.TouchUp += (object sender, EventArgs e) =>
                 {
                     player.Seek(SeekBar.Value);
