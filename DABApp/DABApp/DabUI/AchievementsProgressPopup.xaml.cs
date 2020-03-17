@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace DABApp.DabUI
 {
-    public partial class AchievementsProgressPopup : ContentView
+    public partial class AchievementsProgressPopup
     {
         public AchievementsProgressPopup()
         {

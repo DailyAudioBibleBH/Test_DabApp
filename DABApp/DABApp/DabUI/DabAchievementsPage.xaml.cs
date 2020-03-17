@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace DABApp.DabUI
+namespace DABApp
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DabAchievementsPage : ContentPage
-    {
-        public DabAchievementsPage()
-        {
-            InitializeComponent();
-        }
-    }
+    public partial class DabAchievementsPage : DabBaseContentPage
+	{
+		public DabAchievementsPage()
+		{
+			InitializeComponent();
+			DabViewHelper.InitDabForm(this);
+			NavigationPage.SetHasBackButton(this, false);
+		}
+	}
 }

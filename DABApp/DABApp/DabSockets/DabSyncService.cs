@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using DABApp.DabUI;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rg.Plugins.Popup.Services;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -245,11 +247,16 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.updatedBadges != null)
                 {
-                    //add badges to db
-                    foreach (var item in root.payload.data.updatedBadges.edges)
+                    if (root.payload?.data?.updatedBadges.edges.Count() > 0)
                     {
-                        await adb.InsertOrReplaceAsync(item);
-                    };
+                        //add badges to db
+                        foreach (var item in root.payload.data.updatedBadges.edges)
+                        {
+                            await adb.InsertOrReplaceAsync(item);
+                        };
+                        PopupNavigation.PushAsync(new AchievementsProgressPopup());
+                    }
+                    
                     dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
                     if (sBadgeUpdateSettings == null)
                     {
@@ -259,7 +266,7 @@ namespace DABApp.DabSockets
                     sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
                     db.InsertOrReplace(sBadgeUpdateSettings);
                 }
-                else if (root.payload?.data?.updatedProgress != null)
+                else if (root.payload?.data?.updatedProgress.edges != null)
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {

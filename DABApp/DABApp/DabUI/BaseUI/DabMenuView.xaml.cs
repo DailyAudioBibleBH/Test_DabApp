@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
-using DABApp.DabUI;
 using FFImageLoading;
 using SlideOverKit;
 using Xamarin.Forms;
@@ -124,11 +123,11 @@ namespace DABApp
                     await Navigation.PopToRootAsync();
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
-				case "Achievements":
-					await Navigation.PushAsync(new DabAchievementsPage());
-					if(Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-					break;
-				case "Prayer Wall":
+                case "Achievements":
+                    await Navigation.PushAsync(new DabAchievementsPage());
+                    if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+                    break;
+                case "Prayer Wall":
                     if (Device.Idiom == TargetIdiom.Tablet)
                     {
                         await Navigation.PushAsync(new DabForumTabletTopicPage(view));

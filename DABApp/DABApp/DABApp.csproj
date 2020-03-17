@@ -188,4 +188,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="DabUI\AchievementsProgressPopup.xaml.cs">
+      <DependentUpon>AchievementsProgressPopup.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

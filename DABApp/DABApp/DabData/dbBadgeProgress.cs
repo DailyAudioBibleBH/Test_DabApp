@@ -9,13 +9,13 @@ namespace DABApp
     {
         [PrimaryKey, NotNull]
         public int id { get; set; }
-        [NotNull]
+        //[NotNull]
         public string data { get; set; }
         [Indexed, NotNull]
         public int badgeId { get; set; }
-        [NotNull]
+        //[NotNull]
         public double percent { get; set; }
-        [NotNull]
+        //[NotNull]
         public int year { get; set; }
         //[NotNull]
         public bool? seen { get; set; }

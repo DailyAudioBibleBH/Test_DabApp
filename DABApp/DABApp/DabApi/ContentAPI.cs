@@ -47,6 +47,7 @@ namespace DABApp
                     else throw new Exception("Request for Content API timed out.");
                 }).Wait();//Appended the GUID to avoid caching.
                 var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
+                var test = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
                 if (ContentSettings == null || DataSettings == null)
                 {
                     ContentSettings = new dbSettings();
