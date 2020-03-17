@@ -371,6 +371,8 @@ namespace DABApp
         {
             try
             {
+                player.Pause(); //should save position
+
                 //Load the episode
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
@@ -409,6 +411,7 @@ namespace DABApp
                 if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
                 {
                     episode = newEp;
+                    episode.Episode.ResetUserData();
 
                     //Bind episode data to the new episode (not the player though)
                     BindControls(true, false);
@@ -465,6 +468,9 @@ namespace DABApp
         {
             try
             {
+
+                player.Pause();//should save position
+
                 //Load the episode
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
@@ -506,6 +512,7 @@ namespace DABApp
                 if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
                 {
                     episode = newEp;
+                    episode.Episode.ResetUserData();
 
                     //Bind episode data to the new episode (not the player though)
                     BindControls(true, false);

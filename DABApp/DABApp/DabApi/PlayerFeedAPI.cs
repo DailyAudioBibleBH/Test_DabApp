@@ -457,8 +457,10 @@ namespace DABApp
             {
                 var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
                 episode.UserData.CurrentPosition = NewStopTime;
+                Debug.WriteLine($"New Stop  Time: {NewStopTime / 60}");
                 episode.remaining_time = NewRemainingTime.ToString(); //TODO was a string - did making this a double break it?
                 await adb.UpdateAsync(episode);
+                await adb.UpdateAsync(episode.UserData);
                 //if (Device.Idiom == TargetIdiom.Tablet)
                 //{
                 Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
