@@ -14,12 +14,12 @@ namespace DABApp.iOS
 		protected override void OnElementChanged(ElementChangedEventArgs<ProgressBar> e)
 		{
 			base.OnElementChanged(e);
-            if (Control != null)
-            {
-                Control.ProgressTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
-                Control.TrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
-            }
-            
+			if (Control != null)
+			{
+				Control.ProgressTintColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
+				Control.TrackTintColor = ((Color)App.Current.Resources["NonScrollingListViewColor"]).ToUIColor();
+			}
+
 		}
 	}
 }

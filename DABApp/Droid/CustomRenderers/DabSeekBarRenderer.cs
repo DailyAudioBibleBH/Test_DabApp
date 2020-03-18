@@ -20,7 +20,7 @@ namespace DABApp.Droid
         protected override void OnLayout(bool changed, int l, int t, int r, int b)
         {
             base.OnLayout(changed, l, t, r, b);
-
+            Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
             var element = (DabSeekBar)Element;
             if (Control != null)
             {
