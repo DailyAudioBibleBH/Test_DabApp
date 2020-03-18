@@ -37,7 +37,14 @@ namespace DABApp
 
                 if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
                 {
-                    MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
+                    if (GlobalResources.GetUserEmail() == "Guest")
+                    {
+                        MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if not logged in
+                    }
+                    else
+                    {
+                        MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
+                    }
                 }
                 else
                 {
