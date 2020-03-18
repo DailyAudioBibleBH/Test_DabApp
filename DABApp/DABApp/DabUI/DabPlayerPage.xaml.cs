@@ -397,7 +397,8 @@ namespace DABApp
                 {
                     Episode.Episode.UserData.HasJournal = true;
                     Episode.HasJournal = true;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
                     await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
                 }
             }
