@@ -580,12 +580,19 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = null)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
-                var actionLog = new dbPlayerActions();
-                actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
+                var actionLog = new DABApp.dbPlayerActions();
+                if (hasEmptyJournal == true)
+                {
+                    actionLog.ActionDateTime = null;
+                }
+                else
+                {
+                    actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
+                }
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
@@ -616,6 +623,7 @@ namespace DABApp
                 {
 
                     //Android - add nw
+
                     db.Insert(actionLog);
                 }
 

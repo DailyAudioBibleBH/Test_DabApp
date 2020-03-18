@@ -17,11 +17,11 @@ namespace DABApp
             foreach (var log in actions) {
                 PlayerEpisodeAction action = new PlayerEpisodeAction();
                 action.entity_id = log.EpisodeId.ToString();
-                var month = log.ActionDateTime.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
-                var time = log.ActionDateTime.ToLocalTime().ToString("HH:mm:ss");
-                var offset = log.ActionDateTime.ToLocalTime().Offset.ToString().Replace(":", "");
+                var month = log.ActionDateTime.Value.ToLocalTime().ToString("MMM", CultureInfo.InvariantCulture);
+                var time = log.ActionDateTime.Value.ToLocalTime().ToString("HH:mm:ss");
+                var offset = log.ActionDateTime.Value.ToLocalTime().Offset.ToString().Replace(":", "");
                 offset = offset.Substring(0, offset.Length - 2);
-                action.entity_datetime = $"{log.ActionDateTime.ToLocalTime().DayOfWeek.ToString().Substring(0, 3)} {month} {log.ActionDateTime.ToLocalTime().Day} {log.ActionDateTime.ToLocalTime().Year} {time} GMT{offset}";
+                action.entity_datetime = $"{log.ActionDateTime.Value.ToLocalTime().DayOfWeek.ToString().Substring(0, 3)} {month} {log.ActionDateTime.Value.ToLocalTime().Day} {log.ActionDateTime.Value.ToLocalTime().Year} {time} GMT{offset}";
                 action.entity_type = log.entity_type;
                 switch (log.ActionType)
                 {

@@ -221,7 +221,7 @@ namespace DABApp
             }
             Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
             {
-                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null, null);
                 return true;
             });
         }
@@ -392,14 +392,21 @@ namespace DABApp
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
             {
                 journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
-                //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-                if (Episode.Episode.UserData.HasJournal == false)
+                if (JournalContent.Text.Length == 0)
+                {
+                    Episode.Episode.UserData.HasJournal = false;
+                    Episode.HasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, true);
+                }
+                else if (Episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
                     Episode.Episode.UserData.HasJournal = true;
                     Episode.HasJournal = true;
 
                     await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, null);
                 }
             }
         }
@@ -693,7 +700,7 @@ namespace DABApp
             Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite, null);
         }
 
         //User listens to (or unlistens to) an episode
@@ -706,7 +713,7 @@ namespace DABApp
             Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
             await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo, null, null);
 
             //TODO: Bind accessibiliyt text
         }
