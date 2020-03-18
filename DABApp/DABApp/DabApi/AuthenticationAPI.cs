@@ -738,15 +738,24 @@ namespace DABApp
                         Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
                         try
                         {
-                            //Send last action query to the websocket
-                            Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                            var updateEpisodesQuery = "{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                            var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
-                            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
-                            DabSyncService.Instance.Send(JsonIn);
+                            if (GlobalResources.GetUserEmail() != "Guest")
+                            {
+                                //Send last action query to the websocket
+                                Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
+                                var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                                var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
+                                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
+                                DabSyncService.Instance.Send(JsonIn);
 
-                            notGetting = true;
-                            return true;
+                                notGetting = true;
+                                return true;
+                            }
+                            else
+                            {
+                                notGetting = true;
+                                return false;
+                            }
+                            
                         }
                         catch (Exception e)
                         {
