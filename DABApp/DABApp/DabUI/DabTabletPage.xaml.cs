@@ -878,14 +878,24 @@ namespace DABApp
             if (JournalContent.IsFocused)
             {
                 journal.UpdateJournal(episode.Episode.PubDate, JournalContent.Text);
-                if (episode.Episode.UserData.HasJournal == false)
+                if (JournalContent.Text.Length == 0)
+                {
+                    episode.Episode.UserData.HasJournal = false;
+                    episode.HasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, true);
+                }
+                else if (episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
                     episode.Episode.UserData.HasJournal = true;
                     episode.HasJournal = true;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, null);
                 }
             }
+            
         }
 
         //TODO: Replace for journal?
