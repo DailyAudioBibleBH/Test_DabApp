@@ -396,20 +396,20 @@ namespace DABApp
                         break;
                     case 2:
                         //Use display alert with cancel and ok buttons
-                        //var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
-                        //mr2.ContinueWith((t1) =>
-                        //{
-                        //    switch (t1.Result)
-                        //    {
-                        //        case true:
-                        //            modeResponseCode = mode.buttons.Last().key;
-                        //            break;
-                        //        case false:
-                        //            modeResponseCode = mode.buttons.First().key;
-                        //            break;
-                        //    }
-                        //    HandleModeResponse(modeResponseCode);
-                        //});
+                        var mr2 = Application.Current.MainPage.DisplayAlert(mode.title, mode.content, mode.buttons.Last().value, mode.buttons.First().value); //Accept - last, Cancel = first
+                        mr2.ContinueWith((t1) =>
+                        {
+                            switch (t1.Result)
+                            {
+                                case true:
+                                    modeResponseCode = mode.buttons.Last().key;
+                                    break;
+                                case false:
+                                    modeResponseCode = mode.buttons.First().key;
+                                    break;
+                            }
+                            HandleModeResponse(modeResponseCode);
+                        });
 
                         break;
                     default:
