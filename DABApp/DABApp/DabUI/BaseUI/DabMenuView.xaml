@@ -36,7 +36,8 @@
 			</local:ImageCircle>-->
                 <Button x:Name="SignUp" Text="Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
 
-                <Label x:Name="UserName" 
+                <Label x:Name="UserName"
+                       Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"
                        TextColor="White" 
                        IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" 
                        HorizontalOptions="StartAndExpand" 

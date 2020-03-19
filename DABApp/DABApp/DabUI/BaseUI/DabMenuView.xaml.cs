@@ -40,7 +40,6 @@ namespace DABApp
             BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
             OnAvatarChanged(this, new EventArgs());
 			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
-			UserName.Text = GlobalResources.GetUserName();
 		}
 
 		void OnSignUp(object o, EventArgs e) {
