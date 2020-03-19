@@ -70,6 +70,8 @@ namespace DABApp
             }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+                //Check with Chet about this, believe this should update episode list
+                Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
             });                      
         }       
