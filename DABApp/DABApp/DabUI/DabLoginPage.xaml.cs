@@ -69,6 +69,15 @@ namespace DABApp
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+
+            MessagingCenter.Subscribe<string>("LoginUI", "StopWaitUI", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                });
+            });
             if (GraphQlLoginComplete)
             {
                 return; //get out of here once login is complete;

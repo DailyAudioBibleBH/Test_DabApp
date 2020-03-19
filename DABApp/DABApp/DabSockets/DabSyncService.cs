@@ -346,6 +346,10 @@ namespace DABApp.DabSockets
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
+            if (!sock.IsConnected)
+            {
+                MessagingCenter.Send<string>("LoginUI", "StopWaitUI");
+            }
         }
 
         private void Sock_ErrorOccured(string eventName, object data)

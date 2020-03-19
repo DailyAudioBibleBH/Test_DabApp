@@ -23,7 +23,7 @@ namespace DABApp.Droid
             base.OnLayout(changed, l, t, r, b);
             Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 
-            Bitmap img = BitmapFactory.DecodeResource(Resources, Resource.Drawable.abc_seekbar_thumb_material);
+            Bitmap img = BitmapFactory.DecodeResource(Resources, Resource.Drawable.circle);
             Drawable d = new BitmapDrawable(Resources, img);
             //seek_bar.ProgressDrawable = d;
 
