@@ -124,7 +124,7 @@ namespace DABApp
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
                 case "Achievements":
-                    await Navigation.PushAsync(new DabAchievementsPage());
+                    await Navigation.PushAsync(new DabAchievementsPage(view));
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
                 case "Prayer Wall":
