@@ -1131,7 +1131,7 @@ namespace DABApp
             labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
-            await AuthenticationAPI.PostActionLogs();
+            await AuthenticationAPI.PostActionLogs(false);
             await AuthenticationAPI.GetMemberData();
             if (episode == null && Episodes.Count() > 0)
             {

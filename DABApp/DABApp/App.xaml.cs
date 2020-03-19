@@ -73,9 +73,9 @@ namespace DABApp
                 DabSyncService.Instance.Disconnect(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
-                    AuthenticationAPI.PostActionLogs();
+                    AuthenticationAPI.PostActionLogs(false);
                 }
-                else await AuthenticationAPI.PostActionLogs();
+                else await AuthenticationAPI.PostActionLogs(false);
 
             }
             catch (Exception ex)

@@ -580,19 +580,12 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
                 var actionLog = new DABApp.dbPlayerActions();
-                if (hasEmptyJournal == true)
-                {
-                    actionLog.ActionDateTime = null;
-                }
-                else
-                {
-                    actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
-                }
+                actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
@@ -632,7 +625,11 @@ namespace DABApp
                         //Add new episode action log
                     await adb.InsertAsync(actionLog);
                 }
-                await PostActionLogs();
+                if (hasEmptyJournal == null)
+                {
+                    hasEmptyJournal = false;
+                }
+                await PostActionLogs((bool)hasEmptyJournal);
             }
             catch (Exception e)
             {
@@ -640,7 +637,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
+        public static async Task<string> PostActionLogs(bool hasEmptyJournal)//Posts action logs to API in order to keep user episode location on multiple devices.
         {
             if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
@@ -694,9 +691,10 @@ namespace DABApp
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
                                     case "entryDate": //When event happened mutation
-                                        //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                                         var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
+                                        if (hasEmptyJournal == true)
+                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
                                         var entPayload = new DabGraphQlPayload(entQuery, variables);
                                         var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
 

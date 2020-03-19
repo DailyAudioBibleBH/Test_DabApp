@@ -149,7 +149,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
-            await AuthenticationAPI.PostActionLogs();
+            await AuthenticationAPI.PostActionLogs(false);
             //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
