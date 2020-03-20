@@ -11,22 +11,21 @@
                     <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
                 </StackLayout>
             </RelativeLayout>
-            <local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{Binding Source={x:Static local:GlobalResources.Instance}, Path=FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" HasUnevenRows="true" VerticalOptions="FillAndExpand">
-                <local:NonScrollingFlowListView.FlowColumnTemplate>
+            <ListView x:Name="achievementListView">
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout Padding="10" Spacing="0" Orientation="Horizontal" Opacity="{Binding IsNotSelected}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding title}">
-                            <ff:CachedImage Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
-                                <ff:CachedImage.Source>
-                                    <UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
-                                </ff:CachedImage.Source>
-                            </ff:CachedImage>
-                            <StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
-                                <Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
+                        <ViewCell>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                                <Image></Image>
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
+                                    <Label></Label>
+                                    <Label></Label>
+                                </StackLayout>
                             </StackLayout>
-                        </StackLayout>
+                        </ViewCell>
                     </DataTemplate>
-                </local:NonScrollingFlowListView.FlowColumnTemplate>
-            </local:NonScrollingFlowListView>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
