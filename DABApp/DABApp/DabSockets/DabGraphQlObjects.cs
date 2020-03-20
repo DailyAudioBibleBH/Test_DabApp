@@ -52,6 +52,23 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateToken updateToken { get; set; }
         public DabGraphQlUpdatedBadges updatedBadges { get; set; }
         public DabGraphQlUpdatedProgress updatedProgress { get; set; }
+        public DabGraphQlProgressUpdated progressUpdated { get; set; }
+    }
+
+    public class DabGraphQlProgressUpdated
+    {
+        public DabGraphQlProgress progress { get; set; }
+    }
+
+    public class DabGraphQlProgress
+    {
+        public int id { get; set; }
+        public int badgeId { get; set; }
+        public int percent { get; set; }
+        public int year { get; set; }
+        public bool seen { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 
     public class DabGraphQlUpdatedProgress

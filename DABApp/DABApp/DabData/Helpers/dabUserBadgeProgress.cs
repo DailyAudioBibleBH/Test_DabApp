@@ -6,12 +6,13 @@ namespace DABApp.Helpers
 {
     public class dabUserBadgeProgress
     {
-        dbBadges badge;
-        dbBadgeProgress progress;
+        public dbBadges Badge { get; set; }
+        public dbBadgeProgress Progress { get; set; }
+
         public dabUserBadgeProgress(dbBadges badge, dbBadgeProgress progress)
         {
-            this.badge = badge;
-            this.progress = progress;
+            this.Badge = badge;
+            this.Progress = progress;
         }
     }
 }

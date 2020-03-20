@@ -9,6 +9,8 @@ namespace DABApp
     public class dbBadges
     {
         [PrimaryKey, NotNull]
+        public int id { get; set; }
+        [NotNull]
         public int badgeId { get; set; }
         [NotNull]
         public string name { get; set; }

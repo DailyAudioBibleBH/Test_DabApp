@@ -254,7 +254,6 @@ namespace DABApp.DabSockets
                         {
                             await adb.InsertOrReplaceAsync(item);
                         };
-                        PopupNavigation.PushAsync(new AchievementsProgressPopup());
                     }
                     
                     dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
@@ -281,6 +280,10 @@ namespace DABApp.DabSockets
                     //Update date last time checked for badges
                     sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
                     db.InsertOrReplace(sBadgeProgressSettings);
+                }
+                else if (root.payload?.data?.progressUpdated?.progress != null)
+                {
+                    PopupNavigation.PushAsync(new AchievementsProgressPopup());
                 }
             }
             catch (Exception ex)

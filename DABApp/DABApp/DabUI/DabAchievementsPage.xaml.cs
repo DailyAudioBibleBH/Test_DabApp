@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using DABApp.Helpers;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,15 +36,23 @@ namespace DABApp
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
-			List<dbBadgeProgress> dbBadgeProgress = db.Table<dbBadgeProgress>().ToList();
+			List<dbBadgeProgress> dbBadgeProgressList = db.Table<dbBadgeProgress>().ToList();
+
+			IEnumerable<dabUserBadgeProgress> queryBadges =
+			from badge in dbBadgeList
+			let badgeid = badge.id
+			from progress in dbBadgeProgressList
+			let progressbadgeid = progress.badgeId
+			where badgeid == progressbadgeid
+			select new dabUserBadgeProgress(badge, progress)
+			{
+				Badge = badge,
+				Progress = progress
+			};
+
+			var test = queryBadges.ToList();
 
 			var breakpoint = "";
-			//List<dbBadges> badgeList = new List<dbBadges>();
-
-			//foreach (var item in dbbadgeList)
-			//{
-			//	badgeList.Add(item);
-			//}
 		}
 	}
 }
