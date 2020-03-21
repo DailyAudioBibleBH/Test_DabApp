@@ -11,7 +11,7 @@
                     <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
                 </StackLayout>
             </RelativeLayout>
-            <ListView x:Name="achievementListView" RowHeight="100" SeparatorVisibility="Default">
+            <ListView x:Name="achievementListView" RowHeight="100" SeparatorVisibility="Default" Margin="10, 0, 10, 0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -20,6 +20,7 @@
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
+                                    <ProgressBar Progress="{Binding Progress.percent}" Margin="0, 0, 30, 0" ProgressColor="Blue"/>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>
