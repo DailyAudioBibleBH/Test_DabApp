@@ -2,6 +2,7 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,6 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = ContentConfig.Instance.views.Single(x => x.id == 132262); //TODO: Find this using a key vs. a specific number
 			BindingContext = AchievementsView;
-			//_resource = AchievementsView.resources[0];
 
 			banner.Source = new UriImageSource
 			{
@@ -32,13 +32,16 @@ namespace DABApp
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
 
+            //Connection to db
 			SQLiteConnection db = DabData.database;
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
+            //separate badge and progress list from db
 			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
 			List<dbBadgeProgress> dbBadgeProgressList = db.Table<dbBadgeProgress>().ToList();
 
-			IEnumerable<dabUserBadgeProgress> queryBadges =
+            //find badges that have progress
+			IEnumerable<dabUserBadgeProgress> queryBadgesWithProgress =
 			from badge in dbBadgeList
 			let badgeid = badge.id
 			from progress in dbBadgeProgressList
@@ -50,8 +53,8 @@ namespace DABApp
 				Progress = progress
 			};
 
-			var badgesWithProgress = queryBadges.ToList();
-			var badgesWithoutProgress = dbBadgeList.Where(p => queryBadges.All(p2 => p2.Progress.badgeId != p.id)).ToList();
+			var badgesWithProgress = queryBadgesWithProgress.ToList();
+			var badgesWithoutProgress = dbBadgeList.Where(p => queryBadgesWithProgress.All(p2 => p2.Progress.badgeId != p.id)).ToList();
 
             foreach (var item in badgesWithoutProgress)
             {
@@ -60,10 +63,10 @@ namespace DABApp
 				badgesWithProgress.Add(newItem);
             }
 
-			var test = badgesWithProgress;
+            //combined list of both badges with progress and badges with empty progress to bind to UI
+			ObservableCollection<dabUserBadgeProgress> achievementsPageList = new ObservableCollection<dabUserBadgeProgress>(badgesWithProgress as List<dabUserBadgeProgress>);
 
-
-			var breakpoint = "";
-		}
+			achievementListView.ItemsSource = achievementsPageList;
+        }
 	}
 }

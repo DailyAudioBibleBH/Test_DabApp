@@ -16,17 +16,16 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
-                                <Image></Image>
+                                <Image Source="{Binding Badge.imageURL}"></Image>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
-                                    <Label></Label>
-                                    <Label></Label>
+                                    <Label Text="{Binding Badge.name}"></Label>
+                                    <Label Text="{Binding Badge.description}"></Label>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
             <ContentView VerticalOptions="EndAndExpand"/>
 		</StackLayout>
 	</ContentPage.Content>
