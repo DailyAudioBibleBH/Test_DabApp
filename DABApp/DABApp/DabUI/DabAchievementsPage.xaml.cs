@@ -50,7 +50,18 @@ namespace DABApp
 				Progress = progress
 			};
 
-			var test = queryBadges.ToList();
+			var badgesWithProgress = queryBadges.ToList();
+			var badgesWithoutProgress = dbBadgeList.Where(p => queryBadges.All(p2 => p2.Progress.badgeId != p.id)).ToList();
+
+            foreach (var item in badgesWithoutProgress)
+            {
+				dbBadgeProgress blankProgress = new dbBadgeProgress();
+				dabUserBadgeProgress newItem = new dabUserBadgeProgress(item, blankProgress);
+				badgesWithProgress.Add(newItem);
+            }
+
+			var test = badgesWithProgress;
+
 
 			var breakpoint = "";
 		}

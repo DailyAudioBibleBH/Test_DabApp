@@ -248,48 +248,56 @@ namespace DABApp
 
         async void OnLogin(object o, EventArgs e)
         {
-            try
+            if (DabSyncService.Instance.IsConnected)
             {
-                Login.IsEnabled = false;
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
-                var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
-                if (result == "Request Sent")
+                try
                 {
-                    //Wait for the reply from GraphQl before proceeding.
-                    GraphQlLoginRequestInProgress = true;
-                }
-
-                else
-                {
-                    activity.IsVisible = false;
-                    activityHolder.IsVisible = false;
-                    if (result.Contains("Error"))
+                    Login.IsEnabled = false;
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activity.IsVisible = true;
+                    activityHolder.IsVisible = true;
+                    var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+                    if (result == "Request Sent")
                     {
-                        if (result.Contains("Http"))
+                        //Wait for the reply from GraphQl before proceeding.
+                        GraphQlLoginRequestInProgress = true;
+                    }
+
+                    else
+                    {
+                        activity.IsVisible = false;
+                        activityHolder.IsVisible = false;
+                        if (result.Contains("Error"))
                         {
-                            await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                            if (result.Contains("Http"))
+                            {
+                                await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                            }
+                            else
+                            {
+                                await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                            }
                         }
                         else
                         {
-                            await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                            await DisplayAlert("Login Failed", result, "OK");
                         }
                     }
-                    else
-                    {
-                        await DisplayAlert("Login Failed", result, "OK");
-                    }
+                    Login.IsEnabled = true;
                 }
-                Login.IsEnabled = true;
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
+                    Navigation.PushAsync(new DabLoginPage());
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Debug.WriteLine(ex.Message);
-                await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
-                Navigation.PushAsync(new DabLoginPage());
+                DabSyncService.Instance.Connect();
             }
+            
         }
 
         void OnForgot(object o, EventArgs e)
@@ -421,46 +429,46 @@ namespace DABApp
         private void HandleModeResponse(string modeResponseCode)
         //Handle the user's response to the maintenance mode prompt 
         {
-            switch (modeResponseCode)
-            {
-                case "update": //update app
-                               //Open up a page to update the app.
-                    var url = string.Empty;
-                    var appId = string.Empty;
-                    if (Device.RuntimePlatform == "iOS") //Apple
-                    {
-                        appId = "1215838266"; //TODO: Verify this is the right code
-                        url = $"itms-apps://itunes.apple.com/app/id{appId}";
-                    }
-                    else //Android
-                    {
-                        //TODO: Test this
-                        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
-                        url = $"https://play.google.com/store/apps/details?id={appId}";
-                    }
+            //switch (modeResponseCode)
+            //{
+            //    case "update": //update app
+            //                   //Open up a page to update the app.
+            //        var url = string.Empty;
+            //        var appId = string.Empty;
+            //        if (Device.RuntimePlatform == "iOS") //Apple
+            //        {
+            //            appId = "1215838266"; //TODO: Verify this is the right code
+            //            url = $"itms-apps://itunes.apple.com/app/id{appId}";
+            //        }
+            //        else //Android
+            //        {
+            //            //TODO: Test this
+            //            appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
+            //            url = $"https://play.google.com/store/apps/details?id={appId}";
+            //        }
 
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        //Does not do anything on iOS Debugger.
-                        Device.OpenUri(new Uri(url));
-                    });
-                    DisableAllInputs("Restart app after updating.");
-
-
-                    break;
-                case "guest": //login as guest
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        OnGuestLogin(null, null);
-                    });
-                    break;
-                case "ok": //ok button signifies it's currently offline
-                           //Disable inputs
-                    DisableAllInputs("Shutdown app and try again later.");
-                    break;
+            //        Device.BeginInvokeOnMainThread(() =>
+            //        {
+            //            //Does not do anything on iOS Debugger.
+            //            Device.OpenUri(new Uri(url));
+            //        });
+            //        DisableAllInputs("Restart app after updating.");
 
 
-            }
+            //        break;
+            //    case "guest": //login as guest
+            //        Device.BeginInvokeOnMainThread(() =>
+            //        {
+            //            OnGuestLogin(null, null);
+            //        });
+            //        break;
+            //    case "ok": //ok button signifies it's currently offline
+            //               //Disable inputs
+            //        DisableAllInputs("Shutdown app and try again later.");
+            //        break;
+
+
+            //}
         }
 
         private void DisableAllInputs(string MainButtonText)
