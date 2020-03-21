@@ -11,15 +11,15 @@
                     <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
                 </StackLayout>
             </RelativeLayout>
-            <ListView x:Name="achievementListView">
+            <ListView x:Name="achievementListView" RowHeight="100" SeparatorVisibility="Default">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal">
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
                                 <Image Source="{Binding Badge.imageURL}"></Image>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
-                                    <Label Text="{Binding Badge.name}"></Label>
-                                    <Label Text="{Binding Badge.description}"></Label>
+                                    <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
+                                    <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>

@@ -64,9 +64,16 @@ namespace DABApp
             }
 
             //combined list of both badges with progress and badges with empty progress to bind to UI
-			ObservableCollection<dabUserBadgeProgress> achievementsPageList = new ObservableCollection<dabUserBadgeProgress>(badgesWithProgress as List<dabUserBadgeProgress>);
-
-			achievementListView.ItemsSource = achievementsPageList;
+			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(badgesWithProgress as List<dabUserBadgeProgress>);
+			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
+            foreach (var item in allAchievementsPageList)
+            {
+                if (item.Badge.visible == true)
+                {
+					visibleAchievementsPageList.Add(item);
+                }
+            }
+			achievementListView.ItemsSource = visibleAchievementsPageList;
         }
 	}
 }
