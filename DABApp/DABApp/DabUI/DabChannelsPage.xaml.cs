@@ -10,6 +10,8 @@ using System.Diagnostics;
 using DABApp.DabSockets;
 using Newtonsoft.Json;
 using SQLite;
+using Rg.Plugins.Popup.Services;
+using DABApp.DabUI;
 
 namespace DABApp
 {
@@ -64,6 +66,7 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
+
         }
 
         void PostLogs()
@@ -137,6 +140,7 @@ namespace DABApp
                 }
                 else
                 {
+                    PopupNavigation.PushAsync(new AchievementsProgressPopup());
                     await Navigation.PushAsync(new DabEpisodesPage(resource));
                 }
 

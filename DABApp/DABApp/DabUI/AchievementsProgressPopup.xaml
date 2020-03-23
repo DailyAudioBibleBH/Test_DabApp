@@ -19,29 +19,16 @@
     <StackLayout
         Margin="12"
         Padding="24"
-        BackgroundColor="WhiteSmoke"
+        BackgroundColor="{StaticResource PageBackgroundColor}"
         HorizontalOptions="Center"
         VerticalOptions="Center">
         <StackLayout>
-            <Label Text="what's up?" />
-            <Entry
-                x:Name="TaskEntry"
-                Placeholder="write them here"
-                TextChanged="TaskEntry_OnTextChanged" />
+            <Label Text="YOU'VE EARNED AN ACHIEVEMENT" FontSize="Small" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="WhiteSmoke" Style="{StaticResource playerLabelStyle}"/>
+            <Image></Image>
+            <Label Text="Pentateuch" Font="Bold" TextColor="White" HorizontalTextAlignment="Center"></Label>
+            <Label Text="Genesis, Exodus, Leviticus, Numbers, Deuteronomy" HorizontalTextAlignment="Center"></Label>
+            <Button x:Name="Share" HeightRequest="40" Text="Share" FontAttributes="Bold" Clicked="OnShare" Style="{StaticResource highlightedButtonStyle}"/>
+            <Button x:Name="Continue" HeightRequest="40" Text="Continue" FontAttributes="Bold" Clicked="OnContinue" BorderColor="DimGray" BackgroundColor="DimGray" Style="{StaticResource highlightedButtonStyle}"/>
         </StackLayout>
-        <StackLayout>
-            <Label Text="Place an exact date and time" />
-            <DatePicker />
-            <TimePicker />
-        </StackLayout>
-        <Button
-            x:Name="TaskButton"
-            BackgroundColor="Crimson"
-            Clicked="Button_OnClicked"
-            CornerRadius="10"
-            FontSize="Large"
-            IsEnabled="False"
-            Text="Add this task now"
-            TextColor="White" />
     </StackLayout>
 </pages:PopupPage>

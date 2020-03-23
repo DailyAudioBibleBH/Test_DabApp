@@ -10,5 +10,16 @@ namespace DABApp.DabUI
         {
             InitializeComponent();
         }
+
+        async void OnShare(object o, EventArgs e)
+        {
+            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent("achievement", "achievement");
+        }
+
+        async void OnContinue(object o, EventArgs e)
+        {
+
+
+        }
     }
 }
