@@ -284,13 +284,13 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.progressUpdated?.progress != null)
                 {
                     DabGraphQlProgress progress = new DabGraphQlProgress(root.payload.data.progressUpdated.progress);
-                    if (progress.percent == 100 && (progress.seen == null || progress.seen == false));
+                    if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
                     {
-                        PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
-                    }
-                    if (progress.seen == null || progress.seen == false)
-                    {
-                        PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
+                        await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
+                        progress.seen = true;
+
+
+                        //make seen
                     }
                 }
             }

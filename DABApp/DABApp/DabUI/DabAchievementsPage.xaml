@@ -16,7 +16,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
-                                <Image Source="{Binding Badge.imageURL}"></Image>
+                                <Image Source="{Binding Badge.imageURL}" HeightRequest="50" WidthRequest="50"></Image>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>

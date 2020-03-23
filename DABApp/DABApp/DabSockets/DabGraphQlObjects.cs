@@ -79,7 +79,13 @@ namespace DABApp.DabSockets
 
         public DabGraphQlProgress(DabGraphQlProgress progress)
         {
-            this.progress = progress;
+            this.id = progress.id;
+            this.badgeId = progress.badgeId;
+            this.percent = progress.percent;
+            this.seen = progress.seen;
+            this.updatedAt = progress.updatedAt;
+            this.createdAt = progress.createdAt;
+            this.year = progress.year;
         }
     }
 

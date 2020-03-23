@@ -27,7 +27,7 @@
             <Image x:Name="AchievementImage"></Image>
             <Label x:Name="Title" Font="Bold" TextColor="White" HorizontalTextAlignment="Center"></Label>
             <Label x:Name="Description" HorizontalTextAlignment="Center"></Label>
-            <Button x:Name="Share" HeightRequest="40" Text="Share" FontAttributes="Bold" Clicked="OnShare" Style="{StaticResource highlightedButtonStyle}"/>
+            <Button x:Name="ShareButton" HeightRequest="40" Text="Share" FontAttributes="Bold" Clicked="OnShare" Style="{StaticResource highlightedButtonStyle}"/>
             <Button x:Name="Continue" HeightRequest="40" Text="Continue" FontAttributes="Bold" Clicked="OnContinue" BorderColor="DimGray" BackgroundColor="DimGray" Style="{StaticResource highlightedButtonStyle}"/>
         </StackLayout>
     </StackLayout>
