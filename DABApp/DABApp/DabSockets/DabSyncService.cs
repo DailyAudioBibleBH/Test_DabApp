@@ -265,7 +265,7 @@ namespace DABApp.DabSockets
                     sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
                     db.InsertOrReplace(sBadgeUpdateSettings);
                 }
-                else if (root.payload?.data?.updatedProgress.edges != null)
+                else if (root.payload?.data?.updatedProgress != null)
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {
@@ -283,7 +283,15 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.progressUpdated?.progress != null)
                 {
-                    PopupNavigation.PushAsync(new AchievementsProgressPopup());
+                    DabGraphQlProgress progress = new DabGraphQlProgress(root.payload.data.progressUpdated.progress);
+                    if (progress.percent == 100 && (progress.seen == null || progress.seen == false));
+                    {
+                        PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
+                    }
+                    if (progress.seen == null || progress.seen == false)
+                    {
+                        PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
+                    }
                 }
             }
             catch (Exception ex)

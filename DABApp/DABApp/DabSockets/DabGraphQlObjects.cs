@@ -62,13 +62,25 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlProgress
     {
+        private DabGraphQlProgress progress;
+
         public int id { get; set; }
         public int badgeId { get; set; }
         public int percent { get; set; }
         public int year { get; set; }
-        public bool seen { get; set; }
+        public bool? seen { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
+
+        public DabGraphQlProgress()
+        {
+
+        }
+
+        public DabGraphQlProgress(DabGraphQlProgress progress)
+        {
+            this.progress = progress;
+        }
     }
 
     public class DabGraphQlUpdatedProgress
@@ -143,7 +155,7 @@ namespace DABApp.DabSockets
     public class DabGraphQlRootObject
     {
         public string type { get; set; } //Actions Logged, Last Actions
-        public string id { get; set; } //Actions Logged
+        public int id { get; set; }
         public DabGraphQlPayload payload { get; set; } //Actions Logged, Last Actions
         public DabGraphQlData data { get; set; } //Channels
 

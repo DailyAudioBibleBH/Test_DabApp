@@ -140,7 +140,7 @@ namespace DABApp
                 }
                 else
                 {
-                    PopupNavigation.PushAsync(new AchievementsProgressPopup());
+                    //PopupNavigation.PushAsync(new AchievementsProgressPopup());
                     await Navigation.PushAsync(new DabEpisodesPage(resource));
                 }
 
