@@ -41,7 +41,7 @@ namespace DABApp
 			List<dbBadgeProgress> dbBadgeProgressList = db.Table<dbBadgeProgress>().ToList();
 
             //find badges that have progress
-			IEnumerable<dabUserBadgeProgress> queryBadgesWithProgress =
+			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
 			from badge in dbBadgeList
 			let badgeid = badge.id
 			from progress in dbBadgeProgressList
@@ -53,26 +53,36 @@ namespace DABApp
 				Progress = progress
 			};
 
-			var badgesWithProgress = queryBadgesWithProgress.ToList();
-			var badgesWithoutProgress = dbBadgeList.Where(p => queryBadgesWithProgress.All(p2 => p2.Progress.badgeId != p.id)).ToList();
+			var allBadges = allBadgesQuery.ToList();
+			var badgesWithoutProgress = dbBadgeList.Where(p => allBadgesQuery.All(p2 => p2.Progress.badgeId != p.id)).ToList();
+			var badgesWithProgress = dbBadgeList.Where(p => allBadgesQuery.All(p2 => p2.Progress.badgeId == p.id)).ToList();
 
-            foreach (var item in badgesWithoutProgress)
+			foreach (var item in badgesWithoutProgress)
             {
 				dbBadgeProgress blankProgress = new dbBadgeProgress();
 				dabUserBadgeProgress newItem = new dabUserBadgeProgress(item, blankProgress);
-				badgesWithProgress.Add(newItem);
+				allBadges.Add(newItem);
             }
 
             //combined list of both badges with progress and badges with empty progress to bind to UI
-			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(badgesWithProgress as List<dabUserBadgeProgress>);
+			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);
 			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
             foreach (var item in allAchievementsPageList)
             {
-                if (item.Badge.visible == true)
+				if (item.Progress.percent == 100)
+				{
+					item.Progress.tint = "Transparent";
+				}
+				else
+				{
+					item.Progress.tint = "Gray";
+				}
+				if (item.Badge.visible == true)
                 {
 					visibleAchievementsPageList.Add(item);
                 }
             }
+			visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent);
 			achievementListView.ItemsSource = visibleAchievementsPageList;
         }
 	}

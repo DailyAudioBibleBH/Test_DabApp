@@ -66,6 +66,7 @@ namespace DABApp.DabSockets
 
         public int id { get; set; }
         public int badgeId { get; set; }
+        public string data { get; set; }
         public int percent { get; set; }
         public int year { get; set; }
         public bool? seen { get; set; }

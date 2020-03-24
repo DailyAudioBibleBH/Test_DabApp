@@ -2,7 +2,8 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabAchievementsPage"
 	xmlns:local="clr-namespace:DABApp"	
     xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit"
-    xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+    xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:controls="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions">
 	<ContentPage.Content>
 		<StackLayout Orientation="Vertical">
             <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
@@ -16,7 +17,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
-                                <Image Source="{Binding Badge.imageURL}" HeightRequest="50" WidthRequest="50"></Image>
+                                <controls:TintedImage x:Name="achievementImage" TintColor="{Binding Progress.tint}"  Source="{Binding Badge.imageURL}"  HeightRequest="50" WidthRequest="50"/>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>

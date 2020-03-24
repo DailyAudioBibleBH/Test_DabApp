@@ -22,6 +22,7 @@ using AVFoundation;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Plugin.CrossPlatformTintedImage.iOS;
 
 namespace DABApp.iOS
 {
@@ -59,6 +60,8 @@ namespace DABApp.iOS
             SlideOverKit.iOS.SlideOverKit.Init();
 
             SegmentedControlRenderer.Init();
+
+            TintedImageRenderer.Init();
 
             app.StatusBarStyle = UIStatusBarStyle.LightContent;
 

@@ -288,10 +288,9 @@ namespace DABApp.DabSockets
                     {
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
                         progress.seen = true;
-
-
-                        //make seen
                     }
+                    dbBadgeProgress newProgress = new dbBadgeProgress(progress);
+                    await adb.InsertOrReplaceAsync(newProgress);
                 }
             }
             catch (Exception ex)
