@@ -47,7 +47,7 @@ namespace DABApp
 			_database.CreateTable<dbEpisodes>();
 			_database.CreateTable<dbPlayerActions>();
 			_database.CreateTable<dbBadges>();
-			_database.CreateTable<dbBadgeProgress>();
+			_database.CreateTable<dbUserBadgeProgress>();
             //_database.CreateTable<dbUserEpisodeMeta>();
             _database.CreateTable <dbChannels>();
 			_database.CreateTable<dbEpisodeUserData>();

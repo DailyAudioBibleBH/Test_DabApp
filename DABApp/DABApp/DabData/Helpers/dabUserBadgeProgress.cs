@@ -7,9 +7,9 @@ namespace DABApp.Helpers
     public class dabUserBadgeProgress
     {
         public dbBadges Badge { get; set; }
-        public dbBadgeProgress Progress { get; set; }
+        public dbUserBadgeProgress Progress { get; set; }
 
-        public dabUserBadgeProgress(dbBadges badge, dbBadgeProgress progress)
+        public dabUserBadgeProgress(dbBadges badge, dbUserBadgeProgress progress)
         {
             this.Badge = badge;
             this.Progress = progress;

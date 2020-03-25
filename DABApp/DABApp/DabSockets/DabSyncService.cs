@@ -44,6 +44,7 @@ namespace DABApp.DabSockets
         DabEpisodesPage episodesPage;
 
         List<int> subscriptionIds = new List<int>();
+        string userName; 
 
 
         private DabSyncService()
@@ -77,7 +78,7 @@ namespace DABApp.DabSockets
         private async void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
             Debug.WriteLine($"Shared code graph ql message: {e.Message}");
-
+            userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
             foreach (var item in ContentConfig.Instance.views)
@@ -269,7 +270,16 @@ namespace DABApp.DabSockets
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {
-                        await adb.InsertOrReplaceAsync(item);
+                        dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == item.id && x.userName == userName);
+                        if (data == null)
+                        {
+                            await adb.InsertOrReplaceAsync(item);
+                        }
+                        else
+                        {
+                            data.percent = item.percent;
+                            await adb.InsertOrReplaceAsync(data);
+                        }
                     }
                     string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
                     dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
@@ -289,9 +299,22 @@ namespace DABApp.DabSockets
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
                         progress.seen = true;
                     }
-                    dbBadgeProgress newProgress = new dbBadgeProgress(progress);
-                    await adb.InsertOrReplaceAsync(newProgress);
+                    dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+                    dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == newProgress.id && x.userName == userName);
+                    if (data == null)
+                    {
+                        await adb.InsertOrReplaceAsync(newProgress);
+                    }
+                    else
+                    {
+                        data.percent = newProgress.percent;
+                        await adb.InsertOrReplaceAsync(data);
+                    }
+                    
                 }
+                var test = db.Table<dbUserBadgeProgress>().ToList();
+                var test2 = db.Table<Badge>().ToList();
+                var breakpoint = "";
             }
             catch (Exception ex)
             {

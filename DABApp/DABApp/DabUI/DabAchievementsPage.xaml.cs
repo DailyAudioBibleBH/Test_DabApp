@@ -25,6 +25,7 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = ContentConfig.Instance.views.Single(x => x.id == 132262); //TODO: Find this using a key vs. a specific number
 			BindingContext = AchievementsView;
+			string userName = GlobalResources.GetUserEmail();
 
 			banner.Source = new UriImageSource
 			{
@@ -38,7 +39,7 @@ namespace DABApp
 
             //separate badge and progress list from db
 			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
-			List<dbBadgeProgress> dbBadgeProgressList = db.Table<dbBadgeProgress>().ToList();
+			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().ToList();
 
             //find badges that have progress
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
@@ -59,7 +60,7 @@ namespace DABApp
 
 			foreach (var item in badgesWithoutProgress)
             {
-				dbBadgeProgress blankProgress = new dbBadgeProgress();
+				dbUserBadgeProgress blankProgress = new dbUserBadgeProgress(item.id, userName);
 				dabUserBadgeProgress newItem = new dabUserBadgeProgress(item, blankProgress);
 				allBadges.Add(newItem);
             }
@@ -77,7 +78,7 @@ namespace DABApp
 				{
 					item.Progress.tint = "Gray";
 				}
-				if (item.Badge.visible == true)
+				if (item.Badge.visible == true && item.Progress.userName == userName)
                 {
 					visibleAchievementsPageList.Add(item);
                 }

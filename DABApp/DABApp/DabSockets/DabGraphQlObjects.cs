@@ -92,7 +92,7 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlUpdatedProgress
     {
-        public List<dbBadgeProgress> edges { get; set; }
+        public List<dbUserBadgeProgress> edges { get; set; }
         public DabGraphQlPageInfo pageInfo { get; set; }
     }
 

@@ -6,12 +6,13 @@ using System.Text;
 
 namespace DABApp
 {
-    public class dbBadgeProgress
+    public class dbUserBadgeProgress
     {
         private DabGraphQlProgress progress;
 
-        public dbBadgeProgress(DabGraphQlProgress progress)
+        public dbUserBadgeProgress(DabGraphQlProgress progress, string userName)
         {
+            this.userName = userName;
             this.id = progress.id;
             this.data = progress.data;
             this.badgeId = progress.badgeId;
@@ -30,13 +31,21 @@ namespace DABApp
             }
         }
 
-        public dbBadgeProgress()
+        public dbUserBadgeProgress()
         {
 
         }
 
+        public dbUserBadgeProgress(int badgeId, string userName)
+        {
+            this.badgeId = badgeId;
+            this.userName = userName;
+        }
+
         [PrimaryKey, NotNull]
         public int id { get; set; }
+        [Indexed, NotNull]
+        public string userName { get; set; }
         //[NotNull]
         public string data { get; set; }
         [Indexed, NotNull]
