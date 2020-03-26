@@ -84,6 +84,10 @@ namespace DABApp
 					visibleAchievementsPageList.Add(item);
                 }
             }
+			foreach (var item in visibleAchievementsPageList)
+			{
+				item.Progress.percent = (float)item.Progress.percent / 100;
+			}
 			visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent);
 			achievementListView.ItemsSource = visibleAchievementsPageList;
         }

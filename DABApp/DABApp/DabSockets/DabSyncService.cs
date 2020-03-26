@@ -338,6 +338,10 @@ namespace DABApp.DabSockets
                     {
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
                         progress.seen = true;
+
+                        string seenQuery = "mutation { seeProgress(id:" + progress.id + ") { id badgeId percent year seen createdAt updatedAt} }";
+                        var seenPayload = new DabGraphQlPayload(seenQuery, variables);
+                        var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
                     
@@ -366,7 +370,6 @@ namespace DABApp.DabSockets
                             db.InsertOrReplace(data);
                         }
                     }
-                    
                 }
             }
             catch (Exception ex)
