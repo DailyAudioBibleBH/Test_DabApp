@@ -23,6 +23,7 @@ namespace DABApp
         string backgroundImage;
         bool IsGuest;
         static double original;
+        double lastLogPlayerPosition;
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
@@ -221,8 +222,16 @@ namespace DABApp
             }
             Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
             {
-                AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null, null);
-                return true;
+                if (lastLogPlayerPosition != player.CurrentPosition)
+                {
+                    AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null, null);
+                    lastLogPlayerPosition = player.CurrentPosition;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             });
         }
 
