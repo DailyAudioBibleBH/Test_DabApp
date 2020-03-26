@@ -81,11 +81,6 @@ namespace DABApp.DabSockets
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
-            foreach (var item in ContentConfig.Instance.views)
-            {
-                System.Diagnostics.Debug.WriteLine(item.title);
-            }
-
             try
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
@@ -373,9 +368,6 @@ namespace DABApp.DabSockets
                     }
                     
                 }
-                var test = db.Table<dbUserBadgeProgress>().ToList();
-                var test2 = db.Table<Badge>().ToList();
-                var breakpoint = "";
             }
             catch (Exception ex)
             {
