@@ -248,34 +248,47 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.updatedBadges != null)
                 {
-                    Device.InvokeOnMainThreadAsync(async () =>
+                    
+                    if (root.payload?.data?.updatedBadges.edges.Count() > 0)
                     {
-                        if (root.payload?.data?.updatedBadges.edges.Count() > 0)
+                        //add badges to db
+                        foreach (var item in root.payload.data.updatedBadges.edges)
                         {
-                            //add badges to db
-                            foreach (var item in root.payload.data.updatedBadges.edges)
+                            try
                             {
                                 await adb.InsertOrReplaceAsync(item);
-                            };
-                        }
 
-                        dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
-                        if (sBadgeUpdateSettings == null)
-                        {
-                            sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
-                        }
-                        //Update date last time checked for badges
+                            }
+                            catch (Exception)
+                            {
+                                db.InsertOrReplace(item);
+                            }
+                        };
+                    }
+
+                    dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
+                    if (sBadgeUpdateSettings == null)
+                    {
+                        sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
+                    }
+                    //Update date last time checked for badges
+                    try
+                    {
                         sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
                         db.InsertOrReplace(sBadgeUpdateSettings);
-                    });
-                    
+                    }
+                    catch (Exception)
+                    {
+                        sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
+                        await adb.InsertOrReplaceAsync(sBadgeUpdateSettings);
+                    }
                 }
                 else if (root.payload?.data?.updatedProgress != null)
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {
                         dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == item.id && x.userName == userName);
-                        Device.InvokeOnMainThreadAsync(async () =>
+                        try
                         {
                             if (data == null)
                             {
@@ -286,18 +299,38 @@ namespace DABApp.DabSockets
                                 data.percent = item.percent;
                                 await adb.InsertOrReplaceAsync(data);
                             }
-
-                            string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
-                            dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
-                            if (sBadgeProgressSettings == null)
+                        }
+                        catch (Exception)
+                        {
+                            if (data == null)
                             {
-                                sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+                                db.InsertOrReplace(item);
                             }
-                            //Update date last time checked for badges
+                            else
+                            {
+                                data.percent = item.percent;
+                                db.InsertOrReplace(data);
+                            }
+                        }
+                        
+
+                        string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                        dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                        if (sBadgeProgressSettings == null)
+                        {
+                            sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+                        }
+                        //Update date last time checked for badges
+                        try
+                        {
                             sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
                             db.InsertOrReplace(sBadgeProgressSettings);
-                        });
-                        
+                        }
+                        catch (Exception)
+                        {
+                            sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                            await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
+                        }
                     }
                     
                 }
