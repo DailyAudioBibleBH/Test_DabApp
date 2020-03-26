@@ -47,7 +47,8 @@ namespace DABApp
 			let badgeid = badge.id
 			from progress in dbBadgeProgressList
 			let progressbadgeid = progress.badgeId
-			where badgeid == progressbadgeid
+			let currentUserName = progress.userName
+			where badgeid == progressbadgeid && currentUserName == userName
 			select new dabUserBadgeProgress(badge, progress)
 			{
 				Badge = badge,

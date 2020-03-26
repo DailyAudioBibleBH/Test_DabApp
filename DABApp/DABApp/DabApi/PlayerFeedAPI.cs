@@ -74,7 +74,10 @@ namespace DABApp
                         episode.PubMonth = getMonth(e.date);
                         episode.PubDay = e.date.Day;
 
-                        await adb.InsertOrReplaceAsync(episode);
+                        Device.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await adb.InsertOrReplaceAsync(episode);
+                        });
                     }
                 }
 

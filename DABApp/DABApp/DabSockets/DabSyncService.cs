@@ -248,48 +248,58 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.updatedBadges != null)
                 {
-                    if (root.payload?.data?.updatedBadges.edges.Count() > 0)
+                    Device.InvokeOnMainThreadAsync(async () =>
                     {
-                        //add badges to db
-                        foreach (var item in root.payload.data.updatedBadges.edges)
+                        if (root.payload?.data?.updatedBadges.edges.Count() > 0)
                         {
-                            await adb.InsertOrReplaceAsync(item);
-                        };
-                    }
+                            //add badges to db
+                            foreach (var item in root.payload.data.updatedBadges.edges)
+                            {
+                                await adb.InsertOrReplaceAsync(item);
+                            };
+                        }
+
+                        dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
+                        if (sBadgeUpdateSettings == null)
+                        {
+                            sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
+                        }
+                        //Update date last time checked for badges
+                        sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
+                        db.InsertOrReplace(sBadgeUpdateSettings);
+                    });
                     
-                    dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
-                    if (sBadgeUpdateSettings == null)
-                    {
-                        sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
-                    }
-                    //Update date last time checked for badges
-                    sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
-                    db.InsertOrReplace(sBadgeUpdateSettings);
                 }
                 else if (root.payload?.data?.updatedProgress != null)
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {
                         dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == item.id && x.userName == userName);
-                        if (data == null)
+                        Device.InvokeOnMainThreadAsync(async () =>
                         {
-                            await adb.InsertOrReplaceAsync(item);
-                        }
-                        else
-                        {
-                            data.percent = item.percent;
-                            await adb.InsertOrReplaceAsync(data);
-                        }
+                            if (data == null)
+                            {
+                                await adb.InsertOrReplaceAsync(item);
+                            }
+                            else
+                            {
+                                data.percent = item.percent;
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+
+                            string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                            dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                            if (sBadgeProgressSettings == null)
+                            {
+                                sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+                            }
+                            //Update date last time checked for badges
+                            sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                            db.InsertOrReplace(sBadgeProgressSettings);
+                        });
+                        
                     }
-                    string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
-                    dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
-                    if (sBadgeProgressSettings == null)
-                    {
-                        sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
-                    }
-                    //Update date last time checked for badges
-                    sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
-                    db.InsertOrReplace(sBadgeProgressSettings);
+                    
                 }
                 else if (root.payload?.data?.progressUpdated?.progress != null)
                 {
@@ -300,15 +310,31 @@ namespace DABApp.DabSockets
                         progress.seen = true;
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+                    
                     dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == newProgress.id && x.userName == userName);
-                    if (data == null)
+                    try
                     {
-                        await adb.InsertOrReplaceAsync(newProgress);
+                        if (data == null)
+                        {
+                            await adb.InsertOrReplaceAsync(newProgress);
+                        }
+                        else
+                        {
+                            data.percent = newProgress.percent;
+                            await adb.InsertOrReplaceAsync(data);
+                        }
                     }
-                    else
+                    catch (Exception)
                     {
-                        data.percent = newProgress.percent;
-                        await adb.InsertOrReplaceAsync(data);
+                        if (data == null)
+                        {
+                            db.InsertOrReplace(newProgress);
+                        }
+                        else
+                        {
+                            data.percent = newProgress.percent;
+                            db.InsertOrReplace(data);
+                        }
                     }
                     
                 }
