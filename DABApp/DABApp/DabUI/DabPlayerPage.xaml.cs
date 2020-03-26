@@ -222,15 +222,25 @@ namespace DABApp
             }
             Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
             {
-                if (lastLogPlayerPosition != player.CurrentPosition)
+                var difference = Math.Abs(lastLogPlayerPosition - player.CurrentPosition);
+                if (lastLogPlayerPosition != player.CurrentPosition && (difference >= 30 || difference <= -30))
                 {
-                    AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null, null);
+                    AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, "pause", player.CurrentPosition, null, null, null);
+                    
                     lastLogPlayerPosition = player.CurrentPosition;
+                    if (GlobalResources.CurrentEpisodeId != (int)Episode.Episode.id)
+                    {
+                        BindControls(true, true);
+                    }
                     return true;
+                }
+                else if (lastLogPlayerPosition == player.CurrentPosition)
+                {
+                    return false;
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
             });
         }
@@ -253,19 +263,7 @@ namespace DABApp
         //method for android lock screen controls
         void OnPrevious()
         {
-            //if (previousEpisode != null)
-            //{
-            //    Episode = previousEpisode;
-            //}
-            //GetNextPreviousEpisodes(Episode);
-            //player.Load(Episode.Episode);
-            //BindControls(true, true);
-            ////Goto the starting position of the episode
-            //player.Seek(Episode.Episode.UserData.CurrentPosition);
-            //GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
             player.Seek(player.CurrentPosition - 30);
-            //if (player.IsPlaying)
-            //    player.Play();
         }
 
         //Go to next episode
