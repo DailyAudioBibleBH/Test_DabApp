@@ -292,6 +292,7 @@ namespace DABApp.DabSockets
                         {
                             if (data == null)
                             {
+                                item.userName = userName;
                                 await adb.InsertOrReplaceAsync(item);
                             }
                             else
@@ -304,6 +305,7 @@ namespace DABApp.DabSockets
                         {
                             if (data == null)
                             {
+                                item.userName = userName;
                                 db.InsertOrReplace(item);
                             }
                             else
