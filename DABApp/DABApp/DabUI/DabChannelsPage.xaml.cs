@@ -66,14 +66,14 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-
+            Application.Current.Properties["IsForcefulLogout"] = "false";
         }
 
         void PostLogs()
         {
             Task.Run(async () =>
             {
-                await AuthenticationAPI.PostActionLogs();
+                await AuthenticationAPI.PostActionLogs(false);
             });
         }
 
@@ -189,7 +189,7 @@ namespace DABApp
             {
                 Task.Run(async () =>
                 {
-                    await AuthenticationAPI.PostActionLogs();
+                    await AuthenticationAPI.PostActionLogs(false);
                     await AuthenticationAPI.GetMemberData();
                 });
             }

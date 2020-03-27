@@ -1,6 +1,7 @@
 ﻿using System;
 using Android.Content;
 using Android.Graphics;
+using Android.Graphics.Drawables;
 using Android.Widget;
 using DABApp;
 using DABApp.Droid;
@@ -20,7 +21,13 @@ namespace DABApp.Droid
         protected override void OnLayout(bool changed, int l, int t, int r, int b)
         {
             base.OnLayout(changed, l, t, r, b);
+            Control.ProgressDrawable.SetTint(((Xamarin.Forms.Color)App.Current.Resources["PlayerLabelColor"]).ToAndroid());
 
+            Bitmap img = BitmapFactory.DecodeResource(Resources, Resource.Drawable.circle);
+            Drawable d = new BitmapDrawable(Resources, img);
+            //seek_bar.ProgressDrawable = d;
+
+            Control.SetThumb(d);
             var element = (DabSeekBar)Element;
             if (Control != null)
             {

@@ -208,6 +208,11 @@ namespace DABApp
 
         private dbEpisodeUserData _UserData;
 
+        public void ResetUserData() //force a reload of the user data.
+        {
+            _UserData = null;
+        }
+
         [Ignore]
         public dbEpisodeUserData UserData
         //User-specific episode data for this episode

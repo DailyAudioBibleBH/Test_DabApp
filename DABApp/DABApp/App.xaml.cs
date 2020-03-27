@@ -37,9 +37,9 @@ namespace DABApp
 
                 if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
                 {
-                    if (GuestStatus.Current.IsGuestLogin)
+                    if (GlobalResources.GetUserEmail() == "Guest")
                     {
-                        MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if guest
+                        MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if not logged in
                     }
                     else
                     {
@@ -73,9 +73,9 @@ namespace DABApp
                 DabSyncService.Instance.Disconnect(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
-                    AuthenticationAPI.PostActionLogs();
+                    AuthenticationAPI.PostActionLogs(false);
                 }
-                else await AuthenticationAPI.PostActionLogs();
+                else await AuthenticationAPI.PostActionLogs(false);
 
             }
             catch (Exception ex)

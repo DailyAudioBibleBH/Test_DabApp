@@ -22,6 +22,8 @@ namespace DABApp
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        static SQLiteConnection db = DabData.database;
+        string isForcefulLogout;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -68,18 +70,25 @@ namespace DABApp
         {
             ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
             StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+
+            MessagingCenter.Subscribe<string>("LoginUI", "StopWaitUI", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                });
+            });
             if (GraphQlLoginComplete)
             {
                 return; //get out of here once login is complete;
-            }
+            } 
 
-            Device.InvokeOnMainThreadAsync(async () =>
-            {
+            Device.InvokeOnMainThreadAsync(async () => {
+
                 if (DabSyncService.Instance.IsConnected)
                 {
-
                     SQLiteConnection db = DabData.database;
-
 
                     //Message received from the Graph QL - deal with those related to login messages!
                     try
@@ -179,18 +188,59 @@ namespace DABApp
                                 }
                                 else
                                 {
-                                    DabChannelsPage _nav = new DabChannelsPage();
-                                    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                    //Application.Current.MainPage = _nav;
-                                    await Navigation.PushAsync(_nav);
-                                    MessagingCenter.Send<string>("Setup", "Setup");
-
-                                    //Delete nav stack so user cant back into login screen
-                                    var existingPages = Navigation.NavigationStack.ToList();
-                                    foreach (var page in existingPages)
+                                    if (Application.Current.Properties.ContainsKey("IsForcefulLogout"))
                                     {
-                                        Navigation.RemovePage(page);
+                                        isForcefulLogout = Application.Current.Properties["IsForcefulLogout"].ToString();
+                                        if (isForcefulLogout == "true")
+                                        {
+                                            Device.BeginInvokeOnMainThread(() =>
+                                            {
+                                                DabChannelsPage _nav = new DabChannelsPage();
+                                                _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                                //Application.Current.MainPage = _nav;
+                                                Navigation.PushAsync(_nav);
+                                                MessagingCenter.Send<string>("Setup", "Setup");
+
+                                                //Delete nav stack so user cant back into login screen
+                                                var existingPages = Navigation.NavigationStack.ToList();
+                                                foreach (var page in existingPages)
+                                                {
+                                                    Navigation.RemovePage(page);
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            DabChannelsPage _nav = new DabChannelsPage();
+                                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                            //Application.Current.MainPage = _nav;
+                                            await Navigation.PushAsync(_nav);
+                                            MessagingCenter.Send<string>("Setup", "Setup");
+
+                                            //Delete nav stack so user cant back into login screen
+                                            var existingPages = Navigation.NavigationStack.ToList();
+                                            foreach (var page in existingPages)
+                                            {
+                                                Navigation.RemovePage(page);
+                                            }
+                                        }
                                     }
+                                    else
+                                    {
+                                        DabChannelsPage _nav = new DabChannelsPage();
+                                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                        //Application.Current.MainPage = _nav;
+                                        await Navigation.PushAsync(_nav);
+                                        MessagingCenter.Send<string>("Setup", "Setup");
+
+                                        //Delete nav stack so user cant back into login screen
+                                        var existingPages = Navigation.NavigationStack.ToList();
+                                        foreach (var page in existingPages)
+                                        {
+                                            Navigation.RemovePage(page);
+                                        }
+                                    }
+
                                 }
                             }
                         }
@@ -223,8 +273,8 @@ namespace DABApp
                 {
                     activity.IsVisible = false;
                     activityHolder.IsVisible = false;
+                    //DabSyncService.Instance.Init();
                     DabSyncService.Instance.Connect();
-
                 }
             });
         }
@@ -431,41 +481,41 @@ namespace DABApp
         {
             //switch (modeResponseCode)
             //{
-            //    case "update": //update app
-            //                   //Open up a page to update the app.
-            //        var url = string.Empty;
-            //        var appId = string.Empty;
-            //        if (Device.RuntimePlatform == "iOS") //Apple
-            //        {
-            //            appId = "1215838266"; //TODO: Verify this is the right code
-            //            url = $"itms-apps://itunes.apple.com/app/id{appId}";
-            //        }
-            //        else //Android
-            //        {
-            //            //TODO: Test this
-            //            appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
-            //            url = $"https://play.google.com/store/apps/details?id={appId}";
-            //        }
+                //case "update": //update app
+                //               //Open up a page to update the app.
+                //    var url = string.Empty;
+                //    var appId = string.Empty;
+                //    if (Device.RuntimePlatform == "iOS") //Apple
+                //    {
+                //        appId = "1215838266"; //TODO: Verify this is the right code
+                //        url = $"itms-apps://itunes.apple.com/app/id{appId}";
+                //    }
+                //    else //Android
+                //    {
+                //        //TODO: Test this
+                //        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
+                //        url = $"https://play.google.com/store/apps/details?id={appId}";
+                //    }
 
-            //        Device.BeginInvokeOnMainThread(() =>
-            //        {
-            //            //Does not do anything on iOS Debugger.
-            //            Device.OpenUri(new Uri(url));
-            //        });
-            //        DisableAllInputs("Restart app after updating.");
+                //    Device.BeginInvokeOnMainThread(() =>
+                //    {
+                //        //Does not do anything on iOS Debugger.
+                //        Device.OpenUri(new Uri(url));
+                //    });
+                //    DisableAllInputs("Restart app after updating.");
 
 
-            //        break;
-            //    case "guest": //login as guest
-            //        Device.BeginInvokeOnMainThread(() =>
-            //        {
-            //            OnGuestLogin(null, null);
-            //        });
-            //        break;
-            //    case "ok": //ok button signifies it's currently offline
-            //               //Disable inputs
-            //        DisableAllInputs("Shutdown app and try again later.");
-            //        break;
+                //    break;
+                //case "guest": //login as guest
+                //    Device.BeginInvokeOnMainThread(() =>
+                //    {
+                //        OnGuestLogin(null, null);
+                //    });
+                //    break;
+                //case "ok": //ok button signifies it's currently offline
+                //           //Disable inputs
+                //    DisableAllInputs("Shutdown app and try again later.");
+                //    break;
 
 
             //}
@@ -508,6 +558,7 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");

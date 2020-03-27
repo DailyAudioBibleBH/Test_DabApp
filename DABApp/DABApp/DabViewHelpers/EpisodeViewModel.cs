@@ -20,11 +20,13 @@ namespace DABApp
         public string description { get; set; }
         public string title { get; set; }
         public string channelTitle { get; set; }
+        public string notes { get; set; }
 
         public EpisodeViewModel(dbEpisodes episode)
         {
             Episode = episode;
             description = episode.description;
+            notes = episode.notes;
             title = episode.title;
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
