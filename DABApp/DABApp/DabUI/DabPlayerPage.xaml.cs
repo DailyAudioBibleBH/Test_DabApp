@@ -248,6 +248,7 @@ namespace DABApp
         //Go to previous episode
         void OnPrevious(object o, EventArgs e)
         {
+            previousButton.IsEnabled = false;
             if (previousEpisode != null)
             {
                 Episode = previousEpisode;
@@ -269,6 +270,7 @@ namespace DABApp
         //Go to next episode
         public void OnNext(object o, EventArgs e)
         {
+            nextButton.IsEnabled = false;
             if (nextEpisode != null)
             {
                 Episode = nextEpisode;

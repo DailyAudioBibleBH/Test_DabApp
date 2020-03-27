@@ -374,6 +374,7 @@ namespace DABApp
         async void OnPrevious(object o, EventArgs e)
         //Handle the selection of a different episode
         {
+            previousButton.IsEnabled = false;
             try
             {
                 player.Pause(); //should save position
@@ -471,6 +472,7 @@ namespace DABApp
         async void OnNext(object o, EventArgs e)
         //Handle the selection of a different episode
         {
+            nextButton.IsEnabled = false;
             try
             {
 
