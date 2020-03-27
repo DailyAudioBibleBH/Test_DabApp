@@ -23,6 +23,7 @@ namespace DABApp
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         static SQLiteConnection db = DabData.database;
+        string isForcefulLogout;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -187,18 +188,59 @@ namespace DABApp
                                 }
                                 else
                                 {
-                                    DabChannelsPage _nav = new DabChannelsPage();
-                                    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                    //Application.Current.MainPage = _nav;
-                                    await Navigation.PushAsync(_nav);
-                                    MessagingCenter.Send<string>("Setup", "Setup");
-
-                                    //Delete nav stack so user cant back into login screen
-                                    var existingPages = Navigation.NavigationStack.ToList();
-                                    foreach (var page in existingPages)
+                                    if (Application.Current.Properties.ContainsKey("IsForcefulLogout"))
                                     {
-                                        Navigation.RemovePage(page);
+                                        isForcefulLogout = Application.Current.Properties["IsForcefulLogout"].ToString();
+                                        if (isForcefulLogout == "true")
+                                        {
+                                            Device.BeginInvokeOnMainThread(() =>
+                                            {
+                                                DabChannelsPage _nav = new DabChannelsPage();
+                                                _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                                //Application.Current.MainPage = _nav;
+                                                Navigation.PushAsync(_nav);
+                                                MessagingCenter.Send<string>("Setup", "Setup");
+
+                                                //Delete nav stack so user cant back into login screen
+                                                var existingPages = Navigation.NavigationStack.ToList();
+                                                foreach (var page in existingPages)
+                                                {
+                                                    Navigation.RemovePage(page);
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            DabChannelsPage _nav = new DabChannelsPage();
+                                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                            //Application.Current.MainPage = _nav;
+                                            await Navigation.PushAsync(_nav);
+                                            MessagingCenter.Send<string>("Setup", "Setup");
+
+                                            //Delete nav stack so user cant back into login screen
+                                            var existingPages = Navigation.NavigationStack.ToList();
+                                            foreach (var page in existingPages)
+                                            {
+                                                Navigation.RemovePage(page);
+                                            }
+                                        }
                                     }
+                                    else
+                                    {
+                                        DabChannelsPage _nav = new DabChannelsPage();
+                                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                        //Application.Current.MainPage = _nav;
+                                        await Navigation.PushAsync(_nav);
+                                        MessagingCenter.Send<string>("Setup", "Setup");
+
+                                        //Delete nav stack so user cant back into login screen
+                                        var existingPages = Navigation.NavigationStack.ToList();
+                                        foreach (var page in existingPages)
+                                        {
+                                            Navigation.RemovePage(page);
+                                        }
+                                    }
+
                                 }
                             }
                         }
