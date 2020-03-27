@@ -540,14 +540,17 @@ namespace DABApp
                     player.Seek(SeekBar.Value);
                 };
 
-                SeekBar.TouchUp += (object sender, EventArgs e) =>
+                if (Device.RuntimePlatform == "Android")
                 {
-                    player.Seek(SeekBar.Value);
-                };
-                SeekBar.TouchDown += (object sender, EventArgs e) =>
-                {
-                    player.Seek(SeekBar.Value);
-                };
+                    SeekBar.TouchUp += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                    SeekBar.TouchDown += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                }
             }
         }
 
