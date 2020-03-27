@@ -297,6 +297,7 @@ namespace DABApp
                 else
                 {
                     DabSyncService.Instance.Connect();
+                    Login.IsEnabled = true;
                     activity.IsVisible = false;
                     activityHolder.IsVisible = false;
                 }
