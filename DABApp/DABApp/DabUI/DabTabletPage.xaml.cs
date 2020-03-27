@@ -337,6 +337,9 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
+            List<string> emptyList = new List<string>();
+            EpisodeList.ItemsSource = emptyList;
+
             //Load the episode list
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
             {
@@ -360,6 +363,8 @@ namespace DABApp
                 //No episodes available
                 await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             }
+
+            EpisodeList.ItemsSource = Episodes;
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
