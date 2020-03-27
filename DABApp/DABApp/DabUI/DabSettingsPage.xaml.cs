@@ -55,6 +55,7 @@ namespace DABApp
 
         public async void OnForceLogout()
         {
+            Application.Current.Properties["IsForcefulLogout"] = "true";
             LogOut.IsEnabled = false;
             await AuthenticationAPI.LogOut();
             var nav = new NavigationPage(new DabLoginPage());
