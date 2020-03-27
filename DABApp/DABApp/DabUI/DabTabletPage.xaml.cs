@@ -281,7 +281,10 @@ namespace DABApp
 
             ////TODO: Replace for journal?
             ////Join the journal channel
-            journal.JoinRoom(newEp.Episode.PubDate);
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                journal.JoinRoom(newEp.Episode.PubDate);
+            }
 
             // Make sure we have a file to play
             if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
