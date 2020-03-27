@@ -91,6 +91,10 @@ namespace DABApp
 						{
 							await DisplayAlert(authentication, "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
 						}
+						if (authentication.Contains("Email already"))
+						{
+							await DisplayAlert("Authentication Error", "This email already exists", "OK");
+						}
 						else {
 							await DisplayAlert("Unexpected Error",$"An unexpected error has been occurred while processing your request. Please check your connection and try again. Technical details: {authentication}", "OK");
 						}
