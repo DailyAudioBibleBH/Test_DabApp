@@ -64,7 +64,15 @@ namespace DABApp
                 }
                 catch (Exception ex)
                 {
-                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    //hard coded default content api paths
+                    if (TestMode)
+                    {
+                        return "https://feed.staging.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
+                    else
+                    {
+                        return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
                 }
 
             }
@@ -99,7 +107,15 @@ namespace DABApp
                 }
                 catch (Exception ex)
                 {
-                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    //hard coded default content api paths
+                    if (TestMode)
+                    {
+                        return "https://feed.staging.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
+                    else
+                    {
+                        return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
                 }
 
 
