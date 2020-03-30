@@ -70,6 +70,8 @@ namespace DABApp
             }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+                //Check with Chet about this, believe this should update episode list
+                Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
             });                      
         }       
@@ -147,7 +149,7 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
-            await AuthenticationAPI.PostActionLogs();
+            await AuthenticationAPI.PostActionLogs(false);
             //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();

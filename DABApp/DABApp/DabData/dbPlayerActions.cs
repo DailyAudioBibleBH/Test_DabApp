@@ -8,7 +8,7 @@ namespace DABApp
 		[PrimaryKey]
 		[AutoIncrement]
 		public int id { get; set; }
-		public DateTimeOffset ActionDateTime {get; set;}
+		public DateTimeOffset? ActionDateTime {get; set;}
 		public string entity_type { get; set;}
 		public int EpisodeId { get; set;}
 		public string ActionType { get; set;}

@@ -281,7 +281,10 @@ namespace DABApp
 
             ////TODO: Replace for journal?
             ////Join the journal channel
-            journal.JoinRoom(newEp.Episode.PubDate);
+            if (!GuestStatus.Current.IsGuestLogin)
+            {
+                journal.JoinRoom(newEp.Episode.PubDate);
+            }
 
             // Make sure we have a file to play
             if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
@@ -337,6 +340,9 @@ namespace DABApp
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
 
+            List<string> emptyList = new List<string>();
+            EpisodeList.ItemsSource = emptyList;
+
             //Load the episode list
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
             {
@@ -360,6 +366,8 @@ namespace DABApp
                 //No episodes available
                 await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             }
+
+            EpisodeList.ItemsSource = Episodes;
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
@@ -369,8 +377,11 @@ namespace DABApp
         async void OnPrevious(object o, EventArgs e)
         //Handle the selection of a different episode
         {
+            previousButton.IsEnabled = false;
             try
             {
+                player.Pause(); //should save position
+
                 //Load the episode
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
@@ -409,6 +420,7 @@ namespace DABApp
                 if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
                 {
                     episode = newEp;
+                    episode.Episode.ResetUserData();
 
                     //Bind episode data to the new episode (not the player though)
                     BindControls(true, false);
@@ -463,8 +475,12 @@ namespace DABApp
         async void OnNext(object o, EventArgs e)
         //Handle the selection of a different episode
         {
+            nextButton.IsEnabled = false;
             try
             {
+
+                player.Pause();//should save position
+
                 //Load the episode
                 ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                 StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
@@ -506,6 +522,7 @@ namespace DABApp
                 if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
                 {
                     episode = newEp;
+                    episode.Episode.ResetUserData();
 
                     //Bind episode data to the new episode (not the player though)
                     BindControls(true, false);
@@ -850,14 +867,18 @@ namespace DABApp
                 SeekBar.BindingContext = player;
                 SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
                 SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
-                SeekBar.TouchUp += (object sender, EventArgs e) =>
+
+                if (Device.RuntimePlatform == "Android")
                 {
-                    player.Seek(SeekBar.Value);
-                };
-                SeekBar.TouchDown += (object sender, EventArgs e) =>
-                {
-                    player.Seek(SeekBar.Value);
-                };
+                    SeekBar.TouchUp += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                    SeekBar.TouchDown += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                }
 
                 //Play-Pause button
                 PlayPause.BindingContext = player;
@@ -871,14 +892,24 @@ namespace DABApp
             if (JournalContent.IsFocused)
             {
                 journal.UpdateJournal(episode.Episode.PubDate, JournalContent.Text);
-                if (episode.Episode.UserData.HasJournal == false)
+                if (JournalContent.Text.Length == 0)
+                {
+                    episode.Episode.UserData.HasJournal = false;
+                    episode.HasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, true);
+                }
+                else if (episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
                     episode.Episode.UserData.HasJournal = true;
                     episode.HasJournal = true;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, null, null, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null);
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, null);
                 }
             }
+            
         }
 
         //TODO: Replace for journal?
@@ -1114,7 +1145,7 @@ namespace DABApp
             labelHolder.IsVisible = true;
             activity.IsVisible = true;
             activityHolder.IsVisible = true;
-            await AuthenticationAPI.PostActionLogs();
+            await AuthenticationAPI.PostActionLogs(false);
             await AuthenticationAPI.GetMemberData();
             if (episode == null && Episodes.Count() > 0)
             {
