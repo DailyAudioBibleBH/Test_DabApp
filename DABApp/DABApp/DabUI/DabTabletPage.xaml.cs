@@ -161,6 +161,13 @@ namespace DABApp
                     TimedActions();
                 });
             });
+            CleanUpEpisodesPage();
+        }
+
+        public async void CleanUpEpisodesPage()
+        {
+            await PlayerFeedAPI.DownloadEpisodes();
+            PlayerFeedAPI.CleanUpEpisodes();
         }
 
         void Handle_SegControlValueChanged(object sender, System.EventArgs e)
@@ -371,6 +378,7 @@ namespace DABApp
             labelHolder.IsVisible = false;
             activity.IsVisible = false;
             activityHolder.IsVisible = false;
+            CleanUpEpisodesPage();
         }
 
         //Go to previous episode
