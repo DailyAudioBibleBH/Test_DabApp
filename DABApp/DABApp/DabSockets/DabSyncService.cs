@@ -221,6 +221,7 @@ namespace DABApp.DabSockets
                     dbEpisodes newEpisode = new dbEpisodes(qlEpisode);
                     newEpisode.channel_code = code;
                     newEpisode.channel_title = channel.title;
+                    newEpisode.is_downloaded = false;
                     if (GlobalResources.TestMode)
                     { 
                         newEpisode.description += $" ({DateTime.Now.ToShortTimeString()})";
@@ -232,6 +233,7 @@ namespace DABApp.DabSockets
                     {
                         MessagingCenter.Send<string>("Update", "Update");
                         MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        PlayerFeedAPI.DownloadEpisodes();
 
                     });
                 }
