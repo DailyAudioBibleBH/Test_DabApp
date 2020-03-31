@@ -205,29 +205,35 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.episodePublished?.episode != null)
                 {
-                    dbEpisodes newEpisode = new dbEpisodes(root.payload.data.episodePublished.episode);
+                    //Get reference to the episode
+                    var qlEpisode = root.payload.data.episodePublished.episode;
 
-                    allEpisodes.Add(root.payload.data.episodePublished.episode);
-                    channelId = root.payload.data.episodePublished.episode.channelId;
+                    //Remove any existing references first
+                    allEpisodes.RemoveAll(x => x.episodeId == qlEpisode.episodeId);
+                    allEpisodes.Add(qlEpisode);
+                    channelId = qlEpisode.channelId;
 
-                    var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
-                    foreach (var item in channels)
-                    {
-                        if (item.channelId == channelId)
-                        {
-                            channel = item;
-                        }
-                    }
-
+                    //find the matching channel
+                    channel = db.Table<dbChannels>().Single(x => x.channelId == channelId);
                     var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
 
+                    //Add record to the database (or update it)
+                    dbEpisodes newEpisode = new dbEpisodes(qlEpisode);
                     newEpisode.channel_code = code;
                     newEpisode.channel_title = channel.title;
-
+                    if (GlobalResources.TestMode)
+                    { 
+                        newEpisode.description += $" ({DateTime.Now.ToShortTimeString()})";
+                    }
                     db.InsertOrReplace(newEpisode);
 
-                    //await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
-                    MessagingCenter.Send<string>("Update", "Update");
+                    //Notify listening items that episodes have changed.
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MessagingCenter.Send<string>("Update", "Update");
+                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+
+                    });
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
