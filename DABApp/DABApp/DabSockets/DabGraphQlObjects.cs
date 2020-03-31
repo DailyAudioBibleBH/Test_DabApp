@@ -53,6 +53,12 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedBadges updatedBadges { get; set; }
         public DabGraphQlUpdatedProgress updatedProgress { get; set; }
         public DabGraphQlProgressUpdated progressUpdated { get; set; }
+        public DabGraphQlEpisodePublished episodePublished { get; set; }
+    }
+
+    public class DabGraphQlEpisodePublished
+    {
+        public DabGraphQlEpisode episode { get; set; }
     }
 
     public class DabGraphQlProgressUpdated
@@ -184,6 +190,31 @@ namespace DABApp.DabSockets
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
     }
+
+    //public class DabGraphQlNewEpisode
+    //{
+    //    public string id { get; set; }
+    //    public int episodeId { get; set; }
+    //    public string type { get; set; }
+    //    public string title { get; set; }
+    //    public string description { get; set; }
+    //    public string notes { get; set; }
+    //    public string author { get; set; }
+    //    public DateTime date { get; set; }
+    //    public string audioURL { get; set; }
+    //    public int audioSize { get; set; }
+    //    public int audioDuration { get; set; }
+    //    public string audioType { get; set; }
+    //    public object readURL { get; set; }
+    //    public object readTranslationShort { get; set; }
+    //    public object readTranslation { get; set; }
+    //    public int channelId { get; set; }
+    //    public int unitId { get; set; }
+    //    public int year { get; set; }
+    //    public string shareURL { get; set; }
+    //    public DateTime createdAt { get; set; }
+    //    public DateTime updatedAt { get; set; }
+    //}
 
     public class DabGraphQlLastActions
     {

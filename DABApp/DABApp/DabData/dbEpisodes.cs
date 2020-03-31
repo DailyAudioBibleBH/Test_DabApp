@@ -24,6 +24,8 @@ namespace DABApp
             author = episode.author;
             PubDate = episode.date;
             PubYear = episode.date.Year;
+            PubMonth = episode.date.Month.ToString();
+            PubDay = episode.date.Day;
             url = episode.audioURL;
             audio_size = episode.audioSize;
             audio_type = episode.audioType;
@@ -41,6 +43,31 @@ namespace DABApp
             //TODO: Save UserData?
 
         }
+
+        //public dbEpisodes(DabGraphQlNewEpisode episode)
+        //{
+        //    id = episode.episodeId;
+        //    title = episode.title;
+        //    description = episode.description;
+        //    author = episode.author;
+        //    PubDate = episode.date;
+        //    PubYear = episode.date.Year;
+        //    url = episode.audioURL;
+        //    audio_size = episode.audioSize;
+        //    audio_type = episode.audioType;
+        //    audio_duration = episode.audioDuration.ToString();
+        //    notes = episode.notes;
+        //    read_link = episode.readURL;
+        //    //stop_time = episode.stop_time;
+        //    //is_favorite = episode.is_favorite;
+        //    //has_journal = episode.has_journal;
+        //    //is_listened_to = episode.is_listened_to;
+        //    //UserData.CurrentPosition = episode.stop_time;
+        //    //UserData.IsFavorite = (episode.favorite != null) ? episode.favorite.Value : false;
+        //    //UserData.HasJournal = (episode.hasJournal != null) ? episode.hasJournal.Value : false;
+        //    //UserData.IsListenedTo = episode.is_listened_to;
+
+        //}
 
         public dbEpisodes(TriggerEpisodeSubscription triggerEpisodeSubscription)
         {
@@ -66,6 +93,8 @@ namespace DABApp
             UserData.IsListenedTo = false;
             //TODO: SaveUserData?
         }
+
+        
 
         [PrimaryKey, Indexed]
         public int? id { get; set; }
@@ -207,6 +236,7 @@ namespace DABApp
         }
 
         private dbEpisodeUserData _UserData;
+        //private DabGraphQlNewEpisode episode;
 
         public void ResetUserData() //force a reload of the user data.
         {

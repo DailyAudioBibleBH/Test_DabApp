@@ -81,6 +81,8 @@ namespace DABApp.DabSockets
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
+            var test = db.Table<dbChannels>().ToList();
+
             try
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
@@ -201,10 +203,30 @@ namespace DABApp.DabSockets
                     GlobalResources.SetLastEpisodeQueryDate(channelId);
                     //stop wait ui on episodes page
                 }
-                else if (root.payload?.data?.triggerEpisodeSubscription != null)
+                else if (root.payload?.data?.episodePublished?.episode != null)
                 {
-                    dbEpisodes newEpisode = new dbEpisodes(root.payload.data.triggerEpisodeSubscription);
-                    await adb.InsertAsync(newEpisode);
+                    dbEpisodes newEpisode = new dbEpisodes(root.payload.data.episodePublished.episode);
+
+                    allEpisodes.Add(root.payload.data.episodePublished.episode);
+                    channelId = root.payload.data.episodePublished.episode.channelId;
+
+                    var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
+                    foreach (var item in channels)
+                    {
+                        if (item.channelId == channelId)
+                        {
+                            channel = item;
+                        }
+                    }
+
+                    var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
+
+                    newEpisode.channel_code = code;
+                    newEpisode.channel_title = channel.title;
+
+                    db.InsertOrReplace(newEpisode);
+                    await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
+                    //MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                     MessagingCenter.Send<string>("Update", "Update");
                     await PlayerFeedAPI.DownloadEpisodes();
                 }

@@ -21,6 +21,7 @@ namespace DABApp
             this.seen = progress.seen;
             this.createdAt = progress.createdAt;
             this.updatedAt = progress.updatedAt;
+            this.progressColor = "Blue";
             if (progress.percent == 100)
             {
                 this.tint = "Transparent";
@@ -52,6 +53,7 @@ namespace DABApp
         public int badgeId { get; set; }
         [NotNull]
         public double percent { get; set; }
+        public string progressColor { get; set; }
         [NotNull]
         public int year { get; set; }
         public string tint { get; set; }
