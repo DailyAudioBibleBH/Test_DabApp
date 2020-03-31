@@ -181,6 +181,16 @@ namespace DABApp
                 case "Three Days":
                     cutoffTime = DateTime.Now.AddDays(-3);
                     break;
+                case "One Week":
+                    if (GlobalResources.TestMode)
+                    {
+                        cutoffTime = DateTime.Now.AddDays(-21);
+                    }
+                    else
+                    {
+                        cutoffTime = DateTime.Now.AddDays(-7);
+                    }
+                    break;
                 default:
                     cutoffTime = DateTime.Now.AddDays(-7);
                     break;
@@ -391,7 +401,14 @@ namespace DABApp
                         cutoffTime = DateTime.Now.AddDays(-3);
                         break;
                     case "One Week":
-                        cutoffTime = DateTime.Now.AddDays(-7);
+                        //When in staging, use 3 weeks instead of 1 for testing
+                        if (GlobalResources.TestMode)
+                        {
+                            cutoffTime = DateTime.Now.AddDays(-21);
+                        } else
+                        {
+                            cutoffTime = DateTime.Now.AddDays(-7);
+                        }
                         break;
                         //case "One Month":
                         //	cutoffTime = DateTime.Now.AddMonths(-1);
