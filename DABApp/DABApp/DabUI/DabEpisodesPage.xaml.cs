@@ -73,8 +73,15 @@ namespace DABApp
                 //Check with Chet about this, believe this should update episode list
                 Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
-            });                      
-        }       
+            });
+            CleanUpEpisodesPage();
+        }   
+        
+        public async void CleanUpEpisodesPage()
+        {
+            await PlayerFeedAPI.DownloadEpisodes();
+            PlayerFeedAPI.CleanUpEpisodes();
+        }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
