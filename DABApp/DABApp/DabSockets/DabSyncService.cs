@@ -225,10 +225,9 @@ namespace DABApp.DabSockets
                     newEpisode.channel_title = channel.title;
 
                     db.InsertOrReplace(newEpisode);
-                    await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
-                    //MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+
+                    //await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                     MessagingCenter.Send<string>("Update", "Update");
-                    await PlayerFeedAPI.DownloadEpisodes();
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
