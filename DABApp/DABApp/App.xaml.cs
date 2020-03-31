@@ -8,6 +8,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
+using Xamarin.Forms.Internals;
 
 namespace DABApp
 {
@@ -21,6 +22,7 @@ namespace DABApp
             {
                 GlobalResources.TestMode = true;
             }
+            Xamarin.Forms.Internals.Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => Debug.WriteLine(arg2)));
             InitializeComponent();
 
             FlowListView.Init();

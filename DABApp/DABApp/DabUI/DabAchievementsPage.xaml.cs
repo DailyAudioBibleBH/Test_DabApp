@@ -89,8 +89,7 @@ namespace DABApp
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				item.Progress.progressColor = "Blue";
 			}
-			visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent);
-			achievementListView.ItemsSource = visibleAchievementsPageList;
-        }
+			achievementListView.ItemsSource = visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent).ToList();
+		}
 	}
 }
