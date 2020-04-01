@@ -30,7 +30,8 @@ namespace DABApp
             {
                 Container.Margin = new Thickness(0, 200, 0, 0);
             }
-            Offline.On = Resource.availableOffline;
+            Offline.IsToggled = Resource.availableOffline;
+            Offline.Toggled += OnOffline;
             SortOld.IsVisible = Resource.AscendingSort;
             SortNew.IsVisible = !Resource.AscendingSort;
             switch (Resource.filter)
@@ -101,33 +102,29 @@ namespace DABApp
 
         void OnOffline(object o, ToggledEventArgs e)
         {
-            if (initialized || !Resource.availableOffline)
+            bool pre = e.Value;
+            Resource.availableOffline = pre;
+            Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
+            if (e.Value)
             {
-                bool pre = e.Value;
-                Resource.availableOffline = pre;
-                Task.Run(async () => { await ContentAPI.UpdateOffline(e.Value, Resource.id); });
-                if (e.Value)
-                {
-                    Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
-                }
-                else
-                {
-                    Task.Run(async () =>
-                    {
-                        await PlayerFeedAPI.DeleteChannelEpisodes(Resource);
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            var handler = ChangedRequested;
-                            handler(this, new EventArgs());
-                        });
-                    });
-                }
-                if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Any())
-                {
-                    Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
-                }
+                Task.Run(async () => { await PlayerFeedAPI.DownloadEpisodes(); });
             }
-            initialized = true;
+            else
+            {
+                Task.Run(async () =>
+                {
+                    await PlayerFeedAPI.DeleteChannelEpisodes(Resource);
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        var handler = ChangedRequested;
+                        handler(this, new EventArgs());
+                    });
+                });
+            }
+            if (Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopupStack.Any())
+            {
+                Rg.Plugins.Popup.Services.PopupNavigation.Instance.PopAsync();
+            }
         }
 
 
