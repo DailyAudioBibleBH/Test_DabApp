@@ -51,8 +51,8 @@
                 <TableSection Title="Offline Episodes">
                     <ViewCell>
                         <StackLayout BackgroundColor="{DynamicResource InputBackgroundColor}" Orientation="Horizontal" Padding="10">
-                            <Label Text="Make available offline" FontSize="Medium"></Label>
-                            <Switch x:Name="Offline" OnColor="Green" HorizontalOptions="EndAndExpand"></Switch>
+                            <Label Text="Make available offline"></Label>
+                            <Switch x:Name="Offline" ThumbColor="White" VerticalOptions="Center" HorizontalOptions="EndAndExpand" OnColor="Green"></Switch>
                         </StackLayout>
                     </ViewCell>
                     <!--<SwitchCell Text="Make available offline" OnChanged="OnOffline" x:Name="Offline"/>-->
