@@ -52,7 +52,7 @@
                     <ViewCell>
                         <StackLayout BackgroundColor="{DynamicResource InputBackgroundColor}" Orientation="Horizontal" Padding="10">
                             <Label Text="Make available offline"></Label>
-                            <Switch x:Name="Offline" ThumbColor="White" VerticalOptions="Center" HorizontalOptions="EndAndExpand" OnColor="Green"></Switch>
+                            <Switch x:Name="Offline" ThumbColor="White" VerticalOptions="Center" HorizontalOptions="EndAndExpand"></Switch>
                         </StackLayout>
                     </ViewCell>
                     <!--<SwitchCell Text="Make available offline" OnChanged="OnOffline" x:Name="Offline"/>-->
