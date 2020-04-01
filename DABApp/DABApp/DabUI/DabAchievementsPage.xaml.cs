@@ -66,6 +66,7 @@ namespace DABApp
 				allBadges.Add(newItem);
             }
 
+
             //combined list of both badges with progress and badges with empty progress to bind to UI
 			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);
 			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
@@ -80,7 +81,7 @@ namespace DABApp
 				{
 					item.Progress.opacity = .5;
 				}
-				if (item.Badge.visible == true && item.Progress.userName == userName )//&& item.Progress.year == currentYear)
+				if (item.Badge.visible == true && item.Progress.userName == userName && item.Progress.year == currentYear)
                 {
 					visibleAchievementsPageList.Add(item);
                 }
@@ -91,6 +92,9 @@ namespace DABApp
 				item.Progress.progressColor = "Blue";
 			}
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent).ToList();
+
+			progressYear.Text = currentYear.ToString();
+
 		}
 	}
 }

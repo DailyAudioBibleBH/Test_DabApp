@@ -611,14 +611,14 @@ namespace DABApp.DabSockets
                 sock.Send(SubscriptionProgressData);
 
                 //Send request for all badges since given date
-                var updatedBadgesQuery = "query { updatedBadges(date: \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId id name description imageURL type method data visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var updatedBadgesQuery = "query { updatedBadges(date: \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId id name description imageURL type method visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
                 var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
                 subscriptionIds.Add(7);
                 sock.Send(badgeInit);
 
                 //Send request for user badge progress since given date
-                var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent data seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
                 var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 8));
                 subscriptionIds.Add(8);
