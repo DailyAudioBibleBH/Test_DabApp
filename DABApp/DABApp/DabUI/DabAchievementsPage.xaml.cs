@@ -37,9 +37,13 @@ namespace DABApp
 			SQLiteConnection db = DabData.database;
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-            //separate badge and progress list from db
+
+			int currentYear = ContentConfig.Instance.options.progress_year;
+			//currentYear = 2020;
+
+			//separate badge and progress list from db
 			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
-			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().ToList();
+			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().Where(x=> x.year == currentYear).ToList();
 
             //find badges that have progress
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
@@ -70,7 +74,7 @@ namespace DABApp
             //combined list of both badges with progress and badges with empty progress to bind to UI
 			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);
 			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
-			int currentYear = ContentConfig.Instance.options.progress_year;
+			
             foreach (var item in allAchievementsPageList)
             {
 				if (item.Progress.percent == 100)
@@ -81,7 +85,7 @@ namespace DABApp
 				{
 					item.Progress.opacity = .5;
 				}
-				if (item.Badge.visible == true && item.Progress.userName == userName && item.Progress.year == currentYear)
+				if (item.Badge.visible == true && item.Progress.userName == userName)
                 {
 					visibleAchievementsPageList.Add(item);
                 }
@@ -91,7 +95,7 @@ namespace DABApp
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				item.Progress.progressColor = "Blue";
 			}
-			achievementListView.ItemsSource = visibleAchievementsPageList.OrderByDescending(x => x.Progress.percent).ToList();
+			achievementListView.ItemsSource = visibleAchievementsPageList.ToList();
 
 			progressYear.Text = currentYear.ToString();
 
