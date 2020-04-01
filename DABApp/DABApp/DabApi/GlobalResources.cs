@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20200330-1.1.30";
+                return "20200331";
             }
         }
 
