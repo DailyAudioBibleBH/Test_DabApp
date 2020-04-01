@@ -28,6 +28,7 @@
             <Color x:Key="MarkCompletedBackground">#7f000000</Color>
             <Color x:Key="OutlineColor">#979797</Color>
             <Color x:Key="RecordColor">#ee878b</Color>
+            <Color x:Key="AchievementsProgressColor">#4fb3bd</Color>
             <!--Player Bar ControlTemplate-->
             <ControlTemplate x:Key="PlayerPageTemplate">
                 <RelativeLayout>

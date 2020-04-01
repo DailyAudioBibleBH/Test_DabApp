@@ -430,6 +430,7 @@
     <Compile Include="CustomRenderers\NonScrollingListViewRenderer.cs" />
     <Compile Include="DependencyServices\iosDabNativePlayer.cs" />
     <Compile Include="DabSockets\iosDabSocket.cs" />
+    <Compile Include="CustomRenderers\DabIosAchievementsProgressBarRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\sample.mp3" />
