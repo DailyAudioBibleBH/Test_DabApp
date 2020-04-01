@@ -390,6 +390,7 @@
     <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
     <Compile Include="DependencyServices\droidDabNativePlayer.cs" />
+    <Compile Include="CustomRenderers\DabAndroidAchievementsProgressBarRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

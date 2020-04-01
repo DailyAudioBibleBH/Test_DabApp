@@ -23,7 +23,7 @@
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
 
                                     <Frame IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="15" CornerRadius="0" HorizontalOptions="Start" WidthRequest="200">
-                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"     />
+                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"  BackgroundColor="Transparent"     />
 
                                     </Frame>
                                 </StackLayout>
