@@ -41,6 +41,7 @@ namespace DABApp
         {
             this.badgeId = badgeId;
             this.userName = userName;
+            this.year = ContentConfig.Instance.options.progress_year;
         }
 
         [PrimaryKey, NotNull]
