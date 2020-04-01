@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabAchievementsPage"
 	xmlns:local="clr-namespace:DABApp"	
     xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit"
@@ -16,9 +16,11 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
-                                <controls:TintedImage x:Name="achievementImage" TintColor="{Binding Progress.tint}"  Source="{Binding Badge.imageURL}"  HeightRequest="50" WidthRequest="50"/>
-                                <StackLayout HorizontalOptions="FillAndExpand" Orientation="Vertical">
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
+                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" Opacity="{Binding Progress.opacity}">
+                                    <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}"  HeightRequest="50" WidthRequest="50"/>
+                                </Frame>
+                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
 

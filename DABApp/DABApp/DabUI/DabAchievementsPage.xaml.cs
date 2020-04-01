@@ -69,17 +69,18 @@ namespace DABApp
             //combined list of both badges with progress and badges with empty progress to bind to UI
 			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);
 			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
+			int currentYear = ContentConfig.Instance.options.progress_year;
             foreach (var item in allAchievementsPageList)
             {
 				if (item.Progress.percent == 100)
 				{
-					item.Progress.tint = "Transparent";
+					item.Progress.opacity = 1;
 				}
 				else
 				{
-					item.Progress.tint = "Gray";
+					item.Progress.opacity = .5;
 				}
-				if (item.Badge.visible == true && item.Progress.userName == userName)
+				if (item.Badge.visible == true && item.Progress.userName == userName )//&& item.Progress.year == currentYear)
                 {
 					visibleAchievementsPageList.Add(item);
                 }

@@ -22,14 +22,6 @@ namespace DABApp
             this.createdAt = progress.createdAt;
             this.updatedAt = progress.updatedAt;
             this.progressColor = "Blue";
-            if (progress.percent == 100)
-            {
-                this.tint = "Transparent";
-            }
-            else
-            {
-                this.tint = "Gray";
-            }
         }
 
         public dbUserBadgeProgress()
@@ -41,6 +33,7 @@ namespace DABApp
         {
             this.badgeId = badgeId;
             this.userName = userName;
+            this.year = ContentConfig.Instance.options.progress_year;
         }
 
         [PrimaryKey, NotNull]
@@ -56,7 +49,7 @@ namespace DABApp
         public string progressColor { get; set; }
         [NotNull]
         public int year { get; set; }
-        public string tint { get; set; }
+        public double opacity { get; set; }
         //[NotNull]
         public bool? seen { get; set; }
         [NotNull]
