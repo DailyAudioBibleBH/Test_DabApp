@@ -17,7 +17,9 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
-                                <controls:TintedImage x:Name="achievementImage" TintColor="{Binding Progress.tint}"  Source="{Binding Badge.imageURL}"  HeightRequest="50" WidthRequest="50"/>
+                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" Opacity="{Binding Progress.opacity}">
+                                    <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}"  HeightRequest="50" WidthRequest="50"/>
+                                </Frame>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>

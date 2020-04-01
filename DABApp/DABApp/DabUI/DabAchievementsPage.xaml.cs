@@ -74,11 +74,11 @@ namespace DABApp
             {
 				if (item.Progress.percent == 100)
 				{
-					item.Progress.tint = "Transparent";
+					item.Progress.opacity = 1;
 				}
 				else
 				{
-					item.Progress.tint = "Gray";
+					item.Progress.opacity = .3;
 				}
 				if (item.Badge.visible == true && item.Progress.userName == userName && item.Progress.year == currentYear)
                 {

@@ -35,7 +35,6 @@ using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
-using Plugin.CrossPlatformTintedImage.Android;
 
 namespace DABApp.Droid
 {
@@ -88,8 +87,6 @@ namespace DABApp.Droid
             DependencyService.Register<AnalyticsService>();
 
             SegmentedControlRenderer.Init();
-
-            TintedImageRenderer.Init();
 
             CachedImageRenderer.Init();
 
