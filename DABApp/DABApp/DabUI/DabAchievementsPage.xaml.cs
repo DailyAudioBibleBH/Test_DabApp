@@ -78,9 +78,9 @@ namespace DABApp
 				}
 				else
 				{
-					item.Progress.opacity = .3;
+					item.Progress.opacity = .5;
 				}
-				if (item.Badge.visible == true && item.Progress.userName == userName && item.Progress.year == currentYear)
+				if (item.Badge.visible == true && item.Progress.userName == userName )//&& item.Progress.year == currentYear)
                 {
 					visibleAchievementsPageList.Add(item);
                 }

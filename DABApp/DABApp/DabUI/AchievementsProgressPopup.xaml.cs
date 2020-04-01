@@ -44,8 +44,9 @@ namespace DABApp.DabUI
         {
             await Share.RequestAsync(new ShareTextRequest
             {
-                Uri = uri,
-                Title = ("I earned the {0} Badge listening to the Daily Audio Bible! You can earn one too at https://player.dailyaudiobible.com!", badgeName).ToString()
+                //Uri = uri,
+                Text = "I earned the " + badgeName + " Badge listening to the Daily Audio Bible! You can earn one too at https://player.dailyaudiobible.com!",
+                Title = "I earned the " + badgeName + " Badge listening to the Daily Audio Bible! You can earn one too at https://player.dailyaudiobible.com!"
             });
         }
 
