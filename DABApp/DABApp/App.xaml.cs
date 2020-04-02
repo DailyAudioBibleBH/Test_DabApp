@@ -45,6 +45,7 @@ namespace DABApp
                     }
                     else
                     {
+                        GlobalResources.Instance.IsLoggedIn = true;
                         MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
                     }
                 }
