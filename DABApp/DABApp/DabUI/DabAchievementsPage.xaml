@@ -15,7 +15,7 @@
             <StackLayout Orientation="Horizontal" Padding="20">
                 <Label x:Name="progressYear" FontSize="Medium"/>
             </StackLayout>
-            <ListView x:Name="achievementListView" RowHeight="100" SeparatorVisibility="Default" Margin="10, 0, 10, 0">
+            <ListView x:Name="achievementListView" RowHeight="110" SeparatorVisibility="Default" Margin="10, 0, 10, 0">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

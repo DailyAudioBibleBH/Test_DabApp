@@ -370,11 +370,7 @@ namespace DABApp.DabSockets
                     if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
                     {
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
-                        progress.seen = true;
-
-                        string seenQuery = "mutation { seeProgress(id:" + progress.id + ") { id badgeId percent year seen createdAt updatedAt} }";
-                        var seenPayload = new DabGraphQlPayload(seenQuery, variables);
-                        var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
+                        progress.seen = true;                        
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
                     

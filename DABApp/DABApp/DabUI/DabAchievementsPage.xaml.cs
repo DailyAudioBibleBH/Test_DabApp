@@ -95,7 +95,7 @@ namespace DABApp
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				item.Progress.progressColor = "Blue";
 			}
-			achievementListView.ItemsSource = visibleAchievementsPageList.ToList();
+			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
 
 			progressYear.Text = currentYear.ToString();
 
