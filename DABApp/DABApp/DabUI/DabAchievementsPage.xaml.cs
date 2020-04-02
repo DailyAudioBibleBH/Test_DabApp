@@ -23,7 +23,7 @@ namespace DABApp
 			NavigationPage.SetHasBackButton(this, true);
 			//Init the form
 			DabViewHelper.InitDabForm(this);
-			AchievementsView = ContentConfig.Instance.views.Single(x => x.id == 132262); //TODO: Find this using a key vs. a specific number
+			AchievementsView = contentView; 
 			BindingContext = AchievementsView;
 			string userName = GlobalResources.GetUserEmail();
 
