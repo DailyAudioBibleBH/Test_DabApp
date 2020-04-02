@@ -90,15 +90,21 @@ namespace DABApp
 					visibleAchievementsPageList.Add(item);
 				}
 			}
-			foreach (var item in visibleAchievementsPageList)
-			{
+            foreach (var item in visibleAchievementsPageList)
+            {
 				item.Progress.percent = (float)item.Progress.percent / 100;
-				item.Progress.progressColor = "Blue";
-			}
+				if (item.Progress.percent == 1 || item.Progress.percent == 0)
+                {
+					item.Progress.progressBarVisible = false;
+                }
+                else
+                {
+					item.Progress.progressBarVisible = true;
+                }
+            }
+			
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
-
 			progressYear.Text = currentYear.ToString();
-
 		}
 	}
 }

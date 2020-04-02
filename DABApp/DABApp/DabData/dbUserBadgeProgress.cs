@@ -21,7 +21,6 @@ namespace DABApp
             this.seen = progress.seen;
             this.createdAt = progress.createdAt;
             this.updatedAt = progress.updatedAt;
-            this.progressColor = "Blue";
         }
 
         public dbUserBadgeProgress()
@@ -46,10 +45,10 @@ namespace DABApp
         public int badgeId { get; set; }
         [NotNull]
         public double percent { get; set; }
-        public string progressColor { get; set; }
         [NotNull]
         public int year { get; set; }
         public double opacity { get; set; }
+        public bool progressBarVisible { get; set; }
         //[NotNull]
         public bool? seen { get; set; }
         [NotNull]
