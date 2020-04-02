@@ -204,7 +204,7 @@ namespace DABApp
                     DabSyncService.Instance.Connect();
                 });
 
-                
+                GlobalResources.Instance.IsLoggedIn = false;
                 return true;
             }
             catch (Exception e)

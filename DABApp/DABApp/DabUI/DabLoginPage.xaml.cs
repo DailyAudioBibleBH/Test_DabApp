@@ -176,6 +176,7 @@ namespace DABApp
                                         NavigationPage _nav = new NavigationPage(new DabChannelsPage());
                                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                         Application.Current.MainPage = _nav;
+                                        GlobalResources.Instance.IsLoggedIn = true;
                                         await Navigation.PopToRootAsync();
                                     }
                                     else
@@ -195,6 +196,7 @@ namespace DABApp
                                         {
                                             Device.BeginInvokeOnMainThread(() =>
                                             {
+                                                GlobalResources.Instance.IsLoggedIn = true;
                                                 DabChannelsPage _nav = new DabChannelsPage();
                                                 _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                                 //Application.Current.MainPage = _nav;
@@ -211,6 +213,7 @@ namespace DABApp
                                         }
                                         else
                                         {
+                                            GlobalResources.Instance.IsLoggedIn = true;
                                             DabChannelsPage _nav = new DabChannelsPage();
                                             _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                             //Application.Current.MainPage = _nav;
@@ -227,6 +230,7 @@ namespace DABApp
                                     }
                                     else
                                     {
+                                        GlobalResources.Instance.IsLoggedIn = true;
                                         DabChannelsPage _nav = new DabChannelsPage();
                                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                         //Application.Current.MainPage = _nav;
@@ -479,46 +483,46 @@ namespace DABApp
         private void HandleModeResponse(string modeResponseCode)
         //Handle the user's response to the maintenance mode prompt 
         {
-            //switch (modeResponseCode)
-            //{
-                //case "update": //update app
-                //               //Open up a page to update the app.
-                //    var url = string.Empty;
-                //    var appId = string.Empty;
-                //    if (Device.RuntimePlatform == "iOS") //Apple
-                //    {
-                //        appId = "1215838266"; //TODO: Verify this is the right code
-                //        url = $"itms-apps://itunes.apple.com/app/id{appId}";
-                //    }
-                //    else //Android
-                //    {
-                //        //TODO: Test this
-                //        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
-                //        url = $"https://play.google.com/store/apps/details?id={appId}";
-                //    }
+            switch (modeResponseCode)
+            {
+                case "update": //update app
+                               //Open up a page to update the app.
+                    var url = string.Empty;
+                    var appId = string.Empty;
+                    if (Device.RuntimePlatform == "iOS") //Apple
+                    {
+                        appId = "1215838266"; //TODO: Verify this is the right code
+                        url = $"itms-apps://itunes.apple.com/app/id{appId}";
+                    }
+                    else //Android
+                    {
+                        //TODO: Test this
+                        appId = "dailyaudiobible.dabapp"; //TODO: Verify this is the right code
+                        url = $"https://play.google.com/store/apps/details?id={appId}";
+                    }
 
-                //    Device.BeginInvokeOnMainThread(() =>
-                //    {
-                //        //Does not do anything on iOS Debugger.
-                //        Device.OpenUri(new Uri(url));
-                //    });
-                //    DisableAllInputs("Restart app after updating.");
-
-
-                //    break;
-                //case "guest": //login as guest
-                //    Device.BeginInvokeOnMainThread(() =>
-                //    {
-                //        OnGuestLogin(null, null);
-                //    });
-                //    break;
-                //case "ok": //ok button signifies it's currently offline
-                //           //Disable inputs
-                //    DisableAllInputs("Shutdown app and try again later.");
-                //    break;
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        //Does not do anything on iOS Debugger.
+                        Device.OpenUri(new Uri(url));
+                    });
+                    DisableAllInputs("Restart app after updating.");
 
 
-            //}
+                    break;
+                case "guest": //login as guest
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        OnGuestLogin(null, null);
+                    });
+                    break;
+                case "ok": //ok button signifies it's currently offline
+                           //Disable inputs
+                    DisableAllInputs("Shutdown app and try again later.");
+                    break;
+
+
+            }
         }
 
         private void DisableAllInputs(string MainButtonText)

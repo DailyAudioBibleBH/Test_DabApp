@@ -12,8 +12,8 @@ using Xamarin.Forms.Xaml;
 
 namespace DABApp
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DabAchievementsPage : DabBaseContentPage
+	[XamlCompilation(XamlCompilationOptions.Compile)]
+	public partial class DabAchievementsPage : DabBaseContentPage
 	{
 		View AchievementsView;
 		Resource _resource;
@@ -29,11 +29,11 @@ namespace DABApp
 
 			banner.Source = new UriImageSource
 			{
-				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
+				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
 
-            //Connection to db
+			//Connection to db
 			SQLiteConnection db = DabData.database;
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
@@ -43,9 +43,9 @@ namespace DABApp
 
 			//separate badge and progress list from db
 			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
-			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().Where(x=> x.year == currentYear).ToList();
+			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().Where(x => x.year == currentYear).ToList();
 
-            //find badges that have progress
+			//find badges that have progress
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
 			from badge in dbBadgeList
 			let badgeid = badge.id
@@ -64,19 +64,19 @@ namespace DABApp
 			var badgesWithProgress = dbBadgeList.Where(p => allBadgesQuery.All(p2 => p2.Progress.badgeId == p.id)).ToList();
 
 			foreach (var item in badgesWithoutProgress)
-            {
+			{
 				dbUserBadgeProgress blankProgress = new dbUserBadgeProgress(item.id, userName);
 				dabUserBadgeProgress newItem = new dabUserBadgeProgress(item, blankProgress);
 				allBadges.Add(newItem);
-            }
+			}
 
 
-            //combined list of both badges with progress and badges with empty progress to bind to UI
+			//combined list of both badges with progress and badges with empty progress to bind to UI
 			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);
 			ObservableCollection<dabUserBadgeProgress> visibleAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>();
-			
-            foreach (var item in allAchievementsPageList)
-            {
+
+			foreach (var item in allAchievementsPageList)
+			{
 				if (item.Progress.percent == 100)
 				{
 					item.Progress.opacity = 1;
@@ -86,16 +86,16 @@ namespace DABApp
 					item.Progress.opacity = .5;
 				}
 				if (item.Badge.visible == true && item.Progress.userName == userName)
-                {
+				{
 					visibleAchievementsPageList.Add(item);
-                }
-            }
+				}
+			}
 			foreach (var item in visibleAchievementsPageList)
 			{
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				item.Progress.progressColor = "Blue";
 			}
-			achievementListView.ItemsSource = visibleAchievementsPageList.ToList();
+			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
 
 			progressYear.Text = currentYear.ToString();
 

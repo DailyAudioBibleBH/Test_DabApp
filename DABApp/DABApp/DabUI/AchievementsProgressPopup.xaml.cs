@@ -1,4 +1,6 @@
-﻿using Rg.Plugins.Popup.Services;
+﻿using DABApp.DabSockets;
+using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,12 @@ namespace DABApp.DabUI
     {
         dbBadges currentBadge;
         string badgeName;
+        int progressId;
         public AchievementsProgressPopup(DabSockets.DabGraphQlProgress progress)
         {
             InitializeComponent();
+
+            progressId = progress.id;
 
             //Connection to db
             SQLiteConnection db = DabData.database;
@@ -57,6 +62,12 @@ namespace DABApp.DabUI
 
         async void OnContinue(object o, EventArgs e)
         {
+            DabGraphQlVariables variables = new DabGraphQlVariables();
+            string seenQuery = "mutation { seeProgress(id:" + progressId + ") { id badgeId percent year seen createdAt updatedAt} }";
+            var seenPayload = new DabGraphQlPayload(seenQuery, variables);
+            var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
+            DabSyncService.Instance.Send(seenJsonIn);
+
             await PopupNavigation.Instance.PopAsync();
         }
     }

@@ -370,11 +370,7 @@ namespace DABApp.DabSockets
                     if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
                     {
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
-                        progress.seen = true;
-
-                        string seenQuery = "mutation { seeProgress(id:" + progress.id + ") { id badgeId percent year seen createdAt updatedAt} }";
-                        var seenPayload = new DabGraphQlPayload(seenQuery, variables);
-                        var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
+                        progress.seen = true;                        
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
                     
@@ -562,10 +558,10 @@ namespace DABApp.DabSockets
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
             if (Token != null) //if user hasn't logged in this may not be valid.
             {
-
                 //Init the connection
                 PrepConnectionWithTokenAndOrigin(Token.Value);
-                if (GlobalResources.GetUserEmail() != "Guest")
+                var test = GlobalResources.GetUserEmail();
+                if (GlobalResources.GetUserEmail() != "Guest"  && GlobalResources.Instance.IsLoggedIn)
                 {
                     //Subscribe to action logs - SUB 1
                     var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
@@ -580,6 +576,20 @@ namespace DABApp.DabSockets
                     var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload, 2));
                     subscriptionIds.Add(2);
                     sock.Send(SubscriptionRemoveToken);
+
+                    //Subscribe to progress data SUB 6
+                    var newProgressQuery = "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }";
+                    DabGraphQlPayload newProgressPayload = new DabGraphQlPayload(newProgressQuery, variables);
+                    var SubscriptionProgressData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newProgressPayload, 6));
+                    subscriptionIds.Add(6);
+                    sock.Send(SubscriptionProgressData);
+
+                    //Send request for user badge progress since given date
+                    var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
+                    var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 8));
+                    subscriptionIds.Add(8);
+                    sock.Send(progressInit);
                 }
 
                 //Subscribe for new episodes SUB 3
@@ -603,26 +613,12 @@ namespace DABApp.DabSockets
                 subscriptionIds.Add(5);
                 sock.Send(SubscriptionBadgeData);
 
-                //Subscribe to progress data SUB 6
-                var newProgressQuery = "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }";
-                DabGraphQlPayload newProgressPayload = new DabGraphQlPayload(newProgressQuery, variables);
-                var SubscriptionProgressData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newProgressPayload, 6));
-                subscriptionIds.Add(6);
-                sock.Send(SubscriptionProgressData);
-
                 //Send request for all badges since given date
                 var updatedBadgesQuery = "query { updatedBadges(date: \"" + GlobalResources.BadgesUpdatedDate.ToString("o") + "Z\") { edges { badgeId id name description imageURL type method visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeUpdatePayload = new DabGraphQlPayload(updatedBadgesQuery, variables);
                 var badgeInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeUpdatePayload, 7));
                 subscriptionIds.Add(7);
                 sock.Send(badgeInit);
-
-                //Send request for user badge progress since given date
-                var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
-                var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 8));
-                subscriptionIds.Add(8);
-                sock.Send(progressInit);
 
                 //get recent actions when we get a connection made
                 var gmd = AuthenticationAPI.GetMemberData().Result;
