@@ -57,7 +57,7 @@ namespace DABApp
 								{
 									await DisplayAlert("Error", url, "OK");
 								}
-
+								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabChannelsPage());
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 								Application.Current.MainPage = nav;
@@ -65,6 +65,7 @@ namespace DABApp
 							}
 							else
 							{
+								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabManageDonationsPage(dons, true));
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 								Application.Current.MainPage = nav;
@@ -73,6 +74,7 @@ namespace DABApp
 						}
 						else
 						{
+							GlobalResources.Instance.IsLoggedIn = true;
 							var nav = new NavigationPage(new DabChannelsPage());
 							nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 							Application.Current.MainPage = nav;
