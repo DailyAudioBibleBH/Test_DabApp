@@ -123,6 +123,8 @@ namespace DABApp
         }
         public bool IsiPhoneX { get; set; } = false;
 
+        public bool IsLoggedIn { get; set; } = false;
+
         public static GlobalResources Instance { get; private set; }
 
         public bool OnRecord { get; set; }
