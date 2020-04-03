@@ -176,6 +176,7 @@ namespace DABApp
                                         NavigationPage _nav = new NavigationPage(new DabChannelsPage());
                                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
                                         Application.Current.MainPage = _nav;
+                                        //user is logged in
                                         GlobalResources.Instance.IsLoggedIn = true;
                                         await Navigation.PopToRootAsync();
                                     }
@@ -196,6 +197,7 @@ namespace DABApp
                                         {
                                             Device.BeginInvokeOnMainThread(() =>
                                             {
+                                                //user is logged in
                                                 GlobalResources.Instance.IsLoggedIn = true;
                                                 DabChannelsPage _nav = new DabChannelsPage();
                                                 _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
@@ -213,6 +215,7 @@ namespace DABApp
                                         }
                                         else
                                         {
+                                            //user is logged in
                                             GlobalResources.Instance.IsLoggedIn = true;
                                             DabChannelsPage _nav = new DabChannelsPage();
                                             _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
@@ -230,6 +233,7 @@ namespace DABApp
                                     }
                                     else
                                     {
+                                        //user is logged in
                                         GlobalResources.Instance.IsLoggedIn = true;
                                         DabChannelsPage _nav = new DabChannelsPage();
                                         _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);

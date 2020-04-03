@@ -31,6 +31,7 @@ namespace DABApp
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
+        //grab episodes by channel
         public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
         {
             try

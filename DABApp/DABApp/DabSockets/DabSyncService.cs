@@ -161,6 +161,7 @@ namespace DABApp.DabSockets
                     }
                     
                 }
+                //Grabbing episodes
                 else if (root.payload?.data?.episodes != null)
                 {
                     MessagingCenter.Send<string>("WaitUI", "StartWaitUI");
@@ -274,6 +275,7 @@ namespace DABApp.DabSockets
                     Instance.Init();
                     Instance.Connect();
                 }
+                // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
                 {
                     
@@ -311,6 +313,7 @@ namespace DABApp.DabSockets
                         await adb.InsertOrReplaceAsync(sBadgeUpdateSettings);
                     }
                 }
+                //progress towards achievements
                 else if (root.payload?.data?.updatedProgress != null)
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
@@ -343,7 +346,7 @@ namespace DABApp.DabSockets
                             }
                         }
                         
-
+                        //update last time checked for badge progress
                         string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
                         dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
                         if (sBadgeProgressSettings == null)
@@ -364,6 +367,7 @@ namespace DABApp.DabSockets
                     }
                     
                 }
+                //Progress was made, show popup if 100 percent achieved
                 else if (root.payload?.data?.progressUpdated?.progress != null)
                 {
                     DabGraphQlProgress progress = new DabGraphQlProgress(root.payload.data.progressUpdated.progress);
@@ -560,7 +564,7 @@ namespace DABApp.DabSockets
             {
                 //Init the connection
                 PrepConnectionWithTokenAndOrigin(Token.Value);
-                var test = GlobalResources.GetUserEmail();
+                //Only send user based subscriptions when user is logged in
                 if (GlobalResources.GetUserEmail() != "Guest"  && GlobalResources.Instance.IsLoggedIn)
                 {
                     //Subscribe to action logs - SUB 1

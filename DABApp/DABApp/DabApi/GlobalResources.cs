@@ -123,6 +123,7 @@ namespace DABApp
         }
         public bool IsiPhoneX { get; set; } = false;
 
+        //Instance to find if user is logged in or not
         public bool IsLoggedIn { get; set; } = false;
 
         public static GlobalResources Instance { get; private set; }
