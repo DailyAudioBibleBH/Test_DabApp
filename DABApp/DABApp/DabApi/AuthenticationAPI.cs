@@ -203,7 +203,7 @@ namespace DABApp
                     System.Threading.Thread.Sleep(1000);
                     DabSyncService.Instance.Connect();
                 });
-
+                //user is not logged in
                 GlobalResources.Instance.IsLoggedIn = false;
                 return true;
             }

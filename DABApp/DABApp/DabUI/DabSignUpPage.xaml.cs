@@ -26,7 +26,7 @@ namespace DABApp
 				Navigation.PushAsync(new DabTermsAndConditionsPage());
 			};
 			Terms.GestureRecognizers.Add(tapper);
-			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible <font color='#ff0000'>Terms of Service.</font></div>";
+			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible </br> <font color='#ff0000'>Terms of Service.</font></div>";
 		}
 
 		async void OnSignUp(object o, EventArgs e) {
@@ -57,6 +57,7 @@ namespace DABApp
 								{
 									await DisplayAlert("Error", url, "OK");
 								}
+                                //user is logged in
 								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabChannelsPage());
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
@@ -65,6 +66,7 @@ namespace DABApp
 							}
 							else
 							{
+                                //user is logged in
 								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabManageDonationsPage(dons, true));
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
@@ -74,6 +76,7 @@ namespace DABApp
 						}
 						else
 						{
+                            //user is logged in
 							GlobalResources.Instance.IsLoggedIn = true;
 							var nav = new NavigationPage(new DabChannelsPage());
 							nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
