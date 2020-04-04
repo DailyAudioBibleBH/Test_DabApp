@@ -329,7 +329,6 @@ namespace DABApp
             GlobalResources.WaitStart();
 
             List<string> emptyList = new List<string>();
-            EpisodeList.ItemsSource = emptyList;
 
             //Load the episode list
             if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
@@ -355,7 +354,6 @@ namespace DABApp
                 await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             }
 
-            EpisodeList.ItemsSource = Episodes;
             GlobalResources.WaitStop();
         }
 
