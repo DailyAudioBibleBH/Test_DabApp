@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -35,8 +36,40 @@ namespace DABApp
 			//Navigation properties
 			Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
 
-			//Slide Menu
-			this.SlideMenu = new DabMenuView();
+            //Wait Indicator
+            //Subscribe to starting wait ui
+            MessagingCenter.Subscribe<string,string>("dabapp", "Wait_Start",  (sender,message) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activityLabel.Text = message;
+                    activity.IsVisible = true;
+                    activityContent.IsVisible=true;
+                    activityHolder.IsVisible = true;
+                });
+            });
+
+            //Subscribe to stopping wait ui
+            MessagingCenter.Subscribe<string>("dabapp", "Wait_Stop", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    activityContent.IsVisible = false;
+                });
+            });
+
+            //Slide Menu
+            this.SlideMenu = new DabMenuView();
             if (Device.RuntimePlatform == "iOS")
             {
                 //Menu Button
