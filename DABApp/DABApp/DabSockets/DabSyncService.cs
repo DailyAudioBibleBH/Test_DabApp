@@ -118,8 +118,8 @@ namespace DABApp.DabSockets
                 {
                     if (GlobalResources.GetUserEmail() != "Guest")
                     {
-                        MessagingCenter.Send<string,string>("dabapp", "Wait_Start", "Please wait while we load your personal action history. Depending on your internet internet connection, this could take up to a minute.");
-                        
+                       GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet internet connection, this could take up to a minute.");
+                            
 
                         List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
                         if (root.payload.data.lastActions.pageInfo.hasNextPage == true)
@@ -160,7 +160,7 @@ namespace DABApp.DabSockets
 
                             //store a new last action date
                             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-                            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
+                            GlobalResources.WaitStop();
 
                         }
                     }
@@ -169,7 +169,7 @@ namespace DABApp.DabSockets
                 //Grabbing episodes
                 else if (root.payload?.data?.episodes != null)
                 {
-                    MessagingCenter.Send<string>("WaitUI", "StartWaitUI");
+                    GlobalResources.WaitStart("Please wait while we load the episode list...");
                     foreach (var item in root.payload.data.episodes.edges)
                     {
                         allEpisodes.Add(item);
@@ -202,7 +202,7 @@ namespace DABApp.DabSockets
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
-                        MessagingCenter.Send<string>("WaitUI", "StopWaitUI");
+                        GlobalResources.WaitStop();
                     }
 
                     //store a new episode query date
@@ -515,7 +515,7 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
             if (!sock.IsConnected)
             {
-                MessagingCenter.Send<string>("LoginUI", "StopWaitUI");
+                GlobalResources.WaitStop();
             }
         }
 

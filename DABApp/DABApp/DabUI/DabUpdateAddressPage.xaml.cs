@@ -49,10 +49,7 @@ namespace DABApp
 		{
 			if (Validation())
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				var update = new Address();
 				update.first_name = FirstName.Text;
 				update.last_name = LastName.Text;
@@ -82,8 +79,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 		}
 

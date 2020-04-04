@@ -68,17 +68,9 @@ namespace DABApp
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+            
 
-            MessagingCenter.Subscribe<string>("LoginUI", "StopWaitUI", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    activity.IsVisible = false;
-                    activityHolder.IsVisible = false;
-                });
-            });
+         
             if (GraphQlLoginComplete)
             {
                 return; //get out of here once login is complete;
@@ -169,8 +161,7 @@ namespace DABApp
                                         }
                                         else
                                         {
-                                            activity.IsVisible = false;
-                                            activityHolder.IsVisible = false;
+                                            GlobalResources.WaitStop();
                                             await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
                                         }
                                         NavigationPage _nav = new NavigationPage(new DabChannelsPage());
@@ -257,8 +248,7 @@ namespace DABApp
                         {
                             if (GraphQlLoginRequestInProgress == true)
                             {
-                                activity.IsVisible = false;
-                                activityHolder.IsVisible = false;
+                                GlobalResources.WaitStop();
                                 //We have a login error!
                                 await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
                                 GraphQlLoginRequestInProgress = false;
@@ -279,8 +269,7 @@ namespace DABApp
                 }
                 else
                 {
-                    activity.IsVisible = false;
-                    activityHolder.IsVisible = false;
+                    GlobalResources.WaitStop();
                     //DabSyncService.Instance.Init();
                     DabSyncService.Instance.Connect();
                 }
@@ -311,10 +300,7 @@ namespace DABApp
                 try
                 {
                     Login.IsEnabled = false;
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    activity.IsVisible = true;
-                    activityHolder.IsVisible = true;
+                    GlobalResources.WaitStart();
                     var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
                     if (result == "Request Sent")
                     {
@@ -324,8 +310,7 @@ namespace DABApp
 
                     else
                     {
-                        activity.IsVisible = false;
-                        activityHolder.IsVisible = false;
+                        GlobalResources.WaitStop();
                         if (result.Contains("Error"))
                         {
                             if (result.Contains("Http"))
@@ -366,10 +351,7 @@ namespace DABApp
         async void OnGuestLogin(object o, EventArgs e)
         {
             GuestLogin.IsEnabled = false;
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
             GuestStatus.Current.IsGuestLogin = true;
             await AuthenticationAPI.ValidateLogin("Guest", "", true);
             if (_fromPlayer)
@@ -383,8 +365,7 @@ namespace DABApp
                 Application.Current.MainPage = _nav;
                 await Navigation.PopToRootAsync();
             }
-            activity.IsVisible = false;
-            activity.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)

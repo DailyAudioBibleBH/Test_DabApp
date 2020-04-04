@@ -246,12 +246,7 @@ namespace DABApp
         //Handle the selection of a different episode
         {
             //Load the episode
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            labelHolder.IsVisible = true;
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
             var newEp = (EpisodeViewModel)e.Item;
             currentIndex = list.IndexOf(newEp);
             previousEpIndex = currentIndex + 1;
@@ -319,9 +314,7 @@ namespace DABApp
             }
             //TODO: Set completed image
             //Completed.Image = episode.listenedToSource;
-            labelHolder.IsVisible = false;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         public void OnMonthSelected(object o, EventArgs e)
@@ -333,12 +326,7 @@ namespace DABApp
         /* User selected a different channel */
         {
             //Wait indicator 
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-            labelHolder.IsVisible = true;
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
 
             List<string> emptyList = new List<string>();
             EpisodeList.ItemsSource = emptyList;
@@ -368,9 +356,7 @@ namespace DABApp
             }
 
             EpisodeList.ItemsSource = Episodes;
-            labelHolder.IsVisible = false;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         //Go to previous episode
@@ -383,12 +369,7 @@ namespace DABApp
                 player.Pause(); //should save position
 
                 //Load the episode
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                labelHolder.IsVisible = true;
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var newEp = previousEpisode;
                 currentIndex = currentIndex + 1;
                 previousEpIndex = currentIndex + 1;
@@ -455,19 +436,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                labelHolder.IsVisible = false;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
                 player.Pause();
             }
             catch (Exception ex)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                labelHolder.IsVisible = false;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }            
         }
 
@@ -482,12 +456,7 @@ namespace DABApp
                 player.Pause();//should save position
 
                 //Load the episode
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                labelHolder.IsVisible = true;
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var newEp = nextEpisode;
                 currentIndex = currentIndex - 1;
                 previousEpIndex = currentIndex + 1;
@@ -557,19 +526,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                labelHolder.IsVisible = false;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
                 player.Pause();
             }
             catch (Exception ex)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                labelHolder.IsVisible = false;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
             
         }
@@ -1139,12 +1101,7 @@ namespace DABApp
 
         async void OnRefresh(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-            labelHolder.IsVisible = true;
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
             await AuthenticationAPI.PostActionLogs(false);
             await AuthenticationAPI.GetMemberData();
             if (episode == null && Episodes.Count() > 0)
@@ -1164,9 +1121,7 @@ namespace DABApp
 
             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
-            labelHolder.IsVisible = false;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
             EpisodeList.IsRefreshing = false;
         }
 

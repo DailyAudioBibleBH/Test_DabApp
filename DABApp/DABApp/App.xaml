@@ -60,7 +60,10 @@
                     </StackLayout>
                     <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
                     </StackLayout>
-                    <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" />
+                   <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" />
+                       <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small"/>
+                   </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
             <!-- No player page and no scrolling-->
@@ -71,10 +74,10 @@
                     </StackLayout>
                     <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
                     </StackLayout>
-                    <StackLayout x:Name="labelHolder" IsVisible="False" BackgroundColor="Transparent" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                        <ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" />
-                        <Label x:Name="Explanation" IsVisible="False" TextColor="{DynamicResource PlayerLabelColor}" VerticalOptions="StartAndExpand" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="Please wait while your audio file is submitted. This process may take a minute or two, depending upon your internet connection." />
-                    </StackLayout>
+                   <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" />
+                       <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small"/>
+                   </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
             <!--Theme Styles-->

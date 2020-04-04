@@ -109,14 +109,10 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var result = await AuthenticationAPI.GetMember();
                 await Navigation.PushAsync(new DabProfileManagementPage());
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
             
         }
@@ -133,10 +129,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var result = await AuthenticationAPI.GetWallet();
                 if (result != null)
                 {
@@ -146,8 +139,7 @@ namespace DABApp
                 {
                     await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
                 }
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
         }
 
@@ -155,18 +147,14 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var don = await AuthenticationAPI.GetDonations();
                 if (don != null)
                 {
                     await Navigation.PushAsync(new DabManageDonationsPage(don));
                 }
                 else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
         }
     }

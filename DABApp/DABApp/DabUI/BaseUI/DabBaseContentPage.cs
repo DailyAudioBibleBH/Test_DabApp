@@ -123,10 +123,7 @@ namespace DABApp
 
                 if (!giving)
                 {
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    activity.IsVisible = true;
-                    activityHolder.IsVisible = true;
+                    GlobalResources.WaitStart();
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
@@ -176,8 +173,7 @@ namespace DABApp
                         }
                         else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
                     }
-                    activity.IsVisible = false;
-                    activityHolder.IsVisible = false;
+                    GlobalResources.WaitStop();
                     giving = false;
                 }
             }

@@ -49,10 +49,7 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			var topic = (Topic)e.Item;
 			var result = await ContentAPI.GetTopic(topic);
 			if (result == null)
@@ -64,8 +61,7 @@ namespace DABApp
 				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
 			}
 			ContentList.topicList.SelectedItem = null;
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		protected override async void OnAppearing()
@@ -84,10 +80,7 @@ namespace DABApp
 		{
 			if (fromPost || unInitialized)
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				_forum = await ContentAPI.GetForum(_view, pageNumber);
 				if (_forum == null)
 				{
@@ -100,8 +93,7 @@ namespace DABApp
 					fromPost = false;
 					unInitialized = false;
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 		}
 	}

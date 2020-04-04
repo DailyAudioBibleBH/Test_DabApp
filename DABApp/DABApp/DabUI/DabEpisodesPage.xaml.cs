@@ -28,24 +28,6 @@ namespace DABApp
 
             });
 
-            //Subscribe to starting wait ui
-            MessagingCenter.Subscribe<string>("WaitUI", "StartWaitUI", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    activity.IsVisible = true;
-                });
-            });
-
-            //Subscribe to stopping wait ui
-            MessagingCenter.Subscribe<string>("WaitUI", "StopWaitUI", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    activity.IsVisible = false;
-                });
-            });
-
             _resource = resource;
             DabViewHelper.InitDabForm(this);
             Episodes = PlayerFeedAPI.GetEpisodeList(resource);
@@ -81,10 +63,7 @@ namespace DABApp
             try
             {
                 EpisodeList.IsEnabled = false;
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var chosenVM = (EpisodeViewModel)e.Item;
                 var chosen = chosenVM.Episode;
                 EpisodeList.SelectedItem = null;
@@ -105,8 +84,7 @@ namespace DABApp
                     await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
                 }
                 EpisodeList.SelectedItem = null;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
                 EpisodeList.IsEnabled = true;
             }
             catch (Exception ex)
@@ -144,10 +122,7 @@ namespace DABApp
 
         async Task Refresh()
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart("Refreshing...");
 
             await AuthenticationAPI.PostActionLogs(false);
             //await PlayerFeedAPI.GetEpisodes(_resource);
@@ -164,8 +139,7 @@ namespace DABApp
                     circularProgressControl.HandleDownloadVisibleChanged(true);
                 });
             }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         void OnFilters(object o, EventArgs e)

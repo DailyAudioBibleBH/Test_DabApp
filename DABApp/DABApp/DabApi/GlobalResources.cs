@@ -25,7 +25,7 @@ namespace DABApp
         /* This string determins the database version. 
          * Any time you change this value and publish a release, a new database will be created and all other .db3 files will be removed
          */
-        public static string DBVersion 
+        public static string DBVersion
         {
             get
             {
@@ -330,7 +330,7 @@ namespace DABApp
             {
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
-                
+
                 if (LastActionsSettings == null)
                 {
                     DateTime actionDate = DateTime.MinValue.ToUniversalTime();
@@ -407,6 +407,24 @@ namespace DABApp
             }
         }
 
+        public static void WaitStart()
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
+        }
+
+        public static void WaitStart(string message)
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
+
+        }
+
+        public static void WaitStop()
+        {
+            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
+        }
+
+
+
         //Return the base URL to connect to the Journal
         public static string JournalUrl
         {
@@ -441,5 +459,7 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
+
+
     }
 }

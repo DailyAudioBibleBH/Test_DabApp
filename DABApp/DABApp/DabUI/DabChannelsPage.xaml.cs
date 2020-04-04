@@ -79,10 +79,7 @@ namespace DABApp
 
         async void OnPlayer(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
             var reading = await PlayerFeedAPI.GetReading(episode.read_link);
             if (Device.Idiom == TargetIdiom.Tablet)
             {
@@ -93,8 +90,7 @@ namespace DABApp
             {
                 await Navigation.PushAsync(new DabPlayerPage(episode, reading));
             }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         protected override void OnDisappearing()
@@ -108,11 +104,7 @@ namespace DABApp
         {
             try
             {
-                //Wait indicator
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
 
                 //Selected resource
                 var selected = (Resource)e.Item;
@@ -145,8 +137,7 @@ namespace DABApp
                 }
 
                 selected.IsNotSelected = 1.0;
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
 
                 //Send info to Firebase analytics that user accessed a channel
                 var infoJ = new Dictionary<string, string>();

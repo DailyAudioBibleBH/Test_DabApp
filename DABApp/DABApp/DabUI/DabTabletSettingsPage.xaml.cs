@@ -112,10 +112,7 @@ namespace DABApp
 		}
 
 		async void OnWallet(object o, EventArgs e) {
-			//ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(SettingsPage, "activity");
-			//StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(SettingsPage, "activityHolder");
-			//activity.IsVisible = true;
-			//activityHolder.IsVisible = true;
+			
 			var result = await AuthenticationAPI.GetWallet();
 			if (result != null)
 			{
@@ -126,23 +123,18 @@ namespace DABApp
 				Remove();
 			}
 			else await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-			//activity.IsVisible = false;
-			//activityHolder.IsVisible = false;
+			
 		}
 
 		async void OnDonations(object o, EventArgs e) {
-			//ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(SettingsPage, "activity");
-			//StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(SettingsPage, "activityHolder");
-			//activity.IsVisible = true;
-			//activityHolder.IsVisible = true;
+			
 			var don = await AuthenticationAPI.GetDonations();
 			var Donations = new DabManageDonationsPage(don);
             Donations.Unsubscribe();
 			Detail = new NavigationPage(Donations) { BarTextColor = (Color)App.Current.Resources["TextColor"]};
 			Donations.ToolbarItems.Clear();
 			Remove();
-			//activity.IsVisible = false;
-			//activityHolder.IsVisible = false;
+			
 		}
 
         void OnDisappearing(object o, EventArgs e)

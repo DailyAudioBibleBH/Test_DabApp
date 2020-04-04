@@ -77,10 +77,7 @@ namespace DABApp
 
 		async Task Update()
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			var result = await ContentAPI.GetTopic(_topic);
 			if (result == null)
 			{
@@ -97,8 +94,7 @@ namespace DABApp
 				}
 				fromPost = false;
 			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 	}
 }

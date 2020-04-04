@@ -7,7 +7,6 @@
 				<ContentView Padding="10, 0, 0, 0">
 				<local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
 				</ContentView>
-				<!--<RelativeLayout>-->
 				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{Binding Source={x:Static local:GlobalResources.Instance}, Path=FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
 					<local:NonScrollingFlowListView.FlowColumnTemplate>
 						<DataTemplate>
@@ -24,18 +23,7 @@
 						</DataTemplate>
 					</local:NonScrollingFlowListView.FlowColumnTemplate>
 				</local:NonScrollingFlowListView>
-				<!--<StackLayout x:Name="activityHolder" Opacity=".5" IsVisible="false" BackgroundColor="Gray"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-								</StackLayout>
-								<ActivityIndicator x:Name="activity" IsVisible="false" IsRunning="true" Color="White" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"
-								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" 
-								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}"
-								RelativeLayout.HeightConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}"
-								RelativeLayout.WidthConstraint = "{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}"/>							
-			</RelativeLayout>-->
+				
 			</StackLayout>
 		</StackLayout>
 	</ContentPage.Content>
