@@ -19,39 +19,9 @@ namespace DABApp.Droid
 
         public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
         {
-            //Build the path for storing the Android database
-            //var filename = "DabSQLite.db3";
-            var filename = $"database.{GlobalResources.DBVersion}.db3";
+         
 
-            string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
-            var path = Path.Combine(folder, filename);
-
-            if (!_initiated)
-            {
-                //do things just once while the app is running
-                _initiated = true;
-                //Reset the file if requested
-                if (ResetDatabaseOnStart)
-                {
-                    if (File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
-                }
-
-                //Cleanup old database files (with names other than the one we're using)
-                DirectoryInfo dir = new DirectoryInfo(folder);
-                foreach (FileInfo fil in dir.GetFiles(("*.db3")))
-                {
-                    if (fil.Name != filename)
-                    {
-                        fil.Delete();
-                    }
-                }
-
-            }
-
-            var connection = new SQLiteConnection(path);
+            var connection = new SQLiteConnection(GetDatabasePath(ResetDatabaseOnStart));
             return connection;
         }
 
@@ -59,7 +29,7 @@ namespace DABApp.Droid
         {
 
 
-            var connection = new SQLiteAsyncConnection(path);
+            var connection = new SQLiteAsyncConnection(GetDatabasePath(ResetDatabaseOnStart));
             return connection;
         }
 
