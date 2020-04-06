@@ -20,7 +20,7 @@ namespace DABApp
 		public DabAchievementsPage(DABApp.View contentView) 
 		{
 			InitializeComponent();
-			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
+			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			NavigationPage.SetHasBackButton(this, true);
 			//Init the form
 			DabViewHelper.InitDabForm(this);
