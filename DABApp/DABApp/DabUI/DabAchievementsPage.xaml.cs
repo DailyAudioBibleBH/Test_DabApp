@@ -20,13 +20,15 @@ namespace DABApp
 		public DabAchievementsPage(DABApp.View contentView) 
 		{
 			InitializeComponent();
-			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
+			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			NavigationPage.SetHasBackButton(this, true);
 			//Init the form
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = contentView; 
 			BindingContext = AchievementsView;
 			string userName = GlobalResources.GetUserEmail();
+
+		
 
 			banner.Source = new UriImageSource
 			{
@@ -105,6 +107,7 @@ namespace DABApp
             }
 			
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
+			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 1000;
 			progressYear.Text = currentYear.ToString();
 		}
 	}

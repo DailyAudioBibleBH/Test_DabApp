@@ -15,8 +15,8 @@
                 <StackLayout Orientation="Horizontal" Padding="20">
                     <Label x:Name="progressYear" FontSize="Medium"/>
                 </StackLayout>
-                <ListView x:Name="achievementListView" RowHeight="-1" IsEnabled="False" SeparatorVisibility="Default" Margin="10, 0, 10, 0" HasUnevenRows="True">
-                    <ListView.ItemTemplate>
+                <local:NonScrollingListView x:Name="achievementListView" RowHeight="-1" IsEnabled="False" SeparatorVisibility="Default" Margin="10, 0, 10, 0" HasUnevenRows="True">
+                    <local:NonScrollingListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
@@ -34,8 +34,8 @@
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    </local:NonScrollingListView.ItemTemplate>
+                </local:NonScrollingListView>
                 <ContentView VerticalOptions="EndAndExpand"/>
             </StackLayout>
     </ContentPage.Content>
