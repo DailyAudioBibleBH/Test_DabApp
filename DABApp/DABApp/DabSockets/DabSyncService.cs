@@ -118,7 +118,7 @@ namespace DABApp.DabSockets
                 {
                     if (GlobalResources.GetUserEmail() != "Guest")
                     {
-                       GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet internet connection, this could take up to a minute.");
+                       GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet connection, this could take up to a minute.");
                             
 
                         List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
