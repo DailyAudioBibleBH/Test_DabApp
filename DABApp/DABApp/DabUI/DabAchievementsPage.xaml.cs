@@ -105,6 +105,7 @@ namespace DABApp
             }
 			
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
+			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 500; //arbitrary number to get them tall enopugh.
 			progressYear.Text = currentYear.ToString();
 		}
 	}
