@@ -53,20 +53,26 @@ namespace DABApp
 
         }
 
-        async void OnLogOut(object o, EventArgs e)
+        public async void OnForceLogout()
+        {
+            Application.Current.Properties["IsForcefulLogout"] = "true";
+            LogOut.IsEnabled = false;
+            await AuthenticationAPI.LogOut();
+            var nav = new NavigationPage(new DabLoginPage());
+            nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+            Application.Current.MainPage = nav;
+            await Navigation.PopToRootAsync();
+        }
+
+        public async void OnLogOut(object o, EventArgs e)
         {
             LogOut.IsEnabled = false;
+            await AuthenticationAPI.LogOut();
             player.Stop();
             var nav = new NavigationPage(new DabLoginPage());
             nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-            if (await AuthenticationAPI.LogOut())
-            {
-                await Navigation.PushModalAsync(nav);
-            }
-            else
-            {
-                await Navigation.PushModalAsync(nav);
-            }
+            Application.Current.MainPage = nav;
+            await Navigation.PopToRootAsync();
         }
 
         protected override void OnDisappearing()
@@ -77,7 +83,7 @@ namespace DABApp
 
         void OnOffline(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabOfflineEpisodeManagementPage());
             }
@@ -85,7 +91,7 @@ namespace DABApp
 
         void OnReset(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabResetListenedToStatusPage());
             }
@@ -93,7 +99,7 @@ namespace DABApp
 
         void OnAppInfo(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabAppInfoPage());
             }
@@ -101,23 +107,19 @@ namespace DABApp
 
         async void OnProfile(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
-
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var result = await AuthenticationAPI.GetMember();
                 await Navigation.PushAsync(new DabProfileManagementPage());
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
+            
         }
 
         void OnAddresses(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 Navigation.PushAsync(new DabAddressManagementPage());
             }
@@ -125,12 +127,9 @@ namespace DABApp
 
         async void OnWallet(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var result = await AuthenticationAPI.GetWallet();
                 if (result != null)
                 {
@@ -140,27 +139,22 @@ namespace DABApp
                 {
                     await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
                 }
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
         }
 
         async void OnDonations(object o, EventArgs e)
         {
-            if(GlobalResources.ShouldUseSplitScreen == false)
+            if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
+                GlobalResources.WaitStart();
                 var don = await AuthenticationAPI.GetDonations();
                 if (don != null)
                 {
                     await Navigation.PushAsync(new DabManageDonationsPage(don));
                 }
                 else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
+                GlobalResources.WaitStop();
             }
         }
     }

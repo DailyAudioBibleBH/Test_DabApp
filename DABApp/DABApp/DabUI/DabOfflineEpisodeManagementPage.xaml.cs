@@ -11,7 +11,7 @@ namespace DABApp
 		public DabOfflineEpisodeManagementPage()
 		{
 			InitializeComponent();
-            if (GlobalResources.ShouldUseSplitScreen){ NavigationPage.SetHasNavigationBar(this, false); }
+            if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
 			//base.ControlTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			DabViewHelper.InitDabForm(this);
 			switch (OfflineEpisodeSettings.Instance.Duration)
@@ -39,9 +39,9 @@ namespace DABApp
 		}
 
 		void OnDeleteAfterListening(object o, ToggledEventArgs e) {
-			var pre = e.Value;
+            bool pre = e.Value;
 			OfflineEpisodeSettings.Instance.DeleteAfterListening = pre;
-			PlayerFeedAPI.UpdateOfflineEpisodeSettings();
+            PlayerFeedAPI.UpdateOfflineEpisodeSettings();
 		}
 
 		void OnDurationPicked(object o, EventArgs e) {

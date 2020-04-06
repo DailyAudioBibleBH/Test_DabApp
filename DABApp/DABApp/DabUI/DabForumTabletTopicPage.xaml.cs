@@ -39,18 +39,14 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			topic = (Topic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
 			topic = await ContentAPI.GetTopic(topic);
 			DetailsView.replies.ItemsSource = topic.replies;
 			DetailsView.last.Text = TimeConvert();
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		async void OnPost(object o, EventArgs e)
@@ -129,10 +125,7 @@ namespace DABApp
 
 		async Task Update()
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			if (topic != null)
 			{
 				topic = await ContentAPI.GetTopic(topic);
@@ -160,8 +153,7 @@ namespace DABApp
                 ContentList.BindingContext = _forum;
                 ContentList.topicList.ItemsSource = _forum.topics;
             }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
             fromPost = false;
             unInitialized = false;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xamarin.Forms;
 using SlideOverKit;
 using SQLite;
@@ -29,7 +29,7 @@ namespace DABApp
         {
             get
             {
-                return "20191210-AddedUserEpisodeMeta-b";
+                return "20200402";
             }
         }
 
@@ -64,7 +64,15 @@ namespace DABApp
                 }
                 catch (Exception ex)
                 {
-                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    //hard coded default content api paths
+                    if (TestMode)
+                    {
+                        return "https://feed.staging.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
+                    else
+                    {
+                        return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
                 }
 
             }
@@ -99,13 +107,24 @@ namespace DABApp
                 }
                 catch (Exception ex)
                 {
-                    return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    //hard coded default content api paths
+                    if (TestMode)
+                    {
+                        return "https://feed.staging.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
+                    else
+                    {
+                        return "https://feed.dailyaudiobible.com/wp-json/lutd/v1/";
+                    }
                 }
 
 
             }
         }
         public bool IsiPhoneX { get; set; } = false;
+
+        //Instance to find if user is logged in or not
+        public bool IsLoggedIn { get; set; } = false;
 
         public static GlobalResources Instance { get; private set; }
 
@@ -157,8 +176,28 @@ namespace DABApp
             }
         }
 
+        public static bool ShouldUseSplitScreen
+        {
+            get
+            {
+                if (Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform == "Android")
+                {
+                    //Phones and Android Devices
+                    return false;
+                }
+                else
+                {
+                    //iPad's only - eventually - we want this to be true
+                    //TODO: Return True for Ipads
+                    return false;
+                }
+            }
+        }
+
+
         public static string GetUserEmail()
         {
+            var settings = db.Table<dbSettings>().ToList();
             dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
             if (EmailSettings == null)
             {
@@ -184,17 +223,119 @@ namespace DABApp
             }
         }
 
-        public static DateTime LastActionDate
-           //Last action check date in GMT (get/set universal time)
+        //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
+        public static string GetLastEpisodeQueryDate(int ChannelId)
+        {
+            //Last episode query date by channel in GMT
+            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
+            if (LastEpisodeQuerySettings == null)
+            {
+                DateTime queryDate = DateTime.MinValue.ToUniversalTime();
+                LastEpisodeQuerySettings = new dbSettings();
+                LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
+                LastEpisodeQuerySettings.Value = queryDate.ToString("o");
+                db.InsertOrReplace(LastEpisodeQuerySettings);
+                return queryDate.ToString("o");
+            }
+            else
+            {
+                return LastEpisodeQuerySettings.Value;
+            }
+        }
+
+        public static void SetLastEpisodeQueryDate(int ChannelId)
+        {
+            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
+
+            //Store the value sent in the database
+            string queryDate = DateTime.UtcNow.ToString("o");
+            LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
+            LastEpisodeQuerySettings.Value = queryDate;
+            db.InsertOrReplace(LastEpisodeQuerySettings);
+        }
+
+        //Last badge check date in GMT (get/set universal time)
+        public static DateTime BadgesUpdatedDate
         {
             get
             {
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
+                string settingsKey = "BadgeUpdateDate";
+                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+
+                if (BadgeUpdateSettings == null)
+                {
+                    DateTime badgeDate = DateTime.MinValue.ToUniversalTime();
+                    BadgeUpdateSettings = new dbSettings();
+                    BadgeUpdateSettings.Key = settingsKey;
+                    BadgeUpdateSettings.Value = badgeDate.ToString();
+                    db.InsertOrReplace(BadgeUpdateSettings);
+                    return DateTime.Parse(BadgeUpdateSettings.Value);
+                }
+                else
+                {
+                    return DateTime.Parse(BadgeUpdateSettings.Value);
+                }
+            }
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = "BadgeUpdateDate";
+                string badgeDate = value.ToString();
+                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                BadgeUpdateSettings.Key = settingsKey;
+                BadgeUpdateSettings.Value = badgeDate;
+                db.InsertOrReplace(BadgeUpdateSettings);
+            }
+        }
+
+        public static DateTime BadgeProgressUpdatesDate
+        //Last badge progress check date in GMT (get/set universal time)
+        {
+            get
+            {
+                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+
+                if (BadgeProgressSettings == null)
+                {
+                    DateTime progressDate = DateTime.MinValue.ToUniversalTime();
+                    BadgeProgressSettings = new dbSettings();
+                    BadgeProgressSettings.Key = settingsKey;
+                    BadgeProgressSettings.Value = progressDate.ToString();
+                    db.InsertOrReplace(BadgeProgressSettings);
+                    return DateTime.Parse(BadgeProgressSettings.Value);
+                }
+                else
+                {
+                    return DateTime.Parse(BadgeProgressSettings.Value);
+                }
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                string progressDate = value.ToString();
+                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                BadgeProgressSettings.Key = settingsKey;
+                BadgeProgressSettings.Value = progressDate;
+                db.InsertOrReplace(BadgeProgressSettings);
+            }
+        }
+
+        public static DateTime LastActionDate
+        //Last action check date in GMT (get/set universal time)
+        {
+            get
+            {
+                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+
                 if (LastActionsSettings == null)
                 {
                     DateTime actionDate = DateTime.MinValue.ToUniversalTime();
                     LastActionsSettings = new dbSettings();
-                    LastActionsSettings.Key = "ActionDate";
+                    LastActionsSettings.Key = settingsKey;
                     LastActionsSettings.Value = actionDate.ToString();
                     db.InsertOrReplace(LastActionsSettings);
                     return actionDate;
@@ -208,9 +349,10 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
+                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ActionDate");
-                LastActionsSettings.Key = "ActionDate";
+                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                LastActionsSettings.Key = settingsKey;
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
             }
@@ -265,6 +407,24 @@ namespace DABApp
             }
         }
 
+        public static void WaitStart()
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
+        }
+
+        public static void WaitStart(string message)
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
+
+        }
+
+        public static void WaitStop()
+        {
+            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
+        }
+
+
+
         //Return the base URL to connect to the Journal
         public static string JournalUrl
         {
@@ -300,22 +460,6 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
 
-        public static bool ShouldUseSplitScreen
-        {
-            get
-            {
-                if(Device.Idiom == TargetIdiom.Phone || Device.RuntimePlatform=="Android")
-                {
-                    //Phones and Android Devices
-                    return false;
-                } else
-                {
-                    //iPad's only - eventually - we want this to be true
-                    //TODO: Return True for Ipads
-                    return false;
-                }
-            }
-        }
-    }
 
+    }
 }

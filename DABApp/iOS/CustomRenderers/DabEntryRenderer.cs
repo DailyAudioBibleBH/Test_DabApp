@@ -13,13 +13,17 @@ namespace DABApp.iOS
 		protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
 		{
 			base.OnElementChanged(e);
-			Control.LeftView = new UIView(new CGRect(2, 0, 2, 0));
-			Control.LeftViewMode = UITextFieldViewMode.Always;
-			Control.RightView = new UIView(new CGRect(2, 0, 2, 0));
-			Control.RightViewMode = UITextFieldViewMode.Always;
-			if (Control.Enabled == false) {
-				Control.TextColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
-			}
+            if (Control != null)
+            {
+                Control.LeftView = new UIView(new CGRect(2, 0, 2, 0));
+                Control.LeftViewMode = UITextFieldViewMode.Always;
+                Control.RightView = new UIView(new CGRect(2, 0, 2, 0));
+                Control.RightViewMode = UITextFieldViewMode.Always;
+                if (Control.Enabled == false)
+                {
+                    Control.TextColor = ((Color)App.Current.Resources["PlayerLabelColor"]).ToUIColor();
+                }
+            }			
 		}
 	}
 }

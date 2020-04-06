@@ -24,12 +24,15 @@ namespace DABApp.Droid
         protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
         {
             base.OnElementChanged(e);
-            Control.Focusable = true;
-            Control.FocusableInTouchMode = true;
-            Control.Enabled = true;
-            Control.ImportantForAccessibility = ImportantForAccessibility.Yes;
-            Control.AccessibilityLiveRegion = AccessibilityLiveRegion.Assertive;
-            Control.SetAccessibilityDelegate(new LabelDelegate());
+            if (Control != null)
+            {
+                Control.Focusable = true;
+                Control.FocusableInTouchMode = true;
+                Control.Enabled = true;
+                Control.ImportantForAccessibility = ImportantForAccessibility.Yes;
+                Control.AccessibilityLiveRegion = AccessibilityLiveRegion.Assertive;
+                Control.SetAccessibilityDelegate(new LabelDelegate());
+            }
         }
     }
 

@@ -12,7 +12,8 @@ namespace DABApp
 		public DabUpdateAddressPage(Address address, Country[] countries, bool IsShipping)
 		{
 			InitializeComponent();
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			BindingContext = address;
@@ -48,10 +49,7 @@ namespace DABApp
 		{
 			if (Validation())
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				var update = new Address();
 				update.first_name = FirstName.Text;
 				update.last_name = LastName.Text;
@@ -81,8 +79,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 		}
 

@@ -20,7 +20,8 @@ namespace DABApp
 			int end = (DateTime.Now.Year - start) + 50;
 			List<string> years = Enumerable.Range(start, end).Select(x => x.ToString()).ToList();
 			Year.ItemsSource = years;
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			if (card != null)

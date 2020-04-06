@@ -20,7 +20,8 @@ namespace DABApp
 			pages = new List<string>();
 			pages.Add("About");
 			pages.Add("Settings");
-            pages.Add("Send Audio Recording");
+			pages.Add("Achievements");
+			pages.Add("Send Audio Recording");
 			InitializeComponent();
 
 			// You must set IsFullScreen in this case, 
@@ -40,6 +41,7 @@ namespace DABApp
             BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
             OnAvatarChanged(this, new EventArgs());
 			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
+			GuestStatus.Current.UserName = GlobalResources.GetUserName();
 		}
 
 		void OnSignUp(object o, EventArgs e) {
@@ -102,10 +104,12 @@ namespace DABApp
 		async void OnItemTapped(object o, ItemTappedEventArgs e) {
 			if (Device.RuntimePlatform == "Android") 
 			{ 
-				MessagingCenter.Send<string>("Show", "Show"); 
+				MessagingCenter.Send("Show", "Show"); 
 			}
 			Nav item = (Nav)e.Item;
             View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
+
+			var test = ContentConfig.Instance.views;
 
 
             //Send info to Firebase analytics that user tapped a menu item
@@ -117,6 +121,10 @@ namespace DABApp
             {
                 case "Channels":
                     await Navigation.PopToRootAsync();
+                    if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+                    break;
+                case "Achievements":
+                    await Navigation.PushAsync(new DabAchievementsPage(view));
                     if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
                     break;
                 case "Prayer Wall":
@@ -145,39 +153,7 @@ namespace DABApp
                     RemovePages();
                     break;
             }
-			//if (item.title == "Channels")
-			//{
-			//	await Navigation.PopToRootAsync();
-			//	if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-			//}
-			//else {
-				
-			//	if (item.title == "Prayer Wall")
-			//	{
-			//		//var fo = await ContentAPI.GetForum(view);
-			//		if (Device.Idiom == TargetIdiom.Tablet)
-			//		{
-			//			await Navigation.PushAsync(new DabForumTabletTopicPage(view));
-			//		}
-			//		else
-			//		{
-			//			await Navigation.PushAsync(new DabForumPhoneTopicList(view));
-			//		}
-			//		RemovePages();
-			//	}
-			//	else
-			//	{
-			//		if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
-			//		{
-			//			await Navigation.PushAsync(new DabParentChildGrid(view));
-			//		}
-			//		else
-			//		{
-			//			await Navigation.PushAsync(new DabContentView(view));
-			//		}
-			//		RemovePages();
-			//	}
-			//}
+			
 			pageList.SelectedItem = null;
 		}
 

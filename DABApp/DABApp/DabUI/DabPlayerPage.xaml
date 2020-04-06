@@ -73,6 +73,15 @@
                                                Style="{StaticResource playerLabelStyle}"
                                                AutomationProperties.IsInAccessibleTree="true" />
                         </ContentView>
+                        <ContentView Padding="40, 10, 40, 0">
+                            <local:PlayerLabel x:Name="lblNotes"
+                                               HorizontalOptions="Center"
+                                               HorizontalTextAlignment="Center"
+                                               FontSize="Small"
+                                               Style="{StaticResource playerLabelStyle}"
+                                               AutomationProperties.IsInAccessibleTree="true" />
+                        </ContentView>
+
                     </StackLayout>
                     <local:DabSeekBar x:Name="SeekBar"
                                       HorizontalOptions="FillAndExpand"
@@ -100,16 +109,32 @@
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="32*" />
-                            <ColumnDefinition Width="17*" />
-                            <ColumnDefinition Width="17*" />
+                            <ColumnDefinition Width="13*" />
+                            <ColumnDefinition Width="13*" />
+                            <ColumnDefinition Width="13*" />
+                            <ColumnDefinition Width="22*" />
+                            <ColumnDefinition Width="13*" />
+                            <ColumnDefinition Width="13*" />
+                            <ColumnDefinition Width="13*" />
                         </Grid.ColumnDefinitions>
+                        <local:PlayerImage x:Name="previousButton"
+                                           Source="baseline_skip_previous_white_48pt_3x.png"
+                                           IsEnabled="True"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           HeightRequest="25"
+                                           WidthRequest="25"
+                                           Aspect="AspectFit"
+                                           AutomationProperties.HelpText="Back to previous episode"
+                                           AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPrevious" />
+                            </Image.GestureRecognizers>
+                        </local:PlayerImage>
                         <local:PlayerImage x:Name="backwardButton"
                                            Source="ic_replay_30_white_3x.png"
                                            Grid.Row="0"
-                                           Grid.Column="1"
+                                           Grid.Column="2"
                                            HeightRequest="25"
                                            WidthRequest="25"
                                            Aspect="AspectFit"
@@ -121,7 +146,7 @@
                         </local:PlayerImage>
                         <local:PlayerImage x:Name="PlayPause"
                                            Grid.Row="0"
-                                           Grid.Column="2"
+                                           Grid.Column="3"
                                            HeightRequest="100"
                                            WidthRequest="100"
                                            AutomationProperties.HelpText="Play Pause"
@@ -134,7 +159,7 @@
                                            IsVisible="false"
                                            Source="ic_play_circle_outline_white_3x.png"
                                            Grid.Row="0"
-                                           Grid.Column="2"
+                                           Grid.Column="3"
                                            HeightRequest="100"
                                            WidthRequest="100"
                                            AutomationProperties.HelpText="Play Pause"
@@ -146,7 +171,7 @@
                         <local:PlayerImage x:Name="forwardButton"
                                            Source="ic_forward_30_white_3x.png"
                                            Grid.Row="0"
-                                           Grid.Column="3"
+                                           Grid.Column="4"
                                            HeightRequest="25"
                                            WidthRequest="25"
                                            Aspect="AspectFit"
@@ -154,6 +179,20 @@
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnForward30" />
+                            </Image.GestureRecognizers>
+                        </local:PlayerImage>
+                        <local:PlayerImage x:Name="nextButton"
+                                           Source="baseline_skip_next_white_48pt_3x.png"
+                                           IsEnabled="True"
+                                           Grid.Row="0"
+                                           Grid.Column="5"
+                                           HeightRequest="25"
+                                           WidthRequest="25"
+                                           Aspect="AspectFit"
+                                           AutomationProperties.HelpText="Skip to next episode"
+                                           AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnNext" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                     </Grid>

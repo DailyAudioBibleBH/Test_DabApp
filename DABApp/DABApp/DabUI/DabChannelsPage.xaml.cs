@@ -8,6 +8,10 @@ using FFImageLoading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DABApp.DabSockets;
+using Newtonsoft.Json;
+using SQLite;
+using Rg.Plugins.Popup.Services;
+using DABApp.DabUI;
 
 namespace DABApp
 {
@@ -16,16 +20,16 @@ namespace DABApp
         View ChannelView;
         dbEpisodes episode;
         Resource _resource;
-        bool IsUnInitialized = true;
         private double _width;
         private double _height;
         private int number;
+        static SQLiteConnection db = DabData.database;
 
         public DabChannelsPage()
         {
             InitializeComponent();
-
-
+            //Take away back button on navbar
+            NavigationPage.SetHasBackButton(this, false);
             ////Choose a different control template to disable built in scroll view
             //ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
             //this.ControlTemplate = playerBarTemplate;
@@ -49,7 +53,11 @@ namespace DABApp
             {
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
-            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
+            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;            
+
+            //Connect to the SyncService
+            DabSyncService.Instance.Init();
+            DabSyncService.Instance.Connect();
 
             /* SET UP TIMERS (run once initially)*/
             TimedActions();
@@ -58,38 +66,31 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-
-            //Connect to the SyncService
-            DabSyncService.Instance.Init();
-            DabSyncService.Instance.Connect();
+            Application.Current.Properties["IsForcefulLogout"] = "false";
         }
 
         void PostLogs()
         {
             Task.Run(async () =>
             {
-                await AuthenticationAPI.PostActionLogs();
+                await AuthenticationAPI.PostActionLogs(false);
             });
         }
 
         async void OnPlayer(object o, EventArgs e)
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart();
             var reading = await PlayerFeedAPI.GetReading(episode.read_link);
             if (Device.Idiom == TargetIdiom.Tablet)
             {
-                await PlayerFeedAPI.GetEpisodes(_resource); //Get episodes prior to pushing up the TabletPage
+                //await PlayerFeedAPI.GetEpisodes(_resource); //Get episodes prior to pushing up the TabletPage
                 await Navigation.PushAsync(new DabTabletPage(_resource));
             }
             else
             {
                 await Navigation.PushAsync(new DabPlayerPage(episode, reading));
             }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         protected override void OnDisappearing()
@@ -101,20 +102,29 @@ namespace DABApp
         //Navigate to a specific channel
         async void OnChannel(object o, ItemTappedEventArgs e)
         {
-
-            //Wait indicator
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-
-            //Selected resource
-            var selected = (Resource)e.Item;
-            selected.IsNotSelected = .5;
-            var resource = (Resource)e.Item;
-            var episodes = await PlayerFeedAPI.GetEpisodes(resource); //Get episodes before pushing to the episodes page.
-            if (!episodes.Contains("error") || PlayerFeedAPI.GetEpisodeList(resource).Count() > 0)
+            try
             {
+                GlobalResources.WaitStart();
+
+                //Selected resource
+                var selected = (Resource)e.Item;
+                selected.IsNotSelected = .5;
+                var resource = (Resource)e.Item;
+
+                if (DabSyncService.Instance.IsDisconnected)
+                {
+                    DabSyncService.Instance.Connect();
+                }
+
+                //send websocket message to get episodes by channel
+                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                DabGraphQlVariables variables = new DabGraphQlVariables();
+                Debug.WriteLine($"Getting episodes by ChannelId");
+                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                DabSyncService.Instance.Send(JsonIn);
+
                 //Navigate to the appropriate player page 
                 if (Device.Idiom == TargetIdiom.Tablet)
                 {
@@ -122,36 +132,43 @@ namespace DABApp
                 }
                 else
                 {
+                    //PopupNavigation.PushAsync(new AchievementsProgressPopup());
                     await Navigation.PushAsync(new DabEpisodesPage(resource));
                 }
+
+                selected.IsNotSelected = 1.0;
+                GlobalResources.WaitStop();
+
+                //Send info to Firebase analytics that user accessed a channel
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("channel", resource.title);
+                DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
+
+                //TODO: Subscribe to a channel
             }
-            else await DisplayAlert("Unable to get episodes for Channel.", "This may be due to problems with your internet connection.  Please check your internet connection and try again.", "OK");
-            selected.IsNotSelected = 1.0;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
-
-            //Send info to Firebase analytics that user accessed a channel
-            var infoJ = new Dictionary<string, string>();
-            infoJ.Add("channel", resource.title);
-            DependencyService.Get<IAnalyticsService>().LogEvent("player_channel_selected", infoJ);
-
-            //TODO: Subscribe to a channel
-
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                await DisplayAlert("Database Busy", "You may have a lot of user data being loaded. Wait a minute and try again.", "Ok");
+                Navigation.PushAsync(new DabChannelsPage());
+            }
         }
 
         void TimedActions()
         {
             if (!AuthenticationAPI.CheckToken())
-            {
-                Task.Run(async () =>
+            {               
+                //Send request for new token
+                if (DabSyncService.Instance.IsConnected)
                 {
-                        //Try to exchange token for a fresh one
-                        await AuthenticationAPI.ExchangeToken();
-                });
+                    DabGraphQlVariables variables = new DabGraphQlVariables();
+                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                    DabSyncService.Instance.Send(tokenJsonIn);
+                }
             }
-            //Clean up old episodes
-            PlayerFeedAPI.CleanUpEpisodes();
-
+            
             //Download new episodes
             Task.Run(async () =>
             {
@@ -163,22 +180,17 @@ namespace DABApp
             {
                 Task.Run(async () =>
                 {
-                    await AuthenticationAPI.PostActionLogs();
+                    await AuthenticationAPI.PostActionLogs(false);
                     await AuthenticationAPI.GetMemberData();
                 });
             }
         }
 
-        ////TODO: Don't think we need this
-        //void ConnectJournal()
-        //{
-        //    //Reconnect the journal
-        //    AuthenticationAPI.ConnectJournal();
-        //}
-
         protected override async void OnAppearing()
         {
-            MessagingCenter.Send<string>("Setup", "Setup");
+            //Show toolbar items for android
+            MessagingCenter.Send<string>("Setup", "Setup");           
+            
             foreach (var r in ChannelView.resources)
             {
                 r.AscendingSort = false;

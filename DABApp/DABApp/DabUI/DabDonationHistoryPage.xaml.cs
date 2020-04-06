@@ -18,7 +18,8 @@ namespace DABApp
 			else {
 				MessagingCenter.Send<string>("Remove", "Remove");
 			}
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);
 			}

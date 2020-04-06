@@ -5,8 +5,7 @@
                           xmlns:local="clr-namespace:DABApp;assembly=DABApp"
                           xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
                           xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-                          xmlns:ios="clr-namespace:MediaPlayer;assembly=Xamarin.iOS;targetPlatform=iOS"
-                          xmlns:generic="clr-namespace:System;assembly=mscorlib">
+                          >
     <local:DabBaseContentPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -43,7 +42,8 @@
                                     Android="true" />
                     </StackLayout.AutomationProperties.IsInAccessibleTree>
                     <StackLayout x:Name="PlayerLabels"
-                                 VerticalOptions="CenterAndExpand">
+                                 VerticalOptions="CenterAndExpand"
+                                 Margin="-10">
                         <Label x:Name="lblEpisodeTitle"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"
@@ -61,6 +61,12 @@
                                FontSize="13"
                                Style="{StaticResource playerLabelStyle}"
                                Margin="40, 10, 40, 0" />
+                        <Label x:Name="EpNotes"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontSize="13"
+                               Style="{StaticResource playerLabelStyle}"
+                               Margin="40, 0, 40, 10" />
                     </StackLayout>
                     <local:DabSeekBar x:Name="SeekBar"
                                       Minimum="0"
@@ -85,18 +91,31 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition x:Name="LeftVoid"
-                                              Width="24*" />
+                            <ColumnDefinition x:Name="LeftVoid" Width="24*" />
+                            <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="10*" />
                             <ColumnDefinition Width="50" />
-                            <ColumnDefinition x:Name="RightVoid"
-                                              Width="24*" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition x:Name="RightVoid" Width="24*" />
                         </Grid.ColumnDefinitions>
+                        <Image x:Name="previousButton"
+                               Source="baseline_skip_previous_white_48pt_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Back to previous episode"
+                               AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnPrevious" />
+                            </Image.GestureRecognizers>
+                        </Image>
                         <Image x:Name="backwardButton"
                                Source="ic_replay_30_white_3x.png"
                                Grid.Row="0"
-                               Grid.Column="1"
+                               Grid.Column="2"
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
@@ -108,7 +127,7 @@
                         </Image>
                         <Image x:Name="PlayPause"
                                Grid.Row="0"
-                               Grid.Column="2"
+                               Grid.Column="3"
                                HeightRequest="90"
                                WidthRequest="90"
                                AutomationProperties.HelpText="Play Pause"
@@ -121,7 +140,7 @@
                                IsVisible="false"
                                Source="ic_play_circle_outline_white_3x.png"
                                Grid.Row="0"
-                               Grid.Column="2"
+                               Grid.Column="3"
                                HeightRequest="90"
                                WidthRequest="90"
                                AutomationProperties.HelpText="Play Pause"
@@ -133,7 +152,7 @@
                         <Image x:Name="forwardButton"
                                Source="ic_forward_30_white_3x.png"
                                Grid.Row="0"
-                               Grid.Column="3"
+                               Grid.Column="4"
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
@@ -143,10 +162,24 @@
                                 <TapGestureRecognizer Tapped="OnForward30" />
                             </Image.GestureRecognizers>
                         </Image>
+                        <Image x:Name="nextButton"
+                               Source="baseline_skip_next_white_48pt_3x.png"
+                               Grid.Row="0"
+                               Grid.Column="5"
+                               HeightRequest="25"
+                               WidthRequest="25"
+                               Margin="5"
+                               AutomationProperties.HelpText="Go to next episode"
+                               AutomationProperties.IsInAccessibleTree="true">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnNext" />
+                            </Image.GestureRecognizers>
+                        </Image>
                     </Grid>
                     <Grid VerticalOptions="EndAndExpand"
                           x:Name="ExtraControls"
-                          Padding="0, 0, 5, 0">
+                          Padding="0, 0, 5, 0"
+                          Margin="0, -25, 0, 0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
@@ -158,19 +191,21 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Frame Grid.Row="0"
+                        <Frame x:Name="ListenedFrame"
+                               Grid.Row="0"
                                Grid.Column="0"
                                BackgroundColor="{DynamicResource MarkCompletedBackground}"
                                CornerRadius="15"
                                Padding="20, 5, 20, 5">
-                            <StackLayout Orientation="Horizontal"
+                            <StackLayout 
+                                         Orientation="Horizontal"
                                          HorizontalOptions="FillAndExpand"
                                          Padding="0">
                                 <Button x:Name="Completed"
                                         Style="{StaticResource imageButtonStyle}"
                                         Clicked="OnListened"
-                                        WidthRequest="20"
-                                        HeightRequest="20"
+                                        WidthRequest="25"
+                                        HeightRequest="25"
                                         AutomationProperties.IsInAccessibleTree="true" />
                                 <Label Text="Mark as Listened"
                                        FontSize="Small"
@@ -183,31 +218,31 @@
                                 </Label>
                             </StackLayout>
                         </Frame>
-                        <local:PlayerImage x:Name="favorite"
-                                           Style="{StaticResource imageButtonStyle}"
+                        <local:PlayerImage x:Name="Favorite"
+                                           
                                            Grid.Row="0"
                                            Grid.Column="2"
-                                           WidthRequest="20"
-                                           HeightRequest="20"
+                                           WidthRequest="25"
+                                           HeightRequest="25"
                                            AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnFavorite" />
                             </Image.GestureRecognizers>
                         </local:PlayerImage>
                         <local:AudioOutputView x:Name="Output"
-                                               WidthRequest="20"
-                                               HeightRequest="20"
+                                               WidthRequest="25"
+                                               HeightRequest="25"
                                                Grid.Row="0"
                                                Grid.Column="3"
                                                AutomationProperties.IsInAccessibleTree="true"
                                                AutomationProperties.HelpText="Change Audio Output" />
                         <local:PlayerImage x:Name="Share"
                                            Source="ic_share_white_3x.png"
-                                           Style="{StaticResource imageButtonStyle}"
+                                           
                                            Grid.Row="0"
                                            Grid.Column="4"
-                                           WidthRequest="20"
-                                           HeightRequest="20"
+                                           WidthRequest="25"
+                                           HeightRequest="25"
                                            AutomationProperties.IsInAccessibleTree="true"
                                            AutomationProperties.Name="Share">
                             <Image.GestureRecognizers>
@@ -326,14 +361,14 @@
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <BoxView Color="Transparent"
-                                                 IsVisible="{Binding listenedToVisible, Converter={StaticResource inverser}}"
+                                                 IsVisible="{Binding IsListenedTo, Converter={StaticResource inverser}}"
                                                  Grid.RowSpan="2"
                                                  Grid.Column="0"
                                                  WidthRequest="20"
                                                  HeightRequest="20"
                                                  VerticalOptions="Center" />
                                         <Image Source="ic_done_listened_3x.png"
-                                               IsVisible="{Binding listenedToVisible}"
+                                               IsVisible="{Binding IsListenedTo}"
                                                Grid.RowSpan="2"
                                                Grid.Column="0"
                                                WidthRequest="20"
@@ -347,14 +382,14 @@
                                                         Style="{StaticResource playerLabelStyle}"
                                                         FontAttributes="Bold"
                                                         IsTitle="true" />
-                                        <Image IsVisible="{Binding favoriteVisible}"
+                                        <Image IsVisible="{Binding IsFavorite}"
                                                Source="ic_star_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
                                                Aspect="AspectFit"
                                                Grid.RowSpan="2"
                                                Grid.Column="2" />
-                                        <Image IsVisible="{Binding hasJournalVisible}"
+                                        <Image IsVisible="{Binding HasJournal}"
                                                Source="pencil_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
@@ -388,10 +423,12 @@
                         <StackLayout>
                             <Label x:Name="ReadTitle"
                                    FontSize="Medium"
-                                   Style="{StaticResource secondaryLabelStyle}" />
+                                   Style="{StaticResource secondaryLabelStyle}"
+                                   />
                             <Label x:Name="ReadExcerpts"
                                    FontSize="Small"
-                                   Style="{StaticResource secondaryLabelStyle}" />
+                                   Style="{StaticResource secondaryLabelStyle}"
+                                   />
                             <Label x:Name="AltWarning"
                                    IsVisible="false"
                                    FontSize="Micro"
@@ -414,7 +451,8 @@
                     <Button x:Name="Login"
                             Text="Log in"
                             Clicked="OnLogin"
-                            Style="{StaticResource highlightedButtonStyle}" />
+                            Style="{StaticResource highlightedButtonStyle}"
+                            />
                 </StackLayout>
                 <StackLayout x:Name="Journal"
                              IsVisible="false"
@@ -452,13 +490,16 @@
                                               Unfocused="OffEdit" />
                     <Label x:Name="JournalWarning"
                            Text="Your device has lost its connection to the journal server. Journals cannot be viewed or edited at this time. Tap here to try and reconnect."
-                           Style="{StaticResource warningLabelStyle}">
+                           FontSize="Medium"
+                           Style="{StaticResource warningLabelStyle}"
+                           >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnReconnect" />
                         </Label.GestureRecognizers>
                     </Label>
                     <BoxView x:Name="spacer"
-                             Style="{StaticResource SpacerStyle}" />
+                             Style="{StaticResource SpacerStyle}"
+                             />
                 </StackLayout>
             </StackLayout>
         </Grid>

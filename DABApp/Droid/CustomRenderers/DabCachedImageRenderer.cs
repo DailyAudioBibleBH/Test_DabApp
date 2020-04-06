@@ -28,12 +28,15 @@ namespace DABApp.Droid
         protected override void OnElementChanged(ElementChangedEventArgs<CachedImage> e)
         {
             base.OnElementChanged(e);
-            Control.Focusable = false;
-            Control.Enabled = false;
-            base.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
-            Control.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
-            Control.AccessibilityLiveRegion = AccessibilityLiveRegion.None;
-            Control.SetAccessibilityDelegate(new ImageDelegate());
+            if (Control != null)
+            {
+                Control.Focusable = false;
+                Control.Enabled = false;
+                base.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
+                Control.ImportantForAccessibility = ImportantForAccessibility.NoHideDescendants;
+                Control.AccessibilityLiveRegion = AccessibilityLiveRegion.None;
+                Control.SetAccessibilityDelegate(new ImageDelegate());
+            }
         }
     }
 

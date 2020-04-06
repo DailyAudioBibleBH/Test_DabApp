@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DABApp;
 using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
@@ -19,6 +18,9 @@ namespace DABApp
         static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
+        static DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
+
+
         static bool notPosting = true;
         static bool notGetting = true;
         static bool favorite; 
@@ -28,7 +30,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -50,12 +52,12 @@ namespace DABApp
                     {
                         TokenSettings.Value = "";
                         EmailSettings.Value = "Guest";
-                        ExpirationSettings.Value = DateTime.Now.ToString();
+                        CreationSettings.Value = DateTime.Now.ToString();
                         FirstNameSettings.Value = "";
                         LastNameSettings.Value = "";
                         AvatarSettings.Value = "";
                         IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-                        settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+                        settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
                     }
                     GuestLogin();
@@ -63,42 +65,16 @@ namespace DABApp
                 }
                 else
                 {
-                    HttpClient client = new HttpClient();//Getting all login user info from the Authentication API
-                    var JsonIn = JsonConvert.SerializeObject(new LoginInfo(email, password));
-                    var content = new StringContent(JsonIn);
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                    var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member", content);
-                    //if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new HttpRequestException(result.ReasonPhrase);
-                    string JsonOut = await result.Content.ReadAsStringAsync();
-                    APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-                    APIToken token = container.token;
-                    if (container.code == "login_error")
-                    {
-                        return container.message;
-                    }
-                    if (TokenSettings == null || EmailSettings == null)
-                    {
-                        CreateSettings(token);
-                    }
-                    else//Setting database settings for user based on what is returned by the Authentication API.
-                    {
-                        if (EmailSettings.Value != email) GuestLogin();
-                        TokenSettings.Value = token.value;
-                        ExpirationSettings.Value = token.expires;
-                        EmailSettings.Value = token.user_email;
-                        FirstNameSettings.Value = token.user_first_name;
-                        LastNameSettings.Value = token.user_last_name;
-                        AvatarSettings.Value = token.user_avatar;
-                        IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-                        settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-                        await adb.UpdateAllAsync(settings);
-                        //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
-                        GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
-                    }
-                    //TODO: Replacew this with sync
-                    //JournalTracker.Current.Connect(token.value);
-                    if (!string.IsNullOrEmpty(token.user_avatar)) GuestStatus.Current.AvatarUrl = token.user_avatar;
-                    return "Success";
+                    //Initiate log in with web socket
+                    /*
+                      mutation {
+                      loginUser(email: "djtest@lutd.io", password: "asdfasdf", version: 1) {token}}
+                     */
+
+                    string jLogin = $"mutation {{loginUser(email: \"{email}\", password: \"{password}\", version: 1) {{token}}}}";
+                    var pLogin = new DabGraphQlPayload(jLogin, variables);
+                    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+                    return "Request Sent"; //Let the caller know we're waitin gfor a reply from GraphQL.
                 }
             }
             catch (Exception e)
@@ -117,50 +93,27 @@ namespace DABApp
 
         public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
-            var expiration = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+            var creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
             int days = ContentConfig.Instance.options.token_life;
-            if (expiration == null)
+            if (creation == null || creation.Value == null)
             {
                 return false;
             }
-            if (expiration.Value == null) return false;
-            DateTime expirationDate = DateTime.Parse(expiration.Value);
-            if (expirationDate <= DateTime.Now.AddDays(days))
+            DateTime creationDate = DateTime.Parse(creation.Value);
+            if (DateTime.Now > creationDate.AddDays(days))
             {
                 return false;
             }
-            //TODO: Replacew this with sync
-            //var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-            //if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-            //{
-            //    JournalTracker.Current.Connect(token.Value);
-            //}
+
             return true;
         }
-
-        //TODO: Replacew this with sync
-        //public static void ConnectJournal()//Connecting Journal Tracker when user logs in.  Done here because of access to the database Token setting.
-        //{
-        //    try
-        //    {
-        //        if (!JournalTracker.Current.IsConnected && CrossConnectivity.Current.IsConnected)
-        //        {
-        //            var token = db.Table<dbSettings>().Single(x => x.Key == "Token");
-        //            JournalTracker.Current.Connect(token.Value);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Debug.WriteLine($"Exception caught in AuthenticationAPI.ConnectJournal(): {e.Message}");
-        //    }
-        //}
 
         public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.
         {
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -185,12 +138,12 @@ namespace DABApp
                 else
                 {
                     TokenSettings.Value = token.value;
-                    ExpirationSettings.Value = token.expires;
+                    CreationSettings.Value = token.expires;
                     EmailSettings.Value = token.user_email;
                     FirstNameSettings.Value = token.user_first_name;
                     LastNameSettings.Value = token.user_last_name;
                     AvatarSettings.Value = token.user_avatar;
-                    IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, ExpirationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
+                    IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                     await adb.UpdateAllAsync(settings);
                     //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
                     GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
@@ -233,60 +186,35 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
-                var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/logout", content);
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
-                {
-                    throw new Exception($"Error Logging Out: {result.StatusCode}");
-                }
-                ExpirationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(ExpirationSettings);
-                return true;
-            }
-            catch (Exception e)
-            {
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                ExpirationSettings.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(ExpirationSettings);
-                return false;
-            }
-        }
+                //Clear DB Settings
+                dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings sExpire = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                if (sToken == null) sToken = new dbSettings() { Key = "Token" };
+                if (sExpire == null) sExpire = new dbSettings() { Key = "TokenCreation" };
+                sToken.Value = null;
+                sExpire.Value = DateTime.MinValue.ToString();
+                await adb.InsertOrReplaceAsync(sToken);
+                await adb.InsertOrReplaceAsync(sExpire);
 
-        public static async Task<bool> ExchangeToken()//Gets new token from the API App uses this whenever user arrives onto channels page and the current token is expired.
-        {
-            try
-            {
-                dbSettings TokenSettings = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().Single(x => x.Key == "TokenExpiration");
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var JsonIn = JsonConvert.SerializeObject(new LogOutInfo(TokenSettings.Value));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/exchangetoken", content);
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-                APIToken token = container.token;
-                if (container.token == null)
+                //Disconnect from service and reconnect without authentication
+                DabSyncService.Instance.Disconnect(true);
+                Task.Factory.StartNew(() =>
                 {
-                    throw new Exception($"Error Exchanging Token: {container.message}");
-                }
-                TokenSettings.Value = token.value;
-                ExpirationSettings.Value = token.expires;
-                await adb.UpdateAsync(TokenSettings);
-                await adb.UpdateAsync(ExpirationSettings);
-                //TODO: Replace this with sync
-                //JournalTracker.Current.Connect(token.value);
+                    System.Threading.Thread.Sleep(1000);
+                    DabSyncService.Instance.Connect();
+                });
+                //user is not logged in
+                GlobalResources.Instance.IsLoggedIn = false;
                 return true;
             }
             catch (Exception e)
             {
+                dbSettings sToken = db.Table<dbSettings>().Single(x => x.Key == "Token");
+                dbSettings sExpire = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
+                sToken.Value = null;
+                sExpire.Value = DateTime.MinValue.ToString();
+                await adb.UpdateAsync(sToken);
+                await adb.UpdateAsync(sExpire);
                 return false;
             }
         }
@@ -327,7 +255,7 @@ namespace DABApp
             try//Edits member data used on DABProfileManagementPage
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -345,12 +273,12 @@ namespace DABApp
                     throw new Exception(container.message);
                 }
                 TokenSettings.Value = token.value;
-                ExpirationSettings.Value = token.expires;
+                CreationSettings.Value = token.expires;
                 EmailSettings.Value = token.user_email;
                 FirstNameSettings.Value = token.user_first_name;
                 LastNameSettings.Value = token.user_last_name;
                 await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
-                await adb.UpdateAsync(ExpirationSettings);
+                await adb.UpdateAsync(CreationSettings);
                 await adb.UpdateAsync(EmailSettings);
                 await adb.UpdateAsync(FirstNameSettings);
                 await adb.UpdateAsync(LastNameSettings);
@@ -628,9 +556,9 @@ namespace DABApp
             var TokenSettings = new dbSettings();
             TokenSettings.Key = "Token";
             TokenSettings.Value = token.value;
-            var ExpirationSettings = new dbSettings();
-            ExpirationSettings.Key = "TokenExpiration";
-            ExpirationSettings.Value = token.expires;
+            var CreationSettings = new dbSettings();
+            CreationSettings.Key = "TokenCreation";
+            CreationSettings.Value = token.expires;
             var EmailSettings = new dbSettings();
             EmailSettings.Key = "Email";
             EmailSettings.Value = token.user_email;
@@ -644,7 +572,7 @@ namespace DABApp
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
             db.InsertOrReplace(TokenSettings);
-            db.InsertOrReplace(ExpirationSettings);
+            db.InsertOrReplace(CreationSettings);
             db.InsertOrReplace(EmailSettings);
             db.InsertOrReplace(FirstNameSettings);
             db.InsertOrReplace(LastNameSettings);
@@ -652,20 +580,20 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null)
+        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
-                var actionLog = new dbPlayerActions();
+                var actionLog = new DABApp.dbPlayerActions();
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
-                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).stop_time;
+                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.CurrentPosition;
                 actionLog.ActionType = actionType;
-                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_favorite;
+                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsFavorite;
                 //check this
-                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).is_listened_to.ToString();
+                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsListenedTo.ToString();
                 var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 if (user != null)
                 {
@@ -688,6 +616,7 @@ namespace DABApp
                 {
 
                     //Android - add nw
+
                     db.Insert(actionLog);
                 }
 
@@ -696,7 +625,11 @@ namespace DABApp
                         //Add new episode action log
                     await adb.InsertAsync(actionLog);
                 }
-                await PostActionLogs();
+                if (hasEmptyJournal == null)
+                {
+                    hasEmptyJournal = false;
+                }
+                await PostActionLogs((bool)hasEmptyJournal);
             }
             catch (Exception e)
             {
@@ -704,7 +637,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> PostActionLogs()//Posts action logs to API in order to keep user episode location on multiple devices.
+        public static async Task<string> PostActionLogs(bool hasEmptyJournal)//Posts action logs to API in order to keep user episode location on multiple devices.
         {
             if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
@@ -728,12 +661,11 @@ namespace DABApp
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
-                                        var favVariables = new Variables();
                                         var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
                                         favQuery = favQuery.Replace("True", "true");
                                         favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
-                                        var favPayload = new WebSocketHelper.Payload(favQuery, favVariables);
-                                        var favJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", favPayload));
+                                        var favPayload = new DabGraphQlPayload(favQuery, variables);
+                                        var favJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", favPayload));
 
                                         DabSyncService.Instance.Send(favJsonIn);
                                         //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
@@ -744,29 +676,27 @@ namespace DABApp
                                         else
                                             listenedTo = "false";
 
-                                        var lisVariables = new Variables();
                                         var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}";
-                                        var lisPayload = new WebSocketHelper.Payload(lisQuery, lisVariables);
-                                        var lisJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", lisPayload));
+                                        var lisPayload = new DabGraphQlPayload(lisQuery, variables);
+                                        var lisJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", lisPayload));
 
                                         DabSyncService.Instance.Send(lisJsonIn);
                                         //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
-                                        var posVariables = new Variables();
                                         var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}";
-                                        var posPayload = new WebSocketHelper.Payload(posQuery, posVariables);
-                                        var posJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", posPayload));
+                                        var posPayload = new DabGraphQlPayload(posQuery, variables);
+                                        var posJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", posPayload));
 
                                         DabSyncService.Instance.Send(posJsonIn);
                                         break;
                                     case "entryDate": //When event happened mutation
-                                        //string entEntryDate = i.ActionDateTime.DateTime.ToShortDateString("yyyy/mm/dd");
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
-                                        var entVariables = new Variables();
                                         var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
-                                        var entPayload = new WebSocketHelper.Payload(entQuery, entVariables);
-                                        var entJsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", entPayload));
+                                        if (hasEmptyJournal == true)
+                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
+                                        var entPayload = new DabGraphQlPayload(entQuery, variables);
+                                        var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
 
                                         DabSyncService.Instance.Send(entJsonIn);
                                         break;
@@ -814,16 +744,24 @@ namespace DABApp
                         Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
                         try
                         {
-                            //Send last action query to the websocket
-                            Variables variables = new Variables();
-                            Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                            var updateEpisodesQuery = "{ lastActions(date: \"" +GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                            var updateEpisodesPayload = new WebSocketHelper.Payload(updateEpisodesQuery, variables);
-                            var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", updateEpisodesPayload));
-                            DabSyncService.Instance.Send(JsonIn);
+                            if (GlobalResources.GetUserEmail() != "Guest")
+                            {
+                                //Send last action query to the websocket
+                                Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
+                                var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                                var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
+                                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
+                                DabSyncService.Instance.Send(JsonIn);
 
-                            notGetting = true;
-                            return true;
+                                notGetting = true;
+                                return true;
+                            }
+                            else
+                            {
+                                notGetting = true;
+                                return false;
+                            }
+                            
                         }
                         catch (Exception e)
                         {
@@ -852,13 +790,13 @@ namespace DABApp
             //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
-            var potential = savedEps.Where(x => x.is_favorite == true || x.is_listened_to == true).ToList();
+            var potential = savedEps.Where(x => x.UserData.IsFavorite == true || x.UserData.IsListenedTo == true).ToList();
             foreach (dbEpisodes p in potential)
             {
                 if (!episodes.Any(x => x.id == p.id))
                 {
-                    p.is_favorite = false;
-                    p.is_listened_to = false;
+                    p.UserData.IsFavorite = false;
+                    p.UserData.IsListenedTo = false;
                     update.Add(p);
                 }
             }
@@ -873,12 +811,12 @@ namespace DABApp
                 //{
                 if (saved != null)
                 {
-                    if (!(saved.stop_time == episode.stop_time && saved.is_favorite == episode.is_favorite && saved.is_listened_to == episode.is_listened_to && saved.has_journal == episode.has_journal))
+                    if (!(saved.UserData.CurrentPosition == episode.UserData.CurrentPosition && saved.UserData.IsFavorite == episode.UserData.IsFavorite && saved.UserData.IsListenedTo == episode.UserData.IsListenedTo && saved.UserData.HasJournal == episode.UserData.HasJournal))
                     {
-                        saved.stop_time = episode.stop_time;
-                        saved.is_favorite = episode.is_favorite;
-                        saved.is_listened_to = episode.is_listened_to;
-                        saved.has_journal = episode.has_journal;
+                        saved.UserData.CurrentPosition = episode.UserData.CurrentPosition;
+                        saved.UserData.IsFavorite = episode.UserData.IsFavorite;
+                        saved.UserData.IsListenedTo = episode.UserData.IsListenedTo;
+                        saved.UserData.HasJournal = episode.UserData.HasJournal;
                         update.Add(saved);
                     }
                 }
@@ -890,11 +828,12 @@ namespace DABApp
 
         static void GuestLogin()//Deletes all user episode data when a guest logs in.
         {
-            var episodes = db.Table<dbEpisodes>();
-            if (episodes.Count() > 0)
-            {
-                db.DeleteAll<dbEpisodes>();
-            }
+            ////This is no longer needed because user data is kept separate from episodes
+            //var episodes = db.Table<dbEpisodes>();
+            //if (episodes.Count() > 0)
+            //{
+            //    db.DeleteAll<dbEpisodes>();
+            //}
         }
 
         public static bool GetTestMode()
@@ -912,6 +851,11 @@ namespace DABApp
             var testMode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
             dbSettings newMode = new dbSettings();
             db.Query<dbEpisodes>("delete from dbEpisodes");
+            db.Execute("delete from dbPlayerActions");
+            db.Execute("delete from Badge");
+            db.Execute("delete from dbUserBadgeProgress");
+            db.Execute("delete from Channel");
+            db.Execute("delete from dbEpisodeUserData");
             newMode.Key = "TestMode";
             newMode.Value = GlobalResources.TestMode.ToString();
             if (testMode != null)

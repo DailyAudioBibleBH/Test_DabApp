@@ -29,7 +29,8 @@ namespace DABApp
 			}
 			_donations = donations;
 			_fromLogin = fromLogin;
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{
@@ -70,6 +71,7 @@ namespace DABApp
 					{
 						monthly.IsVisible = false;
 						once.Text = "Give";
+						once.HeightRequest = 40;
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
 					}
 					once.WidthRequest = 150;
@@ -92,10 +94,7 @@ namespace DABApp
 
 		async void OnHistory(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			DonationRecord[] history = await AuthenticationAPI.GetDonationHistory();
 			if (history != null)
 			{
@@ -106,30 +105,22 @@ namespace DABApp
 				await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			}
 			isInitialized = false;
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		async void OnRecurring(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			Button chosen = (Button)o;
 			Card[] cards = await AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.id.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		async void OnGive(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			Button chosen = (Button)o;
 			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
 			if (!url.Contains("Error"))
@@ -140,8 +131,7 @@ namespace DABApp
 			{
 				await DisplayAlert("An Error has occured.", url, "OK");
 			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		protected override async void OnAppearing()
@@ -156,10 +146,7 @@ namespace DABApp
 			}
 			if (isInitialized)
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				_donations = await AuthenticationAPI.GetDonations();
 				if (_donations != null)
 				{
@@ -187,6 +174,7 @@ namespace DABApp
 							Labels[2].Text = null;
 							Buttons[0].IsVisible = false;
 							Buttons[1].Text = "Give";
+							Buttons[1].HeightRequest = 40;
 						}
 					}
 				}
@@ -195,8 +183,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					//await Navigation.PopAsync();
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 			isInitialized = true;
 		}

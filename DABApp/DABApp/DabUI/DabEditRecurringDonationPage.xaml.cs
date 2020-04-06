@@ -21,7 +21,8 @@ namespace DABApp
 			}
 			_campaign = campaign;
 			Next.MinimumDate = DateTime.Now.AddDays(1);
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			Title.Text = campaign.name;
@@ -47,10 +48,7 @@ namespace DABApp
 			if (Validation())
 			{
 				AmountWarning.IsVisible = false;
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				var card = (Card)Cards.SelectedItem;
 				var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 				long unix = (long)(Next.Date - stime).TotalSeconds;
@@ -84,8 +82,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 			else 
 			{
@@ -95,10 +92,7 @@ namespace DABApp
 
 		async void OnCancel(object o, EventArgs e) 
 		{
-			ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-			StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-			activity.IsVisible = true;
-			activityHolder.IsVisible = true;
+			GlobalResources.WaitStart();
 			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
 			if (decision) {
 				var result = await AuthenticationAPI.DeleteDonation(_campaign.id);
@@ -112,8 +106,7 @@ namespace DABApp
 					await DisplayAlert("Error", result, "OK");
 				}
 			}
-			activity.IsVisible = false;
-			activityHolder.IsVisible = false;
+			GlobalResources.WaitStop();
 		}
 
 		bool Validation() 

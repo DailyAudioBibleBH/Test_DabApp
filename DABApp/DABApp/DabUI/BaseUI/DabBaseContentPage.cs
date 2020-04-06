@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Plugin.Connectivity;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -27,39 +28,48 @@ namespace DABApp
 			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
 			Title = "DAILY AUDIO BIBLE";
 			//Control template (adds the player bar)
-			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplate"];
+			ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
 			RelativeLayout container = new RelativeLayout();
 			ControlTemplate = playerBarTemplate;
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
-			//activityHolder = new StackLayout()
-			//
-			//	Opacity = 0.5,
-			//	BackgroundColor = Color.Gray,
-			//	IsVisible = true
-			//};
-			//activity = new ActivityIndicator()
-			//{
-			//	IsRunning = true,
-			//	IsVisible = true,
-			//	VerticalOptions = LayoutOptions.CenterAndExpand,
-			//	HorizontalOptions = LayoutOptions.CenterAndExpand,
-			//	Color = Color.White
-			//};
-			//container.Children.Add(activityHolder, Constraint.RelativeToParent((parent) => { return parent.Width; }), Constraint.RelativeToParent((parent) => { return parent.Height; }));
-			//container.Children.Add(activity, Constraint.RelativeToParent((parent) => { return parent.Width; }), Constraint.RelativeToParent((parent) => { return parent.Height; }));
-
-			//ContentView view = new ContentView()
-			//{
-			//	Content = container,
-			//	ControlTemplate = playerBarTemplate
-			//};
-			//Content = view;
 
 			//Navigation properties
 			Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
 
-			//Slide Menu
-			this.SlideMenu = new DabMenuView();
+            //Wait Indicator
+            //Subscribe to starting wait ui
+            MessagingCenter.Subscribe<string,string>("dabapp", "Wait_Start",  (sender,message) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activityLabel.Text = message;
+                    activity.IsVisible = true;
+                    activityContent.IsVisible=true;
+                    activityHolder.IsVisible = true;
+                });
+            });
+
+            //Subscribe to stopping wait ui
+            MessagingCenter.Subscribe<string>("dabapp", "Wait_Stop", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activity.IsVisible = false;
+                    activityHolder.IsVisible = false;
+                    activityContent.IsVisible = false;
+                });
+            });
+
+            //Slide Menu
+            this.SlideMenu = new DabMenuView();
             if (Device.RuntimePlatform == "iOS")
             {
                 //Menu Button
@@ -96,73 +106,80 @@ namespace DABApp
                 giveButton.Clicked += OnGive;
                 this.ToolbarItems.Add(giveButton);
             }
+            else
+            {
+                MessagingCenter.Send("Setup", "Setup");
+            }
 		}
 
         async void OnGive(object sender, EventArgs e)
         {
-            //Send info to Firebase analytics that user tapped an action we track
-            var info = new Dictionary<string, string>();
-            info.Add("title", "give");
-            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
-
-            if (!giving)
+            try
             {
-                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                activity.IsVisible = true;
-                activityHolder.IsVisible = true;
-                giving = true;
-                if (GuestStatus.Current.IsGuestLogin)
+                //Send info to Firebase analytics that user tapped an action we track
+                var info = new Dictionary<string, string>();
+                info.Add("title", "give");
+                DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
+                if (!giving)
                 {
-                    if (CrossConnectivity.Current.IsConnected)
+                    GlobalResources.WaitStart();
+                    giving = true;
+                    if (GuestStatus.Current.IsGuestLogin)
                     {
-                        var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
-                        if (choice)
+                        if (CrossConnectivity.Current.IsConnected)
                         {
-                            var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
-                            nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            await Navigation.PushModalAsync(nav);
-                        }
-                    }
-                    else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
-                }
-                else
-                {
-                    var num = 15000;
-                    var t = AuthenticationAPI.GetDonations();
-                    Donation[] dons = new Donation[] { };
-                    if (t == await Task.WhenAny(t, Task.Delay(num)))
-                    {
-                        dons = await AuthenticationAPI.GetDonations();
-                    }
-                    else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
-                    if (dons != null)
-                    {
-                        if (dons.Length == 1)
-                        {
-                            String url = "";
-                            var ask = PlayerFeedAPI.PostDonationAccessToken();
-                            if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                            var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+                            if (choice)
                             {
-                                url = await PlayerFeedAPI.PostDonationAccessToken();
-                            }
-                            else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
-                            if (url.StartsWith("http"))
-                            {
-                                DependencyService.Get<IRivets>().NavigateTo(url);
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", url, "OK");
+                                var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
+                                nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                                await Navigation.PushModalAsync(nav);
                             }
                         }
-                        else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
-                    else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                    else
+                    {
+                        var num = 15000;
+                        var t = AuthenticationAPI.GetDonations();
+                        Donation[] dons = new Donation[] { };
+                        if (t == await Task.WhenAny(t, Task.Delay(num)))
+                        {
+                            dons = await AuthenticationAPI.GetDonations();
+                        }
+                        else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
+                        if (dons != null)
+                        {
+                            if (dons.Length == 1)
+                            {
+                                String url = "";
+                                var ask = PlayerFeedAPI.PostDonationAccessToken();
+                                if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                                {
+                                    url = await PlayerFeedAPI.PostDonationAccessToken();
+                                }
+                                else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
+                                if (url.StartsWith("http"))
+                                {
+                                    DependencyService.Get<IRivets>().NavigateTo(url);
+                                }
+                                else
+                                {
+                                    await DisplayAlert("Error", url, "OK");
+                                }
+                            }
+                            else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                        }
+                        else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
+                    }
+                    GlobalResources.WaitStop();
+                    giving = false;
                 }
-                activity.IsVisible = false;
-                activityHolder.IsVisible = false;
-                giving = false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 
@@ -175,29 +192,6 @@ namespace DABApp
         {
             MessagingCenter.Send<string>("Refresh", "Refresh");
             
-            //DabPlayerPage.BindControls(true, true);
-            //DabTabletPage.BindControls(true, true);
-            //DabTabletPage.OnRefresh();
-
-            //foreach (var i in Application.Current.MainPage.Navigation.NavigationStack)
-            //{
-            //Resource _resource = new Resource();
-            //DabEpisodesPage episodesPage = new DabEpisodesPage(_resource);
-            //await episodesPage.Refresh();
-            //await AuthenticationAPI.PostActionLogs();
-            //await PlayerFeedAPI.GetEpisodes(_resource);
-            //await AuthenticationAPI.GetMemberData();
-            ////episodesPage.TimedActions();
-            //if (_resource.availableOffline)
-            //{
-            //    Task.Run(async () =>
-            //    {
-            //        await PlayerFeedAPI.DownloadEpisodes();
-            //        //CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-            //        //circularProgressControl.HandleDownloadVisibleChanged(true);
-            //    });
-            //}
-            //}
         }
 
         public void Unsubscribe()
@@ -226,8 +220,12 @@ namespace DABApp
                     }
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
+                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });           
             }
+            MessagingCenter.Subscribe<string>("Logout", "Logout", (sender) => {
+                DabSettingsPage settings = new DabSettingsPage();
+                settings.OnForceLogout();
+            });
         }
 
         async void OnRecord(object o, EventArgs e)

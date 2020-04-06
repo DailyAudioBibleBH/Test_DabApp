@@ -26,7 +26,7 @@ namespace DABApp
 				Navigation.PushAsync(new DabTermsAndConditionsPage());
 			};
 			Terms.GestureRecognizers.Add(tapper);
-			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible <font color='#ff0000'>Terms of Service.</font></div>";
+			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible </br> <font color='#ff0000'>Terms of Service.</font></div>";
 		}
 
 		async void OnSignUp(object o, EventArgs e) {
@@ -57,7 +57,8 @@ namespace DABApp
 								{
 									await DisplayAlert("Error", url, "OK");
 								}
-
+                                //user is logged in
+								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabChannelsPage());
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 								Application.Current.MainPage = nav;
@@ -65,6 +66,8 @@ namespace DABApp
 							}
 							else
 							{
+                                //user is logged in
+								GlobalResources.Instance.IsLoggedIn = true;
 								var nav = new NavigationPage(new DabManageDonationsPage(dons, true));
 								nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 								Application.Current.MainPage = nav;
@@ -73,6 +76,8 @@ namespace DABApp
 						}
 						else
 						{
+                            //user is logged in
+							GlobalResources.Instance.IsLoggedIn = true;
 							var nav = new NavigationPage(new DabChannelsPage());
 							nav.SetValue(NavigationPage.BarBackgroundColorProperty, (Color)App.Current.Resources["TextColor"]);
 							Application.Current.MainPage = nav;
@@ -90,6 +95,10 @@ namespace DABApp
 						if (authentication.Contains("Http"))
 						{
 							await DisplayAlert(authentication, "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+						}
+						if (authentication.Contains("Email already"))
+						{
+							await DisplayAlert("Authentication Error", "This email already exists", "OK");
 						}
 						else {
 							await DisplayAlert("Unexpected Error",$"An unexpected error has been occurred while processing your request. Please check your connection and try again. Technical details: {authentication}", "OK");

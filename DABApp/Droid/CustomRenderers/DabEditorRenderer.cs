@@ -19,8 +19,11 @@ namespace DABApp.Droid
 
 			var element = (DabEditor)Element;
 
-			Control.Hint = element.Placeholder;
-			Control.SetHintTextColor(element.PlaceholderColor.ToAndroid());
+            if (Control != null)
+            {
+                Control.Hint = element.Placeholder;
+                Control.SetHintTextColor(element.PlaceholderColor.ToAndroid());
+            }
 		}
 	}
 }

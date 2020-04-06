@@ -11,13 +11,13 @@ using Xamarin.Forms;
 using System.Diagnostics;
 using Plugin.Connectivity;
 using System.Linq;
-using DABApp.WebSocketHelper;
 using DABApp.DabSockets;
 
 namespace DABApp
 {
     public class PlayerFeedAPI
     {
+
         static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         static bool DownloadIsRunning = false;
@@ -31,95 +31,97 @@ namespace DABApp
             return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
         }
 
-        public static async Task<string> GetEpisodes(Resource resource)
+        //grab episodes by channel
+        public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
         {
             try
             {
-                var client = new HttpClient();
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-                var result = /*GlobalResources.TestMode ? await client.GetAsync(resource.feedUrl) :*/ await client.GetAsync($"{resource.feedUrl}?fromdate={fromDate}&&todate={DateTime.Now.Year}-12-31");
-                string jsonOut = await result.Content.ReadAsStringAsync();
-                var Episodes = JsonConvert.DeserializeObject<List<dbEpisodes>>(jsonOut);
-                var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
+
+                List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
+
+                foreach (var item in episodesList)
+                {
+                    if (item.date >= Convert.ToDateTime(fromDate) && item.channelId == channel.channelId)
+                    {
+                        currentEpisodes.Add(item);
+                    }
+                    else
+                    {
+                        currentEpisodes.Remove(item);
+                    }
+                }
+
+                //var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
                 List<int> episodesToGetActionsFor = new List<int>();
-                if (Episodes == null)
+                if (currentEpisodes == null)
                 {
                     return "Server Error";
                 }
-                var code = resource.title == "Daily Audio Bible" ? "dab" : resource.title.ToLower();
+                var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
                 var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_code == code).ToList();
                 var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
-                var newEpisodeIds = Episodes.Select(x => x.id);
+                var newEpisodeIds = currentEpisodes.Select(x => x.episodeId);
                 var start = DateTime.Now;
-                foreach (var e in Episodes)
+                foreach (var e in currentEpisodes)
                 {
-                    if (!existingEpisodeIds.Contains(e.id))
+                    if (!existingEpisodeIds.Contains(e.episodeId))
                     {
-                        //get user-episode meta data from the database if we have it
-                        dbUserEpisodeMeta meta = EpisodeMeta.SingleOrDefault(x => x.EpisodeId == e.id);
-                        if (meta != null)
-                        {
-                            e.stop_time = (meta.CurrentPosition == null) ? 0 : meta.CurrentPosition.Value;
-                            e.is_favorite = (meta.IsFavorite == null) ? false : meta.IsFavorite.Value;
-                            e.has_journal = (meta.HasJournal == null) ? false : meta.HasJournal.Value;
-                            e.is_listened_to = (meta.IsListenedTo == null) ? false : meta.IsListenedTo.Value;
-                            Debug.WriteLine($"Loaded episode user meta for {e.id}");
-                        } else
-                        {
-                            Debug.WriteLine($"No user meta for {e.id}");
-                        }
+                        //build out rest of episodes object since we don't get this from websocket
+                        dbEpisodes episode = new dbEpisodes(e);
+                        episode.channel_title = channel.title;
+                        //episode.channel_description = channel.;
+                        episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
+                        episode.PubMonth = getMonth(e.date);
+                        episode.PubDay = e.date.Day;
 
-                        //adding an episode to the database
-                        await adb.InsertOrReplaceAsync(e);
-
-                        ////add episode to list of episodes to query actions from
-                        //episodesToGetActionsFor.Add(e.id.Value);
+                        Device.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await adb.InsertOrReplaceAsync(episode);
+                        });
                     }
                 }
 
-                ////send off request to get new episode data
-                ////Send last action query to the websocket
-                //int c = episodesToGetActionsFor.Count();
-                //if (c > 0)
-                //{
-                //    Variables variables = new Variables();
-                //    Debug.WriteLine($"Getting actions for {c} new episodes...");
-                //    var newEpisodeQuery = "query{ actions(episodeIds: " + JsonConvert.SerializeObject(episodesToGetActionsFor) + ") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } } } ";
-                //    var newEpisodePayload = new WebSocketHelper.Payload(newEpisodeQuery, variables);
-                //    var JsonIn = JsonConvert.SerializeObject(new WebSocketCommunication("start", newEpisodePayload));
-                //    DabSyncService.Instance.Send(JsonIn);
-                //}
-
-
-                Debug.WriteLine($"Starting deletion {(DateTime.Now - start).TotalMilliseconds}");
-                foreach (var old in existingEpisodes)
-                {
-                    if (!newEpisodeIds.Contains(old.id))
-                    {
-                        await adb.DeleteAsync(old);
-                    }
-                }
-                Debug.WriteLine($"Finished inserting and deleting episodes {(DateTime.Now - start).TotalMilliseconds}");
-                if (resource.availableOffline && Device.Idiom == TargetIdiom.Tablet)
-                {
-                    Task.Run(async () => { await DownloadEpisodes(); });
-                }
-                //var b = await AuthenticationAPI.GetMemberData();//This slows down everything
-                //if (!b)
-                //{
-                //	db = DabData.database;
-                //	adb = DabData.AsyncDatabase;
-                //}
                 Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
                 return "OK";
-                //else {
-                //	throw new Exception(); 
-                //}
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine($"Exception called in Getting episodes: {e.Message}");
-                return e.Message;
+                Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
+                return ex.Message;
+            }
+        }
+
+        public static string getMonth(DateTime e)
+        {
+            switch (e.Month)
+            {
+                case (1):
+                    return "Jan";
+                case (2):
+                    return "Feb";
+                case (3):
+                    return "Mar";
+                case (4):
+                    return "Apr";
+                case (5):
+                    return "May";
+                case (6):
+                    return "Jun";
+                case (7):
+                    return "Jul";
+                case (8):
+                    return "Aug";
+                case (9):
+                    return "Sep";
+                case (10):
+                    return "Oct";
+                case (11):
+                    return "Nov";
+                case (12):
+                    return "Dec";
+                default:
+                    return "";
             }
         }
 
@@ -180,6 +182,16 @@ namespace DABApp
                 case "Three Days":
                     cutoffTime = DateTime.Now.AddDays(-3);
                     break;
+                case "One Week":
+                    if (GlobalResources.TestMode)
+                    {
+                        cutoffTime = DateTime.Now.AddDays(-21);
+                    }
+                    else
+                    {
+                        cutoffTime = DateTime.Now.AddDays(-7);
+                    }
+                    break;
                 default:
                     cutoffTime = DateTime.Now.AddDays(-7);
                     break;
@@ -193,7 +205,7 @@ namespace DABApp
                                      join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
                                      where !episode.is_downloaded //not downloaded
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
-                                                           && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.is_listened_to != true) //not listened to or system not set to delete listened to episodes
+                                                           && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.UserData.IsListenedTo != true) //not listened to or system not set to delete listened to episodes
                                      orderby episode.PubDate descending
                                      select episode;
             episodesToShowDownload = EpisodesToDownload.ToList();
@@ -251,10 +263,7 @@ namespace DABApp
                 {
                     await DownloadEpisodes();
                 }
-                //if (Device.Idiom == TargetIdiom.Tablet)
-                //{
-                //	Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-                //}
+                
                 return true;
             }
             else
@@ -321,68 +330,48 @@ namespace DABApp
         {
             try
             {
-                //find the epissode
-                var episode = db.Table<dbEpisodes>().SingleOrDefault(x => x.id == episodeId);
-                if (episode != null) //only update episodes we have in the database
+                //find the epissode user data
+                var userName = GlobalResources.GetUserEmail();
+                dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
+                if (data == null)
                 {
-                    //listened
-                    if (isListened != null)
+                    data = new dbEpisodeUserData();
+                    data.EpisodeId = episodeId;
+                    data.UserName = userName;
+                }
+                data.HasJournal = (hasJournal == null) ? false : hasJournal.Value;
+                data.IsFavorite = (isFavorite == null) ? false : isFavorite.Value;
+                data.IsListenedTo = (isListened == null) ? false : isListened.Value;
+                if (playerPosition.HasValue)
+                {
+                    if (GlobalResources.CurrentEpisodeId == episodeId)
                     {
-                        episode.is_listened_to = (bool)isListened;
-                    }
-                    //favorite
-                    if (isFavorite.HasValue)
-                    {
-                        episode.is_favorite = (bool)isFavorite;
-                    }
-                    //has journal
-                    if (hasJournal.HasValue)
-                    {
-                        episode.has_journal = (bool)hasJournal;
-                    }
-                    //player position
-                    if (playerPosition.HasValue)
-                    {
-                        if (GlobalResources.CurrentEpisodeId == episode.id)
+                        if (!GlobalResources.playerPodcast.IsPlaying)
                         {
-                            if (!GlobalResources.playerPodcast.IsPlaying)
-                            {
-                                //update the active player (only if it is paused)
-                                episode.stop_time = playerPosition.Value;
-                                episode.remaining_time = (episode.Duration - episode.stop_time).ToString();
-                                GlobalResources.playerPodcast.Seek(episode.stop_time);
-                            } else
-                            {
-                                Debug.WriteLine("Skipping seek to new position since episode is playing...");
-                            }
+                            //update the active player (only if it is paused)
+                            data.CurrentPosition = playerPosition.Value;
+                            //TODO: Need to update this?
+                            //episode.remaining_time = (episode.Duration - episode.UserData.CurrentPosition).ToString();
+                            GlobalResources.playerPodcast.Seek(data.CurrentPosition);
                         }
-                        //
-                    }
-                    //save data to the database
-                    db.Update(episode);
-                }
-                else
-                {
-                    //Store the record in the user-episode meta table for later use
-                    dbUserEpisodeMeta meta = db.Table<dbUserEpisodeMeta>().SingleOrDefault(x => x.EpisodeId == episodeId);
-                    if (meta == null)
+                        else
+                        {
+                            Debug.WriteLine("Skipping seek to new position since episode is playing...");
+                        }
+                    } else
                     {
-                        meta = new dbUserEpisodeMeta();
-                        meta.EpisodeId = episodeId; 
+                        data.CurrentPosition = playerPosition.Value;
                     }
-                    meta.CurrentPosition = playerPosition;
-                    meta.HasJournal = hasJournal;
-                    meta.IsFavorite = isFavorite;
-                    meta.IsListenedTo = isListened;
 
-                    db.InsertOrReplace(meta);
-                    Debug.WriteLine($"Added episode {episodeId} to meta table for later use...");
                 }
+                db.InsertOrReplace(data);
+                Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
-                //Notify listening pages that episode data has changed 
+                //Notify listening pages that episode data has changed
                 if (RaiseEpisodeDataChanged)
                 {
                     MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                    //MessagingCenter.Send<string>("Update", "Update");
                 }
             }
             catch (Exception e)
@@ -413,7 +402,14 @@ namespace DABApp
                         cutoffTime = DateTime.Now.AddDays(-3);
                         break;
                     case "One Week":
-                        cutoffTime = DateTime.Now.AddDays(-7);
+                        //When in staging, use 3 weeks instead of 1 for testing
+                        if (GlobalResources.TestMode)
+                        {
+                            cutoffTime = DateTime.Now.AddDays(-21);
+                        } else
+                        {
+                            cutoffTime = DateTime.Now.AddDays(-7);
+                        }
                         break;
                         //case "One Month":
                         //	cutoffTime = DateTime.Now.AddMonths(-1);
@@ -425,9 +421,13 @@ namespace DABApp
                 {
                     var eps = from x in db.Table<dbEpisodes>()
                               where x.is_downloaded  //downloaded episodes
-                                          && (x.is_listened_to == true || x.PubDate < cutoffTime)
                               select x;
-                    episodesToDelete = eps.ToList();
+                    //simplified query and added foreach iteration since query was giving null object reference on x.userdata.islistenedto
+                    foreach (var item in eps)
+                    {
+                        if (item.UserData.IsListenedTo == true || item.PubDate < cutoffTime)
+                            episodesToDelete.Add(item);
+                    }
                 }
                 else
                 {
@@ -477,9 +477,11 @@ namespace DABApp
             try
             {
                 var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
-                episode.stop_time = NewStopTime;
+                episode.UserData.CurrentPosition = NewStopTime;
+                Debug.WriteLine($"New Stop  Time: {NewStopTime / 60}");
                 episode.remaining_time = NewRemainingTime.ToString(); //TODO was a string - did making this a double break it?
                 await adb.UpdateAsync(episode);
+                await adb.UpdateAsync(episode.UserData);
                 //if (Device.Idiom == TargetIdiom.Tablet)
                 //{
                 Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
@@ -564,7 +566,7 @@ namespace DABApp
             try
             {
                 dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings ExpirationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenExpiration");
+                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
                 dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
                 dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                 dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
@@ -572,7 +574,7 @@ namespace DABApp
                 var token = new APIToken
                 {
                     value = TokenSettings.Value,
-                    expires = ExpirationSettings.Value,
+                    expires = CreationSettings.Value,
                     user_email = EmailSettings.Value,
                     user_first_name = FirstNameSettings.Value,
                     user_last_name = LastNameSettings.Value,

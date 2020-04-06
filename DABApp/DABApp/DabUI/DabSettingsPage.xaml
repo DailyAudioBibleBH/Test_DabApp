@@ -48,7 +48,7 @@
                 <StackLayout.Padding>
                   <OnPlatform x:TypeArguments="Thickness" iOS="15, 0, 15, 0" Android ="15, 15, 15, 0"/>
                 </StackLayout.Padding>
-                <Button x:Name="LogOut" Text="Log Out" Clicked="OnLogOut"/>
+                <Button x:Name="LogOut" HeightRequest="40" Text="Log Out" Clicked="OnLogOut"/>
               </StackLayout>
 						</ViewCell>
 						</TableSection>

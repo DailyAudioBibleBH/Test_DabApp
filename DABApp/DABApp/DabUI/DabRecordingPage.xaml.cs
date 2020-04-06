@@ -283,20 +283,9 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    StackLayout labelHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "labelHolder");
-                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    Label explanation = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "Explanation");
-                    activity.IsVisible = true;
-                    activityHolder.IsVisible = true;
-                    labelHolder.IsVisible = true;
-                    activity.VerticalOptions = LayoutOptions.EndAndExpand;
-                    explanation.IsVisible = true;
+                    GlobalResources.WaitStart("Submitting recording...");
                     var result = await SendAudio(audio);
-                    activity.IsVisible = false;
-                    activityHolder.IsVisible = false;
-                    labelHolder.IsVisible = false;
-                    explanation.IsVisible = false;
+                    GlobalResources.WaitStop();
                     if (result) await Navigation.PopModalAsync();
                 }
                 else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");

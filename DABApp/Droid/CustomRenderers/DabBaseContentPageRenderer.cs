@@ -24,7 +24,7 @@ namespace DABApp.Droid
 
         public DabBaseContentPageRenderer(Context context) : base(context)
         {
-            new SlideOverKitDroidHandler().Init(this);
+            new SlideOverKitDroidHandler().Init(this, Context);
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Page> e)

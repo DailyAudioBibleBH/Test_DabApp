@@ -19,30 +19,73 @@ using Android.Media;
 
 using DABApp.Droid.DependencyServices;
 using Android.Telephony;
+using Android.Runtime;
+using System.Drawing;
+using Android.Graphics;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {
-
-
-
-    public class DroidDabNativePlayer : IDabNativePlayer
+    public class DroidDabNativePlayer : Java.Lang.Object, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
     {
 
         //Based on Xamarin.Android documentation:
         //Fundamentals: https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/notifications/local-notifications
         //Walkthrough: https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/notifications/local-notifications-walkthrough
 
-
         static readonly int NOTIFICATION_ID = 1000;
         static readonly string CHANNEL_ID = "location_notification";
-
         DabPlayer dabplayer;
 
         public DroidDabNativePlayer()
         {
             player = new Android.Media.MediaPlayer() { };
             player.Completion += OnPlaybackEnded;
+        }
+
+        public bool RequestAudioFocus()
+        {
+            AudioManager audioManager = (AudioManager)Application.Context.GetSystemService(Android.Content.Context.AudioService);
+            AudioFocusRequest audioFocusRequest;
+            if (Build.VERSION.SdkInt > BuildVersionCodes.O)
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain)
+                .SetAudioAttributes(new AudioAttributes.Builder().SetLegacyStreamType(Android.Media.Stream.Music).Build()).SetOnAudioFocusChangeListener(this)
+                .Build());
+            }
+            else
+            {
+                audioFocusRequest = audioManager.RequestAudioFocus(this, Android.Media.Stream.Music, AudioFocus.Gain);
+            }
+
+            if (audioFocusRequest == AudioFocusRequest.Granted)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void OnAudioFocusChange(AudioFocus focusChange)
+        {
+            switch (focusChange)
+            {
+                case AudioFocus.Gain:
+                    Play();
+                    //Gain when other Music Player app releases the audio service   
+                    break;
+                case AudioFocus.Loss:
+                    //We have lost focus stop!   
+                    Stop();
+                    break;
+                case AudioFocus.LossTransient:
+                    //We have lost focus for a short time, but likely to resume so pause   
+                    Pause();
+                    break;
+                case AudioFocus.LossTransientCanDuck:
+                    //We have lost focus but should till play at a muted 10% volume   
+                    SetVolume(.1);
+                    break;
+            }
         }
 
         //Static method to create a single notification channel;
@@ -82,27 +125,46 @@ namespace DABApp.Droid
 
                 dabplayer.EpisodeDataChanged += (sender, e) =>
                 {
+
                     // Set up an intent so that tapping the notifications returns to this app:
                     Intent intent = new Intent(Application.Context, typeof(MainActivity));
-                    Intent playPauseIntent = new Intent(Application.Context, typeof(SecondActivity));
+                    Intent playPauseIntent = new Intent(Application.Context, typeof(PlayPauseActivity));
+                    Intent skipIntent = new Intent(Application.Context, typeof(SkipActivity));
+                    Intent previousIntent = new Intent(Application.Context, typeof(PreviousActivity));
+
                     // Create a PendingIntent; 
                     const int pendingIntentId = 0;
                     const int firstPendingIntentId = 1;
-                    PendingIntent firstPendingIntent =
+                    const int skipPendingIntentId = 2;
+                    const int previousPendingIntentId = 3;
+                   
+                    PendingIntent backToAppPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
-                    PendingIntent pendingIntent =
+                    PendingIntent playPausePendingIntent =
                         PendingIntent.GetActivity(Application.Context, pendingIntentId, playPauseIntent, 0);
+                    PendingIntent skipPendingIntent =
+                        PendingIntent.GetActivity(Application.Context, skipPendingIntentId, skipIntent, 0);
+                    PendingIntent previousPendingIntent =
+                        PendingIntent.GetActivity(Application.Context, previousPendingIntentId, previousIntent, 0);
 
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
                                             .SetMediaSession(mSession.SessionToken)
-                                            .SetShowActionsInCompactView(0))
+                                            .SetShowCancelButton(true)
+                                            .SetShowActionsInCompactView(0, 1, 2)
+                                            .SetCancelButtonIntent(backToAppPendingIntent))
+                                  .SetProgress(player.Duration, player.CurrentPosition, true)
                                   .SetVisibility(NotificationCompat.VisibilityPublic)
-                                  .SetContentIntent(firstPendingIntent) // Start up this activity when the user clicks the intent.
+                                  .SetContentIntent(backToAppPendingIntent) // Start up this activity when the user clicks the intent.
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
-                                  .AddAction(Resource.Drawable.ic_media_play_pause, "Play", pendingIntent)
+                                  .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
+                                  .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_play_arrow_white_36, "Play or Pause", playPausePendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_forward_30_white_36, "Forward 30", skipPendingIntent)
+                                  .SetShowWhen(false)
+                                  .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
                                   .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
 
@@ -124,8 +186,6 @@ namespace DABApp.Droid
 
         Android.Media.MediaPlayer player;
 
-        static int index = 0;
-
         /// Length of audio in seconds
         public double Duration
         {
@@ -137,7 +197,8 @@ namespace DABApp.Droid
 
         /// Current position of audio playback in seconds
         public double CurrentPosition
-        { get
+        {
+            get
             {
                 return player == null ? 0 : ((double)player.CurrentPosition) / 1000.0;
             }
@@ -147,10 +208,12 @@ namespace DABApp.Droid
         /// Playback volume (0 to 1)
         public double Volume
         {
-            get {
+            get
+            {
                 return _volume;
             }
-            set {
+            set
+            {
                 SetVolume(_volume = value);
             }
         }
@@ -163,7 +226,8 @@ namespace DABApp.Droid
         /// Indicates if the position of the loaded audio file can be updated
         public bool CanSeek
         {
-            get {
+            get
+            {
                 return player == null ? false : true;
             }
         }
@@ -252,11 +316,13 @@ namespace DABApp.Droid
             else
             {
                 //Play from where we're at
-         
+
             }
 
-
-            player.Start();
+            if (RequestAudioFocus())
+            {
+                player.Start();
+            }
         }
 
         ///<Summary>
@@ -284,8 +350,8 @@ namespace DABApp.Droid
         ///</Summary>
         public void Seek(double position)
         {
-              if (CanSeek)
-            { 
+            if (CanSeek)
+            {
                 player?.SeekTo((int)position * 1000);
                 System.Diagnostics.Debug.WriteLine($"Seeking to {position}");
             }
@@ -332,14 +398,6 @@ namespace DABApp.Droid
             isDisposed = true;
         }
 
-        //~SimpleAudioPlayerImplementation()
-        //{
-        //    Dispose(false);
-        //}
-
-        ///<Summary>
-        /// Dispose SimpleAudioPlayer and release resources
-        ///</Summary>
         public void Dispose()
         {
             Dispose(true);
@@ -348,13 +406,11 @@ namespace DABApp.Droid
         }
     }
 
-
     [Activity]
-    public class SecondActivity : Activity
+    public class PlayPauseActivity : Activity
     {
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
-        DroidDabNativePlayer droid = new DroidDabNativePlayer();
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -388,5 +444,68 @@ namespace DABApp.Droid
         }
     }
 
+    [Activity]
+    public class SkipActivity : Activity
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        EpisodeViewModel Episode;
 
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            bool playing = player.IsPlaying;
+
+            if (player.IsReady)
+            {
+                MessagingCenter.Send<string>("droid", "skip");
+            }
+            else
+            {
+                if (player.Load(Episode.Episode))
+                {
+                    MessagingCenter.Send<string>("droid", "skip");
+                }
+                else
+                {
+                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
+
+            }
+
+            Finish();
+        }
+    }
+
+    [Activity]
+    public class PreviousActivity : Activity
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        EpisodeViewModel Episode;
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            bool playing = player.IsPlaying;
+
+            if (player.IsReady)
+            {
+                MessagingCenter.Send<string>("droid", "previous");
+                
+            }
+            else
+            {
+                if (player.Load(Episode.Episode))
+                {
+                    MessagingCenter.Send<string>("droid", "previous");
+                }
+                else
+                {
+                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                }
+
+            }
+
+            Finish();
+        }
+    }
 }

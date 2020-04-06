@@ -2,26 +2,28 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using SlideOverKit;
 using Xamarin.Forms;
-using TEditor;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
-using Newtonsoft.Json;
-using Microsoft.AppCenter.Crashes;
+using SQLite;
+using System.Collections.ObjectModel;
 
 namespace DABApp
 {
     public partial class DabPlayerPage : DabBaseContentPage
     {
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        ObservableCollection<EpisodeViewModel> list;
         DabPlayer player = GlobalResources.playerPodcast;
         EpisodeViewModel Episode;
+        EpisodeViewModel nextEpisode;
+        EpisodeViewModel previousEpisode;
         string backgroundImage;
         bool IsGuest;
         static double original;
+        double lastLogPlayerPosition;
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
@@ -33,7 +35,10 @@ namespace DABApp
             //Prep variables needed
             IsGuest = GuestStatus.Current.IsGuestLogin;
             Episode = new EpisodeViewModel(episode);
+
             _episode = episode;
+
+            GetNextPreviousEpisodes(Episode);
 
             //Prepare an empty journal object (needed early for binding purposes)
             journal = new DabJournalService();
@@ -68,6 +73,8 @@ namespace DABApp
                 PlayPause.IsVisible = false;
                 backwardButton.Opacity = 0;
                 forwardButton.Opacity = 0;
+                nextButton.IsVisible = false;
+                previousButton.IsVisible = false;
                 Initializer.IsVisible = true;
             }
 
@@ -127,25 +134,65 @@ namespace DABApp
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
 
+            MessagingCenter.Subscribe<string>("droid", "skip", (obj) =>
+            {
+                OnNext();
+            });
+
+            MessagingCenter.Subscribe<string>("droid", "previous", (obj) =>
+            {
+                OnPrevious();
+            });
+
             MessagingCenter.Subscribe<string>("dabapp", "SocketDisconnected", (obj) =>
             {
-                 int paddingMulti = journal.IsConnected ? 4 : 8;
+                int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
             MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
-               {
-                   BindControls(true, true);
-               });
-              
+                {
+                    BindControls(true, true);
+                });
+
             });
 
             //Play-Pause button binding
             //Moved here to take away flicker when favoriting and marking an episode as listened to 
             PlayPause.BindingContext = player;
             PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+        }
 
+        async void GetNextPreviousEpisodes(EpisodeViewModel _episode)
+        {
+            var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
+            list = new ObservableCollection<EpisodeViewModel>(savedEps.Select(x => new EpisodeViewModel(x)));
+
+            nextEpisode = list.OrderBy(x => x.Episode.PubDate).FirstOrDefault(x => x.Episode.PubDate > Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            previousEpisode = list.OrderBy(x => x.Episode.PubDate).LastOrDefault(x => x.Episode.PubDate < Episode.Episode.PubDate && x.Episode.id != Episode.Episode.id && Episode.channelTitle == x.channelTitle);
+            //prep next episode link
+            if (nextEpisode == null)
+            {
+                nextButton.Opacity = .5;
+                nextButton.IsEnabled = false;
+            }
+            else
+            {
+                nextButton.Opacity = 1;
+                nextButton.IsEnabled = true;
+            }
+            //prep previous episode link
+            if (previousEpisode == null)
+            {
+                previousButton.Opacity = .5;
+                previousButton.IsEnabled = false;
+            }
+            else
+            {
+                previousButton.Opacity = 1;
+                previousButton.IsEnabled = true;
+            }
         }
 
         //Play or Pause the episode (not the same as the init play button)
@@ -160,11 +207,6 @@ namespace DABApp
                 else
                 {
                     player.Play();
-                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                    {
-                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                        return true;
-                    });
                 }
             }
             else
@@ -172,18 +214,79 @@ namespace DABApp
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
-                    Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-                    {
-                        AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "pause", player.CurrentPosition, null, null);
-                        return true;
-                    });
                 }
                 else
                 {
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
                 }
-
             }
+            Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
+            {
+                var difference = Math.Abs(lastLogPlayerPosition - player.CurrentPosition);
+                if (lastLogPlayerPosition != player.CurrentPosition && (difference >= 30 || difference <= -30))
+                {
+                    AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, "pause", player.CurrentPosition, null, null, null);
+                    
+                    lastLogPlayerPosition = player.CurrentPosition;
+                    if (GlobalResources.CurrentEpisodeId != (int)Episode.Episode.id)
+                    {
+                        BindControls(true, true);
+                    }
+                    return true;
+                }
+                else if (lastLogPlayerPosition == player.CurrentPosition)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            });
+        }
+
+        //Go to previous episode
+        void OnPrevious(object o, EventArgs e)
+        {
+            previousButton.IsEnabled = false;
+            if (previousEpisode != null)
+            {
+                Episode = previousEpisode;
+            }
+            GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
+            BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+        }
+
+        //method for android lock screen controls
+        void OnPrevious()
+        {
+            player.Seek(player.CurrentPosition - 30);
+        }
+
+        //Go to next episode
+        public void OnNext(object o, EventArgs e)
+        {
+            nextButton.IsEnabled = false;
+            if (nextEpisode != null)
+            {
+                Episode = nextEpisode;
+            }
+            GetNextPreviousEpisodes(Episode);
+            player.Load(Episode.Episode);
+            BindControls(true, true);
+            //Goto the starting position of the episode
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
+            GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
+        }
+
+        //method for android lock screen controls
+        public void OnNext()
+        {
+            player.Seek(player.CurrentPosition + 30);
         }
 
         //Go back 30 seconds
@@ -298,15 +401,23 @@ namespace DABApp
             if (JournalContent.IsFocused)//Making sure to update the journal only when the user is using the TextBox so that the server isn't updating itself.
             {
                 journal.UpdateJournal(Episode.Episode.PubDate, JournalContent.Text);
-                //JournalTracker.Current.Update(Episode.Episode.PubDate.ToString("yyyy-MM-dd"), JournalContent.Text);
-                if (Episode.Episode.has_journal == false)
+                if (JournalContent.Text.Length == 0)
                 {
-                    Episode.Episode.has_journal = true;
-                    Episode.hasJournalVisible = true;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, null, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null);
+                    Episode.Episode.UserData.HasJournal = false;
+                    Episode.HasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, true);
                 }
-            }        
+                else if (Episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
+                {
+                    Episode.Episode.UserData.HasJournal = true;
+                    Episode.HasJournal = true;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, null);
+                }
+            }
         }
 
         //TODO: These need replaced and linked back to journal
@@ -383,6 +494,10 @@ namespace DABApp
                 lblDescription.BindingContext = Episode;
                 lblDescription.SetBinding(Label.TextProperty, "description");
 
+                //Episodes Notes
+                lblNotes.BindingContext = Episode;
+                lblNotes.SetBinding(Label.TextProperty, "notes");
+
                 //Favorite button
                 Favorite.BindingContext = Episode;
                 Favorite.SetBinding(Button.ImageProperty, "favoriteSource");
@@ -421,12 +536,23 @@ namespace DABApp
                 SeekBar.BindingContext = player;
                 SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
                 SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+
                 SeekBar.UserInteraction += (object sender, EventArgs e) =>
                 {
                     player.Seek(SeekBar.Value);
                 };
 
-                
+                if (Device.RuntimePlatform == "Android")
+                {
+                    SeekBar.TouchUp += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                    SeekBar.TouchDown += (object sender, EventArgs e) =>
+                    {
+                        player.Seek(SeekBar.Value);
+                    };
+                }
             }
         }
 
@@ -452,7 +578,7 @@ namespace DABApp
             }
 
             //Goto the starting position of the episode
-            player.Seek(Episode.Episode.stop_time);
+            player.Seek(Episode.Episode.UserData.CurrentPosition);
 
             //Bind controls for playback
             BindControls(true, true);
@@ -476,6 +602,8 @@ namespace DABApp
             PlayPause.IsVisible = true;
             backwardButton.Opacity = 1;
             forwardButton.Opacity = 1;
+            previousButton.IsVisible = true;
+            nextButton.IsVisible = true;
         }
 
         //Share the episode
@@ -565,7 +693,7 @@ namespace DABApp
                     JournalContent.HeightRequest = original + 100;
                 }
                 else
-                {                   
+                {
                     JournalContent.HeightRequest = e.Visible ? original - e.Height + 50 : original + 100;
                 }
             }
@@ -581,24 +709,24 @@ namespace DABApp
         //User favorites (or unfavorites) an episode
         async void OnFavorite(object o, EventArgs e)
         {
-            Episode.favoriteVisible = !Episode.favoriteVisible;
+            Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, null, Episode.favoriteVisible, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.is_favorite);           
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite, null);
         }
 
         //User listens to (or unlistens to) an episode
         async void OnListened(object o, EventArgs e)
         {
-            
+
             //Mark episode as listened to
             //Episode.Episode.is_listened_to = "";
             //check this
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.listenedToVisible, null, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.is_listened_to);
-            
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, Episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo, null, null);
+
             //TODO: Bind accessibiliyt text
         }
 
@@ -606,7 +734,7 @@ namespace DABApp
         void OnVisibleChanged(object o, EventArgs e)
         {
             //Switch the value of listened to
-            Episode.listenedToVisible = !Episode.listenedToVisible;
+            Episode.IsListenedTo = !Episode.IsListenedTo;
         }
     }
 }

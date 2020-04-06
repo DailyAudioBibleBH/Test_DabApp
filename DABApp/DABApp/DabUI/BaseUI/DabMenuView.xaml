@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<t:SlideMenuView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:t="clr-namespace:SlideOverKit" 
-		x:Class="DABApp.DabMenuView" xmlns:local="clr-namespace:DABApp;">
+<t:SlideMenuView
+    xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit"
+                 xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+		         x:Class="DABApp.DabMenuView"
+                 xmlns:local="clr-namespace:DABApp">
 	<t:SlideMenuView.Resources>
 		<ResourceDictionary>
 			<local:NegateBooleanConverter x:Key="inverter"/>
@@ -31,9 +35,10 @@
 				</local:ImageCircle.Source>
 			</local:ImageCircle>-->
                 <Button x:Name="SignUp" Text="Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
-                <Label x:Name="UserName" 
+
+                <Label x:Name="UserName"
+                       Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"
                        TextColor="White" 
-                       Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}" 
                        IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" 
                        HorizontalOptions="StartAndExpand" 
                        VerticalOptions="Center" 

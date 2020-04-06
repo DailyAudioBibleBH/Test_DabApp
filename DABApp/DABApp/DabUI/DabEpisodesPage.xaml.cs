@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using DABApp.DabSockets;
-using DABApp.WebSocketHelper;
-using Newtonsoft.Json;
 using Plugin.Connectivity;
-using Rg.Plugins.Popup.Contracts;
-using SlideOverKit;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -24,10 +16,21 @@ namespace DABApp
         public DabEpisodesPage(Resource resource)
         {
             InitializeComponent();
+            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+
+            //Subscribe to GraphQL alerts for refresh
+            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    TimedActions();
+                });
+
+            });
+
             _resource = resource;
             DabViewHelper.InitDabForm(this);
             Episodes = PlayerFeedAPI.GetEpisodeList(resource);
-            //EpisodeList.ItemsSource = Episodes;
             BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
@@ -49,63 +52,46 @@ namespace DABApp
             }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+                //Check with Chet about this, believe this should update episode list
+                Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
-            });
-
-            //Subscribe to GraphQL alerts for refresh
-            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    TimedActions();
-                });
-
-            });
-
-            Device.StartTimer(TimeSpan.FromSeconds(10), () =>
-            {
-                TimedActions();
-                return true;
-            });
-
-            
-        }
+            });                      
+        }       
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
-            EpisodeList.IsEnabled = false;
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
-            var chosenVM = (EpisodeViewModel)e.Item;
-            var chosen = chosenVM.Episode;
-            EpisodeList.SelectedItem = null;
-            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-
-            if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
+            try
             {
-                if (chosen.id != GlobalResources.CurrentEpisodeId)
+                EpisodeList.IsEnabled = false;
+                GlobalResources.WaitStart();
+                var chosenVM = (EpisodeViewModel)e.Item;
+                var chosen = chosenVM.Episode;
+                EpisodeList.SelectedItem = null;
+                var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
+
+                if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
                 {
-                    //TODO: Replace this with sync
-                    //JournalTracker.Current.Content = null;
+                    if (chosen.id != GlobalResources.CurrentEpisodeId)
+                    {
+                        //TODO: Replace this with sync
+                        //JournalTracker.Current.Content = null;
+                    }
+                    //Push the new player page
+                    await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
                 }
-                //Push the new player page
-                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+                else
+                {
+                    await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+                }
+                EpisodeList.SelectedItem = null;
+                GlobalResources.WaitStop();
+                EpisodeList.IsEnabled = true;
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Refresh();
             }
-            EpisodeList.SelectedItem = null;
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
-            EpisodeList.IsEnabled = true;
-
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
-            {
-                TimedActions();
-            });
         }
 
         public void OnMonthSelected(object o, EventArgs e) {
@@ -117,19 +103,9 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            if (ep.is_listened_to == true)
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, false, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, false);
-                model.listenedToVisible = false;
-
-            }
-            else
-            {
-                await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, true, null, null, null);
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, true);
-                model.listenedToVisible = true;
-            }
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, !ep.UserData.IsListenedTo, null, null, null, false);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, !ep.UserData.IsListenedTo);
+            model.IsListenedTo = !ep.UserData.IsListenedTo;
         }
 
         public async void OnFavorite(object o, EventArgs e)
@@ -137,22 +113,19 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.is_favorite, null, null);
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.is_favorite);
-            model.favoriteVisible = !ep.is_favorite;
+            await PlayerFeedAPI.UpdateEpisodeProperty((int)ep.id, null, !ep.UserData.IsFavorite, null, null, false);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, !ep.UserData.IsFavorite);
+            model.IsFavorite = !ep.UserData.IsFavorite;
         }
 
         
 
         async Task Refresh()
         {
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-            StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-            activity.IsVisible = true;
-            activityHolder.IsVisible = true;
+            GlobalResources.WaitStart("Refreshing...");
 
-            await AuthenticationAPI.PostActionLogs();
-            await PlayerFeedAPI.GetEpisodes(_resource);
+            await AuthenticationAPI.PostActionLogs(false);
+            //await PlayerFeedAPI.GetEpisodes(_resource);
             await AuthenticationAPI.GetMemberData();
             TimedActions();
 
@@ -166,8 +139,7 @@ namespace DABApp
                     circularProgressControl.HandleDownloadVisibleChanged(true);
                 });
             }
-            activity.IsVisible = false;
-            activityHolder.IsVisible = false;
+            GlobalResources.WaitStop();
         }
 
         void OnFilters(object o, EventArgs e)
@@ -184,7 +156,7 @@ namespace DABApp
             TimedActions();
         }
 
-        void TimedActions()
+        public void TimedActions()
         {
             if (_resource.AscendingSort)
             {
@@ -194,12 +166,15 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            EpisodeList.ItemsSource = _Episodes = Episodes
+            if (Episodes.Count() > 0)
+            {
+                EpisodeList.ItemsSource = _Episodes = Episodes
                 .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.is_favorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.has_journal : true)
+                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                 .Select(x => new EpisodeViewModel(x)).ToList();
                 Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+            }
         }
     }
 }

@@ -14,7 +14,8 @@ namespace DABApp
 		public DabWalletPage(Card[] cards)
 		{
 			InitializeComponent();
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+            {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			_cards = cards;
@@ -37,10 +38,7 @@ namespace DABApp
 			base.OnAppearing();
 			if (isInitialized)
 			{
-				ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-				StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-				activity.IsVisible = true;
-				activityHolder.IsVisible = true;
+				GlobalResources.WaitStart();
 				var result = await AuthenticationAPI.GetWallet();
 				if (result != null)
 				{
@@ -58,8 +56,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Wallet information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					await Navigation.PopAsync();
 				}
-				activity.IsVisible = false;
-				activityHolder.IsVisible = false;
+				GlobalResources.WaitStop();
 			}
 			isInitialized = true;
 		}

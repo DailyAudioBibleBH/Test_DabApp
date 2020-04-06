@@ -10,7 +10,7 @@ namespace DABApp
 		public DabProfileManagementPage()
 		{
 			InitializeComponent();
-            if (GlobalResources.ShouldUseSplitScreen){ NavigationPage.SetHasNavigationBar(this, false); }
+            if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
 			var UserName = GlobalResources.GetUserName().Split(' ');
 			FirstName.Text = UserName[0];
 			LastName.Text = UserName[1];

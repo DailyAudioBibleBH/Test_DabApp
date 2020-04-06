@@ -8,6 +8,7 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
+using Xamarin.Forms.Internals;
 
 namespace DABApp
 {
@@ -21,17 +22,33 @@ namespace DABApp
             {
                 GlobalResources.TestMode = true;
             }
+            Xamarin.Forms.Internals.Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => Debug.WriteLine(arg2)));
             InitializeComponent();
 
             FlowListView.Init();
+
             List<Versions> versionList = new List<Versions>();
             versionList = contentConfig.versions;
             contentAPI.GetModes();
+
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                //Connect to SyncSocket
+                DabSyncService.Instance.Init();
+                DabSyncService.Instance.Connect();
+
                 if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
                 {
-                    MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
+                    if (GlobalResources.GetUserEmail() == "Guest")
+                    {
+                        MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if not logged in
+                    }
+                    else
+                    {
+                        //user is logged in
+                        GlobalResources.Instance.IsLoggedIn = true;
+                        MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
+                    }
                 }
                 else
                 {
@@ -57,12 +74,12 @@ namespace DABApp
             try
             {
 
-                DabSyncService.Instance.Disconnect();
+                DabSyncService.Instance.Disconnect(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
-                    AuthenticationAPI.PostActionLogs();
+                    AuthenticationAPI.PostActionLogs(false);
                 }
-                else await AuthenticationAPI.PostActionLogs();
+                else await AuthenticationAPI.PostActionLogs(false);
 
             }
             catch (Exception ex)
