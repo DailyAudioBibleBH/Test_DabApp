@@ -156,10 +156,6 @@ namespace DABApp
                     });
                 }
             }
-            else
-            {
-                TimedActions();
-            }
             
             GlobalResources.WaitStop();
         }

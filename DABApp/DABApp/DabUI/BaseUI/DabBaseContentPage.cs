@@ -46,6 +46,10 @@ namespace DABApp
                     StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
                     Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
                     StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    activity.FadeTo(1, 250);
+                    activityContent.FadeTo(1, 250);
+                    activityLabel.FadeTo(1, 250);
+                    activityHolder.FadeTo(1, 250);
                     activityLabel.Text = message;
                     activity.IsVisible = true;
                     activityContent.IsVisible=true;
