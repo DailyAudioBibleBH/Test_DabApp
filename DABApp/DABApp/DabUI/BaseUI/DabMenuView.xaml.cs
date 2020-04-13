@@ -139,7 +139,7 @@ namespace DABApp
                     RemovePages();
                     break;
                 case "Send Audio Recording":
-                    await Navigation.PushModalAsync(new DabRecordingPage());
+					GlobalResources.GoToRecordingPage();
                     break;
                 default:
                     if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)

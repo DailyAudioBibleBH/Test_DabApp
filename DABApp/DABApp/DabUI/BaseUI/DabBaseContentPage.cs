@@ -226,14 +226,7 @@ namespace DABApp
 
         async void OnRecord(object o, EventArgs e)
         {
-            if (GuestStatus.Current.IsGuestLogin)
-            {
-                await DisplayAlert("Login Required", "You must be logged in to use this feature.", "OK");
-            }
-            else
-            {
-                await Navigation.PushModalAsync(new DabRecordingPage());
-            }
+            GlobalResources.GoToRecordingPage();
         }
     }
 }

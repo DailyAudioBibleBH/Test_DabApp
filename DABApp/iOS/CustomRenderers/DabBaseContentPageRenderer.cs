@@ -128,7 +128,7 @@ namespace DABApp.iOS
                     r.SetImage(recordButton.Image, UIControlState.Normal);
                     r.TranslatesAutoresizingMaskIntoConstraints = false;
                     r.TouchUpInside += async delegate {
-                        await Element.Navigation.PushModalAsync(new DabRecordingPage());
+                        GlobalResources.GoToRecordingPage();
                     };
                     //r.AddTarget(r.Self, recordButton.Action, UIControlEvent.TouchUpInside);
                     recordButton.CustomView = r;

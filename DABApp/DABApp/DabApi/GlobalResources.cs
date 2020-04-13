@@ -462,6 +462,25 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
 
+        public static async void GoToRecordingPage()
+        {
+            //Takes the user to the recording page if they are logged in. If not, alerts them to log in first
+            var nav = Application.Current.MainPage.Navigation;
+            if (GuestStatus.Current.IsGuestLogin)
+            {
+                var r = await Application.Current.MainPage.DisplayAlert("Login Required", "You must login to use this function", "Login", "Cancel");
+                if (r == true)
+                {
+                    GlobalResources.LogoffAndResetApp();
+                }
+            } else
+            {
+                //logged in user
+                await nav.PushModalAsync(new DabRecordingPage());
+            }
+        }
+
+
         public static async void LogoffAndResetApp(string Message = null)
         {
             //This method will log the current user off, reset all players and the app back to the login view, and reconnect all connections.
