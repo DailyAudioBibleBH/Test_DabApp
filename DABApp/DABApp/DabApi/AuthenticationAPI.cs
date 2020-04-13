@@ -50,12 +50,12 @@ namespace DABApp
                     }
                     else
                     {
-                        TokenSettings.Value = "";
-                        EmailSettings.Value = "Guest";
-                        CreationSettings.Value = DateTime.Now.ToString();
-                        FirstNameSettings.Value = "";
-                        LastNameSettings.Value = "";
-                        AvatarSettings.Value = "";
+                        if (TokenSettings != null) TokenSettings.Value = "";
+                        if (EmailSettings != null) EmailSettings.Value = "Guest";
+                        if (CreationSettings != null) CreationSettings.Value = DateTime.Now.ToString();
+                        if (FirstNameSettings != null) FirstNameSettings.Value = "";
+                        if (LastNameSettings != null) LastNameSettings.Value = "";
+                        if (AvatarSettings != null) AvatarSettings.Value = "";
                         IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
                         settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
