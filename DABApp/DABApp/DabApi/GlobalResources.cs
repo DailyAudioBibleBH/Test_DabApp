@@ -506,11 +506,18 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-            if (Token != null)
+            dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            if (s != null)
             {
-                db.Delete(Token);
+                db.Delete(s);
             }
+            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+            if (s != null)
+            {
+                db.Delete(s);
+            }
+
+
 
             //Disconnect
             DabSyncService.Instance.Disconnect(true);
