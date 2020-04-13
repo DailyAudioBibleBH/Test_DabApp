@@ -138,21 +138,29 @@ namespace DABApp
             string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
             DabSyncService.Instance.Send(JsonIn);
 
-            await AuthenticationAPI.PostActionLogs(false);
-            //await PlayerFeedAPI.GetEpisodes(_resource);
-            await AuthenticationAPI.GetMemberData();
-            TimedActions();
-
-            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-
-            if (_resource.availableOffline)
+            if (GlobalResources.GetUserEmail() != "Guest")
             {
-                Task.Run(async () => {
-                    await PlayerFeedAPI.DownloadEpisodes();
-                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                    circularProgressControl.HandleDownloadVisibleChanged(true);
-                });
+                await AuthenticationAPI.PostActionLogs(false);
+                //await PlayerFeedAPI.GetEpisodes(_resource);
+                await AuthenticationAPI.GetMemberData();
+                TimedActions();
+
+                GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+
+                if (_resource.availableOffline)
+                {
+                    Task.Run(async () => {
+                        await PlayerFeedAPI.DownloadEpisodes();
+                        CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                        circularProgressControl.HandleDownloadVisibleChanged(true);
+                    });
+                }
             }
+            else
+            {
+                TimedActions();
+            }
+            
             GlobalResources.WaitStop();
         }
 

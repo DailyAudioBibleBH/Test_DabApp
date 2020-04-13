@@ -338,60 +338,53 @@ namespace DABApp
 
                     if (answer == false)
                     {
-
+                        GlobalResources.LogoffAndResetApp();
                     }
-
-                    //async void OnAlertYesNoClicked(object sender, EventArgs e)
-                    //{
-                    //    bool answer = await Application.Current.MainPage.DisplayAlert("Alert", "You must be logged in to use this feature", "Cancel", "Log in");
-                    //    Debug.WriteLine("Answer: " + answer);
-
-                    //    if (answer == false)
-                    //    {
-
-                    //    }
-                    //}
                 }
-                dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
-                if (data == null)
+                else
                 {
-                    data = new dbEpisodeUserData();
-                    data.EpisodeId = episodeId;
-                    data.UserName = userName;
-                }
-                data.HasJournal = (hasJournal == null) ? false : hasJournal.Value;
-                data.IsFavorite = (isFavorite == null) ? false : isFavorite.Value;
-                data.IsListenedTo = (isListened == null) ? false : isListened.Value;
-                if (playerPosition.HasValue)
-                {
-                    if (GlobalResources.CurrentEpisodeId == episodeId)
+                    dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
+                    if (data == null)
                     {
-                        if (!GlobalResources.playerPodcast.IsPlaying)
+                        data = new dbEpisodeUserData();
+                        data.EpisodeId = episodeId;
+                        data.UserName = userName;
+                    }
+                    data.HasJournal = (hasJournal == null) ? false : hasJournal.Value;
+                    data.IsFavorite = (isFavorite == null) ? false : isFavorite.Value;
+                    data.IsListenedTo = (isListened == null) ? false : isListened.Value;
+                    if (playerPosition.HasValue)
+                    {
+                        if (GlobalResources.CurrentEpisodeId == episodeId)
                         {
-                            //update the active player (only if it is paused)
-                            data.CurrentPosition = playerPosition.Value;
-                            //TODO: Need to update this?
-                            //episode.remaining_time = (episode.Duration - episode.UserData.CurrentPosition).ToString();
-                            GlobalResources.playerPodcast.Seek(data.CurrentPosition);
+                            if (!GlobalResources.playerPodcast.IsPlaying)
+                            {
+                                //update the active player (only if it is paused)
+                                data.CurrentPosition = playerPosition.Value;
+                                //TODO: Need to update this?
+                                //episode.remaining_time = (episode.Duration - episode.UserData.CurrentPosition).ToString();
+                                GlobalResources.playerPodcast.Seek(data.CurrentPosition);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Skipping seek to new position since episode is playing...");
+                            }
                         }
                         else
                         {
-                            Debug.WriteLine("Skipping seek to new position since episode is playing...");
+                            data.CurrentPosition = playerPosition.Value;
                         }
-                    } else
-                    {
-                        data.CurrentPosition = playerPosition.Value;
+
                     }
+                    db.InsertOrReplace(data);
+                    Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
-                }
-                db.InsertOrReplace(data);
-                Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
-
-                //Notify listening pages that episode data has changed
-                if (RaiseEpisodeDataChanged)
-                {
-                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                    //MessagingCenter.Send<string>("Update", "Update");
+                    //Notify listening pages that episode data has changed
+                    if (RaiseEpisodeDataChanged)
+                    {
+                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        //MessagingCenter.Send<string>("Update", "Update");
+                    }
                 }
             }
             catch (Exception e)
