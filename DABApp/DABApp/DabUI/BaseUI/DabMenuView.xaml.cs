@@ -51,13 +51,7 @@ namespace DABApp
             info.Add("title", "signup");
             DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
 
-
-            SignUp.IsEnabled = false;
-            player.Stop();
-			var nav = new NavigationPage(new DabLoginPage());
-			nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-			Navigation.PushModalAsync(nav);
-			SignUp.IsEnabled = true;
+			GlobalResources.LogoffAndResetApp();
 		}
 
        

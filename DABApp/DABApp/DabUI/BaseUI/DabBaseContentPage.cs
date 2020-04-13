@@ -132,9 +132,7 @@ namespace DABApp
                             var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
                             if (choice)
                             {
-                                var nav = new Xamarin.Forms.NavigationPage(new DabLoginPage(false, true));
-                                nav.SetValue(Xamarin.Forms.NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                await Navigation.PushModalAsync(nav);
+                                GlobalResources.LogoffAndResetApp();
                             }
                         }
                         else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
