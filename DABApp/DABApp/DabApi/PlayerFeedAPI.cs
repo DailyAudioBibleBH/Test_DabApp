@@ -332,6 +332,26 @@ namespace DABApp
             {
                 //find the epissode user data
                 var userName = GlobalResources.GetUserEmail();
+                if (userName == "Guest")
+                {
+                    bool answer = await Application.Current.MainPage.DisplayAlert("Alert", "You must be logged in to use this feature", "Cancel", "Log in");
+
+                    if (answer == false)
+                    {
+
+                    }
+
+                    //async void OnAlertYesNoClicked(object sender, EventArgs e)
+                    //{
+                    //    bool answer = await Application.Current.MainPage.DisplayAlert("Alert", "You must be logged in to use this feature", "Cancel", "Log in");
+                    //    Debug.WriteLine("Answer: " + answer);
+
+                    //    if (answer == false)
+                    //    {
+
+                    //    }
+                    //}
+                }
                 dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
                 if (data == null)
                 {
