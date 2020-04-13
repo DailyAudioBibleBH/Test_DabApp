@@ -44,7 +44,7 @@ namespace DABApp.DabSockets
         DabEpisodesPage episodesPage;
 
         List<int> subscriptionIds = new List<int>();
-        string userName; 
+        string userName;
 
 
         private DabSyncService()
@@ -87,13 +87,44 @@ namespace DABApp.DabSockets
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
+
                 //Generic keep alive
-                if (root.type=="ka")
+                if (root.type == "ka")
                 {
                     //Nothing to see here...
+                    return;
                 }
-                //Action logged elsewhere
-                else if (root.payload?.data?.actionLogged != null)
+
+
+
+                //Check for invalid token indicating user needs to log back in
+                if(GuestStatus.Current.IsGuestLogin == false && root.type=="error" && root.payload?.message != null)
+                {
+                    if (root.payload.message== "Your token is not valid.")
+                    {
+                        dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                        if (s != null)
+                        {
+                            //User's token is no longer good. Better log them off.
+                            db.Delete(s);
+                            GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
+                           
+                        }
+                        return;
+                    }
+                }
+
+                //logging errors, but not doing anything else with them right now.
+                if (GuestStatus.Current.IsGuestLogin == false && root.payload?.errors != null)
+                {
+                    foreach (var er in root.payload.errors)
+                    {
+                        Debug.WriteLine(er.message);
+                    }
+                }
+
+                //Action we need to address
+                if (root.payload?.data?.actionLogged != null)
                 {
                     var action = root.payload.data.actionLogged.action;
                     bool hasJournal;
@@ -118,8 +149,8 @@ namespace DABApp.DabSockets
                 {
                     if (GlobalResources.GetUserEmail() != "Guest")
                     {
-                       GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet connection, this could take up to a minute.");
-                            
+                        GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet connection, this could take up to a minute.");
+
 
                         List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
                         if (root.payload.data.lastActions.pageInfo.hasNextPage == true)
@@ -164,7 +195,7 @@ namespace DABApp.DabSockets
 
                         }
                     }
-                    
+
                 }
                 //Grabbing episodes
                 else if (root.payload?.data?.episodes != null)
@@ -187,7 +218,8 @@ namespace DABApp.DabSockets
                         var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
                     }
-                    else {
+                    else
+                    {
                         //Last page, let UI know
                         var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
                         foreach (var item in channels)
@@ -229,7 +261,7 @@ namespace DABApp.DabSockets
                     newEpisode.channel_title = channel.title;
                     newEpisode.is_downloaded = false;
                     if (GlobalResources.TestMode)
-                    { 
+                    {
                         newEpisode.description += $" ({DateTime.Now.ToShortTimeString()})";
                     }
                     db.InsertOrReplace(newEpisode);
@@ -285,7 +317,7 @@ namespace DABApp.DabSockets
                 // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
                 {
-                    
+
                     if (root.payload?.data?.updatedBadges.edges.Count() > 0)
                     {
                         //add badges to db
@@ -352,7 +384,7 @@ namespace DABApp.DabSockets
                                 db.InsertOrReplace(data);
                             }
                         }
-                        
+
                         //update last time checked for badge progress
                         string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
                         dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
@@ -372,7 +404,7 @@ namespace DABApp.DabSockets
                             await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
                         }
                     }
-                    
+
                 }
                 //Progress was made, show popup if 100 percent achieved
                 else if (root.payload?.data?.progressUpdated?.progress != null)
@@ -381,10 +413,10 @@ namespace DABApp.DabSockets
                     if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
                     {
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
-                        progress.seen = true;                        
+                        progress.seen = true;
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
-                    
+
                     dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == newProgress.id && x.userName == userName);
                     try
                     {
@@ -428,7 +460,7 @@ namespace DABApp.DabSockets
 
 
             //Unsubscribe from all subscriptions
-            foreach(int id in subscriptionIds)
+            foreach (int id in subscriptionIds)
             {
                 var jSub = $"{{\"type\":\"stop\",\"id\":\"{id}\",\"payload\":\"null\"}}";
                 sock.Send(jSub);
@@ -437,7 +469,7 @@ namespace DABApp.DabSockets
 
             //Log the user out, if requested and they are logged in.
             if (LogOutUser)
-            { 
+            {
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
                     var jLogout = "{\"type\":\"start\",\"payload\":{\"query\":\"mutation {logoutUser(version: 1)}\",\"variables\":{}}}";
@@ -572,7 +604,7 @@ namespace DABApp.DabSockets
                 //Init the connection
                 PrepConnectionWithTokenAndOrigin(Token.Value);
                 //Only send user based subscriptions when user is logged in
-                if (GlobalResources.GetUserEmail() != "Guest"  && GlobalResources.Instance.IsLoggedIn)
+                if (GlobalResources.GetUserEmail() != "Guest" && GlobalResources.Instance.IsLoggedIn)
                 {
                     //Subscribe to action logs - SUB 1
                     var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
@@ -606,14 +638,14 @@ namespace DABApp.DabSockets
                 //Subscribe for new episodes SUB 3
                 var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
                 DabGraphQlPayload newEpisodePayload = new DabGraphQlPayload(newEpisodeQuery, variables);
-                var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload,3));
+                var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload, 3));
                 subscriptionIds.Add(3);
                 sock.Send(SubscriptionNewEpisode);
 
                 //Send request for channels lists - SUB 4
                 var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
                 DabGraphQlPayload channelPayload = new DabGraphQlPayload(channelQuery, variables);
-                var channelInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", channelPayload,4));
+                var channelInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", channelPayload, 4));
                 subscriptionIds.Add(4);
                 sock.Send(channelInit);
 
