@@ -5,21 +5,21 @@
     xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
 >
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-                <ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
-                <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                    <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+            <StackLayout Orientation="Vertical">
+                <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+                    <ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                    <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+                        <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+                    </StackLayout>
+                </RelativeLayout>
+                <StackLayout Orientation="Horizontal" Padding="20">
+                    <Label x:Name="progressYear" FontSize="Medium"/>
                 </StackLayout>
-            </RelativeLayout>
-            <StackLayout Orientation="Horizontal" Padding="20">
-                <Label x:Name="progressYear" FontSize="Medium"/>
-            </StackLayout>
-            <ListView x:Name="achievementListView" RowHeight="120" IsEnabled="False" SeparatorVisibility="Default" Margin="10, 0, 10, 0">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" HeightRequest="100" Padding="0, 10, 0, 10">
+                <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
+                    
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
                                 <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}">
                                     <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
                                 </Frame>
@@ -32,11 +32,10 @@
                                     </Frame>
                                 </StackLayout>
                             </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             <ContentView VerticalOptions="EndAndExpand"/>
-        </StackLayout>
+            </StackLayout>
     </ContentPage.Content>
 </local:DabBaseContentPage>

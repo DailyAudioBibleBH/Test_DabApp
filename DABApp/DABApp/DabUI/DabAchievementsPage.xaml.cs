@@ -1,4 +1,4 @@
-﻿using DABApp.Helpers;
+using DABApp.Helpers;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -17,9 +17,10 @@ namespace DABApp
 	{
 		View AchievementsView;
 		Resource _resource;
-		public DabAchievementsPage(DABApp.View contentView)
+		public DabAchievementsPage(DABApp.View contentView) 
 		{
 			InitializeComponent();
+			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			NavigationPage.SetHasBackButton(this, true);
 			//Init the form
 			DabViewHelper.InitDabForm(this);
@@ -104,6 +105,7 @@ namespace DABApp
             }
 			
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
+			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 500; //arbitrary number to get them tall enopugh.
 			progressYear.Text = currentYear.ToString();
 		}
 	}

@@ -14,6 +14,7 @@ namespace DABApp
     {
         public static DabPlayer playerPodcast = new DabPlayer(true);
         public static DabPlayer playerRecorder = new DabPlayer(false);
+        public static List<dbSettings> SettingsToPreserve; //List of settings to be preserved when a database version is made (see sqlite_{platform}.cs)
         public static int CurrentEpisodeId = 0;
         private double thumbnailHeight;
         private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;
