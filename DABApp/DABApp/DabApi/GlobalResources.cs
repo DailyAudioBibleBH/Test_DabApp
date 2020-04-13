@@ -493,7 +493,7 @@ namespace DABApp
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
-                    await Application.Current.MainPage.DisplayAlert("Please Log Back In", Message, "OK");
+                    await Application.Current.MainPage.DisplayAlert("Login Required", Message, "OK");
                 }
                 );
             }

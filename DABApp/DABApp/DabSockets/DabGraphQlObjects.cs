@@ -147,6 +147,7 @@ namespace DABApp.DabSockets
         public string query { get; set; }
         public DabGraphQlVariables variables {get; set;}
         public List<GraphQlError> errors { get; set; }
+        public string message { get; set; }
 
         public DabGraphQlPayload()
         {
