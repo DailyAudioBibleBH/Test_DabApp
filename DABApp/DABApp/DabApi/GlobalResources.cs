@@ -478,7 +478,11 @@ namespace DABApp
             }
 
             //Cleanup
-            GlobalResources.Instance.IsLoggedIn = true;
+            GlobalResources.Instance.IsLoggedIn = false;
+
+            //Player.
+            CurrentEpisodeId = 0;
+            playerPodcast.Stop();
 
             //Database
             dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");

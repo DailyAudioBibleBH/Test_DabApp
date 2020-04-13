@@ -222,10 +222,6 @@ namespace DABApp
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
                 MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });           
             }
-            MessagingCenter.Subscribe<string>("Logout", "Logout", (sender) => {
-                DabSettingsPage settings = new DabSettingsPage();
-                settings.OnForceLogout();
-            });
         }
 
         async void OnRecord(object o, EventArgs e)
