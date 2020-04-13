@@ -202,12 +202,14 @@ namespace DABApp.DabSockets
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         }
+                        if (allEpisodes.Count() >= 1)
+                        {
+                            //store a new episode query date
+                            GlobalResources.SetLastEpisodeQueryDate(channelId);
+                        }
+                        //stop wait ui on episodes page
                         GlobalResources.WaitStop();
                     }
-
-                    //store a new episode query date
-                    GlobalResources.SetLastEpisodeQueryDate(channelId);
-                    //stop wait ui on episodes page
                 }
                 else if (root.payload?.data?.episodePublished?.episode != null)
                 {

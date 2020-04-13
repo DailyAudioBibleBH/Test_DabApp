@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -123,6 +126,17 @@ namespace DABApp
         async Task Refresh()
         {
             GlobalResources.WaitStart("Refreshing...");
+
+            DateTime queryDate = DateTime.MinValue.ToUniversalTime();
+            string minQueryDate = queryDate.ToString("o");
+
+            //send websocket message to get episodes by channel
+            DabGraphQlVariables variables = new DabGraphQlVariables();
+            Debug.WriteLine($"Getting episodes by ChannelId");
+            var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+            var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+            string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+            DabSyncService.Instance.Send(JsonIn);
 
             await AuthenticationAPI.PostActionLogs(false);
             //await PlayerFeedAPI.GetEpisodes(_resource);
