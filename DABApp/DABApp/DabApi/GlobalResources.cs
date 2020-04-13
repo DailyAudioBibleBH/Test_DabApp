@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using DABApp.DabAudio;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -460,6 +461,39 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
+
+        public static async void LogoffAndResetApp(string Message = null)
+        {
+            //This method will log the current user off, reset all players and the app back to the login view, and reconnect all connections.
+            //If Message is null, this will happen without any notification to the user. If a message is passed, it will be shown to the user and then they will be reset.
+            //The user will NOT have the option to "cancel" the action
+
+            if (Message != null)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.DisplayAlert("Please Log Back In", Message, "OK");
+                }
+                );
+            }
+
+            //Cleanup
+            GlobalResources.Instance.IsLoggedIn = true;
+
+            //Database
+            dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            if (Token != null)
+            {
+                db.Delete(Token);
+            }
+
+            //Disconnect
+            DabSyncService.Instance.Disconnect(true);
+
+            //Reset main page of app.
+            Application.Current.MainPage  = new NavigationPage(new DabLoginPage());
+
+        }
 
 
     }

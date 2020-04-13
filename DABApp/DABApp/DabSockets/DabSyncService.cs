@@ -245,17 +245,19 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
-                    //Expire the token (should log the user out?)
-                    dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                    if (sTokenCreationDate == null)
-                    {
-                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                    }
-                    sTokenCreationDate.Value = DateTime.Now.AddDays(5).ToString();
-                    db.Update(sTokenCreationDate);
-                    sock.Disconnect();
-                    Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
-                    Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
+
+                    GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
+                    ////Expire the token (should log the user out?)
+                    //dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                    //if (sTokenCreationDate == null)
+                    //{
+                    //    sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                    //}
+                    //sTokenCreationDate.Value = DateTime.Now.AddDays(5).ToString();
+                    //db.Update(sTokenCreationDate);
+                    //sock.Disconnect();
+                    //Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
+                    //Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
                 }
                 else if (root.payload?.data?.updateToken?.token != null)
                 {
