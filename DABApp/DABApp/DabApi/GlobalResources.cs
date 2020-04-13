@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using DABApp.DabAudio;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
@@ -460,6 +461,73 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
+
+    
+
+        public static async void GoToRecordingPage()
+        {
+            //Takes the user to the recording page if they are logged in. If not, alerts them to log in first
+            var nav = Application.Current.MainPage.Navigation;
+            if (GuestStatus.Current.IsGuestLogin)
+            {
+                var r = await Application.Current.MainPage.DisplayAlert("Login Required", "You must login to use this function", "Login", "Cancel");
+                if (r == true)
+                {
+                    GlobalResources.LogoffAndResetApp();
+                }
+            } else
+            {
+                //logged in user
+                await nav.PushModalAsync(new DabRecordingPage());
+            }
+        }
+
+
+        public static async void LogoffAndResetApp(string Message = null)
+        {
+            //This method will log the current user off, reset all players and the app back to the login view, and reconnect all connections.
+            //If Message is null, this will happen without any notification to the user. If a message is passed, it will be shown to the user and then they will be reset.
+            //The user will NOT have the option to "cancel" the action
+
+            if (Message != null)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.DisplayAlert("Please Log Back In", Message, "OK");
+                }
+                );
+            }
+
+            //Cleanup
+            GlobalResources.Instance.IsLoggedIn = false;
+
+            //Player.
+            CurrentEpisodeId = 0;
+            playerPodcast.Stop();
+
+            //Database
+            dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            if (s != null)
+            {
+                db.Delete(s);
+            }
+            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+            if (s != null)
+            {
+                db.Delete(s);
+            }
+
+
+
+            //Disconnect
+            DabSyncService.Instance.Disconnect(true);
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //Reset main page of app.
+                Application.Current.MainPage = new NavigationPage(new DabLoginPage());
+            });
+        }
 
 
     }

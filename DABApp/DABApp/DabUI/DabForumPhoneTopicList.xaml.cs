@@ -33,12 +33,8 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				if (CrossConnectivity.Current.IsConnected)
-				{
-					await Navigation.PushModalAsync(new DabLoginPage(true));
-					login = true;
-				}
-				else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
+                //Take them back to log on so they can get back to this.
+				GlobalResources.LogoffAndResetApp();
 			}
 			else
 			{

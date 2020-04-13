@@ -23,7 +23,6 @@ namespace DABApp
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         static SQLiteConnection db = DabData.database;
-        string isForcefulLogout;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -68,15 +67,16 @@ namespace DABApp
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
-            
 
-         
+
+
             if (GraphQlLoginComplete)
             {
                 return; //get out of here once login is complete;
-            } 
+            }
 
-            Device.InvokeOnMainThreadAsync(async () => {
+            Device.InvokeOnMainThreadAsync(async () =>
+            {
 
                 if (DabSyncService.Instance.IsConnected)
                 {
@@ -143,104 +143,20 @@ namespace DABApp
 
                             GuestStatus.Current.IsGuestLogin = false;
                             await AuthenticationAPI.GetMemberData();
-                            if (_fromPlayer)
+
+                            //user is logged in
+                            GlobalResources.Instance.IsLoggedIn = true;
+                            DabChannelsPage _nav = new DabChannelsPage();
+                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                            //Application.Current.MainPage = _nav;
+                            await Navigation.PushAsync(_nav);
+                            MessagingCenter.Send<string>("Setup", "Setup");
+
+                            //Delete nav stack so user cant back into login screen
+                            var existingPages = Navigation.NavigationStack.ToList();
+                            foreach (var page in existingPages)
                             {
-                                await Navigation.PopModalAsync();
-                            }
-                            else
-                            {
-                                if (_fromDonation)
-                                {
-                                    var dons = await AuthenticationAPI.GetDonations();
-                                    if (dons.Length == 1)
-                                    {
-                                        var url = await PlayerFeedAPI.PostDonationAccessToken();
-                                        if (url.StartsWith("http"))
-                                        {
-                                            DependencyService.Get<IRivets>().NavigateTo(url);
-                                        }
-                                        else
-                                        {
-                                            GlobalResources.WaitStop();
-                                            await DisplayAlert("Error", "An unknown error occured while logging in. Please try again.", "OK");
-                                        }
-                                        NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-                                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                        Application.Current.MainPage = _nav;
-                                        //user is logged in
-                                        GlobalResources.Instance.IsLoggedIn = true;
-                                        await Navigation.PopToRootAsync();
-                                    }
-                                    else
-                                    {
-                                        NavigationPage _navs = new NavigationPage(new DabManageDonationsPage(dons, true));
-                                        _navs.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                        Application.Current.MainPage = _navs;
-                                        await Navigation.PopToRootAsync();
-                                    }
-                                }
-                                else
-                                {
-                                    if (Application.Current.Properties.ContainsKey("IsForcefulLogout"))
-                                    {
-                                        isForcefulLogout = Application.Current.Properties["IsForcefulLogout"].ToString();
-                                        if (isForcefulLogout == "true")
-                                        {
-                                            Device.BeginInvokeOnMainThread(() =>
-                                            {
-                                                //user is logged in
-                                                GlobalResources.Instance.IsLoggedIn = true;
-                                                DabChannelsPage _nav = new DabChannelsPage();
-                                                _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                                //Application.Current.MainPage = _nav;
-                                                Navigation.PushAsync(_nav);
-                                                MessagingCenter.Send<string>("Setup", "Setup");
-
-                                                //Delete nav stack so user cant back into login screen
-                                                var existingPages = Navigation.NavigationStack.ToList();
-                                                foreach (var page in existingPages)
-                                                {
-                                                    Navigation.RemovePage(page);
-                                                }
-                                            });
-                                        }
-                                        else
-                                        {
-                                            //user is logged in
-                                            GlobalResources.Instance.IsLoggedIn = true;
-                                            DabChannelsPage _nav = new DabChannelsPage();
-                                            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                            //Application.Current.MainPage = _nav;
-                                            await Navigation.PushAsync(_nav);
-                                            MessagingCenter.Send<string>("Setup", "Setup");
-
-                                            //Delete nav stack so user cant back into login screen
-                                            var existingPages = Navigation.NavigationStack.ToList();
-                                            foreach (var page in existingPages)
-                                            {
-                                                Navigation.RemovePage(page);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //user is logged in
-                                        GlobalResources.Instance.IsLoggedIn = true;
-                                        DabChannelsPage _nav = new DabChannelsPage();
-                                        _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                                        //Application.Current.MainPage = _nav;
-                                        await Navigation.PushAsync(_nav);
-                                        MessagingCenter.Send<string>("Setup", "Setup");
-
-                                        //Delete nav stack so user cant back into login screen
-                                        var existingPages = Navigation.NavigationStack.ToList();
-                                        foreach (var page in existingPages)
-                                        {
-                                            Navigation.RemovePage(page);
-                                        }
-                                    }
-
-                                }
+                                Navigation.RemovePage(page);
                             }
                         }
 
@@ -340,7 +256,7 @@ namespace DABApp
             {
                 DabSyncService.Instance.Connect();
             }
-            
+
         }
 
         void OnForgot(object o, EventArgs e)

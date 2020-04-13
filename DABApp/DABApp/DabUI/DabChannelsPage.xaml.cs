@@ -66,7 +66,6 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-            Application.Current.Properties["IsForcefulLogout"] = "false";
         }
 
         void PostLogs()

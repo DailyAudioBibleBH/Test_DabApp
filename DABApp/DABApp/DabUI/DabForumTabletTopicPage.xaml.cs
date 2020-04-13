@@ -53,12 +53,7 @@ namespace DABApp
 		{ 
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				if (CrossConnectivity.Current.IsConnected)
-				{
-					await Navigation.PushModalAsync(new DabLoginPage(true));
-					loginTop = true;
-				}
-				else await DisplayAlert("Internet connection needed for logging in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
+				GlobalResources.LogoffAndResetApp();
 
 			}
 			else 
@@ -72,12 +67,7 @@ namespace DABApp
 		{ 
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				if (CrossConnectivity.Current.IsConnected)
-				{
-					await Navigation.PushModalAsync(new DabLoginPage(true));
-					loginRep = true;
-				}
-				else await DisplayAlert("Internet connection needed for logging in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
+				GlobalResources.LogoffAndResetApp();
 
 			}
 			else 
