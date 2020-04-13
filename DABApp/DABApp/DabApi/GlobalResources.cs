@@ -490,9 +490,11 @@ namespace DABApp
             //Disconnect
             DabSyncService.Instance.Disconnect(true);
 
-            //Reset main page of app.
-            Application.Current.MainPage  = new NavigationPage(new DabLoginPage());
-
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                //Reset main page of app.
+                Application.Current.MainPage = new NavigationPage(new DabLoginPage());
+            });
         }
 
 
