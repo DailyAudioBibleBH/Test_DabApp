@@ -232,7 +232,10 @@ namespace DABApp.DabSockets
                         if (root.payload.data.episodes != null)
                         {
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
+                            MessagingCenter.Send<string>("Update", "Update");
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                            PlayerFeedAPI.DownloadEpisodes();
+
                         }
                         if (allEpisodes.Count() >= 1)
                         {

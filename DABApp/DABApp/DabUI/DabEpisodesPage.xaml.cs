@@ -47,19 +47,21 @@ namespace DABApp
             Months.SelectedIndex = 0;
             if (resource.availableOffline)
             {
-                Task.Run(async () => {
+                Task.Run(async () =>
+                {
                     await PlayerFeedAPI.DownloadEpisodes();
                     CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
                     circularProgressControl.HandleDownloadVisibleChanged(true);
                 });
             }
             EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) => {
+            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
+            {
                 //Check with Chet about this, believe this should update episode list
                 Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
-            });                      
-        }       
+            });
+        }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
@@ -97,7 +99,8 @@ namespace DABApp
             }
         }
 
-        public void OnMonthSelected(object o, EventArgs e) {
+        public void OnMonthSelected(object o, EventArgs e)
+        {
             TimedActions();
         }
 
@@ -121,7 +124,7 @@ namespace DABApp
             model.IsFavorite = !ep.UserData.IsFavorite;
         }
 
-        
+
 
         async Task Refresh()
         {
@@ -149,14 +152,15 @@ namespace DABApp
 
                 if (_resource.availableOffline)
                 {
-                    Task.Run(async () => {
+                    Task.Run(async () =>
+                    {
                         await PlayerFeedAPI.DownloadEpisodes();
                         CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
                         circularProgressControl.HandleDownloadVisibleChanged(true);
                     });
                 }
             }
-            
+
             GlobalResources.WaitStop();
         }
 
@@ -186,12 +190,16 @@ namespace DABApp
             }
             if (Episodes.Count() > 0)
             {
-                EpisodeList.ItemsSource = _Episodes = Episodes
-                .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
-                .Select(x => new EpisodeViewModel(x)).ToList();
-                Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    EpisodeList.ItemsSource = _Episodes = Episodes
+                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                    .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                    .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
+                    .Select(x => new EpisodeViewModel(x)).ToList();
+                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                }
+                );
             }
         }
     }
