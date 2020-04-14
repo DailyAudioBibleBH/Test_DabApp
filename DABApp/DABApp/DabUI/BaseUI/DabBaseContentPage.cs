@@ -134,7 +134,7 @@ namespace DABApp
                     {
                         if (CrossConnectivity.Current.IsConnected)
                         {
-                            var choice = await DisplayAlert("Login Required", "You must be logged in to access this service. Would you like to log in?", "Yes", "No");
+                            var choice = await DisplayAlert("Login Required", "You must be logged in to use this feature.", "Login", "Cancel");
                             if (choice)
                             {
                                 GlobalResources.LogoffAndResetApp();

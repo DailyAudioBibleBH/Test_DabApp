@@ -470,7 +470,7 @@ namespace DABApp
             var nav = Application.Current.MainPage.Navigation;
             if (GuestStatus.Current.IsGuestLogin)
             {
-                var r = await Application.Current.MainPage.DisplayAlert("Login Required", "You must login to use this function", "Login", "Cancel");
+                var r = await Application.Current.MainPage.DisplayAlert("Login Required", "You must be logged into use this feature.", "Login", "Cancel");
                 if (r == true)
                 {
                     GlobalResources.LogoffAndResetApp();

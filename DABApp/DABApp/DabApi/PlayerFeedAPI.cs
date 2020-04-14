@@ -331,18 +331,18 @@ namespace DABApp
             try
             {
                 //find the epissode user data
-                var userName = GlobalResources.GetUserEmail();
-                if (userName == "Guest")
+                if (GuestStatus.Current.IsGuestLogin)
                 {
-                    bool answer = await Application.Current.MainPage.DisplayAlert("Alert", "You must be logged in to use this feature", "Cancel", "Log in");
+                    bool answer = await Application.Current.MainPage.DisplayAlert("Login Required", "You must be logged in to use this feature. Your settings will be saved locally, but may be lost when your app is updated.", "Log In", "Ignore");
 
-                    if (answer == false)
+                    if (answer == true)
                     {
                         GlobalResources.LogoffAndResetApp();
                     }
                 }
                 else
                 {
+                    var userName = GlobalResources.GetUserEmail();
                     dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
                     if (data == null)
                     {
