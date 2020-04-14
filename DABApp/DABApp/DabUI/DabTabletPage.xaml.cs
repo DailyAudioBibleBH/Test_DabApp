@@ -1099,40 +1099,50 @@ namespace DABApp
 
         async void OnRefresh(object o, EventArgs e)
         {
-            GlobalResources.WaitStart();
-
-            DateTime queryDate = DateTime.MinValue.ToUniversalTime();
-            string minQueryDate = queryDate.ToString("o");
-
-            //send websocket message to get episodes by channel
-            DabGraphQlVariables variables = new DabGraphQlVariables();
-            Debug.WriteLine($"Getting episodes by ChannelId");
-            var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-            var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-            string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-            DabSyncService.Instance.Send(JsonIn);
-
-
-            await AuthenticationAPI.PostActionLogs(false);
-            await AuthenticationAPI.GetMemberData();
-            if (episode == null && Episodes.Count() > 0)
+            DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
+            if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= 240)
             {
-                episode = new EpisodeViewModel(Episodes.First());
-                currentIndex = 0;
-                count = list.Count();
-                previousEpisode = list.ElementAt(currentIndex + 1);
-                nextEpisode = null;
-                nextButton.IsEnabled = false;
+                GlobalResources.WaitStart();
+
+                DateTime queryDate = DateTime.MinValue.ToUniversalTime();
+                string minQueryDate = queryDate.ToString("o");
+
+                //send websocket message to get episodes by channel
+                DabGraphQlVariables variables = new DabGraphQlVariables();
+                Debug.WriteLine($"Getting episodes by ChannelId");
+                var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                DabSyncService.Instance.Send(JsonIn);
+
+
+                await AuthenticationAPI.PostActionLogs(false);
+                await AuthenticationAPI.GetMemberData();
+                if (episode == null && Episodes.Count() > 0)
+                {
+                    episode = new EpisodeViewModel(Episodes.First());
+                    currentIndex = 0;
+                    count = list.Count();
+                    previousEpisode = list.ElementAt(currentIndex + 1);
+                    nextEpisode = null;
+                    nextButton.IsEnabled = false;
+                }
+                else
+                {
+                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                }
+                TimedActions();
+
+                GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                GlobalResources.SetLastRefreshDate(_resource.id);
+
+                GlobalResources.WaitStop();
             }
             else
             {
-                episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                await DisplayAlert("Try Again Later", "You can only pull to refresh once every 240 minutes. Please try again later.", "OK");
             }
-            TimedActions();
 
-            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-
-            GlobalResources.WaitStop();
             EpisodeList.IsRefreshing = false;
         }
 
