@@ -155,7 +155,7 @@ namespace DABApp
                 }
                 else
                 {
-                    return;
+                    return; //don't do anything if they've recently pulled to refresh
                 }
             }
             else
