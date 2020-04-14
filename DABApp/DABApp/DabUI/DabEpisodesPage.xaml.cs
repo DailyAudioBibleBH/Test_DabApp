@@ -143,17 +143,29 @@ namespace DABApp
 
         async Task Refresh(bool ReloadAll)
         {
+            DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
+            
             string minQueryDate;
             if (ReloadAll)
             {
-                minQueryDate = DateTime.MinValue.ToUniversalTime().ToString("o");
-            } else
+                if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= 240)
+                {
+                    minQueryDate = DateTime.MinValue.ToUniversalTime().ToString("o");
+                    GlobalResources.SetLastRefreshDate(_resource.id);
+                }
+                else
+                {
+                    await DisplayAlert("Try Again Later", "You can only pull to refresh once every 240 minutes. Please try again later.", "OK");
+                    return;
+                }
+            }
+            else
             {
                 minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
             }
 
             GlobalResources.WaitStart($"Refreshing episodes...");
-            
+
             //send websocket message to get episodes by channel
             DabGraphQlVariables variables = new DabGraphQlVariables();
             Debug.WriteLine($"Getting episodes by ChannelId");
@@ -181,6 +193,7 @@ namespace DABApp
                     });
                 }
             }
+
 
             GlobalResources.WaitStop();
         }

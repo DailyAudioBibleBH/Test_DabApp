@@ -360,6 +360,37 @@ namespace DABApp
             }
         }
 
+        //Handled LastRefreshDate_{ChannelId} with methods instead of fields so I take in ChannelId
+        public static string GetLastRefreshDate(int ChannelId)
+        {
+            //Last episode query date by channel in GMT
+            dbSettings LastRefreshSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "RefreshDate" + ChannelId);
+            if (LastRefreshSettings == null)
+            {
+                DateTime refreshDate = DateTime.MinValue.ToUniversalTime();
+                LastRefreshSettings = new dbSettings();
+                LastRefreshSettings.Key = "RefreshDate" + ChannelId;
+                LastRefreshSettings.Value = refreshDate.ToString("o");
+                db.InsertOrReplace(LastRefreshSettings);
+                return refreshDate.ToString("o");
+            }
+            else
+            {
+                return LastRefreshSettings.Value;
+            }
+        }
+
+        public static void SetLastRefreshDate(int ChannelId)
+        {
+            dbSettings LastRefreshSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "RefreshDate" + ChannelId);
+
+            //Store the value sent in the database
+            string queryDate = DateTime.UtcNow.ToString("o");
+            LastRefreshSettings.Key = "RefreshDate" + ChannelId;
+            LastRefreshSettings.Value = queryDate;
+            db.InsertOrReplace(LastRefreshSettings);
+        }
+
         public static string UserAvatar
         {
             get
