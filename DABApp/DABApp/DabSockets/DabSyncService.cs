@@ -276,6 +276,7 @@ namespace DABApp.DabSockets
                     {
                         MessagingCenter.Send<string>("Update", "Update");
                         MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
                         PlayerFeedAPI.DownloadEpisodes();
 
                     });

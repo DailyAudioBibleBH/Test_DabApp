@@ -54,13 +54,28 @@ namespace DABApp
                     circularProgressControl.HandleDownloadVisibleChanged(true);
                 });
             }
-            EpisodeList.RefreshCommand = new Command(async () => { await Refresh(); EpisodeList.IsRefreshing = false; });
+            EpisodeList.RefreshCommand = new Command(async () => { await Refresh(true); EpisodeList.IsRefreshing = false; });
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
-                //Check with Chet about this, believe this should update episode list
                 Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
             });
+
+            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) => {
+                Refresh(false);
+                }
+            ); //app activated
+
+            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", (obj) => {
+                Refresh(false);
+            }
+            ); //app activated
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Refresh(false);
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
@@ -95,7 +110,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                Refresh();
+                Refresh(true);
             }
         }
 
@@ -126,13 +141,19 @@ namespace DABApp
 
 
 
-        async Task Refresh()
+        async Task Refresh(bool ReloadAll)
         {
-            GlobalResources.WaitStart("Refreshing...");
+            string minQueryDate;
+            if (ReloadAll)
+            {
+                minQueryDate = DateTime.MinValue.ToUniversalTime().ToString("o");
+            } else
+            {
+                minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
+            }
 
-            DateTime queryDate = DateTime.MinValue.ToUniversalTime();
-            string minQueryDate = queryDate.ToString("o");
-
+            GlobalResources.WaitStart($"Refreshing episodes since {minQueryDate}...");
+            
             //send websocket message to get episodes by channel
             DabGraphQlVariables variables = new DabGraphQlVariables();
             Debug.WriteLine($"Getting episodes by ChannelId");
