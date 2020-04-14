@@ -144,18 +144,17 @@ namespace DABApp
         async Task Refresh(bool ReloadAll)
         {
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
-            
+            int pullToRefreshRate = GlobalResources.PullToRefreshRate;
             string minQueryDate;
             if (ReloadAll)
             {
-                if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= 240)
+                if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
                 {
                     minQueryDate = DateTime.MinValue.ToUniversalTime().ToString("o");
                     GlobalResources.SetLastRefreshDate(_resource.id);
                 }
                 else
                 {
-                    await DisplayAlert("Try Again Later", "You can only pull to refresh once every 240 minutes. Please try again later.", "OK");
                     return;
                 }
             }

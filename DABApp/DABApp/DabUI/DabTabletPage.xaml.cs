@@ -1100,7 +1100,8 @@ namespace DABApp
         async void OnRefresh(object o, EventArgs e)
         {
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
-            if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= 240)
+            int pullToRefreshRate = GlobalResources.PullToRefreshRate;
+            if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
             {
                 GlobalResources.WaitStart();
 
@@ -1137,10 +1138,6 @@ namespace DABApp
                 GlobalResources.SetLastRefreshDate(_resource.id);
 
                 GlobalResources.WaitStop();
-            }
-            else
-            {
-                await DisplayAlert("Try Again Later", "You can only pull to refresh once every 240 minutes. Please try again later.", "OK");
             }
 
             EpisodeList.IsRefreshing = false;
