@@ -11,8 +11,8 @@ using System.Diagnostics;
 
 namespace DABApp
 {
-	public class DabBaseContentPage : MenuContainerPage
-	{
+    public class DabBaseContentPage : MenuContainerPage
+    {
         //public ActivityIndicator activity { get; set;}
         //public StackLayout activityHolder { get; set;}
         bool giving;
@@ -23,36 +23,40 @@ namespace DABApp
         //tablet page - reload list, bind controls
 
         public DabBaseContentPage()
-		{
-			//Default Page properties
-			//this.Padding = new Thickness(10, 10); //Add some padding around all page controls
-			Title = "DAILY AUDIO BIBLE";
-			//Control template (adds the player bar)
-			ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
-			RelativeLayout container = new RelativeLayout();
-			ControlTemplate = playerBarTemplate;
+        {
+            //Default Page properties
+            //this.Padding = new Thickness(10, 10); //Add some padding around all page controls
+            Title = "DAILY AUDIO BIBLE";
+            //Control template (adds the player bar)
+            ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
+            RelativeLayout container = new RelativeLayout();
+            ControlTemplate = playerBarTemplate;
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
-			//Navigation properties
-			Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
+            //Navigation properties
+            Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
 
             //Wait Indicator
             //Subscribe to starting wait ui
-            MessagingCenter.Subscribe<string,string>("dabapp", "Wait_Start",  (sender,message) =>
+            MessagingCenter.Subscribe<string, string>("dabapp", "Wait_Start", (sender, message) =>
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
-                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
                     StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    activity.FadeTo(1, 250);
-                    activityContent.FadeTo(1, 250);
-                    activityLabel.FadeTo(1, 250);
-                    activityHolder.FadeTo(1, 250);
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    //Reset the fade if needed.
+                    if (activityHolder.IsVisible == false)
+                    {
+                        activityHolder.Opacity = 0;
+                        activityContent.Opacity = 0;
+                        activityHolder.FadeTo(.75, 500,Easing.CubicIn);
+                        activityContent.FadeTo(1, 500,Easing.CubicIn);
+                    }
                     activityLabel.Text = message;
                     activity.IsVisible = true;
-                    activityContent.IsVisible=true;
+                    activityContent.IsVisible = true;
                     activityHolder.IsVisible = true;
                 });
             });
@@ -62,11 +66,8 @@ namespace DABApp
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                     StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
-                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
                     StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    activity.IsVisible = false;
                     activityHolder.IsVisible = false;
                     activityContent.IsVisible = false;
                 });
@@ -114,7 +115,7 @@ namespace DABApp
             {
                 MessagingCenter.Send("Setup", "Setup");
             }
-		}
+        }
 
         async void OnGive(object sender, EventArgs e)
         {
@@ -193,7 +194,7 @@ namespace DABApp
         public static void UpdatePlayerEpisodeData()
         {
             MessagingCenter.Send<string>("Refresh", "Refresh");
-            
+
         }
 
         public void Unsubscribe()
@@ -210,7 +211,7 @@ namespace DABApp
         }
 
         protected override void OnAppearing()
-        { 
+        {
             base.OnAppearing();
             if (Device.RuntimePlatform == "Android")
             {
@@ -222,7 +223,7 @@ namespace DABApp
                     }
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });           
+                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
             }
         }
 
