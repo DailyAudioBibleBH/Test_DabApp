@@ -152,7 +152,7 @@ namespace DABApp
                 minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
             }
 
-            GlobalResources.WaitStart($"Refreshing episodes since {minQueryDate}...");
+            GlobalResources.WaitStart($"Refreshing episodes...");
             
             //send websocket message to get episodes by channel
             DabGraphQlVariables variables = new DabGraphQlVariables();
