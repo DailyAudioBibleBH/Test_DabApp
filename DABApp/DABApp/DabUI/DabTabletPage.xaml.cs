@@ -35,8 +35,8 @@ namespace DABApp
         int previousEpIndex;
         int nextEpIndex;
         int count;
-        
-        
+
+
 
 
         //Open up the page and optionally init it with an episode
@@ -100,13 +100,13 @@ namespace DABApp
                     episode = new EpisodeViewModel(Episodes.First());
                 }
             }
-            
+
             //Bind to the active episode
             Favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
             Completed.BindingContext = episode;
             BindControls(true, true);
-            
+
 
             //Reading area
             ReadText.EraseText = true;
@@ -132,7 +132,7 @@ namespace DABApp
                     journal.JoinRoom(episode.Episode.PubDate);
                 }
             }
-            
+
             //Keyboard events on iOS for Journal
             if (Device.RuntimePlatform == "iOS")
             {
@@ -225,7 +225,7 @@ namespace DABApp
                         Journal.IsVisible = true;
                         LoginJournal.IsVisible = false;
                     }
-                    if (episode == null && Episodes.Count() > 0) 
+                    if (episode == null && Episodes.Count() > 0)
                     {
                         episode = new EpisodeViewModel(Episodes.First());
                     }
@@ -252,7 +252,7 @@ namespace DABApp
             previousEpIndex = currentIndex + 1;
             nextEpIndex = currentIndex - 1;
             count = list.Count();
-            
+
             if (previousEpIndex < count)
             {
                 previousEpisode = list.ElementAt(previousEpIndex);
@@ -393,7 +393,7 @@ namespace DABApp
                 {
                     nextEpisode = null;
                     nextButton.IsEnabled = false;
-                }              
+                }
 
                 // Make sure we have a file to play
                 if (newEp.Episode.File_name_local != null || CrossConnectivity.Current.IsConnected)
@@ -440,7 +440,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 GlobalResources.WaitStop();
-            }            
+            }
         }
 
         //Go to next episode
@@ -531,7 +531,7 @@ namespace DABApp
             {
                 GlobalResources.WaitStop();
             }
-            
+
         }
         //Go back 30 seconds
         void OnBack30(object o, EventArgs e)
@@ -567,7 +567,7 @@ namespace DABApp
                 else //Play if paused
                 {
                     player.Play();
-                    
+
                 }
             }
             else
@@ -869,7 +869,7 @@ namespace DABApp
                     await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, null);
                 }
             }
-            
+
         }
 
         //TODO: Replace for journal?
@@ -882,7 +882,7 @@ namespace DABApp
         //TODO: Replace for journal?
         async void OnReconnect(object o, EventArgs e)
         {
-            
+
             journal.Reconnect();
             if (episode != null)
             {
@@ -899,7 +899,7 @@ namespace DABApp
             }
         }
 
-        
+
         //Journal was edited
         void OnEdit(object o, EventArgs e)
         {
@@ -966,7 +966,7 @@ namespace DABApp
             previousButton.IsVisible = true;
         }
 
-        
+
 
         async void OnListened(object o, EventArgs e)
         {
@@ -976,7 +976,7 @@ namespace DABApp
             await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
         }
 
-        
+
 
         async void OnFavorite(object o, EventArgs e)
         {
@@ -993,7 +993,7 @@ namespace DABApp
             var ep = model.Episode;
             //start new
 
-            model.IsFavorite= !ep.UserData.IsFavorite;
+            model.IsFavorite = !ep.UserData.IsFavorite;
 
             if (episode == null && Episodes.Count() > 0)
             {
@@ -1001,7 +1001,7 @@ namespace DABApp
             }
             if (episode != null)
             {
-                
+
                 if (ep.id == episode.Episode.id)
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
@@ -1160,16 +1160,19 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
-            EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
-                .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
-                .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
-                .Select(x => new EpisodeViewModel(x)));
-
-            if (episode != null)
+            Device.BeginInvokeOnMainThread(() =>
             {
-                Favorite.Source = episode.favoriteSource;
-            }
+                EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
+                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                    .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                    .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
+                    .Select(x => new EpisodeViewModel(x)));
+
+                if (episode != null)
+                {
+                    Favorite.Source = episode.favoriteSource;
+                }
+            });
         }
     }
 }
