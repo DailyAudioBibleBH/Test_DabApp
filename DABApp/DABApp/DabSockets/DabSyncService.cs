@@ -112,15 +112,33 @@ namespace DABApp.DabSockets
                         }
                         return;
                     }
+                    else //other errors 
+                    {
+                        //log error to firebase
+                        var errorInfo = new Dictionary<string, string>();
+                        errorInfo.Add("user", GlobalResources.GetUserEmail());
+                        errorInfo.Add("idiom", Device.Idiom.ToString());
+                        errorInfo.Add("error", $"Payload.Message: {root.payload.message}");
+                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
+                    }
                 }
 
                 //logging errors, but not doing anything else with them right now.
-                if (GuestStatus.Current.IsGuestLogin == false && root.payload?.errors != null)
+                if (root.payload?.errors != null)
                 {
+                    //turn off any lingering wait indicators to allow them to continue trying.
+                    GlobalResources.WaitStop(); //Stop the wait indicator... something went wrong, hopefully they can work around it or try again.
+
                     foreach (var er in root.payload.errors)
                     {
-                        Debug.WriteLine(er.message);
+                        //log error to firebase
+                        var errorInfo = new Dictionary<string, string>();
+                        errorInfo.Add("user", GlobalResources.GetUserEmail());
+                        errorInfo.Add("idiom", Device.Idiom.ToString());
+                        errorInfo.Add("error", $"Payload.Error: {er.message}");
+                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
                     }
+
                 }
 
                 //Action we need to address
