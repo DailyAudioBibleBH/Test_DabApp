@@ -78,7 +78,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.1.50</string>
 	<key>CFBundleVersion</key>
-	<string>20200416</string>
+	<string>20200417</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We use bluetooth devices to play audio on them.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
