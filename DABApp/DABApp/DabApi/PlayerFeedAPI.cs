@@ -263,7 +263,10 @@ namespace DABApp
                 {
                     await DownloadEpisodes();
                 }
-                
+
+                //Cleanup episodes
+                PlayerFeedAPI.CleanUpEpisodes();
+
                 return true;
             }
             else
@@ -433,7 +436,7 @@ namespace DABApp
                 if (OfflineEpisodeSettings.Instance.DeleteAfterListening)
                 {
                     var eps = from x in db.Table<dbEpisodes>()
-                              where x.is_downloaded  //downloaded episodes
+                              where (x.is_downloaded || x.progressVisible)  //downloaded episodes
                               select x;
                     //simplified query and added foreach iteration since query was giving null object reference on x.userdata.islistenedto
                     foreach (var item in eps)
@@ -445,7 +448,7 @@ namespace DABApp
                 else
                 {
                     var eps = from x in db.Table<dbEpisodes>()
-                              where x.is_downloaded && x.PubDate < cutoffTime
+                              where (x.is_downloaded || x.progressVisible) && x.PubDate < cutoffTime
                               select x;
                     episodesToDelete = eps.ToList();
                 }
@@ -462,10 +465,7 @@ namespace DABApp
                             episode.is_downloaded = false;
                             episode.progressVisible = false;
                             db.Update(episode);
-                            if (Device.Idiom == TargetIdiom.Tablet)
-                            {
                                 Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-                            }
                         }
 
                     }
