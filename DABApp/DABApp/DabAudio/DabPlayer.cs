@@ -136,7 +136,6 @@ namespace DABApp.DabAudio
         ISimpleAudioPlayer Implementation 
         ********************************/
 
-
         public double Duration
         {
             get
@@ -160,6 +159,10 @@ namespace DABApp.DabAudio
             get
             {
                 return nativePlayer.CurrentPosition;
+            }
+            set
+            {
+                //do nothing - player position can't be set directly.
             }
                 //set
                 //{
