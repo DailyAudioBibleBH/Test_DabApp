@@ -30,6 +30,8 @@ namespace DABApp.iOS
 
         public void LogEvent(string eventId, IDictionary<string, string> parameters)
         {
+            try
+            {
 
             Debug.WriteLine($"Logging Event: {eventId}...");
 
@@ -51,6 +53,13 @@ namespace DABApp.iOS
             var parametersDictionary =
                 NSDictionary<NSString, NSObject>.FromObjectsAndKeys(values.ToArray(), keys.ToArray(), keys.Count);
             Analytics.LogEvent(eventId, parametersDictionary);
+
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error logging event to firebase.");
+            }
 
         }
     }

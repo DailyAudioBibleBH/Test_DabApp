@@ -33,6 +33,11 @@ namespace DABApp.Droid
 
         public void LogEvent(string eventId, IDictionary<string, string> parameters)
         {
+            try
+            {
+
+            
+
             var fireBaseAnalytics = FirebaseAnalytics.GetInstance(Forms.Context);
 
             if (parameters == null)
@@ -50,6 +55,11 @@ namespace DABApp.Droid
             }
 
             fireBaseAnalytics.LogEvent(eventId, bundle);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error logging event to firebase");
+            }
         }
     }
 }

@@ -105,6 +105,13 @@ namespace DABApp.DabSockets
                         dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
                         if (s != null)
                         {
+                            //log to firebase
+                            var fbInfo = new Dictionary<string, string>();
+                            fbInfo.Add("user", GlobalResources.GetUserEmail());
+                            fbInfo.Add("idiom", Device.Idiom.ToString());
+                            DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaToken", fbInfo);
+
+
                             //User's token is no longer good. Better log them off.
                             db.Delete(s);
                             GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
@@ -301,6 +308,12 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.tokenRemoved?.token != null)
                 {
+                    //log to firebase
+                    var fbInfo = new Dictionary<string, string>();
+                    fbInfo.Add("user", GlobalResources.GetUserEmail());
+                    fbInfo.Add("idiom", Device.Idiom.ToString());
+                    DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
+
 
                     GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
                     ////Expire the token (should log the user out?)
@@ -436,6 +449,14 @@ namespace DABApp.DabSockets
                     DabGraphQlProgress progress = new DabGraphQlProgress(root.payload.data.progressUpdated.progress);
                     if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
                     {
+                        //log to firebase
+                        var fbInfo = new Dictionary<string, string>();
+                        fbInfo.Add("user", GlobalResources.GetUserEmail());
+                        fbInfo.Add("idiom", Device.Idiom.ToString());
+                        fbInfo.Add("badgeId", progress.badgeId.ToString());
+                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
+
+
                         await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
                         progress.seen = true;
                     }
@@ -470,6 +491,14 @@ namespace DABApp.DabSockets
             }
             catch (Exception ex)
             {
+                //log error to firebase
+                var errorInfo = new Dictionary<string, string>();
+                errorInfo.Add("user", GlobalResources.GetUserEmail());
+                errorInfo.Add("idiom", Device.Idiom.ToString());
+                errorInfo.Add("error", $"Exception-Caught: {ex.Message}");
+                DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
+
+
                 System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
             }
         }
