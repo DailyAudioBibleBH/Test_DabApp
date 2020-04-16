@@ -273,10 +273,21 @@ namespace DABApp
             GuestLogin.IsEnabled = false;
             GlobalResources.WaitStart();
             GuestStatus.Current.IsGuestLogin = true;
-            dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-            if (EmailSettings == null) EmailSettings = new dbSettings() { Key = "Email" };
-            EmailSettings.Value = "Guest";
-            db.InsertOrReplace(EmailSettings);
+
+            dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            if (s == null) s = new dbSettings() { Key = "Email" };
+            s.Value = "Guest";
+            db.InsertOrReplace(s);
+
+            //Token
+            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            if (s != null) db.Delete(s);
+
+            //TokenCreation
+            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+            if (s != null) db.Delete(s);
+
+
             await AuthenticationAPI.ValidateLogin("Guest", "", true);
             if (_fromPlayer)
             {
