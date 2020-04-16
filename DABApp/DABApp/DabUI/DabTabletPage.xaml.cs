@@ -1081,7 +1081,7 @@ namespace DABApp
             {
                 GlobalResources.WaitStart();
 
-                DateTime queryDate = DateTime.MinValue.ToUniversalTime();
+                DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
                 string minQueryDate = queryDate.ToString("o");
 
                 //send websocket message to get episodes by channel

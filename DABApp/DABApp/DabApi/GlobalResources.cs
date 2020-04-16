@@ -43,6 +43,13 @@ namespace DABApp
             }
         }
 
+        public static DateTime DabMinDate //The min date we use throughout the DAB app
+        { get
+            {
+                return new DateTime(2020, 1, 1);
+            }
+        }
+
         public static string APIVersion { get; set; } = "2";
 
         public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
@@ -134,8 +141,18 @@ namespace DABApp
         public bool IsiPhoneX { get; set; } = false;
 
         //Instance to find if user is logged in or not
-        public bool IsLoggedIn { get; set; } = false;
+        public bool IsLoggedIn
+        {
+            get
+            {
+                return !GuestStatus.Current.IsGuestLogin;
+            }
 
+            set
+            {
+                GuestStatus.Current.IsGuestLogin = !value;
+            }
+        }
         public static GlobalResources Instance { get; private set; }
 
         public bool OnRecord { get; set; }
@@ -269,7 +286,7 @@ namespace DABApp
             dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
             if (LastEpisodeQuerySettings == null)
             {
-                DateTime queryDate = DateTime.MinValue.ToUniversalTime();
+                DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
                 LastEpisodeQuerySettings = new dbSettings();
                 LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
                 LastEpisodeQuerySettings.Value = queryDate.ToString("o");
@@ -303,7 +320,7 @@ namespace DABApp
 
                 if (BadgeUpdateSettings == null)
                 {
-                    DateTime badgeDate = DateTime.MinValue.ToUniversalTime();
+                    DateTime badgeDate = GlobalResources.DabMinDate.ToUniversalTime();
                     BadgeUpdateSettings = new dbSettings();
                     BadgeUpdateSettings.Key = settingsKey;
                     BadgeUpdateSettings.Value = badgeDate.ToString();
@@ -337,7 +354,7 @@ namespace DABApp
 
                 if (BadgeProgressSettings == null)
                 {
-                    DateTime progressDate = DateTime.MinValue.ToUniversalTime();
+                    DateTime progressDate = GlobalResources.DabMinDate.ToUniversalTime();
                     BadgeProgressSettings = new dbSettings();
                     BadgeProgressSettings.Key = settingsKey;
                     BadgeProgressSettings.Value = progressDate.ToString();
@@ -372,7 +389,7 @@ namespace DABApp
 
                 if (LastActionsSettings == null)
                 {
-                    DateTime actionDate = DateTime.MinValue.ToUniversalTime();
+                    DateTime actionDate = GlobalResources.DabMinDate.ToUniversalTime();
                     LastActionsSettings = new dbSettings();
                     LastActionsSettings.Key = settingsKey;
                     LastActionsSettings.Value = actionDate.ToString();
@@ -404,7 +421,7 @@ namespace DABApp
             dbSettings LastRefreshSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "RefreshDate" + ChannelId);
             if (LastRefreshSettings == null)
             {
-                DateTime refreshDate = DateTime.MinValue.ToUniversalTime();
+                DateTime refreshDate = GlobalResources.DabMinDate.ToUniversalTime();
                 LastRefreshSettings = new dbSettings();
                 LastRefreshSettings.Key = "RefreshDate" + ChannelId;
                 LastRefreshSettings.Value = refreshDate.ToString("o");

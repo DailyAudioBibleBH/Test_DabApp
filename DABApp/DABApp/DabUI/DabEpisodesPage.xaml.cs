@@ -150,7 +150,7 @@ namespace DABApp
             {
                 if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
                 {
-                    minQueryDate = DateTime.MinValue.ToUniversalTime().ToString("o");
+                    minQueryDate = GlobalResources.DabMinDate.ToUniversalTime().ToString("o");
                     GlobalResources.SetLastRefreshDate(_resource.id);
                 }
                 else
