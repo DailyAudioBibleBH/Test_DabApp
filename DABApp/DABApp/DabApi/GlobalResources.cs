@@ -585,7 +585,11 @@ namespace DABApp
             {
                 db.Delete(s);
             }
-
+            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            if (s != null)
+            {
+                db.Delete(s);
+            }
 
 
             //Disconnect
