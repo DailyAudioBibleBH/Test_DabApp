@@ -33,6 +33,9 @@ namespace DABApp
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                //Start off as a guest
+                GuestStatus.Current.IsGuestLogin = true;
+
                 //Connect to SyncSocket
                 DabSyncService.Instance.Init();
                 DabSyncService.Instance.Connect();
