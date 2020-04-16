@@ -222,7 +222,7 @@ namespace DABApp
                 try
                 {
                     Login.IsEnabled = false;
-                    GlobalResources.WaitStart();
+                    GlobalResources.WaitStart("Checking your credentials...");
                     var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
                     if (result == "Request Sent")
                     {
@@ -273,7 +273,7 @@ namespace DABApp
         async void OnGuestLogin(object o, EventArgs e)
         {
             GuestLogin.IsEnabled = false;
-            GlobalResources.WaitStart();
+            GlobalResources.WaitStart("Logging you in as a guest...");
             GuestStatus.Current.IsGuestLogin = true;
 
             dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");

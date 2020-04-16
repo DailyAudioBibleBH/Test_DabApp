@@ -246,7 +246,7 @@ namespace DABApp
         //Handle the selection of a different episode
         {
             //Load the episode
-            GlobalResources.WaitStart();
+            GlobalResources.WaitStart("Loading episode...");
             var newEp = (EpisodeViewModel)e.Item;
             currentIndex = list.IndexOf(newEp);
             previousEpIndex = currentIndex + 1;
@@ -326,7 +326,7 @@ namespace DABApp
         /* User selected a different channel */
         {
             //Wait indicator 
-            GlobalResources.WaitStart();
+            GlobalResources.WaitStart("Loading channel...");
 
             List<string> emptyList = new List<string>();
 
@@ -1082,7 +1082,8 @@ namespace DABApp
             int pullToRefreshRate = GlobalResources.PullToRefreshRate;
             if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
             {
-                GlobalResources.WaitStart();
+                GlobalResources.WaitStart("Refreshing episodes...");
+                
 
                 DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
                 string minQueryDate = queryDate.ToString("o");

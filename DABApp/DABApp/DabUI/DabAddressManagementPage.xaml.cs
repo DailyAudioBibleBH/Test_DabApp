@@ -17,7 +17,7 @@ namespace DABApp
 
 		async void OnBilling(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			GlobalResources.WaitStart("Getting Billing Address...");
 			var result = await AuthenticationAPI.GetAddresses();
 			var countries = await AuthenticationAPI.GetCountries();
 			if (result != null)
@@ -30,7 +30,7 @@ namespace DABApp
 
 		async void OnShipping(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			GlobalResources.WaitStart("Getting Shipping Address...");
 			var result = await AuthenticationAPI.GetAddresses();
 			var countries = await AuthenticationAPI.GetCountries();
 			if (result != null)

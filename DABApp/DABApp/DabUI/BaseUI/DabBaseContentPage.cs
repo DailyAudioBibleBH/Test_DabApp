@@ -128,7 +128,7 @@ namespace DABApp
 
                 if (!giving)
                 {
-                    GlobalResources.WaitStart();
+                    GlobalResources.WaitStart("Connecting to the DAB Server...");
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
