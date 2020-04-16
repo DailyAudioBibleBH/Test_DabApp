@@ -125,6 +125,9 @@ namespace DABApp.Droid
                                                         case "Avatar":
                                                             GlobalResources.SettingsToPreserve.Add(s);
                                                             break;
+                                                        case "WpId":
+                                                            GlobalResources.SettingsToPreserve.Add(s);
+                                                            break;
                                                         case "ActionDate": //IGNORE THIS ONE!
                                                             break; //IGNORE THIS!
                                                         default:

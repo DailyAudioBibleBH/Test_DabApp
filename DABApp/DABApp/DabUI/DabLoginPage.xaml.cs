@@ -126,18 +126,22 @@ namespace DABApp
                             dbSettings sFirstName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
                             dbSettings sLastName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
                             dbSettings sAvatar = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                            dbSettings sWpId = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "WpId");
                             if (sEmail == null) sEmail = new dbSettings() { Key = "Email" };
                             if (sFirstName == null) sFirstName = new dbSettings() { Key = "FirstName" };
                             if (sLastName == null) sLastName = new dbSettings() { Key = "LastName" };
                             if (sAvatar == null) sAvatar = new dbSettings() { Key = "Avatar" };
+                            if (sWpId == null) sWpId = new dbSettings() { Key = "WpId" };
                             sEmail.Value = root.payload.data.user.email;
                             sFirstName.Value = root.payload.data.user.firstName;
                             sLastName.Value = root.payload.data.user.lastName;
                             sAvatar.Value = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
+                            sWpId.Value = root.payload.data.user.wpId.ToString();
                             db.InsertOrReplace(sEmail);
                             db.InsertOrReplace(sFirstName);
                             db.InsertOrReplace(sLastName);
                             db.InsertOrReplace(sAvatar);
+                            db.InsertOrReplace(sWpId);
 
                             GraphQlLoginRequestInProgress = false;
 

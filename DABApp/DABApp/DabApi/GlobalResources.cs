@@ -204,6 +204,35 @@ namespace DABApp
             }
         }
 
+        public static string GetUserWpId()
+        {
+            try
+            {
+
+                if (!GuestStatus.Current.IsGuestLogin)
+                {
+                    //Returns WpId for non-guest users
+                    dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "WpId");
+                    if (s == null)
+                    {
+                        return "-1"; //unknown (haven't stored it yet)
+                    }
+                    else
+                    {
+                        return s.Value;
+                    }
+                }
+                else
+                {
+                    return "0"; //guest
+                }
+            }
+            catch (Exception ex)
+            {
+                return "-1"; //error
+            }
+
+        }
 
         public static string GetUserEmail()
         {
@@ -501,7 +530,7 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
         };
 
-    
+
 
         public static async void GoToRecordingPage()
         {
@@ -514,7 +543,8 @@ namespace DABApp
                 {
                     GlobalResources.LogoffAndResetApp();
                 }
-            } else
+            }
+            else
             {
                 //logged in user
                 await nav.PushModalAsync(new DabRecordingPage());

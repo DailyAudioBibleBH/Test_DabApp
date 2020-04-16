@@ -83,7 +83,7 @@ namespace DABApp
             {
                 string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Hardware.OperatingSystem}" +
                     $"&screenWidth={DeviceInfo.Hardware.ScreenWidth}&screenHeight={DeviceInfo.Hardware.ScreenHeight}&manufacturer={DeviceInfo.Hardware.Manufacturer}&model={DeviceInfo.Hardware.Model}" +
-                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={GlobalResources.GetUserEmail()}";
+                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={GlobalResources.GetUserEmail()}&userWpId={GlobalResources.GetUserWpId()}";
                 Device.OpenUri(new Uri(url));
             }
             else
