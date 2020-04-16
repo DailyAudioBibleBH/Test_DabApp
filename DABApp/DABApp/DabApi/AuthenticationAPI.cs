@@ -182,42 +182,42 @@ namespace DABApp
             }
         }
 
-        public static async Task<bool> LogOut()//Logs the user out.
-        {
-            try
-            {
-                //Clear DB Settings
-                dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings sExpire = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                if (sToken == null) sToken = new dbSettings() { Key = "Token" };
-                if (sExpire == null) sExpire = new dbSettings() { Key = "TokenCreation" };
-                sToken.Value = null;
-                sExpire.Value = DateTime.MinValue.ToString();
-                await adb.InsertOrReplaceAsync(sToken);
-                await adb.InsertOrReplaceAsync(sExpire);
+        //public static async Task<bool> LogOut()//Logs the user out.
+        //{
+        //    try
+        //    {
+        //        //Clear DB Settings
+        //        dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+        //        dbSettings sExpire = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+        //        if (sToken == null) sToken = new dbSettings() { Key = "Token" };
+        //        if (sExpire == null) sExpire = new dbSettings() { Key = "TokenCreation" };
+        //        sToken.Value = null;
+        //        sExpire.Value = GlobalResources.DabMinDate.ToString();
+        //        await adb.InsertOrReplaceAsync(sToken);
+        //        await adb.InsertOrReplaceAsync(sExpire);
 
-                //Disconnect from service and reconnect without authentication
-                DabSyncService.Instance.Disconnect(true);
-                Task.Factory.StartNew(() =>
-                {
-                    System.Threading.Thread.Sleep(1000);
-                    DabSyncService.Instance.Connect();
-                });
-                //user is not logged in
-                GlobalResources.Instance.IsLoggedIn = false;
-                return true;
-            }
-            catch (Exception e)
-            {
-                dbSettings sToken = db.Table<dbSettings>().Single(x => x.Key == "Token");
-                dbSettings sExpire = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
-                sToken.Value = null;
-                sExpire.Value = DateTime.MinValue.ToString();
-                await adb.UpdateAsync(sToken);
-                await adb.UpdateAsync(sExpire);
-                return false;
-            }
-        }
+        //        //Disconnect from service and reconnect without authentication
+        //        DabSyncService.Instance.Disconnect(true);
+        //        Task.Factory.StartNew(() =>
+        //        {
+        //            System.Threading.Thread.Sleep(1000);
+        //            DabSyncService.Instance.Connect();
+        //        });
+        //        //user is not logged in
+        //        GlobalResources.Instance.IsLoggedIn = false;
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        dbSettings sToken = db.Table<dbSettings>().Single(x => x.Key == "Token");
+        //        dbSettings sExpire = db.Table<dbSettings>().Single(x => x.Key == "TokenCreation");
+        //        sToken.Value = null;
+        //        sExpire.Value = GlobalResources.DabMinDate.ToString();
+        //        await adb.UpdateAsync(sToken);
+        //        await adb.UpdateAsync(sExpire);
+        //        return false;
+        //    }
+        //}
 
         public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
         {
