@@ -635,31 +635,7 @@ namespace DABApp
         //User login
         void OnLogin(object o, EventArgs e)
         {
-            Login.IsEnabled = false;
-            player.Pause(); if ((string)Months.SelectedItem == "My Favorites")
-            {
-                EpisodeList.ItemsSource = Episodes.Where(x => x.UserData.IsFavorite == true);
-            }
-            else
-            {
-                if ((string)Months.SelectedItem == "My Journals")
-                {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.UserData.HasJournal == true);
-                }
-                else
-                {
-                    EpisodeList.ItemsSource = Episodes.Where(x => x.PubMonth == Months.Items[Months.SelectedIndex]);
-                }
-            }
-            player.Stop();
-            if (CrossConnectivity.Current.IsConnected)
-            {
-                var nav = new NavigationPage(new DabLoginPage(true));
-                nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                Navigation.PushModalAsync(nav);
-            }
-            else DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
-            Login.IsEnabled = true;
+            GlobalResources.LogoffAndResetApp();
         }
 
         //Set the reading
