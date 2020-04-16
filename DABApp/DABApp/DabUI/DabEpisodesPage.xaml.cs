@@ -54,19 +54,26 @@ namespace DABApp
                     circularProgressControl.HandleDownloadVisibleChanged(true);
                 });
             }
-            EpisodeList.RefreshCommand = new Command(async () => { await Refresh(true); EpisodeList.IsRefreshing = false; });
+            EpisodeList.RefreshCommand = new Command(async () =>
+            {
+                await Refresh(true);
+                EpisodeList.IsRefreshing = false;
+            });
+
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
                 Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
             });
 
-            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) => {
+            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
+            {
                 Refresh(false);
-                }
+            }
             ); //app activated
 
-            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", (obj) => {
+            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", (obj) =>
+            {
                 Refresh(false);
             }
             ); //app activated
