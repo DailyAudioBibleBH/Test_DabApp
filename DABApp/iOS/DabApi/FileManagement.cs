@@ -62,18 +62,25 @@ namespace DABApp.iOS
         public bool DeleteEpisode(string episodeId, string extension)
         {
             try
-            { 
-                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
-                if (File.Exists(fileName))
-                { 
-                Debug.WriteLine($"Deleted episode {episodeId}");
-                File.Delete(fileName);
+            {
+                if (episodeId != GlobalResources.CurrentEpisodeId.ToString())
+                {
+                    var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
+                    if (File.Exists(fileName))
+                    {
+                        Debug.WriteLine($"Deleted episode {episodeId}");
+                        File.Delete(fileName);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Ignored deletion of episode {episodeId}");
+                    }
+                    return true;
                 } else
                 {
-                    Debug.WriteLine($"Ignored deletion of episode {episodeId}");
+                    return false; //don't delete playing episode.
                 }
-                return true;
             }
             catch (Exception e)
             {

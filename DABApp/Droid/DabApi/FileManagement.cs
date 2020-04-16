@@ -22,7 +22,7 @@ namespace DABApp.Droid
         WebClient client;
         public bool keepDownloading { get; set; } = true;
         long FileSize;
-        CircularProgressControl circularProgressControl = new CircularProgressControl(); 
+        CircularProgressControl circularProgressControl = new CircularProgressControl();
 
         public FileManagement()
         {
@@ -32,18 +32,25 @@ namespace DABApp.Droid
         {
             try
             {
-                var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
-                if (File.Exists(fileName))
+                if (episodeId != GlobalResources.CurrentEpisodeId.ToString())
                 {
-                    Debug.WriteLine($"Deleted episode {episodeId}");
-                    File.Delete(fileName);
+                    var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var fileName = Path.Combine(doc, $"{episodeId}.{extension}");
+                    if (File.Exists(fileName))
+                    {
+                        Debug.WriteLine($"Deleted episode {episodeId}");
+                        File.Delete(fileName);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Ignored deletion of episode {episodeId}");
+                    }
+                    return true;
                 }
                 else
                 {
-                    Debug.WriteLine($"Ignored deletion of episode {episodeId}");
+                    return false; //don't delete playing episode
                 }
-                return true;
 
             }
             catch (Exception e)
