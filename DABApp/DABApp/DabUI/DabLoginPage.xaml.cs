@@ -274,6 +274,7 @@ namespace DABApp
             GlobalResources.WaitStart();
             GuestStatus.Current.IsGuestLogin = true;
             dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            if (EmailSettings == null) EmailSettings = new dbSettings() { Key = "Email" };
             EmailSettings.Value = "Guest";
             db.InsertOrReplace(EmailSettings);
             await AuthenticationAPI.ValidateLogin("Guest", "", true);
