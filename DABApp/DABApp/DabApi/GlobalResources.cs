@@ -302,10 +302,9 @@ namespace DABApp
         public static void SetLastEpisodeQueryDate(int ChannelId)
         {
             dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
-
+            if (LastEpisodeQuerySettings == null) LastEpisodeQuerySettings = new dbSettings() { Key = "EpisodeQueryDate" + ChannelId };
             //Store the value sent in the database
             string queryDate = DateTime.UtcNow.ToString("o");
-            LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
             LastEpisodeQuerySettings.Value = queryDate;
             db.InsertOrReplace(LastEpisodeQuerySettings);
         }
@@ -408,7 +407,7 @@ namespace DABApp
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
                 dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
-                LastActionsSettings.Key = settingsKey;
+                if (LastActionsSettings == null) LastActionsSettings = new dbSettings() { Key = settingsKey };
                 LastActionsSettings.Value = actionDate;
                 db.InsertOrReplace(LastActionsSettings);
             }

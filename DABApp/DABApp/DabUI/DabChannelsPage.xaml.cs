@@ -115,14 +115,15 @@ namespace DABApp
                     DabSyncService.Instance.Connect();
                 }
 
-                //send websocket message to get episodes by channel
-                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
-                DabGraphQlVariables variables = new DabGraphQlVariables();
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //Removed this because the player page will request it on it's on in OnAppearing
+                ////send websocket message to get episodes by channel
+                //string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
+                //DabGraphQlVariables variables = new DabGraphQlVariables();
+                //Debug.WriteLine($"Getting episodes by ChannelId");
+                //var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                //var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                //string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                //DabSyncService.Instance.Send(JsonIn);
 
                 //Navigate to the appropriate player page 
                 if (Device.Idiom == TargetIdiom.Tablet)

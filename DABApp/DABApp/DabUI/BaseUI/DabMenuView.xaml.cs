@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DABApp.DabAudio;
 using FFImageLoading;
 using SlideOverKit;
+using Version.Plugin;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -42,6 +43,8 @@ namespace DABApp
             OnAvatarChanged(this, new EventArgs());
 			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
 			GuestStatus.Current.UserName = GlobalResources.GetUserName();
+
+            lblVersion.Text = $"v {CrossVersion.Current.Version}";
 		}
 
 		void OnSignUp(object o, EventArgs e) {

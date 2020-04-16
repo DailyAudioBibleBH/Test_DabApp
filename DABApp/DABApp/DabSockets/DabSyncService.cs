@@ -500,6 +500,7 @@ namespace DABApp.DabSockets
 
 
                 System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
+                GlobalResources.WaitStop();
             }
         }
 

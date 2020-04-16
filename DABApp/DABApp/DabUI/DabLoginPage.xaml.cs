@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Version.Plugin;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -63,6 +64,7 @@ namespace DABApp
             }
 
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
+            lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)

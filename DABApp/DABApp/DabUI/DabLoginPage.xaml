@@ -19,7 +19,7 @@
 			<Frame OutlineColor="{DynamicResource OutlineColor}" VerticalOptions="End" HeightRequest="40" Margin="20, 30, 20, 30">
 				<local:HtmlLabel x:Name="SignUp" VerticalOptions="Center" Padding="0, 10, 0, 0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
 			</Frame>
-			<!--<Button Text="Don't have an account? Sign up!" VerticalOptions="End" Clicked="OnSignUp" BorderWidth="2" BorderColor="#333333"/>-->
+            <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/> 
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

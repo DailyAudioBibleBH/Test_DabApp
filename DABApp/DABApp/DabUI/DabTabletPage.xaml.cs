@@ -598,6 +598,9 @@ namespace DABApp
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            OnRefresh(null, null); //load episodes
+
             BindControls(true, true); //rebind controls when clicking on miniplayer
             if (Device.RuntimePlatform == "iOS")
             {
@@ -1097,6 +1100,7 @@ namespace DABApp
                 await AuthenticationAPI.GetMemberData();
                 if (episode == null && Episodes.Count() > 0)
                 {
+                    //pick the first episode
                     episode = new EpisodeViewModel(Episodes.First());
                     currentIndex = 0;
                     count = list.Count();
@@ -1104,9 +1108,14 @@ namespace DABApp
                     nextEpisode = null;
                     nextButton.IsEnabled = false;
                 }
+                else if (episode != null)
+                {
+                    //use a specific episode
+                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                }
                 else
                 {
-                    episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+                    //no episode available yet.
                 }
                 TimedActions();
 

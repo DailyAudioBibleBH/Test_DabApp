@@ -5,37 +5,30 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 		         x:Class="DABApp.DabMenuView"
                  xmlns:local="clr-namespace:DABApp">
-	<t:SlideMenuView.Resources>
-		<ResourceDictionary>
-			<local:NegateBooleanConverter x:Key="inverter"/>
-		</ResourceDictionary>
-	</t:SlideMenuView.Resources>
+    <t:SlideMenuView.Resources>
+        <ResourceDictionary>
+            <local:NegateBooleanConverter x:Key="inverter"/>
+        </ResourceDictionary>
+    </t:SlideMenuView.Resources>
     <StackLayout BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
-            <StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0">
-                <!--<Button Text="Channels" Clicked="OnChannels" HorizontalOptions="Start" FontSize="Large"/>
-		<Button Text="About" Clicked="OnAbout" HorizontalOptions="Start" FontSize="Large"/>
-		<Button Text="Settings" Clicked="OnSettings" HorizontalOptions="Start" FontSize="Large"/>-->
-                <local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}"
+        <StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0">
+            <local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}"
 				ItemTapped="OnItemTapped">
-                    <local:NonScrollingListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Padding="10" Spacing="5">
-                                    <Label Text="{Binding title}" FontSize="20" Style="{StaticResource playerLabelStyle}"/>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </local:NonScrollingListView.ItemTemplate>
-                </local:NonScrollingListView>
-                <BoxView HeightRequest="2" HorizontalOptions="FillAndExpand"  BackgroundColor="#FFFFFF" Opacity=".27" Color="#FFFFFF"/>
+                <local:NonScrollingListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Padding="10" Spacing="5">
+                                <Label Text="{Binding title}" FontSize="20" Style="{StaticResource playerLabelStyle}"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </local:NonScrollingListView.ItemTemplate>
+            </local:NonScrollingListView>
+            <BoxView HeightRequest="2" HorizontalOptions="FillAndExpand"  BackgroundColor="#FFFFFF" Opacity=".27" Color="#FFFFFF"/>
+            <Label TextColor="#FFFFFF" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/> 
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand" Padding="0,10,0,10">
                 <local:ImageCircle x:Name="Avatar" Aspect="AspectFit" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" HorizontalOptions="Start" VerticalOptions="Center" HeightRequest="35" CacheDuration="{x:Static local:GlobalResources.ImageCacheValidity}" Source="{Binding Source={x:Static local:GuestStatus.Current}, Path=AvatarUrl}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"/>
-                <!--<local:ImageCircle.Source>
-					<UriImageSource x:Name="AvatarSource" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" Uri="{Binding Source={x:Static local:GuestStatus.Current}, Path=AvatarUrl}"/>
-				</local:ImageCircle.Source>
-			</local:ImageCircle>-->
-                <Button x:Name="SignUp" Text="Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
-
+                <Button x:Name="SignUp" Text="Login or Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
                 <Label x:Name="UserName"
                        Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"
                        TextColor="White" 
@@ -46,7 +39,7 @@
                        FontAttributes="Bold" 
                        AutomationProperties.IsInAccessibleTree="true"/>
                 <Button x:Name="Settings" Image="ic_settings_white_3x.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" Clicked="OnSettings" Style="{StaticResource imageButtonStyle}" VerticalOptions="Center" AutomationProperties.Name="Settings" AutomationProperties.IsInAccessibleTree="true"/>
-                </StackLayout>
             </StackLayout>
+        </StackLayout>
     </StackLayout>
 </t:SlideMenuView>
