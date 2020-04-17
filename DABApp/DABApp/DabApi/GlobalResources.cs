@@ -46,7 +46,7 @@ namespace DABApp
         public static DateTime DabMinDate //The min date we use throughout the DAB app
         { get
             {
-                return new DateTime(2020, 1, 1);
+                return new DateTime(2019, 12, 31);
             }
         }
 
