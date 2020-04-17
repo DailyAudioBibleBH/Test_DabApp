@@ -68,6 +68,7 @@ namespace DABApp
 			{
 				dbUserBadgeProgress blankProgress = new dbUserBadgeProgress(item.id, userName);
 				dabUserBadgeProgress newItem = new dabUserBadgeProgress(item, blankProgress);
+
 				allBadges.Add(newItem);
 			}
 
@@ -84,15 +85,21 @@ namespace DABApp
 				}
 				else
 				{
-					item.Progress.opacity = .5;
+					item.Progress.opacity = .4;
 				}
 				if (item.Badge.visible == true && item.Progress.userName == userName)
 				{
 					visibleAchievementsPageList.Add(item);
 				}
 			}
-            foreach (var item in visibleAchievementsPageList)
+
+
+
+			//int i = 0;
+			foreach (var item in visibleAchievementsPageList)
             {
+				//i++;
+
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				if (item.Progress.percent == 1 || item.Progress.percent == 0)
                 {
@@ -102,10 +109,19 @@ namespace DABApp
                 {
 					item.Progress.progressBarVisible = true;
                 }
-            }
-			
+
+//#if DEBUG
+//				int r;
+//				Math.DivRem(i, 2, out r);
+//				if (r == 0)
+//				{
+//					item.Badge.imageURL = $"https://via.placeholder.com/400/ffffff/555555?text={item.Badge.badgeId}"; //testing image capture
+//				}
+//#endif
+			}
+
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
-			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 500; //arbitrary number to get them tall enopugh.
+			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 			progressYear.Text = currentYear.ToString();
 		}
 	}

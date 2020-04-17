@@ -16,19 +16,17 @@
                     <Label x:Name="progressYear" FontSize="Medium"/>
                 </StackLayout>
                 <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
-                    
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
-                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}">
-                                    <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
+                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}" >
+                                    <ff:CachedImage x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
                                 </Frame>
                                 <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="Center" Orientation="Vertical">
                                     <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                     <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
-
                                     <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="15" CornerRadius="0" HorizontalOptions="Start" WidthRequest="200">
-                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"  BackgroundColor="Transparent"     />
+                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
                                     </Frame>
                                 </StackLayout>
                             </StackLayout>
