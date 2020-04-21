@@ -18,7 +18,6 @@ namespace DABApp
     public class PlayerFeedAPI
     {
 
-        static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         static bool DownloadIsRunning = false;
         static bool CleanupIsRunning = false;
@@ -28,7 +27,8 @@ namespace DABApp
         public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
         {
             //GetEpisodes(resource);
-            return db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate);
+            return adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
+                
         }
 
         //grab episodes by channel
@@ -59,7 +59,7 @@ namespace DABApp
                     return "Server Error";
                 }
                 var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-                var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.channel_code == code).ToList();
+                var existingEpisodes = adb.Table<dbEpisodes>().Where(x => x.channel_code == code).ToListAsync().Result;
                 var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
                 var newEpisodeIds = currentEpisodes.Select(x => x.episodeId);
                 var start = DateTime.Now;
@@ -133,12 +133,12 @@ namespace DABApp
 
         public static dbEpisodes GetEpisode(int id)
         {
-            return db.Table<dbEpisodes>().Single(x => x.id == id);
+            return adb.Table<dbEpisodes>().Where(x => x.id == id).FirstAsync().Result;
         }
 
         public static void CheckOfflineEpisodeSettings()
         {
-            var offlineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "OfflineEpisodes");
+            var offlineSettings = adb.Table<dbSettings>().Where(x => x.Key == "OfflineEpisodes").FirstOrDefaultAsync().Result;
             if (offlineSettings == null)
             {
                 offlineSettings = new dbSettings();
@@ -148,7 +148,7 @@ namespace DABApp
                 settings.DeleteAfterListening = false;
                 var jsonSettings = JsonConvert.SerializeObject(settings);
                 offlineSettings.Value = jsonSettings;
-                db.Insert(offlineSettings);
+                adb.InsertAsync(offlineSettings);
                 OfflineEpisodeSettings.Instance = settings;
             }
             else
@@ -160,9 +160,9 @@ namespace DABApp
 
         public static void UpdateOfflineEpisodeSettings()
         {
-            var offlineSettings = db.Table<dbSettings>().Single(x => x.Key == "OfflineEpisodes");
+            var offlineSettings = adb.Table<dbSettings>().Where(x => x.Key == "OfflineEpisodes").FirstAsync().Result;
             offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
-            db.Update(offlineSettings);
+            adb.UpdateAsync(offlineSettings);
         }
 
         public static async Task<bool> DownloadEpisodes()
@@ -202,7 +202,7 @@ namespace DABApp
             //Get episodes to download
             var episodesToShowDownload = new List<dbEpisodes>();
             var EpisodesToDownload = from channel in OfflineChannels
-                                     join episode in db.Table<dbEpisodes>() on channel.title equals episode.channel_title
+                                     join episode in adb.Table<dbEpisodes>().ToListAsync().Result on channel.title equals episode.channel_title
                                      where !episode.is_downloaded //not downloaded
                                                            && episode.PubDate > cutoffTime //new enough to be downloaded
                                                            && (!OfflineEpisodeSettings.Instance.DeleteAfterListening || episode.UserData.IsListenedTo != true) //not listened to or system not set to delete listened to episodes
@@ -294,7 +294,7 @@ namespace DABApp
                 FileManager fm = new FileManager();
                 fm.StopDownloading();
                 DownloadIsRunning = false;
-                var Episodes = db.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && (x.is_downloaded || x.progressVisible)).ToList();
+                var Episodes = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && (x.is_downloaded || x.progressVisible)).ToListAsync().Result;
                 foreach (var episode in Episodes)
                 {
                     var ext = episode.url.Split('.').Last();
@@ -346,7 +346,7 @@ namespace DABApp
                 else
                 {
                     var userName = GlobalResources.GetUserEmail();
-                    dbEpisodeUserData data = db.Table<dbEpisodeUserData>().SingleOrDefault(x => x.EpisodeId == episodeId && x.UserName == userName);
+                    dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
                     if (data == null)
                     {
                         data = new dbEpisodeUserData();
@@ -379,7 +379,7 @@ namespace DABApp
                         }
 
                     }
-                    db.InsertOrReplace(data);
+                    adb.InsertOrReplaceAsync(data);
                     Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
                     //Notify listening pages that episode data has changed
@@ -395,7 +395,6 @@ namespace DABApp
                 //Getting Locked exception on android 
                 Debug.WriteLine($"Exception in PlayerFeedAPI.UpdateEpisodeProperty(): {e.Message}");
                 DabData.ResetDatabases();
-                db = DabData.database;
                 adb = DabData.AsyncDatabase;
             }
         }
@@ -435,11 +434,11 @@ namespace DABApp
                 List<dbEpisodes> episodesToDelete = new List<dbEpisodes>();
                 if (OfflineEpisodeSettings.Instance.DeleteAfterListening)
                 {
-                    var eps = from x in db.Table<dbEpisodes>()
+                    var eps = from x in adb.Table<dbEpisodes>()
                               where (x.is_downloaded || x.progressVisible)  //downloaded episodes
                               select x;
                     //simplified query and added foreach iteration since query was giving null object reference on x.userdata.islistenedto
-                    foreach (var item in eps)
+                    foreach (var item in eps.ToListAsync().Result)
                     {
                         if (item.UserData.IsListenedTo == true || item.PubDate < cutoffTime)
                             episodesToDelete.Add(item);
@@ -447,10 +446,10 @@ namespace DABApp
                 }
                 else
                 {
-                    var eps = from x in db.Table<dbEpisodes>()
+                    var eps = from x in adb.Table<dbEpisodes>()
                               where (x.is_downloaded || x.progressVisible) && x.PubDate < cutoffTime
                               select x;
-                    episodesToDelete = eps.ToList();
+                    episodesToDelete = eps.ToListAsync().Result;
                 }
                 Debug.WriteLine("Cleaning up {0} episodes...", episodesToDelete.Count());
                 foreach (var episode in episodesToDelete)
@@ -464,7 +463,7 @@ namespace DABApp
                             Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
                             episode.is_downloaded = false;
                             episode.progressVisible = false;
-                            db.Update(episode);
+                            adb.UpdateAsync(episode);
                                 Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
                         }
 
@@ -489,7 +488,7 @@ namespace DABApp
         {
             try
             {
-                var episode = db.Table<dbEpisodes>().Single(x => x.id == CurrentEpisodeId);
+                var episode = adb.Table<dbEpisodes>().Where(x => x.id == CurrentEpisodeId).FirstAsync().Result;
                 episode.UserData.CurrentPosition = NewStopTime;
                 Debug.WriteLine($"New Stop  Time: {NewStopTime / 60}");
                 episode.remaining_time = NewRemainingTime.ToString(); //TODO was a string - did making this a double break it?
@@ -578,12 +577,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-                dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
                 var token = new APIToken
                 {
                     value = TokenSettings.Value,

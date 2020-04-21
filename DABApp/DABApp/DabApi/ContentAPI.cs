@@ -16,15 +16,14 @@ namespace DABApp
 {
     public class ContentAPI
     {
-        static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
         public static bool CheckContent()
         {
 
             //Get the content API from the settings database
-            dbSettings ContentSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "ContentJSON");
-            dbSettings DataSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "data");
+            dbSettings ContentSettings = adb.Table<dbSettings>().Where(x => x.Key == "ContentJSON").FirstOrDefaultAsync().Result;
+            dbSettings DataSettings = adb.Table<dbSettings>().Where(x => x.Key == "data").FirstOrDefaultAsync().Result;
 
             if (ContentConfig.Instance.app_settings == null && ContentSettings != null)
             {
@@ -56,8 +55,8 @@ namespace DABApp
                     DataSettings = new dbSettings();
                     DataSettings.Key = "data";
                     DataSettings.Value = updated;
-                    db.Insert(ContentSettings);
-                    db.Insert(DataSettings);
+                    adb.InsertOrReplaceAsync(ContentSettings);
+                    adb.InsertOrReplaceAsync(DataSettings);
 
                     ParseContent(jsonOut);
                 }
@@ -93,7 +92,7 @@ namespace DABApp
 
         public static void ParseContent(string jsonOut)
         {
-            var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+            var OfflineSettings = adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
             Task.Run(async () =>
@@ -105,7 +104,7 @@ namespace DABApp
                 OfflineSettings = new dbSettings();
                 OfflineSettings.Key = "AvailableOffline";
                 OfflineSettings.Value = new JArray().ToString();
-                db.Insert(OfflineSettings);
+                adb.InsertAsync(OfflineSettings);
             }
             else
             {
@@ -123,7 +122,7 @@ namespace DABApp
             try
             {
                 Debug.WriteLine("Updating Offline Settings");
-                var OfflineSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "AvailableOffline");
+                var OfflineSettings = adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
                 if (OfflineSettings != null)
                 {
                     var jsonArray = JArray.Parse(OfflineSettings.Value);
@@ -205,7 +204,7 @@ namespace DABApp
                 //Sending Event to Firebase Analytics about Topic post
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var JsonIn = JsonConvert.SerializeObject(topic);
@@ -237,7 +236,7 @@ namespace DABApp
                 //Sending Event to Firebase Analytics to record Reply post.
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var JsonIn = JsonConvert.SerializeObject(reply);

@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using System.Diagnostics;
 
 namespace DABApp
 {
@@ -21,7 +22,7 @@ namespace DABApp
         private int flowListViewColumns = Device.Idiom == TargetIdiom.Tablet ? 3 : 2;
         public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
 
-        static SQLiteConnection db = DabData.database;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
 
         /* This string determins the database version. 
@@ -229,7 +230,7 @@ namespace DABApp
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
                     //Returns WpId for non-guest users
-                    dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "WpId");
+                    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "WpId").FirstOrDefaultAsync().Result;
                     if (s == null)
                     {
                         return "-1"; //unknown (haven't stored it yet)
@@ -253,8 +254,7 @@ namespace DABApp
 
         public static string GetUserEmail()
         {
-            var settings = db.Table<dbSettings>().ToList();
-            dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
             if (EmailSettings == null)
             {
                 return "";
@@ -267,8 +267,8 @@ namespace DABApp
 
         public static string GetUserName()
         {
-            dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-            dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+            dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+            dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
             if (FirstNameSettings == null || LastNameSettings == null)
             {
                 return "";
@@ -283,14 +283,15 @@ namespace DABApp
         public static string GetLastEpisodeQueryDate(int ChannelId)
         {
             //Last episode query date by channel in GMT
-            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
+            string k = "EpisodeQueryDate" + ChannelId;
+            dbSettings LastEpisodeQuerySettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
             if (LastEpisodeQuerySettings == null)
             {
                 DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
                 LastEpisodeQuerySettings = new dbSettings();
-                LastEpisodeQuerySettings.Key = "EpisodeQueryDate" + ChannelId;
+                LastEpisodeQuerySettings.Key = k;
                 LastEpisodeQuerySettings.Value = queryDate.ToString("o");
-                db.InsertOrReplace(LastEpisodeQuerySettings);
+                adb.InsertOrReplaceAsync(LastEpisodeQuerySettings);
                 return queryDate.ToString("o");
             }
             else
@@ -301,12 +302,13 @@ namespace DABApp
 
         public static void SetLastEpisodeQueryDate(int ChannelId)
         {
-            dbSettings LastEpisodeQuerySettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "EpisodeQueryDate" + ChannelId);
-            if (LastEpisodeQuerySettings == null) LastEpisodeQuerySettings = new dbSettings() { Key = "EpisodeQueryDate" + ChannelId };
+            string k = "EpisodeQueryDate" + ChannelId;
+            dbSettings LastEpisodeQuerySettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
+            if (LastEpisodeQuerySettings == null) LastEpisodeQuerySettings = new dbSettings() { Key = k };
             //Store the value sent in the database
             string queryDate = DateTime.UtcNow.ToString("o");
             LastEpisodeQuerySettings.Value = queryDate;
-            db.InsertOrReplace(LastEpisodeQuerySettings);
+            adb.InsertOrReplaceAsync(LastEpisodeQuerySettings);
         }
 
         //Last badge check date in GMT (get/set universal time)
@@ -315,7 +317,7 @@ namespace DABApp
             get
             {
                 string settingsKey = "BadgeUpdateDate";
-                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings BadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
                 if (BadgeUpdateSettings == null)
                 {
@@ -323,7 +325,7 @@ namespace DABApp
                     BadgeUpdateSettings = new dbSettings();
                     BadgeUpdateSettings.Key = settingsKey;
                     BadgeUpdateSettings.Value = badgeDate.ToString();
-                    db.InsertOrReplace(BadgeUpdateSettings);
+                    adb.InsertOrReplaceAsync(BadgeUpdateSettings);
                     return DateTime.Parse(BadgeUpdateSettings.Value);
                 }
                 else
@@ -336,10 +338,10 @@ namespace DABApp
                 //Store the value sent in the database
                 string settingsKey = "BadgeUpdateDate";
                 string badgeDate = value.ToString();
-                dbSettings BadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings BadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 BadgeUpdateSettings.Key = settingsKey;
                 BadgeUpdateSettings.Value = badgeDate;
-                db.InsertOrReplace(BadgeUpdateSettings);
+                adb.InsertOrReplaceAsync(BadgeUpdateSettings);
             }
         }
 
@@ -349,7 +351,7 @@ namespace DABApp
             get
             {
                 string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
-                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
                 if (BadgeProgressSettings == null)
                 {
@@ -357,7 +359,7 @@ namespace DABApp
                     BadgeProgressSettings = new dbSettings();
                     BadgeProgressSettings.Key = settingsKey;
                     BadgeProgressSettings.Value = progressDate.ToString();
-                    db.InsertOrReplace(BadgeProgressSettings);
+                    adb.InsertOrReplaceAsync(BadgeProgressSettings);
                     return DateTime.Parse(BadgeProgressSettings.Value);
                 }
                 else
@@ -371,10 +373,10 @@ namespace DABApp
                 //Store the value sent in the database
                 string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
                 string progressDate = value.ToString();
-                dbSettings BadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 BadgeProgressSettings.Key = settingsKey;
                 BadgeProgressSettings.Value = progressDate;
-                db.InsertOrReplace(BadgeProgressSettings);
+                adb.InsertOrReplaceAsync(BadgeProgressSettings);
             }
         }
 
@@ -384,7 +386,7 @@ namespace DABApp
             get
             {
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings LastActionsSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
                 if (LastActionsSettings == null)
                 {
@@ -392,7 +394,7 @@ namespace DABApp
                     LastActionsSettings = new dbSettings();
                     LastActionsSettings.Key = settingsKey;
                     LastActionsSettings.Value = actionDate.ToString();
-                    db.InsertOrReplace(LastActionsSettings);
+                    adb.InsertOrReplaceAsync(LastActionsSettings);
                     return actionDate;
                 }
                 else
@@ -406,10 +408,10 @@ namespace DABApp
                 //Store the value sent in the database
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
-                dbSettings LastActionsSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                dbSettings LastActionsSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 if (LastActionsSettings == null) LastActionsSettings = new dbSettings() { Key = settingsKey };
                 LastActionsSettings.Value = actionDate;
-                db.InsertOrReplace(LastActionsSettings);
+                adb.InsertOrReplaceAsync(LastActionsSettings);
             }
         }
 
@@ -417,14 +419,15 @@ namespace DABApp
         public static string GetLastRefreshDate(int ChannelId)
         {
             //Last episode query date by channel in GMT
-            dbSettings LastRefreshSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "RefreshDate" + ChannelId);
+            string k = "RefreshDate" + ChannelId;
+            dbSettings LastRefreshSettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
             if (LastRefreshSettings == null)
             {
                 DateTime refreshDate = GlobalResources.DabMinDate.ToUniversalTime();
                 LastRefreshSettings = new dbSettings();
-                LastRefreshSettings.Key = "RefreshDate" + ChannelId;
+                LastRefreshSettings.Key = k;
                 LastRefreshSettings.Value = refreshDate.ToString("o");
-                db.InsertOrReplace(LastRefreshSettings);
+                adb.InsertOrReplaceAsync(LastRefreshSettings);
                 return refreshDate.ToString("o");
             }
             else
@@ -432,23 +435,25 @@ namespace DABApp
                 return LastRefreshSettings.Value;
             }
         }
+    
 
         public static void SetLastRefreshDate(int ChannelId)
         {
-            dbSettings LastRefreshSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "RefreshDate" + ChannelId);
+            string k = "RefreshDate" + ChannelId;
+            dbSettings LastRefreshSettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
 
             //Store the value sent in the database
             string queryDate = DateTime.UtcNow.ToString("o");
-            LastRefreshSettings.Key = "RefreshDate" + ChannelId;
+            LastRefreshSettings.Key = k;
             LastRefreshSettings.Value = queryDate;
-            db.InsertOrReplace(LastRefreshSettings);
+            adb.InsertOrReplaceAsync(LastRefreshSettings);
         }
 
         public static string UserAvatar
         {
             get
             {
-                dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
                 if (AvatarSettings == null)
                 {
                     return "";
@@ -459,7 +464,7 @@ namespace DABApp
 
         public static string GetUserAvatar()
         {
-            dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+            dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
             if (AvatarSettings == null)
             {
                 return "";
@@ -591,20 +596,20 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                db.Delete(s);
+                adb.DeleteAsync(s);
             }
-            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+            s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                db.Delete(s);
+                adb.DeleteAsync(s);
             }
-            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            s = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                db.Delete(s);
+                adb.DeleteAsync(s);
             }
 
 

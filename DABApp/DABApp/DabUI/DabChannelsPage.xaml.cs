@@ -23,7 +23,7 @@ namespace DABApp
         private double _width;
         private double _height;
         private int number;
-        static SQLiteConnection db = DabData.database;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
         public DabChannelsPage()
         {

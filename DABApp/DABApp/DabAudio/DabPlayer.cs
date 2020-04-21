@@ -42,7 +42,7 @@ namespace DABApp.DabAudio
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
         private bool shouldResumePlay = false;
-        static SQLiteConnection db = DabData.database;
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
 
 

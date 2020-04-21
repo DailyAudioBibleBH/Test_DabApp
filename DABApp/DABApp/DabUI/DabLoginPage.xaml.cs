@@ -23,7 +23,6 @@ namespace DABApp
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
-        static SQLiteConnection db = DabData.database;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -82,7 +81,7 @@ namespace DABApp
 
                 if (DabSyncService.Instance.IsConnected)
                 {
-                    SQLiteConnection db = DabData.database;
+                    SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
                     //Message received from the Graph QL - deal with those related to login messages!
                     try
@@ -92,23 +91,23 @@ namespace DABApp
                         {
 
                             //Store the token
-                            dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                            dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                             if (sToken == null)
                             {
                                 sToken = new dbSettings() { Key = "Token" };
                             }
                             sToken.Value = root.payload.data.loginUser.token;
-                            db.InsertOrReplace(sToken);
+                            await adb.InsertOrReplaceAsync(sToken);
 
                             //Update Token Life
                             ContentConfig.Instance.options.token_life = 5;
-                            dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                            dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
                             if (sTokenCreationDate == null)
                             {
                                 sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
                             }
                             sTokenCreationDate.Value = DateTime.Now.ToString();
-                            db.InsertOrReplace(sTokenCreationDate);
+                            await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
                             //Reset the connection with the new token
                             DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
@@ -124,11 +123,11 @@ namespace DABApp
                             //We got back user data!
                             GraphQlLoginComplete = true; //stop processing success messages.
                                                          //Save the data
-                            dbSettings sEmail = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                            dbSettings sFirstName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                            dbSettings sLastName = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-                            dbSettings sAvatar = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
-                            dbSettings sWpId = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "WpId");
+                            dbSettings sEmail = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                            dbSettings sFirstName = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                            dbSettings sLastName = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                            dbSettings sAvatar = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
+                            dbSettings sWpId = adb.Table<dbSettings>().Where(x => x.Key == "WpId").FirstOrDefaultAsync().Result;
                             if (sEmail == null) sEmail = new dbSettings() { Key = "Email" };
                             if (sFirstName == null) sFirstName = new dbSettings() { Key = "FirstName" };
                             if (sLastName == null) sLastName = new dbSettings() { Key = "LastName" };
@@ -139,11 +138,11 @@ namespace DABApp
                             sLastName.Value = root.payload.data.user.lastName;
                             sAvatar.Value = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
                             sWpId.Value = root.payload.data.user.wpId.ToString();
-                            db.InsertOrReplace(sEmail);
-                            db.InsertOrReplace(sFirstName);
-                            db.InsertOrReplace(sLastName);
-                            db.InsertOrReplace(sAvatar);
-                            db.InsertOrReplace(sWpId);
+                            adb.InsertOrReplaceAsync(sEmail);
+                            adb.InsertOrReplaceAsync(sFirstName);
+                            adb.InsertOrReplaceAsync(sLastName);
+                            adb.InsertOrReplaceAsync(sAvatar);
+                            adb.InsertOrReplaceAsync(sWpId);
 
                             GraphQlLoginRequestInProgress = false;
 
@@ -276,18 +275,18 @@ namespace DABApp
             GlobalResources.WaitStart("Logging you in as a guest...");
             GuestStatus.Current.IsGuestLogin = true;
 
-            dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+            dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
             if (s == null) s = new dbSettings() { Key = "Email" };
             s.Value = "Guest";
-            db.InsertOrReplace(s);
+            await adb.InsertOrReplaceAsync(s);
 
             //Token
-            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-            if (s != null) db.Delete(s);
+            s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+            if (s != null) await adb.DeleteAsync(s);
 
             //TokenCreation
-            s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-            if (s != null) db.Delete(s);
+            s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+            if (s != null) await adb.DeleteAsync(s);
 
 
             await AuthenticationAPI.ValidateLogin("Guest", "", true);

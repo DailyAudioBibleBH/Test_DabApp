@@ -35,7 +35,6 @@ namespace DABApp
 			};
 
 			//Connection to db
-			SQLiteConnection db = DabData.database;
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
@@ -43,8 +42,8 @@ namespace DABApp
 			//currentYear = 2020;
 
 			//separate badge and progress list from db
-			List<dbBadges> dbBadgeList = db.Table<dbBadges>().ToList();
-			List<dbUserBadgeProgress> dbBadgeProgressList = db.Table<dbUserBadgeProgress>().Where(x => x.year == currentYear).ToList();
+			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
+			List<dbUserBadgeProgress> dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().Where(x => x.year == currentYear).ToListAsync().Result;
 
 			//find badges that have progress
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =

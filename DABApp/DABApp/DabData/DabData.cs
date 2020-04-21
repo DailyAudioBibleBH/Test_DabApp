@@ -12,17 +12,6 @@ namespace DABApp
         static SQLiteConnection _database;
         static SQLiteAsyncConnection _AsyncDatabase;
         static bool _databaseInitiated = false;
-        public static SQLiteConnection database
-        {
-            get
-            {
-                if (!_databaseInitiated)
-                {
-                    initDatabase();
-                }
-                return _database;
-            }
-        }
 
         public static SQLiteAsyncConnection AsyncDatabase
         {

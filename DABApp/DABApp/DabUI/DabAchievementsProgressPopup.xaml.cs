@@ -23,10 +23,9 @@ namespace DABApp.DabUI
             progressId = progress.id;
 
             //Connection to db
-            SQLiteConnection db = DabData.database;
             SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-            List<dbBadges> currentBadges = db.Table<dbBadges>().Where(x => x.id == progress.badgeId).ToList();
+            List<dbBadges> currentBadges = adb.Table<dbBadges>().Where(x => x.id == progress.badgeId).ToListAsync().Result;
             dbBadges currentBadge = new dbBadges();
 
             foreach (var item in currentBadges)

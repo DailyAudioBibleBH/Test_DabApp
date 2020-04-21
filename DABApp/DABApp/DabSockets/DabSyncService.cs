@@ -32,7 +32,6 @@ namespace DABApp.DabSockets
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler<DabGraphQlMessageEventHandler> DabGraphQlMessage; //Event so others can listen in on events.
 
-        SQLiteConnection db = DabData.database;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         DabGraphQlVariables variables = new DabGraphQlVariables();
 
@@ -81,7 +80,7 @@ namespace DABApp.DabSockets
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
-            var test = db.Table<dbChannels>().ToList();
+            var test = adb.Table<dbChannels>().ToListAsync().Result;
 
             try
             {
@@ -102,7 +101,7 @@ namespace DABApp.DabSockets
                 {
                     if (root.payload.message == "Your token is not valid.")
                     {
-                        dbSettings s = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                        dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                         if (s != null)
                         {
                             //log to firebase
@@ -113,7 +112,7 @@ namespace DABApp.DabSockets
 
 
                             //User's token is no longer good. Better log them off.
-                            db.Delete(s);
+                            await adb.DeleteAsync(s);
                             GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
 
                         }
@@ -238,7 +237,7 @@ namespace DABApp.DabSockets
                         //More pages, go get them
                         string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
                         Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId.ToString() + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                         var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
                         var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
                         DabSyncService.Instance.Send(JsonIn);
@@ -246,7 +245,7 @@ namespace DABApp.DabSockets
                     else
                     {
                         //Last page, let UI know
-                        var channels = db.Table<dbChannels>().OrderByDescending(x => x.channelId);
+                        var channels = adb.Table<dbChannels>().OrderByDescending(x => x.channelId).ToListAsync().Result;
                         foreach (var item in channels)
                         {
                             if (item.channelId == channelId)
@@ -282,7 +281,7 @@ namespace DABApp.DabSockets
                     channelId = qlEpisode.channelId;
 
                     //find the matching channel
-                    channel = db.Table<dbChannels>().Single(x => x.channelId == channelId);
+                    channel = adb.Table<dbChannels>().Where(x => x.channelId == channelId).FirstOrDefaultAsync().Result;
                     var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
 
                     //Add record to the database (or update it)
@@ -294,7 +293,7 @@ namespace DABApp.DabSockets
                     {
                         newEpisode.description += $" ({DateTime.Now.ToShortTimeString()})";
                     }
-                    db.InsertOrReplace(newEpisode);
+                    adb.InsertOrReplaceAsync(newEpisode);
 
                     //Notify listening items that episodes have changed.
                     Device.BeginInvokeOnMainThread(() =>
@@ -331,7 +330,7 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.updateToken?.token != null)
                 {
                     //Update Token
-                    dbSettings sToken = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                     if (sToken == null)
                     {
                         sToken = new dbSettings() { Key = "Token" };
@@ -340,13 +339,13 @@ namespace DABApp.DabSockets
                     await adb.UpdateAsync(sToken);
 
                     //Update Token Life
-                    dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+                    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
                     if (sTokenCreationDate == null)
                     {
                         sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
                     }
                     sTokenCreationDate.Value = DateTime.Now.ToString();
-                    db.InsertOrReplace(sTokenCreationDate);
+                    adb.InsertOrReplaceAsync(sTokenCreationDate);
 
                     Instance.Init();
                     Instance.Connect();
@@ -367,12 +366,12 @@ namespace DABApp.DabSockets
                             }
                             catch (Exception)
                             {
-                                db.InsertOrReplace(item);
+                                adb.InsertOrReplaceAsync(item);
                             }
                         };
                     }
 
-                    dbSettings sBadgeUpdateSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "BadgeUpdateDate");
+                    dbSettings sBadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == "BadgeUpdateDate").FirstOrDefaultAsync().Result;
                     if (sBadgeUpdateSettings == null)
                     {
                         sBadgeUpdateSettings = new dbSettings() { Key = "BadgeUpdateDate" };
@@ -381,7 +380,7 @@ namespace DABApp.DabSockets
                     try
                     {
                         sBadgeUpdateSettings.Value = DateTime.UtcNow.ToString();
-                        db.InsertOrReplace(sBadgeUpdateSettings);
+                        await adb.InsertOrReplaceAsync(sBadgeUpdateSettings);
                     }
                     catch (Exception)
                     {
@@ -394,7 +393,7 @@ namespace DABApp.DabSockets
                 {
                     foreach (var item in root.payload.data.updatedProgress.edges)
                     {
-                        dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == item.id && x.userName == userName);
+                        dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == item.id && x.userName == userName).FirstOrDefaultAsync().Result;
                         try
                         {
                             if (data == null)
@@ -413,18 +412,18 @@ namespace DABApp.DabSockets
                             if (data == null)
                             {
                                 item.userName = userName;
-                                db.InsertOrReplace(item);
+                                await adb.InsertOrReplaceAsync(item);
                             }
                             else
                             {
                                 data.percent = item.percent;
-                                db.InsertOrReplace(data);
+                                await adb.InsertOrReplaceAsync(data);
                             }
                         }
 
                         //update last time checked for badge progress
                         string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
-                        dbSettings sBadgeProgressSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == settingsKey);
+                        dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                         if (sBadgeProgressSettings == null)
                         {
                             sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
@@ -433,7 +432,7 @@ namespace DABApp.DabSockets
                         try
                         {
                             sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
-                            db.InsertOrReplace(sBadgeProgressSettings);
+                            await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
                         }
                         catch (Exception)
                         {
@@ -462,7 +461,7 @@ namespace DABApp.DabSockets
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
 
-                    dbUserBadgeProgress data = db.Table<dbUserBadgeProgress>().SingleOrDefault(x => x.id == newProgress.id && x.userName == userName);
+                    dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
                     try
                     {
                         if (data == null)
@@ -479,12 +478,12 @@ namespace DABApp.DabSockets
                     {
                         if (data == null)
                         {
-                            db.InsertOrReplace(newProgress);
+                            await adb.InsertOrReplaceAsync(newProgress);
                         }
                         else
                         {
                             data.percent = newProgress.percent;
-                            db.InsertOrReplace(data);
+                            adb.InsertOrReplaceAsync(data);
                         }
                     }
                 }
@@ -652,7 +651,7 @@ namespace DABApp.DabSockets
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
-            dbSettings Token = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+            dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result ;
             if (Token == null) Token = new dbSettings() { Key="Token",Value="" }; //fake token
             //Init the connection
             PrepConnectionWithTokenAndOrigin(Token.Value);

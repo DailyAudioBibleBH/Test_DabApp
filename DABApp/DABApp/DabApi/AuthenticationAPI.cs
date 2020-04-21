@@ -15,7 +15,6 @@ namespace DABApp
 {
     public class AuthenticationAPI
     {
-        static SQLiteConnection db = DabData.database;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
         static DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
@@ -29,12 +28,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-                dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
                 if (IsGuest)//Setting database settings for guest login
                 {
                     if (EmailSettings == null)
@@ -93,7 +92,7 @@ namespace DABApp
 
         public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
-            var creation = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
+            var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result ;
             int days = ContentConfig.Instance.options.token_life;
             if (creation == null || creation.Value == null)
             {
@@ -112,12 +111,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
-                dbSettings AvatarSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Avatar");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();//Authentication Bearer token is hard coded in GlobalResources. 
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
                 var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
@@ -223,10 +222,10 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/profile");
@@ -254,11 +253,11 @@ namespace DABApp
         {
             try//Edits member data used on DABProfileManagementPage
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                dbSettings CreationSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                dbSettings EmailSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
-                dbSettings FirstNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "FirstName");
-                dbSettings LastNameSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "LastName");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
@@ -298,7 +297,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
@@ -320,7 +319,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}countries");
@@ -338,7 +337,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(newBilling);
                 var content = new StringContent(JsonIn);
@@ -370,7 +369,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}wallet");
@@ -388,7 +387,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}wallet/{CardId}");
@@ -417,7 +416,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(token);
                 var content = new StringContent(JsonIn);
@@ -447,7 +446,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations");
@@ -465,7 +464,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -490,7 +489,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -515,7 +514,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}donations/{id}");
@@ -537,7 +536,7 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations/history");
@@ -571,12 +570,12 @@ namespace DABApp
             var AvatarSettings = new dbSettings();
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
-            db.InsertOrReplace(TokenSettings);
-            db.InsertOrReplace(CreationSettings);
-            db.InsertOrReplace(EmailSettings);
-            db.InsertOrReplace(FirstNameSettings);
-            db.InsertOrReplace(LastNameSettings);
-            db.InsertOrReplace(AvatarSettings);
+            adb.InsertOrReplaceAsync(TokenSettings);
+            adb.InsertOrReplaceAsync(CreationSettings);
+            adb.InsertOrReplaceAsync(EmailSettings);
+            adb.InsertOrReplaceAsync(FirstNameSettings);
+            adb.InsertOrReplaceAsync(LastNameSettings);
+            adb.InsertOrReplaceAsync(AvatarSettings);
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
@@ -589,25 +588,25 @@ namespace DABApp
                 var entity_type = actionType == "listened" ? "listened_status" : "episode";
                 actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
-                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.CurrentPosition;
+                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.CurrentPosition;
                 actionLog.ActionType = actionType;
-                actionLog.Favorite = favorite.HasValue ? favorite.Value : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsFavorite;
+                actionLog.Favorite = favorite.HasValue ? favorite.Value : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.IsFavorite;
                 //check this
-                actionLog.listened_status = actionType == "listened" ? listened.ToString() : db.Table<dbEpisodes>().Single(x => x.id == episodeId).UserData.IsListenedTo.ToString();
-                var user = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Email");
+                actionLog.listened_status = actionType == "listened" ? listened.ToString() : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.IsListenedTo.ToString();
+                var user = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
                 if (user != null)
                 {
                     actionLog.UserEmail = user.Value;
                 }
 
                 //Android - Delete all existing action logs for this episode.
-                var actionList = db.Table<dbPlayerActions>().ToList();
+                var actionList = adb.Table<dbPlayerActions>().ToListAsync().Result;
 
                 foreach (var i in actionList)
                 {
                     if (i.EpisodeId == episodeId && i.ActionType == actionType)
                     {
-                        db.Delete(i);
+                        await adb.DeleteAsync(i);
                     }
                 }
 
@@ -617,7 +616,7 @@ namespace DABApp
 
                     //Android - add nw
 
-                    db.Insert(actionLog);
+                    await adb.InsertAsync(actionLog);
                 }
 
                 else
@@ -645,8 +644,8 @@ namespace DABApp
                 {
                     string listenedTo;
                     notPosting = false;
-                    dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
-                    var actions = db.Table<dbPlayerActions>().ToList();
+                    dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                    var actions = adb.Table<dbPlayerActions>().ToListAsync().Result;
                     
                     if (TokenSettings != null && actions.Count > 0) 
                     {
@@ -838,7 +837,7 @@ namespace DABApp
 
         public static bool GetTestMode()
         {
-            var testmode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
+            var testmode = adb.Table<dbSettings>().Where(x => x.Key == "TestMode").FirstOrDefaultAsync().Result;
             if (testmode != null)
             {
                 return Convert.ToBoolean(testmode.Value);
@@ -848,21 +847,21 @@ namespace DABApp
 
         public static void SetTestMode()
         {
-            var testMode = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TestMode");
+            var testMode = adb.Table<dbSettings>().Where(x => x.Key == "TestMode").FirstOrDefaultAsync().Result;
             dbSettings newMode = new dbSettings();
-            db.Query<dbEpisodes>("delete from dbEpisodes");
-            db.Execute("delete from dbPlayerActions");
-            db.Execute("delete from Badge");
-            db.Execute("delete from dbUserBadgeProgress");
-            db.Execute("delete from Channel");
-            db.Execute("delete from dbEpisodeUserData");
+            adb.QueryAsync<dbEpisodes>("delete from dbEpisodes");
+            adb.ExecuteAsync("delete from dbPlayerActions");
+            adb.ExecuteAsync("delete from Badge");
+            adb.ExecuteAsync("delete from dbUserBadgeProgress");
+            adb.ExecuteAsync("delete from Channel");
+            adb.ExecuteAsync("delete from dbEpisodeUserData");
             newMode.Key = "TestMode";
             newMode.Value = GlobalResources.TestMode.ToString();
             if (testMode != null)
             {
-                db.Update(newMode);
+                adb.UpdateAsync(newMode);
             }
-            else db.InsertOrReplace(newMode);
+            else adb.InsertOrReplaceAsync(newMode);
         }
 
         public static string CurrentToken
@@ -870,7 +869,7 @@ namespace DABApp
         {
             get
             {
-                dbSettings TokenSettings = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "Token");
+                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 return TokenSettings?.Value;
             }
         }
