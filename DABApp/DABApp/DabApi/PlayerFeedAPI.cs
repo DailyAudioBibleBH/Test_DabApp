@@ -34,8 +34,8 @@ namespace DABApp
         //grab episodes by channel
         public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
         {
-            //try
-            //{
+            try
+            {
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
 
                 List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
@@ -80,12 +80,12 @@ namespace DABApp
 
                 Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
                 return "OK";
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
-            //    return ex.Message;
-            //}
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
+                return ex.Message;
+            }
         }
 
         public static string getMonth(DateTime e)
