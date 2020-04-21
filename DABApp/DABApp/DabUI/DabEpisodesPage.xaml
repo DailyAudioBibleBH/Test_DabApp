@@ -1,64 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
 		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:generic="clr-namespace:System;assembly=mscorlib">
-		<local:DabBaseContentPage.Resources>
-    <ResourceDictionary>
-      <local:InverseConverter x:Key="inverser" />
-    </ResourceDictionary>
-  </local:DabBaseContentPage.Resources>
-	<t:MenuContainerPage.Content>
-    <StackLayout x:Name="Container">
-      <ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true" CachingStrategy="RecycleElementAndDataTemplate">
-        <ListView.Header>
-          <StackLayout Spacing="0" Padding="0">
-            <RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-              <ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
-              <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
-              </StackLayout>
-            </RelativeLayout>
-            <StackLayout Orientation="Horizontal" Padding="10" Spacing="5" BackgroundColor="{DynamicResource PageBackgroundColor}">
-              <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
-              <Image x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" Source="more_horiz" WidthRequest="40">
-                <Image.GestureRecognizers>
-                  <TapGestureRecognizer Tapped="OnFilters"/>
-                </Image.GestureRecognizers>
-              </Image>
-            </StackLayout>
-            <BoxView HorizontalOptions="FillAndExpand"/>
-          </StackLayout>
-        </ListView.Header>
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <local:DabViewCell>
-              <ViewCell.ContextActions>
-                <MenuItem Clicked="OnListened" IsDestructive="true" Text="Completed" CommandParameter="{Binding .}"/>
-                <MenuItem Clicked="OnFavorite" Text="Favorite" CommandParameter="{Binding .}"/>
-              </ViewCell.ContextActions>
-              <Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="Auto"/>
-                  <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"/>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <BoxView Color="Transparent" IsVisible="{Binding IsListenedTo, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
-                <Image Source="ic_done_listened_3x.png" IsVisible="{Binding IsListenedTo}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
-                <StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                  <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true" LineBreakMode="TailTruncation"/>
-                  <Image IsVisible="{Binding IsFavorite}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
-                  <Image IsVisible="{Binding HasJournal}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
-                </StackLayout>
-                <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
-                <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
-              </Grid>
-            </local:DabViewCell>
-          </DataTemplate>
-        </ListView.ItemTemplate>
-      </ListView>
-    </StackLayout>
-	</t:MenuContainerPage.Content>
+    <local:DabBaseContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseConverter x:Key="inverser" />
+        </ResourceDictionary>
+    </local:DabBaseContentPage.Resources>
+    <t:MenuContainerPage.Content>
+        <StackLayout x:Name="Container">
+            <ListView x:Name="EpisodeList" HasUnevenRows="true" ItemTapped="OnEpisode" Style="{StaticResource EpisodeMenuStyle}" IsPullToRefreshEnabled="true" CachingStrategy="RecycleElementAndDataTemplate">
+                <ListView.Header>
+                    <StackLayout Spacing="0" Padding="0">
+                        <RelativeLayout x:Name="bannerContainer" HeightRequest="80" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+                            <ff:CachedImage x:Name="bannerImage" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                            <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+                                <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
+                            </StackLayout>
+                        </RelativeLayout>
+                        <StackLayout Orientation="Horizontal" Padding="10" Spacing="5" BackgroundColor="{DynamicResource PageBackgroundColor}">
+                            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
+                            <Button x:Name="btnRefresh" Text="Refresh" Clicked="OnRefresh"/>
+                            <Image x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" Source="more_horiz" WidthRequest="40">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnFilters"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </StackLayout>
+                        <BoxView HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                </ListView.Header>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:DabViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem Clicked="OnListened" IsDestructive="true" Text="Completed" CommandParameter="{Binding .}"/>
+                                <MenuItem Clicked="OnFavorite" Text="Favorite" CommandParameter="{Binding .}"/>
+                            </ViewCell.ContextActions>
+                            <Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <BoxView Color="Transparent" IsVisible="{Binding IsListenedTo, Converter={StaticResource inverser}}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                                <Image Source="ic_done_listened_3x.png" IsVisible="{Binding IsListenedTo}" Grid.RowSpan="2" Grid.Column="0" WidthRequest="20" HeightRequest="20" VerticalOptions="Center"/>
+                                <StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+                                    <local:DabLabel Text="{Binding title}" FontSize="Medium" HorizontalOptions="Start" Style="{StaticResource playerLabelStyle}" FontAttributes="Bold" IsTitle="true" LineBreakMode="TailTruncation"/>
+                                    <Image IsVisible="{Binding IsFavorite}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
+                                    <Image IsVisible="{Binding HasJournal}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
+                                </StackLayout>
+                                <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
+                                <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
+                            </Grid>
+                        </local:DabViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </t:MenuContainerPage.Content>
 </local:DabBaseContentPage>
