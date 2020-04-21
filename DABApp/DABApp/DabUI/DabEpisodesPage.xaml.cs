@@ -85,6 +85,11 @@ namespace DABApp
             Refresh(false);
         }
 
+        public async void OnRefresh(object o, EventArgs e)
+        {
+            Refresh(true);
+        }
+
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
             try
@@ -155,6 +160,10 @@ namespace DABApp
             string minQueryDate;
             if (ReloadAll)
             {
+#if DEBUG
+                minQueryDate = GlobalResources.DabMinDate.ToUniversalTime().ToString("o");
+                GlobalResources.SetLastRefreshDate(_resource.id);
+#else
                 if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
                 {
                     minQueryDate = GlobalResources.DabMinDate.ToUniversalTime().ToString("o");
@@ -164,6 +173,7 @@ namespace DABApp
                 {
                     return; //don't do anything if they've recently pulled to refresh
                 }
+#endif
             }
             else
             {

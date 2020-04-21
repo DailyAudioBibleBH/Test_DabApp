@@ -148,9 +148,16 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
-                await DisplayAlert("Database Busy", "You may have a lot of user data being loaded. Wait a minute and try again.", "Ok");
-                Navigation.PushAsync(new DabChannelsPage());
+                Debug.WriteLine(ex.ToString());
+
+                var r = await DisplayAlert("Unexpected error.", "We ran into an unexpected problem getting the episode list. Please try again.", "OK", "Details");
+                if (r)
+                {
+                    //Do nothing.
+                } else
+                {
+                    await DisplayAlert("Error Details", ex.Message, "OK");
+                }
             }
         }
 
