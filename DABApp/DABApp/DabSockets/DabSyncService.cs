@@ -495,7 +495,7 @@ namespace DABApp.DabSockets
                 var errorInfo = new Dictionary<string, string>();
                 errorInfo.Add("user", GlobalResources.GetUserEmail());
                 errorInfo.Add("idiom", Device.Idiom.ToString());
-                errorInfo.Add("error", $"Exception-Caught: {ex.Message}");
+                errorInfo.Add("error", $"Exception-Caught: {ex.ToString()}");
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
 
 
