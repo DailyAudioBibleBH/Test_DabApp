@@ -317,13 +317,15 @@
                                          BackgroundColor="{DynamicResource PageBackgroundColor}">
                                 <Picker x:Name="Months"
                                         SelectedIndexChanged="OnMonthSelected"
-                                        HorizontalOptions="Start"
+                                        HorizontalOptions="StartAndExpand"
                                         WidthRequest="140"
                                         Style="{StaticResource monthPickerStyle}"
                                         Margin="0, 10, 20, 10"
                                         AutomationProperties.IsInAccessibleTree="true" />
+                                <Button x:Name="btnRefresh" Text="&#xf021;" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Title" Clicked="OnRefresh" Opacity=".4" VerticalOptions="Center" HorizontalOptions="End" Style="{StaticResource imageButtonStyle}"   Padding="0,0,20,0" />
+
                                 <Image Source="more_horiz"
-                                       HorizontalOptions="EndAndExpand"
+                                       HorizontalOptions="End"
                                        WidthRequest="40"
                                        AutomationProperties.IsInAccessibleTree="true"
                                        AutomationProperties.Name="Filters">

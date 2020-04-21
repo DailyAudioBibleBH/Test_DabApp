@@ -1080,7 +1080,14 @@ namespace DABApp
         {
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
             int pullToRefreshRate = GlobalResources.PullToRefreshRate;
-            if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
+            bool ok;
+#if DEBUG
+            ok = true;
+#else
+            ok = DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate;
+#endif
+
+            if (ok)
             {
                 GlobalResources.WaitStart("Refreshing episodes...");
                 
@@ -1155,16 +1162,24 @@ namespace DABApp
             }
             Device.BeginInvokeOnMainThread(() =>
             {
-                EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
+                try
+                {
+                    EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
                     .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)));
 
-                if (episode != null)
-                {
-                    Favorite.Source = episode.favoriteSource;
+                    if (episode != null)
+                    {
+                        Favorite.Source = episode.favoriteSource;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
+                }
+                
             });
         }
     }
