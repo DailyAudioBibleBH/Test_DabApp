@@ -242,12 +242,21 @@ namespace DABApp
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    EpisodeList.ItemsSource = _Episodes = Episodes
+                    try
+                    {
+                        EpisodeList.ItemsSource = _Episodes = Episodes
                     .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)).ToList();
-                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                        Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.ToString());
+                    }
+
+                    
                 }
                 );
             }
