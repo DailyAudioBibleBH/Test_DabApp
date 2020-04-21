@@ -138,11 +138,11 @@ namespace DABApp
                             sLastName.Value = root.payload.data.user.lastName;
                             sAvatar.Value = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
                             sWpId.Value = root.payload.data.user.wpId.ToString();
-                            adb.InsertOrReplaceAsync(sEmail);
-                            adb.InsertOrReplaceAsync(sFirstName);
-                            adb.InsertOrReplaceAsync(sLastName);
-                            adb.InsertOrReplaceAsync(sAvatar);
-                            adb.InsertOrReplaceAsync(sWpId);
+                            var x = adb.InsertOrReplaceAsync(sEmail).Result;
+                            x = adb.InsertOrReplaceAsync(sFirstName).Result;
+                            x = adb.InsertOrReplaceAsync(sLastName).Result;
+                            x = adb.InsertOrReplaceAsync(sAvatar).Result;
+                            x = adb.InsertOrReplaceAsync(sWpId).Result;
 
                             GraphQlLoginRequestInProgress = false;
 

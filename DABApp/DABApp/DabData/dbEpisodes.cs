@@ -262,16 +262,12 @@ namespace DABApp
 
                 try
                 {
-
                     episodeId = id.Value;
                     userName = GlobalResources.GetUserEmail();
                     adb = DabData.AsyncDatabase; //TODO - Verify this doesn't get overused
 
                     var data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == id && x.UserName == userName).FirstOrDefaultAsync().Result;
 
-                    //Throw an exception if no data retrievied
-                    //This is not an error, but we'll let the exception handler handle it
-                    //and return an empty object
                     if (data == null)
                     {
                         //make one and add it to the database
@@ -284,7 +280,7 @@ namespace DABApp
                             HasJournal = false,
                             CurrentPosition = 0,
                         };
-                        adb.InsertOrReplaceAsync(data);
+                        var rv = adb.InsertOrReplaceAsync(data).Result;
                         data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == id && x.UserName == userName).FirstOrDefaultAsync().Result;
                     }
 

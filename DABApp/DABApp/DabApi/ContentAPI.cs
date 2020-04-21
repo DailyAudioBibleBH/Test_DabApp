@@ -55,8 +55,8 @@ namespace DABApp
                     DataSettings = new dbSettings();
                     DataSettings.Key = "data";
                     DataSettings.Value = updated;
-                    adb.InsertOrReplaceAsync(ContentSettings);
-                    adb.InsertOrReplaceAsync(DataSettings);
+                    var x = adb.InsertOrReplaceAsync(ContentSettings).Result;
+                    x = adb.InsertOrReplaceAsync(DataSettings).Result;
 
                     ParseContent(jsonOut);
                 }
@@ -104,7 +104,7 @@ namespace DABApp
                 OfflineSettings = new dbSettings();
                 OfflineSettings.Key = "AvailableOffline";
                 OfflineSettings.Value = new JArray().ToString();
-                adb.InsertAsync(OfflineSettings);
+                var x = adb.InsertAsync(OfflineSettings).Result;
             }
             else
             {

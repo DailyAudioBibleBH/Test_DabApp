@@ -42,8 +42,8 @@ namespace DABApp
         public void Save()
         {
             SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-            adb.UpdateAsync(this);
-
+            var x = adb.UpdateAsync(this).Result;
+            
         }
     }
 }

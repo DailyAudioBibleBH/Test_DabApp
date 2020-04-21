@@ -34,8 +34,8 @@ namespace DABApp
         //grab episodes by channel
         public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
         {
-            try
-            {
+            //try
+            //{
                 var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
 
                 List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
@@ -74,22 +74,18 @@ namespace DABApp
                         episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
                         episode.PubMonth = getMonth(e.date);
                         episode.PubDay = e.date.Day;
-
-                        Device.InvokeOnMainThreadAsync(async () =>
-                        {
-                            await adb.InsertOrReplaceAsync(episode);
-                        });
+                        await adb.InsertOrReplaceAsync(episode);
                     }
                 }
 
                 Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
                 return "OK";
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
-                return ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
+            //    return ex.Message;
+            //}
         }
 
         public static string getMonth(DateTime e)
@@ -148,7 +144,7 @@ namespace DABApp
                 settings.DeleteAfterListening = false;
                 var jsonSettings = JsonConvert.SerializeObject(settings);
                 offlineSettings.Value = jsonSettings;
-                adb.InsertAsync(offlineSettings);
+                var x = adb.InsertAsync(offlineSettings).Result;
                 OfflineEpisodeSettings.Instance = settings;
             }
             else
@@ -162,7 +158,7 @@ namespace DABApp
         {
             var offlineSettings = adb.Table<dbSettings>().Where(x => x.Key == "OfflineEpisodes").FirstAsync().Result;
             offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
-            adb.UpdateAsync(offlineSettings);
+            var x = adb.UpdateAsync(offlineSettings).Result;
         }
 
         public static async Task<bool> DownloadEpisodes()
@@ -379,7 +375,7 @@ namespace DABApp
                         }
 
                     }
-                    adb.InsertOrReplaceAsync(data);
+                    await adb.InsertOrReplaceAsync(data);
                     Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
 
                     //Notify listening pages that episode data has changed
@@ -463,7 +459,7 @@ namespace DABApp
                             Debug.WriteLine("Episode {0} deleted.", episode.id, episode.url);
                             episode.is_downloaded = false;
                             episode.progressVisible = false;
-                            adb.UpdateAsync(episode);
+                            var x = adb.UpdateAsync(episode).Result;
                                 Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
                         }
 

@@ -570,12 +570,12 @@ namespace DABApp
             var AvatarSettings = new dbSettings();
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
-            adb.InsertOrReplaceAsync(TokenSettings);
-            adb.InsertOrReplaceAsync(CreationSettings);
-            adb.InsertOrReplaceAsync(EmailSettings);
-            adb.InsertOrReplaceAsync(FirstNameSettings);
-            adb.InsertOrReplaceAsync(LastNameSettings);
-            adb.InsertOrReplaceAsync(AvatarSettings);
+            int x = adb.InsertOrReplaceAsync(TokenSettings).Result;
+            x= adb.InsertOrReplaceAsync(CreationSettings).Result;
+            x = adb.InsertOrReplaceAsync(EmailSettings).Result;
+            x = adb.InsertOrReplaceAsync(FirstNameSettings).Result;
+            x = adb.InsertOrReplaceAsync(LastNameSettings).Result;
+            x = adb.InsertOrReplaceAsync(AvatarSettings).Result;
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
@@ -859,9 +859,12 @@ namespace DABApp
             newMode.Value = GlobalResources.TestMode.ToString();
             if (testMode != null)
             {
-                adb.UpdateAsync(newMode);
+                var x = adb.UpdateAsync(newMode).Result;
             }
-            else adb.InsertOrReplaceAsync(newMode);
+            else
+            {
+                var x = adb.InsertOrReplaceAsync(newMode).Result;
+            }
         }
 
         public static string CurrentToken

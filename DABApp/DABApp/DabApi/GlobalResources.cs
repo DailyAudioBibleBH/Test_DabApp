@@ -291,7 +291,7 @@ namespace DABApp
                 LastEpisodeQuerySettings = new dbSettings();
                 LastEpisodeQuerySettings.Key = k;
                 LastEpisodeQuerySettings.Value = queryDate.ToString("o");
-                adb.InsertOrReplaceAsync(LastEpisodeQuerySettings);
+                var x = adb.InsertOrReplaceAsync(LastEpisodeQuerySettings).Result;
                 return queryDate.ToString("o");
             }
             else
@@ -308,7 +308,7 @@ namespace DABApp
             //Store the value sent in the database
             string queryDate = DateTime.UtcNow.ToString("o");
             LastEpisodeQuerySettings.Value = queryDate;
-            adb.InsertOrReplaceAsync(LastEpisodeQuerySettings);
+            var x = adb.InsertOrReplaceAsync(LastEpisodeQuerySettings).Result;
         }
 
         //Last badge check date in GMT (get/set universal time)
@@ -325,7 +325,7 @@ namespace DABApp
                     BadgeUpdateSettings = new dbSettings();
                     BadgeUpdateSettings.Key = settingsKey;
                     BadgeUpdateSettings.Value = badgeDate.ToString();
-                    adb.InsertOrReplaceAsync(BadgeUpdateSettings);
+                    var x = adb.InsertOrReplaceAsync(BadgeUpdateSettings).Result;
                     return DateTime.Parse(BadgeUpdateSettings.Value);
                 }
                 else
@@ -341,7 +341,7 @@ namespace DABApp
                 dbSettings BadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 BadgeUpdateSettings.Key = settingsKey;
                 BadgeUpdateSettings.Value = badgeDate;
-                adb.InsertOrReplaceAsync(BadgeUpdateSettings);
+                var x = adb.InsertOrReplaceAsync(BadgeUpdateSettings).Result;
             }
         }
 
@@ -359,7 +359,7 @@ namespace DABApp
                     BadgeProgressSettings = new dbSettings();
                     BadgeProgressSettings.Key = settingsKey;
                     BadgeProgressSettings.Value = progressDate.ToString();
-                    adb.InsertOrReplaceAsync(BadgeProgressSettings);
+                    var x = adb.InsertOrReplaceAsync(BadgeProgressSettings).Result;
                     return DateTime.Parse(BadgeProgressSettings.Value);
                 }
                 else
@@ -376,7 +376,7 @@ namespace DABApp
                 dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 BadgeProgressSettings.Key = settingsKey;
                 BadgeProgressSettings.Value = progressDate;
-                adb.InsertOrReplaceAsync(BadgeProgressSettings);
+                var x = adb.InsertOrReplaceAsync(BadgeProgressSettings).Result;
             }
         }
 
@@ -394,7 +394,7 @@ namespace DABApp
                     LastActionsSettings = new dbSettings();
                     LastActionsSettings.Key = settingsKey;
                     LastActionsSettings.Value = actionDate.ToString();
-                    adb.InsertOrReplaceAsync(LastActionsSettings);
+                    var x = adb.InsertOrReplaceAsync(LastActionsSettings).Result;
                     return actionDate;
                 }
                 else
@@ -411,7 +411,7 @@ namespace DABApp
                 dbSettings LastActionsSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 if (LastActionsSettings == null) LastActionsSettings = new dbSettings() { Key = settingsKey };
                 LastActionsSettings.Value = actionDate;
-                adb.InsertOrReplaceAsync(LastActionsSettings);
+                var x = adb.InsertOrReplaceAsync(LastActionsSettings).Result;
             }
         }
 
@@ -427,7 +427,7 @@ namespace DABApp
                 LastRefreshSettings = new dbSettings();
                 LastRefreshSettings.Key = k;
                 LastRefreshSettings.Value = refreshDate.ToString("o");
-                adb.InsertOrReplaceAsync(LastRefreshSettings);
+                var x = adb.InsertOrReplaceAsync(LastRefreshSettings).Result;
                 return refreshDate.ToString("o");
             }
             else
@@ -446,7 +446,7 @@ namespace DABApp
             string queryDate = DateTime.UtcNow.ToString("o");
             LastRefreshSettings.Key = k;
             LastRefreshSettings.Value = queryDate;
-            adb.InsertOrReplaceAsync(LastRefreshSettings);
+            var x = adb.InsertOrReplaceAsync(LastRefreshSettings).Result;
         }
 
         public static string UserAvatar
@@ -599,17 +599,17 @@ namespace DABApp
             dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                adb.DeleteAsync(s);
+                await adb.DeleteAsync(s);
             }
             s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                adb.DeleteAsync(s);
+                await adb.DeleteAsync(s);
             }
             s = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
             if (s != null)
             {
-                adb.DeleteAsync(s);
+                await adb.DeleteAsync(s);
             }
 
 

@@ -293,7 +293,7 @@ namespace DABApp.DabSockets
                     {
                         newEpisode.description += $" ({DateTime.Now.ToShortTimeString()})";
                     }
-                    adb.InsertOrReplaceAsync(newEpisode);
+                    var x = adb.InsertOrReplaceAsync(newEpisode).Result;
 
                     //Notify listening items that episodes have changed.
                     Device.BeginInvokeOnMainThread(() =>
@@ -301,7 +301,7 @@ namespace DABApp.DabSockets
                         MessagingCenter.Send<string>("Update", "Update");
                         MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
-                        PlayerFeedAPI.DownloadEpisodes();
+                        var x = PlayerFeedAPI.DownloadEpisodes().Result;
 
                     });
                 }
@@ -345,7 +345,7 @@ namespace DABApp.DabSockets
                         sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
                     }
                     sTokenCreationDate.Value = DateTime.Now.ToString();
-                    adb.InsertOrReplaceAsync(sTokenCreationDate);
+                    await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
                     Instance.Init();
                     Instance.Connect();
@@ -366,7 +366,7 @@ namespace DABApp.DabSockets
                             }
                             catch (Exception)
                             {
-                                adb.InsertOrReplaceAsync(item);
+                                await adb.InsertOrReplaceAsync(item);
                             }
                         };
                     }
@@ -483,7 +483,7 @@ namespace DABApp.DabSockets
                         else
                         {
                             data.percent = newProgress.percent;
-                            adb.InsertOrReplaceAsync(data);
+                            await adb.InsertOrReplaceAsync(data);
                         }
                     }
                 }
