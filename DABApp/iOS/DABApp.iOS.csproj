@@ -508,6 +508,9 @@
     <BundleResource Include="Resources\baseline_skip_previous_white_48pt_1x.png" />
     <BundleResource Include="Resources\baseline_skip_previous_white_48pt_2x.png" />
     <BundleResource Include="Resources\baseline_skip_previous_white_48pt_3x.png" />
+    <BundleResource Include="Resources\Font Awesome 5 Brands-Regular-400.otf" />
+    <BundleResource Include="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <BundleResource Include="Resources\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />

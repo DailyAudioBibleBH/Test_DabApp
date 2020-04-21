@@ -17,7 +17,7 @@
                                 <local:HtmlLabel x:Name="bannerContent" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" Style="{StaticResource playerLabelStyle}"/>
                             </StackLayout>
                             <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                                <Button x:Name="btnRefresh" Text="Reload Episodes" Clicked="OnRefresh" FontSize="Micro" Opacity=".4" VerticalOptions="EndAndExpand" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" />
+                                <Button x:Name="btnRefresh" Text="&#xf021;" FontFamily="{StaticResource FontAwesomeSolid}" Clicked="OnRefresh" FontSize="Micro" Opacity=".4" VerticalOptions="EndAndExpand" HorizontalOptions="EndAndExpand" Style="{StaticResource imageButtonStyle}" />
                             </StackLayout>
                         </RelativeLayout>
                         <StackLayout Orientation="Horizontal" Padding="10" Spacing="5" BackgroundColor="{DynamicResource PageBackgroundColor}">
