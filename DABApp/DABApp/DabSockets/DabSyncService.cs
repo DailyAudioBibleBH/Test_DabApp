@@ -77,6 +77,11 @@ namespace DABApp.DabSockets
         private async void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
             Debug.WriteLine($"Shared code graph ql message: {e.Message}");
+
+            if (e.Message.Contains("Your token is not valid"))
+            {
+                await adb.ExecuteAsync("DELETE FROM dbSettings");
+            }
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 

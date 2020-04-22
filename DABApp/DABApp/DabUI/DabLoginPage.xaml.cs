@@ -51,6 +51,8 @@ namespace DABApp
             SignUp.IsSelectable = false;
             var tapper = new TapGestureRecognizer();
             tapper.NumberOfTapsRequired = 1;
+
+
             tapper.Tapped += (sender, e) =>
             {
                 Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
