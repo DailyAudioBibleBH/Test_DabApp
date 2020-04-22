@@ -505,6 +505,7 @@ namespace DABApp.DabSockets
 
         public void Connect()
         {
+            GlobalResources.WaitStart("Connecting to the Daily Audio Bible servers...");
             sock.Connect();
         }
 
@@ -647,7 +648,7 @@ namespace DABApp.DabSockets
         private void Sock_Connected(object data)
         {
             //The socket has connected or reconnected. Take appropriate action
-
+            GlobalResources.WaitStop();
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");

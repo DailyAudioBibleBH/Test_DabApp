@@ -87,6 +87,8 @@ namespace DABApp
 
         public async void OnRefresh(object o, EventArgs e)
         {
+            await btnRefresh.RotateTo(360, 2000);
+            btnRefresh.Rotation = 0;
             Refresh(true);
         }
 
