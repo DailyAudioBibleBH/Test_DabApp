@@ -71,10 +71,11 @@
                     </StackLayout>
                     <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
                     </StackLayout>
-                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" />
-                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand"/>
-                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" HorizontalOptions="End" />
+                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <Label Text=" " VerticalOptions="CenterAndExpand"></Label>
+                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" VerticalOptions="Center" />
+                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" VerticalOptions="EndAndExpand" HorizontalOptions="End" Opacity=".5" />
                     </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
@@ -92,10 +93,11 @@
                     </StackLayout>
                     <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
                     </StackLayout>
-                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" />
-                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" />
-                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand"/>
+                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <Label Text=" " VerticalOptions="CenterAndExpand"></Label>
+                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" VerticalOptions="Center" />
+                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" VerticalOptions="EndAndExpand" HorizontalOptions="End" Opacity=".5" />
                     </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
@@ -107,10 +109,11 @@
                     </StackLayout>
                     <StackLayout x:Name="activityHolder" Opacity=".75" IsVisible="false" BackgroundColor="{DynamicResource ActivityHolderBackground}" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
                     </StackLayout>
-                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="30" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
-                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" />
-                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" />
-                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand"/>
+                    <StackLayout x:Name="activityContent" IsVisible="false" Padding="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=0}" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=0}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}">
+                        <Label Text=" " VerticalOptions="CenterAndExpand"></Label>
+                        <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" VerticalOptions="Center" />
+                        <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
+                        <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" VerticalOptions="EndAndExpand" HorizontalOptions="End" Opacity=".5" />
                     </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>
