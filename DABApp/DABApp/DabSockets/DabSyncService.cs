@@ -78,10 +78,6 @@ namespace DABApp.DabSockets
         {
             Debug.WriteLine($"Shared code graph ql message: {e.Message}");
 
-            if (e.Message.Contains("Your token is not valid"))
-            {
-                await adb.ExecuteAsync("DELETE FROM dbSettings");
-            }
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
@@ -102,37 +98,36 @@ namespace DABApp.DabSockets
 
 
                 //Check for invalid token indicating user needs to log back in
-                if (GuestStatus.Current.IsGuestLogin == false && root.type == "error" && root.payload?.message != null)
+                //if (GuestStatus.Current.IsGuestLogin == false && root.type == "error" && root.payload?.message != null)
+                //{
+                if (root.payload.message == "Your token is not valid.")
                 {
-                    if (root.payload.message == "Your token is not valid.")
+                    //Clean up settings we don't want anymore.
+                    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                    if (s != null)
                     {
-                        dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                        if (s != null)
-                        {
-                            //log to firebase
-                            var fbInfo = new Dictionary<string, string>();
-                            fbInfo.Add("user", GlobalResources.GetUserEmail());
-                            fbInfo.Add("idiom", Device.Idiom.ToString());
-                            DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaToken", fbInfo);
+                        //log to firebase
+                        var fbInfo = new Dictionary<string, string>();
+                        fbInfo.Add("user", GlobalResources.GetUserEmail());
+                        fbInfo.Add("idiom", Device.Idiom.ToString());
+                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaToken", fbInfo);
 
+                        //User's token is no longer good. Better log them off (which will delete the settings)
+                        GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
 
-                            //User's token is no longer good. Better log them off.
-                            await adb.DeleteAsync(s);
-                            GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
-
-                        }
-                        return;
                     }
-                    else //other errors 
-                    {
-                        //log error to firebase
-                        var errorInfo = new Dictionary<string, string>();
-                        errorInfo.Add("user", GlobalResources.GetUserEmail());
-                        errorInfo.Add("idiom", Device.Idiom.ToString());
-                        errorInfo.Add("error", $"Payload.Message: {root.payload.message}");
-                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
-                    }
+                    return;
                 }
+                else //other errors 
+                {
+                    //log error to firebase
+                    var errorInfo = new Dictionary<string, string>();
+                    errorInfo.Add("user", GlobalResources.GetUserEmail());
+                    errorInfo.Add("idiom", Device.Idiom.ToString());
+                    errorInfo.Add("error", $"Payload.Message: {root.payload.message}");
+                    DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
+                }
+                //}
 
                 //logging errors, but not doing anything else with them right now.
                 if (root.payload?.errors != null)
@@ -657,8 +652,8 @@ namespace DABApp.DabSockets
             //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
-            dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result ;
-            if (Token == null) Token = new dbSettings() { Key="Token",Value="" }; //fake token
+            dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+            if (Token == null) Token = new dbSettings() { Key = "Token", Value = "" }; //fake token
             //Init the connection
             PrepConnectionWithTokenAndOrigin(Token.Value);
             //Only send user based subscriptions when user is logged in
@@ -688,7 +683,7 @@ namespace DABApp.DabSockets
                 //QUERY - RECENT PROGRESS
                 var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
-                var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload,0));
+                var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 0));
                 sock.Send(progressInit);
 
                 //get recent actions when we get a connection made

@@ -596,21 +596,7 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-            if (s != null)
-            {
-                await adb.DeleteAsync(s);
-            }
-            s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-            if (s != null)
-            {
-                await adb.DeleteAsync(s);
-            }
-            s = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-            if (s != null)
-            {
-                await adb.DeleteAsync(s);
-            }
+            dbSettings.DeleteLoginSettings();
 
 
             //Disconnect
