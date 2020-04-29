@@ -92,6 +92,9 @@ namespace DABApp
 
         public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
+            try
+            {
+
             var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result ;
             int days = ContentConfig.Instance.options.token_life;
             if (creation == null || creation.Value == null)
@@ -105,6 +108,12 @@ namespace DABApp
             }
 
             return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
 
         public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.

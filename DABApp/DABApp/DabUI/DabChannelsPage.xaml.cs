@@ -163,41 +163,44 @@ namespace DABApp
 
         void TimedActions()
         {
-            if (!AuthenticationAPI.CheckToken())
-            {               
-                //Send request for new token
-                if (DabSyncService.Instance.IsConnected)
+            if (GlobalResources.Instance.IsLoggedIn)
+            {
+                //update token if needed
+                if (!AuthenticationAPI.CheckToken())
                 {
-                    DabGraphQlVariables variables = new DabGraphQlVariables();
-                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                    DabSyncService.Instance.Send(tokenJsonIn);
+                    //Send request for new token
+                    if (DabSyncService.Instance.IsConnected)
+                    {
+                        DabGraphQlVariables variables = new DabGraphQlVariables();
+                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                        DabSyncService.Instance.Send(tokenJsonIn);
+                    }
                 }
+
+                //post actions logs
+                Task.Run(async () =>
+                {
+                    await AuthenticationAPI.PostActionLogs(false);
+                    await AuthenticationAPI.GetMemberData();
+                });
+
             }
-            
+
             //Download new episodes
             Task.Run(async () =>
             {
                 await PlayerFeedAPI.DownloadEpisodes();
             });
 
-            //Send data to the server
-            if (GlobalResources.GetUserName() != "Guest Guest")
-            {
-                Task.Run(async () =>
-                {
-                    await AuthenticationAPI.PostActionLogs(false);
-                    await AuthenticationAPI.GetMemberData();
-                });
-            }
         }
 
         protected override async void OnAppearing()
         {
             //Show toolbar items for android
-            MessagingCenter.Send<string>("Setup", "Setup");           
-            
+            MessagingCenter.Send<string>("Setup", "Setup");
+
             foreach (var r in ChannelView.resources)
             {
                 r.AscendingSort = false;

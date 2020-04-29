@@ -723,15 +723,18 @@ namespace DABApp
                 }
                 else if (!AuthenticationAPI.CheckToken())
                 {
-                    //Episodes may be null because websocket is denying because of bad token
-                    //Send request for new token
-                    if (DabSyncService.Instance.IsConnected)
+                    if (GlobalResources.Instance.IsLoggedIn)
                     {
-                        DabGraphQlVariables variables = new DabGraphQlVariables();
-                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                        DabSyncService.Instance.Send(tokenJsonIn);
+                        //Episodes may be null because websocket is denying because of bad token
+                        //Send request for new token
+                        if (DabSyncService.Instance.IsConnected)
+                        {
+                            DabGraphQlVariables variables = new DabGraphQlVariables();
+                            var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                            var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                            var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                            DabSyncService.Instance.Send(tokenJsonIn);
+                        }
                     }
                 }
                 else
@@ -1090,7 +1093,7 @@ namespace DABApp
             if (ok)
             {
                 GlobalResources.WaitStart("Refreshing episodes...");
-                
+
 
                 DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
                 string minQueryDate = queryDate.ToString("o");
@@ -1179,7 +1182,7 @@ namespace DABApp
                 {
                     Debug.WriteLine(ex.ToString());
                 }
-                
+
             });
         }
     }
