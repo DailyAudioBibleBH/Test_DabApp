@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dailyaudiobible.dabapp" android:installLocation="auto" android:versionName="1.1.70" android:versionCode="2020042319">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dailyaudiobible.dabapp" android:installLocation="auto" android:versionName="1.1.70" android:versionCode="2020042900">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
 	<permission android:name="dailyaudiobible.dabapp.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<supports-screens android:resizeable="true" android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" />
@@ -8,8 +8,6 @@
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
