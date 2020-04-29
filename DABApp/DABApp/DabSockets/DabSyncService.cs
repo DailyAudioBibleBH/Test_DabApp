@@ -97,37 +97,37 @@ namespace DABApp.DabSockets
 
 
 
-                //Check for invalid token indicating user needs to log back in
-                //if (GuestStatus.Current.IsGuestLogin == false && root.type == "error" && root.payload?.message != null)
-                //{
-                if (root.payload.message == "Your token is not valid.")
+                //Check for error messages
+                if (root.type == "error" && root.payload?.message != null)
                 {
-                    //Clean up settings we don't want anymore.
-                    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                    if (s != null)
+                    if (root.payload.message == "Your token is not valid.")
                     {
-                        //log to firebase
-                        var fbInfo = new Dictionary<string, string>();
-                        fbInfo.Add("user", GlobalResources.GetUserEmail());
-                        fbInfo.Add("idiom", Device.Idiom.ToString());
-                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaToken", fbInfo);
+                        //Clean up settings we don't want anymore.
+                        dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                        if (s != null)
+                        {
+                            //log to firebase
+                            var fbInfo = new Dictionary<string, string>();
+                            fbInfo.Add("user", GlobalResources.GetUserEmail());
+                            fbInfo.Add("idiom", Device.Idiom.ToString());
+                            DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaToken", fbInfo);
 
-                        //User's token is no longer good. Better log them off (which will delete the settings)
-                        GlobalResources.LogoffAndResetApp("Your login credentials have been revoked. Please log back in.");
+                            //User's token is no longer good. Better log them off (which will delete the settings)
+                            GlobalResources.LogoffAndResetApp("Your login token is not valid. Please log back in.");
 
+                        }
+                        return;
                     }
-                    return;
+                    else //other errors 
+                    {
+                        //log error to firebase
+                        var errorInfo = new Dictionary<string, string>();
+                        errorInfo.Add("user", GlobalResources.GetUserEmail());
+                        errorInfo.Add("idiom", Device.Idiom.ToString());
+                        errorInfo.Add("error", $"Payload.Message: {root.payload.message}");
+                        DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
+                    }
                 }
-                else //other errors 
-                {
-                    //log error to firebase
-                    var errorInfo = new Dictionary<string, string>();
-                    errorInfo.Add("user", GlobalResources.GetUserEmail());
-                    errorInfo.Add("idiom", Device.Idiom.ToString());
-                    errorInfo.Add("error", $"Payload.Message: {root.payload.message}");
-                    DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_error", errorInfo);
-                }
-                //}
 
                 //logging errors, but not doing anything else with them right now.
                 if (root.payload?.errors != null)
@@ -315,17 +315,6 @@ namespace DABApp.DabSockets
 
 
                     GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
-                    ////Expire the token (should log the user out?)
-                    //dbSettings sTokenCreationDate = db.Table<dbSettings>().SingleOrDefault(x => x.Key == "TokenCreation");
-                    //if (sTokenCreationDate == null)
-                    //{
-                    //    sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                    //}
-                    //sTokenCreationDate.Value = DateTime.Now.AddDays(5).ToString();
-                    //db.Update(sTokenCreationDate);
-                    //sock.Disconnect();
-                    //Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Logout", "Logout"); });
-                    //Debug.WriteLine($"SOCKET jwt_expired {DateTime.Now}");
                 }
                 else if (root.payload?.data?.updateToken?.token != null)
                 {
