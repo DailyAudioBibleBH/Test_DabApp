@@ -48,7 +48,7 @@ namespace DABApp
                 Logo.WidthRequest = 250;
                 Logo.Aspect = Aspect.AspectFit;
             }
-            SignUp.IsSelectable = false;
+            //SignUp.IsSelectable = false;
             var tapper = new TapGestureRecognizer();
             tapper.NumberOfTapsRequired = 1;
 
@@ -57,8 +57,8 @@ namespace DABApp
             {
                 Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
             };
-            SignUp.GestureRecognizers.Add(tapper);
-            SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+            //SignUp.GestureRecognizers.Add(tapper);
+            //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
@@ -271,9 +271,15 @@ namespace DABApp
             Navigation.PushAsync(new DabResetPasswordPage());
         }
 
+        void OnBack(object o, EventArgs e)
+        {
+            BackButton.IsEnabled = false;
+            Navigation.PopAsync();
+        }
+
         async void OnGuestLogin(object o, EventArgs e)
         {
-            GuestLogin.IsEnabled = false;
+            //GuestLogin.IsEnabled = false;
             GlobalResources.WaitStart("Logging you in as a guest...");
             GuestStatus.Current.IsGuestLogin = true;
 
@@ -455,10 +461,10 @@ namespace DABApp
             {
                 Email.IsEnabled = false;
                 Password.IsEnabled = false;
-                GuestLogin.IsEnabled = false;
+                //GuestLogin.IsEnabled = false;
                 Login.IsEnabled = false;
                 btnForgot.IsEnabled = false;
-                SignUp.IsEnabled = false;
+                //SignUp.IsEnabled = false;
                 Login.Text = MainButtonText;
             }
             );
@@ -468,7 +474,7 @@ namespace DABApp
         {
             base.OnDisappearing();
             Login.IsEnabled = true;
-            GuestLogin.IsEnabled = true;
+            //GuestLogin.IsEnabled = true;
         }
 
         void OnCompleted(object sender, System.EventArgs e)
@@ -490,8 +496,8 @@ namespace DABApp
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
                     Login.IsEnabled = false;
-                    GuestLogin.IsEnabled = false;
-                    SignUp.IsEnabled = false;
+                    //GuestLogin.IsEnabled = false;
+                    //SignUp.IsEnabled = false;
                 }
             }
         }

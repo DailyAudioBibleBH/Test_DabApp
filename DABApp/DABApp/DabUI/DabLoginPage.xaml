@@ -6,19 +6,18 @@
       <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnTest"/></Image.GestureRecognizers>
       </Image>
 			<Frame/>
-			<Label Text="Email" FontSize="Micro" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
+			<Label Text="Email" FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
 			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
-			<Label Text="Password" FontSize="Micro" VerticalOptions="Center" AutomationProperties.IsInAccessibleTree="true"/>
-			<Entry x:Name="Password" VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
-			<Frame/>
-			<Button x:Name="Login" HeightRequest="40" Text="Log in" Clicked="OnLogin" Style="{StaticResource highlightedButtonStyle}"/>
-			<StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
-				<Button x:Name="btnForgot" Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="StartAndExpand"/>
-				<Button x:Name="GuestLogin" Text="Log in as Guest" Clicked="OnGuestLogin" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
-			</StackLayout>
-			<Frame OutlineColor="{DynamicResource OutlineColor}" VerticalOptions="End" HeightRequest="40" Margin="20, 30, 20, 30">
-				<local:HtmlLabel x:Name="SignUp" VerticalOptions="Center" Padding="0, 10, 0, 0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
-			</Frame>
+			<Entry x:Name="Password" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
+                <Label Text="Password" FontSize="Small" HorizontalOptions="StartAndExpand"/>
+                <Button x:Name="btnForgot" Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
+            </StackLayout>
+            <Frame/>
+            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                <Button x:Name="BackButton" HeightRequest="40" WidthRequest="120"  Text="Back" Clicked="OnBack" HorizontalOptions="StartAndExpand"  Style="{StaticResource highlightedButtonStyle}"/>
+                <Button x:Name="Login" HeightRequest="40" WidthRequest="120" Text="Log in" Clicked="OnLogin" HorizontalOptions="EndAndExpand"  Style="{StaticResource highlightedButtonStyle}"/>
+            </StackLayout>
             <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/> 
 		</StackLayout>
 	</ContentPage.Content>
