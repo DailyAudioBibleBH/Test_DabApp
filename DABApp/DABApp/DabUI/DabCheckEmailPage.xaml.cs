@@ -23,6 +23,8 @@ namespace DABApp
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        DabGraphQlVariables variables = new DabGraphQlVariables();
+
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -216,47 +218,51 @@ namespace DABApp
         }
 
 
-        async void OnLogin(object o, EventArgs e)
+        async void OnNext(object o, EventArgs e)
         {
             if (DabSyncService.Instance.IsConnected)
             {
                 try
                 {
-                    Login.IsEnabled = false;
-                    GlobalResources.WaitStart("Checking your credentials...");
-                    var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
-                    if (result == "Request Sent")
-                    {
-                        //Wait for the reply from GraphQl before proceeding.
-                        GraphQlLoginRequestInProgress = true;
-                    }
+                    var checkEmailQuery = "query { checkEmail(email: \"" + Email.Text + "\" )}";
+                    var checkEmailPayload = new DabGraphQlPayload(checkEmailQuery, variables);
+                    var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", checkEmailPayload));
+                    DabSyncService.Instance.Send(JsonIn);
+                    //Login.IsEnabled = false;
+                    //GlobalResources.WaitStart("Checking your credentials...");
+                    //var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+                    //if (result == "Request Sent")
+                    //{
+                    //    //Wait for the reply from GraphQl before proceeding.
+                    //    GraphQlLoginRequestInProgress = true;
+                    //}
 
-                    else
-                    {
-                        GlobalResources.WaitStop();
-                        if (result.Contains("Error"))
-                        {
-                            if (result.Contains("Http"))
-                            {
-                                await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
-                            }
-                        }
-                        else
-                        {
-                            await DisplayAlert("Login Failed", result, "OK");
-                        }
-                    }
-                    Login.IsEnabled = true;
+                    //else
+                    //{
+                    //    GlobalResources.WaitStop();
+                    //    if (result.Contains("Error"))
+                    //    {
+                    //        if (result.Contains("Http"))
+                    //        {
+                    //            await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
+                    //        }
+                    //        else
+                    //        {
+                    //            await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        await DisplayAlert("Login Failed", result, "OK");
+                    //    }
+                    //}
+                    //Login.IsEnabled = true;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
-                    Navigation.PushAsync(new DabLoginPage());
+                    //Navigation.PushAsync(new DabLoginPage());
                 }
             }
             else
@@ -269,12 +275,6 @@ namespace DABApp
         void OnForgot(object o, EventArgs e)
         {
             Navigation.PushAsync(new DabResetPasswordPage());
-        }
-
-        void OnBack(object o, EventArgs e)
-        {
-            BackButton.IsEnabled = false;
-            Navigation.PopAsync();
         }
 
         async void OnGuestLogin(object o, EventArgs e)
@@ -460,12 +460,12 @@ namespace DABApp
             Device.BeginInvokeOnMainThread(() =>
             {
                 Email.IsEnabled = false;
-                Password.IsEnabled = false;
+                //Password.IsEnabled = false;
                 //GuestLogin.IsEnabled = false;
-                Login.IsEnabled = false;
+                //Login.IsEnabled = false;
                 btnForgot.IsEnabled = false;
                 //SignUp.IsEnabled = false;
-                Login.Text = MainButtonText;
+                //Login.Text = MainButtonText;
             }
             );
         }
@@ -473,13 +473,7 @@ namespace DABApp
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            Login.IsEnabled = true;
-            //GuestLogin.IsEnabled = true;
-        }
-
-        void OnCompleted(object sender, System.EventArgs e)
-        {
-            Password.Focus();
+            Email.IsEnabled = true;
         }
 
         async void OnTest(object sender, EventArgs e)
@@ -495,7 +489,7 @@ namespace DABApp
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
-                    Login.IsEnabled = false;
+                    Email.IsEnabled = false;
                     //GuestLogin.IsEnabled = false;
                     //SignUp.IsEnabled = false;
                 }
