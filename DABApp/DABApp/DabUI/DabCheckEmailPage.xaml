@@ -1,25 +1,23 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabCheckEmailPage"
 	xmlns:local="clr-namespace:DABApp;">
-	<ContentPage.Content>
-		<StackLayout x:Name="Container" Padding="10" Spacing="5">
-      <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png"><Image.GestureRecognizers><TapGestureRecognizer Tapped="OnTest"/></Image.GestureRecognizers>
-      </Image>
-     <Label Text="Lorem ipsum dolar sit amet, consectetu adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ></Label>
-			<Frame/>
-			<Label Text="Email" FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
-			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
-			<Entry x:Name="Password" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
-            <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
-                <Label Text="Password" FontSize="Small" HorizontalOptions="StartAndExpand"/>
-                <Button x:Name="btnForgot" Text="Forgot Password?" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
-            </StackLayout>
+    <ContentPage.Content>
+        <StackLayout x:Name="Container" Padding="10" Spacing="5">
+            <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png">
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnTest"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <Frame/>
+            <Label Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum" FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
+            <Entry x:Name="Email" VerticalOptions="Center" Margin="0, 10, 0, 10"  Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+            <Button x:Name="NextButton" Margin="0, 0, 0, 10" HeightRequest="40" WidthRequest="120" Text="Next" Clicked="OnLogin"  Style="{StaticResource highlightedButtonStyle}"/>
+            <Button x:Name="btnForgot" Text="Login as guest" Clicked="OnGuestLogin" BorderColor="Transparent"/>
             <Frame/>
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-                <Button x:Name="BackButton" HeightRequest="40" WidthRequest="120"  Text="Back" Clicked="OnBack" HorizontalOptions="StartAndExpand"  Style="{StaticResource highlightedButtonStyle}"/>
-                <Button x:Name="Login" HeightRequest="40" WidthRequest="120" Text="Log in" Clicked="OnLogin" HorizontalOptions="EndAndExpand"  Style="{StaticResource highlightedButtonStyle}"/>
+                
             </StackLayout>
-            <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/> 
-		</StackLayout>
-	</ContentPage.Content>
+            <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/>
+        </StackLayout>
+    </ContentPage.Content>
 </local:DabBaseContentPage>
