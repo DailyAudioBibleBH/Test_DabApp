@@ -111,6 +111,7 @@ namespace DABApp
         {
             try
             {
+                //TODO: Move to DabSyncService
                 dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                 dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
                 dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
@@ -121,6 +122,12 @@ namespace DABApp
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
                 var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
                 var content = new StringContent(JsonIn);
+
+                string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}";
+                var mRegister = new DabGraphQlPayload(registerMutation, variables);
+                DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
+
+
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                 var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/profile", content);
                 string JsonOut = await result.Content.ReadAsStringAsync();

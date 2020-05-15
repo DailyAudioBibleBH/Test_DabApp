@@ -10,7 +10,9 @@
             <Label Text="Email Address" FontSize="Micro"/>
             <Entry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
             <Label Text="Password" FontSize="Micro"/>
-            <Entry x:Name="Password" IsPassword="true" Completed="OnSignUp"/>
+            <Entry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
+            <Label Text="Re Enter Password" FontSize="Micro"/>
+            <Entry x:Name="PasswordAgain" IsPassword="true" Completed="OnSignUp"/>
             <StackLayout Orientation="Horizontal">
                 <Switch x:Name="Agreement" VerticalOptions="Start">
                     <Switch.AutomationProperties.Name>

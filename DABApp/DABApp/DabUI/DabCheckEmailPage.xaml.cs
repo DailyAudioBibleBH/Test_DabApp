@@ -220,11 +220,12 @@ namespace DABApp
 
         async void OnNext(object o, EventArgs e)
         {
+            const string quote = "\"";
             if (DabSyncService.Instance.IsConnected)
             {
                 try
                 {
-                    var checkEmailQuery = "query { checkEmail(email: \"" + Email.Text + "\" )}";
+                    var checkEmailQuery = "query { checkEmail(email:" + quote + Email.Text + quote + " )}";
                     var checkEmailPayload = new DabGraphQlPayload(checkEmailQuery, variables);
                     var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", checkEmailPayload));
                     DabSyncService.Instance.Send(JsonIn);

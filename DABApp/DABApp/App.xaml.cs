@@ -56,7 +56,7 @@ namespace DABApp
                 else
                 {
                     //Take them to the login page if they aren't logged in or there is a special mode in play.
-                    MainPage = new NavigationPage(new DabCheckEmailPage()); //Take to login page if not logged in
+                    MainPage = new NavigationPage(new DabLoginPage()); //Take to login page if not logged in
                 }
             }
             else

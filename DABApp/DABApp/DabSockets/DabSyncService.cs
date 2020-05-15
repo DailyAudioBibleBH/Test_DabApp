@@ -680,6 +680,20 @@ namespace DABApp.DabSockets
                 subscriptionIds.Add(3);
                 sock.Send(SubscriptionProgressData);
 
+                //SUBSCRIPTION 4 - USER UPDATED
+                var userUpdatedQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
+                DabGraphQlPayload userUpdatedPayload = new DabGraphQlPayload(userUpdatedQuery, variables);
+                var SubscriptionUpdatedUser = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userUpdatedPayload, 4));
+                subscriptionIds.Add(4);
+                sock.Send(SubscriptionUpdatedUser);
+
+                //SUBSCRIPTION 5 - USER ADDRESS UPDATED
+                var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
+                DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
+                var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 5));
+                subscriptionIds.Add(5);
+                sock.Send(SubscriptionUpdatedUserAddress);
+
                 //QUERY - RECENT PROGRESS
                 var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
