@@ -487,6 +487,26 @@ namespace DABApp.DabSockets
                         }
                     }
                 }
+                else if (root.payload?.data?.updateUser?.user != null)
+                {
+                    GraphQlUser user = new GraphQlUser(root.payload.data.updateUser.user);
+
+                    dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                    dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                    dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                    dbSettings LanguageSettings = adb.Table<dbSettings>().Where(x => x.Key == "Language").FirstOrDefaultAsync().Result;
+
+                    EmailSettings.Value = user.email;
+                    FirstNameSettings.Value = user.firstName;
+                    LastNameSettings.Value = user.lastName;
+                    LanguageSettings.Value = user.language;
+
+                    await adb.UpdateAsync(EmailSettings);
+                    await adb.UpdateAsync(FirstNameSettings);
+                    await adb.UpdateAsync(LastNameSettings);
+                    await adb.UpdateAsync(LanguageSettings);
+
+                }
             }
             catch (Exception ex)
             {

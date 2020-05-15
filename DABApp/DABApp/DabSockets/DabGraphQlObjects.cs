@@ -111,6 +111,20 @@ namespace DABApp.DabSockets
 
     public class GraphQlUser
     {
+        public GraphQlUser()
+        {
+
+        }
+        public GraphQlUser(GraphQlUser user)
+        {
+            this.id = user.id;
+            this.email = user.email;
+            this.firstName = user.firstName;
+            this.lastName = user.lastName;
+            this.language = user.language;
+            this.wpId = user.wpId;
+        }
+
         public int id { get; set; }
         public int wpId { get; set; }
         public string firstName { get; set; }

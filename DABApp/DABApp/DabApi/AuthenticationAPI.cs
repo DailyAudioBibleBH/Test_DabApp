@@ -574,6 +574,9 @@ namespace DABApp
             var LastNameSettings = new dbSettings();
             LastNameSettings.Key = "LastName";
             LastNameSettings.Value = token.user_last_name;
+            var LanguageSettings = new dbSettings();
+            LanguageSettings.Key = "Language";
+            LanguageSettings.Value = "English";
             var AvatarSettings = new dbSettings();
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
@@ -583,6 +586,7 @@ namespace DABApp
             x = adb.InsertOrReplaceAsync(FirstNameSettings).Result;
             x = adb.InsertOrReplaceAsync(LastNameSettings).Result;
             x = adb.InsertOrReplaceAsync(AvatarSettings).Result;
+            x = adb.InsertOrReplaceAsync(LanguageSettings).Result;
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
