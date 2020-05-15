@@ -683,15 +683,15 @@ namespace DABApp.DabSockets
                 //SUBSCRIPTION 4 - USER UPDATED
                 var userUpdatedQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
                 DabGraphQlPayload userUpdatedPayload = new DabGraphQlPayload(userUpdatedQuery, variables);
-                var SubscriptionUpdatedUser = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userUpdatedPayload, 4));
-                subscriptionIds.Add(4);
+                var SubscriptionUpdatedUser = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userUpdatedPayload, 6));
+                subscriptionIds.Add(6);
                 sock.Send(SubscriptionUpdatedUser);
 
                 //SUBSCRIPTION 5 - USER ADDRESS UPDATED
                 var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
                 DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
-                var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 5));
-                subscriptionIds.Add(5);
+                var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 7));
+                subscriptionIds.Add(7);
                 sock.Send(SubscriptionUpdatedUserAddress);
 
                 //QUERY - RECENT PROGRESS
