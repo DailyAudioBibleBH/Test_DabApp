@@ -608,7 +608,7 @@ namespace DABApp
             Device.BeginInvokeOnMainThread(() =>
             {
                 //Reset main page of app.
-                Application.Current.MainPage = new NavigationPage(new DabLoginPage());
+                Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
             });
         }
 
