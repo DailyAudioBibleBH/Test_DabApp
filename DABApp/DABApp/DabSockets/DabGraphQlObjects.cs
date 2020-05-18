@@ -55,6 +55,7 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedProgress updatedProgress { get; set; }
         public DabGraphQlProgressUpdated progressUpdated { get; set; }
         public DabGraphQlEpisodePublished episodePublished { get; set; }
+        public string checkEmail { get; set; }
     }
 
     public class DabGraphQlEpisodePublished

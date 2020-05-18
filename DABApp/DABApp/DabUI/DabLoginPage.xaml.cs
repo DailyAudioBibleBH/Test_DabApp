@@ -274,7 +274,7 @@ namespace DABApp
         void OnBack(object o, EventArgs e)
         {
             BackButton.IsEnabled = false;
-            Navigation.PushAsync(new DabSignUpPage());
+            Navigation.PopAsync();
         }
 
         async void OnGuestLogin(object o, EventArgs e)
