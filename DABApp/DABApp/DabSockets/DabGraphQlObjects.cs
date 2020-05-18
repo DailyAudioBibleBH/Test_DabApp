@@ -41,7 +41,8 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlData
     {
-        public GraphQlUpdateUser updateUser { get; set; } //User Information
+        public DabGraphQlRegisterUser registerUser { get; set; }
+        public DabGraphQlUpdateUser updateUser { get; set; } //User Information
         public DabGraphQlActionLogged actionLogged { get; set; } //Actions Logged
         public List<Channel> channels { get; set; } //Channels
         public DabGraphQlLastActions lastActions { get; set; } //Last Actions
@@ -56,6 +57,21 @@ namespace DABApp.DabSockets
         public DabGraphQlProgressUpdated progressUpdated { get; set; }
         public DabGraphQlEpisodePublished episodePublished { get; set; }
         public string checkEmail { get; set; }
+    }
+
+    public class DabGraphQlRegisterUser
+    {
+        public int id { get; set; }
+        public int wpId { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string nickname { get; set; }
+        public string email { get; set; }
+        public string language { get; set; }
+        public string channel { get; set; }
+        public string channels { get; set; }
+        public string userRegistered { get; set; }
+        public string token { get; set; }
     }
 
     public class DabGraphQlEpisodePublished
@@ -134,7 +150,7 @@ namespace DABApp.DabSockets
         public string language { get; set; }
     }
 
-    public class GraphQlUpdateUser
+    public class DabGraphQlUpdateUser
     {
         public GraphQlUser user { get; set; }
     }
