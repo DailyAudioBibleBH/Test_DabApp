@@ -23,6 +23,8 @@ namespace DABApp
         bool GraphQlLoginRequestInProgress = false;
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+        DabGraphQlVariables variables = new DabGraphQlVariables();
+
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -166,16 +168,23 @@ namespace DABApp
                                 Navigation.RemovePage(page);
                             }
                         }
+                        else if (root?.payload?.data?.resetPassword != null)
+                        {
+                            if (root.payload.data.resetPassword == true)
+                            {
+                                await DisplayAlert("Forgot Password?", "Check your email!", "OK");
+                            }
+                        }
 
                         else if (root?.payload?.errors?.First() != null)
                         {
-                            if (GraphQlLoginRequestInProgress == true)
-                            {
+                            //if (GraphQlLoginRequestInProgress == true)
+                            //{
                                 GlobalResources.WaitStop();
                                 //We have a login error!
                                 await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
                                 GraphQlLoginRequestInProgress = false;
-                            }
+                            //}
                         }
                         else
                         {
@@ -266,9 +275,22 @@ namespace DABApp
 
         }
 
-        void OnForgot(object o, EventArgs e)
+        async void OnForgot(object o, EventArgs e)
         {
-            Navigation.PushAsync(new DabResetPasswordPage());
+            bool answer = await DisplayAlert("Forgot Password?", "Would you like for us to send you an email to reset your password?", "Yes", "No");
+            var email = Email.Text;
+            if (answer == true)
+            {
+                var resetPasswordMutation = $"mutation {{ resetPassword(email: \"{email}\" )}}";
+                var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
+                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
+                DabSyncService.Instance.Send(JsonIn);
+            }
+            //var resetPasswordMutation = "mutation { resetPassword(email: \"{Email.Text}\" )}";
+            //var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
+            //var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
+            //DabSyncService.Instance.Send(JsonIn);
+            //Navigation.PushAsync(new DabResetPasswordPage());
         }
 
         void OnBack(object o, EventArgs e)

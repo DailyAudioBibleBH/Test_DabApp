@@ -349,7 +349,7 @@ namespace DABApp
                 //Password.IsEnabled = false;
                 //GuestLogin.IsEnabled = false;
                 //Login.IsEnabled = false;
-                btnForgot.IsEnabled = false;
+                btnGuest.IsEnabled = false;
                 //SignUp.IsEnabled = false;
                 //Login.Text = MainButtonText;
             }

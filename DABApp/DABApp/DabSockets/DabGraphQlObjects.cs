@@ -41,6 +41,7 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlData
     {
+        public bool resetPassword { get; set; }
         public DabGraphQlRegisterUser registerUser { get; set; }
         public DabGraphQlUpdateUser updateUser { get; set; } //User Information
         public DabGraphQlActionLogged actionLogged { get; set; } //Actions Logged
