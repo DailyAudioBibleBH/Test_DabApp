@@ -525,6 +525,7 @@ namespace DABApp.DabSockets
                     }
                     if (user.channel != null)
                     {
+                        //Find out how we want to do this
                         dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
                         if (ChannelSettings == null)
                         {
@@ -535,6 +536,7 @@ namespace DABApp.DabSockets
                     }
                     if (user.channels != null)
                     {
+                        //Find out how we want to do this
                         dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
                         if (ChannelsSettings == null)
                         {
