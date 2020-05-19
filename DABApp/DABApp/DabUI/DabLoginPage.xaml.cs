@@ -163,7 +163,7 @@ namespace DABApp
                             DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
 
                             //Send a request for updated user data
-                            string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                            string jUser = $"query {{user{{wpId,firstName,lastName, nickname, email, language, channel, channels, userRegistered, token}}}}";
                             var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
                             DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
 
