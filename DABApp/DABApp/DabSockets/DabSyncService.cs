@@ -743,7 +743,7 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
             dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-            if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIKey }; //fake token
+            if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIRoleKey }; //fake token
             //Init the connection
             PrepConnectionWithTokenAndOrigin(Token.Value);
             //Only send user based subscriptions when user is logged in

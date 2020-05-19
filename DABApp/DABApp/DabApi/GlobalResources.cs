@@ -32,7 +32,7 @@ namespace DABApp
         {
             get
             {
-                return "20200517";
+                return "20200402";
             }
         }
 
@@ -53,9 +53,9 @@ namespace DABApp
 
         public static string APIVersion { get; set; } = "2";
 
-        //public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
+        public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
 
-        public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4MjkwMTkwNSwibmJmIjoxNTgyOTAxOTA1LCJleHAiOjE3NDA1ODE5MDUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE3In19fQ.dVSqTh1aPpfH-E-LpzmXpr6ibl4NC73yl4F4dFwhIio";
+        public static readonly string APIRoleKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4MjkwMTkwNSwibmJmIjoxNTgyOTAxOTA1LCJleHAiOjE3NDA1ODE5MDUsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE3In19fQ.dVSqTh1aPpfH-E-LpzmXpr6ibl4NC73yl4F4dFwhIio";
 
 
         public event PropertyChangedEventHandler PropertyChanged;
