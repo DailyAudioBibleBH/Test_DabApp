@@ -1,30 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:local="clr-namespace:DABApp;"
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabChannelsPage" xmlns:local="clr-namespace:DABApp"
 	xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
-	<ContentPage.Content>
-		<StackLayout x:Name="Container">
-			<StackLayout Padding="15">
-				<ContentView Padding="10, 0, 0, 0">
-				<local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
-				</ContentView>
-				<local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{Binding Source={x:Static local:GlobalResources.Instance}, Path=FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
-					<local:NonScrollingFlowListView.FlowColumnTemplate>
-						<DataTemplate>
-							<StackLayout Padding="10" Spacing="0" Opacity="{Binding IsNotSelected}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding title}">
-								<ff:CachedImage Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
-									<ff:CachedImage.Source>
-										<UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
-									</ff:CachedImage.Source>
-								</ff:CachedImage>
-								<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
-									<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
-								</StackLayout>
-							</StackLayout>
-						</DataTemplate>
-					</local:NonScrollingFlowListView.FlowColumnTemplate>
-				</local:NonScrollingFlowListView>
-				
-			</StackLayout>
-		</StackLayout>
-	</ContentPage.Content>
+    <ContentPage.Content>
+        <StackLayout x:Name="Container">
+            <StackLayout HeightRequest="0" x:Name="TodaysEpisodeContainer" IsClippedToBounds="true">
+                <RelativeLayout>
+                    <local:BackgroundImage x:Name="TodaysEpisodeBackgroundImage"
+                                   Aspect="AspectFill"
+                                   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
+                                   RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
+                                   AutomationProperties.IsInAccessibleTree="false"
+                                           Opacity=".25"/>
+                    <StackLayout x:Name="TodaysEpisodeContentContainer" VerticalOptions="CenterAndExpand">
+                        <!--<Label Text="Today's Reading" FontSize="Title" TextColor="{DynamicResource TextColor}"/>-->
+                        <Label Text="[Title]" x:Name="TodaysEpisodeTitle" FontSize="Subtitle" TextColor="{DynamicResource HighlightTextColor}"/>
+                        <Label Text="Join us today as we continue to read through the Bible in its entirety." TextColor="{DynamicResource HighlightTextColor}"/>
+                        <Label Text="[Passage Text Goes Here]" x:Name="TodaysEpisodePassageLabel" TextColor="{DynamicResource SecondaryTextColor}"/>
+                        <Button Text="Listen Now" FontSize="Large" HorizontalOptions="Start" Padding="20,0,20,0"  Style="{StaticResource highlightedButtonStyle}" x:Name="TodaysEpisodeButton"/>
+                    </StackLayout>
+                </RelativeLayout>
+            </StackLayout>
+            <StackLayout Padding="15" x:Name="stackChannels">
+                <ContentView Padding="10, 0, 0, 0">
+                    <local:HtmlLabel x:Name="ListTitle" Text="{Binding title}" FontSize="Large" FontAttributes="Bold"/>
+                </ContentView>
+                <local:NonScrollingFlowListView x:Name="ChannelsList" FlowColumnCount="{Binding Source={x:Static local:GlobalResources.Instance}, Path=FlowListViewColumns}" FlowItemsSource="{Binding resources}" SeparatorVisibility="None" FlowUseAbsoluteLayoutInternally="true" FlowItemTapped="OnChannel" HasUnevenRows="true" VerticalOptions="FillAndExpand">
+                    <local:NonScrollingFlowListView.FlowColumnTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="10" Spacing="0" Opacity="{Binding IsNotSelected}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding title}">
+                                <ff:CachedImage Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
+                                    <ff:CachedImage.Source>
+                                        <UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
+                                    </ff:CachedImage.Source>
+                                </ff:CachedImage>
+                                <StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
+                                    <Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </DataTemplate>
+                    </local:NonScrollingFlowListView.FlowColumnTemplate>
+                </local:NonScrollingFlowListView>
+
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
 </local:DabBaseContentPage>
