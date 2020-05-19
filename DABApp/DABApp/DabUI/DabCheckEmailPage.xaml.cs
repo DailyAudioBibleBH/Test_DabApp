@@ -98,7 +98,7 @@ namespace DABApp
                         if (root?.payload?.data?.checkEmail == "true")
                         {
                             GlobalResources.WaitStop();
-                            await Navigation.PushAsync(new DabLoginPage());
+                            await Navigation.PushAsync(new DabLoginPage(Email.Text));
                         }
                         if (root?.payload?.data?.checkEmail == "false")
                         {

@@ -24,7 +24,7 @@ namespace DABApp
         bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         DabGraphQlVariables variables = new DabGraphQlVariables();
-
+        private string text;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -65,6 +65,52 @@ namespace DABApp
             {
                 Container.Padding = 100;
             }
+
+            DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
+            lblVersion.Text = $"v {CrossVersion.Current.Version}";
+        }
+
+        public DabLoginPage(string emailInput, bool fromPlayer = false, bool fromDonation = false)
+        {
+            InitializeComponent();
+            _width = this.Width;
+            _height = this.Height;
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
+            }
+            NavigationPage.SetHasNavigationBar(this, false);
+            _fromPlayer = fromPlayer;
+            _fromDonation = fromDonation;
+            GlobalResources.LogInPageExists = true;
+            ToolbarItems.Clear();
+            var email = GlobalResources.GetUserEmail();
+            if (email != "Guest" && !String.IsNullOrEmpty(email))
+            {
+                Email.Text = email;
+            }
+            if (Device.Idiom == TargetIdiom.Phone)
+            {
+                Logo.WidthRequest = 250;
+                Logo.Aspect = Aspect.AspectFit;
+            }
+            //SignUp.IsSelectable = false;
+            var tapper = new TapGestureRecognizer();
+            tapper.NumberOfTapsRequired = 1;
+
+
+            tapper.Tapped += (sender, e) =>
+            {
+                Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
+            };
+            //SignUp.GestureRecognizers.Add(tapper);
+            //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+            if (Device.Idiom == TargetIdiom.Tablet)
+            {
+                Container.Padding = 100;
+            }
+
+            Email.Text = emailInput;
 
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
