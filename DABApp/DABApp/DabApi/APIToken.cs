@@ -73,14 +73,11 @@ namespace DABApp
 		public string user_password_current { get; set; }
 		public string user_password1 { get; set; }
 		public string user_password2 { get; set; }
-		public EditProfileInfo(string email, string firstName, string lastName, string currentPassword, string password1, string password2)
+		public EditProfileInfo(string email, string firstName, string lastName)
 		{
 			user_email = email;
 			user_first_name = firstName;
 			user_last_name = lastName;
-			user_password_current = currentPassword;
-			user_password1 = password1;
-			user_password2 = password2;
 		}
 	}
 

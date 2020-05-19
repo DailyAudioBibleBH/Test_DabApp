@@ -256,7 +256,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> EditMember(string email, string firstName, string lastName, string currentPassword, string newPassword, string confirmNewPassword)
+        public static async Task<string> EditMember(string email, string firstName, string lastName)
         {
             try//Edits member data used on DABProfileManagementPage
             {
@@ -267,7 +267,7 @@ namespace DABApp
                 dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName, currentPassword, newPassword, confirmNewPassword));
+                var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName));
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
                 var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);//Using an HttpPut method to update member profle

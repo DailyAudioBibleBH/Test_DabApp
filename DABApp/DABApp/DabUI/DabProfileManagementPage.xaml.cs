@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using DABApp.DabSockets;
+using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace DABApp
 {
 	public partial class DabProfileManagementPage : DabBaseContentPage
 	{
+		DabGraphQlVariables variables = new DabGraphQlVariables();
+
 		public DabProfileManagementPage()
 		{
 			InitializeComponent();
@@ -22,7 +26,7 @@ namespace DABApp
 			Save.IsEnabled = false;
 			if (Validation()) 
 			{
-				var message = await AuthenticationAPI.EditMember(Email.Text, FirstName.Text, LastName.Text, CurrentPassword.Text, NewPassword.Text, ConfirmNewPassword.Text);
+				var message = await AuthenticationAPI.EditMember(Email.Text, FirstName.Text, LastName.Text);
 				if (message == "Success")
 				{
 					await DisplayAlert(message, "User profile information has been updated", "OK");
@@ -30,11 +34,24 @@ namespace DABApp
 					var UserName = GlobalResources.GetUserName().Split(' ');
 					FirstName.Text = UserName[0];
 					LastName.Text = UserName[1];
+					GuestStatus.Current.UserName = GlobalResources.GetUserName();
+					
+				}
+                if (CurrentPassword != null && NewPassword != null && ConfirmNewPassword != null)
+                {
+					var resetPasswordMutation = $"mutation {{ updatePassword( currentPassword: \"{CurrentPassword.Text}\" newPassword: \"{NewPassword.Text}\")}}";
+					var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
+					var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
+					DabSyncService.Instance.Send(JsonIn);
+
 					CurrentPassword.Text = null;
 					NewPassword.Text = null;
 					ConfirmNewPassword.Text = null;
-					GuestStatus.Current.UserName = GlobalResources.GetUserName();
-					if (Device.Idiom == TargetIdiom.Phone) {
+				}
+                if (message == "Success")
+                {
+					if (Device.Idiom == TargetIdiom.Phone)
+					{
 						await Navigation.PopAsync();
 					}
 				}
