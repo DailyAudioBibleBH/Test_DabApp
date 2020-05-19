@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using Xamarin.Forms;
+using Xamarin.Essentials;
+
 
 namespace DABApp.DabSockets
 {
@@ -507,13 +509,7 @@ namespace DABApp.DabSockets
                     await adb.UpdateAsync(LanguageSettings);
 
                 }
-                else if (root.payload?.data?.updatePassword != null)
-                {
-                    if (root.payload.data.updatePassword == true)
-                    {
-                        await Application.Current.MainPage.DisplayAlert("Success", "Password Successfully Updated", "OK");
-                    }
-                }
+                
             }
             catch (Exception ex)
             {
