@@ -509,6 +509,71 @@ namespace DABApp.DabSockets
                     await adb.UpdateAsync(LanguageSettings);
 
                 }
+                else if (root.payload?.data?.user != null)
+                {
+                    var user = root.payload.data.user;
+                    if (user.email != null)
+                    {
+                        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+                        if (EmailSettings == null)
+                        {
+                            EmailSettings = new dbSettings() { Key = "Email" };
+                        }
+                        EmailSettings.Value = user.email;
+                        await adb.InsertOrReplaceAsync(EmailSettings);
+                        
+                    }
+                    if (user.channel != null)
+                    {
+                        dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
+                        if (ChannelSettings == null)
+                        {
+                            ChannelSettings = new dbSettings() { Key = "Channel" };
+                        }
+                        ChannelSettings.Value = user.channel.channelId.ToString();
+                        await adb.InsertOrReplaceAsync(ChannelSettings);
+                    }
+                    if (user.channels != null)
+                    {
+                        dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
+                        if (ChannelsSettings == null)
+                        {
+                            ChannelsSettings = new dbSettings() { Key = "Email" };
+                        }
+                        ChannelsSettings.Value = user.channels.ToString();
+                        await adb.InsertOrReplaceAsync(ChannelsSettings);
+                    }
+                    if (user.firstName != null)
+                    {
+                        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+                        if (FirstNameSettings == null)
+                        {
+                            FirstNameSettings = new dbSettings() { Key = "FirstName" };
+                        }
+                        FirstNameSettings.Value = user.firstName;
+                        await adb.InsertOrReplaceAsync(FirstNameSettings);
+                    }
+                    if (user.lastName != null)
+                    {
+                        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+                        if (LastNameSettings == null)
+                        {
+                            LastNameSettings = new dbSettings() { Key = "LastName" };
+                        }
+                        LastNameSettings.Value = user.lastName;
+                        await adb.InsertOrReplaceAsync(LastNameSettings);
+                    }
+                    if (user.language != null)
+                    {
+                        dbSettings LanguageSettings = adb.Table<dbSettings>().Where(x => x.Key == "Language").FirstOrDefaultAsync().Result;
+                        if (LanguageSettings == null)
+                        {
+                            LanguageSettings = new dbSettings() { Key = "Language" };
+                        }
+                        LanguageSettings.Value = user.language;
+                        await adb.InsertOrReplaceAsync(LanguageSettings);
+                    }
+                }
                 
             }
             catch (Exception ex)

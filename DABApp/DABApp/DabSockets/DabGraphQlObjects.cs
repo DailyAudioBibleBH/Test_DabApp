@@ -148,8 +148,13 @@ namespace DABApp.DabSockets
         public int wpId { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
+        public string nickname { get; set; }
         public string email { get; set; }
         public string language { get; set; }
+        public Channel channel { get; set; }
+        public List<Channel> channels { get; set; }
+        public DateTime userRegistered { get; set; }
+        public string token { get; set; }
     }
 
     public class DabGraphQlUpdateUser
