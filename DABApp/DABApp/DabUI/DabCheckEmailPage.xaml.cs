@@ -80,40 +80,39 @@ namespace DABApp
             Device.InvokeOnMainThreadAsync(async () =>
             {
 
-                if (DabSyncService.Instance.IsConnected)
+            if (DabSyncService.Instance.IsConnected)
+            {
+                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
+                //Message received from the Graph QL - deal with those related to login messages!
+                try
                 {
-                    SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-
-                    //Message received from the Graph QL - deal with those related to login messages!
-                    try
+                    var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+                    //Generic keep alive
+                    if (root.type == "ka")
                     {
-                        var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+                        //Nothing to see here...
+                        return;
+                    }
+                    if (root?.payload?.data?.checkEmail == "true")
+                    {
+                        GlobalResources.WaitStop();
+                        await Navigation.PushAsync(new DabLoginPage(Email.Text));
+                    }
+                    if (root?.payload?.data?.checkEmail == "false")
+                    {
+                        GlobalResources.WaitStop();
+                        await Navigation.PushAsync(new DabSignUpPage());
+                    }
 
-                        //Generic keep alive
-                        if (root.type == "ka")
-                        {
-                            //Nothing to see here...
-                            return;
-                        }
-                        if (root?.payload?.data?.checkEmail == "true")
+                    else if (root?.payload?.errors?.First() != null)
+                    {
+                        if (GraphQlLoginRequestInProgress == true)
                         {
                             GlobalResources.WaitStop();
-                            await Navigation.PushAsync(new DabLoginPage(Email.Text));
-                        }
-                        if (root?.payload?.data?.checkEmail == "false")
-                        {
-                            GlobalResources.WaitStop();
-                            await Navigation.PushAsync(new DabSignUpPage());
-                        }
-
-                        else if (root?.payload?.errors?.First() != null)
-                        {
-                            if (GraphQlLoginRequestInProgress == true)
-                            {
-                                GlobalResources.WaitStop();
-                                //We have a login error!
-                                await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
-                                GraphQlLoginRequestInProgress = false;
+                            //We have a login error!
+                            Device.BeginInvokeOnMainThread(() => { DisplayAlert("Login Error", root.payload.errors.First().message, "OK"); ; });
+                            GraphQlLoginRequestInProgress = false;
                             }
                         }
                         else
