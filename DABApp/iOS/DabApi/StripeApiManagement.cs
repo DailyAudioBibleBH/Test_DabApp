@@ -21,6 +21,7 @@ namespace DABApp.iOS
 			};
 			try
 			{
+				Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeApiKey;
 				var token = await StripeClient.CreateToken(sCard);
 				var container = new StripeContainer();
 				container.card_token = token.Id;

@@ -98,39 +98,48 @@ namespace DABApp
                     {
                         GlobalResources.WaitStop();
                         await Navigation.PushAsync(new DabLoginPage(Email.Text));
+                        NextButton.IsEnabled = true;
+                        btnGuest.IsEnabled = true;
                     }
                     if (root?.payload?.data?.checkEmail == "false")
                     {
                         GlobalResources.WaitStop();
                         await Navigation.PushAsync(new DabSignUpPage());
+                        NextButton.IsEnabled = true;
+                        btnGuest.IsEnabled = true;
                     }
 
                     else if (root?.payload?.errors?.First() != null)
                     {
+                        NextButton.IsEnabled = true;
+                        btnGuest.IsEnabled = true;
                         if (GraphQlLoginRequestInProgress == true)
                         {
                             GlobalResources.WaitStop();
                             //We have a login error!
                             Device.BeginInvokeOnMainThread(() => { DisplayAlert("Login Error", root.payload.errors.First().message, "OK"); ; });
                             GraphQlLoginRequestInProgress = false;
-                            }
                         }
-                        else
-                        {
-                            //Some other GraphQL message we don't care about here.
+                    }
+                    else
+                    {
+                        //Some other GraphQL message we don't care about here.
 
-                        }
+                    }
                     }
                     catch (Exception ex)
                     {
+                        NextButton.IsEnabled = true;
+                        btnGuest.IsEnabled = true;
                         GlobalResources.WaitStop();
                         System.Diagnostics.Debug.WriteLine(ex.Message);
                         //Some other GraphQL message we don't care about here.
-
                     }
                 }
                 else
                 {
+                    NextButton.IsEnabled = true;
+                    btnGuest.IsEnabled = true;
                     GlobalResources.WaitStop();
                     //DabSyncService.Instance.Init();
                     DabSyncService.Instance.Connect();
@@ -139,6 +148,7 @@ namespace DABApp
         }
         async void OnNext(object o, EventArgs e)
         {
+            NextButton.IsEnabled = false;
             GlobalResources.WaitStart();
             const string quote = "\"";
             if (DabSyncService.Instance.IsConnected)
@@ -164,7 +174,7 @@ namespace DABApp
         }
         async void OnGuestLogin(object o, EventArgs e)
         {
-            //GuestLogin.IsEnabled = false;
+            btnGuest.IsEnabled = false;
             GlobalResources.WaitStart("Logging you in as a guest...");
             GuestStatus.Current.IsGuestLogin = true;
 

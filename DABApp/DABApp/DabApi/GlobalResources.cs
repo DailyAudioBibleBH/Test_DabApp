@@ -54,6 +54,7 @@ namespace DABApp
         public static string APIVersion { get; set; } = "2";
 
         public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4OTk5NDcxOSwibmJmIjoxNTg5OTk0NzE5LCJleHAiOjE3NDc2NzQ3MTksImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.JCt2vuC2tSkyY2Y5YUFZK6DpQ9I_EoVt3KAUqrzQQ0A";
+        public static readonly string StripeApiKey = "pk_live_O0E92mb0sHFrAD5JGBiU9fgK";
 
 
         //old api tokens
