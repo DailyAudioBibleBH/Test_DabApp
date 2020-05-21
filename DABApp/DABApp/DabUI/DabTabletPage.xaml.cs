@@ -1080,6 +1080,7 @@ namespace DABApp
 
         async void OnRefresh(object o, EventArgs e)
         {
+            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this.
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
             int pullToRefreshRate = GlobalResources.PullToRefreshRate;
             bool ok;
