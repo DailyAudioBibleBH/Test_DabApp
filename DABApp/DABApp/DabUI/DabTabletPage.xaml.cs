@@ -64,13 +64,13 @@ namespace DABApp
 
             //Channels list
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
-            ChannelsList.SelectedItem = _resource;
+            ChannelsList.SelectedItem = this._resource;
 
             //Set up selected channel
-            _resource = resource;
-            backgroundImage = _resource.images.backgroundTablet;
+            this._resource = resource;
+            backgroundImage = this._resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
+            Episodes = PlayerFeedAPI.GetEpisodeList(this._resource); //Get episodes for selected channel
 
             //break episodes months out into list
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
@@ -85,6 +85,7 @@ namespace DABApp
             //Run timed actions and subscribe to events to update them
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
+                Episodes = PlayerFeedAPI.GetEpisodeList(resource);
                 TimedActions();
             });
 
@@ -338,6 +339,7 @@ namespace DABApp
                 BackgroundImage.Source = _resource.images.backgroundTablet;
 
                 //Load the list if episodes for the channel.
+                
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
                 // send websocket message to get episodes by channel
