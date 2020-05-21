@@ -597,6 +597,18 @@ namespace DABApp.DabSockets
         {
             GlobalResources.WaitStart("Connecting to the Daily Audio Bible servers...");
             sock.Connect();
+
+            var current = Connectivity.NetworkAccess;
+
+            if (current != NetworkAccess.Internet)
+            {
+                // Connection to internet is not available
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Application.Current.MainPage.DisplayAlert("Error", "Error trying to connect to the websocket, please check your internet connection", "OK");
+
+                });
+            }
         }
 
         public void Disconnect(bool LogOutUser)
@@ -743,6 +755,10 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
             dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+            if (GlobalResources.TestMode)
+            {
+                Token = new dbSettings() { Key = "Token", Value = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNTgyOTEwMTI1LCJuYmYiOjE1ODI5MTAxMjUsImV4cCI6MTc0MDU5MDEyNSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTI5MTcifX19.bT-Bnn6SdHc4rKQ37vMjrllUeKbsvdvMUJ0pBzMy8Fs" }; //test mode token
+            }
             if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIKey }; //fake token
             //Init the connection
             PrepConnectionWithTokenAndOrigin(Token.Value);
