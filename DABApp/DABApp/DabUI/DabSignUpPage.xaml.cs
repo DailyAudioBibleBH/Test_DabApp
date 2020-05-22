@@ -20,7 +20,7 @@ namespace DABApp
 		bool GraphQlLoginRequestInProgress = false;
 		bool GraphQlLoginComplete = false;
 
-		public DabSignUpPage(bool fromPlayer = false, bool fromDonation = false)
+		public DabSignUpPage(string emailInput, bool fromPlayer = false, bool fromDonation = false)
 		{
 			InitializeComponent();
 			if (Device.Idiom == TargetIdiom.Tablet)
@@ -40,6 +40,11 @@ namespace DABApp
 			};
 			Terms.GestureRecognizers.Add(tapper);
 			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible </br> <font color='#ff0000'>Terms of Service.</font></div>";
+
+			if (emailInput != null)
+			{
+				Email.Text = emailInput;
+			}
 		}
 
 		async void OnSignUp(object o, EventArgs e)

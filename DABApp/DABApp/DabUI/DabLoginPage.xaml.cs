@@ -51,14 +51,14 @@ namespace DABApp
                 Logo.Aspect = Aspect.AspectFit;
             }
             //SignUp.IsSelectable = false;
-            var tapper = new TapGestureRecognizer();
-            tapper.NumberOfTapsRequired = 1;
+            //var tapper = new TapGestureRecognizer();
+            //tapper.NumberOfTapsRequired = 1;
 
 
-            tapper.Tapped += (sender, e) =>
-            {
-                Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
-            };
+            //tapper.Tapped += (sender, e) =>
+            //{
+            //    Navigation.PushAsync(new DabSignUpPage("", _fromPlayer, _fromDonation));
+            //};
             //SignUp.GestureRecognizers.Add(tapper);
             //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
             if (Device.Idiom == TargetIdiom.Tablet)
@@ -95,14 +95,14 @@ namespace DABApp
                 Logo.Aspect = Aspect.AspectFit;
             }
             //SignUp.IsSelectable = false;
-            var tapper = new TapGestureRecognizer();
-            tapper.NumberOfTapsRequired = 1;
+            //var tapper = new TapGestureRecognizer();
+            //tapper.NumberOfTapsRequired = 1;
 
 
-            tapper.Tapped += (sender, e) =>
-            {
-                Navigation.PushAsync(new DabSignUpPage(_fromPlayer, _fromDonation));
-            };
+            //tapper.Tapped += (sender, e) =>
+            //{
+            //    Navigation.PushAsync(new DabSignUpPage("", _fromPlayer, _fromDonation));
+            //};
             //SignUp.GestureRecognizers.Add(tapper);
             //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
             if (Device.Idiom == TargetIdiom.Tablet)
