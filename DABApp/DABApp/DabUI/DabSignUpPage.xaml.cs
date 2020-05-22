@@ -130,76 +130,74 @@ namespace DABApp
 			{
 				SignUp.IsEnabled = true;
 			}
+		}
 
-
-
-			bool SignUpValidation()
+		bool SignUpValidation()
+		{
+			if (string.IsNullOrWhiteSpace(FirstName.Text))
 			{
-				if (string.IsNullOrWhiteSpace(FirstName.Text))
-				{
-					DisplayAlert("First Name is Required", null, "OK");
-					return false;
-				}
-				if (string.IsNullOrWhiteSpace(LastName.Text))
-				{
-					DisplayAlert("Last Name is Required", null, "OK");
-					return false;
-				}
-				if (string.IsNullOrWhiteSpace(Email.Text))
-				{
-					DisplayAlert("Email is Required", null, "OK");
-					return false;
-				}
-				else
-				{
-					if (!Regex.Match(Email.Text, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success)
-					{
-						DisplayAlert("Email must be a valid email!", null, "OK");
-						return false;
-					}
-				}
-				if (string.IsNullOrWhiteSpace(Password.Text))
-				{
-					DisplayAlert("Password is Required", null, "OK");
-					return false;
-				}
-				if (string.IsNullOrWhiteSpace(PasswordAgain.Text))
-				{
-					DisplayAlert("Re Enter Password is Required", null, "OK");
-					return false;
-				}
-				if (Password.Text != PasswordAgain.Text)
-				{
-					DisplayAlert("Passwords Do Not Match", null, "OK");
-					return false;
-				}
-				if (!Agreement.IsToggled)
-				{
-					DisplayAlert("Wait", "Please read and agree to the Daily Audio Bible Terms of Service.", "OK");
-					return false;
-				}
-				return true;
+				DisplayAlert("First Name is Required", null, "OK");
+				return false;
 			}
-
-			void OnFirstNameCompleted(object o, EventArgs e)
+			if (string.IsNullOrWhiteSpace(LastName.Text))
 			{
-				LastName.Focus();
+				DisplayAlert("Last Name is Required", null, "OK");
+				return false;
 			}
-
-			void OnPasswordCompleted(object o, EventArgs e)
+			if (string.IsNullOrWhiteSpace(Email.Text))
 			{
-				PasswordAgain.Focus();
+				DisplayAlert("Email is Required", null, "OK");
+				return false;
 			}
-
-			void OnLastNameCompleted(object o, EventArgs e)
+			else
 			{
-				Email.Focus();
+				if (!Regex.Match(Email.Text, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success)
+				{
+					DisplayAlert("Email must be a valid email!", null, "OK");
+					return false;
+				}
 			}
-
-			void OnEmailCompleted(object o, EventArgs e)
+			if (string.IsNullOrWhiteSpace(Password.Text))
 			{
-				Password.Focus();
+				DisplayAlert("Password is Required", null, "OK");
+				return false;
 			}
+			if (string.IsNullOrWhiteSpace(PasswordAgain.Text))
+			{
+				DisplayAlert("Re Enter Password is Required", null, "OK");
+				return false;
+			}
+			if (Password.Text != PasswordAgain.Text)
+			{
+				DisplayAlert("Passwords Do Not Match", null, "OK");
+				return false;
+			}
+			if (!Agreement.IsToggled)
+			{
+				DisplayAlert("Wait", "Please read and agree to the Daily Audio Bible Terms of Service.", "OK");
+				return false;
+			}
+			return true;
+		}
+
+		void OnFirstNameCompleted(object o, EventArgs e)
+		{
+			LastName.Focus();
+		}
+
+		void OnPasswordCompleted(object o, EventArgs e)
+		{
+			PasswordAgain.Focus();
+		}
+
+		void OnLastNameCompleted(object o, EventArgs e)
+		{
+			Email.Focus();
+		}
+
+		void OnEmailCompleted(object o, EventArgs e)
+		{
+			Password.Focus();
 		}
 
 		private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)

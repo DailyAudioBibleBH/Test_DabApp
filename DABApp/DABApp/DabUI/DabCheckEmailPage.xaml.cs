@@ -111,8 +111,6 @@ namespace DABApp
 
                     else if (root?.payload?.errors?.First() != null)
                     {
-                        NextButton.IsEnabled = true;
-                        btnGuest.IsEnabled = true;
                         if (GraphQlLoginRequestInProgress == true)
                         {
                             GlobalResources.WaitStop();
@@ -129,8 +127,6 @@ namespace DABApp
                     }
                     catch (Exception ex)
                     {
-                        NextButton.IsEnabled = true;
-                        btnGuest.IsEnabled = true;
                         GlobalResources.WaitStop();
                         System.Diagnostics.Debug.WriteLine(ex.Message);
                         //Some other GraphQL message we don't care about here.
@@ -138,8 +134,6 @@ namespace DABApp
                 }
                 else
                 {
-                    NextButton.IsEnabled = true;
-                    btnGuest.IsEnabled = true;
                     GlobalResources.WaitStop();
                     //DabSyncService.Instance.Init();
                     DabSyncService.Instance.Connect();
@@ -148,7 +142,6 @@ namespace DABApp
         }
         async void OnNext(object o, EventArgs e)
         {
-            NextButton.IsEnabled = false;
             GlobalResources.WaitStart();
             const string quote = "\"";
             if (DabSyncService.Instance.IsConnected)
@@ -174,7 +167,6 @@ namespace DABApp
         }
         async void OnGuestLogin(object o, EventArgs e)
         {
-            btnGuest.IsEnabled = false;
             GlobalResources.WaitStart("Logging you in as a guest...");
             GuestStatus.Current.IsGuestLogin = true;
 
