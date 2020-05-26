@@ -458,7 +458,7 @@ namespace DABApp.DabSockets
                         DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
 
 
-                        await PopupNavigation.PushAsync(new AchievementsProgressPopup(progress));
+                        await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
                         progress.seen = true;
                     }
                     dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);

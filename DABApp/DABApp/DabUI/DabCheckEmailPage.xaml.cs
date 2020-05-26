@@ -162,6 +162,7 @@ namespace DABApp
             else
             {
                 DabSyncService.Instance.Connect();
+                await DisplayAlert("One Moment", "We're establishing a connection", "OK");
             }
 
         }
