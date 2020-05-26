@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using SQLite;
 using Rg.Plugins.Popup.Services;
 using DABApp.DabUI;
+using Plugin.Connectivity;
 
 namespace DABApp
 {
@@ -24,6 +25,7 @@ namespace DABApp
         private double _height;
         private int number;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+        private bool todaysEpisodeVisible = false;
 
         public DabChannelsPage()
         {
@@ -53,7 +55,7 @@ namespace DABApp
             {
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
-            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;            
+            else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
 
             //Connect to the SyncService
             DabSyncService.Instance.Init();
@@ -154,7 +156,8 @@ namespace DABApp
                 if (r)
                 {
                     //Do nothing.
-                } else
+                }
+                else
                 {
                     await DisplayAlert("Error Details", ex.Message, "OK");
                 }
@@ -163,41 +166,44 @@ namespace DABApp
 
         void TimedActions()
         {
-            if (!AuthenticationAPI.CheckToken())
-            {               
-                //Send request for new token
-                if (DabSyncService.Instance.IsConnected)
+            if (GlobalResources.Instance.IsLoggedIn)
+            {
+                //update token if needed
+                if (!AuthenticationAPI.CheckToken())
                 {
-                    DabGraphQlVariables variables = new DabGraphQlVariables();
-                    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                    DabSyncService.Instance.Send(tokenJsonIn);
+                    //Send request for new token
+                    if (DabSyncService.Instance.IsConnected)
+                    {
+                        DabGraphQlVariables variables = new DabGraphQlVariables();
+                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                        DabSyncService.Instance.Send(tokenJsonIn);
+                    }
                 }
+
+                //post actions logs
+                Task.Run(async () =>
+                {
+                    await AuthenticationAPI.PostActionLogs(false);
+                    await AuthenticationAPI.GetMemberData();
+                });
+
             }
-            
+
             //Download new episodes
             Task.Run(async () =>
             {
                 await PlayerFeedAPI.DownloadEpisodes();
             });
 
-            //Send data to the server
-            if (GlobalResources.GetUserName() != "Guest Guest")
-            {
-                Task.Run(async () =>
-                {
-                    await AuthenticationAPI.PostActionLogs(false);
-                    await AuthenticationAPI.GetMemberData();
-                });
-            }
         }
 
         protected override async void OnAppearing()
         {
             //Show toolbar items for android
-            MessagingCenter.Send<string>("Setup", "Setup");           
-            
+            MessagingCenter.Send<string>("Setup", "Setup");
+
             foreach (var r in ChannelView.resources)
             {
                 r.AscendingSort = false;
@@ -208,6 +214,29 @@ namespace DABApp
             {
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
+
+            //Sample to show today's reading after a second
+            //TODO: Replace this delay with reception of current episode data.
+            //TODO: Run in more than debug/test mode
+            bool shouldShowTodaysEpisode = false;
+
+            if (GlobalResources.TestMode)
+            {
+                shouldShowTodaysEpisode = true;
+            }
+#if DEBUG
+            shouldShowTodaysEpisode = true;
+#endif
+            if (shouldShowTodaysEpisode)
+            {
+                await Task.Run(async () =>
+                {
+                    await Task.Delay(1000);
+                //TODO: Replace this with user's preferred channel
+                ShowTodaysEpisode(_resource);
+                });
+            }
+
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -224,6 +253,66 @@ namespace DABApp
                 GlobalResources.Instance.FlowListViewColumns = width > height ? 4 : 3;
             }
             GlobalResources.Instance.ThumbnailImageHeight = (App.Current.MainPage.Width / GlobalResources.Instance.FlowListViewColumns) - 30;
+        }
+
+        private void ShowTodaysEpisode(Resource resource)
+        {
+            try
+            {
+
+                if (!todaysEpisodeVisible)
+                {
+                    //Shows today's reading section with the most recent episode from the designated channel
+                    //Display Today's Reading when it's available
+
+
+                    //Get channel and episode
+                    var ch = adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
+                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == ch.key).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
+
+                    if (ep != null && ch != null)
+                    {
+                        double TodaysEpisodeHeight = 250; //TODO: may need to be different for tablets
+                        todaysEpisodeVisible = true; //mark it as visible so this won't run again
+
+                        Device.BeginInvokeOnMainThread((() =>
+                        {
+                            TodaysEpisodeContentContainer.Padding = 25; //can't set that until in code to keep it hidden until now;
+                            TodaysEpisodeContentContainer.Spacing = 18;
+                            TodaysEpisodeTitle.Text = $"Today's Reading: {ep.title}";
+                            TodaysEpisodePassageLabel.Text = ep.description;
+                            TodaysEpisodeBackgroundImage.Source = resource.images.bannerPhone;
+                        }
+                        ));
+
+                        //Animate today's reading
+                        TodaysEpisodeContainer.HeightTo(0, TodaysEpisodeHeight, h => TodaysEpisodeContainer.HeightRequest = h, 500, Easing.SinIn);
+
+                        //Set up button
+                        TodaysEpisodeButton.Clicked += async (sender, e) =>
+                        {
+                            GlobalResources.WaitStart("Getting today's episode...");
+                            var _reading = await PlayerFeedAPI.GetReading(ep.read_link);
+                            if (ep.File_name_local != null || CrossConnectivity.Current.IsConnected)
+                            {
+                                await Navigation.PushAsync(new DabPlayerPage(ep, _reading));
+                            }
+                            GlobalResources.WaitStop();
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                todaysEpisodeVisible = false; //try again later
+            }
+
+
+
+
+
+
         }
     }
 }
