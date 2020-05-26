@@ -63,6 +63,30 @@ namespace DABApp
                 });
             });
 
+            //WaitStart without a dismiss button
+            MessagingCenter.Subscribe<string, string>("dabapp", "Wait_Start_WithoutDismiss", (sender, message) =>
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    //Reset the fade if needed.
+                    if (activityHolder.IsVisible == false)
+                    {
+                        activityHolder.Opacity = 0;
+                        activityContent.Opacity = 0;
+                        activityHolder.FadeTo(.75, 500, Easing.CubicIn);
+                        activityContent.FadeTo(1, 500, Easing.CubicIn);
+                    }
+                    activityLabel.Text = message;
+                    activity.IsVisible = true;
+                    activityContent.IsVisible = true;
+                    activityHolder.IsVisible = true;
+                });
+            });
+
             //Subscribe to stopping wait ui
             MessagingCenter.Subscribe<string>("dabapp", "Wait_Stop", (obj) =>
             {

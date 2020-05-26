@@ -283,7 +283,7 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    GlobalResources.WaitStart("Submitting recording...");
+                    GlobalResources.WaitStart("Submitting recording...", false);
                     var result = await SendAudio(audio);
                     GlobalResources.WaitStop();
                     if (result) await Navigation.PopModalAsync();
