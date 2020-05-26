@@ -52,6 +52,7 @@ namespace DABApp
 			SignUp.IsEnabled = false;
 			if (SignUpValidation())
 			{
+				GlobalResources.WaitStart("Checking your credentials...");
 				string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
 				var mRegister = new DabGraphQlPayload(registerMutation, variables);
 				DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
@@ -266,6 +267,7 @@ namespace DABApp
 							}
 							catch (Exception ex)
 							{
+								GlobalResources.WaitStop();
 								Debug.WriteLine(ex.Message);
 								await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
 								Navigation.PushAsync(new DabLoginPage());
@@ -334,6 +336,7 @@ namespace DABApp
 							await AuthenticationAPI.GetMemberData();
 
 							//user is logged in
+							GlobalResources.WaitStop();
 							GlobalResources.Instance.IsLoggedIn = true;
 							DabChannelsPage _nav = new DabChannelsPage();
 							_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
