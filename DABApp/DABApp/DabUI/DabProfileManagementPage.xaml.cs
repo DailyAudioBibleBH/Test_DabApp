@@ -30,9 +30,11 @@ namespace DABApp
 			Save.IsEnabled = false;
 			if (Validation()) 
 			{
+				GlobalResources.WaitStart("Saving your information...");
 				var message = await AuthenticationAPI.EditMember(Email.Text, FirstName.Text, LastName.Text);
 				if (message == "Success")
 				{
+					GlobalResources.WaitStop();
 					await DisplayAlert(message, "User profile information has been updated", "OK");
 					Email.Text = GlobalResources.GetUserEmail();
 					var UserName = GlobalResources.GetUserName().Split(' ');
@@ -43,7 +45,7 @@ namespace DABApp
 				}
                 if (CurrentPassword != null && NewPassword != null && ConfirmNewPassword != null)
                 {
-					GlobalResources.WaitStart();
+					GlobalResources.WaitStart("Updating your password...");
 					var resetPasswordMutation = $"mutation {{ updatePassword( currentPassword: \"{CurrentPassword.Text}\" newPassword: \"{NewPassword.Text}\")}}";
 					var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
 					var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
@@ -83,6 +85,7 @@ namespace DABApp
 
 						if (root.payload?.data?.updatePassword != null)
 						{
+							GlobalResources.WaitStop();
 							if (root.payload.data.updatePassword == true)
 							{
 								MainThread.BeginInvokeOnMainThread(() =>
