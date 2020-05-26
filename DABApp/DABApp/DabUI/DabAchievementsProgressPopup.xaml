@@ -21,7 +21,8 @@
         Padding="24"
         BackgroundColor="{StaticResource PageBackgroundColor}"
         HorizontalOptions="Center"
-        VerticalOptions="Center">
+        VerticalOptions="Center"
+        WidthRequest="250">
         <StackLayout>
             <Label Text="YOU'VE EARNED AN ACHIEVEMENT" FontSize="Small" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="WhiteSmoke" Style="{StaticResource playerLabelStyle}"/>
             <Image x:Name="AchievementImage" HeightRequest="50"></Image>
