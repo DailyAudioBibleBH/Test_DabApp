@@ -482,16 +482,41 @@ namespace DABApp.DabSockets
                     dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
                     dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
                     dbSettings LanguageSettings = adb.Table<dbSettings>().Where(x => x.Key == "Language").FirstOrDefaultAsync().Result;
+                    dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
+                    dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
+                    dbSettings NickNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "NickName").FirstOrDefaultAsync().Result;
+                    if (LanguageSettings == null)
+                    {
+                        LanguageSettings = new dbSettings() { Key = "Language" };
+                    }
+                    if (NickNameSettings == null)
+                    {
+                        NickNameSettings = new dbSettings() { Key = "NickName" };
+                    }
+                    if (ChannelSettings == null)
+                    {
+                        ChannelSettings = new dbSettings() { Key = "Channel" };
+                    }
+                    if (ChannelsSettings == null)
+                    {
+                        ChannelsSettings = new dbSettings() { Key = "Channels" };
+                    }
 
                     EmailSettings.Value = user.email;
                     FirstNameSettings.Value = user.firstName;
                     LastNameSettings.Value = user.lastName;
                     LanguageSettings.Value = user.language;
+                    ChannelSettings.Value = user.channel;
+                    ChannelsSettings.Value = user.channels;
+                    NickNameSettings.Value = user.nickname;
 
                     await adb.UpdateAsync(EmailSettings);
                     await adb.UpdateAsync(FirstNameSettings);
                     await adb.UpdateAsync(LastNameSettings);
                     await adb.UpdateAsync(LanguageSettings);
+                    await adb.UpdateAsync(ChannelSettings);
+                    await adb.UpdateAsync(ChannelsSettings);
+                    await adb.UpdateAsync(NickNameSettings);
 
                 }
                 else if (root.payload?.data?.user != null)
@@ -525,7 +550,7 @@ namespace DABApp.DabSockets
                         dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
                         if (ChannelsSettings == null)
                         {
-                            ChannelsSettings = new dbSettings() { Key = "Email" };
+                            ChannelsSettings = new dbSettings() { Key = "Channels" };
                         }
                         ChannelsSettings.Value = user.channels.ToString();
                         await adb.InsertOrReplaceAsync(ChannelsSettings);
