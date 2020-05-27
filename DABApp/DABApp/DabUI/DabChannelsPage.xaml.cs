@@ -273,8 +273,9 @@ namespace DABApp
                         ChannelSettings = new dbSettings() { Key = "Channel" };
                     }
 
-                    var ch = ChannelSettings.Value;//adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
-                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == ch).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
+                    var ch = ChannelSettings.Value;
+                    var code = ch == "Daily Audio Bible" ? "dab" : ch.ToLower();
+                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == code).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
 
                     if (ep != null && ch != null)
                     {

@@ -163,8 +163,6 @@ namespace DABApp
                             //Reset the connection with the new token
                             DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
 
-                            Thread.Sleep(2000);
-
                             //Send a request for updated user data
                             string jUser = $"query {{user{{wpId,firstName,lastName, nickname, email, language, channel, channels, userRegistered, token}}}}";
                             var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
