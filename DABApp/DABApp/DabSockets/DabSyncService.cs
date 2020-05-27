@@ -520,7 +520,7 @@ namespace DABApp.DabSockets
                         {
                             ChannelSettings = new dbSettings() { Key = "Channel" };
                         }
-                        ChannelSettings.Value = user.channel.channelId.ToString();
+                        ChannelSettings.Value = user.channel.key.ToString();
                         await adb.InsertOrReplaceAsync(ChannelSettings);
                     }
                     if (user.channels != null)

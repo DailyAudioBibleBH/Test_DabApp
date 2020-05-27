@@ -267,8 +267,14 @@ namespace DABApp
 
 
                     //Get channel and episode
-                    var ch = adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
-                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == ch.key).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
+                    dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
+                    if (ChannelSettings == null)
+                    {
+                        ChannelSettings = new dbSettings() { Key = "Channel" };
+                    }
+
+                    var ch = ChannelSettings.Value;//adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
+                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == ch).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
 
                     if (ep != null && ch != null)
                     {
