@@ -86,6 +86,7 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
             {
                 TimedActions();
+                Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
             });
 
             //Load the specified episode
