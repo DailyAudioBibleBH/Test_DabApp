@@ -151,8 +151,8 @@ namespace DABApp.DabSockets
         public string nickname { get; set; }
         public string email { get; set; }
         public string language { get; set; }
-        public Channel channel { get; set; }
-        public List<Channel> channels { get; set; }
+        public string channel { get; set; }
+        public string channels { get; set; }
         public DateTime userRegistered { get; set; }
         public string token { get; set; }
     }

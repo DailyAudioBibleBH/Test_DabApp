@@ -83,8 +83,6 @@ namespace DABApp.DabSockets
             userName = GlobalResources.GetUserEmail();
             DabGraphQlMessage?.Invoke(this, e);
 
-            var test = adb.Table<dbChannels>().ToListAsync().Result;
-
             try
             {
                 var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
@@ -96,9 +94,7 @@ namespace DABApp.DabSockets
                     //Nothing to see here...
                     return;
                 }
-
-
-
+                
                 //Check for error messages
                 if (root.type == "error" && root.payload?.message != null)
                 {
@@ -520,7 +516,7 @@ namespace DABApp.DabSockets
                         {
                             ChannelSettings = new dbSettings() { Key = "Channel" };
                         }
-                        ChannelSettings.Value = user.channel.key.ToString();
+                        ChannelSettings.Value = user.channel;
                         await adb.InsertOrReplaceAsync(ChannelSettings);
                     }
                     if (user.channels != null)
