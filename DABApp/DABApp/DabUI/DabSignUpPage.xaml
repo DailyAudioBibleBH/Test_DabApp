@@ -21,7 +21,7 @@
                 </Switch>
                 <local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>
             </StackLayout>
-            <Button x:Name="SignUp" Text="Sign up" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
+            <Button x:Name="SignUp" Text="Sign up" HeightRequest="40" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </local:DabBaseContentPage>

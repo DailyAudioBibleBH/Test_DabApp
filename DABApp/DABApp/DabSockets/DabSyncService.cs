@@ -724,6 +724,9 @@ namespace DABApp.DabSockets
             if (!sock.IsConnected)
             {
                 GlobalResources.WaitStop();
+                //Reconnect Socket
+                Init();
+                Connect();
             }
         }
 

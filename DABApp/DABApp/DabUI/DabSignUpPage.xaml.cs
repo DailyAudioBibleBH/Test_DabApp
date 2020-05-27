@@ -269,8 +269,8 @@ namespace DABApp
 							{
 								GlobalResources.WaitStop();
 								Debug.WriteLine(ex.Message);
-								await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
-								Navigation.PushAsync(new DabLoginPage());
+								await DisplayAlert("System Error", "System error with login. Try again or restart application.", "Ok");
+								await Navigation.PushAsync(new DabCheckEmailPage());
 							}
 						}
 						if (root?.payload?.data?.loginUser != null)

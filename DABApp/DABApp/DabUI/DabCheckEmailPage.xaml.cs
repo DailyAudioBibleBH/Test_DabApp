@@ -348,12 +348,9 @@ namespace DABApp
             Device.BeginInvokeOnMainThread(() =>
             {
                 Email.IsEnabled = false;
-                //Password.IsEnabled = false;
-                //GuestLogin.IsEnabled = false;
-                //Login.IsEnabled = false;
+                NextButton.IsEnabled = false;
                 btnGuest.IsEnabled = false;
-                //SignUp.IsEnabled = false;
-                //Login.Text = MainButtonText;
+                NextButton.Text = MainButtonText;
             }
             );
         }
@@ -377,9 +374,7 @@ namespace DABApp
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
-                    Email.IsEnabled = false;
-                    //GuestLogin.IsEnabled = false;
-                    //SignUp.IsEnabled = false;
+                    DisableAllInputs("Shutdown and restart app");
                 }
             }
         }
