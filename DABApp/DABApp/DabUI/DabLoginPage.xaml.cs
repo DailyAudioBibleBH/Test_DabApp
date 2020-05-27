@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
 
@@ -161,6 +162,8 @@ namespace DABApp
 
                             //Reset the connection with the new token
                             DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+
+                            Thread.Sleep(2000);
 
                             //Send a request for updated user data
                             string jUser = $"query {{user{{wpId,firstName,lastName, nickname, email, language, channel, channels, userRegistered, token}}}}";
