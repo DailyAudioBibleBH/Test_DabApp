@@ -20,18 +20,59 @@ namespace DABApp
     {
         View ChannelView;
         dbEpisodes episode;
+        dbChannels favChannel;
         Resource _resource;
         private double _width;
         private double _height;
         private int number;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         private bool todaysEpisodeVisible = false;
+        bool shouldShowTodaysEpisode = false;
 
         public DabChannelsPage()
         {
             InitializeComponent();
             //Take away back button on navbar
             NavigationPage.SetHasBackButton(this, false);
+            MessagingCenter.Subscribe<string>("dabapp", "ShowTodaysEpisode", (obj) =>
+            {
+                shouldShowTodaysEpisode = true;
+                //#if DEBUG
+                if (GlobalResources.TestMode)
+                {
+                    shouldShowTodaysEpisode = true;
+                }
+                //#endif
+                if (shouldShowTodaysEpisode)
+                {
+                    Task.Run(() =>
+                    {
+                        //await Task.Delay(1000);
+                        //TODO: Replace this with user's preferred channel
+                        ShowTodaysEpisode(favChannel);
+                    });
+                }
+            });
+            //MessagingCenter.Subscribe<string, string>("dabapp", "ShowTodaysEpisode", (sender, message) =>
+            //{
+            //    shouldShowTodaysEpisode = true;
+            //    var test = "WHy isnt this getting hit";
+            //    //#if DEBUG
+            //    if (GlobalResources.TestMode)
+            //    {
+            //        shouldShowTodaysEpisode = true;
+            //    }
+            //    //#endif
+            //    if (shouldShowTodaysEpisode)
+            //    {
+            //        Task.Run(() =>
+            //        {
+            //            //await Task.Delay(1000);
+            //            //TODO: Replace this with user's preferred channel
+            //            ShowTodaysEpisode(favChannel);
+            //        });
+            //    }
+            //});
             ////Choose a different control template to disable built in scroll view
             //ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
             //this.ControlTemplate = playerBarTemplate;
@@ -68,6 +109,10 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
+          
+
+            
+            
         }
 
         void PostLogs()
@@ -116,16 +161,6 @@ namespace DABApp
                 {
                     DabSyncService.Instance.Connect();
                 }
-
-                //Removed this because the player page will request it on it's on in OnAppearing
-                ////send websocket message to get episodes by channel
-                //string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(resource.id);
-                //DabGraphQlVariables variables = new DabGraphQlVariables();
-                //Debug.WriteLine($"Getting episodes by ChannelId");
-                //var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                //var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                //string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                //DabSyncService.Instance.Send(JsonIn);
 
                 //Navigate to the appropriate player page 
                 if (Device.Idiom == TargetIdiom.Tablet)
@@ -215,28 +250,25 @@ namespace DABApp
                 ChannelsList.HeightRequest = Device.Idiom == TargetIdiom.Tablet ? number * (GlobalResources.Instance.ThumbnailImageHeight + 60) + 120 : number * (GlobalResources.Instance.ThumbnailImageHeight + 60);
             }
 
-            //Sample to show today's reading after a second
-            //TODO: Replace this delay with reception of current episode data.
-            //TODO: Run in more than debug/test mode
-            bool shouldShowTodaysEpisode = false;
-
-            if (GlobalResources.TestMode)
+            //Get channel and episode
+            dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
+            if (ChannelSettings == null)
             {
-                shouldShowTodaysEpisode = true;
-            }
-#if DEBUG
-            shouldShowTodaysEpisode = true;
-#endif
-            if (shouldShowTodaysEpisode)
-            {
-                await Task.Run(async () =>
-                {
-                    await Task.Delay(1000);
-                //TODO: Replace this with user's preferred channel
-                ShowTodaysEpisode(_resource);
-                });
+                ChannelSettings = new dbSettings() { Key = "Channel" };
             }
 
+            var ch = ChannelSettings.Value;
+            if (ch != null)
+            {
+                favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
+                var minQueryDate = GlobalResources.GetLastEpisodeQueryDate(Convert.ToInt32(favChannel.id));
+                DabGraphQlVariables variables = new DabGraphQlVariables();
+                Debug.WriteLine($"Getting episodes by ChannelId");
+                var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + favChannel.channelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                DabSyncService.Instance.Send(JsonIn);
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -255,7 +287,7 @@ namespace DABApp
             GlobalResources.Instance.ThumbnailImageHeight = (App.Current.MainPage.Width / GlobalResources.Instance.FlowListViewColumns) - 30;
         }
 
-        private void ShowTodaysEpisode(Resource resource)
+        public void ShowTodaysEpisode(dbChannels favChannel)
         {
             try
             {
@@ -264,20 +296,10 @@ namespace DABApp
                 {
                     //Shows today's reading section with the most recent episode from the designated channel
                     //Display Today's Reading when it's available
-
-
                     //Get channel and episode
-                    dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-                    if (ChannelSettings == null)
-                    {
-                        ChannelSettings = new dbSettings() { Key = "Channel" };
-                    }
+                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == favChannel.key).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
 
-                    var ch = ChannelSettings.Value;
-                    var code = ch == "Daily Audio Bible" ? "dab" : ch.ToLower();
-                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == code).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
-
-                    if (ep != null && ch != null)
+                    if (ep != null)
                     {
                         double TodaysEpisodeHeight = 250; //TODO: may need to be different for tablets
                         todaysEpisodeVisible = true; //mark it as visible so this won't run again
@@ -288,7 +310,7 @@ namespace DABApp
                             TodaysEpisodeContentContainer.Spacing = 18;
                             TodaysEpisodeTitle.Text = $"Today's Reading: {ep.title}";
                             TodaysEpisodePassageLabel.Text = ep.description;
-                            TodaysEpisodeBackgroundImage.Source = resource.images.bannerPhone;
+                            TodaysEpisodeBackgroundImage.Source = favChannel.imageURL;
                         }
                         ));
 
@@ -306,7 +328,6 @@ namespace DABApp
                             }
                             GlobalResources.WaitStop();
                         };
-
                     }
                 }
             }
@@ -314,12 +335,6 @@ namespace DABApp
             {
                 todaysEpisodeVisible = false; //try again later
             }
-
-
-
-
-
-
         }
     }
 }

@@ -256,7 +256,14 @@ namespace DABApp.DabSockets
                             await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
                             MessagingCenter.Send<string>("Update", "Update");
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                            PlayerFeedAPI.DownloadEpisodes();
+
+                            dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
+                            dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
+                            if (channel.id == favChannel.id)
+                            {
+                                MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+                            }
+                            await PlayerFeedAPI.DownloadEpisodes();
 
                         }
                         if (allEpisodes.Count() >= 1)
@@ -299,6 +306,7 @@ namespace DABApp.DabSockets
                         MessagingCenter.Send<string>("Update", "Update");
                         MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
                         MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
+                        MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
                         var x = PlayerFeedAPI.DownloadEpisodes().Result;
 
                     });
