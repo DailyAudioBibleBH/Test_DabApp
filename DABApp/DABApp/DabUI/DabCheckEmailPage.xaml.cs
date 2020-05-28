@@ -93,6 +93,7 @@ namespace DABApp
                         //Nothing to see here...
                         return;
                     }
+                    //Ask Chet about this. Difficult to test. 
                     if (root.payload.message == "not authorized")
                     {
                             //Token
