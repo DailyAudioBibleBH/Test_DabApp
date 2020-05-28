@@ -25,7 +25,6 @@ namespace DABApp
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
         DabGraphQlVariables variables = new DabGraphQlVariables();
 
-
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
             InitializeComponent();
@@ -94,6 +93,16 @@ namespace DABApp
                         //Nothing to see here...
                         return;
                     }
+                    if (root.payload.message == "not authorized")
+                    {
+                            //Token
+                            dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                            if (s != null) await adb.DeleteAsync(s);
+
+                            //TokenCreation
+                            s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                            if (s != null) await adb.DeleteAsync(s);
+                        }
                     if (root?.payload?.data?.checkEmail == "true")
                     {
                         GlobalResources.WaitStop();
@@ -122,7 +131,6 @@ namespace DABApp
                     else
                     {
                         //Some other GraphQL message we don't care about here.
-
                     }
                     }
                     catch (Exception ex)
@@ -157,6 +165,7 @@ namespace DABApp
                 {
                     Debug.WriteLine(ex.Message);
                     await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
+                    GlobalResources.WaitStop();
                 }
             }
             else
