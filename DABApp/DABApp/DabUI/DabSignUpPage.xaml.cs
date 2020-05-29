@@ -71,16 +71,22 @@ namespace DABApp
 			if (string.IsNullOrWhiteSpace(FirstName.Text))
 			{
 				DisplayAlert("First Name is Required", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			if (string.IsNullOrWhiteSpace(LastName.Text))
 			{
 				DisplayAlert("Last Name is Required", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			if (string.IsNullOrWhiteSpace(Email.Text))
 			{
 				DisplayAlert("Email is Required", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			else
@@ -88,22 +94,30 @@ namespace DABApp
 				if (!Regex.Match(Email.Text, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success)
 				{
 					DisplayAlert("Email must be a valid email!", null, "OK");
+					Password.Text = "";
+					PasswordAgain.Text = "";
 					return false;
 				}
 			}
 			if (string.IsNullOrWhiteSpace(Password.Text))
 			{
 				DisplayAlert("Password is Required", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			if (string.IsNullOrWhiteSpace(PasswordAgain.Text))
 			{
 				DisplayAlert("Re Enter Password is Required", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			if (Password.Text != PasswordAgain.Text)
 			{
 				DisplayAlert("Passwords Do Not Match", null, "OK");
+				Password.Text = "";
+				PasswordAgain.Text = "";
 				return false;
 			}
 			if (!Agreement.IsToggled)
