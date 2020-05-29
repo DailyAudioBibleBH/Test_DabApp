@@ -43,7 +43,7 @@ namespace DABApp
 					GuestStatus.Current.UserName = GlobalResources.GetUserName();
 					
 				}
-                if (CurrentPassword != null && NewPassword != null && ConfirmNewPassword != null)
+                if (CurrentPassword.Text != null && NewPassword.Text != null && ConfirmNewPassword.Text != null)
                 {
 					GlobalResources.WaitStart("Updating your password...");
 					var resetPasswordMutation = $"mutation {{ updatePassword( currentPassword: \"{CurrentPassword.Text}\" newPassword: \"{NewPassword.Text}\")}}";
