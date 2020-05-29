@@ -114,6 +114,8 @@
                         <ActivityIndicator x:Name="activity" IsRunning="true" Color="White" VerticalOptions="Center" />
                         <Label x:Name="activityLabel"  Text="Please wait..."  TextColor="White" FontSize="Small" HorizontalOptions="CenterAndExpand" VerticalOptions="Center"/>
                         <Button x:Name="activityButton" Text="times" FontFamily="{StaticResource FontAwesomeSolid}" FontSize="Medium" Style="{StaticResource imageButtonStyle}" VerticalOptions="EndAndExpand" HorizontalOptions="End" Opacity=".5" />
+                        <!--Added fake label so when cancel button is not visible, activity stay in center of screen-->
+                        <Label x:Name="fakeLabel" Text=" " FontSize="Medium" VerticalOptions="EndAndExpand" HorizontalOptions="End" Opacity=".5" />
                     </StackLayout>
                 </RelativeLayout>
             </ControlTemplate>

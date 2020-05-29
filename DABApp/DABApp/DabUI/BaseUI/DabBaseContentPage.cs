@@ -72,6 +72,8 @@ namespace DABApp
                     StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
                     ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
                     Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                    Button activityButton = ControlTemplateAccess.FindTemplateElementByName<Button>(this, "activityButton");
+                    Label fakeLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "fakeLabel");
                     //Reset the fade if needed.
                     if (activityHolder.IsVisible == false)
                     {
@@ -80,6 +82,10 @@ namespace DABApp
                         activityHolder.FadeTo(.75, 500, Easing.CubicIn);
                         activityContent.FadeTo(1, 500, Easing.CubicIn);
                     }
+                    activityButton.Clicked += StopWait;
+                    activityButton.IsEnabled = false;
+                    activityButton.IsVisible = false;
+                    //fakeLabel.IsVisible = true;
                     activityLabel.Text = message;
                     activity.IsVisible = true;
                     activityContent.IsVisible = true;
