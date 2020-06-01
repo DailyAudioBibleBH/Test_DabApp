@@ -7,7 +7,7 @@
       </Image>
 			<Button Text="Email" TextColor="{DynamicResource PlayerLabelColor}" FontSize="Small" VerticalOptions="End" BorderColor="Transparent" AutomationProperties.IsInAccessibleTree="true" HorizontalOptions="StartAndExpand"/>
 			<Entry x:Name="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
-			<Entry x:Name="Password" FontSize="Small" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+			<Entry x:Name="Password" FontSize="Medium" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
             <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
                 <Button Text="Password" BorderColor="Transparent" FontSize="Small" TextColor="{DynamicResource PlayerLabelColor}"  HorizontalOptions="StartAndExpand"/>
                 <Button x:Name="btnForgot" Text="Forgot Password?" TextColor="{DynamicResource PlayerLabelColor}" FontSize="Small" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>

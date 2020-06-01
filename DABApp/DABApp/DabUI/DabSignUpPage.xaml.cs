@@ -45,6 +45,7 @@ namespace DABApp
 			{
 				Email.Text = emailInput;
 			}
+			SignUp.IsEnabled = true;
 		}
 
 		async void OnSignUp(object o, EventArgs e)
