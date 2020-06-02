@@ -225,13 +225,33 @@ namespace DABApp
 
                         else if (root?.payload?.errors?.First() != null)
                         {
-                            //if (GraphQlLoginRequestInProgress == true)
-                            //{
+                            if (root?.payload?.errors?.First().message == "Not authorized.")
+                            {
+                                //Token
+                                dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                                var test = s.Value;
+                                if (s != null) await adb.DeleteAsync(s);
+
+                                //TokenCreation
+                                s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                                if (s != null) await adb.DeleteAsync(s);
+
+                                DabGraphQlVariables variables = new DabGraphQlVariables();
+                                var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                                var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                                var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                                DabSyncService.Instance.Send(tokenJsonIn);
+                                GlobalResources.WaitStop();
+                                Device.BeginInvokeOnMainThread(() => { DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
+                            }
+
+                            else
+                            {
                                 GlobalResources.WaitStop();
                                 //We have a login error!
-                                await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                                Device.BeginInvokeOnMainThread(() => { DisplayAlert("Login Error", root.payload.errors.First().message, "OK"); ; });
                                 GraphQlLoginRequestInProgress = false;
-                            //}
+                            }
                         }
                         else
                         {
