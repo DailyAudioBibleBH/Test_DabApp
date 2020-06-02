@@ -36,6 +36,7 @@ namespace DABApp.Droid
         static readonly int NOTIFICATION_ID = 1000;
         static readonly string CHANNEL_ID = "location_notification";
         DabPlayer dabplayer;
+        bool wasPlaying = false;
 
         public DroidDabNativePlayer()
         {
@@ -70,15 +71,25 @@ namespace DABApp.Droid
             switch (focusChange)
             {
                 case AudioFocus.Gain:
-                    Play();
+                    //Check to make sure it's not going to start playing an episode if they had already paused it before the interruption
+                    if (wasPlaying == true)
+                        Play();
                     //Gain when other Music Player app releases the audio service   
                     break;
                 case AudioFocus.Loss:
                     //We have lost focus stop!   
+                    if (player.IsPlaying == true)
+                        wasPlaying = true;
+                    else
+                        wasPlaying = false;
                     Stop();
                     break;
                 case AudioFocus.LossTransient:
                     //We have lost focus for a short time, but likely to resume so pause   
+                    if (player.IsPlaying == true)
+                        wasPlaying = true;
+                    else
+                        wasPlaying = false;
                     Pause();
                     break;
                 case AudioFocus.LossTransientCanDuck:
