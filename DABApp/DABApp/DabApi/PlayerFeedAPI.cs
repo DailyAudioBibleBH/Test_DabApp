@@ -19,7 +19,7 @@ namespace DABApp
     {
 
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-        static bool DownloadIsRunning = false;
+        public static bool DownloadIsRunning = false;
         static bool CleanupIsRunning = false;
         static bool ResumeNotSet = true;
         public static event EventHandler<DabEventArgs> MakeProgressVisible;

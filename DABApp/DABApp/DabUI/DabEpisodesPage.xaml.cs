@@ -77,11 +77,21 @@ namespace DABApp
                 Refresh(false);
             }
             ); //app activated
+            
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            if (_resource.availableOffline)
+            {
+                Task.Run(async () =>
+                {
+                    await PlayerFeedAPI.DownloadEpisodes();
+                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                    circularProgressControl.HandleDownloadVisibleChanged(true);
+                });
+            }
             Refresh(false);
         }
 
@@ -200,7 +210,7 @@ namespace DABApp
 
                 GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
-                if (_resource.availableOffline)
+                if (_resource.availableOffline  && PlayerFeedAPI.DownloadIsRunning == false)
                 {
                     Task.Run(async () =>
                     {
