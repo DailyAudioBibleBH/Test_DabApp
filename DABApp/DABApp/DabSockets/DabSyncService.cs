@@ -133,6 +133,25 @@ namespace DABApp.DabSockets
                     //turn off any lingering wait indicators to allow them to continue trying.
                     GlobalResources.WaitStop(); //Stop the wait indicator... something went wrong, hopefully they can work around it or try again.
 
+                    if (root?.payload?.errors?.First().message == "Not authorized.")
+                    {
+                        //Token
+                        dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                        if (s != null) await adb.DeleteAsync(s);
+
+                        //TokenCreation
+                        s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                        if (s != null) await adb.DeleteAsync(s);
+
+                        DabGraphQlVariables variables = new DabGraphQlVariables();
+                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
+                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
+                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
+                        DabSyncService.Instance.Send(tokenJsonIn);
+                        GlobalResources.WaitStop();
+                        Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
+                    }
+
                     foreach (var er in root.payload.errors)
                     {
                         //log error to firebase
