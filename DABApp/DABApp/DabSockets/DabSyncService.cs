@@ -178,6 +178,38 @@ namespace DABApp.DabSockets
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
                 }
+                else if (root?.payload?.data?.loginUser != null)
+                {
+
+                    //Store the token
+                    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                    if (sToken == null)
+                    {
+                        sToken = new dbSettings() { Key = "Token" };
+                    }
+                    sToken.Value = root.payload.data.loginUser.token;
+                    await adb.InsertOrReplaceAsync(sToken);
+
+                    //Update Token Life
+                    ContentConfig.Instance.options.token_life = 5;
+                    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                    if (sTokenCreationDate == null)
+                    {
+                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                    }
+                    sTokenCreationDate.Value = DateTime.Now.ToString();
+                    await adb.InsertOrReplaceAsync(sTokenCreationDate);
+                    //DabSyncService.Instance.Disconnect(false);
+                    //DabSyncService.Instance.Connect();
+                    //Reset the connection with the new token
+                    DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+
+                    //Send a request for updated user data
+                    string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                    var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+                    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+
+                }
                 else if (root.payload?.data?.channels != null)
                 {
                     foreach (var item in root.payload.data.channels)
