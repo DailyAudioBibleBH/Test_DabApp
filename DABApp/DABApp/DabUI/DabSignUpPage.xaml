@@ -8,7 +8,7 @@
             <Label Text="Last Name" FontSize="Micro"/>
             <Entry x:Name="LastName" Completed="OnLastNameCompleted"/>
             <Label Text="Email Address" FontSize="Micro"/>
-            <Entry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
+            <Entry x:Name="Email" IsEnabled="false" Keyboard="Email"/>
             <Label Text="Password" FontSize="Micro"/>
             <Entry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
             <Label Text="Confirm Password" FontSize="Micro"/>

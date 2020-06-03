@@ -141,11 +141,6 @@ namespace DABApp
 
 		void OnLastNameCompleted(object o, EventArgs e)
 		{
-			Email.Focus();
-		}
-
-		void OnEmailCompleted(object o, EventArgs e)
-		{
 			Password.Focus();
 		}
 
