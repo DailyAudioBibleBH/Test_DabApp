@@ -39,13 +39,28 @@ namespace DABApp
 				Navigation.PushAsync(new DabTermsAndConditionsPage());
 			};
 			Terms.GestureRecognizers.Add(tapper);
-			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible </br> <font color='#ff0000'>Terms of Service.</font></div>";
+            Terms.FormattedText = TermsText;
 
 			if (emailInput != null)
 			{
 				Email.Text = emailInput;
 			}
 			SignUp.IsEnabled = true;
+		}
+
+		public FormattedString TermsText
+		{
+			get
+			{
+				return new FormattedString
+				{
+					Spans =
+			        {
+				        new Span { Text = "By signing up I agree to the Daily Audio Bible ", ForegroundColor=Color.White },
+				        new Span { Text = "Terms of Serivce", ForegroundColor=Color.Red }
+			        }
+				};
+			}
 		}
 
 		async void OnSignUp(object o, EventArgs e)
