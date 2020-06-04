@@ -72,9 +72,10 @@ namespace DABApp
             }
             ); //app activated
 
-            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", (obj) =>
+            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", async (obj) =>
             {
-                Refresh(false);
+                await Refresh(false);
+                PlayerFeedAPI.DownloadEpisodes();
             }
             ); //app activated
             

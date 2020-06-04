@@ -39,13 +39,28 @@ namespace DABApp
 				Navigation.PushAsync(new DabTermsAndConditionsPage());
 			};
 			Terms.GestureRecognizers.Add(tapper);
-			Terms.Text = "<div style='font-size:14px;'>By signing up I agree to the Daily Audio Bible </br> <font color='#ff0000'>Terms of Service.</font></div>";
+            Terms.FormattedText = TermsText;
 
 			if (emailInput != null)
 			{
 				Email.Text = emailInput;
 			}
 			SignUp.IsEnabled = true;
+		}
+
+		public FormattedString TermsText
+		{
+			get
+			{
+				return new FormattedString
+				{
+					Spans =
+			        {
+				        new Span { Text = "By signing up I agree to the Daily Audio Bible ", ForegroundColor=Color.White },
+				        new Span { Text = "Terms of Serivce", ForegroundColor=Color.Red }
+			        }
+				};
+			}
 		}
 
 		async void OnSignUp(object o, EventArgs e)
@@ -141,11 +156,6 @@ namespace DABApp
 
 		void OnLastNameCompleted(object o, EventArgs e)
 		{
-			Email.Focus();
-		}
-
-		void OnEmailCompleted(object o, EventArgs e)
-		{
 			Password.Focus();
 		}
 
@@ -216,37 +226,38 @@ namespace DABApp
 								await Navigation.PushAsync(new DabCheckEmailPage());
 							}
 						}
-						if (root?.payload?.data?.loginUser != null)
-						{
+						//if (root?.payload?.data?.loginUser != null)
+						//{
 
-							//Store the token
-							dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-							if (sToken == null)
-							{
-								sToken = new dbSettings() { Key = "Token" };
-							}
-							sToken.Value = root.payload.data.loginUser.token;
-							await adb.InsertOrReplaceAsync(sToken);
+						//	//Store the token
+						//	dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+						//	if (sToken == null)
+						//	{
+						//		sToken = new dbSettings() { Key = "Token" };
+						//	}
+						//	sToken.Value = root.payload.data.loginUser.token;
+						//	await adb.InsertOrReplaceAsync(sToken);
 
-							//Update Token Life
-							ContentConfig.Instance.options.token_life = 5;
-							dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-							if (sTokenCreationDate == null)
-							{
-								sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-							}
-							sTokenCreationDate.Value = DateTime.Now.ToString();
-							await adb.InsertOrReplaceAsync(sTokenCreationDate);
+						//	//Update Token Life
+						//	ContentConfig.Instance.options.token_life = 5;
+						//	dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+						//	if (sTokenCreationDate == null)
+						//	{
+						//		sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+						//	}
+						//	sTokenCreationDate.Value = DateTime.Now.ToString();
+						//	await adb.InsertOrReplaceAsync(sTokenCreationDate);
+						//	DabSyncService.Instance.Disconnect(false);
+						//	DabSyncService.Instance.Connect();
+						//	//Reset the connection with the new token
+						//	DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
 
-							//Reset the connection with the new token
-							DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+						//	//Send a request for updated user data
+						//	string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+						//	var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+						//	DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
 
-							//Send a request for updated user data
-							string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
-							var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
-							DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
-
-						}
+						//}
 						else if (root?.payload?.data?.user != null)
 						{
 							//We got back user data!

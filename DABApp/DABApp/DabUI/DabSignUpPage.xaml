@@ -8,7 +8,7 @@
             <Label Text="Last Name" FontSize="Micro"/>
             <Entry x:Name="LastName" Completed="OnLastNameCompleted"/>
             <Label Text="Email Address" FontSize="Micro"/>
-            <Entry x:Name="Email" Keyboard="Email" Completed="OnEmailCompleted"/>
+            <Entry x:Name="Email" IsEnabled="false" Keyboard="Email"/>
             <Label Text="Password" FontSize="Micro"/>
             <Entry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
             <Label Text="Confirm Password" FontSize="Micro"/>
@@ -19,9 +19,9 @@
                         <OnPlatform x:TypeArguments="generic:String" iOS="I agree to the Daily Audio Bible Terms of Service."/>
                     </Switch.AutomationProperties.Name>
                 </Switch>
-                <local:HtmlLabel x:Name="Terms" VerticalOptions="Start"/>
+                <Label x:Name="Terms" VerticalOptions="Start" />
             </StackLayout>
-            <Button x:Name="SignUp" Text="Sign up" HeightRequest="40" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
+            <Button x:Name="SignUp" FontSize="Small" Text="Sign up" HeightRequest="40" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </local:DabBaseContentPage>
