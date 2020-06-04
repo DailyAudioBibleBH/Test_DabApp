@@ -36,43 +36,22 @@ namespace DABApp
             NavigationPage.SetHasBackButton(this, false);
             MessagingCenter.Subscribe<string>("dabapp", "ShowTodaysEpisode", (obj) =>
             {
+#if DEBUG
                 shouldShowTodaysEpisode = true;
-                //#if DEBUG
+#endif
                 if (GlobalResources.TestMode)
                 {
                     shouldShowTodaysEpisode = true;
                 }
-                //#endif
                 if (shouldShowTodaysEpisode)
                 {
                     Task.Run(() =>
                     {
-                        //await Task.Delay(1000);
-                        //TODO: Replace this with user's preferred channel
                         ShowTodaysEpisode(favChannel);
                     });
                 }
             });
-            //MessagingCenter.Subscribe<string, string>("dabapp", "ShowTodaysEpisode", (sender, message) =>
-            //{
-            //    shouldShowTodaysEpisode = true;
-            //    var test = "WHy isnt this getting hit";
-            //    //#if DEBUG
-            //    if (GlobalResources.TestMode)
-            //    {
-            //        shouldShowTodaysEpisode = true;
-            //    }
-            //    //#endif
-            //    if (shouldShowTodaysEpisode)
-            //    {
-            //        Task.Run(() =>
-            //        {
-            //            //await Task.Delay(1000);
-            //            //TODO: Replace this with user's preferred channel
-            //            ShowTodaysEpisode(favChannel);
-            //        });
-            //    }
-            //});
+
             ////Choose a different control template to disable built in scroll view
             //ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
             //this.ControlTemplate = playerBarTemplate;
@@ -109,10 +88,10 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-          
 
-            
-            
+
+
+
         }
 
         void PostLogs()
@@ -251,7 +230,7 @@ namespace DABApp
             }
 
             //Get channel and episode
-            string favoriteChannel = dbSettings.GetSetting("Channel","");
+            string favoriteChannel = dbSettings.GetSetting("Channel", "");
             if (favoriteChannel != "")
             {
                 favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;

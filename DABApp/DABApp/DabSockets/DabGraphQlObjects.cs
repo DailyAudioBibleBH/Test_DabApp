@@ -58,8 +58,21 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedProgress updatedProgress { get; set; }
         public DabGraphQlProgressUpdated progressUpdated { get; set; }
         public DabGraphQlEpisodePublished episodePublished { get; set; }
+        public DabGraphQlLogAction logAction { get; set; }
         public string checkEmail { get; set; }
     }
+
+    public class DabGraphQlLogAction
+    {
+        public int episodeId { get; set; }
+        public int userId { get; set; }
+        public bool? listen { get; set; }
+        public int? position { get; set; }
+        public bool? favorite { get; set; }
+        public object entryDate { get; set; }
+        public DateTime updatedAt { get; set; }
+    }
+
 
     public class DabGraphQlRegisterUser
     {
