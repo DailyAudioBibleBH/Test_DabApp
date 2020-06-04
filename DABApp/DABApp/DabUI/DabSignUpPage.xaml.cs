@@ -289,13 +289,20 @@ namespace DABApp
 							GuestStatus.Current.IsGuestLogin = false;
 							await AuthenticationAPI.GetMemberData();
 
-							//user is logged in
+                            //Disconnect
+							DabSyncService.Instance.Disconnect(true);
+
+                            //user is logged in
 							GlobalResources.WaitStop();
 							GlobalResources.Instance.IsLoggedIn = true;
 							DabChannelsPage _nav = new DabChannelsPage();
 							_nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-							//Application.Current.MainPage = _nav;
-							await Navigation.PushAsync(_nav);
+							Device.BeginInvokeOnMainThread(() =>
+							{
+								Application.Current.MainPage = new NavigationPage(_nav);
+							});
+
+							//await Navigation.PushAsync(_nav);
 							MessagingCenter.Send<string>("Setup", "Setup");
 
 							//Delete nav stack so user cant back into login screen
