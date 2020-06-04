@@ -36,7 +36,7 @@
                     <DataTemplate>
                         <local:DabViewCell>
                             <ViewCell.ContextActions>
-                                <MenuItem Clicked="OnListened" IsDestructive="true" Text="Completed" CommandParameter="{Binding .}"/>
+                                <MenuItem Clicked="OnListened" IsDestructive="true" Text="Listened" CommandParameter="{Binding .}"/>
                                 <MenuItem Clicked="OnFavorite" Text="Favorite" CommandParameter="{Binding .}"/>
                             </ViewCell.ContextActions>
                             <Grid Padding="10,10,10,10" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1}">

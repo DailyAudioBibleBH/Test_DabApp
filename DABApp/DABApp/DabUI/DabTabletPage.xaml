@@ -343,7 +343,7 @@
                                 <local:DabViewCell>
                                     <ViewCell.ContextActions>
                                         <MenuItem Clicked="OnListListened"
-                                                  Text="Completed"
+                                                  Text="Listened"
                                                   CommandParameter="{Binding .}"
                                                   IsDestructive="true" />
                                         <MenuItem Clicked="OnListFavorite"
