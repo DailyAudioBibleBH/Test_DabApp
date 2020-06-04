@@ -666,16 +666,6 @@ namespace DABApp.DabSockets
             sock.Connect();
 
             var current = Connectivity.NetworkAccess;
-
-            if (current != NetworkAccess.Internet)
-            {
-                // Connection to internet is not available
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Application.Current.MainPage.DisplayAlert("Error", "Error trying to connect to the websocket, please check your internet connection", "OK");
-
-                });
-            }
         }
 
         public void Disconnect(bool LogOutUser)

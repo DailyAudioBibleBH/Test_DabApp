@@ -165,7 +165,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
-
+                GlobalResources.WaitStop();
                 var r = await DisplayAlert("Unexpected error.", "We ran into an unexpected problem getting the episode list. Please try again.", "OK", "Details");
                 if (r)
                 {

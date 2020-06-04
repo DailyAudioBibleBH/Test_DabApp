@@ -156,7 +156,7 @@ namespace DABApp
             {
                 try
                 {
-                    var checkEmailQuery = "query { checkEmail(email:" + quote + Email.Text + quote + " )}";
+                    var checkEmailQuery = "query { checkEmail(email:" + quote + Email.Text.Trim() + quote + " )}";
                     var checkEmailPayload = new DabGraphQlPayload(checkEmailQuery, variables);
                     var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", checkEmailPayload));
                     DabSyncService.Instance.Send(JsonIn);
