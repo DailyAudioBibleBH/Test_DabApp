@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabAppInfoPage"
-	xmlns:local="clr-namespace:DABApp;">
+	xmlns:local="clr-namespace:DABApp">
 	<ContentPage.Content>
 		<StackLayout Padding="15" Spacing="15">
 			<local:HtmlLabel Text="{Binding appInfo}"/>
 			<Label x:Name="VersionNumber"/>
+			<Button x:Name="ResetActions" Text="Reset Local User Data" Clicked="Button_Clicked"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

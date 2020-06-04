@@ -735,6 +735,7 @@ namespace DABApp
 
                     //delete actions
                     int i = adb.ExecuteAsync("delete from dbPlayerActions").Result;
+                    i = adb.ExecuteAsync("delete from dbEpisodeUserData").Result;
                 }
 
                 //store the setting that we have ran through this for the first run of the version
