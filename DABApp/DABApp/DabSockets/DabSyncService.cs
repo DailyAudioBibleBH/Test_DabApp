@@ -94,7 +94,7 @@ namespace DABApp.DabSockets
                     //Nothing to see here...
                     return;
                 }
-                
+
                 //Check for error messages
                 if (root.type == "error" && root.payload?.message != null)
                 {
@@ -309,10 +309,13 @@ namespace DABApp.DabSockets
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
 
                             dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-                            dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
-                            if (channel.id == favChannel.id)
+                            if (ChannelSettings != null)
                             {
-                                MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+                                dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
+                                if (channel.id == favChannel.id)
+                                {
+                                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+                                }
                             }
                             await PlayerFeedAPI.DownloadEpisodes();
 
@@ -590,7 +593,7 @@ namespace DABApp.DabSockets
                         }
                         EmailSettings.Value = user.email;
                         await adb.InsertOrReplaceAsync(EmailSettings);
-                        
+
                     }
                     if (user.channel != null)
                     {
@@ -645,7 +648,7 @@ namespace DABApp.DabSockets
                         await adb.InsertOrReplaceAsync(LanguageSettings);
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
