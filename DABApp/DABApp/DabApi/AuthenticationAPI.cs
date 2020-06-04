@@ -22,7 +22,7 @@ namespace DABApp
 
         static bool notPosting = true;
         static bool notGetting = true;
-        static bool favorite; 
+        static bool favorite;
 
         public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.
         {
@@ -101,7 +101,7 @@ namespace DABApp
                 {
                     return false;
                 }
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -116,19 +116,19 @@ namespace DABApp
             try
             {
 
-            var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result ;
-            int days = ContentConfig.Instance.options.token_life;
-            if (creation == null || creation.Value == null)
-            {
-                return false;
-            }
-            DateTime creationDate = DateTime.Parse(creation.Value);
-            if (DateTime.Now > creationDate.AddDays(days))
-            {
-                return false;
-            }
+                var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                int days = ContentConfig.Instance.options.token_life;
+                if (creation == null || creation.Value == null)
+                {
+                    return false;
+                }
+                DateTime creationDate = DateTime.Parse(creation.Value);
+                if (DateTime.Now > creationDate.AddDays(days))
+                {
+                    return false;
+                }
 
-            return true;
+                return true;
             }
             catch (Exception ex)
             {
@@ -551,7 +551,7 @@ namespace DABApp
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
             int x = adb.InsertOrReplaceAsync(TokenSettings).Result;
-            x= adb.InsertOrReplaceAsync(CreationSettings).Result;
+            x = adb.InsertOrReplaceAsync(CreationSettings).Result;
             x = adb.InsertOrReplaceAsync(EmailSettings).Result;
             x = adb.InsertOrReplaceAsync(FirstNameSettings).Result;
             x = adb.InsertOrReplaceAsync(LastNameSettings).Result;
@@ -607,7 +607,7 @@ namespace DABApp
 
                 else
                 {//Apple - asnc
-                        //Add new episode action log
+                 //Add new episode action log
                     await adb.InsertAsync(actionLog);
                 }
                 if (hasEmptyJournal == null)
@@ -632,17 +632,17 @@ namespace DABApp
                     notPosting = false;
                     dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
                     var actions = adb.Table<dbPlayerActions>().ToListAsync().Result;
-                    
-                    if (TokenSettings != null && actions.Count > 0) 
+
+                    if (TokenSettings != null && actions.Count > 0)
                     {
                         try
                         {
                             LoggedEvents events = new LoggedEvents();
-                           
+
                             foreach (var i in actions)
                             {
                                 var updatedAt = DateTime.UtcNow.ToString("o");
-                                
+
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
@@ -709,10 +709,48 @@ namespace DABApp
             }
         }
 
+        static void CleanMemberData()
+        {
+            //Determine if this is the furst run of this version and if we need to do some cleanup           
+            var version = Version.Plugin.CrossVersion.Current.Version;
+            var firstRun = dbSettings.GetSetting($"FirstRun_{version}", "");
+            if (firstRun == "")
+            {
+
+                //cleans up database for the first time for specific versions of the app
+                var adb = DabData.AsyncDatabase;
+                var a = version.Split(".");
+                var shortVersion = a[0] + "." + a[1] + "." + a[2]; //xx.xx.xx format
+
+                //reset action date for specific version of the app.
+                List<string> VersionsToResetActionsOn = new List<string>() { "1.1.72", "1.1.73", "1.1.80" };
+                if (VersionsToResetActionsOn.Contains(shortVersion))
+                {
+                    //delete action dates
+                    var dateSettings = adb.Table<dbSettings>().Where(x => x.Key.StartsWith("ActionDate-")).ToListAsync().Result;
+                    foreach (var item in dateSettings)
+                    {
+                        int j = adb.DeleteAsync(item).Result;
+                    }
+
+                    //delete actions
+                    int i = adb.ExecuteAsync("delete from dbPlayerActions").Result;
+                }
+
+                //store the setting that we have ran through this for the first run of the version
+                dbSettings.StoreSetting($"FirstRun_{version}", DateTime.Now.ToString());
+
+            }
+
+        }
+
         public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
         {
             if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
             {
+
+                CleanMemberData(); //clean up member data if needed, normally only on the first time throuah an app.
+
                 if (notGetting)
                 {
                     notGetting = false;
@@ -742,7 +780,7 @@ namespace DABApp
                                 notGetting = true;
                                 return false;
                             }
-                            
+
                         }
                         catch (Exception e)
                         {
