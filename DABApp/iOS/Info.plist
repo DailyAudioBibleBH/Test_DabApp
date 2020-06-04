@@ -78,15 +78,15 @@
 	<true/>
 	<key>FirebaseAppDelegatProxyEnabled</key>
 	<string>No</string>
-	<key>CFBundleVersion</key>
-	<string>2020060301</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We use bluetooth devices to play audio on them.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>We use bluetooth devices to play audio on them.</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.72</string>
+	<string>1.1.73</string>
 	<key>CFBundleDisplayName</key>
 	<string>DAB</string>
+	<key>CFBundleVersion</key>
+	<string>2020060401</string>
 </dict>
 </plist>
