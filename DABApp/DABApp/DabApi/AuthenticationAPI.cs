@@ -547,18 +547,6 @@ namespace DABApp
             var LastNameSettings = new dbSettings();
             LastNameSettings.Key = "LastName";
             LastNameSettings.Value = token.user_last_name;
-            var LanguageSettings = new dbSettings();
-            LanguageSettings.Key = "Language";
-            LanguageSettings.Value = "English";
-            var ChannelSettings = new dbSettings();
-            ChannelSettings.Key = "Channel";
-            ChannelSettings.Value = "";
-            var ChannelsSettings = new dbSettings();
-            ChannelSettings.Key = "Channels";
-            ChannelSettings.Value = "";
-            var NickNameSettings = new dbSettings();
-            NickNameSettings.Key = "NickName";
-            NickNameSettings.Value = "";
             var AvatarSettings = new dbSettings();
             AvatarSettings.Key = "Avatar";
             AvatarSettings.Value = token.user_avatar;
@@ -568,10 +556,12 @@ namespace DABApp
             x = adb.InsertOrReplaceAsync(FirstNameSettings).Result;
             x = adb.InsertOrReplaceAsync(LastNameSettings).Result;
             x = adb.InsertOrReplaceAsync(AvatarSettings).Result;
-            x = adb.InsertOrReplaceAsync(LanguageSettings).Result;
-            x = adb.InsertOrReplaceAsync(ChannelSettings).Result;
-            x = adb.InsertOrReplaceAsync(ChannelsSettings).Result;
-            x = adb.InsertOrReplaceAsync(NickNameSettings).Result;
+
+            dbSettings.StoreSetting("Language", "English");
+            dbSettings.StoreSetting("Channel", "");
+            dbSettings.StoreSetting("Channels", "");
+            dbSettings.StoreSetting("NickName", "");
+
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 

@@ -308,10 +308,10 @@ namespace DABApp.DabSockets
                             MessagingCenter.Send<string>("Update", "Update");
                             MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
 
-                            dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-                            if (ChannelSettings != null)
+                            string favoriteChannel = dbSettings.GetSetting("Channel", "");
+                            if (favoriteChannel != "")
                             {
-                                dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
+                                dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
                                 if (channel.id == favChannel.id)
                                 {
                                     MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
@@ -543,42 +543,18 @@ namespace DABApp.DabSockets
                     dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
                     dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
                     dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-                    dbSettings LanguageSettings = adb.Table<dbSettings>().Where(x => x.Key == "Language").FirstOrDefaultAsync().Result;
-                    dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-                    dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
-                    dbSettings NickNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "NickName").FirstOrDefaultAsync().Result;
-                    if (LanguageSettings == null)
-                    {
-                        LanguageSettings = new dbSettings() { Key = "Language" };
-                    }
-                    if (NickNameSettings == null)
-                    {
-                        NickNameSettings = new dbSettings() { Key = "NickName" };
-                    }
-                    if (ChannelSettings == null)
-                    {
-                        ChannelSettings = new dbSettings() { Key = "Channel" };
-                    }
-                    if (ChannelsSettings == null)
-                    {
-                        ChannelsSettings = new dbSettings() { Key = "Channels" };
-                    }
 
                     EmailSettings.Value = user.email;
                     FirstNameSettings.Value = user.firstName;
                     LastNameSettings.Value = user.lastName;
-                    LanguageSettings.Value = user.language;
-                    ChannelSettings.Value = user.channel;
-                    ChannelsSettings.Value = user.channels;
-                    NickNameSettings.Value = user.nickname;
+                    dbSettings.StoreSetting("Channel", user.channel);
+                    dbSettings.StoreSetting("Channels", user.channels);
+                    dbSettings.StoreSetting("Language", user.language);
+                    dbSettings.StoreSetting("NickName", user.nickname);
 
                     await adb.UpdateAsync(EmailSettings);
                     await adb.UpdateAsync(FirstNameSettings);
                     await adb.UpdateAsync(LastNameSettings);
-                    await adb.UpdateAsync(LanguageSettings);
-                    await adb.UpdateAsync(ChannelSettings);
-                    await adb.UpdateAsync(ChannelsSettings);
-                    await adb.UpdateAsync(NickNameSettings);
 
                 }
                 else if (root.payload?.data?.user != null)
@@ -597,25 +573,11 @@ namespace DABApp.DabSockets
                     }
                     if (user.channel != null)
                     {
-                        //Find out how we want to do this
-                        dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-                        if (ChannelSettings == null)
-                        {
-                            ChannelSettings = new dbSettings() { Key = "Channel" };
-                        }
-                        ChannelSettings.Value = user.channel;
-                        await adb.InsertOrReplaceAsync(ChannelSettings);
+                        dbSettings.StoreSetting("Channel", user.channel);
                     }
                     if (user.channels != null)
                     {
-                        //Find out how we want to do this
-                        dbSettings ChannelsSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channels").FirstOrDefaultAsync().Result;
-                        if (ChannelsSettings == null)
-                        {
-                            ChannelsSettings = new dbSettings() { Key = "Channels" };
-                        }
-                        ChannelsSettings.Value = user.channels.ToString();
-                        await adb.InsertOrReplaceAsync(ChannelsSettings);
+                        dbSettings.StoreSetting("Channels", user.channels);
                     }
                     if (user.firstName != null)
                     {
@@ -639,13 +601,11 @@ namespace DABApp.DabSockets
                     }
                     if (user.language != null)
                     {
-                        dbSettings LanguageSettings = adb.Table<dbSettings>().Where(x => x.Key == "Language").FirstOrDefaultAsync().Result;
-                        if (LanguageSettings == null)
-                        {
-                            LanguageSettings = new dbSettings() { Key = "Language" };
-                        }
-                        LanguageSettings.Value = user.language;
-                        await adb.InsertOrReplaceAsync(LanguageSettings);
+                        dbSettings.StoreSetting("Language", user.language);
+                    }
+                    if (user.nickname != null)
+                    {
+                        dbSettings.StoreSetting("NickName", user.nickname);
                     }
                 }
 

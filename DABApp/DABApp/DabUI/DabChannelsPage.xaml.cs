@@ -251,16 +251,10 @@ namespace DABApp
             }
 
             //Get channel and episode
-            dbSettings ChannelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Channel").FirstOrDefaultAsync().Result;
-            if (ChannelSettings == null)
+            string favoriteChannel = dbSettings.GetSetting("Channel","");
+            if (favoriteChannel != "")
             {
-                ChannelSettings = new dbSettings() { Key = "Channel" };
-            }
-
-            var ch = ChannelSettings.Value;
-            if (ch != null)
-            {
-                favChannel = adb.Table<dbChannels>().Where(x => x.title == ChannelSettings.Value).FirstOrDefaultAsync().Result;
+                favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
                 var minQueryDate = GlobalResources.GetLastEpisodeQueryDate(Convert.ToInt32(favChannel.id));
                 DabGraphQlVariables variables = new DabGraphQlVariables();
                 Debug.WriteLine($"Getting episodes by ChannelId");
