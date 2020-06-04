@@ -193,6 +193,15 @@ namespace DABApp.DabSockets
                         await adb.DeleteAsync(a);
                     }
 
+                    //update the database with the correct value, if it's different
+                    bool hasJournal;
+                    if (action.entryDate != null)
+                        hasJournal = true;
+                    else
+                        hasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
+
 
 
 
