@@ -301,7 +301,7 @@ namespace DABApp
                 {
                     Login.IsEnabled = false;
                     GlobalResources.WaitStart("Checking your credentials...");
-                    var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+                    var result = await AuthenticationAPI.ValidateLogin(Email.Text.Trim(), Password.Text); //Sends message off to GraphQL
                     if (result == "Request Sent")
                     {
                         //Wait for the reply from GraphQl before proceeding.
