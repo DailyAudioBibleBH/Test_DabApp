@@ -646,7 +646,7 @@ namespace DABApp
                                 switch (i.ActionType)
                                 {
                                     case "favorite": //Favorited an episode mutation
-                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId favorite updatedAt}}";
+                                        var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId userId favorite updatedAt}}";
                                         favQuery = favQuery.Replace("True", "true");
                                         favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
                                         var favPayload = new DabGraphQlPayload(favQuery, variables);
@@ -661,7 +661,7 @@ namespace DABApp
                                         else
                                             listenedTo = "false";
 
-                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId listen updatedAt}}";
+                                        var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId userId listen updatedAt}}";
                                         var lisPayload = new DabGraphQlPayload(lisQuery, variables);
                                         var lisJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", lisPayload));
 
@@ -669,7 +669,7 @@ namespace DABApp
                                         //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
                                         break;
                                     case "pause": //Saving player position to socket on pause mutation
-                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId position updatedAt}}";
+                                        var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId userId position updatedAt}}";
                                         var posPayload = new DabGraphQlPayload(posQuery, variables);
                                         var posJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", posPayload));
 
@@ -677,9 +677,9 @@ namespace DABApp
                                         break;
                                     case "entryDate": //When event happened mutation
                                         string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
                                         if (hasEmptyJournal == true)
-                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId entryDate updatedAt}}";
+                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
                                         var entPayload = new DabGraphQlPayload(entQuery, variables);
                                         var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
 
@@ -688,10 +688,6 @@ namespace DABApp
                                     default:
                                         break;
                                 }
-                            }
-                            foreach (var action in actions)
-                            {
-                                await adb.DeleteAsync(action);
                             }
                         }
                         catch (Exception e)
