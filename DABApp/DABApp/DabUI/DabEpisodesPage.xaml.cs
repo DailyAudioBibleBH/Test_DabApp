@@ -209,7 +209,7 @@ namespace DABApp
                 await AuthenticationAPI.GetMemberData();
                 TimedActions();
 
-                GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                //GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
                 if (_resource.availableOffline  && PlayerFeedAPI.DownloadIsRunning == false)
                 {
