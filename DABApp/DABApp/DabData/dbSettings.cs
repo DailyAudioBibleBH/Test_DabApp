@@ -96,7 +96,7 @@ namespace DABApp
                 {
                     //insert
                     s = new dbSettings() { Key = Key.ToLower(), Value = Value };
-                    await adb.InsertAsync(s);
+                    await adb.InsertOrReplaceAsync(s);
                     return;
                 }
             }

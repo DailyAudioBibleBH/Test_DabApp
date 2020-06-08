@@ -41,7 +41,19 @@ namespace DABApp.DabUI
             Description.Text = currentBadge.description;
             badgeName = currentBadge.name;
 
-            var breakpoint = "";
+            try
+            {
+                //Send info to Firebase analytics that user achieveed the badge
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("badge", currentBadge.name);
+                infoJ.Add("user", GlobalResources.GetUserEmail());
+                DependencyService.Get<IAnalyticsService>().LogEvent("badge_earned", infoJ);
+
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public async Task ShareUri(string uri)

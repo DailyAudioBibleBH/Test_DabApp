@@ -723,7 +723,7 @@ namespace DABApp
                 var shortVersion = a[0] + "." + a[1] + "." + a[2]; //xx.xx.xx format
 
                 //reset action date for specific version of the app.
-                List<string> VersionsToResetActionsOn = new List<string>() { "1.1.72", "1.1.73", "1.1.80" };
+                List<string> VersionsToResetActionsOn = new List<string>() { "1.1.72", "1.1.73", "1.1.74", "1.1.80" };
                 if (VersionsToResetActionsOn.Contains(shortVersion))
                 {
                     //delete action dates
