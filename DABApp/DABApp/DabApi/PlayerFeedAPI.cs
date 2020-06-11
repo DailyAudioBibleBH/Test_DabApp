@@ -382,7 +382,7 @@ namespace DABApp
                     if (RaiseEpisodeDataChanged)
                     {
                         MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                        //MessagingCenter.Send<string>("Update", "Update");
+                        MessagingCenter.Send<string>("Update", "Update");
                     }
                 }
             }
