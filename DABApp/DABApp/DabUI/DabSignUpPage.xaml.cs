@@ -290,7 +290,8 @@ namespace DABApp
 							await AuthenticationAPI.GetMemberData();
 
                             //Disconnect
-							DabSyncService.Instance.Disconnect(true);
+                            //Why was this true before
+							DabSyncService.Instance.Disconnect(false);
 
                             //user is logged in
 							GlobalResources.WaitStop();

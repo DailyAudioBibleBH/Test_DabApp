@@ -200,7 +200,7 @@ namespace DABApp
 
                             GuestStatus.Current.IsGuestLogin = false;
                             await AuthenticationAPI.GetMemberData();
-
+                            DabSyncService.Instance.Disconnect(false);
                             //user is logged in
                             GlobalResources.Instance.IsLoggedIn = true;
                             DabChannelsPage _nav = new DabChannelsPage();
