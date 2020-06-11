@@ -93,7 +93,6 @@ namespace DABApp
                     if (root?.payload?.data?.checkEmail == "false")
                     {
                         GlobalResources.WaitStop();
-                        await DisplayAlert("Sorry","No matching email found.", "OK");
                         await Navigation.PushAsync(new DabSignUpPage(Email.Text));
                         NextButton.IsEnabled = true;
                         btnGuest.IsEnabled = true;
