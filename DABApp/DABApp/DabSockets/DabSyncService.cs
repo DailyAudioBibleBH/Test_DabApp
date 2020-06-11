@@ -200,12 +200,7 @@ namespace DABApp.DabSockets
                     else
                         hasJournal = false;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
-
-
-
-
-
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position, false);
                 }
 
                 //Action we need to address
