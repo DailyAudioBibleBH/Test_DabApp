@@ -363,6 +363,7 @@ namespace DABApp
 
         void OnBack(object o, EventArgs e)
         {
+            DabSyncService.Instance.Disconnect(false);
             BackButton.IsEnabled = false;
             Navigation.PopAsync();
         }
