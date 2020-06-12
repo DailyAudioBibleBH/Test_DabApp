@@ -142,10 +142,7 @@ namespace DABApp
 				DisplayAlert("Wait", "Please read and agree to the Daily Audio Bible Terms of Service.", "OK");
 				return false;
 			}
-            else
-            {
-				return true;
-			}
+			return true;
 		}
 
 		void OnFirstNameCompleted(object o, EventArgs e)
@@ -192,38 +189,36 @@ namespace DABApp
 						{
 							try
 							{
-                                //Login.IsEnabled = false;
-                                
-								GlobalResources.WaitStart("Checking your credentials...");
-								var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
-
-								if (result == "Request Sent")
+								var user = root.payload.data.registerUser;
+								//Store the token
+								dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+								if (sToken == null)
 								{
-									//Wait for the reply from GraphQl before proceeding.
-									GraphQlLoginRequestInProgress = true;
+									sToken = new dbSettings() { Key = "Token" };
 								}
+								sToken.Value = user.token;
+								await adb.InsertOrReplaceAsync(sToken);
 
-								else
+								//Update Token Life
+								ContentConfig.Instance.options.token_life = 5;
+								dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+								if (sTokenCreationDate == null)
 								{
-									GlobalResources.WaitStop();
-									if (result.Contains("Error"))
-									{
-										if (result.Contains("Http"))
-										{
-											await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
-										}
-										else
-										{
-											await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
-										}
-									}
-									else
-									{
-										await DisplayAlert("Login Failed", result, "OK");
-									}
+									sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
 								}
-								//Login.IsEnabled = true;
-							}
+								sTokenCreationDate.Value = DateTime.Now.ToString();
+								await adb.InsertOrReplaceAsync(sTokenCreationDate);
+								//DabSyncService.Instance.Disconnect(false);
+								//DabSyncService.Instance.Connect();
+								//Reset the connection with the new token
+								DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+
+                                //Send a request for updated user data
+
+                                string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                                var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+                                DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+                            }
 							catch (Exception ex)
 							{
 								GlobalResources.WaitStop();
