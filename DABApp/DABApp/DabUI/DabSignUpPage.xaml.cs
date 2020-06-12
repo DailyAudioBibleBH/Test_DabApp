@@ -72,6 +72,7 @@ namespace DABApp
 				string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
 				var mRegister = new DabGraphQlPayload(registerMutation, variables);
 				DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
+				
 
 				
 				SignUp.IsEnabled = true;
@@ -141,7 +142,10 @@ namespace DABApp
 				DisplayAlert("Wait", "Please read and agree to the Daily Audio Bible Terms of Service.", "OK");
 				return false;
 			}
-			return true;
+            else
+            {
+				return true;
+			}
 		}
 
 		void OnFirstNameCompleted(object o, EventArgs e)
@@ -188,9 +192,11 @@ namespace DABApp
 						{
 							try
 							{
-								//Login.IsEnabled = false;
+                                //Login.IsEnabled = false;
+                                
 								GlobalResources.WaitStart("Checking your credentials...");
 								var result = await AuthenticationAPI.ValidateLogin(Email.Text, Password.Text); //Sends message off to GraphQL
+
 								if (result == "Request Sent")
 								{
 									//Wait for the reply from GraphQl before proceeding.
