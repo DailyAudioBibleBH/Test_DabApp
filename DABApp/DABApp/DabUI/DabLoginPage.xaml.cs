@@ -51,17 +51,7 @@ namespace DABApp
                 Logo.WidthRequest = 250;
                 Logo.Aspect = Aspect.AspectFit;
             }
-            //SignUp.IsSelectable = false;
-            //var tapper = new TapGestureRecognizer();
-            //tapper.NumberOfTapsRequired = 1;
-
-
-            //tapper.Tapped += (sender, e) =>
-            //{
-            //    Navigation.PushAsync(new DabSignUpPage("", _fromPlayer, _fromDonation));
-            //};
-            //SignUp.GestureRecognizers.Add(tapper);
-            //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+            
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
@@ -95,17 +85,7 @@ namespace DABApp
                 Logo.WidthRequest = 250;
                 Logo.Aspect = Aspect.AspectFit;
             }
-            //SignUp.IsSelectable = false;
-            //var tapper = new TapGestureRecognizer();
-            //tapper.NumberOfTapsRequired = 1;
-
-
-            //tapper.Tapped += (sender, e) =>
-            //{
-            //    Navigation.PushAsync(new DabSignUpPage("", _fromPlayer, _fromDonation));
-            //};
-            //SignUp.GestureRecognizers.Add(tapper);
-            //SignUp.Text = "<div style='font-size:15px;'>Don't have an account? <font color='#ff0000'>Sign Up</font></div>";
+            
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
@@ -138,38 +118,7 @@ namespace DABApp
                     try
                     {
                         var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
-                        //if (root?.payload?.data?.loginUser != null)
-                        //{
-
-                        //    //Store the token
-                        //    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                        //    if (sToken == null)
-                        //    {
-                        //        sToken = new dbSettings() { Key = "Token" };
-                        //    }
-                        //    sToken.Value = root.payload.data.loginUser.token;
-                        //    await adb.InsertOrReplaceAsync(sToken);
-
-                        //    //Update Token Life
-                        //    ContentConfig.Instance.options.token_life = 5;
-                        //    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                        //    if (sTokenCreationDate == null)
-                        //    {
-                        //        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                        //    }
-                        //    sTokenCreationDate.Value = DateTime.Now.ToString();
-                        //    await adb.InsertOrReplaceAsync(sTokenCreationDate);
-                        //    DabSyncService.Instance.Disconnect(false);
-                        //    DabSyncService.Instance.Connect();
-                        //    //Reset the connection with the new token
-                        //    DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
-
-                        //    //Send a request for updated user data
-                        //    string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
-                        //    var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
-                        //    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
-
-                        //}
+                        
                         if (root?.payload?.data?.user != null)
                         {
                             //We got back user data!
@@ -205,7 +154,6 @@ namespace DABApp
                             GlobalResources.Instance.IsLoggedIn = true;
                             DabChannelsPage _nav = new DabChannelsPage();
                             _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                            //Application.Current.MainPage = _nav;
                             await Navigation.PushAsync(_nav);
                             MessagingCenter.Send<string>("Setup", "Setup");
 
@@ -226,38 +174,14 @@ namespace DABApp
 
                         else if (root?.payload?.errors?.First() != null)
                         {
-                            //if (root?.payload?.errors?.First().message == "Not authorized.")
-                            //{
-                            //    //Token
-                            //    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                            //    var test = s.Value;
-                            //    if (s != null) await adb.DeleteAsync(s);
-
-                            //    //TokenCreation
-                            //    s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                            //    if (s != null) await adb.DeleteAsync(s);
-
-                            //    DabGraphQlVariables variables = new DabGraphQlVariables();
-                            //    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                            //    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                            //    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                            //    DabSyncService.Instance.Send(tokenJsonIn);
-                            //    GlobalResources.WaitStop();
-                            //    Device.BeginInvokeOnMainThread(() => { DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
-                            //}
-
-                            //else
-                            //{
-                                GlobalResources.WaitStop();
-                                //We have a login error!
-                                await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
-                                GraphQlLoginRequestInProgress = false;
-                            //}
+                            GlobalResources.WaitStop();
+                            //We have a login error!
+                            await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                            GraphQlLoginRequestInProgress = false;
                         }
                         else
                         {
                             //Some other GraphQL message we don't care about here.
-
                         }
                     }
                     catch (Exception ex)
@@ -354,11 +278,6 @@ namespace DABApp
                 var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
                 DabSyncService.Instance.Send(JsonIn);
             }
-            //var resetPasswordMutation = "mutation { resetPassword(email: \"{Email.Text}\" )}";
-            //var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
-            //var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
-            //DabSyncService.Instance.Send(JsonIn);
-            //Navigation.PushAsync(new DabResetPasswordPage());
         }
 
         void OnBack(object o, EventArgs e)
