@@ -824,7 +824,7 @@ namespace DABApp.DabSockets
             //Init the connection
             PrepConnectionWithTokenAndOrigin(Token.Value);
             //Only send user based subscriptions when user is logged in
-            if (GuestStatus.Current.IsGuestLogin == false)
+            if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
             {
                 //SUBSCRIPTION 1 - ACTION LOGGED
                 var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
@@ -854,12 +854,12 @@ namespace DABApp.DabSockets
                 subscriptionIds.Add(6);
                 sock.Send(SubscriptionUpdatedUser);
 
-                //SUBSCRIPTION 5 - USER ADDRESS UPDATED
-                var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
-                DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
-                var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 7));
-                subscriptionIds.Add(7);
-                sock.Send(SubscriptionUpdatedUserAddress);
+                ////SUBSCRIPTION 5 - USER ADDRESS UPDATED
+                //var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
+                //DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
+                //var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 7));
+                //subscriptionIds.Add(7);
+                //sock.Send(SubscriptionUpdatedUserAddress);
 
                 //QUERY - RECENT PROGRESS
                 var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
