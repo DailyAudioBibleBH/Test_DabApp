@@ -202,36 +202,36 @@ namespace DABApp
         //    }
         //}
 
-        public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
-        {
-            try
-            {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/profile");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
-                if (info.email == null)
-                {
-                    throw new Exception($"Error Getting Member: email is null");
-                }
-                EmailSettings.Value = info.email;
-                FirstNameSettings.Value = info.first_Name;
-                LastNameSettings.Value = info.last_Name;
-                await adb.UpdateAsync(EmailSettings);
-                await adb.UpdateAsync(FirstNameSettings);
-                await adb.UpdateAsync(LastNameSettings);
-                return true;
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
-        }
+        //public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
+        //{
+        //    try
+        //    {
+        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+        //        HttpClient client = new HttpClient();
+        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+        //        var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/profile");
+        //        string JsonOut = await result.Content.ReadAsStringAsync();
+        //        ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
+        //        if (info.email == null)
+        //        {
+        //            throw new Exception($"Error Getting Member: email is null");
+        //        }
+        //        EmailSettings.Value = info.email;
+        //        FirstNameSettings.Value = info.first_Name;
+        //        LastNameSettings.Value = info.last_Name;
+        //        await adb.UpdateAsync(EmailSettings);
+        //        await adb.UpdateAsync(FirstNameSettings);
+        //        await adb.UpdateAsync(LastNameSettings);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return false;
+        //    }
+        //}
 
         public static async Task<string> EditMember(string email, string firstName, string lastName)
         {

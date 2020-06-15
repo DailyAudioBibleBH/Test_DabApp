@@ -95,7 +95,7 @@ namespace DABApp
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 GlobalResources.WaitStart();
-                var result = await AuthenticationAPI.GetMember();
+                //var result = await AuthenticationAPI.GetMember();
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
             }
