@@ -63,17 +63,15 @@ namespace DABApp
 			}
 		}
 
-		async void OnSignUp(object o, EventArgs e)
+		void OnSignUp(object o, EventArgs e)
 		{
 			SignUp.IsEnabled = false;
 			if (SignUpValidation())
 			{
 				GlobalResources.WaitStart("Checking your credentials...");
-				//string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-				//var mRegister = new DabGraphQlPayload(registerMutation, variables);
-				//DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
-
-				await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
+                string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+                var mRegister = new DabGraphQlPayload(registerMutation, variables);
+                DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
 
 				SignUp.IsEnabled = true;
 			}
@@ -208,8 +206,7 @@ namespace DABApp
 								}
 								sTokenCreationDate.Value = DateTime.Now.ToString();
 								await adb.InsertOrReplaceAsync(sTokenCreationDate);
-								//DabSyncService.Instance.Disconnect(false);
-								//DabSyncService.Instance.Connect();
+								
 								//Reset the connection with the new token
 								DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
 
