@@ -647,6 +647,19 @@ namespace DABApp.DabSockets
                         dbSettings.StoreSetting("NickName", user.nickname);
                     }
                 }
+                else if (root.payload?.data?.updateUserFields != null)
+                {
+                    DabGraphQlUpdateUserFields fields = root.payload.data.updateUserFields;
+                    
+                    dbSettings.StoreSetting("Email", fields.email);
+                    dbSettings.StoreSetting("FirstName", fields.firstName);
+                    dbSettings.StoreSetting("LastName", fields.lastName);
+
+                    GlobalResources.WaitStop();
+                    var UserName = GlobalResources.GetUserName().Split(' ');
+                    GuestStatus.Current.UserName = GlobalResources.GetUserName();
+                    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "User profile information has been updated", "OK"); ; });
+                }
 
             }
             catch (Exception ex)

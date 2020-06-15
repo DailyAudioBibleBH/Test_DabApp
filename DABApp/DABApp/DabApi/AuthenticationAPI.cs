@@ -233,49 +233,49 @@ namespace DABApp
         //    }
         //}
 
-        public static async Task<string> EditMember(string email, string firstName, string lastName)
-        {
-            try//Edits member data used on DABProfileManagementPage
-            {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName));
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);//Using an HttpPut method to update member profle
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-                APIToken token = container.token;
-                if (container.message != null && token == null)
-                {
-                    throw new Exception(container.message);
-                }
-                TokenSettings.Value = token.value;
-                CreationSettings.Value = token.expires;
-                EmailSettings.Value = token.user_email;
-                FirstNameSettings.Value = token.user_first_name;
-                LastNameSettings.Value = token.user_last_name;
-                await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
-                await adb.UpdateAsync(CreationSettings);
-                await adb.UpdateAsync(EmailSettings);
-                await adb.UpdateAsync(FirstNameSettings);
-                await adb.UpdateAsync(LastNameSettings);
-                return "Success";
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(HttpRequestException))
-                {
-                    return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-                }
-                return e.Message;
-            }
-        }
+        //public static async Task<string> EditMember(string email, string firstName, string lastName)
+        //{
+        //    try//Edits member data used on DABProfileManagementPage
+        //    {
+        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+        //        dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+        //        HttpClient client = new HttpClient();
+        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+        //        var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName));
+        //        var content = new StringContent(JsonIn);
+        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        //        var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);//Using an HttpPut method to update member profle
+        //        string JsonOut = await result.Content.ReadAsStringAsync();
+        //        APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
+        //        APIToken token = container.token;
+        //        if (container.message != null && token == null)
+        //        {
+        //            throw new Exception(container.message);
+        //        }
+        //        TokenSettings.Value = token.value;
+        //        CreationSettings.Value = token.expires;
+        //        EmailSettings.Value = token.user_email;
+        //        FirstNameSettings.Value = token.user_first_name;
+        //        LastNameSettings.Value = token.user_last_name;
+        //        await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
+        //        await adb.UpdateAsync(CreationSettings);
+        //        await adb.UpdateAsync(EmailSettings);
+        //        await adb.UpdateAsync(FirstNameSettings);
+        //        await adb.UpdateAsync(LastNameSettings);
+        //        return "Success";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (e.GetType() == typeof(HttpRequestException))
+        //        {
+        //            return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
+        //        }
+        //        return e.Message;
+        //    }
+        //}
 
         public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
         {

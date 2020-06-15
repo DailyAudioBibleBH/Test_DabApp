@@ -13,6 +13,8 @@ namespace DABApp
 	public partial class DabProfileManagementPage : DabBaseContentPage
 	{
 		DabGraphQlVariables variables = new DabGraphQlVariables();
+		SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 
 		public DabProfileManagementPage()
 		{
@@ -25,24 +27,19 @@ namespace DABApp
 			DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
 		}
 
-		async void OnSave(object o, EventArgs e) 
+		void OnSave(object o, EventArgs e) 
 		{
 			Save.IsEnabled = false;
 			if (Validation()) 
 			{
 				GlobalResources.WaitStart("Saving your information...");
-				var message = await AuthenticationAPI.EditMember(Email.Text, FirstName.Text, LastName.Text);
-				if (message == "Success")
-				{
-					GlobalResources.WaitStop();
-					await DisplayAlert(message, "User profile information has been updated", "OK");
-					Email.Text = GlobalResources.GetUserEmail();
-					var UserName = GlobalResources.GetUserName().Split(' ');
-					FirstName.Text = UserName[0];
-					LastName.Text = UserName[1];
-					GuestStatus.Current.UserName = GlobalResources.GetUserName();
-					
-				}
+                
+				var updateUserSettingsMutation = $"mutation {{ updateUserFields(firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", email: \"{Email.Text}\") {{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+				var updateUserSettingsPayload = new DabGraphQlPayload(updateUserSettingsMutation, variables);
+				var settingsJson = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateUserSettingsPayload));
+				DabSyncService.Instance.Send(settingsJson);
+				
+
                 if (CurrentPassword.Text != null && NewPassword.Text != null && ConfirmNewPassword.Text != null)
                 {
 					GlobalResources.WaitStart("Updating your password...");
@@ -54,16 +51,6 @@ namespace DABApp
 					CurrentPassword.Text = null;
 					NewPassword.Text = null;
 					ConfirmNewPassword.Text = null;
-				}
-                if (message == "Success")
-                {
-					if (Device.Idiom == TargetIdiom.Phone)
-					{
-						await Navigation.PopAsync();
-					}
-				}
-				else {
-					await DisplayAlert("An error has occured", message, "OK");
 				}
 			}
 			Save.IsEnabled = true;
