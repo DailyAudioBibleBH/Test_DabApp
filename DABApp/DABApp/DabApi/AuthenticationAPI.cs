@@ -153,7 +153,11 @@ namespace DABApp
                 var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
                 var content = new StringContent(JsonIn);
 
-                string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}";
+                //string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}";
+                //var mRegister = new DabGraphQlPayload(registerMutation, variables);
+                //DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
+
+                string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
                 var mRegister = new DabGraphQlPayload(registerMutation, variables);
                 DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
 

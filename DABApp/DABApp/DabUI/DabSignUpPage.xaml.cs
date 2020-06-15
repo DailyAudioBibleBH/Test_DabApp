@@ -69,12 +69,12 @@ namespace DABApp
 			if (SignUpValidation())
 			{
 				GlobalResources.WaitStart("Checking your credentials...");
-				string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-				var mRegister = new DabGraphQlPayload(registerMutation, variables);
-				DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
-				
+				//string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+				//var mRegister = new DabGraphQlPayload(registerMutation, variables);
+				//DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
 
-				
+				await AuthenticationAPI.CreateNewMember(FirstName.Text, LastName.Text, Email.Text, Password.Text);
+
 				SignUp.IsEnabled = true;
 			}
 			else
