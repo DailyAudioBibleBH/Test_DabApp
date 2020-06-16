@@ -24,7 +24,6 @@ namespace DABApp
 			FirstName.Text = UserName[0];
 			LastName.Text = UserName[1];
 			Email.Text = GlobalResources.GetUserEmail();
-			DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
 		}
 
 		void OnSave(object o, EventArgs e) 
@@ -33,16 +32,20 @@ namespace DABApp
 			if (Validation()) 
 			{
 				GlobalResources.WaitStart("Saving your information...");
-                
-				var updateUserSettingsMutation = $"mutation {{ updateUserFields(firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", email: \"{Email.Text}\") {{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-				var updateUserSettingsPayload = new DabGraphQlPayload(updateUserSettingsMutation, variables);
-				var settingsJson = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateUserSettingsPayload));
-				DabSyncService.Instance.Send(settingsJson);
-				
+				dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
+				dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
+				dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
+
+                if (FirstName.Text != FirstNameSettings.Value || LastName.Text != LastNameSettings.Value || Email.Text != EmailSettings.Value)
+                {
+					var updateUserSettingsMutation = $"mutation {{ updateUserFields(firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", email: \"{Email.Text}\") {{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+					var updateUserSettingsPayload = new DabGraphQlPayload(updateUserSettingsMutation, variables);
+					var settingsJson = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateUserSettingsPayload));
+					DabSyncService.Instance.Send(settingsJson);
+				}
 
                 if (CurrentPassword.Text != null && NewPassword.Text != null && ConfirmNewPassword.Text != null)
                 {
-					GlobalResources.WaitStart("Updating your password...");
 					var resetPasswordMutation = $"mutation {{ updatePassword( currentPassword: \"{CurrentPassword.Text}\" newPassword: \"{NewPassword.Text}\")}}";
 					var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
 					var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
@@ -55,66 +58,6 @@ namespace DABApp
 			}
 			Save.IsEnabled = true;
 		}
-
-        private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
-        {
-            Device.InvokeOnMainThreadAsync(async () =>
-            {
-
-                if (DabSyncService.Instance.IsConnected)
-                {
-                    SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-
-                    //Message received from the Graph QL - deal with those related to login messages!
-                    try
-                    {
-                        var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
-
-						if (root.payload?.data?.updatePassword != null)
-						{
-							GlobalResources.WaitStop();
-							if (root.payload.data.updatePassword == true)
-							{
-								MainThread.BeginInvokeOnMainThread(() =>
-								{
-									Application.Current.MainPage.DisplayAlert("Success", "Password Successfully Updated", "OK");
-								});
-							}
-						}
-
-						else if (root?.payload?.errors?.First() != null)
-                        {
-                            //if (GraphQlLoginRequestInProgress == true)
-                            //{
-                            GlobalResources.WaitStop();
-							//We have an error!
-							MainThread.BeginInvokeOnMainThread(() =>
-							{
-								Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
-							});
-                        }
-                        else
-                        {
-                            //Some other GraphQL message we don't care about here.
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-						GlobalResources.WaitStop();
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                        //Some other GraphQL message we don't care about here.
-
-                    }
-                }
-                else
-                {
-                    GlobalResources.WaitStop();
-                    //DabSyncService.Instance.Init();
-                    DabSyncService.Instance.Connect();
-                }
-            });
-        }
 
         void OnFirstNameCompleted(object o, EventArgs e) {
 			LastName.Focus();

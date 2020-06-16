@@ -59,7 +59,6 @@ namespace DABApp
                         settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
                         await adb.UpdateAllAsync(settings);
                     }
-                    GuestLogin();
                     return "IsGuest";
                 }
                 else
@@ -136,146 +135,6 @@ namespace DABApp
             }
 
         }
-
-        //public static async Task<string> CreateNewMember(string firstName, string lastName, string email, string password)//Creates a new member.
-        //{
-        //    try
-        //    {
-        //        //TODO: Move to DabSyncService
-        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-        //        dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-        //        dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
-        //        HttpClient client = new HttpClient();//Authentication Bearer token is hard coded in GlobalResources. 
-        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GlobalResources.APIKey);
-        //        var JsonIn = JsonConvert.SerializeObject(new SignUpInfo(email, firstName, lastName, password));
-        //        var content = new StringContent(JsonIn);
-
-        //        //string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}";
-        //        //var mRegister = new DabGraphQlPayload(registerMutation, variables);
-        //        //DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
-
-        //        string registerMutation = $"mutation {{registerUser(email: \"{email}\", firstName: \"{firstName}\", lastName: \"{lastName}\", password: \"{password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-        //        var mRegister = new DabGraphQlPayload(registerMutation, variables);
-        //        DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
-
-
-        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        //        var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}member/profile", content);
-        //        string JsonOut = await result.Content.ReadAsStringAsync();
-        //        APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-        //        APIToken token = container.token;
-        //        if (container.code == "rest_forbidden" || container.code == "add_member_error")
-        //        {
-        //            return "An error occured: " + container.message;
-        //        }
-        //        if (TokenSettings == null)//If the AuthenticationAPI does not have the new member data then creae it.  Otherwise login normally.
-        //        {
-        //            CreateSettings(token);
-        //        }
-        //        else
-        //        {
-        //            TokenSettings.Value = token.value;
-        //            CreationSettings.Value = token.expires;
-        //            EmailSettings.Value = token.user_email;
-        //            FirstNameSettings.Value = token.user_first_name;
-        //            LastNameSettings.Value = token.user_last_name;
-        //            AvatarSettings.Value = token.user_avatar;
-        //            IEnumerable<dbSettings> settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-        //            await adb.UpdateAllAsync(settings);
-        //            //GuestStatus.Current.AvatarUrl = new Uri(token.user_avatar);
-        //            GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
-        //        }
-        //        //TODO: Replacew this with sync
-        //        //JournalTracker.Current.Connect(TokenSettings.Value);
-        //        return "";
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e.GetType() == typeof(HttpRequestException))
-        //        {
-        //            return "Http Request Timed out.";
-        //        }
-        //        else return "The following exception was caught: " + e.Message;
-        //    }
-        //}
-
-        //public static async Task<bool> GetMember()//Used to get user profile info for the DabSettingsPage.  Also gets the current user settings from the API and updates the App user settings.
-        //{
-        //    try
-        //    {
-        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-        //        HttpClient client = new HttpClient();
-        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-        //        var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}member/profile");
-        //        string JsonOut = await result.Content.ReadAsStringAsync();
-        //        ProfileInfo info = JsonConvert.DeserializeObject<ProfileInfo>(JsonOut);
-        //        if (info.email == null)
-        //        {
-        //            throw new Exception($"Error Getting Member: email is null");
-        //        }
-        //        EmailSettings.Value = info.email;
-        //        FirstNameSettings.Value = info.first_Name;
-        //        LastNameSettings.Value = info.last_Name;
-        //        await adb.UpdateAsync(EmailSettings);
-        //        await adb.UpdateAsync(FirstNameSettings);
-        //        await adb.UpdateAsync(LastNameSettings);
-        //        return true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        return false;
-        //    }
-        //}
-
-        //public static async Task<string> EditMember(string email, string firstName, string lastName)
-        //{
-        //    try//Edits member data used on DABProfileManagementPage
-        //    {
-        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-        //        dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-        //        HttpClient client = new HttpClient();
-        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-        //        var JsonIn = JsonConvert.SerializeObject(new EditProfileInfo(email, firstName, lastName));
-        //        var content = new StringContent(JsonIn);
-        //        content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-        //        var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}member/profile", content);//Using an HttpPut method to update member profle
-        //        string JsonOut = await result.Content.ReadAsStringAsync();
-        //        APITokenContainer container = JsonConvert.DeserializeObject<APITokenContainer>(JsonOut);
-        //        APIToken token = container.token;
-        //        if (container.message != null && token == null)
-        //        {
-        //            throw new Exception(container.message);
-        //        }
-        //        TokenSettings.Value = token.value;
-        //        CreationSettings.Value = token.expires;
-        //        EmailSettings.Value = token.user_email;
-        //        FirstNameSettings.Value = token.user_first_name;
-        //        LastNameSettings.Value = token.user_last_name;
-        //        await adb.UpdateAsync(TokenSettings);//Updating settings only if the API gets successfully updated.
-        //        await adb.UpdateAsync(CreationSettings);
-        //        await adb.UpdateAsync(EmailSettings);
-        //        await adb.UpdateAsync(FirstNameSettings);
-        //        await adb.UpdateAsync(LastNameSettings);
-        //        return "Success";
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e.GetType() == typeof(HttpRequestException))
-        //        {
-        //            return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-        //        }
-        //        return e.Message;
-        //    }
-        //}
 
         public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
         {
@@ -811,7 +670,6 @@ namespace DABApp
         static async Task SaveMemberData(List<dbEpisodes> episodes)//Saves member data for each episode gotten from GetMemberData method.
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
-            //List<dbEpisodes> insert = new List<dbEpisodes>();
             List<dbEpisodes> update = new List<dbEpisodes>();
             var start = DateTime.Now;
             var potential = savedEps.Where(x => x.UserData.IsFavorite == true || x.UserData.IsListenedTo == true).ToList();
@@ -827,12 +685,7 @@ namespace DABApp
             foreach (dbEpisodes episode in episodes)
             {
                 var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
-                //if (saved == null)
-                //{
-                //    insert.Add(episode);
-                //}
-                //else
-                //{
+                
                 if (saved != null)
                 {
                     if (!(saved.UserData.CurrentPosition == episode.UserData.CurrentPosition && saved.UserData.IsFavorite == episode.UserData.IsFavorite && saved.UserData.IsListenedTo == episode.UserData.IsListenedTo && saved.UserData.HasJournal == episode.UserData.HasJournal))
@@ -845,19 +698,8 @@ namespace DABApp
                     }
                 }
             }
-            //await adb.InsertAllAsync(insert);
             await adb.UpdateAllAsync(update);
             Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
-        }
-
-        static void GuestLogin()//Deletes all user episode data when a guest logs in.
-        {
-            ////This is no longer needed because user data is kept separate from episodes
-            //var episodes = db.Table<dbEpisodes>();
-            //if (episodes.Count() > 0)
-            //{
-            //    db.DeleteAll<dbEpisodes>();
-            //}
         }
 
         public static bool GetTestMode()

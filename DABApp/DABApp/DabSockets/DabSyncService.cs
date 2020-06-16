@@ -47,7 +47,6 @@ namespace DABApp.DabSockets
         List<int> subscriptionIds = new List<int>();
         string userName;
 
-
         private DabSyncService()
         {
             //Constructure is private so we only allow one of them
@@ -150,6 +149,20 @@ namespace DABApp.DabSockets
                         DabSyncService.Instance.Send(tokenJsonIn);
                         GlobalResources.WaitStop();
                         Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
+                    }
+                    else if (root?.payload?.errors?.First() != null)
+                    {
+                        GlobalResources.WaitStop();
+                        //We have an error!
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
+                        });
+                    }
+                    else
+                    {
+                        //Some other GraphQL message we don't care about here.
+
                     }
 
                     foreach (var er in root.payload.errors)
@@ -658,8 +671,17 @@ namespace DABApp.DabSockets
                     GlobalResources.WaitStop();
                     var UserName = GlobalResources.GetUserName().Split(' ');
                     GuestStatus.Current.UserName = GlobalResources.GetUserName();
-                    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
                     Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "User profile information has been updated", "OK"); ; });
+                    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                }
+                else if (root.payload?.data?.updatePassword != null)
+                {
+                    GlobalResources.WaitStop();
+                    if (root.payload.data.updatePassword == true)
+                    {
+                        Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "Your password has been updated", "OK"); ; });
+                        //Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                    }
                 }
 
             }
