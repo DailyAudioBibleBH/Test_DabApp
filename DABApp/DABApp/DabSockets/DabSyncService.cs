@@ -658,6 +658,7 @@ namespace DABApp.DabSockets
                     GlobalResources.WaitStop();
                     var UserName = GlobalResources.GetUserName().Split(' ');
                     GuestStatus.Current.UserName = GlobalResources.GetUserName();
+                    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
                     Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "User profile information has been updated", "OK"); ; });
                 }
 
