@@ -349,9 +349,18 @@ namespace DABApp
                         data.EpisodeId = episodeId;
                         data.UserName = userName;
                     }
-                    data.HasJournal = (hasJournal == null) ? false : hasJournal.Value;
-                    data.IsFavorite = (isFavorite == null) ? false : isFavorite.Value;
-                    data.IsListenedTo = (isListened == null) ? false : isListened.Value;
+                    if (hasJournal.HasValue)
+                    { 
+                        data.HasJournal = hasJournal.Value;
+                    }
+                    if (isFavorite.HasValue)
+                    {
+                        data.IsFavorite = isFavorite.Value;
+                    }
+                    if (isListened.HasValue)
+                    {
+                        data.IsListenedTo = isListened.Value;
+                    }
                     if (playerPosition.HasValue)
                     {
                         if (GlobalResources.CurrentEpisodeId == episodeId)
@@ -376,7 +385,7 @@ namespace DABApp
 
                     }
                     await adb.InsertOrReplaceAsync(data);
-                    Debug.WriteLine($"Added episode {episodeId}/{userName} to user episode for later use...");
+                    Debug.WriteLine($"Saved episode {episodeId}/{userName} meta data: {JsonConvert.SerializeObject(data)}");
 
                     //Notify listening pages that episode data has changed
                     if (RaiseEpisodeDataChanged)
