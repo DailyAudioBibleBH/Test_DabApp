@@ -132,11 +132,6 @@ namespace DABApp
                 selected.IsNotSelected = .5;
                 var resource = (Resource)e.Item;
 
-                if (DabSyncService.Instance.IsDisconnected)
-                {
-                    DabSyncService.Instance.Connect();
-                }
-
                 //Navigate to the appropriate player page 
                 if (Device.Idiom == TargetIdiom.Tablet)
                 {

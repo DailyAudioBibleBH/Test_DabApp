@@ -612,7 +612,7 @@ namespace DABApp
 
 
             //Disconnect
-            DabSyncService.Instance.Disconnect(true);
+            DabSyncService.Instance.DisconnectWebSocket(true);
 
             Device.BeginInvokeOnMainThread(() =>
             {

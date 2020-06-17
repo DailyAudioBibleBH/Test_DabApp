@@ -142,8 +142,6 @@ namespace DABApp
                 else
                 {
                     GlobalResources.WaitStop();
-                    //DabSyncService.Instance.Init();
-                    DabSyncService.Instance.Connect();
                 }
             });
         }
@@ -169,7 +167,6 @@ namespace DABApp
             }
             else
             {
-                DabSyncService.Instance.Connect();
                 await DisplayAlert("Please try again", "We've had to reset your connection to the Daily Audio Bible Servers. Please click Next again to continue", "OK");
             }
 

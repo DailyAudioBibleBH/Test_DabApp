@@ -37,8 +37,7 @@ namespace DABApp
                 GuestStatus.Current.IsGuestLogin = true;
 
                 //Connect to SyncSocket
-                DabSyncService.Instance.Init();
-                DabSyncService.Instance.Connect();
+                DabSyncService.Instance.ConnectWebsocket();
 
                 if (AuthenticationAPI.CheckTokenOnAppStart() && versionList == null) //Check to see if the user is logged in.
                 {
@@ -78,7 +77,7 @@ namespace DABApp
             try
             {
 
-                DabSyncService.Instance.Disconnect(false);
+                DabSyncService.Instance.DisconnectWebSocket(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
                     AuthenticationAPI.PostActionLogs(false);
@@ -98,8 +97,7 @@ namespace DABApp
             {
 
 
-                DabSyncService.Instance.Init();
-                DabSyncService.Instance.Connect();
+                DabSyncService.Instance.ConnectWebsocket();
 
                 if (GlobalResources.playerPodcast != null)
                 {

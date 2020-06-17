@@ -53,28 +53,7 @@ namespace DABApp.DabSockets
             //Constructure is private so we only allow one of them
         }
 
-        public bool Init()
-        {
-            //Set up the socket and connect it so it can be used throughout the app.
-
-            //Create socket
-            sock = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
-
-            //Get the URL to use
-            var appSettings = ContentConfig.Instance.app_settings;
-            string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
-            //need to add wss:// since it just gives us the address here
-            uri = $"wss://{uri}";
-
-            //Register for notifications from the socket
-            sock.DabSocketEvent += Sock_DabSocketEvent;
-            sock.DabGraphQlMessage += Sock_DabGraphQlMessage;
-
-            //Init the socket
-            sock.Init(uri);
-
-            return true;
-        }
+        
 
         private async void Sock_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
@@ -250,10 +229,8 @@ namespace DABApp.DabSockets
                     }
                     sTokenCreationDate.Value = DateTime.Now.ToString();
                     await adb.InsertOrReplaceAsync(sTokenCreationDate);
-                    //DabSyncService.Instance.Disconnect(false);
-                    //DabSyncService.Instance.Connect();
-                    //Reset the connection with the new token
-                    DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+
+                    DabSyncService.Instance.ConnectGraphQl(sToken.Value);
 
                     //Send a request for updated user data
                     string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
@@ -447,8 +424,8 @@ namespace DABApp.DabSockets
                     sTokenCreationDate.Value = DateTime.Now.ToString();
                     await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
-                    Instance.Init();
-                    Instance.Connect();
+                    Instance.DisconnectGraphQl(true);
+                    Instance.ConnectGraphQl(root.payload.data.updateToken.token);
                 }
                 // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
@@ -711,18 +688,62 @@ namespace DABApp.DabSockets
             }
         }
 
-        public void Connect()
+        public bool ConnectWebsocket()
         {
-            GlobalResources.WaitStart("Connecting to the Daily Audio Bible servers...");
-            sock.Connect();
+            //This method initializes and connects the websocket connection itself
 
-            var current = Connectivity.NetworkAccess;
+            GlobalResources.WaitStart("Connecting to the Daily Audio Bible servers...");
+
+            if (!IsConnected)
+            {
+                //Set up the socket and connect it so it can be used throughout the app.
+
+                //Create socket
+                sock = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
+
+                //Get the URL to use
+                var appSettings = ContentConfig.Instance.app_settings;
+                string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
+                //need to add wss:// since it just gives us the address here
+                uri = $"wss://{uri}";
+
+                //Register for notifications from the socket
+                sock.DabSocketEvent += Sock_DabSocketEvent;
+                sock.DabGraphQlMessage += Sock_DabGraphQlMessage;
+
+                //Init the socket
+                sock.Init(uri);
+
+                //Connect the socke
+                sock.Connect();
+
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("Socket already connected. Will not connect again again.");
+                return false;
+            }
+
         }
 
-        public void Disconnect(bool LogOutUser)
+        public void DisconnectWebSocket(bool LogOutUser)
+            //Disconnects the websocket (will also disconnect graphql)
         {
+            if (IsConnected)
+            {
+                //Disconnect GraphQL first
+                DisconnectGraphQl(LogOutUser);
 
+                //Disconnect the socket
+                sock.Disconnect();
+            }
+        }
 
+        public void DisconnectGraphQl(bool LogOutUser)
+            //Terminates the connection to GraphQL
+
+        {
             //Unsubscribe from all subscriptions
             foreach (int id in subscriptionIds)
             {
@@ -744,9 +765,6 @@ namespace DABApp.DabSockets
             //Terminate the connection before disconnecting it.
             var jTerm = "{\"type\":\"connection_terminate\"}";
             sock.Send(jTerm);
-
-            //Disconnect the socket
-            sock.Disconnect();
         }
 
         public void Send(string JsonIn)
@@ -832,7 +850,7 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
         }
 
-        public void PrepConnectionWithTokenAndOrigin(string Token)
+        public void ConnectGraphQl(string Token)
         {
             string origin;
             if (Device.RuntimePlatform == Device.Android)
@@ -848,10 +866,10 @@ namespace DABApp.DabSockets
                 origin = "could not determine runtime platform";
             }
 
-
             Payload token = new Payload(Token, origin);
             var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
             sock.Send(ConnectInit);
+
 
         }
 
@@ -868,8 +886,8 @@ namespace DABApp.DabSockets
                 Token = new dbSettings() { Key = "Token", Value = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNTgyOTEwMTI1LCJuYmYiOjE1ODI5MTAxMjUsImV4cCI6MTc0MDU5MDEyNSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTI5MTcifX19.bT-Bnn6SdHc4rKQ37vMjrllUeKbsvdvMUJ0pBzMy8Fs" }; //test mode token
             }
             if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIKey }; //fake token
-            //Init the connection
-            PrepConnectionWithTokenAndOrigin(Token.Value);
+            //Init the GraphQL connection
+            ConnectGraphQl(Token.Value);
             //Only send user based subscriptions when user is logged in
             if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
             {

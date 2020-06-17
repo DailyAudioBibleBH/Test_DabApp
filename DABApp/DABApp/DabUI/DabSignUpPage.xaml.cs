@@ -206,9 +206,10 @@ namespace DABApp
 								}
 								sTokenCreationDate.Value = DateTime.Now.ToString();
 								await adb.InsertOrReplaceAsync(sTokenCreationDate);
-								
+
 								//Reset the connection with the new token
-								DabSyncService.Instance.PrepConnectionWithTokenAndOrigin(sToken.Value);
+								DabSyncService.Instance.DisconnectGraphQl(true);
+								DabSyncService.Instance.ConnectGraphQl(sToken.Value);
 
                                 //Send a request for updated user data
 
@@ -288,8 +289,6 @@ namespace DABApp
 							await AuthenticationAPI.GetMemberData();
 
                             //Disconnect
-                            //Why was this true before
-							DabSyncService.Instance.Disconnect(false);
 
                             //user is logged in
 							GlobalResources.WaitStop();
@@ -361,8 +360,6 @@ namespace DABApp
 				else
 				{
 					GlobalResources.WaitStop();
-					//DabSyncService.Instance.Init();
-					DabSyncService.Instance.Connect();
 				}
 			});
 		}
