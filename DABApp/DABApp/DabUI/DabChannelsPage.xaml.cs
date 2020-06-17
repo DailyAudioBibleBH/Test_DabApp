@@ -77,10 +77,6 @@ namespace DABApp
             }
             else ChannelsList.HeightRequest = GlobalResources.Instance.ScreenSize > 1000 ? 1500 : 1000;
 
-            //Connect to the SyncService
-            DabSyncService.Instance.Init();
-            DabSyncService.Instance.Connect();
-
             /* SET UP TIMERS (run once initially)*/
             TimedActions();
             Device.StartTimer(TimeSpan.FromMinutes(5), () =>
