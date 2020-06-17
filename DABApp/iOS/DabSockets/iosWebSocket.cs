@@ -53,6 +53,7 @@ namespace DABApp.iOS.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
+            Debug.WriteLine("SOCKET RCVD:" + data.Message);
             DabGraphQlMessage?.Invoke(this, new DabGraphQlMessageEventHandler(data.Message));
         }
 
@@ -113,7 +114,7 @@ namespace DABApp.iOS.DabSockets
 
         public void Send(string JsonIn)
         {
-            Debug.WriteLine("Sending to socket:" + JsonIn);
+            Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);
         }
 
