@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DABApp.DabAudio;
+using DABApp.DabSockets;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -95,7 +96,7 @@ namespace DABApp
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 GlobalResources.WaitStart();
-                //var result = await AuthenticationAPI.GetMember();
+                DabSyncService.Instance.popRequests = 0;
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
             }

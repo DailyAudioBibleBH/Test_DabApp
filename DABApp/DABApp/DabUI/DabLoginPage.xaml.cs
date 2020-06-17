@@ -174,9 +174,10 @@ namespace DABApp
 
                         else if (root?.payload?.errors?.First() != null)
                         {
-                            GlobalResources.WaitStop();
-                            //We have a login error!
-                            await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                            //GlobalResources.WaitStop();
+                            ////We have a login error!
+                            //await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                            Password.Text = "";
                             GraphQlLoginRequestInProgress = false;
                         }
                         else

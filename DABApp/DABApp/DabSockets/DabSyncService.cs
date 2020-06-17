@@ -46,6 +46,7 @@ namespace DABApp.DabSockets
 
         List<int> subscriptionIds = new List<int>();
         string userName;
+        public int popRequests = 0;
 
         private DabSyncService()
         {
@@ -672,7 +673,13 @@ namespace DABApp.DabSockets
                     var UserName = GlobalResources.GetUserName().Split(' ');
                     GuestStatus.Current.UserName = GlobalResources.GetUserName();
                     Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "User profile information has been updated", "OK"); ; });
-                    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                    if (popRequests < 1)
+                    {
+                        popRequests = popRequests + 1;
+                        Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                    }
+                    else
+                        popRequests = 0;
                 }
                 else if (root.payload?.data?.updatePassword != null)
                 {
@@ -680,7 +687,13 @@ namespace DABApp.DabSockets
                     if (root.payload.data.updatePassword == true)
                     {
                         Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "Your password has been updated", "OK"); ; });
-                        //Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                        if (popRequests < 2)
+                        {
+                            popRequests = popRequests + 1;
+                            Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                        }
+                        else
+                            popRequests = 1;
                     }
                 }
 
