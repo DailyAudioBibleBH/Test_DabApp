@@ -84,7 +84,7 @@ namespace DABApp
                 }
 
                 //Find the existing setting
-                var s = adb.Table<dbSettings>().Where(x => x.Key.ToLower() == Key.ToLower()).FirstOrDefaultAsync().Result;
+                var s = adb.Table<dbSettings>().Where(x => x.Key == Key).FirstOrDefaultAsync().Result;
                 if (s != null) //found it!
                 {
                     //update
@@ -95,7 +95,7 @@ namespace DABApp
                 else //didn't find it!
                 {
                     //insert
-                    s = new dbSettings() { Key = Key.ToLower(), Value = Value };
+                    s = new dbSettings() { Key = Key, Value = Value };
                     await adb.InsertOrReplaceAsync(s);
                     return;
                 }

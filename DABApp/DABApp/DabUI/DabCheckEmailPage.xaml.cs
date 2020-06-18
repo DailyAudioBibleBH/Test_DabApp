@@ -167,6 +167,10 @@ namespace DABApp
             }
             else
             {
+                GlobalResources.WaitStop();
+                //Connect
+                DabSyncService.Instance.ConnectWebsocket();
+                DabSyncService.Instance.ConnectGraphQl(GlobalResources.APIKey);
                 await DisplayAlert("Please try again", "We've had to reset your connection to the Daily Audio Bible Servers. Please click Next again to continue", "OK");
             }
 

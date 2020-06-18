@@ -11,7 +11,8 @@ using System.Linq;
 using System.Threading;
 using Xamarin.Forms;
 using Xamarin.Essentials;
-
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DABApp.DabSockets
 {
@@ -47,6 +48,9 @@ namespace DABApp.DabSockets
         List<int> subscriptionIds = new List<int>();
         string userName;
         public int popRequests = 0;
+
+        bool GraphQlLoginRequestInProgress = false;
+        bool GraphQlLoginComplete = false;
 
         private DabSyncService()
         {
@@ -130,12 +134,26 @@ namespace DABApp.DabSockets
                     }
                     else if (root?.payload?.errors?.First() != null)
                     {
-                        GlobalResources.WaitStop();
-                        //We have an error!
-                        MainThread.BeginInvokeOnMainThread(() =>
+                        if (GraphQlLoginRequestInProgress == true)
                         {
-                            Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
-                        });
+                            GlobalResources.WaitStop();
+                            //We have a login error!
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                Application.Current.MainPage.DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+
+                            });
+                            GraphQlLoginRequestInProgress = false;
+                        }
+                        else
+                        {
+                            GlobalResources.WaitStop();
+                            //We have an error!
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
+                                Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
+                            });
+                        }
                     }
                     else
                     {
@@ -587,54 +605,46 @@ namespace DABApp.DabSockets
                 }
                 else if (root.payload?.data?.user != null)
                 {
-                    var user = root.payload.data.user;
-                    if (user.email != null)
-                    {
-                        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                        if (EmailSettings == null)
-                        {
-                            EmailSettings = new dbSettings() { Key = "Email" };
-                        }
-                        EmailSettings.Value = user.email;
-                        await adb.InsertOrReplaceAsync(EmailSettings);
+                    //We got back user data!
+                    GraphQlLoginComplete = true; //stop processing success messages.
+                                                 //Save the data
 
-                    }
-                    if (user.channel != null)
+                    var user = root.payload.data.user;
+
+                    var avatarValue = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
+
+                    dbSettings.StoreSetting("Avatar", avatarValue);
+                    dbSettings.StoreSetting("WpId", user.wpId.ToString());
+                    dbSettings.StoreSetting("Email", user.email);
+                    dbSettings.StoreSetting("Channel", user.channel);
+                    dbSettings.StoreSetting("Channels", user.channels);
+                    dbSettings.StoreSetting("FirstName", user.firstName);
+                    dbSettings.StoreSetting("LastName", user.lastName);
+                    dbSettings.StoreSetting("Language", user.language);
+                    dbSettings.StoreSetting("NickName", user.nickname);
+
+                    GraphQlLoginRequestInProgress = false;
+
+                    GuestStatus.Current.IsGuestLogin = false;
+                    await AuthenticationAPI.GetMemberData();
+
+                    //Disconnect
+
+                    //user is logged in
+                    GlobalResources.WaitStop();
+                    GlobalResources.Instance.IsLoggedIn = true;
+
+                    GuestStatus.Current.UserName = GlobalResources.GetUserName();
+
+                    DabChannelsPage _nav = new DabChannelsPage();
+                    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                    Device.BeginInvokeOnMainThread(() =>
                     {
-                        dbSettings.StoreSetting("Channel", user.channel);
-                    }
-                    if (user.channels != null)
-                    {
-                        dbSettings.StoreSetting("Channels", user.channels);
-                    }
-                    if (user.firstName != null)
-                    {
-                        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-                        if (FirstNameSettings == null)
-                        {
-                            FirstNameSettings = new dbSettings() { Key = "FirstName" };
-                        }
-                        FirstNameSettings.Value = user.firstName;
-                        await adb.InsertOrReplaceAsync(FirstNameSettings);
-                    }
-                    if (user.lastName != null)
-                    {
-                        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-                        if (LastNameSettings == null)
-                        {
-                            LastNameSettings = new dbSettings() { Key = "LastName" };
-                        }
-                        LastNameSettings.Value = user.lastName;
-                        await adb.InsertOrReplaceAsync(LastNameSettings);
-                    }
-                    if (user.language != null)
-                    {
-                        dbSettings.StoreSetting("Language", user.language);
-                    }
-                    if (user.nickname != null)
-                    {
-                        dbSettings.StoreSetting("NickName", user.nickname);
-                    }
+                        Application.Current.MainPage = new NavigationPage(_nav);
+                    });
+
+                    //await Navigation.PushAsync(_nav);
+                    MessagingCenter.Send<string>("Setup", "Setup");
                 }
                 else if (root.payload?.data?.updateUserFields != null)
                 {
@@ -671,6 +681,52 @@ namespace DABApp.DabSockets
                             popRequests = 1;
                     }
                 }
+                if (root?.payload?.data?.registerUser != null)
+                {
+                    try
+                    {
+                        var user = root.payload.data.registerUser;
+                        //Store the token
+                        dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                        if (sToken == null)
+                        {
+                            sToken = new dbSettings() { Key = "Token" };
+                        }
+                        sToken.Value = user.token;
+                        await adb.InsertOrReplaceAsync(sToken);
+
+                        //Update Token Life
+                        ContentConfig.Instance.options.token_life = 5;
+                        dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                        if (sTokenCreationDate == null)
+                        {
+                            sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                        }
+                        sTokenCreationDate.Value = DateTime.Now.ToString();
+                        await adb.InsertOrReplaceAsync(sTokenCreationDate);
+
+                        //Reset the connection with the new token
+                        //DabSyncService.Instance.DisconnectGraphQl(true);
+                        DabSyncService.Instance.ConnectGraphQl(sToken.Value);
+
+                        //Send a request for updated user data
+
+                        string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                        var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+                        DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+                    }
+                    catch (Exception ex)
+                    {
+                        GlobalResources.WaitStop();
+                        Debug.WriteLine(ex.Message);
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            Application.Current.MainPage.DisplayAlert("System Error", "System error with login. Try again or restart application.", "Ok");
+                            Application.Current.MainPage.Navigation.PushAsync(new DabCheckEmailPage());
+                        });
+                        
+                    }
+                }
 
             }
             catch (Exception ex)
@@ -686,6 +742,22 @@ namespace DABApp.DabSockets
                 System.Diagnostics.Debug.WriteLine("Error in MessageReceived: " + ex.ToString());
                 GlobalResources.WaitStop();
             }
+        }
+
+        public string CalculateMD5Hash(string email)
+        {
+            // step 1, calculate MD5 hash from input
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(email);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // step 2, convert byte array to hex string
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
 
         public bool ConnectWebsocket()
@@ -740,7 +812,7 @@ namespace DABApp.DabSockets
             }
         }
 
-        public void DisconnectGraphQl(bool LogOutUser)
+        public async void DisconnectGraphQl(bool LogOutUser)
             //Terminates the connection to GraphQL
 
         {
