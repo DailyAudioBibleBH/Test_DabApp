@@ -76,6 +76,12 @@ namespace DABApp.DabSockets
                     return;
                 }
 
+                if (root.type == "connection_ack")
+                {
+                    GraphQlConnected(root.type);
+                    return;
+                }
+
                 //Check for error messages
                 if (root.type == "error" && root.payload?.message != null)
                 {
@@ -248,6 +254,7 @@ namespace DABApp.DabSockets
                     sTokenCreationDate.Value = DateTime.Now.ToString();
                     await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
+                    GlobalResources.Instance.IsLoggedIn = true;
                     DabSyncService.Instance.ConnectGraphQl(sToken.Value);
 
                     //Send a request for updated user data
@@ -585,22 +592,14 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.updateUser?.user != null)
                 {
                     GraphQlUser user = new GraphQlUser(root.payload.data.updateUser.user);
-
-                    dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                    dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-                    dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-
-                    EmailSettings.Value = user.email;
-                    FirstNameSettings.Value = user.firstName;
-                    LastNameSettings.Value = user.lastName;
+                   
                     dbSettings.StoreSetting("Channel", user.channel);
                     dbSettings.StoreSetting("Channels", user.channels);
                     dbSettings.StoreSetting("Language", user.language);
                     dbSettings.StoreSetting("NickName", user.nickname);
-
-                    await adb.UpdateAsync(EmailSettings);
-                    await adb.UpdateAsync(FirstNameSettings);
-                    await adb.UpdateAsync(LastNameSettings);
+                    dbSettings.StoreSetting("Email", user.email);
+                    dbSettings.StoreSetting("FirstName", user.firstName);
+                    dbSettings.StoreSetting("LastName", user.lastName);
 
                 }
                 else if (root.payload?.data?.user != null)
@@ -812,7 +811,7 @@ namespace DABApp.DabSockets
             }
         }
 
-        public async void DisconnectGraphQl(bool LogOutUser)
+        public void DisconnectGraphQl(bool LogOutUser)
             //Terminates the connection to GraphQL
 
         {
@@ -941,8 +940,57 @@ namespace DABApp.DabSockets
             Payload token = new Payload(Token, origin);
             var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
             sock.Send(ConnectInit);
+        }
 
+        private void GraphQlConnected(object data)
+        {
+            //Only send user based subscriptions when user is logged in
+            if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
+            {
+                //SUBSCRIPTION 1 - ACTION LOGGED
+                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
+                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
+                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, 1));
+                subscriptionIds.Add(1);
+                sock.Send(SubscriptionInit);
 
+                //SUBSCRIPTION 2 - TOKEN REMOVED
+                var tokenRemovedQuery = "subscription { tokenRemoved { token } }";
+                DabGraphQlPayload tokenRemovedPayload = new DabGraphQlPayload(tokenRemovedQuery, variables);
+                var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload, 2));
+                subscriptionIds.Add(2);
+                sock.Send(SubscriptionRemoveToken);
+
+                //SUBSCRIPTION 3 - PROGRESS UPDATED
+                var newProgressQuery = "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }";
+                DabGraphQlPayload newProgressPayload = new DabGraphQlPayload(newProgressQuery, variables);
+                var SubscriptionProgressData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newProgressPayload, 3));
+                subscriptionIds.Add(3);
+                sock.Send(SubscriptionProgressData);
+
+                //SUBSCRIPTION 4 - USER UPDATED
+                var userUpdatedQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
+                DabGraphQlPayload userUpdatedPayload = new DabGraphQlPayload(userUpdatedQuery, variables);
+                var SubscriptionUpdatedUser = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userUpdatedPayload, 6));
+                subscriptionIds.Add(6);
+                sock.Send(SubscriptionUpdatedUser);
+
+                ////SUBSCRIPTION 5 - USER ADDRESS UPDATED
+                //var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
+                //DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
+                //var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 7));
+                //subscriptionIds.Add(7);
+                //sock.Send(SubscriptionUpdatedUserAddress);
+
+                //QUERY - RECENT PROGRESS
+                var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                DabGraphQlPayload newBadgeProgressPayload = new DabGraphQlPayload(badgeProgressQuery, variables);
+                var progressInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgeProgressPayload, 0));
+                sock.Send(progressInit);
+
+                //get recent actions when we get a connection made
+                var gmd = AuthenticationAPI.GetMemberData().Result;
+            }
         }
 
         private void Sock_Connected(object data)

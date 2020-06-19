@@ -78,9 +78,11 @@ namespace DABApp
                 SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
                 //We store null values as empty strings.
+                //Ask Chet but I think it would be better to just not do anything with a null value
                 if (Value == null)
                 {
-                    Value = "";
+                    //Value = "";
+                    return;
                 }
 
                 //Find the existing setting
