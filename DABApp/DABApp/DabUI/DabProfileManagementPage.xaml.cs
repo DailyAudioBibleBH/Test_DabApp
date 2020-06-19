@@ -14,6 +14,7 @@ namespace DABApp
 	{
 		DabGraphQlVariables variables = new DabGraphQlVariables();
 		SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+		public int popRequests = 0;
 
 
 		public DabProfileManagementPage()
@@ -57,6 +58,7 @@ namespace DABApp
 				}
 			}
 			Save.IsEnabled = true;
+			Navigation.PopAsync();
 		}
 
         void OnFirstNameCompleted(object o, EventArgs e) {
@@ -118,5 +120,5 @@ namespace DABApp
 			}
 			return true;
 		}
-	}
+    }
 }

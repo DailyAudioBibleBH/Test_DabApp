@@ -648,7 +648,7 @@ namespace DABApp.DabSockets
                 else if (root.payload?.data?.updateUserFields != null)
                 {
                     DabGraphQlUpdateUserFields fields = root.payload.data.updateUserFields;
-                    
+
                     dbSettings.StoreSetting("Email", fields.email);
                     dbSettings.StoreSetting("FirstName", fields.firstName);
                     dbSettings.StoreSetting("LastName", fields.lastName);
@@ -657,13 +657,14 @@ namespace DABApp.DabSockets
                     var UserName = GlobalResources.GetUserName().Split(' ');
                     GuestStatus.Current.UserName = GlobalResources.GetUserName();
                     Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "User profile information has been updated", "OK"); ; });
-                    if (popRequests < 1)
-                    {
-                        popRequests = popRequests + 1;
-                        Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
-                    }
-                    else
-                        popRequests = 0;
+                    //if (popRequests < 1)
+                    //{
+                    //    popRequests = popRequests + 1;
+                    //    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+
+                    //}
+                    //else
+                    //    popRequests = 0;
                 }
                 else if (root.payload?.data?.updatePassword != null)
                 {
@@ -671,13 +672,13 @@ namespace DABApp.DabSockets
                     if (root.payload.data.updatePassword == true)
                     {
                         Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Success", "Your password has been updated", "OK"); ; });
-                        if (popRequests < 2)
-                        {
-                            popRequests = popRequests + 1;
-                            Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
-                        }
-                        else
-                            popRequests = 1;
+                        //if (popRequests < 2)
+                        //{
+                        //    popRequests = popRequests + 1;
+                        //    Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.Navigation.PopAsync(); });
+                        //}
+                        //else
+                        //    popRequests = 1;
                     }
                 }
                 if (root?.payload?.data?.registerUser != null)
