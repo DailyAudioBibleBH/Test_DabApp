@@ -245,7 +245,7 @@ namespace DABApp.DabSockets
                     await adb.InsertOrReplaceAsync(sToken);
 
                     //Update Token Life
-                    ContentConfig.Instance.options.token_life = 5;
+                    //ContentConfig.Instance.options.token_life = 5;
                     dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
                     if (sTokenCreationDate == null)
                     {
@@ -696,7 +696,7 @@ namespace DABApp.DabSockets
                         await adb.InsertOrReplaceAsync(sToken);
 
                         //Update Token Life
-                        ContentConfig.Instance.options.token_life = 5;
+                        //ContentConfig.Instance.options.token_life = 5;
                         dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
                         if (sTokenCreationDate == null)
                         {

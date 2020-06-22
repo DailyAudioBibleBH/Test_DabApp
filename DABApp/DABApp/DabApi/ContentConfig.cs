@@ -375,9 +375,9 @@ namespace DABApp
 
     public class Options
     {
-        public int token_life { get; set; }
-        public int log_position_interval { get; set; }
-		public int progress_year { get; set; }
+		public int token_life { get; set; } = 5; 
+		public int log_position_interval { get; set; } = 30;
+		public int progress_year { get; set; } = 2020; 
 	}
 
     /* Converter class to convert short month names to long names */
