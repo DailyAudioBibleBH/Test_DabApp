@@ -232,37 +232,37 @@ namespace DABApp.DabSockets
                     //Need to figure out action type
                     await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
                 }
-                else if (root?.payload?.data?.loginUser != null)
-                {
+                //else if (root?.payload?.data?.loginUser != null)
+                //{
 
-                    //Store the token
-                    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                    if (sToken == null)
-                    {
-                        sToken = new dbSettings() { Key = "Token" };
-                    }
-                    sToken.Value = root.payload.data.loginUser.token;
-                    await adb.InsertOrReplaceAsync(sToken);
+                //    //Store the token
+                //    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                //    if (sToken == null)
+                //    {
+                //        sToken = new dbSettings() { Key = "Token" };
+                //    }
+                //    sToken.Value = root.payload.data.loginUser.token;
+                //    await adb.InsertOrReplaceAsync(sToken);
 
-                    //Update Token Life
-                    //ContentConfig.Instance.options.token_life = 5;
-                    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                    if (sTokenCreationDate == null)
-                    {
-                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                    }
-                    sTokenCreationDate.Value = DateTime.Now.ToString();
-                    await adb.InsertOrReplaceAsync(sTokenCreationDate);
+                //    //Update Token Life
+                //    //ContentConfig.Instance.options.token_life = 5;
+                //    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                //    if (sTokenCreationDate == null)
+                //    {
+                //        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
+                //    }
+                //    sTokenCreationDate.Value = DateTime.Now.ToString();
+                //    await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
-                    GlobalResources.Instance.IsLoggedIn = true;
-                    DabSyncService.Instance.ConnectGraphQl(sToken.Value);
+                //    GlobalResources.Instance.IsLoggedIn = true;
+                //    DabSyncService.Instance.ConnectGraphQl(sToken.Value);
 
-                    //Send a request for updated user data
-                    string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
-                    var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
-                    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
+                //    //Send a request for updated user data
+                //    string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
+                //    var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
+                //    DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
 
-                }
+                //}
                 else if (root.payload?.data?.channels != null)
                 {
                     foreach (var item in root.payload.data.channels)
@@ -450,7 +450,8 @@ namespace DABApp.DabSockets
                     await adb.InsertOrReplaceAsync(sTokenCreationDate);
 
                     Instance.DisconnectGraphQl(true);
-                    Instance.ConnectGraphQl(root.payload.data.updateToken.token);
+
+                    var ql = GraphQlFunctions.InitializeConnection(root.payload.data.updateToken.token).Result;
                 }
                 // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
@@ -707,7 +708,7 @@ namespace DABApp.DabSockets
 
                         //Reset the connection with the new token
                         //DabSyncService.Instance.DisconnectGraphQl(true);
-                        DabSyncService.Instance.ConnectGraphQl(sToken.Value);
+                        var ql = GraphQlFunctions.InitializeConnection(sToken.Value).Result;
 
                         //Send a request for updated user data
 
@@ -922,26 +923,26 @@ namespace DABApp.DabSockets
             OnPropertyChanged("IsDisconnected");
         }
 
-        public void ConnectGraphQl(string Token)
-        {
-            string origin;
-            if (Device.RuntimePlatform == Device.Android)
-            {
-                origin = "c2it-android";
-            }
-            else if (Device.RuntimePlatform == Device.iOS)
-            {
-                origin = "c2it-ios";
-            }
-            else
-            {
-                origin = "could not determine runtime platform";
-            }
+        //public void ConnectGraphQl(string Token)
+        //{
+        //    string origin;
+        //    if (Device.RuntimePlatform == Device.Android)
+        //    {
+        //        origin = "c2it-android";
+        //    }
+        //    else if (Device.RuntimePlatform == Device.iOS)
+        //    {
+        //        origin = "c2it-ios";
+        //    }
+        //    else
+        //    {
+        //        origin = "could not determine runtime platform";
+        //    }
 
-            Payload token = new Payload(Token, origin);
-            var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
-            sock.Send(ConnectInit);
-        }
+        //    Payload token = new Payload(Token, origin);
+        //    var ConnectInit = JsonConvert.SerializeObject(new ConnectionInitSyncSocket("connection_init", token));
+        //    sock.Send(ConnectInit);
+        //}
 
         private void GraphQlConnected(object data)
         {
@@ -1008,7 +1009,7 @@ namespace DABApp.DabSockets
             }
             if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIKey }; //fake token
             //Init the GraphQL connection
-            ConnectGraphQl(Token.Value);
+            var ql = GraphQlFunctions.InitializeConnection(Token.Value).Result;
             //Only send user based subscriptions when user is logged in
             if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
             {

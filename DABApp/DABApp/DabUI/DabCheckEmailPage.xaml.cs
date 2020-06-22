@@ -170,7 +170,7 @@ namespace DABApp
                 GlobalResources.WaitStop();
                 //Connect
                 DabSyncService.Instance.ConnectWebsocket();
-                DabSyncService.Instance.ConnectGraphQl(GlobalResources.APIKey);
+                var ql = await GraphQlFunctions.InitializeConnection(GlobalResources.APIKey);
                 await DisplayAlert("Please try again", "We've had to reset your connection to the Daily Audio Bible Servers. Please click Next again to continue", "OK");
             }
 
@@ -193,8 +193,7 @@ namespace DABApp
             s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
             if (s != null) await adb.DeleteAsync(s);
 
-
-            await AuthenticationAPI.ValidateLogin("Guest", "", true);
+            AuthenticationAPI.LoginGuest();
             if (_fromPlayer)
             {
                 await Navigation.PopModalAsync();

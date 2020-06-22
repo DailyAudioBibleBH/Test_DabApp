@@ -33,7 +33,7 @@ namespace DABApp.DabSockets
             {
                 TimeSpan remaining = timeout.Subtract(DateTime.Now);
                 Debug.WriteLine($"Waiting {remaining.ToString()} for {GraphQlMessageCode} - Wait: {waiting} - Result: {JsonConvert.SerializeObject(result)}");
-                await Task.Delay(100);
+                await Task.Delay(1000);
             }
 
             //Disconnect the listener
@@ -112,6 +112,25 @@ namespace DABApp.DabSockets
                                     waiting = false;
                                 }
                             }
+                            break;
+
+                        case "USER":
+                            //successful user profile reception
+                            if (response?.payload?.data?.user != null)
+                            {
+                                result = response;
+                                waiting = false;
+                            }
+                            break;
+
+                        case "CONNECTION_INIT":
+                            //successful connection
+                            if (response?.type == "connection_ack")
+                            {
+                                result = response;
+                                waiting = false;
+                            }
+                            //TOOD: GraphQlConnected needs replaced?
                             break;
 
                         default:

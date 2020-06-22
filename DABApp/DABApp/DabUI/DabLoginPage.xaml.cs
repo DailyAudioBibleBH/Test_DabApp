@@ -218,49 +218,32 @@ namespace DABApp
 
         async void OnLogin(object o, EventArgs e)
         {
-            if (DabSyncService.Instance.IsConnected)
-            {
-                try
-                {
-                    Login.IsEnabled = false;
-                    GlobalResources.WaitStart("Checking your credentials...");
-                    var result = await AuthenticationAPI.ValidateLogin(Email.Text.Trim(), Password.Text); //Sends message off to GraphQL
-                    if (result == "Request Sent")
-                    {
-                        //Wait for the reply from GraphQl before proceeding.
-                        GraphQlLoginRequestInProgress = true;
-                    }
+            //log the user in and push up channels page upon success.
 
-                    else
-                    {
-                        GlobalResources.WaitStop();
-                        if (result.Contains("Error"))
-                        {
-                            if (result.Contains("Http"))
-                            {
-                                await DisplayAlert("Request Timed Out", "There appears to be a temporary problem connecting to the server. Please check your internet connection or try again later.", "OK");
-                            }
-                            else
-                            {
-                                await DisplayAlert("Error", "An unknown error occured while trying to log in. Please try agian.", "OK");
-                            }
-                        }
-                        else
-                        {
-                            await DisplayAlert("Login Failed", result, "OK");
-                        }
-                    }
-                    Login.IsEnabled = true;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    await DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok");
-                    Navigation.PushAsync(new DabLoginPage());
-                }
-            }
-            else
+            var result = await GraphQlFunctions.LoginUser(Email.Text.Trim(), Password.Text);
+            if (result.Result == true) //Successful Login
             {
+                //process the data we got back.
+                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+                dbSettings.StoreSetting("Token", result.data.payload.data.loginUser.token);
+                await Navigation.PushAsync(new DabChannelsPage());
+
+                //get user profile information and update it.
+                result = await GraphQlFunctions.GetUserData(result.data.payload.data.loginUser.token);
+                if (result.Result == true)
+                {
+                    //process user profile information
+                    var profile = result.data.payload.data.user;
+                    dbSettings.StoreSetting("FirstName", profile.firstName);
+                    dbSettings.StoreSetting("LastName", profile.lastName);
+                    dbSettings.StoreSetting("Email", profile.email);
+                }
+
+
+            } else
+            {
+                //alert user that login failed
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {result.ErrorMessage}","OK");
             }
 
         }
@@ -304,7 +287,7 @@ namespace DABApp
             if (s != null) await adb.DeleteAsync(s);
 
 
-            await AuthenticationAPI.ValidateLogin("Guest", "", true);
+            AuthenticationAPI.LoginGuest();
             if (_fromPlayer)
             {
                 await Navigation.PopModalAsync();

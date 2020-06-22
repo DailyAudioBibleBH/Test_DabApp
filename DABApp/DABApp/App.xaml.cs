@@ -38,8 +38,10 @@ namespace DABApp
 
                 //Connect to SyncSocket
                 DabSyncService.Instance.ConnectWebsocket();
+
                 //Connect to GraphQl
-                DabSyncService.Instance.ConnectGraphQl(GlobalResources.APIKey);
+                var ql = GraphQlFunctions.InitializeConnection(GlobalResources.APIKey).Result;
+
 
                 if (AuthenticationAPI.CheckTokenOnAppStart() && versionList == null) //Check to see if the user is logged in.
                 {
