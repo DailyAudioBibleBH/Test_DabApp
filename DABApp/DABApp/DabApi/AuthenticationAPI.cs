@@ -27,7 +27,7 @@ namespace DABApp
         public static void LoginGuest()
         {
             dbSettings.StoreSetting("Token", "");
-            dbSettings.StoreSetting("Email", "Guest");
+            dbSettings.StoreSetting("Email", "");
             dbSettings.StoreSetting("TokenCreation", "");
             dbSettings.StoreSetting("FirstName", "Guest");
             dbSettings.StoreSetting("LastName", "Guest");

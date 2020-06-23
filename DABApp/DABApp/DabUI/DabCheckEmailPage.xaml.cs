@@ -1,13 +1,8 @@
 ﻿using DABApp.DabSockets;
 using DABApp.Interfaces;
-using Newtonsoft.Json;
-using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using Version.Plugin;
 using Xamarin.Forms;
 
@@ -15,35 +10,18 @@ namespace DABApp
 {
     public partial class DabCheckEmailPage : DabBaseContentPage
     {
-        static bool _fromPlayer;
-        static bool _fromDonation;
         int TapNumber = 0;
-        private double _width;
-        private double _height;
-        bool GraphQlLoginRequestInProgress = false;
-        bool GraphQlLoginComplete = false;
-        SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
-        DabGraphQlVariables variables = new DabGraphQlVariables();
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
             InitializeComponent();
-            _width = this.Width;
-            _height = this.Height;
-            if (Device.Idiom == TargetIdiom.Tablet)
-            {
-                Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
-            }
+
+            /* UI Prep
+             */
             NavigationPage.SetHasNavigationBar(this, false);
-            _fromPlayer = fromPlayer;
-            _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = GlobalResources.GetUserEmail();
-            if (email != "Guest" && !String.IsNullOrEmpty(email))
-            {
-                Email.Text = email;
-            }
+            Email.Text = dbSettings.GetSetting("Email", "");
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 Logo.WidthRequest = 250;
@@ -52,42 +30,34 @@ namespace DABApp
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
+                Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
             }
-
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
 
         async void OnNext(object o, EventArgs e)
         {
-            if (DabSyncService.Instance.IsConnected)
+            /* Handles when they click next to continue with an email address
+             */
+            GlobalResources.WaitStart();
+            var ql = await GraphQlFunctions.CheckEmail(Email.Text.Trim());
+            GlobalResources.WaitStop();
+            if (ql.Success)
             {
-                GlobalResources.WaitStart();
-                var ql = await GraphQlFunctions.CheckEmail(Email.Text.Trim());
-                GlobalResources.WaitStop();
-                if (ql.Success)
+                if (ql.Data.payload.data.checkEmail == true)
                 {
-                    if (ql.Data.payload.data.checkEmail == true)
-                    {
-                        //existing user - log them in
-                        await Navigation.PushAsync(new DabLoginPage(Email.Text));
-                    }
-                    else
-                    {
-                        //new user - register them
-                        await Navigation.PushAsync(new DabSignUpPage(Email.Text));
-                    }
+                    //existing user - log them in
+                    await Navigation.PushAsync(new DabLoginPage(Email.Text));
+                }
+                else
+                {
+                    //new user - register them
+                    await Navigation.PushAsync(new DabSignUpPage(Email.Text));
                 }
             }
-            else
-            {
-                //Connect
-                DabSyncService.Instance.ConnectWebsocket();
-                var ql = await GraphQlFunctions.InitializeConnection(GlobalResources.APIKey);
-                await DisplayAlert("Please try again", "We've had to reset your connection to the Daily Audio Bible Servers. Please click Next again to continue", "OK");
-            }
-
         }
+
         async void OnGuestLogin(object o, EventArgs e)
         {
             //log the user in as a guest
@@ -135,6 +105,10 @@ namespace DABApp
 
         protected override void OnAppearing()
         {
+            /* Sets up a tap counter for test mode
+             * Also sets up forceful version upgrades
+             */
+
             base.OnAppearing();
             if (GlobalResources.playerPodcast.IsPlaying)
             {
@@ -255,11 +229,6 @@ namespace DABApp
             );
         }
 
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            Email.IsEnabled = true;
-        }
 
         async void OnTest(object sender, EventArgs e)
         {
@@ -270,6 +239,7 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
