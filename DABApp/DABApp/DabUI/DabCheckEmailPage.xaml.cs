@@ -54,120 +54,33 @@ namespace DABApp
                 Container.Padding = 100;
             }
 
-            DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
-        private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+
+        async void OnNext(object o, EventArgs e)
         {
-            //if (GraphQlLoginComplete)
-            //{
-            //    return; //get out of here once login is complete;
-            //}
-
-            Device.InvokeOnMainThreadAsync(async () =>
-            {
-
             if (DabSyncService.Instance.IsConnected)
             {
-                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-
-                //Message received from the Graph QL - deal with those related to login messages!
-                try
+                GlobalResources.WaitStart();
+                var ql = await GraphQlFunctions.CheckEmail(Email.Text.Trim());
+                GlobalResources.WaitStop();
+                if (ql.Success)
                 {
-                    var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
-                    //Generic keep alive
-                    if (root.type == "ka")
+                    if (ql.data.payload.data.checkEmail == true)
                     {
-                        //Nothing to see here...
-                        return;
-                    }
-                    
-                    if (root?.payload?.data?.checkEmail == "true")
-                    {
-                        GlobalResources.WaitStop();
+                        //existing user - log them in
                         await Navigation.PushAsync(new DabLoginPage(Email.Text));
-                        NextButton.IsEnabled = true;
-                        btnGuest.IsEnabled = true;
-                    }
-                    if (root?.payload?.data?.checkEmail == "false")
-                    {
-                        GlobalResources.WaitStop();
-                        await Navigation.PushAsync(new DabSignUpPage(Email.Text));
-                        NextButton.IsEnabled = true;
-                        btnGuest.IsEnabled = true;
-                    }
-
-                    else if (root?.payload?.errors?.First() != null)
-                    {
-                            //if (root?.payload?.errors?.First().message == "Not authorized.")
-                            //{
-                            //    //Token
-                            //    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                            //    if (s != null) await adb.DeleteAsync(s);
-
-                            //    //TokenCreation
-                            //    s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                            //    if (s != null) await adb.DeleteAsync(s);
-
-                            //    DabGraphQlVariables variables = new DabGraphQlVariables();
-                            //    var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                            //    var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                            //    var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                            //    DabSyncService.Instance.Send(tokenJsonIn);
-                            //    GlobalResources.WaitStop();
-                            //    Device.BeginInvokeOnMainThread(() => { DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
-                            //}
-
-                            if (GraphQlLoginRequestInProgress == true)
-                            {
-                                GlobalResources.WaitStop();
-                                //We have a login error!
-                                await DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
-                                GraphQlLoginRequestInProgress = false;
-                            }
                     }
                     else
                     {
-                        //Some other GraphQL message we don't care about here.
+                        //new user - register them
+                        await Navigation.PushAsync(new DabSignUpPage(Email.Text));
                     }
-                    }
-                    catch (Exception ex)
-                    {
-                        GlobalResources.WaitStop();
-                        System.Diagnostics.Debug.WriteLine(ex.Message);
-                        //Some other GraphQL message we don't care about here.
-                    }
-                }
-                else
-                {
-                    GlobalResources.WaitStop();
-                }
-            });
-        }
-        async void OnNext(object o, EventArgs e)
-        {
-            GlobalResources.WaitStart();
-            const string quote = "\"";
-            if (DabSyncService.Instance.IsConnected)
-            {
-                try
-                {
-                    var checkEmailQuery = "query { checkEmail(email:" + quote + Email.Text.Trim() + quote + " )}";
-                    var checkEmailPayload = new DabGraphQlPayload(checkEmailQuery, variables);
-                    var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", checkEmailPayload));
-                    DabSyncService.Instance.Send(JsonIn);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    Device.BeginInvokeOnMainThread(() => DisplayAlert("System Error", "System Error with login. Try again or restart application.", "Ok"));
-                    GlobalResources.WaitStop();
                 }
             }
             else
             {
-                GlobalResources.WaitStop();
                 //Connect
                 DabSyncService.Instance.ConnectWebsocket();
                 var ql = await GraphQlFunctions.InitializeConnection(GlobalResources.APIKey);
@@ -177,35 +90,14 @@ namespace DABApp
         }
         async void OnGuestLogin(object o, EventArgs e)
         {
-            GlobalResources.WaitStart("Logging you in as a guest...");
-            GuestStatus.Current.IsGuestLogin = true;
-
-            dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-            if (s == null) s = new dbSettings() { Key = "Email" };
-            s.Value = "Guest";
-            await adb.InsertOrReplaceAsync(s);
-
-            //Token
-            s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-            if (s != null) await adb.DeleteAsync(s);
-
-            //TokenCreation
-            s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-            if (s != null) await adb.DeleteAsync(s);
-
+            //log the user in as a guest
             AuthenticationAPI.LoginGuest();
-            if (_fromPlayer)
-            {
-                await Navigation.PopModalAsync();
-            }
-            else
-            {
-                NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-                _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                Application.Current.MainPage = _nav;
-                await Navigation.PopToRootAsync();
-            }
-            GlobalResources.WaitStop();
+
+            //open up the channels page
+            NavigationPage _nav = new NavigationPage(new DabChannelsPage());
+            _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+            Application.Current.MainPage = _nav;
+            await Navigation.PopToRootAsync();
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)

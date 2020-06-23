@@ -60,7 +60,7 @@ namespace DABApp.DabSockets
         public DabGraphQlEpisodePublished episodePublished { get; set; }
         public DabGraphQlLogAction logAction { get; set; }
         public DabGraphQlUpdateUserFields updateUserFields { get; set; }
-        public string checkEmail { get; set; }
+        public bool checkEmail { get; set; }
     }
 
     public class DabGraphQlLogAction

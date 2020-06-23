@@ -11,8 +11,6 @@ namespace DABApp.DabSockets
         {
             //This routine init's a new connection with the token.
 
-            GlobalResources.WaitStart("Connecting to DAB Servers...");
-
             string origin;
             if (Device.RuntimePlatform == Device.Android)
             {
@@ -33,15 +31,8 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("connection_init", 2000); //smaller timeout in case we don't get ack.. move along
+            var response = await service.WaitForGraphQlObject("connection_init"); //smaller timeout in case we don't get ack.. move along
 
-            if (response.ErrorMessage.StartsWith("Timeout expired")) //proceed on with a timeout here, don't always get ack
-            {
-                response.Success = true;
-            }
-
-            //Return to the calling app
-            GlobalResources.WaitStop();
             return response;
 
         }
@@ -49,8 +40,6 @@ namespace DABApp.DabSockets
         public static async Task<GraphQlWaitResponse> AddSubscription(int id, string subscriptionJson)
         {
             //This routine takes a subscription Json string and subscribes to it. It waits for it to finish before returning
-
-            GlobalResources.WaitStart("Adding subscriptions...");
 
             DabGraphQlPayload payload = new DabGraphQlPayload(subscriptionJson, new DabGraphQlVariables());
             var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, id));
@@ -60,16 +49,8 @@ namespace DABApp.DabSockets
 
             //Wait for appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("subscription", 2000);
+            var response = await service.WaitForGraphQlObject("subscription");
 
-            //Return (ignore timeouts)
-            if (response.ErrorMessage.StartsWith("Timeout expired")) //proceed on with a timeout here, don't always get ack
-            {
-                response.Success = true;
-            }
-
-            //Return to the calling app
-            GlobalResources.WaitStop();
             return response;
 
 
@@ -78,8 +59,6 @@ namespace DABApp.DabSockets
         public static async Task<GraphQlWaitResponse> GetUserData (string token)
         {
             //This routine takes a token and gets the user profile information from it.
-
-            GlobalResources.WaitStart("Getting your user profile");
 
             //TODO: Check for a QraphQL Connection
 
@@ -90,18 +69,34 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("user", 10000);
+            var response = await service.WaitForGraphQlObject("user");
 
-            //Return to the calling app
-            GlobalResources.WaitStop();
             return response;
+        }
+
+        public static async Task<GraphQlWaitResponse> CheckEmail(string email)
+        {
+            //this method takes an email and checks to see if it is for a new or existing user
+
+            //send the query
+            const string quote = "\"";
+            string command = "query { checkEmail(email:" + quote + email + quote + " )}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //wait for appropriate response
+            var service = new GraphQlWaitService();
+            var response = await service.WaitForGraphQlObject("checkemail");
+
+            return response;
+
+
+
         }
 
         public static async Task<GraphQlWaitResponse> LoginUser(string email, string password)
         {
             //This routine takes a specified username and password and attempts to log the user in via graphql.
-
-            GlobalResources.WaitStart("Checking your credentials...");
 
             //TODO: Check for a QraphQL Connection
 
@@ -112,10 +107,8 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("loginUser", 10000);
+            var response = await service.WaitForGraphQlObject("loginUser");
 
-            //Return to the calling app
-            GlobalResources.WaitStop();
             return response;
 
         }

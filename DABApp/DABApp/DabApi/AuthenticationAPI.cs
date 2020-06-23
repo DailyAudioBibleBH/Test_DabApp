@@ -32,6 +32,8 @@ namespace DABApp
             dbSettings.StoreSetting("FirstName", "Guest");
             dbSettings.StoreSetting("LastName", "Guest");
             dbSettings.StoreSetting("Avatar", "");
+            GuestStatus.Current.IsGuestLogin = true;
+
         }
 
         //public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.

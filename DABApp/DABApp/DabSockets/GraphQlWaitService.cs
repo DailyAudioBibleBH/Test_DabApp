@@ -18,7 +18,7 @@ namespace DABApp.DabSockets
         bool waiting = true; //start off true, will set to false once ready
 
 
-        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(string GraphQlMessageCode, int TimeoutMilliseconds = 1000)
+        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(string GraphQlMessageCode, int TimeoutMilliseconds = 2000)
         {
 
             messageCode = GraphQlMessageCode.ToUpper();
@@ -145,6 +145,15 @@ namespace DABApp.DabSockets
                         case "SUBSCRIPTION":
                             //successful subscription
                             if (response.type=="complete")
+                            {
+                                qlObject = response;
+                                waiting = false;
+                            }
+                            break;
+
+                        case "CHECKEMAIL":
+                            //check email query finished
+                            if (response?.payload?.data?.checkEmail != null)
                             {
                                 qlObject = response;
                                 waiting = false;
