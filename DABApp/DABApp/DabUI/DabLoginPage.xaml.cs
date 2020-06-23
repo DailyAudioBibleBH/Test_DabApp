@@ -221,7 +221,7 @@ namespace DABApp
             //log the user in and push up channels page upon success.
 
             var result = await GraphQlFunctions.LoginUser(Email.Text.Trim(), Password.Text);
-            if (result.Result == true) //Successful Login
+            if (result.Success == true) //Successful Login
             {
                 //process the data we got back.
                 dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
@@ -230,7 +230,7 @@ namespace DABApp
 
                 //get user profile information and update it.
                 result = await GraphQlFunctions.GetUserData(result.data.payload.data.loginUser.token);
-                if (result.Result == true)
+                if (result.Success == true)
                 {
                     //process user profile information
                     var profile = result.data.payload.data.user;

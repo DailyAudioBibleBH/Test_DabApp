@@ -39,9 +39,6 @@ namespace DABApp
                 //Connect to SyncSocket
                 DabSyncService.Instance.ConnectWebsocket();
 
-                //Connect to GraphQl
-                var ql = GraphQlFunctions.InitializeConnection(GlobalResources.APIKey).Result;
-
 
                 if (AuthenticationAPI.CheckTokenOnAppStart() && versionList == null) //Check to see if the user is logged in.
                 {
@@ -73,6 +70,7 @@ namespace DABApp
         {
             DependencyService.Get<IAnalyticsService>().LogEvent("app_startup", "start_date", DateTime.Now.ToShortDateString());
             AppCenter.Start("ios=71f3b832-d6bc-47f3-a1f9-6bbda4669815;" + "android=63fbcb2c-3fcd-4491-b6c3-80f75d2e0d4d;", typeof(Analytics), typeof(Crashes));
+
 
         }
 

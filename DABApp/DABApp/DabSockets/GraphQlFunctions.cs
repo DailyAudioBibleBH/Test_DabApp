@@ -13,10 +13,6 @@ namespace DABApp.DabSockets
 
             GlobalResources.WaitStart("Connecting to DAB Servers...");
 
-            //TODO: Check for a QraphQL Connection
-
-            //Send the Login mutation
-
             string origin;
             if (Device.RuntimePlatform == Device.Android)
             {
@@ -37,11 +33,45 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("connection_init", 10000);
+            var response = await service.WaitForGraphQlObject("connection_init", 2000); //smaller timeout in case we don't get ack.. move along
+
+            if (response.ErrorMessage.StartsWith("Timeout expired")) //proceed on with a timeout here, don't always get ack
+            {
+                response.Success = true;
+            }
 
             //Return to the calling app
             GlobalResources.WaitStop();
             return response;
+
+        }
+
+        public static async Task<GraphQlWaitResponse> AddSubscription(int id, string subscriptionJson)
+        {
+            //This routine takes a subscription Json string and subscribes to it. It waits for it to finish before returning
+
+            GlobalResources.WaitStart("Adding subscriptions...");
+
+            DabGraphQlPayload payload = new DabGraphQlPayload(subscriptionJson, new DabGraphQlVariables());
+            var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, id));
+            DabSyncService.Instance.subscriptionIds.Add(id);
+            DabSyncService.Instance.Send(SubscriptionInit);
+
+
+            //Wait for appropriate response
+            var service = new GraphQlWaitService();
+            var response = await service.WaitForGraphQlObject("subscription", 2000);
+
+            //Return (ignore timeouts)
+            if (response.ErrorMessage.StartsWith("Timeout expired")) //proceed on with a timeout here, don't always get ack
+            {
+                response.Success = true;
+            }
+
+            //Return to the calling app
+            GlobalResources.WaitStop();
+            return response;
+
 
         }
 

@@ -45,7 +45,7 @@ namespace DABApp.DabSockets
         List<DabGraphQlEpisode> allEpisodes = new List<DabGraphQlEpisode>();
         DabEpisodesPage episodesPage;
 
-        List<int> subscriptionIds = new List<int>();
+        public List<int> subscriptionIds = new List<int>();
         string userName;
         public int popRequests = 0;
 
@@ -995,58 +995,38 @@ namespace DABApp.DabSockets
             }
         }
 
-        private void Sock_Connected(object data)
+        private async void Sock_Connected(object data)
         {
             //The socket has connected or reconnected. Take appropriate action
+
+            //UI Updates
             GlobalResources.WaitStop();
-            //Notify UI
             OnPropertyChanged("IsConnected");
             OnPropertyChanged("IsDisconnected");
-            dbSettings Token = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-            if (GlobalResources.TestMode && !GlobalResources.Instance.IsLoggedIn)
+
+
+            //Get the token to be used for the graphql connection
+            string token = dbSettings.GetSetting("Token","");
+            if (token == "")
             {
-                Token = new dbSettings() { Key = "Token", Value = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc3RhZ2luZy5kYWlseWF1ZGlvYmlibGUuY29tIiwiaWF0IjoxNTgyOTEwMTI1LCJuYmYiOjE1ODI5MTAxMjUsImV4cCI6MTc0MDU5MDEyNSwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMTI5MTcifX19.bT-Bnn6SdHc4rKQ37vMjrllUeKbsvdvMUJ0pBzMy8Fs" }; //test mode token
+                //make sure we are set up for guest mode
+                AuthenticationAPI.LoginGuest();
+
+                //use generic token
+                token = GlobalResources.APIKey;
             }
-            if (Token == null) Token = new dbSettings() { Key = "Token", Value = GlobalResources.APIKey }; //fake token
+
             //Init the GraphQL connection
-            var ql = GraphQlFunctions.InitializeConnection(Token.Value).Result;
+            var ql = await GraphQlFunctions.InitializeConnection(token);
+
             //Only send user based subscriptions when user is logged in
             if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
             {
-                //SUBSCRIPTION 1 - ACTION LOGGED
-                var query = "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }";
-                DabGraphQlPayload payload = new DabGraphQlPayload(query, variables);
-                var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, 1));
-                subscriptionIds.Add(1);
-                sock.Send(SubscriptionInit);
 
-                //SUBSCRIPTION 2 - TOKEN REMOVED
-                var tokenRemovedQuery = "subscription { tokenRemoved { token } }";
-                DabGraphQlPayload tokenRemovedPayload = new DabGraphQlPayload(tokenRemovedQuery, variables);
-                var SubscriptionRemoveToken = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", tokenRemovedPayload, 2));
-                subscriptionIds.Add(2);
-                sock.Send(SubscriptionRemoveToken);
-
-                //SUBSCRIPTION 3 - PROGRESS UPDATED
-                var newProgressQuery = "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }";
-                DabGraphQlPayload newProgressPayload = new DabGraphQlPayload(newProgressQuery, variables);
-                var SubscriptionProgressData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newProgressPayload, 3));
-                subscriptionIds.Add(3);
-                sock.Send(SubscriptionProgressData);
-
-                //SUBSCRIPTION 4 - USER UPDATED
-                var userUpdatedQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
-                DabGraphQlPayload userUpdatedPayload = new DabGraphQlPayload(userUpdatedQuery, variables);
-                var SubscriptionUpdatedUser = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userUpdatedPayload, 6));
-                subscriptionIds.Add(6);
-                sock.Send(SubscriptionUpdatedUser);
-
-                ////SUBSCRIPTION 5 - USER ADDRESS UPDATED
-                //var userAddressQuery = "subscription { updateUser { user { id wpId firstName lastName email language } } } ";
-                //DabGraphQlPayload userAddressPayload = new DabGraphQlPayload(userAddressQuery, variables);
-                //var SubscriptionUpdatedUserAddress = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", userAddressPayload, 7));
-                //subscriptionIds.Add(7);
-                //sock.Send(SubscriptionUpdatedUserAddress);
+                ql = await GraphQlFunctions.AddSubscription(1, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
+                ql = await GraphQlFunctions.AddSubscription(2, "subscription { tokenRemoved { token } }");
+                ql = await GraphQlFunctions.AddSubscription(3, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
+                ql = await GraphQlFunctions.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
 
                 //QUERY - RECENT PROGRESS
                 var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
@@ -1058,20 +1038,10 @@ namespace DABApp.DabSockets
                 var gmd = AuthenticationAPI.GetMemberData().Result;
             }
 
-            //SUBSCRIPTION 4 - EPISODE PUBLISHED
-            var newEpisodeQuery = "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }";
-            DabGraphQlPayload newEpisodePayload = new DabGraphQlPayload(newEpisodeQuery, variables);
-            var SubscriptionNewEpisode = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newEpisodePayload, 4));
-            subscriptionIds.Add(4);
-            sock.Send(SubscriptionNewEpisode);
+            //Generic subscriptions
+            ql = await GraphQlFunctions.AddSubscription(4, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
+            ql = await GraphQlFunctions.AddSubscription(5, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
 
-
-            //SUBSCRIPTION 5 - BADGE UPDATED
-            var newBadgeQuery = "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }";
-            DabGraphQlPayload newBadgePayload = new DabGraphQlPayload(newBadgeQuery, variables);
-            var SubscriptionBadgeData = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", newBadgePayload, 5));
-            subscriptionIds.Add(5);
-            sock.Send(SubscriptionBadgeData);
 
             //QUERY - CHANNELS
             var channelQuery = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
