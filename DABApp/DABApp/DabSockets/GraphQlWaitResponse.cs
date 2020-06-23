@@ -12,9 +12,9 @@ namespace DABApp.DabSockets
     public class GraphQlWaitResponse
     {
 
-        public bool Success = false;
-        public string ErrorMessage = "";
-        public DabGraphQlRootObject Data = null;
+        public bool Success = false; //true = successful response - false = something didn't go as expected
+        public string ErrorMessage = ""; //custom error emssage if success is false
+        public DabGraphQlRootObject Data = null; //the graphql object that is to be used on success
 
 
         public GraphQlWaitResponse()
@@ -34,7 +34,7 @@ namespace DABApp.DabSockets
             ErrorMessage = "";
         }
 
-        public GraphQlWaitResponse(GraphQlErrorResponses ErrorType, string ErrorMessage = "")
+        public GraphQlWaitResponse(GraphQlErrorResponses ErrorType, string CustomErrorMessage = "")
         {
             /*
              * constructor with error messages built in
@@ -68,7 +68,7 @@ namespace DABApp.DabSockets
                     //custom / generic error message
                     Success = false;
                     Data = null;
-                    ErrorMessage = (ErrorMessage != "") ? ErrorMessage : "An error occured while communicating with the Daily Audio Bible servers.";
+                    ErrorMessage = (CustomErrorMessage != "") ? CustomErrorMessage : "An error occured while communicating with the Daily Audio Bible servers.";
                     break;
             }
 

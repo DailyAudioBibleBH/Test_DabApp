@@ -220,7 +220,10 @@ namespace DABApp
         {
             //log the user in and push up channels page upon success.
 
+            GlobalResources.WaitStart("Checking your credentials...");
             var result = await GraphQlFunctions.LoginUser(Email.Text.Trim(), Password.Text);
+            GlobalResources.WaitStop();
+
             if (result.Success == true) //Successful Login
             {
                 //process the data we got back.

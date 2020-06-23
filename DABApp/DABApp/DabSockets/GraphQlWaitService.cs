@@ -9,6 +9,9 @@ namespace DABApp.DabSockets
 
     public enum GraphQlWaitTypes
     {
+        /* This enum contains the list of various methods that can be waited on.
+         * Each of these items will have a switch/case section in the listener on the websocket
+         */
         InitConnection,
         CheckEmail,
         LoginUser,
@@ -18,18 +21,30 @@ namespace DABApp.DabSockets
 
     public class GraphQlWaitService
     {
-        public GraphQlWaitService()
-        {
-        }
+        /* This service class connects itself to listen to specific types of messages on the websocket.
+         * When a message is received that cooresponds to the type of method being listened for, a response
+         * is built, and the "waiting" flag is set to false so that the WHILE loop knows it can stop listening
+         * and return the appropriate response. If the timeout expires, the method will also return with a false
+         * message along with a timeout error.
+         */
 
-        GraphQlWaitTypes _waitType;
+        GraphQlWaitTypes _waitType; //type of wait being performed
         string _error = ""; //friendly error message to return
         DabGraphQlRootObject _qlObject = null; //starts null
         bool _waiting = true; //start off true, will set to false once ready
 
-
-        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(GraphQlWaitTypes WaitType, int TimeoutMilliseconds = 2000)
+        public GraphQlWaitService()
         {
+            //no constructor needed
+        }
+
+        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(GraphQlWaitTypes WaitType, int TimeoutMilliseconds = 20000)
+        {
+            /* this method listens-loops-returns the value to the calling app as a task.
+             * it should be awaited in the calling method unless it is an intentional fire-and-forget
+             * type of task
+             */
+            
             _waitType = WaitType;
 
             //Connect a listener
@@ -48,9 +63,9 @@ namespace DABApp.DabSockets
             //Disconnect the listener
             DabSyncService.Instance.DabGraphQlMessage -= Instance_DabGraphQlMessage;
 
+            //Return the appropriate response
             GraphQlWaitResponse result; //result to be returned
 
-            //Return the appropriate response
             if (_qlObject != null) //result found
             {
                 result = new GraphQlWaitResponse(_qlObject);
@@ -61,7 +76,7 @@ namespace DABApp.DabSockets
                 result = new GraphQlWaitResponse(GraphQlErrorResponses.TimeoutOccured);
             }
 
-            else if (_error != null) //error received
+            else if (_error != "") //error received
             {
                 result = new GraphQlWaitResponse(GraphQlErrorResponses.CustomError, _error);
             }
@@ -71,7 +86,6 @@ namespace DABApp.DabSockets
                 result = new GraphQlWaitResponse(GraphQlErrorResponses.UnknownErrorOccurred);
             }
 
-            Debug.WriteLine($"Returning QL Result: {JsonConvert.SerializeObject(result)}");
             return result;
 
 
@@ -79,12 +93,16 @@ namespace DABApp.DabSockets
 
         private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
+            /* this is the handler of incoming socket messages that will compare the wait type to the type of 
+             * message being processed and handle appropriate messages as needed
+             */
             {
                 try
                 {
+                    //deserialize the message into an object
                     DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
-                    switch (_waitType) //will be upper case
+                    switch (_waitType) //one of the enum values
                     {
                         //Login Processor Messages
                         case GraphQlWaitTypes.LoginUser:
@@ -124,7 +142,6 @@ namespace DABApp.DabSockets
                                 _qlObject = response;
                                 _waiting = false;
                             }
-                            //TOOD: GraphQlConnected needs replaced?
                             break;
 
                         default:
@@ -152,6 +169,7 @@ namespace DABApp.DabSockets
                 }
                 catch (Exception ex)
                 {
+                    //ignore the message and keep waiting...
                     Debug.WriteLine($"Exception processing message: {ex.Message}");
                 }
 

@@ -6,9 +6,16 @@ using Xamarin.Forms;
 namespace DABApp.DabSockets
 {
 
-
     public static class GraphQlFunctions
     {
+        /* 
+         * This static class contains asyncronous methods for various QraphQL
+         * service interactions. Most methods will:
+         * 1. Check for a connection to the GraphQL service / websocket
+         * 2. Send a string of text to the websocket
+         * 3. Initiate a "GraphQLWaitService" to wait for the appropriate response, error, or timeout
+         * 4. Return the value to the calling method
+         */
 
         public static bool IsGraphQlConnected
         {

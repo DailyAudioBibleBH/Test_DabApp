@@ -138,29 +138,29 @@ namespace DABApp.DabSockets
                         GlobalResources.WaitStop();
                         Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
                     }
-                    else if (root?.payload?.errors?.First() != null)
-                    {
-                        if (GraphQlLoginRequestInProgress == true)
-                        {
-                            GlobalResources.WaitStop();
-                            //We have a login error!
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                Application.Current.MainPage.DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
+                    //else if (root?.payload?.errors?.First() != null)
+                    //{
+                    //    if (GraphQlLoginRequestInProgress == true)
+                    //    {
+                    //        GlobalResources.WaitStop();
+                    //        //We have a login error!
+                    //        MainThread.BeginInvokeOnMainThread(() =>
+                    //        {
+                    //            Application.Current.MainPage.DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
 
-                            });
-                            GraphQlLoginRequestInProgress = false;
-                        }
-                        else
-                        {
-                            GlobalResources.WaitStop();
-                            //We have an error!
-                            MainThread.BeginInvokeOnMainThread(() =>
-                            {
-                                Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
-                            });
-                        }
-                    }
+                    //        });
+                    //        GraphQlLoginRequestInProgress = false;
+                    //    }
+                    //    else
+                    //    {
+                    //        GlobalResources.WaitStop();
+                    //        //We have an error!
+                    //        MainThread.BeginInvokeOnMainThread(() =>
+                    //        {
+                    //            Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
+                    //        });
+                    //    }
+                    //}
                     else
                     {
                         //Some other GraphQL message we don't care about here.
