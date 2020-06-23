@@ -225,15 +225,15 @@ namespace DABApp
             {
                 //process the data we got back.
                 dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                dbSettings.StoreSetting("Token", result.data.payload.data.loginUser.token);
+                dbSettings.StoreSetting("Token", result.Data.payload.data.loginUser.token);
                 await Navigation.PushAsync(new DabChannelsPage());
 
                 //get user profile information and update it.
-                result = await GraphQlFunctions.GetUserData(result.data.payload.data.loginUser.token);
+                result = await GraphQlFunctions.GetUserData(result.Data.payload.data.loginUser.token);
                 if (result.Success == true)
                 {
                     //process user profile information
-                    var profile = result.data.payload.data.user;
+                    var profile = result.Data.payload.data.user;
                     dbSettings.StoreSetting("FirstName", profile.firstName);
                     dbSettings.StoreSetting("LastName", profile.lastName);
                     dbSettings.StoreSetting("Email", profile.email);

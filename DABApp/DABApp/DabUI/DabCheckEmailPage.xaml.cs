@@ -67,7 +67,7 @@ namespace DABApp
                 GlobalResources.WaitStop();
                 if (ql.Success)
                 {
-                    if (ql.data.payload.data.checkEmail == true)
+                    if (ql.Data.payload.data.checkEmail == true)
                     {
                         //existing user - log them in
                         await Navigation.PushAsync(new DabLoginPage(Email.Text));

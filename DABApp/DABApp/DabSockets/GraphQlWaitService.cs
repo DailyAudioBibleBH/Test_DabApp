@@ -53,42 +53,22 @@ namespace DABApp.DabSockets
             //Return the appropriate response
             if (_qlObject != null) //result found
             {
-                result= new GraphQlWaitResponse()
-                {
-                    Success = true,
-                    ErrorMessage = "",
-                    data = _qlObject
-                };
+                result = new GraphQlWaitResponse(_qlObject);
             }
 
             else if (_qlObject == null && _error == "") //timeout expired
             {
-                result= new GraphQlWaitResponse()
-                {
-                    Success = false,
-                    ErrorMessage = $"Timeout expired after {new TimeSpan(0, 0, 0, 0, TimeoutMilliseconds).TotalSeconds} seconds.",
-                    data = null
-                };
+                result = new GraphQlWaitResponse(GraphQlErrorResponses.TimeoutOccured);
             }
 
             else if (_error != null) //error received
             {
-                result = new GraphQlWaitResponse()
-                {
-                    Success = false,
-                    ErrorMessage = _error,
-                    data = null
-                };
+                result = new GraphQlWaitResponse(GraphQlErrorResponses.CustomError, _error);
             }
+
             else //other unexpected result
             {
-
-                result = new GraphQlWaitResponse()
-                {
-                    Success = false,
-                    ErrorMessage = "Unknown Error",
-                    data = null
-                };
+                result = new GraphQlWaitResponse(GraphQlErrorResponses.UnknownErrorOccurred);
             }
 
             Debug.WriteLine($"Returning QL Result: {JsonConvert.SerializeObject(result)}");
