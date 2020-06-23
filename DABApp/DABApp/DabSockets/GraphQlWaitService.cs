@@ -6,53 +6,62 @@ using Newtonsoft.Json;
 
 namespace DABApp.DabSockets
 {
+
+    public enum GraphQlWaitTypes
+    {
+        InitConnection,
+        CheckEmail,
+        LoginUser,
+        GetUserProfile,
+        StartSubscription
+    }
+
     public class GraphQlWaitService
     {
         public GraphQlWaitService()
         {
         }
 
-        string messageCode = "";
-        string friendlyError = ""; //friendly error message to return
-        DabGraphQlRootObject qlObject = null; //starts null
-        bool waiting = true; //start off true, will set to false once ready
+        GraphQlWaitTypes _waitType;
+        string _error = ""; //friendly error message to return
+        DabGraphQlRootObject _qlObject = null; //starts null
+        bool _waiting = true; //start off true, will set to false once ready
 
 
-        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(string GraphQlMessageCode, int TimeoutMilliseconds = 2000)
+        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(GraphQlWaitTypes WaitType, int TimeoutMilliseconds = 2000)
         {
+            _waitType = WaitType;
 
-            messageCode = GraphQlMessageCode.ToUpper();
-            
             //Connect a listener
             DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
 
             //wait for the timeout period or until a result is sound (sets waiting to false)
             DateTime start = DateTime.Now;
             DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
-            while (waiting == true && DateTime.Now < timeout)
+            while (_waiting == true && DateTime.Now < timeout)
             {
                 TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                Debug.WriteLine($"Waiting {remaining.ToString()} for {GraphQlMessageCode} - Wait: {waiting} - Result: {JsonConvert.SerializeObject(qlObject)}");
-                await Task.Delay(500);
+                Debug.WriteLine($"Waiting {remaining.ToString()} for {WaitType} - Wait: {_waiting} - Result: {JsonConvert.SerializeObject(_qlObject)}");
+                await Task.Delay(500); //check every 1/2 second
             }
 
             //Disconnect the listener
             DabSyncService.Instance.DabGraphQlMessage -= Instance_DabGraphQlMessage;
 
-            GraphQlWaitResponse result;
+            GraphQlWaitResponse result; //result to be returned
 
             //Return the appropriate response
-            if (qlObject != null) //result found
+            if (_qlObject != null) //result found
             {
                 result= new GraphQlWaitResponse()
                 {
                     Success = true,
                     ErrorMessage = "",
-                    data = qlObject
+                    data = _qlObject
                 };
             }
 
-            else if (qlObject == null && friendlyError == "") //timeout expired
+            else if (_qlObject == null && _error == "") //timeout expired
             {
                 result= new GraphQlWaitResponse()
                 {
@@ -62,12 +71,12 @@ namespace DABApp.DabSockets
                 };
             }
 
-            else if (friendlyError != null) //error received
+            else if (_error != null) //error received
             {
                 result = new GraphQlWaitResponse()
                 {
                     Success = false,
-                    ErrorMessage = friendlyError,
+                    ErrorMessage = _error,
                     data = null
                 };
             }
@@ -95,15 +104,15 @@ namespace DABApp.DabSockets
                 {
                     DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
-                    switch (messageCode) //will be upper case
+                    switch (_waitType) //will be upper case
                     {
                         //Login Processor Messages
-                        case "LOGINUSER":
+                        case GraphQlWaitTypes.LoginUser:
                             //successful login
                             if (response?.payload?.data?.loginUser != null)
                             {
-                                qlObject = response;
-                                waiting = false;
+                                _qlObject = response;
+                                _waiting = false;
                             }
 
                             //error during login
@@ -113,27 +122,27 @@ namespace DABApp.DabSockets
                                 var loginError = response.payload.errors.Where(x => x.path.Contains("loginUser")).FirstOrDefault();
                                 if (loginError != null)
                                 {
-                                    friendlyError = loginError.message;
-                                    waiting = false;
+                                    _error = loginError.message;
+                                    _waiting = false;
                                 }
                             }
                             break;
 
-                        case "USER":
+                        case GraphQlWaitTypes.GetUserProfile:
                             //successful user profile reception
                             if (response?.payload?.data?.user != null)
                             {
-                                qlObject = response;
-                                waiting = false;
+                                _qlObject = response;
+                                _waiting = false;
                             }
                             break;
 
-                        case "CONNECTION_INIT":
+                        case GraphQlWaitTypes.InitConnection:
                             //successful connection
                             if (response?.type == "connection_ack")
                             {
-                                qlObject = response;
-                                waiting = false;
+                                _qlObject = response;
+                                _waiting = false;
                             }
                             //TOOD: GraphQlConnected needs replaced?
                             break;
@@ -142,21 +151,21 @@ namespace DABApp.DabSockets
                             //ignore this response, it's not relevant.
                             break;
 
-                        case "SUBSCRIPTION":
+                        case GraphQlWaitTypes.StartSubscription:
                             //successful subscription
                             if (response.type=="complete")
                             {
-                                qlObject = response;
-                                waiting = false;
+                                _qlObject = response;
+                                _waiting = false;
                             }
                             break;
 
-                        case "CHECKEMAIL":
+                        case GraphQlWaitTypes.CheckEmail:
                             //check email query finished
                             if (response?.payload?.data?.checkEmail != null)
                             {
-                                qlObject = response;
-                                waiting = false;
+                                _qlObject = response;
+                                _waiting = false;
                             }
                             break;
                     }

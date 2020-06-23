@@ -5,6 +5,7 @@ using Xamarin.Forms;
 
 namespace DABApp.DabSockets
 {
+
     public static class GraphQlFunctions
     {
         public static async Task<GraphQlWaitResponse> InitializeConnection(string Token)
@@ -31,7 +32,7 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("connection_init"); //smaller timeout in case we don't get ack.. move along
+            var response = await service.WaitForGraphQlObject(GraphQlWaitTypes.InitConnection); //smaller timeout in case we don't get ack.. move along
 
             return response;
 
@@ -49,7 +50,7 @@ namespace DABApp.DabSockets
 
             //Wait for appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("subscription");
+            var response = await service.WaitForGraphQlObject(GraphQlWaitTypes.StartSubscription);
 
             return response;
 
@@ -69,7 +70,7 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("user");
+            var response = await service.WaitForGraphQlObject(GraphQlWaitTypes.GetUserProfile);
 
             return response;
         }
@@ -86,7 +87,7 @@ namespace DABApp.DabSockets
 
             //wait for appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("checkemail");
+            var response = await service.WaitForGraphQlObject(GraphQlWaitTypes.CheckEmail);
 
             return response;
 
@@ -107,7 +108,7 @@ namespace DABApp.DabSockets
 
             //Wait for the appropriate response
             var service = new GraphQlWaitService();
-            var response = await service.WaitForGraphQlObject("loginUser");
+            var response = await service.WaitForGraphQlObject(GraphQlWaitTypes.LoginUser);
 
             return response;
 
