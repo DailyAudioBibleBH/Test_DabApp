@@ -49,7 +49,7 @@ namespace DABApp.DabService
             _waitType = WaitType;
 
             //Connect a listener
-            DabSyncService.Instance.DabGraphQlMessage += Instance_DabGraphQlMessage;
+            DabService.Socket.DabGraphQlMessage += Service_GraphQlMessage;
 
             //wait for the timeout period or until a result is sound (sets waiting to false)
             DateTime start = DateTime.Now;
@@ -62,7 +62,7 @@ namespace DABApp.DabService
             }
 
             //Disconnect the listener
-            DabSyncService.Instance.DabGraphQlMessage -= Instance_DabGraphQlMessage;
+            DabService.Socket.DabGraphQlMessage -= Service_GraphQlMessage;
 
             //Return the appropriate response
             DabServiceWaitResponse result; //result to be returned
@@ -92,7 +92,7 @@ namespace DABApp.DabService
 
         }
 
-        private void Instance_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+        private void Service_GraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
             /* this is the handler of incoming socket messages that will compare the wait type to the type of 
              * message being processed and handle appropriate messages as needed
