@@ -86,27 +86,29 @@ namespace DABApp.Service
         {
             //disconnects and resets the websocket
 
-            if (socket.IsConnected == true)
+            if (socket != null)
             {
-                //disconnect the event listeners
-                socket.DabSocketEvent -= Socket_DabSocketEvent;
-                socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
-
-                //disconnect the socket
-                socket.Disconnect();
-
-                //wait for the socket to become disconnected
-                //Wait for the socket to connect
-                DateTime start = DateTime.Now;
-                DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
-                while (socket.IsConnected == false && DateTime.Now < timeout)
+                if (socket.IsConnected == true)
                 {
-                    TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                    Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
-                    await Task.Delay(500); //check every 1/2 second
+                    //disconnect the event listeners
+                    socket.DabSocketEvent -= Socket_DabSocketEvent;
+                    socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
+
+                    //disconnect the socket
+                    socket.Disconnect();
+
+                    //wait for the socket to become disconnected
+                    //Wait for the socket to connect
+                    DateTime start = DateTime.Now;
+                    DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
+                    while (socket.IsConnected == false && DateTime.Now < timeout)
+                    {
+                        TimeSpan remaining = timeout.Subtract(DateTime.Now);
+                        Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
+                        await Task.Delay(500); //check every 1/2 second
+                    }
                 }
             }
-
             //clear the socket reference to reset it completely
             socket = null;
 
@@ -260,9 +262,12 @@ namespace DABApp.Service
                 await Task.Delay(500);
 
                 //disconnect the socket
-                if (socket.IsConnected)
+                if (socket != null)
                 {
-                    socket.Disconnect();
+                    if (socket.IsConnected)
+                    {
+                        socket.Disconnect();
+                    }
                 }
 
             }
@@ -323,7 +328,7 @@ namespace DABApp.Service
             return response;
         }
 
-        public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress,string Password)
+        public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress, string Password)
         {
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
@@ -361,10 +366,21 @@ namespace DABApp.Service
 
         }
 
-        public static async Task<DabServiceWaitResponse> ResetPassword()
+        public static async Task<DabServiceWaitResponse> ResetPassword(string Email)
         {
-            //TODO: Send command to reset user's password
-            throw new NotImplementedException();
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //send update token mutation
+            var command = $"mutation {{ resetPassword(email: \"{Email}\" )}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.ResetPassword);
+
+            //return the response
+            return response;
         }
 
 
@@ -397,7 +413,7 @@ namespace DABApp.Service
             throw new NotImplementedException();
         }
 
-        public static async Task<DabServiceWaitResponse> ChangePassword (string OldPassword, string NewPassword)
+        public static async Task<DabServiceWaitResponse> ChangePassword(string OldPassword, string NewPassword)
         {
             //TODO: change the users's password and wait for the response.
             throw new NotImplementedException();
@@ -409,7 +425,7 @@ namespace DABApp.Service
         {
             //TODO: get episodes since the last updated date and wait for response.
             //TODO: this will need to handle the loops put in place with cursors and may require more arguments
-            throw  new NotImplementedException();
+            throw new NotImplementedException();
         }
 
 
@@ -423,7 +439,7 @@ namespace DABApp.Service
             PositionChanged
         }
 
-        public static async Task<DabServiceWaitResponse> LogAction(int EpisodeId, ServiceActionsEnum Action, double Position = 0 )
+        public static async Task<DabServiceWaitResponse> LogAction(int EpisodeId, ServiceActionsEnum Action, double Position = 0)
         {
             //TODO: log an action to Service and wait for confirmation it was processed.
             throw new NotImplementedException();

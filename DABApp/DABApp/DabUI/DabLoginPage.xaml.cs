@@ -168,10 +168,11 @@ namespace DABApp
             var email = Email.Text;
             if (answer == true)
             {
-                var resetPasswordMutation = $"mutation {{ resetPassword(email: \"{email}\" )}}";
-                var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
-                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                var ql = await DabService.ResetPassword(email);
+                if (ql.Success)
+                {
+                    await DisplayAlert("Email Sent", "Please check your email for a link to reset your password.", "OK");
+                }
             }
         }
 

@@ -19,7 +19,8 @@ namespace DABApp.Service
         GetUserProfile,
         StartSubscription,
         RegisterUser,
-        UpdateToken
+        UpdateToken,
+        ResetPassword
     }
 
     public class DabServiceWaitService
@@ -203,7 +204,16 @@ namespace DABApp.Service
 
                         case DabServiceWaitTypes.UpdateToken:
                             //update token finished
-                            if (response?.payload.data?.updateToken != null)
+                            if (response?.payload?.data?.updateToken != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.ResetPassword:
+                            //reset password finished
+                            if (response?.payload?.data?.resetPassword != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;
