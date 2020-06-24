@@ -26,24 +26,16 @@ namespace DABApp.Service
         public const int ShortTimeout = 250;
         private static List<int> SubscriptionIds = new List<int>();
 
+        /*
+         * WEBSOCKET CORE CONNECTION
+         */
+
         public static IWebSocket Socket
         {
             //public reference to the socket for connecting events and such
             get
             {
                 return socket;
-            }
-        }
-
-        public static bool IsConnected
-        {
-            get
-            {
-                if (socket == null)
-                {
-                    return false;
-                }
-                return (socket.IsConnected); //as long as the socket is connected, we should be good to go.
             }
         }
 
@@ -92,9 +84,36 @@ namespace DABApp.Service
             return socket.IsConnected;
         }
 
-        private static void Socket_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+        private static async Task<bool> DisconnectWebsocket(int TimeoutMilliseconds = LongTimeout)
         {
-            //TODO: this is where we will handle incoming graphql subscription messages unrelated to functions we await
+            //disconnects and resets the websocket
+
+            if (socket.IsConnected == true)
+            {
+                //disconnect the event listeners
+                socket.DabSocketEvent -= Socket_DabSocketEvent;
+                socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
+
+                //disconnect the socket
+                socket.Disconnect();
+
+                //wait for the socket to become disconnected
+                //Wait for the socket to connect
+                DateTime start = DateTime.Now;
+                DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
+                while (socket.IsConnected == false && DateTime.Now < timeout)
+                {
+                    TimeSpan remaining = timeout.Subtract(DateTime.Now);
+                    Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
+                    await Task.Delay(500); //check every 1/2 second
+                }
+            }
+
+            //clear the socket reference to reset it completely
+            socket = null;
+
+            return true;
+
         }
 
         private async static void Socket_DabSocketEvent(object sender, DabSocketEventHandler e)
@@ -129,36 +148,20 @@ namespace DABApp.Service
             }
         }
 
-        private static async Task<bool> DisconnectWebsocket(int TimeoutMilliseconds = LongTimeout)
+        /*
+         * GRAPHQL CONNECTION 
+         */
+
+        public static bool IsConnected
         {
-            //disconnects and resets the websocket
-
-            if (socket.IsConnected == true)
+            get
             {
-                //disconnect the event listeners
-                socket.DabSocketEvent -= Socket_DabSocketEvent;
-                socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
-
-                //disconnect the socket
-                socket.Disconnect();
-
-                //wait for the socket to become disconnected
-                //Wait for the socket to connect
-                DateTime start = DateTime.Now;
-                DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
-                while (socket.IsConnected == false && DateTime.Now < timeout)
+                if (socket == null)
                 {
-                    TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                    Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
-                    await Task.Delay(500); //check every 1/2 second
+                    return false;
                 }
+                return (socket.IsConnected); //as long as the socket is connected, we should be good to go.
             }
-
-            //clear the socket reference to reset it completely
-            socket = null;
-
-            return true;
-
         }
 
         public static async Task<DabServiceWaitResponse> InitializeConnection()
@@ -274,49 +277,9 @@ namespace DABApp.Service
             return true;
         }
 
-        public static async Task<DabServiceWaitResponse> AddSubscription(int id, string subscriptionJson)
-        {
-            /*
-             * This routine takes a subscription Json string and subscribes to it. It waits for it to finish before returning
-             */
-
-            //check for a connecting before proceeding
-            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
-
-            //prep and send the command
-            DabGraphQlPayload payload = new DabGraphQlPayload(subscriptionJson, new DabGraphQlVariables());
-            var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, id));
-            SubscriptionIds.Add(id);
-            socket.Send(SubscriptionInit);
-
-            //Wait for appropriate response
-            var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription,ShortTimeout);
-
-            //return the response
-            return response;
-        }
-
-        public static async Task<DabServiceWaitResponse> GetUserData(string token)
-        {
-            /*
-             * This routine takes a token and gets the user profile information from it.
-             */
-
-            //check for a connecting before proceeding
-            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
-
-            //Send the Login mutation
-            string command = $"query {{user{{wpId,firstName,lastName,email}}}}";
-            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
-            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
-
-            //Wait for the appropriate response
-            var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetUserProfile);
-
-            return response;
-        }
+        /*
+         * AUTHENTICATION
+         */
 
         public static async Task<DabServiceWaitResponse> CheckEmail(string email)
         {
@@ -362,5 +325,164 @@ namespace DABApp.Service
             //return the response
             return response;
         }
+
+        /*
+         * USER PROFILE
+         */
+
+        public static async Task<DabServiceWaitResponse> GetUserData(string token)
+        {
+            /*
+             * This routine takes a token and gets the user profile information from it.
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the Login mutation
+            string command = $"query {{user{{wpId,firstName,lastName,email}}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetUserProfile);
+
+            return response;
+        }
+
+        /*
+         * SUBSCRIPTIONS
+         */
+
+        public static async Task<DabServiceWaitResponse> AddSubscription(int id, string subscriptionJson)
+        {
+            /*
+             * This routine takes a subscription Json string and subscribes to it. It waits for it to finish before returning
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //prep and send the command
+            DabGraphQlPayload payload = new DabGraphQlPayload(subscriptionJson, new DabGraphQlVariables());
+            var SubscriptionInit = JsonConvert.SerializeObject(new DabGraphQlSubscription("start", payload, id));
+            SubscriptionIds.Add(id);
+            socket.Send(SubscriptionInit);
+
+            //Wait for appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
+
+            //return the response
+            return response;
+        }
+
+
+        private static void Socket_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
+        {
+            //Handle incoming subscription notifications we care about
+
+            DabGraphQlRootObject ql = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+            DabGraphQlData data = ql?.payload?.data;
+
+            //exit the method if nothing to process
+            if (data == null)
+            {
+                return;
+            }
+
+            //Identify subscriptions we need to deal with
+
+            if (data.actionLogged != null)
+            {
+                //new action logged!
+                HandleActionLogged(data.actionLogged);
+
+            }
+            else if (data.episodePublished != null)
+            {
+                //new episode published
+                HandleEpisodePublished(data.episodePublished);
+
+            }
+            else if (data.progressUpdated != null)
+            {
+                //progress updated
+                HandleProgressUpdated(data.progressUpdated);
+
+            }
+            else if (data.tokenRemoved != null)
+            {
+                //token removed
+
+            }
+            else if (data.updateUser != null)
+            {
+                //user profile updated
+                Debug.WriteLine($"USER: {e.Message}");
+
+            }
+            else
+            {
+                //nothing to see here... all other incoming messages should be handled by the appropriate wait service
+            }
+
+        }
+
+        private static async void HandleActionLogged(DabGraphQlActionLogged data)
+        {
+            /* 
+             * Handle an incoming action log
+             */
+
+            Debug.WriteLine($"ACTIONLOGGED: {JsonConvert.SerializeObject(data)}");
+
+        }
+
+        private static async void HandleEpisodePublished(DabGraphQlEpisodePublished data)
+        {
+            /* 
+             * Handle an incoming episode notification
+             */
+
+            Debug.WriteLine($"EPISODEPUBLISHED: {JsonConvert.SerializeObject(data)}");
+
+        }
+
+        private static async void HandleProgressUpdated(DabGraphQlProgressUpdated data)
+        {
+            /*
+             * Handle an incoming pogress update notification
+             */
+
+            Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
+
+        }
+
+        private static async void HandleTokenRemoved(TokenRemoved data)
+        {
+            /*
+             * Handle an incoming token removed update notification
+             */
+
+            Debug.WriteLine($"TOKENREMOVED: {JsonConvert.SerializeObject(data)}");
+
+        }
+
+        private static async void HandleUpdateUser(DabGraphQlUpdateUser data)
+        {
+            /* 
+             * Handle an incoming update user notification
+             */
+
+            Debug.WriteLine($"UPDATEUSER: {JsonConvert.SerializeObject(data)}");
+
+        }
+
+
+
+
+
     }
 }
