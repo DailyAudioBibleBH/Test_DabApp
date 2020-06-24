@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
 using Xamarin.Essentials;
@@ -27,38 +28,59 @@ namespace DABApp
 			Email.Text = GlobalResources.GetUserEmail();
 		}
 
-		void OnSave(object o, EventArgs e) 
+		async void OnSave(object o, EventArgs e) 
 		{
-			Save.IsEnabled = false;
 			if (Validation()) 
 			{
 				GlobalResources.WaitStart("Saving your information...");
-				dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-				dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-				dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
 
-                if (FirstName.Text != FirstNameSettings.Value || LastName.Text != LastNameSettings.Value || Email.Text != EmailSettings.Value)
+				bool okToClose = true;
+				string oldFirstName = dbSettings.GetSetting("FirstName","");
+				string oldLastName = dbSettings.GetSetting("LastName","");
+				string oldEmail = dbSettings.GetSetting("Email","");
+
+                if (FirstName.Text != oldFirstName || LastName.Text != oldLastName || Email.Text != oldEmail)
                 {
-					var updateUserSettingsMutation = $"mutation {{ updateUserFields(firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", email: \"{Email.Text}\") {{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-					var updateUserSettingsPayload = new DabGraphQlPayload(updateUserSettingsMutation, variables);
-					var settingsJson = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateUserSettingsPayload));
-					DabSyncService.Instance.Send(settingsJson);
+					var ql = await DabService.SaveUserProfile(FirstName.Text, LastName.Text, Email.Text);
+					if (ql.Success)
+					{
+						var data = ql.Data.payload.data.updateUserFields;
+						dbSettings.StoreSetting("FirstName", data.firstName);
+						dbSettings.StoreSetting("LastName", data.lastName);
+						dbSettings.StoreSetting("Email", data.email);
+					} else
+                    {
+						await DisplayAlert("User profile could not be changed", ql.ErrorMessage, "OK");
+						okToClose = false;
+                    }
 				}
 
-                if (CurrentPassword.Text != null && NewPassword.Text != null && ConfirmNewPassword.Text != null)
+                if (CurrentPassword.Text != null && NewPassword.Text != null && ConfirmNewPassword.Text != null && NewPassword.Text == ConfirmNewPassword.Text)
                 {
-					var resetPasswordMutation = $"mutation {{ updatePassword( currentPassword: \"{CurrentPassword.Text}\" newPassword: \"{NewPassword.Text}\")}}";
-					var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
-					var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
-					DabSyncService.Instance.Send(JsonIn);
+					var ql = await DabService.ChangePassword(CurrentPassword.Text, NewPassword.Text);
+					if (ql.Success)
+					{
+						await DisplayAlert($"Password changed", "Your password has been changed.", "OK");
+					} else
+                    {
+						await DisplayAlert($"Password change failed", ql.ErrorMessage, "OK");
+						okToClose = false;
+                    }
 
-					CurrentPassword.Text = null;
-					NewPassword.Text = null;
-					ConfirmNewPassword.Text = null;
+					CurrentPassword.Text = "";
+					NewPassword.Text = "";
+					ConfirmNewPassword.Text = "";
 				}
+
+				//close the form if done
+				GlobalResources.WaitStop();
+				if (okToClose)
+				{
+					await Navigation.PopAsync();
+				}
+
 			}
-			Save.IsEnabled = true;
-			Navigation.PopAsync();
+
 		}
 
         void OnFirstNameCompleted(object o, EventArgs e) {

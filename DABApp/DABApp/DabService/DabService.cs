@@ -407,16 +407,46 @@ namespace DABApp.Service
             return response;
         }
 
-        public static async Task<DabServiceWaitResponse> SaveUserData(string FirstName, string LastName, string EmailAddress)
+        public static async Task<DabServiceWaitResponse> SaveUserProfile(string FirstName, string LastName, string EmailAddress)
         {
-            //TODO: send command and wait for response.
-            throw new NotImplementedException();
+            //this routine updates a user's profile
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+
+            var command = $"mutation {{ updateUserFields(firstName: \"{FirstName}\", lastName: \"{LastName}\", email: \"{EmailAddress}\") {{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload));
+            socket.Send(JsonIn);
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.SaveUserProfile);
+
+            return response;
         }
 
         public static async Task<DabServiceWaitResponse> ChangePassword(string OldPassword, string NewPassword)
         {
-            //TODO: change the users's password and wait for the response.
-            throw new NotImplementedException();
+
+            //this routine updates a user's password
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+
+            var command = $"mutation {{ updatePassword( currentPassword: \"{OldPassword}\" newPassword: \"{NewPassword}\")}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload));
+            socket.Send(JsonIn);
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.ChangePassword);
+
+            return response;
+
         }
 
         //CHANNELS AND EPISODES
@@ -497,7 +527,7 @@ namespace DABApp.Service
             {
                 if (ql.payload?.message == "Your token is not valid.")
                 {
-                    //TODO: Reset the app and start over.
+                    HandleInvalidToken(ql);
                 }
             }
 
@@ -603,6 +633,16 @@ namespace DABApp.Service
 
             //TODO: Handle this
 
+        }
+
+        private static async void HandleInvalidToken(DabGraphQlRootObject ql)
+        {
+            /*
+             * Handle an invalid token message, meaning we probably need to log the user out
+             */
+
+            Debug.WriteLine($"INVALIDTOKEN");
+            throw new NotImplementedException();
         }
 
     }

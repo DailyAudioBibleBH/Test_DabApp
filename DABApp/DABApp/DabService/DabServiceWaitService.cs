@@ -20,7 +20,9 @@ namespace DABApp.Service
         StartSubscription,
         RegisterUser,
         UpdateToken,
-        ResetPassword
+        ResetPassword,
+        ChangePassword,
+        SaveUserProfile
     }
 
     public class DabServiceWaitService
@@ -214,6 +216,39 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.ResetPassword:
                             //reset password finished
                             if (response?.payload?.data?.resetPassword != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.ChangePassword:
+                            //change password finished
+                            if (response?.payload?.data?.updatePassword != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                                break;
+                            }
+
+                            //error during check email
+                            if (response?.payload?.errors != null)
+                            {
+                                //Find the relevant error
+                                var error = response.payload.errors.FirstOrDefault();
+                                if (error != null)
+                                {
+                                    _error = error.message;
+                                    _waiting = false;
+                                    break;
+                                }
+
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.SaveUserProfile:
+                            //user profile saved
+                            if (response?.payload?.data?.updateUserFields != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;
