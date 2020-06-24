@@ -26,9 +26,7 @@ namespace DABApp.Service
         public const int ShortTimeout = 250;
         private static List<int> SubscriptionIds = new List<int>();
 
-        /*
-         * WEBSOCKET CORE CONNECTION
-         */
+        //WEBSOCKET CONNECTION
 
         public static IWebSocket Socket
         {
@@ -148,9 +146,7 @@ namespace DABApp.Service
             }
         }
 
-        /*
-         * GRAPHQL CONNECTION 
-         */
+        //GRAPHQL CONNECTION
 
         public static bool IsConnected
         {
@@ -277,9 +273,7 @@ namespace DABApp.Service
             return true;
         }
 
-        /*
-         * AUTHENTICATION
-         */
+        // AUTHENTICATION
 
         public static async Task<DabServiceWaitResponse> CheckEmail(string email)
         {
@@ -326,11 +320,28 @@ namespace DABApp.Service
             return response;
         }
 
-        /*
-         * USER PROFILE
-         */
+        public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress)
+        {
+            //TODO: Handle this messaging and wait for the correct response, and then update user properties
+            throw new NotImplementedException();
+        }
 
-        public static async Task<DabServiceWaitResponse> GetUserData(string token)
+        public static async Task<DabServiceWaitResponse> UpdateToken()
+        {
+            //TODO: Update a user 's token
+            throw new NotImplementedException();
+        }
+
+        public static async Task<DabServiceWaitResponse> ResetPassword()
+        {
+            //TODO: Send command to reset user's password
+            throw new NotImplementedException();
+        }
+
+
+        //USER PROFILE
+
+        public static async Task<DabServiceWaitResponse> GetUserData()
         {
             /*
              * This routine takes a token and gets the user profile information from it.
@@ -351,9 +362,60 @@ namespace DABApp.Service
             return response;
         }
 
-        /*
-         * SUBSCRIPTIONS
-         */
+        public static async Task<DabServiceWaitResponse> SaveUserData(string FirstName, string LastName, string EmailAddress)
+        {
+            //TODO: send command and wait for response.
+            throw new NotImplementedException();
+        }
+
+        public static async Task<DabServiceWaitResponse> ChangePassword (string OldPassword, string NewPassword)
+        {
+            //TODO: change the users's password and wait for the response.
+            throw new NotImplementedException();
+        }
+
+        //CHANNELS AND EPISODES
+
+        public static async Task<DabServiceWaitResponse> GetEpisodes(DateTime StartDate, int ChannelId)
+        {
+            //TODO: get episodes since the last updated date and wait for response.
+            //TODO: this will need to handle the loops put in place with cursors and may require more arguments
+            throw  new NotImplementedException();
+        }
+
+
+        //ACTIONS
+
+        public enum ServiceActionsEnum
+        {
+            Favorite,
+            Listened,
+            Journaled,
+            PositionChanged
+        }
+
+        public static async Task<DabServiceWaitResponse> LogAction(int EpisodeId, ServiceActionsEnum Action, double Position = 0 )
+        {
+            //TODO: log an action to Service and wait for confirmation it was processed.
+            throw new NotImplementedException();
+        }
+
+        public static async Task<DabServiceWaitResponse> GetActions(DateTime StartDate)
+        {
+            //TODO: get last actions since a date.
+            //TODO: this procedure needs to handle the looping necessary and may need more arguments
+            throw new NotImplementedException();
+        }
+
+        //BADGES AND PROGRESS
+
+        public static async Task<DabServiceWaitResponse> SeeProgress(int ProgressId)
+        {
+            //TODO: send progress seen and wait for confiramation
+            throw new NotImplementedException();
+        }
+
+        //SUBSCRIPTIONS
 
         public static async Task<DabServiceWaitResponse> AddSubscription(int id, string subscriptionJson)
         {
@@ -377,7 +439,6 @@ namespace DABApp.Service
             //return the response
             return response;
         }
-
 
         private static void Socket_DabGraphQlMessage(object sender, DabGraphQlMessageEventHandler e)
         {
@@ -438,6 +499,8 @@ namespace DABApp.Service
 
             Debug.WriteLine($"ACTIONLOGGED: {JsonConvert.SerializeObject(data)}");
 
+            //TODO: Handle this by storing the action in the database and sending messaging out so any UI will know to update
+
         }
 
         private static async void HandleEpisodePublished(DabGraphQlEpisodePublished data)
@@ -447,6 +510,8 @@ namespace DABApp.Service
              */
 
             Debug.WriteLine($"EPISODEPUBLISHED: {JsonConvert.SerializeObject(data)}");
+
+            //TODO: Handle this by adding episode to the database and sending messaging out to notify UI to update
 
         }
 
@@ -458,6 +523,8 @@ namespace DABApp.Service
 
             Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
 
+            //TODO: Handle this by updating database (don't think we have any UI notifications here
+
         }
 
         private static async void HandleTokenRemoved(TokenRemoved data)
@@ -468,21 +535,21 @@ namespace DABApp.Service
 
             Debug.WriteLine($"TOKENREMOVED: {JsonConvert.SerializeObject(data)}");
 
+            //TODO: Handle this by logging the user out. Within that method, we should terminate the connection and reset it to the generic API token
+
         }
 
         private static async void HandleUpdateUser(DabGraphQlUpdateUser data)
         {
             /* 
-             * Handle an incoming update user notification
+             * Handle an incoming update user notification by updating user profile data and making any UI notifications
              */
 
             Debug.WriteLine($"UPDATEUSER: {JsonConvert.SerializeObject(data)}");
 
+            //TODO: Handle this
+
         }
-
-
-
-
 
     }
 }

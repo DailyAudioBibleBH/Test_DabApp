@@ -240,7 +240,7 @@ namespace DABApp
                 await DabService.InitializeConnection(token);
 
                 //get user profile information and update it.
-                result = await  Service.DabService.GetUserData(result.Data.payload.data.loginUser.token);
+                result = await  Service.DabService.GetUserData();
                 if (result.Success == true)
                 {
                     //process user profile information
@@ -248,6 +248,10 @@ namespace DABApp
                     dbSettings.StoreSetting("FirstName", profile.firstName);
                     dbSettings.StoreSetting("LastName", profile.lastName);
                     dbSettings.StoreSetting("Email", profile.email);
+                    dbSettings.StoreSetting("Channel", profile.channel);
+                    dbSettings.StoreSetting("Channels", profile.channels);
+                    dbSettings.StoreSetting("Language", profile.language);
+                    dbSettings.StoreSetting("Nickname", profile.nickname);
                 }
 
                 //push up new channels page
