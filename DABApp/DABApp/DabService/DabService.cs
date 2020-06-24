@@ -7,7 +7,7 @@ using Xamarin.Forms;
 namespace DABApp.DabService
 {
 
-    public static class DabServiceFunctions
+    public static class DabService
     {
         /* 
          * This static class contains asyncronous methods for various QraphQL

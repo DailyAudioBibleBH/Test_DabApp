@@ -222,7 +222,7 @@ namespace DABApp
             //log the user in and push up channels page upon success.
 
             GlobalResources.WaitStart("Checking your credentials...");
-            var result = await DabServiceFunctions.LoginUser(Email.Text.Trim(), Password.Text);
+            var result = await DabService.DabService.LoginUser(Email.Text.Trim(), Password.Text);
             GlobalResources.WaitStop();
 
             if (result.Success == true) //Successful Login
@@ -233,7 +233,7 @@ namespace DABApp
                 await Navigation.PushAsync(new DabChannelsPage());
 
                 //get user profile information and update it.
-                result = await DabServiceFunctions.GetUserData(result.Data.payload.data.loginUser.token);
+                result = await DabService.DabService.GetUserData(result.Data.payload.data.loginUser.token);
                 if (result.Success == true)
                 {
                     //process user profile information
