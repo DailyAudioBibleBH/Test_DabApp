@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DABApp.DabSockets;
 using Newtonsoft.Json;
 
-namespace DABApp.DabService
+namespace DABApp.Service
 {
 
     public enum DabServiceWaitTypes

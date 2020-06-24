@@ -1,4 +1,4 @@
-﻿using DABApp.DabService;
+﻿using DABApp.Service;
 using DABApp.DabSockets;
 using DABApp.Interfaces;
 using System;
@@ -42,7 +42,7 @@ namespace DABApp
             /* Handles when they click next to continue with an email address
              */
             GlobalResources.WaitStart();
-            var ql = await DabService.DabService.CheckEmail(Email.Text.Trim());
+            var ql = await  Service.DabService.CheckEmail(Email.Text.Trim());
             GlobalResources.WaitStop();
             if (ql.Success)
             {

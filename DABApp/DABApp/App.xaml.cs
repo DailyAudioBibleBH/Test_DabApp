@@ -9,13 +9,13 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
 using Xamarin.Forms.Internals;
+using DABApp.Service;
+using DABApp.DabUI;
 
 namespace DABApp
 {
     public partial class App : Application
     {
-        ContentAPI contentAPI = new ContentAPI();
-        ContentConfig contentConfig = new ContentConfig();
         public App()
         {
             if (AuthenticationAPI.GetTestMode())
@@ -27,43 +27,8 @@ namespace DABApp
 
             FlowListView.Init();
 
-            List<Versions> versionList = new List<Versions>();
-            versionList = contentConfig.versions;
-            contentAPI.GetModes();
+            MainPage = new DabServiceConnect();
 
-            if (ContentAPI.CheckContent()) //Check for valid content API
-            {
-                //Start off as a guest
-                GuestStatus.Current.IsGuestLogin = true;
-
-                //Connect to SyncSocket
-                DabSyncService.Instance.ConnectWebsocket();
-
-
-                if (AuthenticationAPI.CheckTokenOnAppStart() && versionList == null) //Check to see if the user is logged in.
-                {
-                    if (GlobalResources.GetUserEmail() == "Guest")
-                    {
-                        MainPage = new NavigationPage(new DabCheckEmailPage()); //Take to login page if not logged in
-                    }
-                    else
-                    {
-                        //user is logged in
-                        GlobalResources.Instance.IsLoggedIn = true;
-                        MainPage = new NavigationPage(new DabChannelsPage()); //Take to channels page is logged in
-                    }
-                }
-                else
-                {
-                    //Take them to the login page if they aren't logged in or there is a special mode in play.
-                    MainPage = new NavigationPage(new DabCheckEmailPage()); //Take to login page if not logged in
-                }
-            }
-            else
-            {
-                MainPage = new DabNetworkUnavailablePage(); //Take to network unavailable page if not logged in.
-            }
-            MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
         }
 
         protected override void OnStart()

@@ -6,7 +6,7 @@ using DABApp.DabSockets;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
-namespace DABApp.DabService
+namespace DABApp.Service
 {
 
     public static class DabService
@@ -38,6 +38,10 @@ namespace DABApp.DabService
         {
             get
             {
+                if (socket == null)
+                {
+                    return false;
+                }
                 return (socket.IsConnected); //as long as the socket is connected, we should be good to go.
             }
         }
@@ -160,13 +164,14 @@ namespace DABApp.DabService
         {
             /* this routine inits a new connection without a token and determines which one to use based on login state
              */
-            if (GuestStatus.Current.IsGuestLogin)
-            {
+            string token = dbSettings.GetSetting("Token", "");
+            if (token == "")
+            { 
                 //use the api token
                 return await InitializeConnection(GlobalResources.APIKey);
             } else
             {
-                return await InitializeConnection(dbSettings.GetSetting("Token", ""));
+                return await InitializeConnection(token);
             }
         }
 

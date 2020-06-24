@@ -1,7 +1,7 @@
 ﻿using System;
 using DABApp.DabSockets;
 
-namespace DABApp.DabService
+namespace DABApp.Service
 {
     public enum DabServiceErrorResponses
     {
