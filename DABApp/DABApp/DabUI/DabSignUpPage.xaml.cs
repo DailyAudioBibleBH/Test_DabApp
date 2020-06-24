@@ -90,7 +90,6 @@ namespace DABApp
 						dbSettings.StoreSetting("Channels", profile.channels);
 						dbSettings.StoreSetting("Language", profile.language);
 						dbSettings.StoreSetting("Nickname", profile.nickname);
-						GuestStatus.Current.IsGuestLogin = false;
 					}
 					GlobalResources.WaitStop();
 

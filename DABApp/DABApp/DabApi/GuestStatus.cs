@@ -32,12 +32,14 @@ namespace DABApp
 		{
 			get
 			{
-				return _IsGuestLogin;
-			}
-			set
-			{
-				_IsGuestLogin = value;
-				OnPropertyChanged("IsGuestLogin");
+				if (dbSettings.GetSetting("Token", "") == "")
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		}
 

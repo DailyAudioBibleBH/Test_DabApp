@@ -157,10 +157,6 @@ namespace DABApp
                 return !GuestStatus.Current.IsGuestLogin;
             }
 
-            set
-            {
-                GuestStatus.Current.IsGuestLogin = !value;
-            }
         }
         public static GlobalResources Instance { get; private set; }
 
@@ -599,9 +595,6 @@ namespace DABApp
                 }
                 );
             }
-
-            //Cleanup
-            GlobalResources.Instance.IsLoggedIn = false;
 
             //Player.
             CurrentEpisodeId = 0;

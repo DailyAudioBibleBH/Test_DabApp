@@ -32,7 +32,6 @@ namespace DABApp
             dbSettings.StoreSetting("FirstName", "Guest");
             dbSettings.StoreSetting("LastName", "Guest");
             dbSettings.StoreSetting("Avatar", "");
-            GuestStatus.Current.IsGuestLogin = true;
 
         }
 

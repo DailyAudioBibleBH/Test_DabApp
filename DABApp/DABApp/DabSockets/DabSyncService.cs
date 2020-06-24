@@ -536,49 +536,49 @@ namespace DABApp.DabSockets
                     dbSettings.StoreSetting("LastName", user.lastName);
 
                 }
-                else if (root.payload?.data?.user != null)
-                {
-                    //We got back user data!
-                    GraphQlLoginComplete = true; //stop processing success messages.
-                                                 //Save the data
+                //else if (root.payload?.data?.user != null)
+                //{
+                //    //We got back user data!
+                //    GraphQlLoginComplete = true; //stop processing success messages.
+                //                                 //Save the data
 
-                    var user = root.payload.data.user;
+                //    var user = root.payload.data.user;
 
-                    var avatarValue = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
+                //    var avatarValue = "https://www.gravatar.com/avatar/" + CalculateMD5Hash(GlobalResources.GetUserEmail()) + "?d=mp";
 
-                    dbSettings.StoreSetting("Avatar", avatarValue);
-                    dbSettings.StoreSetting("WpId", user.wpId.ToString());
-                    dbSettings.StoreSetting("Email", user.email);
-                    dbSettings.StoreSetting("Channel", user.channel);
-                    dbSettings.StoreSetting("Channels", user.channels);
-                    dbSettings.StoreSetting("FirstName", user.firstName);
-                    dbSettings.StoreSetting("LastName", user.lastName);
-                    dbSettings.StoreSetting("Language", user.language);
-                    dbSettings.StoreSetting("NickName", user.nickname);
+                //    dbSettings.StoreSetting("Avatar", avatarValue);
+                //    dbSettings.StoreSetting("WpId", user.wpId.ToString());
+                //    dbSettings.StoreSetting("Email", user.email);
+                //    dbSettings.StoreSetting("Channel", user.channel);
+                //    dbSettings.StoreSetting("Channels", user.channels);
+                //    dbSettings.StoreSetting("FirstName", user.firstName);
+                //    dbSettings.StoreSetting("LastName", user.lastName);
+                //    dbSettings.StoreSetting("Language", user.language);
+                //    dbSettings.StoreSetting("NickName", user.nickname);
 
-                    GraphQlLoginRequestInProgress = false;
+                //    GraphQlLoginRequestInProgress = false;
 
-                    GuestStatus.Current.IsGuestLogin = false;
-                    await AuthenticationAPI.GetMemberData();
+                //    GuestStatus.Current.IsGuestLogin = false;
+                //    await AuthenticationAPI.GetMemberData();
 
-                    //Disconnect
+                //    //Disconnect
 
-                    //user is logged in
-                    GlobalResources.WaitStop();
-                    GlobalResources.Instance.IsLoggedIn = true;
+                //    //user is logged in
+                //    GlobalResources.WaitStop();
+                //    GlobalResources.Instance.IsLoggedIn = true;
 
-                    GuestStatus.Current.UserName = GlobalResources.GetUserName();
+                //    GuestStatus.Current.UserName = GlobalResources.GetUserName();
 
-                    DabChannelsPage _nav = new DabChannelsPage();
-                    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        Application.Current.MainPage = new NavigationPage(_nav);
-                    });
+                //    DabChannelsPage _nav = new DabChannelsPage();
+                //    _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                //    Device.BeginInvokeOnMainThread(() =>
+                //    {
+                //        Application.Current.MainPage = new NavigationPage(_nav);
+                //    });
 
-                    //await Navigation.PushAsync(_nav);
-                    MessagingCenter.Send<string>("Setup", "Setup");
-                }
+                //    //await Navigation.PushAsync(_nav);
+                //    MessagingCenter.Send<string>("Setup", "Setup");
+                //}
                 else if (root.payload?.data?.updateUserFields != null)
                 {
                     DabGraphQlUpdateUserFields fields = root.payload.data.updateUserFields;
