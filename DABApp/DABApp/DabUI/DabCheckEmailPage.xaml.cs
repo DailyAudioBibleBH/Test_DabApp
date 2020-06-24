@@ -42,8 +42,12 @@ namespace DABApp
             /* Handles when they click next to continue with an email address
              */
             GlobalResources.WaitStart();
-            var ql = await  Service.DabService.CheckEmail(Email.Text.Trim());
+
+            //check for existing/new email
+            var ql = await  DabService.CheckEmail(Email.Text.Trim());
             GlobalResources.WaitStop();
+
+            //determine next path
             if (ql.Success)
             {
                 if (ql.Data.payload.data.checkEmail == true)
@@ -104,13 +108,18 @@ namespace DABApp
 
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             /* Sets up a tap counter for test mode
              * Also sets up forceful version upgrades
              */
 
             base.OnAppearing();
+
+            //reset service connection to generic token
+            await DabService.TerminateConnection();
+            await DabService.InitializeConnection(GlobalResources.APIKey); //connect with generic token
+
             if (GlobalResources.playerPodcast.IsPlaying)
             {
                 //Stop the podcast player before continuing

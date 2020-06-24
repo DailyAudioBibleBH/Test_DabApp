@@ -39,7 +39,7 @@ namespace DABApp.Service
             //no constructor needed
         }
 
-        public async Task<DabServiceWaitResponse> WaitForServiceResponse(DabServiceWaitTypes WaitType, int TimeoutMilliseconds = 20000)
+        public async Task<DabServiceWaitResponse> WaitForServiceResponse(DabServiceWaitTypes WaitType, int TimeoutMilliseconds = DabService.LongTimeout)
         {
             /* this method listens-loops-returns the value to the calling app as a task.
              * it should be awaited in the calling method unless it is an intentional fire-and-forget
@@ -102,6 +102,12 @@ namespace DABApp.Service
                 {
                     //deserialize the message into an object
                     DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+
+                    if (response.type=="ka")
+                    {
+                        //nothing to do...
+                        return;
+                    }
 
                     switch (_waitType) //one of the enum values
                     {

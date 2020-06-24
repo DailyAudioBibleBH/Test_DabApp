@@ -42,8 +42,19 @@ namespace DABApp.DabUI
                 }
                 else
                 {
-                    //successful connection made, move forward with the user logged in. Channels page will need to log them out if expired
-                    Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+                    //attempt to connect to service
+                    var ql=  await DabService.InitializeConnection(token);
+                    if (ql.Success == false && ql.ErrorMessage == "xxx") //TODO: Replace this text with error messgae for invalid token
+                    {
+                        //token is validated as expired - make them log back in
+                        await DabService.TerminateConnection();
+                        await DabService.InitializeConnection(GlobalResources.APIKey);
+                        Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+
+                    } else
+                    {
+                        Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+                    }
                 }
             }
             else

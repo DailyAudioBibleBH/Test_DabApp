@@ -223,14 +223,21 @@ namespace DABApp
 
             GlobalResources.WaitStart("Checking your credentials...");
             var result = await  Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
-            GlobalResources.WaitStop();
 
             if (result.Success == true) //Successful Login
             {
+
+                //Turn off guest mode
+                GuestStatus.Current.IsGuestLogin = false;
+
                 //process the data we got back.
+                string token = result.Data.payload.data.loginUser.token;
                 dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                dbSettings.StoreSetting("Token", result.Data.payload.data.loginUser.token);
-                await Navigation.PushAsync(new DabChannelsPage());
+                dbSettings.StoreSetting("Token", token);
+
+                //re-establish service connection as the user
+                await DabService.TerminateConnection();
+                await DabService.InitializeConnection(token);
 
                 //get user profile information and update it.
                 result = await  Service.DabService.GetUserData(result.Data.payload.data.loginUser.token);
@@ -243,11 +250,15 @@ namespace DABApp
                     dbSettings.StoreSetting("Email", profile.email);
                 }
 
+                //push up new channels page
+                GlobalResources.WaitStop();
+                await Navigation.PushAsync(new DabChannelsPage());
 
             }
             else
             {
                 //alert user that login failed
+                GlobalResources.WaitStop();
                 await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {result.ErrorMessage}", "OK");
             }
 

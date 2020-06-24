@@ -20,9 +20,10 @@ namespace DABApp.Service
          * 4. Return the value to the calling method
          */
 
-        
+
         private static IWebSocket socket;
-        private const int DefaultTimeout = 5000;
+        public const int LongTimeout = 5000;
+        public const int ShortTimeout = 250;
         private static List<int> SubscriptionIds = new List<int>();
 
         public static IWebSocket Socket
@@ -46,7 +47,7 @@ namespace DABApp.Service
             }
         }
 
-        private static async Task<bool> ConnectWebsocket(int TimeoutMilliseconds = DefaultTimeout)
+        private static async Task<bool> ConnectWebsocket(int TimeoutMilliseconds = LongTimeout)
         {
             //This routine will establish a connection to the websocket if not already established
             if (socket == null)
@@ -128,7 +129,7 @@ namespace DABApp.Service
             }
         }
 
-        private static async Task<bool> DisconnectWebsocket(int TimeoutMilliseconds = DefaultTimeout)
+        private static async Task<bool> DisconnectWebsocket(int TimeoutMilliseconds = LongTimeout)
         {
             //disconnects and resets the websocket
 
@@ -166,10 +167,11 @@ namespace DABApp.Service
              */
             string token = dbSettings.GetSetting("Token", "");
             if (token == "")
-            { 
+            {
                 //use the api token
                 return await InitializeConnection(GlobalResources.APIKey);
-            } else
+            }
+            else
             {
                 return await InitializeConnection(token);
             }
@@ -187,7 +189,7 @@ namespace DABApp.Service
             {
                 return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected); //websocket disconnected, no way to connect service;
             }
-        
+
             //set up the origin for the connection
             string origin;
             if (Device.RuntimePlatform == Device.Android)
@@ -212,6 +214,21 @@ namespace DABApp.Service
             var service = new DabServiceWaitService();
             var response = await service.WaitForServiceResponse(DabServiceWaitTypes.InitConnection); //smaller timeout in case we don't get ack.. move along
 
+            //set up appropriate subscriptions
+
+            //Generic subscriptions
+            var ql = await Service.DabService.AddSubscription(1, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
+            ql = await Service.DabService.AddSubscription(2, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
+
+            //logged in subscriptions
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                ql = await Service.DabService.AddSubscription(3, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
+                ql = await Service.DabService.AddSubscription(4, "subscription { tokenRemoved { token } }");
+                ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
+                ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
+            }
+
             //return the received response
             return response;
 
@@ -229,7 +246,7 @@ namespace DABApp.Service
                 string command;
 
                 //Unsubscribe from each subscription
-                foreach(int id in SubscriptionIds)
+                foreach (int id in SubscriptionIds)
                 {
                     command = $"{{\"type\":\"stop\",\"id\":\"{id}\",\"payload\":\"null\"}}";
                     socket.Send(command);
@@ -274,7 +291,7 @@ namespace DABApp.Service
 
             //Wait for appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription);
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription,ShortTimeout);
 
             //return the response
             return response;
