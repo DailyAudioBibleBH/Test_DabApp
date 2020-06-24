@@ -1,4 +1,5 @@
 ﻿using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
 using System;
@@ -62,21 +63,44 @@ namespace DABApp
 			}
 		}
 
-		void OnSignUp(object o, EventArgs e)
+		async void OnSignUp(object o, EventArgs e)
 		{
-			SignUp.IsEnabled = false;
 			if (SignUpValidation())
 			{
-				GlobalResources.WaitStart("Checking your credentials...");
-                string registerMutation = $"mutation {{registerUser(email: \"{Email.Text}\", firstName: \"{FirstName.Text}\", lastName: \"{LastName.Text}\", password: \"{Password.Text}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
-                var mRegister = new DabGraphQlPayload(registerMutation, variables);
-                DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
+				GlobalResources.WaitStart("Registering your account...");
+				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
+				if (ql.Success)
+                {
+					//switch to a connection with their token
+					string token = ql.Data.payload.data.registerUser.token;
+					dbSettings.StoreSetting("Token", token);
+					dbSettings.StoreSetting("TokenCreated", DateTime.Now.ToString()); ;
+					await DabService.TerminateConnection();
+					await DabService.InitializeConnection(token);
+					//get user profile information and update it.
+					ql = await Service.DabService.GetUserData();
+					if (ql.Success == true)
+					{
+						//process user profile information
+						var profile = ql.Data.payload.data.user;
+						dbSettings.StoreSetting("FirstName", profile.firstName);
+						dbSettings.StoreSetting("LastName", profile.lastName);
+						dbSettings.StoreSetting("Email", profile.email);
+						dbSettings.StoreSetting("Channel", profile.channel);
+						dbSettings.StoreSetting("Channels", profile.channels);
+						dbSettings.StoreSetting("Language", profile.language);
+						dbSettings.StoreSetting("Nickname", profile.nickname);
+						GuestStatus.Current.IsGuestLogin = false;
+					}
+					GlobalResources.WaitStop();
 
-				SignUp.IsEnabled = true;
-			}
-			else
-			{
-				SignUp.IsEnabled = true;
+					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+				}
+				else
+                {
+					GlobalResources.WaitStop();
+					await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}","OK");
+                }
 			}
 		}
 

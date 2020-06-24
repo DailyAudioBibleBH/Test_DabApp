@@ -61,6 +61,10 @@ namespace DABApp
                     await Navigation.PushAsync(new DabSignUpPage(Email.Text));
                 }
             }
+            else
+            {
+               await DisplayAlert("Error Occured", ql.ErrorMessage, "OK");
+            }
         }
 
         async void OnGuestLogin(object o, EventArgs e)

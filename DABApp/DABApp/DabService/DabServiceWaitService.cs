@@ -17,7 +17,8 @@ namespace DABApp.Service
         CheckEmail,
         LoginUser,
         GetUserProfile,
-        StartSubscription
+        StartSubscription,
+        RegisterUser
     }
 
     public class DabServiceWaitService
@@ -118,6 +119,7 @@ namespace DABApp.Service
                             {
                                 _qlObject = response;
                                 _waiting = false;
+                                break;
                             }
 
                             //error during login
@@ -129,6 +131,7 @@ namespace DABApp.Service
                                 {
                                     _error = loginError.message;
                                     _waiting = false;
+                                    break;
                                 }
                             }
                             break;
@@ -167,6 +170,30 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.CheckEmail:
                             //check email query finished
                             if (response?.payload?.data?.checkEmail != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                                break;
+                            }
+
+                            //error during check email
+                            if (response?.payload?.errors != null)
+                            {
+                                //Find the relevant error
+                                var error = response.payload.errors.FirstOrDefault();
+                                if (error != null)
+                                {
+                                    _error = error.message;
+                                    _waiting = false;
+                                    break;
+                                }
+
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.RegisterUser:
+                            //registration finished
+                            if (response?.payload?.data?.registerUser != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

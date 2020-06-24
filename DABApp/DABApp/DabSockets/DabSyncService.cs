@@ -683,53 +683,6 @@ namespace DABApp.DabSockets
                         //    popRequests = 1;
                     }
                 }
-                if (root?.payload?.data?.registerUser != null)
-                {
-                    try
-                    {
-                        var user = root.payload.data.registerUser;
-                        //Store the token
-                        dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                        if (sToken == null)
-                        {
-                            sToken = new dbSettings() { Key = "Token" };
-                        }
-                        sToken.Value = user.token;
-                        await adb.InsertOrReplaceAsync(sToken);
-
-                        //Update Token Life
-                        //ContentConfig.Instance.options.token_life = 5;
-                        dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                        if (sTokenCreationDate == null)
-                        {
-                            sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                        }
-                        sTokenCreationDate.Value = DateTime.Now.ToString();
-                        await adb.InsertOrReplaceAsync(sTokenCreationDate);
-
-                        //Reset the connection with the new token
-                        //DabSyncService.Instance.DisconnectGraphQl(true);
-                        var ql = Service.DabService.InitializeConnection(sToken.Value).Result;
-
-                        //Send a request for updated user data
-
-                        string jUser = $"query {{user{{wpId,firstName,lastName,email}}}}";
-                        var pLogin = new DabGraphQlPayload(jUser, new DabGraphQlVariables());
-                        DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
-                    }
-                    catch (Exception ex)
-                    {
-                        GlobalResources.WaitStop();
-                        Debug.WriteLine(ex.Message);
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            Application.Current.MainPage.DisplayAlert("System Error", "System error with login. Try again or restart application.", "Ok");
-                            Application.Current.MainPage.Navigation.PushAsync(new DabCheckEmailPage());
-                        });
-
-                    }
-                }
-
             }
             catch (Exception ex)
             {

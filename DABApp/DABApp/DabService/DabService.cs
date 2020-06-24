@@ -22,8 +22,8 @@ namespace DABApp.Service
 
 
         private static IWebSocket socket;
-        public const int LongTimeout = 5000;
-        public const int ShortTimeout = 250;
+        public const int LongTimeout = 10000; //timeout for calls we expect return values from
+        public const int ShortTimeout = 250; //timeout for quick calls or items we don't expect values from
         private static List<int> SubscriptionIds = new List<int>();
 
         //WEBSOCKET CONNECTION
@@ -320,10 +320,24 @@ namespace DABApp.Service
             return response;
         }
 
-        public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress)
+        public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress,string Password)
         {
             //TODO: Handle this messaging and wait for the correct response, and then update user properties
-            throw new NotImplementedException();
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send register mutation
+
+            string command = $"mutation {{registerUser(email: \"{EmailAddress}\", firstName: \"{FirstName}\", lastName: \"{LastName}\", password: \"{Password}\"){{ token }}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser);
+
+            //return the response
+            return response;
+
         }
 
         public static async Task<DabServiceWaitResponse> UpdateToken()
@@ -446,6 +460,15 @@ namespace DABApp.Service
 
             DabGraphQlRootObject ql = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
             DabGraphQlData data = ql?.payload?.data;
+
+            //capture service-wide issues
+            if (ql.type == "connection_error")
+            {
+                if (ql.payload?.message == "Your token is not valid.")
+                {
+                    //TODO: Reset the app and start over.
+                }
+            }
 
             //exit the method if nothing to process
             if (data == null)
