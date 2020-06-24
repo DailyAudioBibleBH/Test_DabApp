@@ -270,6 +270,9 @@ namespace DABApp.Service
             //remove all subscriptions
             SubscriptionIds.Clear();
 
+            //terminate the websocket, if needed
+            await DisconnectWebsocket();
+
             return true;
         }
 
