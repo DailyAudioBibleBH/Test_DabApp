@@ -18,7 +18,8 @@ namespace DABApp.Service
         LoginUser,
         GetUserProfile,
         StartSubscription,
-        RegisterUser
+        RegisterUser,
+        UpdateToken
     }
 
     public class DabServiceWaitService
@@ -194,6 +195,15 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.RegisterUser:
                             //registration finished
                             if (response?.payload?.data?.registerUser != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.UpdateToken:
+                            //update token finished
+                            if (response?.payload.data?.updateToken != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

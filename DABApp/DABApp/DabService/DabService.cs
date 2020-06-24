@@ -322,11 +322,9 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponse> RegisterUser(string FirstName, string LastName, string EmailAddress,string Password)
         {
-            //TODO: Handle this messaging and wait for the correct response, and then update user properties
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send register mutation
-
             string command = $"mutation {{registerUser(email: \"{EmailAddress}\", firstName: \"{FirstName}\", lastName: \"{LastName}\", password: \"{Password}\"){{ token }}}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
@@ -342,8 +340,22 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponse> UpdateToken()
         {
-            //TODO: Update a user 's token
-            throw new NotImplementedException();
+            //update a users's token
+
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //send update token mutation
+            var command = "mutation { updateToken(version: 1) { token } }";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdateToken);
+
+            //return the response
+            return response;
+
         }
 
         public static async Task<DabServiceWaitResponse> ResetPassword()

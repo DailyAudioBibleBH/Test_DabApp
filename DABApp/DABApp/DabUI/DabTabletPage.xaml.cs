@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -722,19 +723,23 @@ namespace DABApp
 
                     SetVisibility(true); //Adjust visibility of controls
                 }
-                else if (!AuthenticationAPI.CheckToken())
+                else if (!AuthenticationAPI.IsTokenStillValid())
                 {
                     if (GlobalResources.Instance.IsLoggedIn)
                     {
-                        //Episodes may be null because websocket is denying because of bad token
-                        //Send request for new token
-                        if (DabSyncService.Instance.IsConnected)
+                        if (DabService.IsConnected)
                         {
-                            DabGraphQlVariables variables = new DabGraphQlVariables();
-                            var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                            var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                            var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                            DabSyncService.Instance.Send(tokenJsonIn);
+                            if (AuthenticationAPI.IsTokenStillValid() == false)
+                            {
+                                //TODO: Make sure this gets awaited.
+                                var ql = DabService.UpdateToken().Result;
+                                if (ql.Success)
+                                {
+                                    //token was updated successfully
+                                    dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
+                                    dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+                                }
+                            }
                         }
                     }
                 }

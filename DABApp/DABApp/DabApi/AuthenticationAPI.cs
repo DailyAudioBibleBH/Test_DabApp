@@ -36,109 +36,22 @@ namespace DABApp
 
         }
 
-        //public static async Task<string> ValidateLogin(string email, string password, bool IsGuest = false)//Asyncronously logs the user in used if the user is logging in as a guest as well.
-        //{
-        //    try
-        //    {
-        //        dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-        //        dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-        //        dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-        //        dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-        //        dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-        //        dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
-        //        if (IsGuest)//Setting database settings for guest login
-        //        {
-        //            if (EmailSettings == null)
-        //            {
-        //                APIToken Empty = new APIToken();
-        //                Empty.user_avatar = "";
-        //                Empty.user_email = "Guest";
-        //                Empty.user_first_name = "";
-        //                Empty.user_last_name = "";
-        //                Empty.value = "";
-        //                Empty.expires = DateTime.Now.ToString();
-        //                CreateSettings(Empty);
-        //            }
-        //            else
-        //            {
-        //                if (TokenSettings != null) TokenSettings.Value = "";
-        //                if (EmailSettings != null) EmailSettings.Value = "Guest";
-        //                if (CreationSettings != null) CreationSettings.Value = DateTime.Now.ToString();
-        //                if (FirstNameSettings != null) FirstNameSettings.Value = "";
-        //                if (LastNameSettings != null) LastNameSettings.Value = "";
-        //                if (AvatarSettings != null) AvatarSettings.Value = "";
-        //                IEnumerable<dbSettings> settings = Enumerable.Empty<dbSettings>();
-        //                settings = new dbSettings[] { TokenSettings, CreationSettings, EmailSettings, FirstNameSettings, LastNameSettings, AvatarSettings };
-        //                await adb.UpdateAllAsync(settings);
-        //            }
-        //            return "IsGuest";
-        //        }
-        //        else
-        //        {
-        //            //Initiate log in with web socket
-        //            /*
-        //              mutation {
-        //              loginUser(email: "djtest@lutd.io", password: "asdfasdf", version: 1) {token}}
-        //             */
-
-        //            string jLogin = $"mutation {{loginUser(email: \"{email}\", password: \"{password}\", version: 1) {{token}}}}";
-        //            var pLogin = new DabGraphQlPayload(jLogin, variables);
-        //            DabSyncService.Instance.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", pLogin)));
-        //            return "Request Sent"; //Let the caller know we're waitin gfor a reply from GraphQL.
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e.GetType() == typeof(HttpRequestException))
-        //        {
-        //            if (!CrossConnectivity.Current.IsConnected)
-        //            {
-        //                return $"Your device is currently not connected to the internet.  If you would like to continue please log in as a guest and log in when you have an internet connection.";
-        //            }
-        //            else return $"An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again.  Exception: {e.Message}";
-        //        }
-        //        else return e.Message;
-        //    }
-        //}
-
-        public static bool CheckTokenOnAppStart()//Checking API given token which determines if user can be brought to channels page on login
+        public static bool IsTokenStillValid() 
         {
+            /* this method checks to see if the user's token needs to be renewed
+             */
             try
             {
 
-                var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                var creation = DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
                 int days = ContentConfig.Instance.options.token_life;
-                if (creation == null || creation.Value == null)
+#if DEBUG
+                days = -1; //always renew in debug mode
+#endif
+                if (DateTime.Now > creation.AddDays(days))
                 {
                     return false;
                 }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-        }
-
-        public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
-        {
-            try
-            {
-
-                var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                int days = ContentConfig.Instance.options.token_life;
-                if (creation == null || creation.Value == null)
-                {
-                    return false;
-                }
-                DateTime creationDate = DateTime.Parse(creation.Value);
-                if (DateTime.Now > creationDate.AddDays(days))
-                {
-                    return false;
-                }
-
                 return true;
             }
             catch (Exception ex)

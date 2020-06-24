@@ -121,52 +121,7 @@ namespace DABApp.DabSockets
                     //turn off any lingering wait indicators to allow them to continue trying.
                     GlobalResources.WaitStop(); //Stop the wait indicator... something went wrong, hopefully they can work around it or try again.
 
-                    if (root?.payload?.errors?.First().message == "Not authorized.")
-                    {
-                        //Token
-                        dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                        if (s != null) await adb.DeleteAsync(s);
 
-                        //TokenCreation
-                        s = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                        if (s != null) await adb.DeleteAsync(s);
-
-                        DabGraphQlVariables variables = new DabGraphQlVariables();
-                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                        DabSyncService.Instance.Send(tokenJsonIn);
-                        GlobalResources.WaitStop();
-                        Device.BeginInvokeOnMainThread(() => { Application.Current.MainPage.DisplayAlert("Token Error", "We're updating your session token. Please try signing up again.", "OK"); ; });
-                    }
-                    //else if (root?.payload?.errors?.First() != null)
-                    //{
-                    //    if (GraphQlLoginRequestInProgress == true)
-                    //    {
-                    //        GlobalResources.WaitStop();
-                    //        //We have a login error!
-                    //        MainThread.BeginInvokeOnMainThread(() =>
-                    //        {
-                    //            Application.Current.MainPage.DisplayAlert("Login Error", root.payload.errors.First().message, "OK");
-
-                    //        });
-                    //        GraphQlLoginRequestInProgress = false;
-                    //    }
-                    //    else
-                    //    {
-                    //        GlobalResources.WaitStop();
-                    //        //We have an error!
-                    //        MainThread.BeginInvokeOnMainThread(() =>
-                    //        {
-                    //            Application.Current.MainPage.DisplayAlert("Error", root.payload.errors.First().message, "OK");
-                    //        });
-                    //    }
-                    //}
-                    else
-                    {
-                        //Some other GraphQL message we don't care about here.
-
-                    }
 
                     foreach (var er in root.payload.errors)
                     {
@@ -430,30 +385,7 @@ namespace DABApp.DabSockets
 
                     GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
                 }
-                else if (root.payload?.data?.updateToken?.token != null)
-                {
-                    //Update Token
-                    dbSettings sToken = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                    if (sToken == null)
-                    {
-                        sToken = new dbSettings() { Key = "Token" };
-                    }
-                    sToken.Value = root.payload.data.updateToken.token;
-                    await adb.UpdateAsync(sToken);
-
-                    //Update Token Life
-                    dbSettings sTokenCreationDate = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                    if (sTokenCreationDate == null)
-                    {
-                        sTokenCreationDate = new dbSettings() { Key = "TokenCreation" };
-                    }
-                    sTokenCreationDate.Value = DateTime.Now.ToString();
-                    await adb.InsertOrReplaceAsync(sTokenCreationDate);
-
-                    Instance.DisconnectGraphQl(true);
-
-                    var ql = Service.DabService.InitializeConnection(root.payload.data.updateToken.token).Result;
-                }
+               
                 // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
                 {

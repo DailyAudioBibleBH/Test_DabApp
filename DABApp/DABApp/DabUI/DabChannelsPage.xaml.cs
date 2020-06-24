@@ -13,6 +13,7 @@ using SQLite;
 using Rg.Plugins.Popup.Services;
 using DABApp.DabUI;
 using Plugin.Connectivity;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -169,26 +170,27 @@ namespace DABApp
             }
         }
 
-        void TimedActions()
+        async void TimedActions()
         {
             if (GlobalResources.Instance.IsLoggedIn)
             {
-                //update token if needed
-                if (!AuthenticationAPI.CheckToken())
+                if (DabService.IsConnected)
                 {
-                    //Send request for new token
-                    if (DabSyncService.Instance.IsConnected)
+                    if (AuthenticationAPI.IsTokenStillValid() == false)
                     {
-                        DabGraphQlVariables variables = new DabGraphQlVariables();
-                        var exchangeTokenQuery = "mutation { updateToken(version: 1) { token } }";
-                        var exchangeTokenPayload = new DabGraphQlPayload(exchangeTokenQuery, variables);
-                        var tokenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", exchangeTokenPayload));
-                        DabSyncService.Instance.Send(tokenJsonIn);
+                        var ql = await DabService.UpdateToken();
+                        if (ql.Success)
+                        {
+                            //token was updated successfully
+                            dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
+                            dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()) ;
+                        }
                     }
                 }
 
+
                 //post actions logs
-                Task.Run(async () =>
+                await Task.Run(async () =>
                 {
                     await AuthenticationAPI.PostActionLogs(false);
                     await AuthenticationAPI.GetMemberData();
@@ -197,7 +199,7 @@ namespace DABApp
             }
 
             //Download new episodes
-            Task.Run(async () =>
+            await Task.Run(async () =>
             {
                 await PlayerFeedAPI.DownloadEpisodes();
             });
