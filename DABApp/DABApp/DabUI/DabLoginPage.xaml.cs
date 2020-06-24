@@ -1,4 +1,5 @@
-﻿using DABApp.DabSockets;
+﻿using DABApp.DabService;
+using DABApp.DabSockets;
 using DABApp.Interfaces;
 using Newtonsoft.Json;
 using SQLite;
@@ -51,7 +52,7 @@ namespace DABApp
                 Logo.WidthRequest = 250;
                 Logo.Aspect = Aspect.AspectFit;
             }
-            
+
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
@@ -85,7 +86,7 @@ namespace DABApp
                 Logo.WidthRequest = 250;
                 Logo.Aspect = Aspect.AspectFit;
             }
-            
+
             if (Device.Idiom == TargetIdiom.Tablet)
             {
                 Container.Padding = 100;
@@ -118,7 +119,7 @@ namespace DABApp
                     try
                     {
                         var root = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
-                        
+
                         if (root?.payload?.data?.user != null)
                         {
                             //We got back user data!
@@ -221,7 +222,7 @@ namespace DABApp
             //log the user in and push up channels page upon success.
 
             GlobalResources.WaitStart("Checking your credentials...");
-            var result = await GraphQlFunctions.LoginUser(Email.Text.Trim(), Password.Text);
+            var result = await DabServiceFunctions.LoginUser(Email.Text.Trim(), Password.Text);
             GlobalResources.WaitStop();
 
             if (result.Success == true) //Successful Login
@@ -232,7 +233,7 @@ namespace DABApp
                 await Navigation.PushAsync(new DabChannelsPage());
 
                 //get user profile information and update it.
-                result = await GraphQlFunctions.GetUserData(result.Data.payload.data.loginUser.token);
+                result = await DabServiceFunctions.GetUserData(result.Data.payload.data.loginUser.token);
                 if (result.Success == true)
                 {
                     //process user profile information
@@ -243,10 +244,11 @@ namespace DABApp
                 }
 
 
-            } else
+            }
+            else
             {
                 //alert user that login failed
-                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {result.ErrorMessage}","OK");
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {result.ErrorMessage}", "OK");
             }
 
         }

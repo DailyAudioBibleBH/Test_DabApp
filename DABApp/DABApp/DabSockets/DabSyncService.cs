@@ -13,6 +13,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using System.Security.Cryptography;
 using System.Text;
+using DABApp.DabService;
 
 namespace DABApp.DabSockets
 {
@@ -451,7 +452,7 @@ namespace DABApp.DabSockets
 
                     Instance.DisconnectGraphQl(true);
 
-                    var ql = GraphQlFunctions.InitializeConnection(root.payload.data.updateToken.token).Result;
+                    var ql = DabServiceFunctions.InitializeConnection(root.payload.data.updateToken.token).Result;
                 }
                 // check for changed in badges
                 else if (root.payload?.data?.updatedBadges != null)
@@ -708,7 +709,7 @@ namespace DABApp.DabSockets
 
                         //Reset the connection with the new token
                         //DabSyncService.Instance.DisconnectGraphQl(true);
-                        var ql = GraphQlFunctions.InitializeConnection(sToken.Value).Result;
+                        var ql = DabServiceFunctions.InitializeConnection(sToken.Value).Result;
 
                         //Send a request for updated user data
 
@@ -1017,7 +1018,7 @@ namespace DABApp.DabSockets
             }
 
             //Init the GraphQL connection
-            var ql = await GraphQlFunctions.InitializeConnection(token);
+            var ql = await DabServiceFunctions.InitializeConnection(token);
 
             if (ql.Success) //only set up subscriptions and queries if we established a connection.
             {
@@ -1025,10 +1026,10 @@ namespace DABApp.DabSockets
                 if (GuestStatus.Current.IsGuestLogin == false && GlobalResources.Instance.IsLoggedIn)
                 {
 
-                    ql = await GraphQlFunctions.AddSubscription(1, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
-                    ql = await GraphQlFunctions.AddSubscription(2, "subscription { tokenRemoved { token } }");
-                    ql = await GraphQlFunctions.AddSubscription(3, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
-                    ql = await GraphQlFunctions.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
+                    ql = await DabServiceFunctions.AddSubscription(1, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
+                    ql = await DabServiceFunctions.AddSubscription(2, "subscription { tokenRemoved { token } }");
+                    ql = await DabServiceFunctions.AddSubscription(3, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
+                    ql = await DabServiceFunctions.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
 
                     //QUERY - RECENT PROGRESS
                     var badgeProgressQuery = "query { updatedProgress(date: \"" + GlobalResources.BadgeProgressUpdatesDate.ToString("o") + "Z\") { edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
@@ -1041,8 +1042,8 @@ namespace DABApp.DabSockets
                 }
 
                 //Generic subscriptions
-                ql = await GraphQlFunctions.AddSubscription(4, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
-                ql = await GraphQlFunctions.AddSubscription(5, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
+                ql = await DabServiceFunctions.AddSubscription(4, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
+                ql = await DabServiceFunctions.AddSubscription(5, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
 
 
                 //QUERY - CHANNELS

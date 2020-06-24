@@ -1,7 +1,9 @@
 ﻿using System;
-namespace DABApp.DabSockets
+using DABApp.DabSockets;
+
+namespace DABApp.DabService
 {
-    public enum GraphQlErrorResponses
+    public enum DabServiceErrorResponses
     {
         TimeoutOccured,
         UnknownErrorOccurred,
@@ -9,7 +11,7 @@ namespace DABApp.DabSockets
         CustomError
     }
 
-    public class GraphQlWaitResponse
+    public class DabServiceWaitResponse
     {
 
         public bool Success = false; //true = successful response - false = something didn't go as expected
@@ -17,14 +19,14 @@ namespace DABApp.DabSockets
         public DabGraphQlRootObject Data = null; //the graphql object that is to be used on success
 
 
-        public GraphQlWaitResponse()
+        public DabServiceWaitResponse()
         {
             /* 
              * generic constructor
              */
         }
 
-        public GraphQlWaitResponse(DabGraphQlRootObject GraphQlData)
+        public DabServiceWaitResponse(DabGraphQlRootObject GraphQlData)
         {
             /* 
              * constructor with a success result (includes GraphQL data)
@@ -34,7 +36,7 @@ namespace DABApp.DabSockets
             ErrorMessage = "";
         }
 
-        public GraphQlWaitResponse(GraphQlErrorResponses ErrorType, string CustomErrorMessage = "")
+        public DabServiceWaitResponse(DabServiceErrorResponses ErrorType, string CustomErrorMessage = "")
         {
             /*
              * constructor with error messages built in
@@ -42,28 +44,28 @@ namespace DABApp.DabSockets
 
             switch (ErrorType)
             {
-                case GraphQlErrorResponses.Disconnected:
+                case DabServiceErrorResponses.Disconnected:
                     //graphql is not connected
                     Data = null;
                     ErrorMessage = "The Daily Audio Bible service is currently unavailable.";
                     Success = false;
                     break;
 
-                case GraphQlErrorResponses.TimeoutOccured:
+                case DabServiceErrorResponses.TimeoutOccured:
                     //timeout expired
                     Data = null;
                     ErrorMessage = "Timeout occured while waiting for a response.";
                     Success = false;
                     break;
 
-                case GraphQlErrorResponses.UnknownErrorOccurred:
+                case DabServiceErrorResponses.UnknownErrorOccurred:
                     //unknown error occured
                     Success = false;
                     Data = null;
                     ErrorMessage = "Unknown error occured.";
                     break;
 
-                case GraphQlErrorResponses.CustomError: //handled by default error handler also.
+                case DabServiceErrorResponses.CustomError: //handled by default error handler also.
                 default:
                     //custom / generic error message
                     Success = false;

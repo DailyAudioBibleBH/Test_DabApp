@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
 using Newtonsoft.Json;
 
-namespace DABApp.DabSockets
+namespace DABApp.DabService
 {
 
-    public enum GraphQlWaitTypes
+    public enum DabServiceWaitTypes
     {
         /* This enum contains the list of various methods that can be waited on.
          * Each of these items will have a switch/case section in the listener on the websocket
@@ -19,7 +20,7 @@ namespace DABApp.DabSockets
         StartSubscription
     }
 
-    public class GraphQlWaitService
+    public class DabServiceWaitService
     {
         /* This service class connects itself to listen to specific types of messages on the websocket.
          * When a message is received that cooresponds to the type of method being listened for, a response
@@ -28,17 +29,17 @@ namespace DABApp.DabSockets
          * message along with a timeout error.
          */
 
-        GraphQlWaitTypes _waitType; //type of wait being performed
+        DabServiceWaitTypes _waitType; //type of wait being performed
         string _error = ""; //friendly error message to return
         DabGraphQlRootObject _qlObject = null; //starts null
         bool _waiting = true; //start off true, will set to false once ready
 
-        public GraphQlWaitService()
+        public DabServiceWaitService()
         {
             //no constructor needed
         }
 
-        public async Task<GraphQlWaitResponse> WaitForGraphQlObject(GraphQlWaitTypes WaitType, int TimeoutMilliseconds = 20000)
+        public async Task<DabServiceWaitResponse> WaitForServiceResponse(DabServiceWaitTypes WaitType, int TimeoutMilliseconds = 20000)
         {
             /* this method listens-loops-returns the value to the calling app as a task.
              * it should be awaited in the calling method unless it is an intentional fire-and-forget
@@ -64,26 +65,26 @@ namespace DABApp.DabSockets
             DabSyncService.Instance.DabGraphQlMessage -= Instance_DabGraphQlMessage;
 
             //Return the appropriate response
-            GraphQlWaitResponse result; //result to be returned
+            DabServiceWaitResponse result; //result to be returned
 
             if (_qlObject != null) //result found
             {
-                result = new GraphQlWaitResponse(_qlObject);
+                result = new DabServiceWaitResponse(_qlObject);
             }
 
             else if (_qlObject == null && _error == "") //timeout expired
             {
-                result = new GraphQlWaitResponse(GraphQlErrorResponses.TimeoutOccured);
+                result = new DabServiceWaitResponse(DabServiceErrorResponses.TimeoutOccured);
             }
 
             else if (_error != "") //error received
             {
-                result = new GraphQlWaitResponse(GraphQlErrorResponses.CustomError, _error);
+                result = new DabServiceWaitResponse(DabServiceErrorResponses.CustomError, _error);
             }
 
             else //other unexpected result
             {
-                result = new GraphQlWaitResponse(GraphQlErrorResponses.UnknownErrorOccurred);
+                result = new DabServiceWaitResponse(DabServiceErrorResponses.UnknownErrorOccurred);
             }
 
             return result;
@@ -105,7 +106,7 @@ namespace DABApp.DabSockets
                     switch (_waitType) //one of the enum values
                     {
                         //Login Processor Messages
-                        case GraphQlWaitTypes.LoginUser:
+                        case DabServiceWaitTypes.LoginUser:
                             //successful login
                             if (response?.payload?.data?.loginUser != null)
                             {
@@ -126,7 +127,7 @@ namespace DABApp.DabSockets
                             }
                             break;
 
-                        case GraphQlWaitTypes.GetUserProfile:
+                        case DabServiceWaitTypes.GetUserProfile:
                             //successful user profile reception
                             if (response?.payload?.data?.user != null)
                             {
@@ -135,7 +136,7 @@ namespace DABApp.DabSockets
                             }
                             break;
 
-                        case GraphQlWaitTypes.InitConnection:
+                        case DabServiceWaitTypes.InitConnection:
                             //successful connection
                             if (response?.type == "connection_ack")
                             {
@@ -148,7 +149,7 @@ namespace DABApp.DabSockets
                             //ignore this response, it's not relevant.
                             break;
 
-                        case GraphQlWaitTypes.StartSubscription:
+                        case DabServiceWaitTypes.StartSubscription:
                             //successful subscription
                             if (response.type=="complete")
                             {
@@ -157,7 +158,7 @@ namespace DABApp.DabSockets
                             }
                             break;
 
-                        case GraphQlWaitTypes.CheckEmail:
+                        case DabServiceWaitTypes.CheckEmail:
                             //check email query finished
                             if (response?.payload?.data?.checkEmail != null)
                             {

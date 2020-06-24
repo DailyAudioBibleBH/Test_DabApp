@@ -1,4 +1,5 @@
-﻿using DABApp.DabSockets;
+﻿using DABApp.DabService;
+using DABApp.DabSockets;
 using DABApp.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace DABApp
             /* Handles when they click next to continue with an email address
              */
             GlobalResources.WaitStart();
-            var ql = await GraphQlFunctions.CheckEmail(Email.Text.Trim());
+            var ql = await DabServiceFunctions.CheckEmail(Email.Text.Trim());
             GlobalResources.WaitStop();
             if (ql.Success)
             {
