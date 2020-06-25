@@ -373,21 +373,8 @@ namespace DABApp
             get
             {
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
-                dbSettings LastActionsSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-
-                if (LastActionsSettings == null)
-                {
-                    DateTime actionDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    LastActionsSettings = new dbSettings();
-                    LastActionsSettings.Key = settingsKey;
-                    LastActionsSettings.Value = actionDate.ToString();
-                    var x = adb.InsertOrReplaceAsync(LastActionsSettings).Result;
-                    return actionDate;
-                }
-                else
-                {
-                    return DateTime.Parse(LastActionsSettings.Value);
-                }
+                DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
+                return LastActionDate;
             }
 
             set
@@ -395,10 +382,7 @@ namespace DABApp
                 //Store the value sent in the database
                 string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
                 string actionDate = value.ToString();
-                dbSettings LastActionsSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-                if (LastActionsSettings == null) LastActionsSettings = new dbSettings() { Key = settingsKey };
-                LastActionsSettings.Value = actionDate;
-                var x = adb.InsertOrReplaceAsync(LastActionsSettings).Result;
+                dbSettings.StoreSetting(settingsKey, actionDate);
             }
         }
 

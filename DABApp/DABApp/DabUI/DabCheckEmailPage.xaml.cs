@@ -63,7 +63,15 @@ namespace DABApp
             }
             else
             {
-               await DisplayAlert("Error Occured", ql.ErrorMessage, "OK");
+               var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
+                if (reconnect == true)
+                {
+                    GlobalResources.WaitStart("Retrying...");
+                    await DabService.InitializeConnection();
+                    OnNext(o, e);
+                    GlobalResources.WaitStop();
+                }
+                
             }
         }
 

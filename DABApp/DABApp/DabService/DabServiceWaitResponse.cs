@@ -9,7 +9,8 @@ namespace DABApp.Service
         TimeoutOccured,
         UnknownErrorOccurred,
         Disconnected,
-        CustomError
+        CustomError,
+        None
     }
 
     public class DabServiceWaitResponseList
@@ -37,6 +38,7 @@ namespace DABApp.Service
 
         public bool Success = false; //true = successful response - false = something didn't go as expected
         public string ErrorMessage = ""; //custom error emssage if success is false
+        public DabServiceErrorResponses ErrorType = DabServiceErrorResponses.None; //type of error, if there is one
         public DabGraphQlRootObject Data = null; //the graphql object that is to be used on success
 
 
@@ -55,6 +57,7 @@ namespace DABApp.Service
             Data = GraphQlData;
             Success = true;
             ErrorMessage = "";
+            ErrorType = DabServiceErrorResponses.None;
         }
 
         public DabServiceWaitResponse(DabServiceErrorResponses ErrorType, string CustomErrorMessage = "")
@@ -62,6 +65,8 @@ namespace DABApp.Service
             /*
              * constructor with error messages built in
              */
+
+            this.ErrorType = ErrorType;
 
             switch (ErrorType)
             {

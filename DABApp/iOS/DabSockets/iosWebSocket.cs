@@ -116,6 +116,7 @@ namespace DABApp.iOS.DabSockets
         {
             Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);
+
         }
 
 

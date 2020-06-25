@@ -68,6 +68,7 @@ namespace DABApp.Service
                 socket.Init(uri);
 
                 //Connect the socket
+                Debug.WriteLine($"Connecting websocket to {uri}...");
                 socket.Connect();
 
                 //Wait for the socket to connect
@@ -113,8 +114,6 @@ namespace DABApp.Service
                     }
                 }
             }
-            //clear the socket reference to reset it completely
-            socket = null;
 
             return true;
 
@@ -485,6 +484,8 @@ namespace DABApp.Service
         {
             //this routine gets episodes for a channel
             //it returns a list of ql objects
+
+            MessagingCenter.Send("dabapp", "traffic");
 
             //check for a connecting before proceeding
             if (!IsConnected)
