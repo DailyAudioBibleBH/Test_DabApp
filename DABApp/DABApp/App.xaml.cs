@@ -63,15 +63,14 @@ namespace DABApp
             try
             {
 
-                //reconnect the websocket
+                //reconnect to service
                 var ql = await DabService.InitializeConnection();
+
                 if (ql.Success)
                 {
+                    //perform post-connection operations with service
                     await DabServiceRoutines.RunConnectionEstablishedRoutines();
                 }
-
-               
-                DabSyncService.Instance.ConnectWebsocket();
 
 
                 if (GlobalResources.playerPodcast != null)
