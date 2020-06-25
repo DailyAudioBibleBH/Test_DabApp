@@ -22,7 +22,8 @@ namespace DABApp.Service
         UpdateToken,
         ResetPassword,
         ChangePassword,
-        SaveUserProfile
+        SaveUserProfile,
+        GetActions
     }
 
     public class DabServiceWaitService
@@ -249,6 +250,15 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.SaveUserProfile:
                             //user profile saved
                             if (response?.payload?.data?.updateUserFields != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.GetActions:
+                            //actions received
+                            if (response?.payload?.data?.lastActions != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

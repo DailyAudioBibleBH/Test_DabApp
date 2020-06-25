@@ -221,13 +221,20 @@ namespace DABApp.Service
             var ql = await Service.DabService.AddSubscription(1, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
             ql = await Service.DabService.AddSubscription(2, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
 
-            //logged in subscriptions
+            //logged in steps
             if (GuestStatus.Current.IsGuestLogin == false)
             {
+                //subscriptions
                 ql = await Service.DabService.AddSubscription(3, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
                 ql = await Service.DabService.AddSubscription(4, "subscription { tokenRemoved { token } }");
                 ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
                 ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
+
+                //last actions (list of results)
+                var actions = await DabService.GetActions(GlobalResources.LastActionDate);
+                Debug.WriteLine(JsonConvert.SerializeObject(actions));
+
+
             }
 
             //return the received response
@@ -475,12 +482,94 @@ namespace DABApp.Service
             throw new NotImplementedException();
         }
 
-        public static async Task<DabServiceWaitResponse> GetActions(DateTime StartDate)
+        public static async Task<DabServiceWaitResponseList> GetActions(DateTime StartDateGmt)
         {
-            //TODO: get last actions since a date.
-            //TODO: this procedure needs to handle the looping necessary and may need more arguments
-            throw new NotImplementedException();
+            /*
+             * this routine gets actions since a given date (GMT)
+             * note that this routine is different as it returns a LIST of responses as it builds all actions together
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMoreActions = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMoreActions == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = $"{{lastActions(date: \"{StartDateGmt.ToString("o")}Z\") {{ edges {{ id episodeId userId favorite listen position entryDate updatedAt createdAt }} pageInfo {{ hasNextPage endCursor }} }} }} ";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = $"{{lastActions(date: \"{StartDateGmt.ToString("o")}Z\", cursor: \"{cursor }\") {{ edges {{ id episodeId userId favorite listen position entryDate updatedAt createdAt }} pageInfo {{ hasNextPage endCursor }} }} }}";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetActions);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.lastActions;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMoreActions = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
         }
+
+
+
+
 
         //BADGES AND PROGRESS
 

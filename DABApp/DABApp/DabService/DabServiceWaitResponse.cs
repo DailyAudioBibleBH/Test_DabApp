@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DABApp.DabSockets;
 
 namespace DABApp.Service
@@ -9,6 +10,26 @@ namespace DABApp.Service
         UnknownErrorOccurred,
         Disconnected,
         CustomError
+    }
+
+    public class DabServiceWaitResponseList
+    {
+        /* This result type is similar to a normal WaitResponse except
+         * it contains a list of GraphQL data instead of only 1
+         */
+
+        public bool Success = false;
+        public string ErrorMessage = "";
+        public List<DabGraphQlRootObject> Data = new List<DabGraphQlRootObject>();
+
+
+        public DabServiceWaitResponseList()
+        {
+            //generic constructur
+        }
+
+
+
     }
 
     public class DabServiceWaitResponse
