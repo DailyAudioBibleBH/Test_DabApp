@@ -6,6 +6,7 @@
 			<local:HtmlLabel Text="{Binding appInfo}"/>
 			<Label x:Name="VersionNumber"/>
 			<Button x:Name="ResetActions" Text="Reset Local User Data" Clicked="Button_Clicked"/>
+			<Label x:Name="lblStats" VerticalOptions="EndAndExpand" FontFamily="monospace" FontSize="Micro"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
