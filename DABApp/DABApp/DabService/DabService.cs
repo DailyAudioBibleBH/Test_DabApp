@@ -622,6 +622,15 @@ namespace DABApp.Service
                 }
             }
 
+            if (ql.type=="ka")
+            {
+                //keepalive message
+                HandleKeepAlive();
+                //don't do anything else
+                return;
+            }
+
+
             //exit the method if nothing to process
             if (data == null)
             {
@@ -734,6 +743,15 @@ namespace DABApp.Service
 
             Debug.WriteLine($"INVALIDTOKEN");
             throw new NotImplementedException();
+        }
+
+        private static async void HandleKeepAlive()
+        {
+            /* 
+             * Handle a basic keep-alive message
+             */
+
+            await DabServiceRoutines.NotifyOnConnectionKeepAlive();
         }
 
     }

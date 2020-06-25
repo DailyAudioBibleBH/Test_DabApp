@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace DABApp.Service
 {
@@ -10,6 +11,8 @@ namespace DABApp.Service
          * Methods in this class may interact with the database, take UI elements as arguments to update, or send messages.
          * It is important to leave DabService class focused on GraphQL interaction only.
          */
+
+        //CONNECTION ROUTINES
 
         public static async Task<bool> RunConnectionEstablishedRoutines()
         {
@@ -25,7 +28,7 @@ namespace DABApp.Service
                 //TODO: get recent badges
 
                 //logged in user routines
-                if (! GuestStatus.Current.IsGuestLogin)
+                if (!GuestStatus.Current.IsGuestLogin)
                 {
 
                     //get user profile information and update it.
@@ -58,6 +61,81 @@ namespace DABApp.Service
             }
         }
 
+        public static async Task<bool> NotifyOnConnectionKeepAlive()
+        {
+            //Keepalive message received - let the UI do something about it
+            MessagingCenter.Send("dabapp", "traffic");
+            return true;
+        }
+
+        //AUTHENTICATION ROUTINES
+
+        public static async Task<bool> CheckAndUpdateToken()
+        {
+            /* this method checks to see if the user's token needs to be renewed
+            */
+            try
+            {
+
+                if (GuestStatus.Current.IsGuestLogin == false)
+                {
+
+                    if (DabService.IsConnected)
+                    {
+
+                        bool needsUpdate = false; //track if we need to update the token
+                        try
+                        {
+                            //get the expiration date
+                            var creation = DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
+                            int days = ContentConfig.Instance.options.token_life;
+                            if (DateTime.Now > creation.AddDays(days))
+                            {
+                                needsUpdate = true; //token needs to be udpated
+                            }
+                            else
+                            {
+                                needsUpdate = false; // no update needed, it's still good
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            needsUpdate = true; //something went wrong - try to update
+                        }
+
+                        if (needsUpdate)
+                        {
+                            //update the token
+                            var ql = await DabService.UpdateToken();
+                            if (ql.Success)
+                            {
+                                //token was updated successfully
+                                dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
+                                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+
+                                //reset the connection using the new token
+                                await DabService.TerminateConnection();
+                                ql = await DabService.InitializeConnection();
+                            }
+                        }
+                    }
+                    return true; //token updated or didn't need updated
+                }
+                else
+                {
+                    return true; //nothing needed for guest
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+
+        //ACTION ROUTINES
+
         public static async Task<bool> GetRecentActions()
         {
             /*
@@ -67,32 +145,38 @@ namespace DABApp.Service
 
             try
             {
-
-                //wait
-                GlobalResources.WaitStart("Getting your recent activity...");
-
-                //get last actions
-                var qlList = await DabService.GetActions(GlobalResources.LastActionDate);
-                if (qlList.Success == true) //ignore failures here
+                if (GuestStatus.Current.IsGuestLogin == false)
                 {
-                    //process all of the ql lists
-                    foreach (var ql in qlList.Data)
+
+                    if (DabService.IsConnected)
                     {
-                        var actions = ql.payload.data.lastActions.edges;
-                        //process each list of actions within each item in the list
-                        foreach (var action in actions)
+
+                        //wait
+                        GlobalResources.WaitStart("Getting your recent activity...");
+
+                        //get last actions
+                        var qlList = await DabService.GetActions(GlobalResources.LastActionDate);
+                        if (qlList.Success == true) //ignore failures here
                         {
-                            //update episode properties
-                            await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position);
+                            //process all of the ql lists
+                            foreach (var ql in qlList.Data)
+                            {
+                                var actions = ql.payload.data.lastActions.edges;
+                                //process each list of actions within each item in the list
+                                foreach (var action in actions)
+                                {
+                                    //update episode properties
+                                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position);
+                                }
+                            }
+                            //store a new last action date
+                            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                         }
+
+                        //stop the wait indicator
+                        GlobalResources.WaitStop();
                     }
-                    //store a new last action date
-                    GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                 }
-
-                //stop the wait indicator
-                GlobalResources.WaitStop();
-
                 return true;
 
             }
@@ -104,6 +188,6 @@ namespace DABApp.Service
 
         }
 
-
     }
 }
+

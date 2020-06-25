@@ -673,6 +673,7 @@ namespace DABApp
             //to start an episode after a different one is loaded.
             try
             {
+
                 if (episode == null && Episodes.Count() > 0)
                 {
                     episode = new EpisodeViewModel(Episodes.First());
@@ -723,26 +724,7 @@ namespace DABApp
 
                     SetVisibility(true); //Adjust visibility of controls
                 }
-                else if (!AuthenticationAPI.IsTokenStillValid())
-                {
-                    if (GlobalResources.Instance.IsLoggedIn)
-                    {
-                        if (DabService.IsConnected)
-                        {
-                            if (AuthenticationAPI.IsTokenStillValid() == false)
-                            {
-                                //TODO: Make sure this gets awaited.
-                                var ql = DabService.UpdateToken().Result;
-                                if (ql.Success)
-                                {
-                                    //token was updated successfully
-                                    dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
-                                    dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                                }
-                            }
-                        }
-                    }
-                }
+
                 else
                 {
                     DisplayAlert("One second", "We're loading your episodes", "Ok");

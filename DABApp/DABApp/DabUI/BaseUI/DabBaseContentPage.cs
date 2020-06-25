@@ -22,6 +22,10 @@ namespace DABApp
         //player page - BindCOntrols to episode
         //tablet page - reload list, bind controls
 
+        //Keepalive Indicator
+        ToolbarItem keepaliveButton;
+
+
         public DabBaseContentPage()
         {
             //Default Page properties
@@ -35,6 +39,18 @@ namespace DABApp
 
             //Navigation properties
             Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
+
+            //Keepalive indicator
+            MessagingCenter.Subscribe<string>("dabapp", "traffic", (obj) =>
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    keepaliveButton.Text = "·";
+                    await Task.Delay(100);
+                    keepaliveButton.Text = "";
+                });
+            });
+
 
             //Wait Indicator
             //Subscribe to starting wait ui
@@ -109,6 +125,12 @@ namespace DABApp
             this.SlideMenu = new DabMenuView();
             if (Device.RuntimePlatform == "iOS")
             {
+                //Keepalive Button
+                keepaliveButton = new ToolbarItem();
+                keepaliveButton.Text = ""; //will be set to an icon when active;
+                keepaliveButton.Priority = 1;
+                this.ToolbarItems.Add(keepaliveButton);
+
                 //Menu Button
                 var menuButton = new ToolbarItem();
                 menuButton.SetValue(AutomationProperties.NameProperty, "Menu");
@@ -122,6 +144,7 @@ namespace DABApp
                     this.ShowMenu();
                 };
                 this.ToolbarItems.Add(menuButton);
+
 
                 //Record Button
                 var recordButton = new ToolbarItem();
@@ -263,6 +286,7 @@ namespace DABApp
                 MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
             }
         }
+
 
         async void OnRecord(object o, EventArgs e)
         {

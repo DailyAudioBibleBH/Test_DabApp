@@ -35,30 +35,6 @@ namespace DABApp
 
         }
 
-        public static bool IsTokenStillValid() 
-        {
-            /* this method checks to see if the user's token needs to be renewed
-             */
-            try
-            {
-
-                var creation = DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
-                int days = ContentConfig.Instance.options.token_life;
-#if DEBUG
-                days = -1; //always renew in debug mode
-#endif
-                if (DateTime.Now > creation.AddDays(days))
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-
-        }
 
         public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
         {

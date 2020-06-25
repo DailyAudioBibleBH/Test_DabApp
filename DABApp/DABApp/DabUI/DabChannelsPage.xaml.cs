@@ -174,19 +174,8 @@ namespace DABApp
         {
             if (GlobalResources.Instance.IsLoggedIn)
             {
-                if (DabService.IsConnected)
-                {
-                    if (AuthenticationAPI.IsTokenStillValid() == false)
-                    {
-                        var ql = await DabService.UpdateToken();
-                        if (ql.Success)
-                        {
-                            //token was updated successfully
-                            dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
-                            dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()) ;
-                        }
-                    }
-                }
+                //update token, if needed
+                await DabServiceRoutines.CheckAndUpdateToken();
 
 
                 //post actions logs
