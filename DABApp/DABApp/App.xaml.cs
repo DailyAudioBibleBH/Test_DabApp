@@ -33,18 +33,23 @@ namespace DABApp
 
         protected override void OnStart()
         {
+            /* 
+             * App is starting up
+             */
+
             DependencyService.Get<IAnalyticsService>().LogEvent("app_startup", "start_date", DateTime.Now.ToShortDateString());
             AppCenter.Start("ios=71f3b832-d6bc-47f3-a1f9-6bbda4669815;" + "android=63fbcb2c-3fcd-4491-b6c3-80f75d2e0d4d;", typeof(Analytics), typeof(Crashes));
-
-
         }
 
         protected override async void OnSleep()
         {
             try
             {
+                var ql = await DabService.TerminateConnection();
 
-                DabSyncService.Instance.DisconnectWebSocket(false);
+
+                //TODO: Old code is below. May need revamped
+                //DabSyncService.Instance.DisconnectWebSocket(false);
                 if (Device.RuntimePlatform == "iOS")
                 {
                     AuthenticationAPI.PostActionLogs(false);
@@ -72,6 +77,7 @@ namespace DABApp
                     await DabServiceRoutines.RunConnectionEstablishedRoutines();
                 }
 
+                //TODO: Old code is below - may need revamped
 
                 if (GlobalResources.playerPodcast != null)
                 {
