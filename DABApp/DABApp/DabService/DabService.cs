@@ -230,11 +230,6 @@ namespace DABApp.Service
                 ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
                 ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
 
-                //last actions (list of results)
-                var actions = await DabService.GetActions(GlobalResources.LastActionDate);
-                Debug.WriteLine(JsonConvert.SerializeObject(actions));
-
-
             }
 
             //return the received response
@@ -596,9 +591,12 @@ namespace DABApp.Service
             SubscriptionIds.Add(id);
             socket.Send(SubscriptionInit);
 
-            //Wait for appropriate response
-            var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
+            //TODO: Consider replacing this with a wait for response, but it doesn't appear we get responses when establishing subscriptions, so just a slight delay here for now.
+            ////Wait for appropriate response
+            //var service = new DabServiceWaitService();
+            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
+            await Task.Delay(50);
+            DabServiceWaitResponse response = new DabServiceWaitResponse(new DabGraphQlRootObject() { type = "complete" }); //imitation ql response
 
             //return the response
             return response;

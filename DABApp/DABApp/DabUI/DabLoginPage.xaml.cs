@@ -118,11 +118,12 @@ namespace DABApp
         {
             //log the user in and push up channels page upon success.
 
-            GlobalResources.WaitStart("Checking your credentials...");
-            var result = await  Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
-
-            if (result.Success == true) //Successful Login
+            try
             {
+                //log the user in 
+                GlobalResources.WaitStart("Checking your credentials...");
+                var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
+                if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //process the data we got back.
                 string token = result.Data.payload.data.loginUser.token;
@@ -131,34 +132,23 @@ namespace DABApp
 
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
-                await DabService.InitializeConnection(token);
+                result = await DabService.InitializeConnection(token);
+                if (result.Success == false) throw new Exception(result.ErrorMessage);
 
-                //get user profile information and update it.
-                result = await  Service.DabService.GetUserData();
-                if (result.Success == true)
-                {
-                    //process user profile information
-                    var profile = result.Data.payload.data.user;
-                    dbSettings.StoreSetting("FirstName", profile.firstName);
-                    dbSettings.StoreSetting("LastName", profile.lastName);
-                    dbSettings.StoreSetting("Email", profile.email);
-                    dbSettings.StoreSetting("Channel", profile.channel);
-                    dbSettings.StoreSetting("Channels", profile.channels);
-                    dbSettings.StoreSetting("Language", profile.language);
-                    dbSettings.StoreSetting("Nickname", profile.nickname);
-                }
+                //perform post-login functions
+                await DabServiceRoutines.RunConnectionEstablishedRoutines();
 
-                //push up new channels page
-                GlobalResources.WaitStop();
+                //push up the channels page
                 await Navigation.PushAsync(new DabChannelsPage());
 
+
             }
-            else
+            catch (Exception ex)
             {
-                //alert user that login failed
                 GlobalResources.WaitStop();
-                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {result.ErrorMessage}", "OK");
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
             }
+
 
         }
 

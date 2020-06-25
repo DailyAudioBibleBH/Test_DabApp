@@ -53,6 +53,9 @@ namespace DABApp.DabUI
 
                     } else
                     {
+                        //perform post-login functions
+                        await DabServiceRoutines.RunConnectionEstablishedRoutines();
+
                         Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
                     }
                 }
