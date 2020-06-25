@@ -23,7 +23,9 @@ namespace DABApp.Service
         ResetPassword,
         ChangePassword,
         SaveUserProfile,
-        GetActions
+        GetActions,
+        GetEpisodes,
+        GetChannels
     }
 
     public class DabServiceWaitService
@@ -259,6 +261,24 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.GetActions:
                             //actions received
                             if (response?.payload?.data?.lastActions != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.GetEpisodes:
+                            //episodes received
+                            if (response?.payload?.data?.episodes != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.GetChannels:
+                            //channels received
+                            if (response?.payload?.data?.channels != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

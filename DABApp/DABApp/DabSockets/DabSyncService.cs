@@ -279,65 +279,65 @@ namespace DABApp.DabSockets
                     }
 
                 }
-                //Grabbing episodes
-                else if (root.payload?.data?.episodes != null)
-                {
-                    GlobalResources.WaitStart("Please wait while we load the episode list...");
-                    foreach (var item in root.payload.data.episodes.edges)
-                    {
-                        allEpisodes.Add(item);
-                        channelId = item.channelId;
-                    }
+                ////Grabbing episodes
+                //else if (root.payload?.data?.episodes != null)
+                //{
+                //    GlobalResources.WaitStart("Please wait while we load the episode list...");
+                //    foreach (var item in root.payload.data.episodes.edges)
+                //    {
+                //        allEpisodes.Add(item);
+                //        channelId = item.channelId;
+                //    }
 
-                    //Take action based on more pages or not
-                    if (root.payload.data.episodes.pageInfo.hasNextPage == true)
-                    {
-                        //More pages, go get them
-                        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId);
-                        Debug.WriteLine($"Getting episodes by ChannelId");
-                        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId.ToString() + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                        var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                        var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                        DabSyncService.Instance.Send(JsonIn);
-                    }
-                    else
-                    {
-                        //Last page, let UI know
-                        var channels = adb.Table<dbChannels>().OrderByDescending(x => x.channelId).ToListAsync().Result;
-                        foreach (var item in channels)
-                        {
-                            if (item.channelId == channelId)
-                            {
-                                channel = item;
-                            }
-                        }
-                        if (root.payload.data.episodes != null)
-                        {
-                            await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
-                            MessagingCenter.Send<string>("Update", "Update");
-                            MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                //    //Take action based on more pages or not
+                //    if (root.payload.data.episodes.pageInfo.hasNextPage == true)
+                //    {
+                //        //More pages, go get them
+                //        string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(channelId).ToString("o");
+                //        Debug.WriteLine($"Getting episodes by ChannelId");
+                //        var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + channelId.ToString() + ", cursor: \"" + root.payload.data.episodes.pageInfo.endCursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                //        var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                //        var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                //        DabSyncService.Instance.Send(JsonIn);
+                //    }
+                //    else
+                //    {
+                //        //Last page, let UI know
+                //        var channels = adb.Table<dbChannels>().OrderByDescending(x => x.channelId).ToListAsync().Result;
+                //        foreach (var item in channels)
+                //        {
+                //            if (item.channelId == channelId)
+                //            {
+                //                channel = item;
+                //            }
+                //        }
+                //        if (root.payload.data.episodes != null)
+                //        {
+                //            await PlayerFeedAPI.GetEpisodes(allEpisodes, channel);
+                //            MessagingCenter.Send<string>("Update", "Update");
+                //            MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
 
-                            string favoriteChannel = dbSettings.GetSetting("Channel", "");
-                            if (favoriteChannel != "")
-                            {
-                                dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
-                                if (channel.id == favChannel.id)
-                                {
-                                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
-                                }
-                            }
-                            await PlayerFeedAPI.DownloadEpisodes();
+                //            string favoriteChannel = dbSettings.GetSetting("Channel", "");
+                //            if (favoriteChannel != "")
+                //            {
+                //                dbChannels favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
+                //                if (channel.id == favChannel.id)
+                //                {
+                //                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+                //                }
+                //            }
+                //            await PlayerFeedAPI.DownloadEpisodes();
 
-                        }
-                        if (allEpisodes.Count() >= 1)
-                        {
-                            //store a new episode query date
-                            GlobalResources.SetLastEpisodeQueryDate(channelId);
-                        }
-                        //stop wait ui on episodes page
-                        GlobalResources.WaitStop();
-                    }
-                }
+                //        }
+                //        if (allEpisodes.Count() >= 1)
+                //        {
+                //            //store a new episode query date
+                //            GlobalResources.SetLastEpisodeQueryDate(channelId);
+                //        }
+                //        //stop wait ui on episodes page
+                //        GlobalResources.WaitStop();
+                //    }
+                //}
                 else if (root.payload?.data?.episodePublished?.episode != null)
                 {
                     //Get reference to the episode

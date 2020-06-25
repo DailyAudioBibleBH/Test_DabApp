@@ -27,12 +27,24 @@ namespace DABApp.Service
                 //TODO: get recent episodes
                 //TODO: get recent badges
 
+                var adb = DabData.AsyncDatabase;
+
+                // get channels
+                var ql = await DabService.GetChannels();
+                if (ql.Success)
+                {
+                    foreach (var c in ql.Data.payload.data.channels)
+                    {
+                        await adb.InsertOrReplaceAsync(c);
+                    }
+                }
+
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
 
                     //get user profile information and update it.
-                    var ql = await Service.DabService.GetUserData();
+                    ql = await Service.DabService.GetUserData();
                     if (ql.Success == true) //ignore failures here
                     {
                         //process user profile information
@@ -130,6 +142,101 @@ namespace DABApp.Service
             {
                 return false;
             }
+
+        }
+
+        //CHANNEL AND EPISODE ROUTINES
+        public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false)
+        {
+            /*
+             * This method gets episodes for a channel based on the last query date, or back to the beginning, if requested
+             */
+
+            try
+            {
+
+
+                //Determine the start date
+                DateTime startdate;
+                int cnt = 0; //number of episodes updated;
+
+                GlobalResources.WaitStart("Checking for new episodes...");
+
+                if (ReloadAll)
+                {
+                    startdate = GlobalResources.DabMinDate;
+                }
+                else
+                {
+                    startdate = GlobalResources.GetLastEpisodeQueryDate(ChannelId);
+                }
+
+                var ql = await DabService.GetEpisodes(startdate, ChannelId);
+                if (ql.Success)
+                {
+                    //store episodes in the database
+                    var adb = DabData.AsyncDatabase;
+                    var channel = await adb.Table<dbChannels>().Where(x => x.channelId == ChannelId).FirstOrDefaultAsync();
+
+                    //loop through the episodes
+                    foreach (var data in ql.Data)
+                    {
+                        var episodes = data.payload.data.episodes;
+                        foreach (var episode in episodes.edges)
+                        {
+                            //process each episode
+                            cnt++;
+                            dbEpisodes dbe = new dbEpisodes(episode);
+
+                            //set up additional properties
+                            var code = channel.key;
+                            dbe.channel_code = code;
+                            dbe.channel_title = channel.title;
+                            dbe.is_downloaded = false;
+                            if (GlobalResources.TestMode)
+                            {
+                                dbe.description += $" ({DateTime.Now.ToShortTimeString()})";
+                            }
+
+                            //add to database
+                            await adb.InsertOrReplaceAsync(dbe);
+                        }
+                    }
+
+
+                    if (cnt > 0)
+                    {
+                        //mark the last query date
+                        GlobalResources.SetLastEpisodeQueryDate(ChannelId);
+
+                        //notify the UI
+                        //TODO: Confirm all of these messages
+                        Device.BeginInvokeOnMainThread(() =>
+                    {
+                        MessagingCenter.Send<string>("Update", "Update");
+                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                        MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
+                        MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+
+                    });
+                    }
+
+                }
+                else
+                {
+                    //nothing to do, no new episodes
+                }
+
+                GlobalResources.WaitStop();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                GlobalResources.WaitStop();
+                return false;
+            }
+            
+
 
         }
 

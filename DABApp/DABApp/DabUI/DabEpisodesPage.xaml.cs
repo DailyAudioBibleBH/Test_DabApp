@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -74,7 +75,8 @@ namespace DABApp
 
             MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", async (obj) =>
             {
-                await Refresh(false);
+                //TODO: Took this out because it was causing a loop. Do we need it?
+                //await Refresh(false);
                 PlayerFeedAPI.DownloadEpisodes();
             }
             ); //app activated
@@ -167,16 +169,16 @@ namespace DABApp
         {
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
             int pullToRefreshRate = GlobalResources.PullToRefreshRate;
-            string minQueryDate;
+            DateTime minQueryDate;
             if (ReloadAll)
             {
 #if DEBUG
-                minQueryDate = GlobalResources.DabMinDate.ToUniversalTime().ToString("o");
+                minQueryDate = GlobalResources.DabMinDate;
                 GlobalResources.SetLastRefreshDate(_resource.id);
 #else
                 if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
                 {
-                    minQueryDate = GlobalResources.DabMinDate.ToUniversalTime().ToString("o");
+                    minQueryDate = GlobalResources.DabMinDate;
                     GlobalResources.SetLastRefreshDate(_resource.id);
                 }
                 else
@@ -192,13 +194,10 @@ namespace DABApp
 
             GlobalResources.WaitStart($"Refreshing episodes...");
 
-            //send websocket message to get episodes by channel
-            DabGraphQlVariables variables = new DabGraphQlVariables();
-            Debug.WriteLine($"Getting episodes by ChannelId");
-            var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-            var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-            string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-            DabSyncService.Instance.Send(JsonIn);
+            var result = await DabServiceRoutines.GetEpisodes(_resource.id, ReloadAll);
+
+
+            //TODO - END OF NEW CODE - FIX WHAT'S BELOW
 
             if (GlobalResources.GetUserEmail() != "Guest")
             {

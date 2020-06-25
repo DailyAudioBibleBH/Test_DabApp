@@ -284,35 +284,18 @@ namespace DABApp
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
-        public static string GetLastEpisodeQueryDate(int ChannelId)
+        public static DateTime GetLastEpisodeQueryDate(int ChannelId)
         {
             //Last episode query date by channel in GMT
             string k = "EpisodeQueryDate" + ChannelId;
-            dbSettings LastEpisodeQuerySettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
-            if (LastEpisodeQuerySettings == null)
-            {
-                DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
-                LastEpisodeQuerySettings = new dbSettings();
-                LastEpisodeQuerySettings.Key = k;
-                LastEpisodeQuerySettings.Value = queryDate.ToString("o");
-                var x = adb.InsertOrReplaceAsync(LastEpisodeQuerySettings).Result;
-                return queryDate.ToString("o");
-            }
-            else
-            {
-                return LastEpisodeQuerySettings.Value;
-            }
+            DateTime querydate = DateTime.Parse(dbSettings.GetSetting(k, DabMinDate.ToUniversalTime().ToString()));
+            return querydate;
         }
 
         public static void SetLastEpisodeQueryDate(int ChannelId)
         {
             string k = "EpisodeQueryDate" + ChannelId;
-            dbSettings LastEpisodeQuerySettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
-            if (LastEpisodeQuerySettings == null) LastEpisodeQuerySettings = new dbSettings() { Key = k };
-            //Store the value sent in the database
-            string queryDate = DateTime.UtcNow.ToString("o");
-            LastEpisodeQuerySettings.Value = queryDate;
-            var x = adb.InsertOrReplaceAsync(LastEpisodeQuerySettings).Result;
+            dbSettings.StoreSetting(k, DateTime.Now.ToUniversalTime().ToString());
         }
 
         //Last badge check date in GMT (get/set universal time)
