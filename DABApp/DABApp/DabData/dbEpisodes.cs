@@ -40,7 +40,6 @@ namespace DABApp
             UserData.IsFavorite = (episode.favorite != null) ? episode.favorite.Value : false;
             UserData.HasJournal = (episode.hasJournal != null) ? episode.hasJournal.Value : false;
             UserData.IsListenedTo = episode.is_listened_to;
-            //TODO: Save UserData?
 
         }
 

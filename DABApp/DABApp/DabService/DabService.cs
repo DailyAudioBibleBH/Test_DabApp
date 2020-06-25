@@ -802,9 +802,8 @@ namespace DABApp.Service
              * Handle an incoming episode notification
              */
 
-            Debug.WriteLine($"EPISODEPUBLISHED: {JsonConvert.SerializeObject(data)}");
+            await DabServiceRoutines.EpisodePublished(data.episode);
 
-            //TODO: Handle this by adding episode to the database and sending messaging out to notify UI to update
 
         }
 

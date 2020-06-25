@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
 using Xamarin.Forms;
 
 namespace DABApp.Service
@@ -235,10 +236,62 @@ namespace DABApp.Service
                 GlobalResources.WaitStop();
                 return false;
             }
-            
+
 
 
         }
+
+        public static async Task<bool> EpisodePublished(DabGraphQlEpisode episode)
+        {
+            /* this episode adds an episode to the system as it's published
+             */
+
+            //TODO: This has not been tested.
+
+            try
+            {
+
+                var adb = DabData.AsyncDatabase;
+                dbEpisodes dbe = new dbEpisodes(episode);
+
+                //find the channel
+                var channel = await adb.Table<Channel>().Where(x => x.channelId == episode.channelId).FirstAsync();
+
+                //set up additional properties
+                var code = channel.key;
+                dbe.channel_code = code;
+                dbe.channel_title = channel.title;
+                dbe.is_downloaded = false;
+                if (GlobalResources.TestMode)
+                {
+                    dbe.description += $" ({DateTime.Now.ToShortTimeString()})";
+                }
+
+                //add to database
+                await adb.InsertOrReplaceAsync(dbe);
+
+                //notify the UI
+                //TODO: Confirm all of these messages
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    MessagingCenter.Send<string>("Update", "Update");
+                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                    MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
+                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
+
+                });
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                //something went wrong.
+                return false;
+            }
+
+        }
+
 
 
         //ACTION ROUTINES
@@ -297,4 +350,5 @@ namespace DABApp.Service
 
     }
 }
+
 
