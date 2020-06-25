@@ -21,10 +21,14 @@ namespace DABApp.Service
          */
 
 
-        private static IWebSocket socket;
+        private static IWebSocket socket; //websocket used by service
+
+        public const int WaitDelayInterval = 500; //milliseconds to pause for anything that waits on another thread to provide input
         public const int LongTimeout = 10000; //timeout for calls we expect return values from
         public const int ShortTimeout = 250; //timeout for quick calls or items we don't expect values from
-        private static List<int> SubscriptionIds = new List<int>();
+        public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
+
+        private static List<int> SubscriptionIds = new List<int>();  //list of subscription id's managed by Service
 
         //WEBSOCKET CONNECTION
 
@@ -105,7 +109,7 @@ namespace DABApp.Service
                     {
                         TimeSpan remaining = timeout.Subtract(DateTime.Now);
                         Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
-                        await Task.Delay(500); //check every 1/2 second
+                        await Task.Delay(WaitDelayInterval); //check every 1/2 second
                     }
                 }
             }
@@ -595,7 +599,7 @@ namespace DABApp.Service
             ////Wait for appropriate response
             //var service = new DabServiceWaitService();
             //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
-            await Task.Delay(50);
+            await Task.Delay(QuickPause);
             DabServiceWaitResponse response = new DabServiceWaitResponse(new DabGraphQlRootObject() { type = "complete" }); //imitation ql response
 
             //return the response

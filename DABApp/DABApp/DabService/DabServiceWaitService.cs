@@ -64,7 +64,7 @@ namespace DABApp.Service
             {
                 TimeSpan remaining = timeout.Subtract(DateTime.Now);
                 Debug.WriteLine($"Waiting {remaining.ToString()} for {WaitType} - Wait: {_waiting} - Result: {JsonConvert.SerializeObject(_qlObject)}");
-                await Task.Delay(500); //check every 1/2 second
+                await Task.Delay(DabService.WaitDelayInterval); //wait interval
             }
 
             //Disconnect the listener
