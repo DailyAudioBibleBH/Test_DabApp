@@ -88,7 +88,6 @@ namespace DABApp.Service
         public static async Task<bool> NotifyOnConnectionKeepAlive()
         {
             //Keepalive message received - let the UI do something about it
-            MessagingCenter.Send("dabapp", "traffic");
             return true;
         }
 

@@ -53,6 +53,7 @@ namespace DABApp.iOS.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
+            DABApp.Service.DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Inbound, data.Message);
             Debug.WriteLine("SOCKET RCVD:" + data.Message);
             DabGraphQlMessage?.Invoke(this, new DabGraphQlMessageEventHandler(data.Message));
         }
@@ -114,6 +115,7 @@ namespace DABApp.iOS.DabSockets
 
         public void Send(string JsonIn)
         {
+            DABApp.Service.DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Outbound, JsonIn);
             Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);
 

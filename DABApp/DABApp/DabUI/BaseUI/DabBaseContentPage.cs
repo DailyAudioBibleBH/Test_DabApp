@@ -8,6 +8,7 @@ using Plugin.Connectivity;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -41,15 +42,7 @@ namespace DABApp
             Xamarin.Forms.NavigationPage.SetBackButtonTitle(this, "");
 
             //Keepalive indicator
-            MessagingCenter.Subscribe<string>("dabapp", "traffic", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    keepaliveButton.Text = "·";
-                    await Task.Delay(100);
-                    keepaliveButton.Text = "";
-                });
-            });
+            DabServiceEvents.TrafficOccuredEvent += DabServiceEvents_TrafficOccuredEvent;
 
 
             //Wait Indicator
@@ -170,6 +163,20 @@ namespace DABApp
             {
                 MessagingCenter.Send("Setup", "Setup");
             }
+        }
+
+        private async void DabServiceEvents_TrafficOccuredEvent(GraphQlTrafficDirection direction, string traffic)
+        {
+            if (direction == GraphQlTrafficDirection.Inbound)
+            {
+                keepaliveButton.Text = "·";
+            } else
+            {
+                keepaliveButton.Text = "·"; //"◦";
+            }
+            await Task.Delay(100);
+            keepaliveButton.Text = "";
+
         }
 
         private void StopWait(object sender, EventArgs e)
