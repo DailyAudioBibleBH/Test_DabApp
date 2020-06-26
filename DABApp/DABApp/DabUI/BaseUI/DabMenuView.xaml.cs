@@ -8,6 +8,7 @@ using FFImageLoading;
 using SlideOverKit;
 using Version.Plugin;
 using Xamarin.Forms;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -45,9 +46,17 @@ namespace DABApp
 			GuestStatus.Current.UserName = GlobalResources.GetUserName();
 
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
+
+            DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;
+
 		}
 
-		void OnSignUp(object o, EventArgs e) {
+        private void DabServiceEvents_UserProfileChangedEvent(DabSockets.GraphQlUser user)
+        {
+			this.UserName.Text = $"{user.firstName} {user.lastName}";
+        }
+
+        void OnSignUp(object o, EventArgs e) {
 
             //Send info to Firebase analytics that user tapped an action we track
             var info = new Dictionary<string, string>();

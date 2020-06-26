@@ -844,12 +844,13 @@ namespace DABApp.Service
             else if (data.tokenRemoved != null)
             {
                 //token removed
+                HandleTokenRemoved(data.tokenRemoved);
 
             }
             else if (data.updateUser != null)
             {
                 //user profile updated
-                Debug.WriteLine($"USER: {e.Message}");
+                HandleUpdateUser(data.updateUser.user);
 
             }
             else
@@ -906,7 +907,7 @@ namespace DABApp.Service
 
         }
 
-        private static async void HandleUpdateUser(DabGraphQlUpdateUser data)
+        private static async void HandleUpdateUser(GraphQlUser data)
         {
             /* 
              * Handle an incoming update user notification by updating user profile data and making any UI notifications
@@ -914,7 +915,7 @@ namespace DABApp.Service
 
             Debug.WriteLine($"UPDATEUSER: {JsonConvert.SerializeObject(data)}");
 
-            //TODO: Handle this
+            DabServiceEvents.UserProfileChanged(data);
 
         }
 
