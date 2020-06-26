@@ -13,7 +13,7 @@ namespace DABApp.Service
          * It is important to leave DabService class focused on GraphQL interaction only.
          */
 
-        //CONNECTION ROUTINES
+        #region Connection Routines
 
         public static async Task<bool> RunConnectionEstablishedRoutines()
         {
@@ -65,13 +65,9 @@ namespace DABApp.Service
                     {
                         //process user profile information
                         var profile = ql.Data.payload.data.user;
-                        dbSettings.StoreSetting("FirstName", profile.firstName);
-                        dbSettings.StoreSetting("LastName", profile.lastName);
-                        dbSettings.StoreSetting("Email", profile.email);
-                        dbSettings.StoreSetting("Channel", profile.channel);
-                        dbSettings.StoreSetting("Channels", profile.channels);
-                        dbSettings.StoreSetting("Language", profile.language);
-                        dbSettings.StoreSetting("Nickname", profile.nickname);
+                        await UpdateUserProfile(profile);
+
+
                     }
 
                     //get recent actions
@@ -96,7 +92,9 @@ namespace DABApp.Service
             return true;
         }
 
-        //AUTHENTICATION ROUTINES
+        #endregion
+
+        #region Authentication Routines
 
         public static async Task<bool> CheckAndUpdateToken()
         {
@@ -160,8 +158,10 @@ namespace DABApp.Service
             }
 
         }
+        #endregion
 
-        //CHANNEL AND EPISODE ROUTINES
+        #region Channel and Episode Routines
+
         public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false)
         {
             /*
@@ -362,6 +362,35 @@ namespace DABApp.Service
 
 
         }
+
+        #endregion
+
+        #region User Profile Routines
+        public static async Task<GraphQlUser> UpdateUserProfile (GraphQlUser user)
+        {
+            /*this routine takes a graphql user object and updates
+             * the local database with the new information.
+             * It then sends out an event notifying anything listening 
+             * the user profile has changed
+             */
+
+
+            //save user profile settings
+            dbSettings.StoreSetting("FirstName", user.firstName);
+            dbSettings.StoreSetting("LastName", user.lastName);
+            dbSettings.StoreSetting("Email", user.email);
+            dbSettings.StoreSetting("Nickname", user.nickname);
+            dbSettings.StoreSetting("Channel", user.channel);
+            dbSettings.StoreSetting("Channels", user.channels);
+            dbSettings.StoreSetting("Language", user.language);
+
+            //alert anything that is listening
+            DabServiceEvents.UserProfileChanged(user);
+
+            return user;
+
+        }
+        #endregion
 
     }
 }

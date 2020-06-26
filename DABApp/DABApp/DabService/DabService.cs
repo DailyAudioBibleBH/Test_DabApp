@@ -913,9 +913,7 @@ namespace DABApp.Service
              * Handle an incoming update user notification by updating user profile data and making any UI notifications
              */
 
-            Debug.WriteLine($"UPDATEUSER: {JsonConvert.SerializeObject(data)}");
-
-            DabServiceEvents.UserProfileChanged(data);
+            await DabServiceRoutines.UpdateUserProfile(data);
 
         }
 
