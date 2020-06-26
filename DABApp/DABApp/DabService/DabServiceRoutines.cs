@@ -40,6 +40,21 @@ namespace DABApp.Service
                     }
                 }
 
+                //get badges
+                var qll = await DabService.GetUpdatedBadges(GlobalResources.BadgesUpdatedDate);
+                if (qll.Success)
+                {
+                    GlobalResources.BadgesUpdatedDate = DateTime.Now;
+                    foreach (var d in qll.Data)
+                    {
+                        foreach (var b in d.payload.data.updatedBadges.edges)
+                        {
+                            await adb.InsertOrReplaceAsync(b);
+                        }
+                    }
+                }
+
+
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
