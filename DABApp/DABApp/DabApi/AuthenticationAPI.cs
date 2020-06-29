@@ -712,10 +712,6 @@ namespace DABApp
                                         break;
                                 }
                             }
-                            foreach (var action in actions)
-                            {
-                                await adb.DeleteAsync(action);
-                            }
                         }
                         catch (Exception e)
                         {

@@ -146,6 +146,44 @@ namespace DABApp.DabSockets
                     }
 
                 }
+                //Confirmation of logAction being received - delete items from the queue that we need to.
+                if (root.payload?.data?.logAction != null)
+                {
+                    //TODO: Only delete actions tied to the correct user id. right now we don't check that because we store user email, not user id.
+                    var action = root.payload.data.logAction;
+                    var actions = new List<dbPlayerActions>();
+                    if (action.listen != null)
+                    {
+                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.listen == action.listen).ToListAsync();
+                    }
+                    else if (action.favorite != null)
+                    {
+                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.favorite == action.favorite).ToListAsync();
+                    }
+                    else if (action.position != null)
+                    {
+                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.position == action.position).ToListAsync();
+                    }
+                    else if (action.entryDate != null)
+                    {
+                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.entryDate == action.entryDate).ToListAsync();
+                    }
+
+                    foreach (var a in actions)
+                    {
+                        Debug.WriteLine($"Deleting action log from local database: {JsonConvert.SerializeObject(a)}");
+                        await adb.DeleteAsync(a);
+                    }
+
+                    //update the database with the correct value, if it's different
+                    bool hasJournal;
+                    if (action.entryDate != null)
+                        hasJournal = true;
+                    else
+                        hasJournal = false;
+
+                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position, false);
+                }
 
                 //Action we need to address
                 if (root.payload?.data?.actionLogged != null)
