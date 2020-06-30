@@ -13,8 +13,8 @@
 			<Entry x:Name="CompanyName" Text="{Binding company}"/>
 			<BoxView HorizontalOptions="FillAndExpand"/>
 			<StackLayout x:Name="EmailAndPhone" IsVisible="true">
-				<Label Text="Email Address" FontSize="Micro"/>
-				<Entry x:Name="Email" Text="{Binding email}" Keyboard="Email"/>
+				<Label Text="Email Address" FontSize="Micro" IsVisible="false"/>
+				<Entry x:Name="Email" Text="{Binding email}" Keyboard="Email" IsVisible="false"/>
 				<Label Text="Phone" FontSize="Micro"/>
 				<Entry x:Name="Phone" Text="{Binding phone}" Keyboard="Numeric"/>
 				<BoxView/>
