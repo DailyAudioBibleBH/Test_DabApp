@@ -7,15 +7,18 @@ namespace DABApp
 {
 	public partial class DabAddressManagementPage : DabBaseContentPage
 	{
-		public DabAddressManagementPage()
+        public List<Address> userAddresses;
+
+        public DabAddressManagementPage(List<Address> userAddresses)
 		{
 			InitializeComponent();
 			if (GlobalResources.ShouldUseSplitScreen){
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+			this.userAddresses = userAddresses;
 		}
 
-		async void OnBilling(object o, EventArgs e) 
+        async void OnBilling(object o, EventArgs e) 
 		{
 			GlobalResources.WaitStart("Getting Billing Address...");
 			var result = await AuthenticationAPI.GetAddresses();

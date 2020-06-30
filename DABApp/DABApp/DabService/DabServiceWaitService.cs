@@ -26,7 +26,8 @@ namespace DABApp.Service
         GetActions,
         GetEpisodes,
         GetChannels,
-        GetBadges
+        GetBadges,
+        GetAddresses
     }
 
     public class DabServiceWaitService
@@ -289,6 +290,14 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.GetBadges:
                             //badges received
                             if (response?.payload?.data?.updatedBadges != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+                        case DabServiceWaitTypes.GetAddresses:
+                            //addresses recieved
+                            if (response?.payload?.data?.addresses != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

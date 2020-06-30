@@ -95,6 +95,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
+                
                 GlobalResources.WaitStart();
                 DabSyncService.Instance.popRequests = 0;
                 await Navigation.PushAsync(new DabProfileManagementPage());
@@ -103,11 +104,24 @@ namespace DABApp
             
         }
 
-        void OnAddresses(object o, EventArgs e)
+        async void OnAddresses(object o, EventArgs e)
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                Navigation.PushAsync(new DabAddressManagementPage());
+                //get user addresses
+                GlobalResources.WaitStart("Checking your credentials...");
+                var result = await Service.DabService.GetAddresses();
+                if (result.Success == false) throw new Exception(result.ErrorMessage);
+
+                List<Address> userAddresses = new List<Address>();
+                foreach (var item in result.Data.data.addresses)
+                {
+                    userAddresses.Add(item);
+                }
+
+
+
+                Navigation.PushAsync(new DabAddressManagementPage(userAddresses));
             }
         }
 
