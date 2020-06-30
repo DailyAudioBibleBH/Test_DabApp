@@ -47,6 +47,18 @@ namespace DABApp
                 }).Wait();//Appended the GUID to avoid caching.
                 var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
                 var test = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
+                JObject countryParse = JObject.Parse(jsonOut);
+                List<JToken> coutnryResults = countryParse["countries"].Children().ToList();
+
+                Dictionary<string, string> countryDict = new Dictionary<string, string>();
+
+                //IList<SearchResult> searchResults = new List<SearchResult>();
+                foreach (JToken result3 in coutnryResults)
+                {
+                    // JToken.ToObject is a helper method that uses JsonSerializer internally
+                    //Country searchResult = result3.ToObject<Country>();
+                    //countryDict.Add(searchResult.countryCode, searchResult.countryName);
+                }
                 if (ContentSettings == null || DataSettings == null)
                 {
                     ContentSettings = new dbSettings();
