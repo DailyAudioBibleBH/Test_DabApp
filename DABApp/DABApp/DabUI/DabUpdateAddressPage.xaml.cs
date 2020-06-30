@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DABApp.DabSockets;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -9,7 +10,7 @@ namespace DABApp
 	{
 		bool isShipping;
 
-		public DabUpdateAddressPage(Address address, Country[] countries, bool IsShipping)
+		public DabUpdateAddressPage(DabGraphQlAddress address, Country[] countries, bool IsShipping)
 		{
 			InitializeComponent();
 			if (GlobalResources.ShouldUseSplitScreen)

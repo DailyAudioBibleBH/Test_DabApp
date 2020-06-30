@@ -8,6 +8,8 @@ namespace DABApp
 	public partial class DabAddressManagementPage : DabBaseContentPage
 	{
         public List<DabGraphQlAddress> addresses;
+		public DabGraphQlAddress billingAddress;
+		public DabGraphQlAddress shippingAddress;
 
         public DabAddressManagementPage(List<DabGraphQlAddress> userAddresses)
 		{
@@ -15,17 +17,22 @@ namespace DABApp
 			if (GlobalResources.ShouldUseSplitScreen){
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			//this.addresses = userAddresses;
+			this.addresses = userAddresses;
 		}
 
         async void OnBilling(object o, EventArgs e) 
 		{
 			GlobalResources.WaitStart("Getting Billing Address...");
-			var result = await AuthenticationAPI.GetAddresses();
+			billingAddress = new DabGraphQlAddress();
+            foreach (var item in addresses)
+            {
+				if (item.type == "billing")
+					billingAddress = item;
+            }
 			var countries = await AuthenticationAPI.GetCountries();
-			if (result != null)
+			if (countries != null)
 			{
-				await Navigation.PushAsync(new DabUpdateAddressPage(result.billing, countries, false));
+				await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			GlobalResources.WaitStop();
@@ -34,11 +41,16 @@ namespace DABApp
 		async void OnShipping(object o, EventArgs e) 
 		{
 			GlobalResources.WaitStart("Getting Shipping Address...");
-			var result = await AuthenticationAPI.GetAddresses();
-			var countries = await AuthenticationAPI.GetCountries();
-			if (result != null)
+			shippingAddress = new DabGraphQlAddress();
+			foreach (var item in addresses)
 			{
-				await Navigation.PushAsync(new DabUpdateAddressPage(result.shipping, countries, true));
+				if (item.type == "shipping")
+					shippingAddress = item;
+			}
+			var countries = await AuthenticationAPI.GetCountries();
+			if (countries != null)
+			{
+				await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			GlobalResources.WaitStop();
