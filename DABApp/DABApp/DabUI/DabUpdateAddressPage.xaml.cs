@@ -67,19 +67,18 @@ namespace DABApp
 					update.state = ((Region)Regions.SelectedItem).regionCode;
 				}
 				if (isShipping)
-				{
 					update.type = "shipping";
-				}
-				var result = await AuthenticationAPI.UpdateBillingAddress(update);
-				if (result == "true")
-				{
+				else
+					update.type = "billing";
+
+				var result = await Service.DabService.UpdateUserAddress(update);
+				if (result.Success == false) throw new Exception(result.ErrorMessage);
+                else
+                {
 					await DisplayAlert("Success", "Address successfully updated", "OK");
 					await Navigation.PopAsync();
 				}
-				else
-				{
-					await DisplayAlert("Error", result, "OK");
-				}
+				
 				GlobalResources.WaitStop();
 			}
 		}

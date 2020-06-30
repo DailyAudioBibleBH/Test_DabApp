@@ -62,6 +62,7 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateUserFields updateUserFields { get; set; }
         public bool checkEmail { get; set; }
         public List<DabGraphQlAddress> addresses { get; set; }
+        public DabGraphQlAddress updateUserAddress { get; set; }
     }
 
     public class DabGraphQlAddress
