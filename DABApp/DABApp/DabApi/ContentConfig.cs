@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FFImageLoading;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -1049,7 +1050,8 @@ public class MX
     public string GT { get; set; }
     public string GR { get; set; }
     public string HG { get; set; }
-    //public string MX { get; set; }
+    [JsonProperty("MX")]
+    public string Mx { get; set; }
     public string MI { get; set; }
     public string MO { get; set; }
     public string NA { get; set; }
@@ -1280,7 +1282,8 @@ public class PH
     public string ZAN { get; set; }
     public string ZAS { get; set; }
     public string ZSI { get; set; }
-    //public string 00 { get; set; }
+    [JsonProperty("00")]
+    public string ZeroZero { get; set; }
     }
 
     public class PK
@@ -1531,7 +1534,137 @@ public class PH
         public string WC { get; set; }
     }
 
-
+    public class BD
+    {
+        [JsonProperty("BD-05")]
+        public string BD_05 { get; set; }
+        [JsonProperty("BD-01")]
+        public string BD_01 { get; set; }
+        [JsonProperty("BD-02")]
+        public string BD_02 { get; set; }
+        [JsonProperty("BD-06")]
+        public string BD_06 { get; set; }
+        [JsonProperty("BD-07")]
+        public string BD_07 { get; set; }
+        [JsonProperty("BD-03")]
+        public string BD_03 { get; set; }
+        [JsonProperty("BD-04")]
+        public string BD_04 { get; set; }
+        [JsonProperty("BD-09")]
+        public string BD_09 { get; set; }
+        [JsonProperty("BD-10")]
+        public string BD_10 { get; set; }
+        [JsonProperty("BD-12")]
+        public string BD_12 { get; set; }
+        [JsonProperty("BD-11")]
+        public string BD_11 { get; set; }
+        [JsonProperty("BD-08")]
+        public string BD_08 { get; set; }
+        [JsonProperty("BD-13")]
+        public string BD_13 { get; set; }
+        [JsonProperty("BD-14")]
+        public string BD_14 { get; set; }
+        [JsonProperty("BD-15")]
+        public string BD_15 { get; set; }
+        [JsonProperty("BD-16")]
+        public string BD_16 { get; set; }
+        [JsonProperty("BD-19")]
+        public string BD_19 { get; set; }
+        [JsonProperty("BD-18")]
+        public string BD_18 { get; set; }
+        [JsonProperty("BD-17")]
+        public string BD_17 { get; set; }
+        [JsonProperty("BD-20")]
+        public string BD_20 { get; set; }
+        [JsonProperty("BD-21")]
+        public string BD_21 { get; set; }
+        [JsonProperty("BD-22")]
+        public string BD_22 { get; set; }
+        [JsonProperty("BD-25")]
+        public string BD_25 { get; set; }
+        [JsonProperty("BD-23")]
+        public string BD_23 { get; set; }
+        [JsonProperty("BD-24")]
+        public string BD_24 { get; set; }
+        [JsonProperty("BD-29")]
+        public string BD_29 { get; set; }
+        [JsonProperty("BD-27")]
+        public string BD_27 { get; set; }
+        [JsonProperty("BD-26")]
+        public string BD_26 { get; set; }
+        [JsonProperty("BD-28")]
+        public string BD_28 { get; set; }
+        [JsonProperty("BD-30")]
+        public string BD_30 { get; set; }
+        [JsonProperty("BD-31")]
+        public string BD_31 { get; set; }
+        [JsonProperty("BD-32")]
+        public string BD_32 { get; set; }
+        [JsonProperty("BD-36")]
+        public string BD_36 { get; set; }
+        [JsonProperty("BD-37")]
+        public string BD_37 { get; set; }
+        [JsonProperty("BD-33")]
+        public string BD_33 { get; set; }
+        [JsonProperty("BD-39")]
+        public string BD_39 { get; set; }
+        [JsonProperty("BD-38")]
+        public string BD_38 { get; set; }
+        [JsonProperty("BD-35")]
+        public string BD_35 { get; set; }
+        [JsonProperty("BD-34")]
+        public string BD_34 { get; set; }
+        [JsonProperty("BD-48")]
+        public string BD_48 { get; set; }
+        [JsonProperty("BD-43")]
+        public string BD_43 { get; set; }
+        [JsonProperty("BD-40")]
+        public string BD_40 { get; set; }
+        [JsonProperty("BD-42")]
+        public string BD_42 { get; set; }
+        [JsonProperty("BD-44")]
+        public string BD_44 { get; set; }
+        [JsonProperty("BD-45")]
+        public string BD_45 { get; set; }
+        [JsonProperty("BD-41")]
+        public string BD_41 { get; set; }
+        [JsonProperty("BD-46")]
+        public string BD_46 { get; set; }
+        [JsonProperty("BD-47")]
+        public string BD_47 { get; set; }
+        [JsonProperty("BD-49")]
+        public string BD_49 { get; set; }
+        [JsonProperty("BD-52")]
+        public string BD_52 { get; set; }
+        [JsonProperty("BD-51")]
+        public string BD_51 { get; set; }
+        [JsonProperty("BD-50")]
+        public string BD_50 { get; set; }
+        [JsonProperty("BD-53")]
+        public string BD_53 { get; set; }
+        [JsonProperty("BD-54")]
+        public string BD_54 { get; set; }
+        [JsonProperty("BD-56")]
+        public string BD_56 { get; set; }
+        [JsonProperty("BD-55")]
+        public string BD_55 { get; set; }
+        [JsonProperty("BD-58")]
+        public string BD_58 { get; set; }
+        [JsonProperty("BD-62")]
+        public string BD_62 { get; set; }
+        [JsonProperty("BD-57")]
+        public string BD_57 { get; set; }
+        [JsonProperty("BD-59")]
+        public string BD_59 { get; set; }
+        [JsonProperty("BD-61")]
+        public string BD_61 { get; set; }
+        [JsonProperty("BD-60")]
+        public string BD_60 { get; set; }
+        [JsonProperty("BD-63")]
+        public string BD_63 { get; set; }
+        [JsonProperty("BD-64")]
+        public string BD_64 { get; set; }
+    }
 
     public class Countries
 	{
@@ -1543,59 +1676,59 @@ public class PH
     public class States
     {
         public object AF { get; set; }
-        //public AO AO { get; set; }
-        //public AR AR { get; set; }
+        public AO AO { get; set; }
+        public AR AR { get; set; }
         public object AT { get; set; }
-        //public AU AU { get; set; }
+        public AU AU { get; set; }
         public object AX { get; set; }
-        //public BD BD { get; set; }
+        public BD BD { get; set; }
         public object BE { get; set; }
         //public BG BG { get; set; }
         public object BH { get; set; }
         public object BI { get; set; }
-        //public BO BO { get; set; }
-        //public BR BR { get; set; }
-        //public CA CA { get; set; }
-        //public CH CH { get; set; }
-        //public CN CN { get; set; }
+        public BO BO { get; set; }
+        public BR BR { get; set; }
+        public CA CA { get; set; }
+        public CH CH { get; set; }
+        public CN CN { get; set; }
         public object CZ { get; set; }
         public object DE { get; set; }
         public object DK { get; set; }
         public object EE { get; set; }
-        //public ES ES { get; set; }
+        public ES ES { get; set; }
         public object FI { get; set; }
         public object FR { get; set; }
         public object GP { get; set; }
-        //public GR GR { get; set; }
+        public GR GR { get; set; }
         public object GF { get; set; }
         //public HK HK { get; set; }
-        //public HU HU { get; set; }
-        //public ID ID { get; set; }
-        //public IE IE { get; set; }
-        //public IN IN { get; set; }
-        //public IR IR { get; set; }
+        public HU HU { get; set; }
+        public ID ID { get; set; }
+        public IE IE { get; set; }
+        public IN IN { get; set; }
+        public IR IR { get; set; }
         public object IS { get; set; }
-        //public IT IT { get; set; }
+        public IT IT { get; set; }
         public object IL { get; set; }
         public object IM { get; set; }
-        //public JP JP { get; set; }
+        public JP JP { get; set; }
         public object KR { get; set; }
         public object KW { get; set; }
         public object LB { get; set; }
-        //public LR LR { get; set; }
+        public LR LR { get; set; }
         public object LU { get; set; }
-        //public MD MD { get; set; }
+        public MD MD { get; set; }
         public object MQ { get; set; }
         public object MT { get; set; }
-        //public MX MX { get; set; }
-        //public MY MY { get; set; }
-        //public NG NG { get; set; }
+        public MX MX { get; set; }
+        public MY MY { get; set; }
+        public NG NG { get; set; }
         public object NL { get; set; }
         public object NO { get; set; }
-        //public NP NP { get; set; }
-        //public NZ NZ { get; set; }
-        //public PE PE { get; set; }
-        //public PH PH { get; set; }
+        public NP NP { get; set; }
+        public NZ NZ { get; set; }
+        public PE PE { get; set; }
+        public PH PH { get; set; }
         public PK PK { get; set; }
         public object PL { get; set; }
         public object PT { get; set; }
