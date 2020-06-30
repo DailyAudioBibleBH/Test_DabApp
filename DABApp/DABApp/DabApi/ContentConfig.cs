@@ -1534,6 +1534,115 @@ public class PH
         public string WC { get; set; }
     }
 
+    public class BG
+    {
+        [JsonProperty("BD-01")]
+        public string BG_01 { get; set; }
+        [JsonProperty("BD-02")]
+        public string BG_02 { get; set; }
+        [JsonProperty("BD-08")]
+        public string BG_08 { get; set; }
+        [JsonProperty("BD-07")]
+        public string BG_07 { get; set; }
+        [JsonProperty("BD-26")]
+        public string BG_26 { get; set; }
+        [JsonProperty("BD-09")]
+        public string BG_09 { get; set; }
+        [JsonProperty("BD-10")]
+        public string BG_10 { get; set; }
+        [JsonProperty("BD-11")]
+        public string BG_11 { get; set; }
+        [JsonProperty("BD-12")]
+        public string BG_12 { get; set; }
+        [JsonProperty("BD-13")]
+        public string BG_13 { get; set; }
+        [JsonProperty("BD-14")]
+        public string BG_14 { get; set; }
+        [JsonProperty("BD-15")]
+        public string BG_15 { get; set; }
+        [JsonProperty("BD-16")]
+        public string BG_16 { get; set; }
+        [JsonProperty("BD-17")]
+        public string BG_17 { get; set; }
+        [JsonProperty("BD-18")]
+        public string BG_18 { get; set; }
+        [JsonProperty("BD-27")]
+        public string BG_27 { get; set; }
+        [JsonProperty("BD-19")]
+        public string BG_19 { get; set; }
+        [JsonProperty("BD-20")]
+        public string BG_20 { get; set; }
+        [JsonProperty("BD-21")]
+        public string BG_21 { get; set; }
+        [JsonProperty("BD-23")]
+        public string BG_23 { get; set; }
+        [JsonProperty("BD-22")]
+        public string BG_22 { get; set; }
+        [JsonProperty("BD-24")]
+        public string BG_24 { get; set; }
+        [JsonProperty("BD-25")]
+        public string BG_25 { get; set; }
+        [JsonProperty("BD-03")]
+        public string BG_03 { get; set; }
+        [JsonProperty("BD-04")]
+        public string BG_04 { get; set; }
+        [JsonProperty("BD-05")]
+        public string BG_05 { get; set; }
+        [JsonProperty("BD-06")]
+        public string BG_06 { get; set; }
+        [JsonProperty("BD-28")]
+        public string BG_28 { get; set; }
+    }
+
+    public class PY
+    {
+        [JsonProperty("PY-ASU")]
+        public string PY_ASU { get; set; }
+        [JsonProperty("PY-1")]
+        public string PY_1 { get; set; }
+        [JsonProperty("PY-2")]
+        public string PY_2 { get; set; }
+        [JsonProperty("PY-3")]
+        public string PY_3 { get; set; }
+        [JsonProperty("PY-4")]
+        public string PY_4 { get; set; }
+        [JsonProperty("PY-5")]
+        public string PY_5 { get; set; }
+        [JsonProperty("PY-6")]
+        public string PY_6 { get; set; }
+        [JsonProperty("PY-7")]
+        public string PY_7 { get; set; }
+        [JsonProperty("PY-8")]
+        public string PY_8 { get; set; }
+        [JsonProperty("PY-9")]
+        public string PY_9 { get; set; }
+        [JsonProperty("PY-10")]
+        public string PY_10 { get; set; }
+        [JsonProperty("PY-11")]
+        public string PY_11 { get; set; }
+        [JsonProperty("PY-12")]
+        public string PY_12 { get; set; }
+        [JsonProperty("PY-13")]
+        public string PY_13 { get; set; }
+        [JsonProperty("PY-14")]
+        public string PY_14 { get; set; }
+        [JsonProperty("PY-15")]
+        public string PY_15 { get; set; }
+        [JsonProperty("PY-16")]
+        public string PY_16 { get; set; }
+        [JsonProperty("PY-17")]
+        public string PY_17 { get; set; }
+    }
+
+    public class HK
+    {
+        [JsonProperty("HONG KONG")]
+        public string HONGKONG { get; set; }
+        public string KOWLOON { get; set; }
+        [JsonProperty("NEW TERRITORIES")]
+        public string NEWTERRITORIES { get; set; }
+    }
+
     public class BD
     {
         [JsonProperty("BD-05")]
@@ -1666,6 +1775,164 @@ public class PH
         public string BD_64 { get; set; }
     }
 
+    public class TH
+    {
+        [JsonProperty("TH-37")]
+        public string TH_37 { get; set; }
+        [JsonProperty("TH-15")]
+        public string TH_15 { get; set; }
+        [JsonProperty("TH-14")]
+        public string TH_14 { get; set; }
+        [JsonProperty("TH-10")]
+        public string TH_10 { get; set; }
+        [JsonProperty("TH-38")]
+        public string TH_38 { get; set; }
+        [JsonProperty("TH-31")]
+        public string TH_31 { get; set; }
+        [JsonProperty("TH-24")]
+        public string TH_24 { get; set; }
+        [JsonProperty("TH-18")]
+        public string TH_18 { get; set; }
+        [JsonProperty("TH-36")]
+        public string TH_36 { get; set; }
+        [JsonProperty("TH-22")]
+        public string TH_22 { get; set; }
+        [JsonProperty("TH-50")]
+        public string TH_50 { get; set; }
+        [JsonProperty("TH-57")]
+        public string TH_57 { get; set; }
+        [JsonProperty("TH-20")]
+        public string TH_20 { get; set; }
+        [JsonProperty("TH-86")]
+        public string TH_86 { get; set; }
+        [JsonProperty("TH-46")]
+        public string TH_46 { get; set; }
+        [JsonProperty("TH-62")]
+        public string TH_62 { get; set; }
+        [JsonProperty("TH-71")]
+        public string TH_71 { get; set; }
+        [JsonProperty("TH-40")]
+        public string TH_40 { get; set; }
+        [JsonProperty("TH-81")]
+        public string TH_81 { get; set; }
+        [JsonProperty("TH-52")]
+        public string TH_52 { get; set; }
+        [JsonProperty("TH-51")]
+        public string TH_51 { get; set; }
+        [JsonProperty("TH-42")]
+        public string TH_42 { get; set; }
+        [JsonProperty("TH-16")]
+        public string TH_16 { get; set; }
+        [JsonProperty("TH-58")]
+        public string TH_58 { get; set; }
+        [JsonProperty("TH-44")]
+        public string TH_44 { get; set; }
+        [JsonProperty("TH-49")]
+        public string TH_49 { get; set; }
+        [JsonProperty("TH-26")]
+        public string TH_26 { get; set; }
+        [JsonProperty("TH-73")]
+        public string TH_73 { get; set; }
+        [JsonProperty("TH-48")]
+        public string TH_48 { get; set; }
+        [JsonProperty("TH-30")]
+        public string TH_30 { get; set; }
+        [JsonProperty("TH-60")]
+        public string TH_60 { get; set; }
+        [JsonProperty("TH-80")]
+        public string TH_80 { get; set; }
+        [JsonProperty("TH-55")]
+        public string TH_55 { get; set; }
+        [JsonProperty("TH-96")]
+        public string TH_96 { get; set; }
+        [JsonProperty("TH-39")]
+        public string TH_39 { get; set; }
+        [JsonProperty("TH-43")]
+        public string TH_43 { get; set; }
+        [JsonProperty("TH-12")]
+        public string TH_12 { get; set; }
+        [JsonProperty("TH-13")]
+        public string TH_13 { get; set; }
+        [JsonProperty("TH-94")]
+        public string TH_94 { get; set; }
+        [JsonProperty("TH-82")]
+        public string TH_82 { get; set; }
+        [JsonProperty("TH-93")]
+        public string TH_93 { get; set; }
+        [JsonProperty("TH-56")]
+        public string TH_56 { get; set; }
+        [JsonProperty("TH-67")]
+        public string TH_67 { get; set; }
+        [JsonProperty("TH-76")]
+        public string TH_76 { get; set; }
+        [JsonProperty("TH-66")]
+        public string TH_66 { get; set; }
+        [JsonProperty("TH-65")]
+        public string TH_65 { get; set; }
+        [JsonProperty("TH-54")]
+        public string TH_54 { get; set; }
+        [JsonProperty("TH-83")]
+        public string TH_83 { get; set; }
+        [JsonProperty("TH-25")]
+        public string TH_25 { get; set; }
+        [JsonProperty("TH-77")]
+        public string TH_77 { get; set; }
+        [JsonProperty("TH-85")]
+        public string TH_85 { get; set; }
+        [JsonProperty("TH-70")]
+        public string TH_70 { get; set; }
+        [JsonProperty("TH-21")]
+        public string TH_21 { get; set; }
+        [JsonProperty("TH-45")]
+        public string TH_45 { get; set; }
+        [JsonProperty("TH-27")]
+        public string TH_27 { get; set; }
+        [JsonProperty("TH-47")]
+        public string TH_47 { get; set; }
+        [JsonProperty("TH-11")]
+        public string TH_11 { get; set; }
+        [JsonProperty("TH-74")]
+        public string TH_74 { get; set; }
+        [JsonProperty("TH-75")]
+        public string TH_75 { get; set; }
+        [JsonProperty("TH-19")]
+        public string TH_19 { get; set; }
+        [JsonProperty("TH-91")]
+        public string TH_91 { get; set; }
+        [JsonProperty("TH-17")]
+        public string TH_17 { get; set; }
+        [JsonProperty("TH-33")]
+        public string TH_33 { get; set; }
+        [JsonProperty("TH-90")]
+        public string TH_90 { get; set; }
+        [JsonProperty("TH-64")]
+        public string TH_64 { get; set; }
+        [JsonProperty("TH-72")]
+        public string TH_72 { get; set; }
+        [JsonProperty("TH-84")]
+        public string TH_84 { get; set; }
+        [JsonProperty("TH-32")]
+        public string TH_32 { get; set; }
+        [JsonProperty("TH-63")]
+        public string TH_63 { get; set; }
+        [JsonProperty("TH-92")]
+        public string TH_92 { get; set; }
+        [JsonProperty("TH-23")]
+        public string TH_23 { get; set; }
+        [JsonProperty("TH-34")]
+        public string TH_34 { get; set; }
+        [JsonProperty("TH-41")]
+        public string TH_41 { get; set; }
+        [JsonProperty("TH-61")]
+        public string TH_61 { get; set; }
+        [JsonProperty("TH-53")]
+        public string TH_53 { get; set; }
+        [JsonProperty("TH-95")]
+        public string TH_95 { get; set; }
+        [JsonProperty("TH-35")]
+        public string TH_35 { get; set; }
+    }
+
     public class Countries
 	{
 		public Names names { get; set; }
@@ -1683,7 +1950,7 @@ public class PH
         public object AX { get; set; }
         public BD BD { get; set; }
         public object BE { get; set; }
-        //public BG BG { get; set; }
+        public BG BG { get; set; }
         public object BH { get; set; }
         public object BI { get; set; }
         public BO BO { get; set; }
@@ -1701,7 +1968,7 @@ public class PH
         public object GP { get; set; }
         public GR GR { get; set; }
         public object GF { get; set; }
-        //public HK HK { get; set; }
+        public HK HK { get; set; }
         public HU HU { get; set; }
         public ID ID { get; set; }
         public IE IE { get; set; }
@@ -1732,14 +1999,14 @@ public class PH
         public PK PK { get; set; }
         public object PL { get; set; }
         public object PT { get; set; }
-        //public PY PY { get; set; }
+        public PY PY { get; set; }
         public object RE { get; set; }
         public RO RO { get; set; }
         public object RS { get; set; }
         public object SG { get; set; }
         public object SK { get; set; }
         public object SI { get; set; }
-        //public TH TH { get; set; }
+        public TH TH { get; set; }
         public TR TR { get; set; }
         public TZ TZ { get; set; }
         public object LK { get; set; }
