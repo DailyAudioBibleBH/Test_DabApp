@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using DABApp.DabSockets;
 using Xamarin.Forms;
 
 namespace DABApp
 {
 	public partial class DabAddressManagementPage : DabBaseContentPage
 	{
-        public List<Address> userAddresses;
+        public List<DabGraphQlAddress> addresses;
 
-        public DabAddressManagementPage(List<Address> userAddresses)
+        public DabAddressManagementPage(List<DabGraphQlAddress> userAddresses)
 		{
 			InitializeComponent();
 			if (GlobalResources.ShouldUseSplitScreen){
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			this.userAddresses = userAddresses;
+			//this.addresses = userAddresses;
 		}
 
         async void OnBilling(object o, EventArgs e) 

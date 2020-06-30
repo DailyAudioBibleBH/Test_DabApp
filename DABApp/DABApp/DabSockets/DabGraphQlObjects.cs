@@ -61,7 +61,7 @@ namespace DABApp.DabSockets
         public DabGraphQlLogAction logAction { get; set; }
         public DabGraphQlUpdateUserFields updateUserFields { get; set; }
         public bool checkEmail { get; set; }
-        public List<Address> addresses { get; set; }
+        public List<DabGraphQlAddress> addresses { get; set; }
     }
 
     public class DabGraphQlAddress
@@ -72,13 +72,18 @@ namespace DABApp.DabSockets
         public string lastName { get; set; }
         public string company { get; set; }
         public string addressOne { get; set; }
-        public string addressTwo { get; set; }
+        public object addressTwo { get; set; }
         public string city { get; set; }
         public string state { get; set; }
         public string postcode { get; set; }
         public string country { get; set; }
         public string phone { get; set; }
         public string email { get; set; }
+
+        public DabGraphQlAddress()
+        {
+
+        }
 
         public DabGraphQlAddress(DabGraphQlAddress address)
         {

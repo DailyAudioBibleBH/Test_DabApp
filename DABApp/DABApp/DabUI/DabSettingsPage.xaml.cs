@@ -17,6 +17,7 @@ namespace DABApp
         public ViewCell addresses { get { return _addresses; } }
         public ViewCell wallet { get { return _wallet; } }
         public ViewCell donations { get { return _donations; } }
+        public List<DabGraphQlAddress> userAddresses;
         ViewCell _offline;
         //ViewCell _reset;
         ViewCell _appInfo;
@@ -109,19 +110,13 @@ namespace DABApp
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 //get user addresses
-                GlobalResources.WaitStart("Checking your credentials...");
+                GlobalResources.WaitStart("Grabbing your addresses...");
                 var result = await Service.DabService.GetAddresses();
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
-                List<Address> userAddresses = new List<Address>();
-                foreach (var item in result.Data.data.addresses)
-                {
-                    userAddresses.Add(item);
-                }
+                var results = result.Data.payload.data.addresses;
 
-
-
-                Navigation.PushAsync(new DabAddressManagementPage(userAddresses));
+                await Navigation.PushAsync(new DabAddressManagementPage(results));
             }
         }
 
