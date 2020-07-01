@@ -32,7 +32,7 @@ namespace DABApp
         {
             get
             {
-                return "20200629";
+                return "20200701";
             }
         }
 
