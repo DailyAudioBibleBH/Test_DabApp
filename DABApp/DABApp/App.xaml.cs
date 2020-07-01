@@ -40,7 +40,7 @@ namespace DABApp
                 DabSyncService.Instance.Init();
                 DabSyncService.Instance.Connect();
 
-                if (AuthenticationAPI.CheckToken() && versionList == null) //Check to see if the user is logged in.
+                if (AuthenticationAPI.CheckTokenOnAppStart() && versionList == null) //Check to see if the user is logged in.
                 {
                     if (GlobalResources.GetUserEmail() == "Guest")
                     {
