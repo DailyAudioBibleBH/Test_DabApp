@@ -83,7 +83,7 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>We use bluetooth devices to play audio on them.</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.80</string>
+	<string>1.1.81</string>
 	<key>CFBundleDisplayName</key>
 	<string>DAB</string>
 	<key>CFBundleVersion</key>
