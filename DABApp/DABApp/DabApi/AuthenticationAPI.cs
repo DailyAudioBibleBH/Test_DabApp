@@ -90,6 +90,27 @@ namespace DABApp
             }
         }
 
+        public static bool CheckTokenOnAppStart()//Checking API given token which determines if user can be brought to channels page on login
+        {
+            try
+            {
+
+                var creation = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
+                int days = ContentConfig.Instance.options.token_life;
+                if (creation == null || creation.Value == null)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public static bool CheckToken()//Checking API given token which determines if user needs to log back in after a set amount of time.
         {
             try
