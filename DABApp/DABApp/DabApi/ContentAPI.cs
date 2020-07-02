@@ -50,17 +50,36 @@ namespace DABApp
                 JObject countryAndStateParse = JObject.Parse(jsonOut);
                 JToken[] coutnryAndStateResults = countryAndStateParse["countries"].Children().ToArray();
                 List<dynamic> countryAndStatesList = new List<dynamic>();
-                Dictionary<string, object> countryAndStateDictionary = new Dictionary<string, object>();
 
                 foreach (JToken results in coutnryAndStateResults)
                 {
                     foreach (var res in results)
                     {
+                        var y = results.ToString();
                         var x = JsonConvert.SerializeObject(res);
-                        countryAndStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(x);
-                        var breakpoint = "";
+                        if(y.Contains("names"))
+                            dbSettings.StoreSetting("Country", x);
+                        if (y.Contains("labels"))
+                            dbSettings.StoreSetting("Labels", x);
+                        if (y.Contains("states"))
+                            dbSettings.StoreSetting("States", x);
+                        //countryAndStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(x);
+                        //var breakpoint = "";
                     }
                 }
+
+                dbSettings CountrySettings = adb.Table<dbSettings>().Where(x => x.Key == "Country").FirstOrDefaultAsync().Result;
+                dbSettings LabelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Labels").FirstOrDefaultAsync().Result;
+                dbSettings StateSettings = adb.Table<dbSettings>().Where(x => x.Key == "States").FirstOrDefaultAsync().Result;
+
+                Dictionary<string, object> countryDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(CountrySettings.Value);
+                Dictionary<string, object> labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(LabelSettings.Value);
+                Dictionary<string, object> stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings.Value);
+
+
+
+
+
 
                 if (ContentSettings == null || DataSettings == null)
                 {
