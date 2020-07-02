@@ -48,15 +48,18 @@ namespace DABApp
                 var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
                 var test = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
                 JObject countryAndStateParse = JObject.Parse(jsonOut);
-                List<JToken> coutnryAndStateResults = countryAndStateParse["countries"].Children().ToList();
-
+                JToken[] coutnryAndStateResults = countryAndStateParse["countries"].Children().ToArray();
                 List<dynamic> countryAndStatesList = new List<dynamic>();
+                Dictionary<string, object> countryAndStateDictionary = new Dictionary<string, object>();
+
                 foreach (JToken results in coutnryAndStateResults)
                 {
-                    dynamic jToken = results;
-                    countryAndStatesList.Add(jToken);
-                    //var x = jToken.names;
-                    //var breakpoint = "";
+                    foreach (var res in results)
+                    {
+                        var x = JsonConvert.SerializeObject(res);
+                        countryAndStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(x);
+                        var breakpoint = "";
+                    }
                 }
 
                 if (ContentSettings == null || DataSettings == null)
