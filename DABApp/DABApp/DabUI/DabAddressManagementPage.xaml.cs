@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DABApp.DabSockets;
+using Newtonsoft.Json;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -29,13 +31,15 @@ namespace DABApp
 				if (item.type == "billing")
 					billingAddress = item;
             }
-			var countries = await AuthenticationAPI.GetCountries();
+			string CountrySettings = dbSettings.GetSetting("Country", "");
+			Dictionary<string, string> countries = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings);
+
 			if (countries != null)
-			{
-				await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
-			}
-			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
-			GlobalResources.WaitStop();
+            {
+                await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
+            }
+            else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
+            GlobalResources.WaitStop();
 		}
 
 		async void OnShipping(object o, EventArgs e) 
@@ -50,7 +54,7 @@ namespace DABApp
 			var countries = await AuthenticationAPI.GetCountries();
 			if (countries != null)
 			{
-				await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
+				//await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			GlobalResources.WaitStop();

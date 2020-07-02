@@ -46,7 +46,8 @@ namespace DABApp
                     else throw new Exception("Request for Content API timed out.");
                 }).Wait();//Appended the GUID to avoid caching.
                 var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
-                var test = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
+
+                //Save Json Objects of Countries and States as a dbSettings
                 JObject countryAndStateParse = JObject.Parse(jsonOut);
                 JToken[] coutnryAndStateResults = countryAndStateParse["countries"].Children().ToArray();
                 List<dynamic> countryAndStatesList = new List<dynamic>();
@@ -63,11 +64,10 @@ namespace DABApp
                             dbSettings.StoreSetting("Labels", x);
                         if (y.Contains("states"))
                             dbSettings.StoreSetting("States", x);
-                        //countryAndStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(x);
-                        //var breakpoint = "";
                     }
                 }
 
+                //Showing that values saved and can easily be converted to a dictionary
                 dbSettings CountrySettings = adb.Table<dbSettings>().Where(x => x.Key == "Country").FirstOrDefaultAsync().Result;
                 dbSettings LabelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Labels").FirstOrDefaultAsync().Result;
                 dbSettings StateSettings = adb.Table<dbSettings>().Where(x => x.Key == "States").FirstOrDefaultAsync().Result;
@@ -75,11 +75,6 @@ namespace DABApp
                 Dictionary<string, object> countryDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(CountrySettings.Value);
                 Dictionary<string, object> labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(LabelSettings.Value);
                 Dictionary<string, object> stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings.Value);
-
-
-
-
-
 
                 if (ContentSettings == null || DataSettings == null)
                 {
