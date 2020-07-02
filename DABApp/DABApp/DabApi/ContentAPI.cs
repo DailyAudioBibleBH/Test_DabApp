@@ -47,18 +47,18 @@ namespace DABApp
                 }).Wait();//Appended the GUID to avoid caching.
                 var updated = JsonConvert.DeserializeObject<ContentConfig>(jsonOut).data.updated;
                 var test = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
-                JObject countryParse = JObject.Parse(jsonOut);
-                List<JToken> coutnryResults = countryParse["countries"].Children().ToList();
+                JObject countryAndStateParse = JObject.Parse(jsonOut);
+                List<JToken> coutnryAndStateResults = countryAndStateParse["countries"].Children().ToList();
 
-                Dictionary<string, string> countryDict = new Dictionary<string, string>();
-
-                //IList<SearchResult> searchResults = new List<SearchResult>();
-                foreach (JToken result3 in coutnryResults)
+                List<dynamic> countryAndStatesList = new List<dynamic>();
+                foreach (JToken results in coutnryAndStateResults)
                 {
-                    // JToken.ToObject is a helper method that uses JsonSerializer internally
-                    //Country searchResult = result3.ToObject<Country>();
-                    //countryDict.Add(searchResult.countryCode, searchResult.countryName);
+                    dynamic jToken = results;
+                    countryAndStatesList.Add(jToken);
+                    //var x = jToken.names;
+                    //var breakpoint = "";
                 }
+
                 if (ContentSettings == null || DataSettings == null)
                 {
                     ContentSettings = new dbSettings();
@@ -88,7 +88,7 @@ namespace DABApp
                 PlayerFeedAPI.CheckOfflineEpisodeSettings();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (ContentSettings == null)
                 {
