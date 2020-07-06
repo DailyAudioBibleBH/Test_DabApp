@@ -136,58 +136,58 @@ namespace DABApp.DabSockets
                 }
 
                 //Confirmation of logAction being received - delete items from the queue that we need to.
-                if (root.payload?.data?.logAction != null)
-                {
-                    //TODO: Only delete actions tied to the correct user id. right now we don't check that because we store user email, not user id.
-                    var action = root.payload.data.logAction;
-                    var actions = new List<dbPlayerActions>();
-                    if (action.listen != null)
-                    {
-                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.listen == action.listen).ToListAsync();
-                    }
-                    else if (action.favorite != null)
-                    {
-                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.favorite == action.favorite).ToListAsync();
-                    }
-                    else if (action.position != null)
-                    {
-                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.position == action.position).ToListAsync();
-                    }
-                    else if (action.entryDate != null)
-                    {
-                        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.entryDate == action.entryDate).ToListAsync();
-                    }
+                //if (root.payload?.data?.logAction != null)
+                //{
+                //    //TODO: Only delete actions tied to the correct user id. right now we don't check that because we store user email, not user id.
+                //    var action = root.payload.data.logAction;
+                //    var actions = new List<dbPlayerActions>();
+                //    if (action.listen != null)
+                //    {
+                //        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.listen == action.listen).ToListAsync();
+                //    }
+                //    else if (action.favorite != null)
+                //    {
+                //        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.favorite == action.favorite).ToListAsync();
+                //    }
+                //    else if (action.position != null)
+                //    {
+                //        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.position == action.position).ToListAsync();
+                //    }
+                //    else if (action.entryDate != null)
+                //    {
+                //        actions = await adb.Table<dbPlayerActions>().Where(x => x.EpisodeId == action.episodeId && action.entryDate == action.entryDate).ToListAsync();
+                //    }
 
-                    foreach (var a in actions)
-                    {
-                        Debug.WriteLine($"Deleting action log from local database: {JsonConvert.SerializeObject(a)}");
-                        await adb.DeleteAsync(a);
-                    }
+                //    foreach (var a in actions)
+                //    {
+                //        Debug.WriteLine($"Deleting action log from local database: {JsonConvert.SerializeObject(a)}");
+                //        await adb.DeleteAsync(a);
+                //    }
 
-                    //update the database with the correct value, if it's different
-                    bool hasJournal;
-                    if (action.entryDate != null)
-                        hasJournal = true;
-                    else
-                        hasJournal = false;
+                //    //update the database with the correct value, if it's different
+                //    bool hasJournal;
+                //    if (action.entryDate != null)
+                //        hasJournal = true;
+                //    else
+                //        hasJournal = false;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position, false);
-                }
+                //    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position, false);
+                //}
 
-                //Action we need to address
-                if (root.payload?.data?.actionLogged != null)
-                {
-                    var action = root.payload.data.actionLogged.action;
-                    bool hasJournal;
+                ////Action we need to address
+                //if (root.payload?.data?.actionLogged != null)
+                //{
+                //    var action = root.payload.data.actionLogged.action;
+                //    bool hasJournal;
 
-                    if (action.entryDate != null)
-                        hasJournal = true;
-                    else
-                        hasJournal = false;
+                //    if (action.entryDate != null)
+                //        hasJournal = true;
+                //    else
+                //        hasJournal = false;
 
-                    //Need to figure out action type
-                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
-                }
+                //    //Need to figure out action type
+                //    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, hasJournal, action.position);
+                //}
                 //else if (root?.payload?.data?.loginUser != null)
                 //{
 
@@ -226,59 +226,59 @@ namespace DABApp.DabSockets
                         await adb.InsertOrReplaceAsync(item);
                     }
                 }
-                //process incoming lastActions
-                else if (root.payload?.data?.lastActions != null)
-                {
-                    if (GlobalResources.GetUserEmail() != "Guest")
-                    {
-                        GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet connection, this could take up to a minute.");
+                ////process incoming lastActions
+                //else if (root.payload?.data?.lastActions != null)
+                //{
+                //    if (GlobalResources.GetUserEmail() != "Guest")
+                //    {
+                //        GlobalResources.WaitStart("Please wait while we load your personal action history. Depending on your internet connection, this could take up to a minute.");
 
 
-                        List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
-                        if (root.payload.data.lastActions.pageInfo.hasNextPage == true)
-                        {
-                            foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
-                            {
-                                await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
-                            }
-                            //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
-                            if (root.payload.data.lastActions.edges.Count > 0)
-                            {
-                                //TODO I would like to take messaging center out of here but need to figure how to grab resource parameter
-                                MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                            }
+                //        List<DabGraphQlEpisode> actionsList = new List<DabGraphQlEpisode>();  //list of actions
+                //        if (root.payload.data.lastActions.pageInfo.hasNextPage == true)
+                //        {
+                //            foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                //            {
+                //                await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                //            }
+                //            //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                //            if (root.payload.data.lastActions.edges.Count > 0)
+                //            {
+                //                //TODO I would like to take messaging center out of here but need to figure how to grab resource parameter
+                //                MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                //            }
 
-                            //Send last action query to the websocket
-                            //TODO: Come back and clean up with GraphQl objects
-                            System.Diagnostics.Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                            var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + root.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                            var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
-                            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
-                            DabSyncService.Instance.Send(JsonIn);
-                        }
-                        else
-                        {
-                            if (root.payload.data.lastActions != null)
-                            {
-                                foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
-                                {
-                                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
-                                }
-                                //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
-                                if (root.payload.data.lastActions.edges.Count > 0)
-                                {
-                                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                                }
-                            }
+                //            //Send last action query to the websocket
+                //            //TODO: Come back and clean up with GraphQl objects
+                //            System.Diagnostics.Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
+                //            var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\", cursor: \"" + root.payload.data.lastActions.pageInfo.endCursor + "\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
+                //            var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
+                //            var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
+                //            DabSyncService.Instance.Send(JsonIn);
+                //        }
+                //        else
+                //        {
+                //            if (root.payload.data.lastActions != null)
+                //            {
+                //                foreach (DabGraphQlEpisode item in root.payload.data.lastActions.edges.OrderByDescending(x => x.createdAt))  //loop throgh them all and update episode data (without sending episode changed messages)
+                //                {
+                //                    await PlayerFeedAPI.UpdateEpisodeProperty(item.episodeId, item.listen, item.favorite, item.hasJournal, item.position, false);
+                //                }
+                //                //since we told UpdateEpisodeProperty to NOT send a message to the UI, we need to do that now.
+                //                if (root.payload.data.lastActions.edges.Count > 0)
+                //                {
+                //                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
+                //                }
+                //            }
 
-                            //store a new last action date
-                            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-                            GlobalResources.WaitStop();
+                //            //store a new last action date
+                //            GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+                //            GlobalResources.WaitStop();
 
-                        }
-                    }
+                //        }
+                //    }
 
-                }
+                //}
                 ////Grabbing episodes
                 //else if (root.payload?.data?.episodes != null)
                 //{

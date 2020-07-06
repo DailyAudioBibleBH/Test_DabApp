@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using Newtonsoft.Json;
 using Xamarin.Forms;
+using static DABApp.Service.DabService;
 
 namespace DABApp.Service
 {
@@ -330,7 +333,7 @@ namespace DABApp.Service
 
                         //get last actions
                         var qlList = await DabService.GetActions(GlobalResources.LastActionDate);
-                        if (qlList.Success == true) //ignore failures here
+                        if (qlList.Success == true) //failures are ok, but don't update the last action date.
                         {
                             //process all of the ql lists
                             foreach (var ql in qlList.Data)
@@ -340,11 +343,14 @@ namespace DABApp.Service
                                 foreach (var action in actions)
                                 {
                                     //update episode properties
-                                    await PlayerFeedAPI.UpdateEpisodeProperty(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position);
+                                    await PlayerFeedAPI.UpdateEpisodeUserData(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position);
                                 }
                             }
                             //store a new last action date
                             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
+
+                            //raise an event to notify anything listening that new actions have been received
+                            DabServiceEvents.EpisodesChanged();
                         }
 
                         //stop the wait indicator
@@ -360,6 +366,85 @@ namespace DABApp.Service
             }
 
 
+        }
+
+        public static async Task<bool> PostActionLogs()
+        {
+            /* 
+             * this routine posts pending action logs
+             */
+
+            try
+            {
+                if (GuestStatus.Current.IsGuestLogin == false)
+                {
+                    if (DabService.IsConnected == true)
+                    {
+                        //get actions to process
+                        var adb = DabData.AsyncDatabase;
+                        var actions = await adb.Table<dbPlayerActions>().ToListAsync();
+
+                        //loop through actions
+                        foreach (var action in actions)
+                        {
+                            DabServiceWaitResponse response;
+                            var actionDate = action.ActionDateTime.Value.DateTime;
+                            switch (action.ActionType.ToLower())
+                            {
+                                case "favorite":
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Favorite, actionDate, action.Favorite,null);
+                                    break;
+                                case "listened_status":
+                                    //same as listened
+                                case "listened":
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Listened, actionDate, action.Listened,null);
+                                    break;
+                                case "pause":
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime) );
+                                    break;
+                                case "entryDate":
+                                    //TODO: Implement this
+                                    throw new NotSupportedException("Journals not working yet.");
+                                default:
+                                    throw new NotSupportedException();
+                            }
+
+                            if (response.Success == true)
+                            {
+                                //check to ensure action was not overwritten by another newer action
+                                var lastAction = response.Data.payload.data.logAction;
+                                if (lastAction.updatedAt >= actionDate)
+                                {
+                                    await PlayerFeedAPI.UpdateEpisodeUserData(lastAction.episodeId, lastAction.listen, lastAction.favorite, null, lastAction.position, true);
+                                    Debug.WriteLine($"Action was overwritten by newer action. OLD: {JsonConvert.SerializeObject(action)} / NEW: {JsonConvert.SerializeObject(lastAction)}");
+                                }
+
+                                //delete the action from the queue
+                                await adb.DeleteAsync(action);
+                            }
+
+                        }
+
+                        //success!
+                        return true;
+
+                    }
+                    else
+                    {
+                        //not connected
+                        return false;
+                    }
+                } else
+                {
+                    //guest
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                return false;
+            }
         }
 
         #endregion

@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
 using Xamarin.Forms;
+using static DABApp.Service.DabService;
 
 namespace DABApp
 {
@@ -328,56 +329,53 @@ namespace DABApp
             GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
         }
 
-        public static async Task CreateNewActionLog(int episodeId, string actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
+        public static async Task CreateNewActionLog(int episodeId,ServiceActionsEnum actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
+                //TODO: only do this if logged in.
+
+                //build a basic action log
                 var actionLog = new DABApp.dbPlayerActions();
+                string email = dbSettings.GetSetting("Email", "");
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
-                var entity_type = actionType == "listened" ? "listened_status" : "episode";
-                actionLog.entity_type = favorite.HasValue ? "favorite" : entity_type;
                 actionLog.EpisodeId = episodeId;
-                actionLog.PlayerTime = playTime.HasValue ? playTime.Value : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.CurrentPosition;
-                actionLog.ActionType = actionType;
-                actionLog.Favorite = favorite.HasValue ? favorite.Value : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.IsFavorite;
-                //check this
-                actionLog.listened_status = actionType == "listened" ? listened.ToString() : adb.Table<dbEpisodes>().Where(x => x.id == episodeId).FirstAsync().Result.UserData.IsListenedTo.ToString();
-                var user = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                if (user != null)
+                actionLog.UserEmail = email;
+
+
+                switch (actionType)
                 {
-                    actionLog.UserEmail = user.Value;
+                    case ServiceActionsEnum.Listened:
+                        actionLog.ActionType = "listened_status";
+                        actionLog.Listened = listened.Value;
+                        break;
+                    case ServiceActionsEnum.Favorite:
+                        actionLog.ActionType = "favorite";
+                        actionLog.Favorite = favorite.Value;
+                        break;
+                    case ServiceActionsEnum.Journaled:
+                        //TODO: Fix this
+                        throw new NotSupportedException("journal not working yet");
+                    case ServiceActionsEnum.PositionChanged:
+                        //TODO: Confirm this is the right code.
+                        actionLog.ActionType = "episode";
+                        actionLog.PlayerTime = playTime.Value;
+                        break;
                 }
 
-                //Android - Delete all existing action logs for this episode.
-                var actionList = adb.Table<dbPlayerActions>().ToListAsync().Result;
-
-                foreach (var i in actionList)
+                //delete existing action logs with same episode and type
+                var oldActions = await adb.Table<dbPlayerActions>().Where(x => x.ActionType == actionLog.ActionType && x.EpisodeId == actionLog.EpisodeId && x.UserEmail == email).ToListAsync();
+                foreach (var oldAction in oldActions)
                 {
-                    if (i.EpisodeId == episodeId && i.ActionType == actionType)
-                    {
-                        await adb.DeleteAsync(i);
-                    }
+                    await adb.DeleteAsync(oldAction);
                 }
 
-                //Insert new action log
-                if (Device.RuntimePlatform == "Android")
-                {
+                //insert new action log
+                await adb.InsertAsync(actionLog);
 
-                    //Android - add nw
+                //send actions logs if we can
+                await Service.DabServiceRoutines.PostActionLogs();
 
-                    await adb.InsertAsync(actionLog);
-                }
-
-                else
-                {//Apple - asnc
-                 //Add new episode action log
-                    await adb.InsertAsync(actionLog);
-                }
-                if (hasEmptyJournal == null)
-                {
-                    hasEmptyJournal = false;
-                }
-                await PostActionLogs((bool)hasEmptyJournal);
             }
             catch (Exception e)
             {

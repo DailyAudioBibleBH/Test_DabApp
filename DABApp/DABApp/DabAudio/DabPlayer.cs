@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using SQLite;
 using Xamarin.Forms;
+using static DABApp.Service.DabService;
 
 namespace DABApp.DabAudio
 {
@@ -397,7 +398,7 @@ namespace DABApp.DabAudio
             //Call other methods related to stopping / pausing an episode
             int e = GlobalResources.CurrentEpisodeId;
             PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-            AuthenticationAPI.CreateNewActionLog(e, "pause", CurrentPosition, null, null);
+            AuthenticationAPI.CreateNewActionLog(e,ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
 
         }
 

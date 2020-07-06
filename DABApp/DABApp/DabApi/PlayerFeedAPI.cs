@@ -12,6 +12,7 @@ using System.Diagnostics;
 using Plugin.Connectivity;
 using System.Linq;
 using DABApp.DabSockets;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -325,7 +326,7 @@ namespace DABApp
             Debug.WriteLine($"Episodes for {resource.title} Deleted");
         }
 
-        public static async Task UpdateEpisodeProperty(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition, bool RaiseEpisodeDataChanged = true)
+        public static async Task UpdateEpisodeUserData(int episodeId, bool? isListened, bool? isFavorite, bool? hasJournal, int? playerPosition, bool RaiseChangedEvent = false)
         {
             try
             {
@@ -341,26 +342,33 @@ namespace DABApp
                 }
                 else
                 {
+                    //find the user episode data (ued) in question
                     var userName = GlobalResources.GetUserEmail();
                     dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
+
+                    //add new ued if needed 
                     if (data == null)
                     {
                         data = new dbEpisodeUserData();
                         data.EpisodeId = episodeId;
                         data.UserName = userName;
                     }
+                    //set journal if needed
                     if (hasJournal.HasValue)
                     { 
                         data.HasJournal = hasJournal.Value;
                     }
+                    //set favorite if needed
                     if (isFavorite.HasValue)
                     {
                         data.IsFavorite = isFavorite.Value;
                     }
+                    //set listened if needed
                     if (isListened.HasValue)
                     {
                         data.IsListenedTo = isListened.Value;
                     }
+                    //set position if needed
                     if (playerPosition.HasValue)
                     {
                         if (GlobalResources.CurrentEpisodeId == episodeId)
@@ -387,11 +395,10 @@ namespace DABApp
                     await adb.InsertOrReplaceAsync(data);
                     Debug.WriteLine($"Saved episode {episodeId}/{userName} meta data: {JsonConvert.SerializeObject(data)}");
 
-                    //Notify listening pages that episode data has changed
-                    if (RaiseEpisodeDataChanged)
+                    //Notify listening pages that episode data has changed, if requested
+                    if (RaiseChangedEvent)
                     {
-                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                        MessagingCenter.Send<string>("Update", "Update");
+                        DabServiceEvents.EpisodesChanged();
                     }
                 }
             }
