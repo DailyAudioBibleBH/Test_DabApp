@@ -201,7 +201,6 @@ namespace DABApp
 
             if (GlobalResources.GetUserEmail() != "Guest")
             {
-                await DabServiceRoutines.PostActionLogs();
                 //await PlayerFeedAPI.GetEpisodes(_resource);
                 await AuthenticationAPI.GetMemberData();
                 TimedActions();

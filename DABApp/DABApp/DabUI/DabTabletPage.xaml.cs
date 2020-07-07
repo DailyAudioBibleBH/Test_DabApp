@@ -1096,7 +1096,6 @@ namespace DABApp
                 DabSyncService.Instance.Send(JsonIn);
 
 
-                await DabServiceRoutines.PostActionLogs();
                 await AuthenticationAPI.GetMemberData();
                 if (episode == null && Episodes.Count() > 0)
                 {

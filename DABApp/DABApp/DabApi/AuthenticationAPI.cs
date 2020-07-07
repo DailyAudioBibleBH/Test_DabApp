@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DABApp;
 using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using SQLite;
@@ -374,7 +375,7 @@ namespace DABApp
                 await adb.InsertAsync(actionLog);
 
                 //send actions logs if we can
-                await Service.DabServiceRoutines.PostActionLogs();
+                await DabServiceRoutines.PostActionLogs();
 
             }
             catch (Exception e)
@@ -382,93 +383,6 @@ namespace DABApp
                 Debug.WriteLine($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
             }
         }
-
-        //public static async Task<string> PostActionLogs(bool hasEmptyJournal)//Posts action logs to API in order to keep user episode location on multiple devices.
-        //{
-        //    if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
-        //    {
-        //        if (notPosting)
-        //        {
-        //            string listenedTo;
-        //            notPosting = false;
-        //            dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-        //            var actions = adb.Table<dbPlayerActions>().ToListAsync().Result;
-
-        //            if (TokenSettings != null && actions.Count > 0)
-        //            {
-        //                try
-        //                {
-        //                    LoggedEvents events = new LoggedEvents();
-
-        //                    foreach (var i in actions)
-        //                    {
-        //                        var updatedAt = DateTime.UtcNow.ToString("o");
-
-        //                        switch (i.ActionType)
-        //                        {
-        //                            case "favorite": //Favorited an episode mutation
-        //                                var favQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", favorite: " + i.Favorite + ", updatedAt: \"" + updatedAt + "\") {episodeId userId favorite updatedAt}}";
-        //                                favQuery = favQuery.Replace("True", "true");
-        //                                favQuery = favQuery.Replace("False", "false"); //Capitolized when converted to string so we undo this
-        //                                var favPayload = new DabGraphQlPayload(favQuery, variables);
-        //                                var favJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", favPayload));
-
-        //                                DabSyncService.Instance.Send(favJsonIn);
-        //                                //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, null, true, null, null);
-        //                                break;
-        //                            case "listened": //Marked as listened mutation
-        //                                if (i.listened_status == "True" || i.listened_status == "listened")
-        //                                    listenedTo = "true";
-        //                                else
-        //                                    listenedTo = "false";
-
-        //                                var lisQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", listen: " + listenedTo + ", updatedAt: \"" + updatedAt + "\") {episodeId userId listen updatedAt}}";
-        //                                var lisPayload = new DabGraphQlPayload(lisQuery, variables);
-        //                                var lisJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", lisPayload));
-
-        //                                DabSyncService.Instance.Send(lisJsonIn);
-        //                                //await PlayerFeedAPI.UpdateEpisodeProperty(i.EpisodeId, true, null, null, null);
-        //                                break;
-        //                            case "pause": //Saving player position to socket on pause mutation
-        //                                var posQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", position: " + (int)i.PlayerTime + ", updatedAt: \"" + updatedAt + "\") {episodeId userId position updatedAt}}";
-        //                                var posPayload = new DabGraphQlPayload(posQuery, variables);
-        //                                var posJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", posPayload));
-
-        //                                DabSyncService.Instance.Send(posJsonIn);
-        //                                break;
-        //                            case "entryDate": //When event happened mutation
-        //                                string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
-        //                                var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
-        //                                if (hasEmptyJournal == true)
-        //                                    entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
-        //                                var entPayload = new DabGraphQlPayload(entQuery, variables);
-        //                                var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
-
-        //                                DabSyncService.Instance.Send(entJsonIn);
-        //                                break;
-        //                            default:
-        //                                break;
-        //                        }
-        //                    }
-        //                }
-        //                catch (Exception e)
-        //                {
-        //                    //It's bad if the program lands here.
-        //                    Debug.WriteLine($"Error in Posting Action logs: {e.Message}");
-        //                    notPosting = true;
-        //                    return e.Message;
-        //                }
-        //            }
-        //            notPosting = true;
-        //            return "OK";
-        //        }
-        //        return "Currently Posting Action Logs";
-        //    }
-        //    else
-        //    {
-        //        return "Skipping Action Log Posts for Guest...";
-        //    }
-        //}
 
         static void CleanMemberData()
         {

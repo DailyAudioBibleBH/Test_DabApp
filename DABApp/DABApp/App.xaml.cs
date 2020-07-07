@@ -45,8 +45,6 @@ namespace DABApp
         {
             try
             {
-                //post action logs
-                await DabServiceRoutines.PostActionLogs();
                 //put the service to sleep
                 var ql = await DabService.TerminateConnection();
             }

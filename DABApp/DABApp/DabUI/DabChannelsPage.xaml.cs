@@ -91,14 +91,6 @@ namespace DABApp
 
         }
 
-        void PostLogs()
-        {
-            Task.Run(async () =>
-            {
-                //post action logs
-                await DabServiceRoutines.PostActionLogs();
-            });
-        }
 
         async void OnPlayer(object o, EventArgs e)
         {
@@ -182,9 +174,6 @@ namespace DABApp
                 //post actions logs
                 await Task.Run(async () =>
                 {
-                    //TODO: this shouldn't be needed anymore because we do it live or on connection
-                    await DabServiceRoutines.PostActionLogs();
-
 
                     await AuthenticationAPI.GetMemberData();
                 });

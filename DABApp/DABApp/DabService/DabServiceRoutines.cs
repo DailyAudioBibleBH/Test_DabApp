@@ -62,6 +62,9 @@ namespace DABApp.Service
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
 
+                    //post recent actions
+                    await PostActionLogs();
+
                     //get user profile information and update it.
                     ql = await Service.DabService.GetUserData();
                     if (ql.Success == true) //ignore failures here
@@ -372,6 +375,14 @@ namespace DABApp.Service
         {
             /* 
              * this routine posts pending action logs
+             * 
+             * It only needs to be called in 2 places:
+             * when the connection is established (to post any pending logs)
+             * when a new log is created (ot post live logs while connected)
+             * 
+             * this routine returns true if all actions a processed and removed as expected.
+             * it returns false if something goes wrong and actions still need to be processed.
+             * 
              */
 
             try
@@ -413,7 +424,8 @@ namespace DABApp.Service
                             {
                                 //check to ensure action was not overwritten by another newer action
                                 var lastAction = response.Data.payload.data.logAction;
-                                if (lastAction.updatedAt >= actionDate)
+                                var lastActionAge = lastAction.updatedAt.Subtract(actionDate);
+                                if (lastActionAge.TotalSeconds>1) //TODO: This should be replaced with action update dates that match per LUTD 7/7/2020
                                 {
                                     await PlayerFeedAPI.UpdateEpisodeUserData(lastAction.episodeId, lastAction.listen, lastAction.favorite, null, lastAction.position, true);
                                     Debug.WriteLine($"Action was overwritten by newer action. OLD: {JsonConvert.SerializeObject(action)} / NEW: {JsonConvert.SerializeObject(lastAction)}");
@@ -421,6 +433,10 @@ namespace DABApp.Service
 
                                 //delete the action from the queue
                                 await adb.DeleteAsync(action);
+                            } else {
+                                //leave the action alone, it will be processed later.
+                                //other actions may continue to get processed.
+                                Debug.WriteLine($"Action failed to be processed: {JsonConvert.SerializeObject(action)} / ERROR: {response.ErrorMessage}");
                             }
 
                         }
@@ -431,17 +447,18 @@ namespace DABApp.Service
                     }
                     else
                     {
-                        //not connected
+                        //not connected - nothing to do
                         return false;
                     }
                 } else
                 {
-                    //guest
+                    //guest - nothing to do
                     return false;
                 }
             }
             catch (Exception ex)
             {
+                //something went wrong - needs to run again at some point.
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
