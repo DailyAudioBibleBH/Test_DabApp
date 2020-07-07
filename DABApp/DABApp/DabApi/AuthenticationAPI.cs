@@ -58,56 +58,6 @@ namespace DABApp
             }
         }
 
-        public static async Task<Country[]> GetCountries()//Gets countries array for updating user addresses so that doesn't have to be hard coded.
-        {
-            try
-            {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}countries");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                Country[] countries = JsonConvert.DeserializeObject<Country[]>(JsonOut);
-                return countries;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static async Task<string> UpdateBillingAddress(Address newBilling)//Updating the Billing Address 
-        {
-            try
-            {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                HttpClient client = new HttpClient();
-                var JsonIn = JsonConvert.SerializeObject(newBilling);
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
-                var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}addresses", content);
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                if (JsonOut == "true")
-                {
-                    return JsonOut;
-                }
-                else
-                {
-                    var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-                    throw new Exception(error.message);
-                }
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(HttpRequestException))
-                {
-                    return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-                }
-                return e.Message;
-            }
-        }
-
         public static async Task<Card[]> GetWallet()//Gets user's saved credit cards.  Used for donations
         {
             try

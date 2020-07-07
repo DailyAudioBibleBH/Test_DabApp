@@ -51,10 +51,12 @@ namespace DABApp
 				if (item.type == "shipping")
 					shippingAddress = item;
 			}
-			var countries = await AuthenticationAPI.GetCountries();
+			string CountrySettings = dbSettings.GetSetting("Country", "");
+			Dictionary<string, string> countries = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings);
+
 			if (countries != null)
 			{
-				//await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
+				await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
 			GlobalResources.WaitStop();

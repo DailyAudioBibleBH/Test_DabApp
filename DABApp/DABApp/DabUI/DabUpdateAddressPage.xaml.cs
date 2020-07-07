@@ -15,8 +15,9 @@ namespace DABApp
         public Dictionary<string, object> stateDictionary;
 		public Dictionary<string, string> labelDictionary;
 		public Dictionary<string, string> countryDictionary;
+        public Dictionary<string, string> currentStateDictionary;
 
-		public DabUpdateAddressPage(DabGraphQlAddress address, Dictionary<string, string> countries, bool IsShipping)
+        public DabUpdateAddressPage(DabGraphQlAddress address, Dictionary<string, string> countries, bool IsShipping)
 		{
 			InitializeComponent();
 			if (GlobalResources.ShouldUseSplitScreen)
@@ -41,17 +42,12 @@ namespace DABApp
 
             if (Country.SelectedItem != null)
             {
-				try
-				{
-					object newCountry = Country.SelectedItem;
-					string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
-					object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-					Regions.ItemsSource = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString()).Values.ToList();
-				}
-				catch (Exception ex)
-				{
-
-				}
+				
+				object newCountry = Country.SelectedItem;
+				string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
+				object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+				Regions.ItemsSource = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString()).Values.ToList();
+				
 			}
             else
             {
@@ -97,10 +93,10 @@ namespace DABApp
 				update.address_2 = Address2.Text;
 				update.city = City.Text;
 				update.postcode = Code.Text;
-				update.country = ((Country)Country.SelectedItem).countryCode;
+				update.country = Country.SelectedItem.ToString();
 				if (Regions.SelectedItem != null)
 				{
-					update.state = ((Region)Regions.SelectedItem).regionCode;
+					update.state = currentStateDictionary.FirstOrDefault(x => x.Value == Regions.SelectedItem.ToString()).Key;
 				}
 				if (isShipping)
 					update.type = "shipping";
@@ -120,29 +116,24 @@ namespace DABApp
 		}
 
 		void OnCountrySelected(object o, EventArgs e) {
-			try
-			{
-				object newCountry = Country.SelectedItem;
-				string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
-				object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-                if (countryStates != null)
-                {
-					Dictionary<string, string> currentStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString());
-					Regions.ItemsSource = currentStateDictionary.Values.ToList();
-					_Region.IsVisible = true;
-				}
-                else
-                {
-					Regions.SelectedItem = null;
-					_Region.IsVisible = false;
-                }
-				RegionLabel.Text = labelDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-				
-			}
-			catch (Exception ex)
+			
+			object newCountry = Country.SelectedItem;
+			string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
+			object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+            if (countryStates != null)
             {
-				var breakpoint2 = "";
+				currentStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString());
+				Regions.ItemsSource = currentStateDictionary.Values.ToList();
+				_Region.IsVisible = true;
+			}
+            else
+            {
+				Regions.SelectedItem = null;
+				_Region.IsVisible = false;
             }
+			RegionLabel.Text = labelDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+				
+			
 
 			//if (countryStates != null)
 
@@ -179,8 +170,8 @@ namespace DABApp
 			}
 			if (Country.SelectedItem != null)
 			{
-				Country selected = (Country)Country.SelectedItem;
-				if (selected.countryCode == "US")
+				object selected = Country.SelectedItem;
+				if (selected.ToString() == "United States (US)")
 				{
 					if (string.IsNullOrEmpty(Address1.Text))
 					{
