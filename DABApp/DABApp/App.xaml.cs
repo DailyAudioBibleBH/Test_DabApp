@@ -45,17 +45,10 @@ namespace DABApp
         {
             try
             {
+                //post action logs
+                await DabServiceRoutines.PostActionLogs();
+                //put the service to sleep
                 var ql = await DabService.TerminateConnection();
-
-
-                //TODO: Old code is below. May need revamped
-                //DabSyncService.Instance.DisconnectWebSocket(false);
-                if (Device.RuntimePlatform == "iOS")
-                {
-                    AuthenticationAPI.PostActionLogs(false);
-                }
-                else await AuthenticationAPI.PostActionLogs(false);
-
             }
             catch (Exception ex)
             {

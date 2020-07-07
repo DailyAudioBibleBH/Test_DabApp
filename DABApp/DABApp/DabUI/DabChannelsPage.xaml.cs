@@ -95,7 +95,8 @@ namespace DABApp
         {
             Task.Run(async () =>
             {
-                await AuthenticationAPI.PostActionLogs(false);
+                //post action logs
+                await DabServiceRoutines.PostActionLogs();
             });
         }
 
@@ -181,7 +182,10 @@ namespace DABApp
                 //post actions logs
                 await Task.Run(async () =>
                 {
-                    await AuthenticationAPI.PostActionLogs(false);
+                    //TODO: this shouldn't be needed anymore because we do it live or on connection
+                    await DabServiceRoutines.PostActionLogs();
+
+
                     await AuthenticationAPI.GetMemberData();
                 });
 

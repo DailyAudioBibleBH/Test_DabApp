@@ -596,11 +596,11 @@ namespace DABApp.Service
                     break;
                 case ServiceActionsEnum.Listened:
                     if (!BoolValue.HasValue) throw new NotSupportedException("No listened value provided.");
-                    command = $"mutation {{logAction(episodeId: {EpisodeId}, listen: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt}}}}";
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, listen: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId listen updatedAt}}}}";
                     break;
                 case ServiceActionsEnum.PositionChanged:
                     if (!IntValue.HasValue) throw new NotSupportedException("No position value provided.");
-                    command = $"mutation {{logAction(episodeId: {EpisodeId}, position: {IntValue.Value}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt}}}}";
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, position: {IntValue.Value}, updatedAt: \"{updatedAt}\") {{episodeId userId position updatedAt}}}}";
                     break;
                 case ServiceActionsEnum.Journaled:
                     //TODO: Implement this
