@@ -29,7 +29,6 @@ namespace DABApp
 				EmailAndPhone.IsVisible = false;
 				Title.Text = "Shipping Address";
 			}
-			Country.ItemsSource = countries.Values.ToList();
 
 			dbSettings CountrySettings = adb.Table<dbSettings>().Where(x => x.Key == "Country").FirstOrDefaultAsync().Result;
 			dbSettings LabelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Labels").FirstOrDefaultAsync().Result;
@@ -38,6 +37,26 @@ namespace DABApp
 			countryDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings.Value);
 			labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(LabelSettings.Value);
 			stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings.Value);
+			Country.ItemsSource = countries.Values.ToList();
+
+            if (Country.SelectedItem != null)
+            {
+				try
+				{
+					object newCountry = Country.SelectedItem;
+					string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
+					object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+					Regions.ItemsSource = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString()).Values.ToList();
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
+            else
+            {
+				Country.SelectedItem = "United States (US)";
+			}
 
 			var breakpoint = "";
 
@@ -101,19 +120,28 @@ namespace DABApp
 		}
 
 		void OnCountrySelected(object o, EventArgs e) {
-			object newCountry = Country.SelectedItem;
-			var countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
-			//var countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-
 			try
 			{
-				var countryStates = stateDictionary.Where(x => x.Key == "US").ToList().FirstOrDefault().Value;
-				Dictionary<string, string> stateDictionary2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString());
-
+				object newCountry = Country.SelectedItem;
+				string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
+				object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+                if (countryStates != null)
+                {
+					Dictionary<string, string> currentStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString());
+					Regions.ItemsSource = currentStateDictionary.Values.ToList();
+					_Region.IsVisible = true;
+				}
+                else
+                {
+					Regions.SelectedItem = null;
+					_Region.IsVisible = false;
+                }
+				RegionLabel.Text = labelDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
+				
 			}
 			catch (Exception ex)
             {
-
+				var breakpoint2 = "";
             }
 
 			//if (countryStates != null)
