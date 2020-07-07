@@ -16,6 +16,9 @@ namespace DABApp
 		public Dictionary<string, string> labelDictionary;
 		public Dictionary<string, string> countryDictionary;
         public Dictionary<string, string> currentStateDictionary;
+		public string CountrySettings;
+		public string LabelSettings;
+		public string StateSettings;
 
         public DabUpdateAddressPage(DabGraphQlAddress address, Dictionary<string, string> countries, bool IsShipping)
 		{
@@ -31,30 +34,45 @@ namespace DABApp
 				Title.Text = "Shipping Address";
 			}
 
-			dbSettings CountrySettings = adb.Table<dbSettings>().Where(x => x.Key == "Country").FirstOrDefaultAsync().Result;
-			dbSettings LabelSettings = adb.Table<dbSettings>().Where(x => x.Key == "Labels").FirstOrDefaultAsync().Result;
-			dbSettings StateSettings = adb.Table<dbSettings>().Where(x => x.Key == "States").FirstOrDefaultAsync().Result;
+			//Finding and then storing all available country, labels, and states
+			CountrySettings = dbSettings.GetSetting("Country", "");
+			LabelSettings = dbSettings.GetSetting("Labels", "");
+			StateSettings = dbSettings.GetSetting("States", "");
 
-			countryDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings.Value);
-			labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(LabelSettings.Value);
-			stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings.Value);
+			countryDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings);
+			labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(LabelSettings);
+			stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings);
 			Country.ItemsSource = countries.Values.ToList();
 
-            if (Country.SelectedItem != null)
+			//If user already has an address tied to them, grab and bind appropriate data
+            if (address.country != null)
             {
-				
-				object newCountry = Country.SelectedItem;
+				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == address.country);
+
+				object newCountry = address.country;
 				string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
 				object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-				Regions.ItemsSource = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString()).Values.ToList();
-				
+
+
+				if (countryStates != null)
+                {
+					currentStateDictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(countryStates.ToString());
+					Regions.ItemsSource = currentStateDictionary.Values.ToList();
+                    if (address.state != null)
+                    {
+						Regions.SelectedItem = currentStateDictionary.FirstOrDefault(x => x.Key == address.state).Value;
+                    }
+				}
+                else
+                {
+					_Region.IsVisible = false;
+                }
 			}
             else
             {
-				Country.SelectedItem = "United States (US)";
+				//Default selected country to USA if no country tied to user
+				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == "United States (US)");
 			}
-
-			var breakpoint = "";
 
 			//Country.ItemDisplayBinding = new Binding("countryName");
 			//if (string.IsNullOrEmpty(address.country))
@@ -103,6 +121,7 @@ namespace DABApp
 				else
 					update.type = "billing";
 
+				//Send updated address to graph ql and wait for response
 				var result = await Service.DabService.UpdateUserAddress(update);
 				if (result.Success == false) throw new Exception(result.ErrorMessage);
                 else
@@ -115,8 +134,9 @@ namespace DABApp
 			}
 		}
 
-		void OnCountrySelected(object o, EventArgs e) {
-			
+		void OnCountrySelected(object o, EventArgs e)
+		{
+			//Select country and find appropriate regions list for country
 			object newCountry = Country.SelectedItem;
 			string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
 			object countryStates = stateDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
@@ -132,13 +152,7 @@ namespace DABApp
 				_Region.IsVisible = false;
             }
 			RegionLabel.Text = labelDictionary.Where(x => x.Key == countryCode).ToList().FirstOrDefault().Value;
-				
-			
 
-			//if (countryStates != null)
-
-
-			var breakpoint = "";
             //if (stateDictionary.Where(x => x.Key == countryCode.Value))
             //if (newCountry.ToString().Length == 0)
             //{
