@@ -160,11 +160,15 @@ namespace DABApp.Service
                             {
                                 _qlObject = response;
                                 _waiting = false;
+                                break;
                             }
-                            break;
-
-                        default:
-                            //ignore this response, it's not relevant.
+                            if (response?.type == "connection_error")
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                                _error = response.payload.message;
+                                break;
+                            }
                             break;
 
                         case DabServiceWaitTypes.StartSubscription:

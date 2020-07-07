@@ -973,8 +973,7 @@ namespace DABApp.Service
              * Handle an invalid token message, meaning we probably need to log the user out
              */
 
-            Debug.WriteLine($"INVALIDTOKEN");
-            throw new NotImplementedException();
+            await GlobalResources.LogoffAndResetApp();
         }
 
         private static async void HandleKeepAlive()

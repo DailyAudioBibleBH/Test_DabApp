@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DABApp
 {
@@ -548,7 +549,7 @@ namespace DABApp
         }
 
 
-        public static async void LogoffAndResetApp(string Message = null)
+        public static async Task<bool> LogoffAndResetApp(string Message = null)
         {
             //This method will log the current user off, reset all players and the app back to the login view, and reconnect all connections.
             //If Message is null, this will happen without any notification to the user. If a message is passed, it will be shown to the user and then they will be reset.
@@ -568,17 +569,16 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            dbSettings.DeleteLoginSettings();
+            await dbSettings.DeleteLoginSettings();
 
-
-            //Disconnect
-            DabSyncService.Instance.DisconnectWebSocket(true);
 
             Device.BeginInvokeOnMainThread(() =>
             {
                 //Reset main page of app.
                 Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
             });
+
+            return true;
         }
 
 
