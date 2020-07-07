@@ -41,7 +41,7 @@
 					<Label x:Name="RegionWarning" Text="Region is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 				</StackLayout>
 				<StackLayout Grid.Row="0" Grid.Column="1">
-					<Label x:Name="CodeLabel" Text="Zip" FontSize="Micro"/>
+					<Label x:Name="CodeLabel" Text="Postal Code" FontSize="Micro"/>
 					<Entry x:Name="Code" Text="{Binding postcode}"/>
 					<Label x:Name="CodeWarning" Text="Zip code is required if in US." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
 				</StackLayout>

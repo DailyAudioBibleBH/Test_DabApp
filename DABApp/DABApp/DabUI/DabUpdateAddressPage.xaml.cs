@@ -47,7 +47,7 @@ namespace DABApp
 			//If user already has an address tied to them, grab and bind appropriate data
             if (address.country != null)
             {
-				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == address.country);
+				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == address.country).Value;
 
 				object newCountry = address.country;
 				string countryCode = countryDictionary.Where(x => x.Value == newCountry.ToString()).ToList().FirstOrDefault().Key;
@@ -71,7 +71,7 @@ namespace DABApp
             else
             {
 				//Default selected country to USA if no country tied to user
-				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == "United States (US)");
+				Country.SelectedItem = countryDictionary.FirstOrDefault(x => x.Value == "United States (US)").Value;
 			}
 
 			//Country.ItemDisplayBinding = new Binding("countryName");
