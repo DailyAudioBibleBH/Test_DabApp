@@ -13,18 +13,25 @@ namespace DABApp
 		public DabGraphQlAddress billingAddress;
 		public DabGraphQlAddress shippingAddress;
 
-        public DabAddressManagementPage(List<DabGraphQlAddress> userAddresses)
+        public DabAddressManagementPage()
 		{
 			InitializeComponent();
 			if (GlobalResources.ShouldUseSplitScreen){
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			this.addresses = userAddresses;
 		}
 
         async void OnBilling(object o, EventArgs e) 
 		{
 			GlobalResources.WaitStart("Getting Billing Address...");
+
+			//get user addresses
+			var result = await Service.DabService.GetAddresses();
+			if (result.Success == false) throw new Exception(result.ErrorMessage);
+
+			var results = result.Data.payload.data.addresses;
+			addresses = results;
+
 			billingAddress = new DabGraphQlAddress();
             foreach (var item in addresses)
             {
@@ -45,6 +52,14 @@ namespace DABApp
 		async void OnShipping(object o, EventArgs e) 
 		{
 			GlobalResources.WaitStart("Getting Shipping Address...");
+
+			//get user addresses
+			var result = await Service.DabService.GetAddresses();
+			if (result.Success == false) throw new Exception(result.ErrorMessage);
+
+			var results = result.Data.payload.data.addresses;
+			addresses = results;
+
 			shippingAddress = new DabGraphQlAddress();
 			foreach (var item in addresses)
 			{

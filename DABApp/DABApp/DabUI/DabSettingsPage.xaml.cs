@@ -109,14 +109,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                //get user addresses
-                GlobalResources.WaitStart("Grabbing your addresses...");
-                var result = await Service.DabService.GetAddresses();
-                if (result.Success == false) throw new Exception(result.ErrorMessage);
-
-                var results = result.Data.payload.data.addresses;
-
-                await Navigation.PushAsync(new DabAddressManagementPage(results));
+                await Navigation.PushAsync(new DabAddressManagementPage());
             }
         }
 
