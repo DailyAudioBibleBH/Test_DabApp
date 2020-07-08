@@ -1034,7 +1034,7 @@ namespace DABApp.Service
                 else
                 {
                     badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(data);
+                    await adb.InsertOrReplaceAsync(badgeData);
                 }
             }
             catch (Exception)
@@ -1046,7 +1046,7 @@ namespace DABApp.Service
                 else
                 {
                     badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(data);
+                    await adb.InsertOrReplaceAsync(badgeData);
                 }
             }
         }
