@@ -24,7 +24,6 @@ namespace DABApp.Service
         public static event GraphQlTraffic TrafficOccuredEvent;
         public static void TrafficOccured(GraphQlTrafficDirection direction, string traffic)
         {
-            Debug.WriteLine($"TrafficOccured Fired");
             Device.BeginInvokeOnMainThread(async () =>
             {
                 TrafficOccuredEvent?.Invoke(direction, traffic);
@@ -35,7 +34,6 @@ namespace DABApp.Service
         public static event GraphQlProfileChanged UserProfileChangedEvent;
         public static void UserProfileChanged(GraphQlUser user)
         {
-            Debug.WriteLine($"GraphQlProfileChanged Fired");
             Device.BeginInvokeOnMainThread(async () =>
            {
                UserProfileChangedEvent?.Invoke(user);
