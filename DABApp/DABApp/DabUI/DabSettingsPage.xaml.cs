@@ -98,7 +98,6 @@ namespace DABApp
             {
                 
                 GlobalResources.WaitStart();
-                DabSyncService.Instance.popRequests = 0;
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
             }

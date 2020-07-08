@@ -138,9 +138,6 @@
     <None Update="DabUI\DabResetListenedToStatusPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
-    <None Update="DabUI\DabResetPasswordPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
     <None Update="DabUI\DabSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

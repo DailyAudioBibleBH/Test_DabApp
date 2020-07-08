@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +27,7 @@ namespace DABApp.Service
         GetEpisodes,
         GetChannels,
         GetBadges,
+        LogAction,
         GetAddresses,
         UpdateUserAddress
     }
@@ -161,11 +162,15 @@ namespace DABApp.Service
                             {
                                 _qlObject = response;
                                 _waiting = false;
+                                break;
                             }
-                            break;
-
-                        default:
-                            //ignore this response, it's not relevant.
+                            if (response?.type == "connection_error")
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                                _error = response.payload.message;
+                                break;
+                            }
                             break;
 
                         case DabServiceWaitTypes.StartSubscription:
@@ -291,6 +296,15 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.GetBadges:
                             //badges received
                             if (response?.payload?.data?.updatedBadges != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.LogAction:
+                            //action logged
+                            if (response?.payload?.data?.logAction != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

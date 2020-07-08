@@ -225,7 +225,7 @@ namespace DABApp
                 var difference = Math.Abs(lastLogPlayerPosition - player.CurrentPosition);
                 if (lastLogPlayerPosition != player.CurrentPosition && (difference >= 30 || difference <= -30))
                 {
-                    AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, "pause", player.CurrentPosition, null, null, null);
+                    AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId,  Service.DabService.ServiceActionsEnum.PositionChanged, player.CurrentPosition, null, null, null);
                     
                     lastLogPlayerPosition = player.CurrentPosition;
                     if (GlobalResources.CurrentEpisodeId != (int)Episode.Episode.id)
@@ -396,16 +396,16 @@ namespace DABApp
                     Episode.Episode.UserData.HasJournal = false;
                     Episode.HasJournal = false;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, false, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, true);
                 }
                 else if (Episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
                     Episode.Episode.UserData.HasJournal = true;
                     Episode.HasJournal = true;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "entryDate", null, null, null, null);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, null);
                 }
             }
         }
@@ -701,7 +701,7 @@ namespace DABApp
         {
             Episode.IsFavorite = !Episode.IsFavorite;
             AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "favorite", null, null, Episode.Episode.UserData.IsFavorite, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Favorite, null, null, Episode.Episode.UserData.IsFavorite, null);
         }
 
         //User listens to (or unlistens to) an episode
@@ -713,7 +713,7 @@ namespace DABApp
             //check this
             Episode.IsListenedTo = !Episode.IsListenedTo;
             AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, "listened", null, Episode.Episode.UserData.IsListenedTo, null, null);
+            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Listened, null, Episode.Episode.UserData.IsListenedTo, null, null);
 
             //TODO: Bind accessibiliyt text
         }

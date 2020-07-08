@@ -551,12 +551,12 @@ namespace DABApp.Service
                 };
             }
 
-            //prep for handling a loop of actions
+            //prep for handling a loop of episodes
             List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
             bool getMore = true;
             object cursor = null;
 
-            //start a loop to get all actions
+            //start a loop to get all episodes
             while (getMore == true)
             {
                 //Send the command
@@ -580,7 +580,7 @@ namespace DABApp.Service
                 var service = new DabServiceWaitService();
                 var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes);
 
-                //Process the actions
+                //Process the episodes
                 if (response.Success == true)
                 {
                     var data = response.Data.payload.data.episodes;
@@ -632,10 +632,60 @@ namespace DABApp.Service
             PositionChanged
         }
 
-        public static async Task<DabServiceWaitResponse> LogAction(int EpisodeId, ServiceActionsEnum Action, double Position = 0)
+        public static async Task<DabServiceWaitResponse> LogAction(int EpisodeId, ServiceActionsEnum Action, DateTime ActionDate, bool? BoolValue, int? IntValue)
         {
-            //TODO: log an action to Service and wait for confirmation it was processed.
-            throw new NotImplementedException();
+            /*
+             * this routine logs an action to the service
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //build the command
+            string command;
+            var updatedAt = ActionDate.ToString("o") + "Z";
+            switch (Action)
+            {
+                case ServiceActionsEnum.Favorite:
+                    if (! BoolValue.HasValue) throw new NotSupportedException("No favorite value provided.");
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, favorite: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt}}}}";
+                    break;
+                case ServiceActionsEnum.Listened:
+                    if (!BoolValue.HasValue) throw new NotSupportedException("No listened value provided.");
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, listen: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId listen updatedAt}}}}";
+                    break;
+                case ServiceActionsEnum.PositionChanged:
+                    if (!IntValue.HasValue) throw new NotSupportedException("No position value provided.");
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, position: {IntValue.Value}, updatedAt: \"{updatedAt}\") {{episodeId userId position updatedAt}}}}";
+                    break;
+                case ServiceActionsEnum.Journaled:
+                    //TODO: Implement this
+                    /* Old Code
+                     *  string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
+                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
+                                        if (hasEmptyJournal == true)
+                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
+                                        var entPayload = new DabGraphQlPayload(entQuery, variables);
+                                        var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
+                    */
+                    throw new NotImplementedException();
+                default:
+                    //Nothing to do here, unuspported action style
+                    throw new NotImplementedException();
+            }
+
+            //Send the command
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            var json = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload));
+            socket.Send(json);
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.LogAction);
+
+            //return the response
+            return response;
+
         }
 
         public static async Task<DabServiceWaitResponseList> GetActions(DateTime StartDateGmt)
@@ -645,8 +695,8 @@ namespace DABApp.Service
              * note that this routine is different as it returns a LIST of responses as it builds all actions together
              */
 
-            //check for a connecting before proceeding
-            if (!IsConnected)
+                    //check for a connecting before proceeding
+                    if (!IsConnected)
             {
                 return new DabServiceWaitResponseList()
                 {
@@ -979,8 +1029,7 @@ namespace DABApp.Service
              * Handle an invalid token message, meaning we probably need to log the user out
              */
 
-            Debug.WriteLine($"INVALIDTOKEN");
-            throw new NotImplementedException();
+            await GlobalResources.LogoffAndResetApp();
         }
 
         private static async void HandleKeepAlive()

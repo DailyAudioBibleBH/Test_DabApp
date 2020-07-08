@@ -45,17 +45,8 @@ namespace DABApp
         {
             try
             {
+                //put the service to sleep
                 var ql = await DabService.TerminateConnection();
-
-
-                //TODO: Old code is below. May need revamped
-                //DabSyncService.Instance.DisconnectWebSocket(false);
-                if (Device.RuntimePlatform == "iOS")
-                {
-                    AuthenticationAPI.PostActionLogs(false);
-                }
-                else await AuthenticationAPI.PostActionLogs(false);
-
             }
             catch (Exception ex)
             {
@@ -84,13 +75,6 @@ namespace DABApp
                     //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
                     GlobalResources.playerPodcast.NotifyPlayStateChanged();
                 }
-                //TODO: Replace this with sync
-                //JournalTracker.Current.Open = true;
-                if (Device.RuntimePlatform == Device.iOS)
-                {
-                    AuthenticationAPI.GetMemberData();
-                }
-                await AuthenticationAPI.GetMemberData();
 
                 //Notify UI that app is active again
                 MessagingCenter.Send<string>("DabApp", "OnResume");

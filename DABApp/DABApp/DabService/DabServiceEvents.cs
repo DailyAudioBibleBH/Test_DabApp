@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using DABApp.DabSockets;
 using Xamarin.Forms;
 
@@ -13,7 +14,9 @@ namespace DABApp.Service
 
 
     public delegate void GraphQlTraffic(GraphQlTrafficDirection direction, string traffic);
-    public delegate void GraphQlEventHandler(GraphQlUser user);
+    public delegate void GraphQlProfileChanged(GraphQlUser user);
+    public delegate void GraphQlEpisodesChanged();
+    
 
     public static class DabServiceEvents
     {
@@ -28,13 +31,24 @@ namespace DABApp.Service
         }
 
         //User Profile Changed Event
-        public static event GraphQlEventHandler UserProfileChangedEvent;
+        public static event GraphQlProfileChanged UserProfileChangedEvent;
         public static void UserProfileChanged(GraphQlUser user)
         {
             Device.BeginInvokeOnMainThread(async () =>
            {
                UserProfileChangedEvent?.Invoke(user);
            });
+        }
+
+        //Episode Property Changed Event
+        public static event GraphQlEpisodesChanged EpisodesChangedEvent;
+        public static void EpisodesChanged()
+        {
+            Debug.WriteLine($"EpisodesChanged Fired");
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                EpisodesChangedEvent?.Invoke();
+            });
         }
     }
 }

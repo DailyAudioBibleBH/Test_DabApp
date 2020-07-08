@@ -342,13 +342,7 @@ namespace DABApp
                 //Load the list if episodes for the channel.
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
-                // send websocket message to get episodes by channel
-                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id).ToString("o");
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //TODO: Get new episodes from the socket
             }
             else
             {
@@ -585,7 +579,7 @@ namespace DABApp
             }
             Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
             {
-                AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "pause", player.CurrentPosition, null, null);
+                AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.PositionChanged, player.CurrentPosition, null, null);
                 return true;
             });
         }
@@ -827,16 +821,16 @@ namespace DABApp
                     episode.Episode.UserData.HasJournal = false;
                     episode.HasJournal = false;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, false, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, true);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, false, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Journaled, null, null, null, true);
                 }
                 else if (episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
                     episode.Episode.UserData.HasJournal = true;
                     episode.HasJournal = true;
 
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "entryDate", null, null, null, null);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, true, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Journaled, null, null, null, null);
                 }
             }
 
@@ -942,8 +936,8 @@ namespace DABApp
         {
             episode.IsListenedTo = !episode.IsListenedTo;
             AutomationProperties.SetName(Completed, episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, episode.Episode.UserData.IsListenedTo);
+            await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Listened, null, episode.Episode.UserData.IsListenedTo);
         }
 
 
@@ -952,8 +946,8 @@ namespace DABApp
         {
             episode.IsFavorite = !episode.IsFavorite;
             AutomationProperties.SetName(Favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, episode.Episode.UserData.IsFavorite);
+            await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Favorite, null, null, episode.Episode.UserData.IsFavorite);
         }
 
         async void OnListFavorite(object o, EventArgs e)
@@ -976,13 +970,13 @@ namespace DABApp
                 {
                     episode.Episode.UserData.IsFavorite = model.IsFavorite;
                     Favorite.Source = episode.favoriteSource;
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "favorite", null, null, model.IsFavorite);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
                 }
                 else
                 {
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "favorite", null, null, model.IsFavorite);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id,  DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
                 }
             }
         }
@@ -1008,13 +1002,13 @@ namespace DABApp
                     Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
 
                     AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, "listened", null, model.IsListenedTo, null);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
                 }
                 else
                 {
-                    await PlayerFeedAPI.UpdateEpisodeProperty((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, "listened", null, model.IsListenedTo, null);
+                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id,  DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
                 }
             }
         }
@@ -1084,20 +1078,9 @@ namespace DABApp
                 GlobalResources.WaitStart("Refreshing episodes...");
 
 
-                DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
-                string minQueryDate = queryDate.ToString("o");
-
-                //send websocket message to get episodes by channel
-                DabGraphQlVariables variables = new DabGraphQlVariables();
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //TODO: Get episodes
 
 
-                await AuthenticationAPI.PostActionLogs(false);
-                await AuthenticationAPI.GetMemberData();
                 if (episode == null && Episodes.Count() > 0)
                 {
                     //pick the first episode

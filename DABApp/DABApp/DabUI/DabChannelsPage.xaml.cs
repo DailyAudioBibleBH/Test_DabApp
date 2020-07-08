@@ -91,13 +91,6 @@ namespace DABApp
 
         }
 
-        void PostLogs()
-        {
-            Task.Run(async () =>
-            {
-                await AuthenticationAPI.PostActionLogs(false);
-            });
-        }
 
         async void OnPlayer(object o, EventArgs e)
         {
@@ -177,14 +170,6 @@ namespace DABApp
                 //update token, if needed
                 await DabServiceRoutines.CheckAndUpdateToken();
 
-
-                //post actions logs
-                await Task.Run(async () =>
-                {
-                    await AuthenticationAPI.PostActionLogs(false);
-                    await AuthenticationAPI.GetMemberData();
-                });
-
             }
 
             //Download new episodes
@@ -216,13 +201,14 @@ namespace DABApp
             if (favoriteChannel != "")
             {
                 favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
-                var minQueryDate = GlobalResources.GetLastEpisodeQueryDate(Convert.ToInt32(favChannel.id));
-                DabGraphQlVariables variables = new DabGraphQlVariables();
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + favChannel.channelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //TODO: Implement using GraphQL service classes - needs to get latest episodes for this specific channel.
+                //var minQueryDate = GlobalResources.GetLastEpisodeQueryDate(Convert.ToInt32(favChannel.id));
+                //DabGraphQlVariables variables = new DabGraphQlVariables();
+                //Debug.WriteLine($"Getting episodes by ChannelId");
+                //var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + favChannel.channelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                //var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
+                //string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
+                //DabSyncService.Instance.Send(JsonIn);
             }
         }
 
