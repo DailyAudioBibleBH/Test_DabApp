@@ -400,7 +400,7 @@ namespace DABApp.Service
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,40000); //Added longer wait time to register user since it was not recieving a response fast enough
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser); //Added longer wait time to register user since it was not recieving a response fast enough
 
             //return the response
             return response;
