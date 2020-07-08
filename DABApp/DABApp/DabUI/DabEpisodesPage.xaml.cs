@@ -200,7 +200,7 @@ namespace DABApp
 
                 //get the episodes - this routine handles resetting the date and raising events
                 GlobalResources.WaitStart($"Refreshing episodes...");
-                var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh)) ;
+                var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
                 GlobalResources.WaitStop();
             }
 
@@ -217,10 +217,9 @@ namespace DABApp
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
-                var m = MonthConverter.ConvertToFull(month);
-                if (Months.Items.Contains(m) == false)
+                if (Months.Items.Contains(month) == false)
                 { 
-                    Months.Items.Add(m);
+                    Months.Items.Add(month);
                 }
             }
 
@@ -243,7 +242,7 @@ namespace DABApp
                 {
                     //filter to the right list of episodes
                     EpisodeList.ItemsSource = _Episodes = Episodes
-                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex])
                         .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                         .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                         .Select(x => new EpisodeViewModel(x)).ToList();
