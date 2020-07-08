@@ -22,7 +22,8 @@ namespace DABApp.DabUI
         {
             base.OnAppearing();
 
-            RotateIconContinuously();
+            RotateIconContinuously(); //start rotation
+            WaitContent.FadeTo(1, 250); //fade it in
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
