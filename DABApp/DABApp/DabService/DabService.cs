@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.DabUI;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
 using SQLite;
 using Xamarin.Forms;
 
@@ -995,6 +997,7 @@ namespace DABApp.Service
 
         }
 
+        //Progress was made, show popup if 100 percent achieved
         private static async void HandleProgressUpdated(DabGraphQlProgressUpdated data)
         {
             /*
@@ -1005,55 +1008,47 @@ namespace DABApp.Service
 
             Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
 
-            
-            dbUserBadgeProgress progress = adb.Table<dbUserBadgeProgress>().Where(x => x.id == data.progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            DabGraphQlProgress progress = new DabGraphQlProgress(data.progress);
+            if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
+            {
+                //log to firebase
+                var fbInfo = new Dictionary<string, string>();
+                fbInfo.Add("user", GlobalResources.GetUserEmail());
+                fbInfo.Add("idiom", Device.Idiom.ToString());
+                fbInfo.Add("badgeId", progress.badgeId.ToString());
+                DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
+
+
+                await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
+                progress.seen = true;
+            }
+            dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
-                if (progress == null)
+                if (badgeData == null)
                 {
-                    data.progress.userName = userName;
-                    await adb.InsertOrReplaceAsync(progress);
+                    await adb.InsertOrReplaceAsync(newProgress);
                 }
                 else
                 {
-                    progress.percent = data.progress.percent;
+                    badgeData.percent = newProgress.percent;
                     await adb.InsertOrReplaceAsync(data);
                 }
             }
             catch (Exception)
             {
-                if (progress == null)
+                if (badgeData == null)
                 {
-                    progress.userName = userName;
-                    await adb.InsertOrReplaceAsync(progress);
+                    await adb.InsertOrReplaceAsync(newProgress);
                 }
                 else
                 {
-                    progress.percent = data.progress.percent;
+                    badgeData.percent = newProgress.percent;
                     await adb.InsertOrReplaceAsync(data);
                 }
             }
-
-            //update last time checked for badge progress
-            string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
-            dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-            if (sBadgeProgressSettings == null)
-            {
-                sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
-            }
-            //Update date last time checked for badges
-            try
-            {
-                sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
-                await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
-            }
-            catch (Exception)
-            {
-                sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
-                await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
-            }
-
-
         }
 
         private static async void HandleTokenRemoved(TokenRemoved data)
