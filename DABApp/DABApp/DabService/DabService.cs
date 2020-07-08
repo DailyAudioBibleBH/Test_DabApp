@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using Newtonsoft.Json;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp.Service
@@ -29,6 +30,11 @@ namespace DABApp.Service
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
 
         private static List<int> SubscriptionIds = new List<int>();  //list of subscription id's managed by Service
+        public static string userName;
+
+        //DATABASE CONNECTION
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 
         //WEBSOCKET CONNECTION
 
@@ -995,9 +1001,58 @@ namespace DABApp.Service
              * Handle an incoming pogress update notification
              */
 
+            userName = GlobalResources.GetUserEmail();
+
             Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
 
-            //TODO: Handle this by updating database (don't think we have any UI notifications here
+            
+            dbUserBadgeProgress progress = adb.Table<dbUserBadgeProgress>().Where(x => x.id == data.progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            try
+            {
+                if (progress == null)
+                {
+                    data.progress.userName = userName;
+                    await adb.InsertOrReplaceAsync(progress);
+                }
+                else
+                {
+                    progress.percent = data.progress.percent;
+                    await adb.InsertOrReplaceAsync(data);
+                }
+            }
+            catch (Exception)
+            {
+                if (progress == null)
+                {
+                    progress.userName = userName;
+                    await adb.InsertOrReplaceAsync(progress);
+                }
+                else
+                {
+                    progress.percent = data.progress.percent;
+                    await adb.InsertOrReplaceAsync(data);
+                }
+            }
+
+            //update last time checked for badge progress
+            string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+            dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
+            if (sBadgeProgressSettings == null)
+            {
+                sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+            }
+            //Update date last time checked for badges
+            try
+            {
+                sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
+            }
+            catch (Exception)
+            {
+                sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
+            }
+
 
         }
 

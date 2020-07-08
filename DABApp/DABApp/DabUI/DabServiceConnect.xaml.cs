@@ -22,7 +22,7 @@ namespace DABApp.DabUI
         {
             base.OnAppearing();
 
-            RotateImageContinously();
+            RotateIconContinuously();
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
@@ -73,7 +73,7 @@ namespace DABApp.DabUI
             rotateImage = false;
         }
 
-        async Task RotateImageContinously()
+        async Task RotateIconContinuously()
         {
             while (rotateImage)
             {
