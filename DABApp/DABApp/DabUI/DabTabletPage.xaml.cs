@@ -342,13 +342,7 @@ namespace DABApp
                 //Load the list if episodes for the channel.
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
-                // send websocket message to get episodes by channel
-                string lastEpisodeQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id).ToString("o");
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + lastEpisodeQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //TODO: Get new episodes from the socket
             }
             else
             {
@@ -1084,19 +1078,9 @@ namespace DABApp
                 GlobalResources.WaitStart("Refreshing episodes...");
 
 
-                DateTime queryDate = GlobalResources.DabMinDate.ToUniversalTime();
-                string minQueryDate = queryDate.ToString("o");
-
-                //send websocket message to get episodes by channel
-                DabGraphQlVariables variables = new DabGraphQlVariables();
-                Debug.WriteLine($"Getting episodes by ChannelId");
-                var episodesByChannelQuery = "query { episodes(date: \"" + minQueryDate + "\", channelId: " + _resource.id + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                var episodesByChannelPayload = new DabGraphQlPayload(episodesByChannelQuery, variables);
-                string JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", episodesByChannelPayload));
-                DabSyncService.Instance.Send(JsonIn);
+                //TODO: Get episodes
 
 
-                await AuthenticationAPI.GetMemberData();
                 if (episode == null && Episodes.Count() > 0)
                 {
                     //pick the first episode

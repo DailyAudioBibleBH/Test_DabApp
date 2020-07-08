@@ -80,7 +80,7 @@ namespace DABApp
                 PlayerFeedAPI.DownloadEpisodes();
             }
             ); //app activated
-            
+
         }
 
         protected override void OnAppearing()
@@ -100,7 +100,7 @@ namespace DABApp
 
         public async void OnRefresh(object o, EventArgs e)
         {
-            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0,0)); ; //don't await this.
+            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this.
             Refresh(true);
         }
 
@@ -159,7 +159,7 @@ namespace DABApp
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id,  DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
             model.IsFavorite = !ep.UserData.IsFavorite;
         }
 
@@ -199,25 +199,15 @@ namespace DABApp
 
             //TODO - END OF NEW CODE - FIX WHAT'S BELOW
 
-            if (GlobalResources.GetUserEmail() != "Guest")
+            if (_resource.availableOffline && PlayerFeedAPI.DownloadIsRunning == false)
             {
-                //await PlayerFeedAPI.GetEpisodes(_resource);
-                await AuthenticationAPI.GetMemberData();
-                TimedActions();
-
-                //GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
-
-                if (_resource.availableOffline  && PlayerFeedAPI.DownloadIsRunning == false)
+                Task.Run(async () =>
                 {
-                    Task.Run(async () =>
-                    {
-                        await PlayerFeedAPI.DownloadEpisodes();
-                        CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                        circularProgressControl.HandleDownloadVisibleChanged(true);
-                    });
-                }
+                    await PlayerFeedAPI.DownloadEpisodes();
+                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                    circularProgressControl.HandleDownloadVisibleChanged(true);
+                });
             }
-
 
             GlobalResources.WaitStop();
         }

@@ -420,65 +420,6 @@ namespace DABApp
 
         }
 
-        public static async Task<bool> GetMemberData()//Getting member info on episodes.  So that user location on episodes is updated.
-        {
-            if (!GuestStatus.Current.IsGuestLogin && DabSyncService.Instance.IsConnected)
-            {
-
-                CleanMemberData(); //clean up member data if needed, normally only on the first time throuah an app.
-
-                if (notGetting)
-                {
-                    notGetting = false;
-                    var start = DateTime.Now;
-                    var settings = await adb.Table<dbSettings>().ToListAsync();
-                    dbSettings TokenSettings = settings.SingleOrDefault(x => x.Key == "Token");
-                    dbSettings EmailSettings = settings.SingleOrDefault(x => x.Key == "Email");
-                    if (TokenSettings != null || EmailSettings != null)
-                    {
-                        Debug.WriteLine($"Read data {(DateTime.Now - start).TotalMilliseconds}");
-                        try
-                        {
-                            if (GlobalResources.GetUserEmail() != "Guest")
-                            {
-                                //Send last action query to the websocket
-                                Debug.WriteLine($"Getting actions since {GlobalResources.LastActionDate.ToString()}...");
-                                var updateEpisodesQuery = "{ lastActions(date: \"" + GlobalResources.LastActionDate.ToString("o") + "Z\") { edges { id episodeId userId favorite listen position entryDate updatedAt createdAt } pageInfo { hasNextPage endCursor } } } ";
-                                var updateEpisodesPayload = new DabGraphQlPayload(updateEpisodesQuery, variables);
-                                var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", updateEpisodesPayload));
-                                DabSyncService.Instance.Send(JsonIn);
-
-                                notGetting = true;
-                                return true;
-                            }
-                            else
-                            {
-                                notGetting = true;
-                                return false;
-                            }
-
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine($"Exception in GetMemberData: {e.Message}");
-                            notGetting = true;
-                            return false;
-                        }
-                    }
-                    notGetting = true;
-                    return false;
-                }
-                //Already Getting
-                return false;
-            }
-            else
-            {
-                //Not logged in
-                Debug.WriteLine("Skipping GetMemberData for guest login...");
-                return false;
-            }
-        }
-
         static async Task SaveMemberData(List<dbEpisodes> episodes)//Saves member data for each episode gotten from GetMemberData method.
         {
             var savedEps = await adb.Table<dbEpisodes>().ToListAsync();

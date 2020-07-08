@@ -24,26 +24,16 @@ namespace DABApp
 		async void OnReset(object o, EventArgs e) {
 			ResetPassword.IsEnabled = false;
 
-			var resetPasswordMutation = "mutation { resetPassword(email: \"{Email.Text}\" )}";
-			var resetPasswordPayload = new DabGraphQlPayload(resetPasswordMutation, variables);
-			var JsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", resetPasswordPayload));
-			DabSyncService.Instance.Send(JsonIn);
+			//TODO: Test and implement
+			var result = await Service.DabService.ResetPassword(Email.Text);
+			if (result.Success == true)
+            {
+				await DisplayAlert("Password Reset", "Instructions to reset your password have been sent to your email.", "OK");
+            } else
+            {
+				await DisplayAlert("Password Reset Failed", result.ErrorMessage, "OK");
+            }
 
-			//if (Email.Text == Confirmation.Text)
-			//{
-			//	string message = await AuthenticationAPI.ResetPassword(Email.Text);
-			//	if (message.Contains("exception"))
-			//	{
-			//		await DisplayAlert("Error", message, "OK");
-			//	}
-			//	else {
-			//		await DisplayAlert("Success", message, "OK");
-			//		await Navigation.PopAsync();
-			//	}
-			//}
-			//else {
-			//	await DisplayAlert("Confimation Email does not match Email!", "Make sure your email matches with the confirmation email.", "OK");
-			//}
 			ResetPassword.IsEnabled = true;
 		}
 

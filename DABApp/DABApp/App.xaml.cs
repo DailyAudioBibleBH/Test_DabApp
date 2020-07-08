@@ -75,13 +75,6 @@ namespace DABApp
                     //Notify bound elements of any changes happened to the player from outside the app (like the lock screen)
                     GlobalResources.playerPodcast.NotifyPlayStateChanged();
                 }
-                //TODO: Replace this with sync
-                //JournalTracker.Current.Open = true;
-                if (Device.RuntimePlatform == Device.iOS)
-                {
-                    AuthenticationAPI.GetMemberData();
-                }
-                await AuthenticationAPI.GetMemberData();
 
                 //Notify UI that app is active again
                 MessagingCenter.Send<string>("DabApp", "OnResume");

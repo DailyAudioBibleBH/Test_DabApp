@@ -73,12 +73,8 @@ namespace DABApp.DabUI
 
         async void OnContinue(object o, EventArgs e)
         {
-            DabGraphQlVariables variables = new DabGraphQlVariables();
-            string seenQuery = "mutation { seeProgress(id:" + progressId + ") { id badgeId percent year seen } }";
-            var seenPayload = new DabGraphQlPayload(seenQuery, variables);
-            var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
-            DabSyncService.Instance.Send(seenJsonIn);
-
+            //TODO: Fully implement this - it's not working yet and will crash the app
+            await Service.DabService.SeeProgress(progressId);
             await PopupNavigation.Instance.PopAsync();
         }
     }

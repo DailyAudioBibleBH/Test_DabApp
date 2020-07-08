@@ -96,7 +96,6 @@ namespace DABApp
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
                 GlobalResources.WaitStart();
-                DabSyncService.Instance.popRequests = 0;
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
             }

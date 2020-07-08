@@ -493,6 +493,11 @@ namespace DABApp.Service
         }
         #endregion
 
+        #region Badge and Progress Routines
+
+
+        #endregion
+
     }
 }
 
