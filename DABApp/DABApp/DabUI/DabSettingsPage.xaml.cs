@@ -17,6 +17,7 @@ namespace DABApp
         public ViewCell addresses { get { return _addresses; } }
         public ViewCell wallet { get { return _wallet; } }
         public ViewCell donations { get { return _donations; } }
+        public List<DabGraphQlAddress> userAddresses;
         ViewCell _offline;
         //ViewCell _reset;
         ViewCell _appInfo;
@@ -95,6 +96,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
+                
                 GlobalResources.WaitStart();
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
@@ -102,11 +104,11 @@ namespace DABApp
             
         }
 
-        void OnAddresses(object o, EventArgs e)
+        async void OnAddresses(object o, EventArgs e)
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                Navigation.PushAsync(new DabAddressManagementPage());
+                await Navigation.PushAsync(new DabAddressManagementPage());
             }
         }
 

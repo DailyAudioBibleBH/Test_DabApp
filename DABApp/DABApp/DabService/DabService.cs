@@ -311,6 +311,28 @@ namespace DABApp.Service
             return response;
         }
 
+        public static async Task<DabServiceWaitResponse> GetAddresses ()
+        {
+            /*
+             * This routine requests a list of addresses assigned to the user, billing and shipping.
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the Login mutation
+            string command = $"query {{ addresses {{ wpId type firstName lastName company addressOne addressTwo city state postcode country phone email}}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetAddresses);
+
+            //return the response
+            return response;
+        }
+
         public static async Task<DabServiceWaitResponse> LoginUser(string email, string password)
         {
             /*
@@ -328,6 +350,39 @@ namespace DABApp.Service
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
             var response = await service.WaitForServiceResponse(DabServiceWaitTypes.LoginUser);
+
+            //return the response
+            return response;
+        }
+
+        public static async Task<DabServiceWaitResponse> UpdateUserAddress(Address address)
+        {
+            /*
+             * This routine takes a specified username and password and attempts to log the user in via graphql.
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            if (address.type == "billing")
+            {
+                //Send the Billing mutation
+                var command = $"mutation {{ updateUserAddress(type: \"{address.type}\" firstName: \"{address.first_name}\", lastName: \"{address.last_name}\", company: \"{address.company}\", addressOne: \"{address.address_1}\", addressTwo: \"{address.address_2}\", city: \"{address.city}\", state: \"{address.state}\", postcode: \"{address.postcode}\", country: \"{address.country}\", phone: \"{address.phone}\", email: \"{address.email}\") {{ wpId type firstName lastName company addressOne addressTwo city state postcode country phone email }}}}";
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            }
+            else
+            {
+                //Send the Shipping mutation
+                var command = $"mutation {{ updateUserAddress(type: \"{address.type}\" firstName: \"{address.first_name}\", lastName: \"{address.last_name}\", company: \"{address.company}\", addressOne: \"{address.address_1}\", addressTwo: \"{address.address_2}\", city: \"{address.city}\", state: \"{address.state}\", postcode: \"{address.postcode}\", country: \"{address.country}\") {{ wpId type firstName lastName company addressOne addressTwo city state postcode country }}}}";
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            }
+            
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdateUserAddress);
 
             //return the response
             return response;

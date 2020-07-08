@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +28,9 @@ namespace DABApp.Service
         GetChannels,
         GetBadges,
         LogAction
+        GetBadges,
+        GetAddresses,
+        UpdateUserAddress
     }
 
     public class DabServiceWaitService
@@ -303,6 +306,22 @@ namespace DABApp.Service
                         case DabServiceWaitTypes.LogAction:
                             //action logged
                             if (response?.payload?.data?.logAction != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+                        case DabServiceWaitTypes.GetAddresses:
+                            //addresses recieved
+                            if (response?.payload?.data?.addresses != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+                        case DabServiceWaitTypes.UpdateUserAddress:
+                            //update address response recieved
+                            if (response?.payload?.data?.updateUserAddress != null)
                             {
                                 _qlObject = response;
                                 _waiting = false;

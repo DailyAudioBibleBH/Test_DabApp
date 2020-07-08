@@ -30,7 +30,7 @@ namespace DABApp
 			//SettingsPage.reset.Tapped += OnReset;
 			SettingsPage.appInfo.Tapped += OnAppInfo;
 			SettingsPage.profile.Tapped += OnProfile;
-			SettingsPage.addresses.Tapped += OnAddresses;
+			//SettingsPage.addresses.Tapped += OnAddresses;
 			SettingsPage.wallet.Tapped += OnWallet;
 			SettingsPage.donations.Tapped += OnDonations;
             SettingsPage.Disappearing += OnDisappearing;
@@ -103,13 +103,13 @@ namespace DABApp
 			Remove();
 		}
 
-		void OnAddresses(object o, EventArgs e) {
-			var Addresses = new DabAddressManagementPage();
-            Addresses.Unsubscribe();
-			Detail = new NavigationPage(Addresses) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
-			Addresses.ToolbarItems.Clear();
-			Remove();
-		}
+		//void OnAddresses(object o, EventArgs e) {
+		//	var Addresses = new DabAddressManagementPage();
+  //          Addresses.Unsubscribe();
+		//	Detail = new NavigationPage(Addresses) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
+		//	Addresses.ToolbarItems.Clear();
+		//	Remove();
+		//}
 
 		async void OnWallet(object o, EventArgs e) {
 			

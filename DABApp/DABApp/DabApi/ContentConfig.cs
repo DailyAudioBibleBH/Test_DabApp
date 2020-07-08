@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using FFImageLoading;
+using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -204,14 +205,14 @@ namespace DABApp
             Instance = new ContentConfig();
         }
 
-        //Properties of the instance
+		//Properties of the instance
 
-        public Data data { get; set; } //update data data
-		public List<Nav> nav { get; set; } //nav items
-		public Blocktext blocktext { get; set; } //block text data
-		public List<View> views { get; set; } //views
-        public List<Versions> versions { get; set; }
-        public AppSettings app_settings { get; set; }
+		public Data data { get; set; }
+		public List<Nav> nav { get; set; }
+		public Blocktext blocktext { get; set; }
+		public List<View> views { get; set; }
+		public List<Versions> versions { get; set; }
+		public AppSettings app_settings { get; set; }
 		public Options options { get; set; }
 
 		public async Task cachImages() 
@@ -380,8 +381,8 @@ namespace DABApp
 		public int progress_year { get; set; } = 2020; 
 	}
 
-    /* Converter class to convert short month names to long names */
-    public static class MonthConverter
+	/* Converter class to convert short month names to long names */
+	public static class MonthConverter
     {
         public static string ConvertToFull(string ShortHand)
         {

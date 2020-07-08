@@ -61,6 +61,47 @@ namespace DABApp.DabSockets
         public DabGraphQlLogAction logAction { get; set; }
         public DabGraphQlUpdateUserFields updateUserFields { get; set; }
         public bool checkEmail { get; set; }
+        public List<DabGraphQlAddress> addresses { get; set; }
+        public DabGraphQlAddress updateUserAddress { get; set; }
+    }
+
+    public class DabGraphQlAddress
+    {
+        public int wpId { get; set; }
+        public string type { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string company { get; set; }
+        public string addressOne { get; set; }
+        public object addressTwo { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+        public string postcode { get; set; }
+        public string country { get; set; }
+        public string phone { get; set; }
+        public string email { get; set; }
+
+        public DabGraphQlAddress()
+        {
+
+        }
+
+        public DabGraphQlAddress(DabGraphQlAddress address)
+        {
+            this.wpId = address.wpId;
+            this.type = address.type;
+            this.firstName = address.firstName;
+            this.lastName = address.lastName;
+            this.company = address.company;
+            this.addressOne = address.addressOne;
+            this.addressTwo = address.addressTwo;
+            this.city = address.city;
+            this.state = address.state;
+            this.postcode = address.postcode;
+            this.country = address.country;
+            this.phone = address.phone;
+            this.email = address.email;
+        }
     }
 
     public class DabGraphQlLogAction
