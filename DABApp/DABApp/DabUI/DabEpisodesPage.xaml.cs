@@ -236,12 +236,19 @@ namespace DABApp
             /*
              * handle listened of an episode via the list
              */
-
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            model.IsListenedTo = !ep.UserData.IsListenedTo;
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, !ep.UserData.IsListenedTo);
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                var mi = ((Xamarin.Forms.MenuItem)o);
+                var model = ((EpisodeViewModel)mi.CommandParameter);
+                var ep = model.Episode;
+                model.IsListenedTo = !ep.UserData.IsListenedTo;
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, !ep.UserData.IsListenedTo);
+            }
+            else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
         }
 
         public async void OnFavorite(object o, EventArgs e)
@@ -249,12 +256,19 @@ namespace DABApp
             /*
              * handle favorite of an episode via the list
              */
-
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            model.IsFavorite = !ep.UserData.IsFavorite;
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                var mi = ((Xamarin.Forms.MenuItem)o);
+                var model = ((EpisodeViewModel)mi.CommandParameter);
+                var ep = model.Episode;
+                model.IsFavorite = !ep.UserData.IsFavorite;
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
+            }
+            else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
         }
 
         void OnFilters(object o, EventArgs e)
