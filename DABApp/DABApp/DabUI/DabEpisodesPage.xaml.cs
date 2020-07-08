@@ -44,8 +44,11 @@ namespace DABApp
                 EpisodeList.IsRefreshing = false;
             });
 
-            //episodes added event
+            //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
+
+            //episode user data changed event
+            DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;
 
         }
 
@@ -183,6 +186,13 @@ namespace DABApp
             //new episodes added - refresh the list
             await Refresh(EpisodeRefreshType.IncrementalRefresh);
         }
+
+        private async void DabServiceEvents_UserProfileChangedEvent(GraphQlUser user)
+        {
+            //user data has changed (not episode list itself)
+            await Refresh(EpisodeRefreshType.NoRefresh);
+        }
+
 
         #endregion
 

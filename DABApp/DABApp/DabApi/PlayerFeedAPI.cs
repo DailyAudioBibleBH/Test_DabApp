@@ -207,10 +207,10 @@ namespace DABApp
                         Debug.WriteLine("Starting to download episode {0} ({1}/{2} - {3})...", episode.id, ix, episodesToShowDownload.Count(), episode.url);
                         if (await fm.DownloadEpisodeAsync(episode.url, episode))
                         {
-                            Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
                             Debug.WriteLine("Finished downloading episode {0} ({1})...", episode.id, episode.url);
                             episode.is_downloaded = true;
                             await adb.UpdateAsync(episode);
+                            Service.DabServiceEvents.EpisodeUserDataChanged(); //notify listeners that episode has changed
                         }
                         else throw new Exception("Error called by the DownloadEpisodeAsync method of the IFileManagement dependency service.");
                     }
@@ -366,7 +366,7 @@ namespace DABApp
                     //Notify listening pages that episode data has changed, if requested
                     if (RaiseChangedEvent)
                     {
-                        DabServiceEvents.EpisodesChanged();
+                        DabServiceEvents.EpisodeUserDataChanged();
                     }
                 }
             }
@@ -444,7 +444,7 @@ namespace DABApp
                             episode.is_downloaded = false;
                             episode.progressVisible = false;
                             var x = adb.UpdateAsync(episode).Result;
-                                Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
+                            Service.DabServiceEvents.EpisodeUserDataChanged();
                         }
 
                     }
@@ -474,10 +474,7 @@ namespace DABApp
                 episode.remaining_time = NewRemainingTime.ToString(); //TODO was a string - did making this a double break it?
                 await adb.UpdateAsync(episode);
                 await adb.UpdateAsync(episode.UserData);
-                //if (Device.Idiom == TargetIdiom.Tablet)
-                //{
-                Device.BeginInvokeOnMainThread(() => { MessagingCenter.Send<string>("Update", "Update"); });
-                //}
+                Service.DabServiceEvents.EpisodeUserDataChanged();
             }
             catch (Exception e)
             {

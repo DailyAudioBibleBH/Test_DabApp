@@ -285,15 +285,7 @@ namespace DABApp.Service
                 await adb.InsertOrReplaceAsync(dbe);
 
                 //notify the UI
-                //TODO: Confirm all of these messages
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    MessagingCenter.Send<string>("Update", "Update");
-                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                    MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
-                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
-
-                });
+                DabServiceEvents.EpisodesChanged();
 
                 return true;
 
@@ -347,7 +339,7 @@ namespace DABApp.Service
                             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
                             //raise an event to notify anything listening that new actions have been received
-                            DabServiceEvents.EpisodesChanged();
+                            DabServiceEvents.EpisodeUserDataChanged();
                         }
 
                         //stop the wait indicator
