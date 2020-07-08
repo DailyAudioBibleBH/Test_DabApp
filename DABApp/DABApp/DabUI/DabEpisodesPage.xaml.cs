@@ -11,6 +11,14 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
+    enum EpisodeRefreshType
+    {
+        FullRefresh,
+        IncrementalRefresh,
+        NoRefresh
+    }
+
+
     public partial class DabEpisodesPage : DabBaseContentPage
     {
         Resource _resource;
@@ -20,133 +28,118 @@ namespace DABApp
         public DabEpisodesPage(Resource resource)
         {
             InitializeComponent();
-            ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-
-            //Subscribe to GraphQL alerts for refresh
-            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    TimedActions();
-                });
-
-            });
-
-            _resource = resource;
             DabViewHelper.InitDabForm(this);
-            Episodes = PlayerFeedAPI.GetEpisodeList(resource);
+
+            //UI setup
+            _resource = resource; //the resource (channel) being used
             BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+
+            //pull to refresh
+            EpisodeList.RefreshCommand = new Command(async () => //pull to refresh command
             {
-                var m = MonthConverter.ConvertToFull(month);
-                Months.Items.Add(m);
-            }
-            Months.Items.Insert(0, "All Episodes");
-            Months.SelectedIndex = 0;
-            if (resource.availableOffline)
-            {
-                Task.Run(async () =>
-                {
-                    await PlayerFeedAPI.DownloadEpisodes();
-                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                    circularProgressControl.HandleDownloadVisibleChanged(true);
-                });
-            }
-            EpisodeList.RefreshCommand = new Command(async () =>
-            {
-                await Refresh(true);
+                await Refresh(EpisodeRefreshType.FullRefresh);
                 EpisodeList.IsRefreshing = false;
             });
 
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
-            {
-                Episodes = PlayerFeedAPI.GetEpisodeList(resource);
-                TimedActions();
-            });
-
-            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
-            {
-                Refresh(false);
-            }
-            ); //app activated
-
-            MessagingCenter.Subscribe<string>("dabapp", "OnEpisodesUpdated", async (obj) =>
-            {
-                //TODO: Took this out because it was causing a loop. Do we need it?
-                //await Refresh(false);
-                PlayerFeedAPI.DownloadEpisodes();
-            }
-            ); //app activated
+            //episodes added event
+            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
         }
 
-        protected override void OnAppearing()
+        private async void DabServiceEvents_EpisodesChangedEvent()
         {
-            base.OnAppearing();
+            //new episodes added - refresh the list
+            await Refresh(EpisodeRefreshType.IncrementalRefresh);
+        }
+
+        async Task<bool> DownloadEpisodes()
+        {
+            /*
+             * download episodes 
+             */
             if (_resource.availableOffline)
             {
-                Task.Run(async () =>
-                {
-                    await PlayerFeedAPI.DownloadEpisodes();
-                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                    circularProgressControl.HandleDownloadVisibleChanged(true);
-                });
+                await PlayerFeedAPI.DownloadEpisodes();
+                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                circularProgressControl.HandleDownloadVisibleChanged(true);
             }
-            Refresh(false);
+
+            return true;
+        }
+
+        protected async override void OnAppearing()
+        {
+            /*
+             * page appearing
+             * when page appears, get new episodes, and then download them, if needed
+             */
+
+            base.OnAppearing();
+
+            //get new episodes, if they exist -- this will also handle downloading
+            Refresh(EpisodeRefreshType.NoRefresh); //refresh list with no new data first
+            Refresh(EpisodeRefreshType.IncrementalRefresh); //run it again looking for new data
+
         }
 
         public async void OnRefresh(object o, EventArgs e)
         {
-            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this.
-            Refresh(true);
+            /*
+             * handles the click of the refresh button 
+             */
+            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this as we want to get started with the code right away
+            await Refresh(EpisodeRefreshType.FullRefresh);
         }
 
         public async void OnEpisode(object o, ItemTappedEventArgs e)
         {
-            try
-            {
-                EpisodeList.IsEnabled = false;
-                GlobalResources.WaitStart();
-                var chosenVM = (EpisodeViewModel)e.Item;
-                var chosen = chosenVM.Episode;
-                EpisodeList.SelectedItem = null;
-                var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
+            /*
+             * click on an episode to play it
+             */
 
-                if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
-                {
-                    if (chosen.id != GlobalResources.CurrentEpisodeId)
-                    {
-                        //TODO: Replace this with sync
-                        //JournalTracker.Current.Content = null;
-                    }
-                    //Push the new player page
-                    await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
-                }
-                else
-                {
-                    await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
-                }
-                EpisodeList.SelectedItem = null;
-                GlobalResources.WaitStop();
-                EpisodeList.IsEnabled = true;
-            }
-            catch (Exception ex)
+            EpisodeList.IsEnabled = false;
+            GlobalResources.WaitStart();
+            var chosenVM = (EpisodeViewModel)e.Item;
+            var chosen = chosenVM.Episode;
+            EpisodeList.SelectedItem = null;
+            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
+
+            if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                Refresh(true);
+                //play the local file or stream it via the internet
+
+                if (chosen.id != GlobalResources.CurrentEpisodeId)
+                {
+                    //TODO: Replace this with sync
+                    //JournalTracker.Current.Content = null;
+                }
+                //Push the new player page
+                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
             }
+            else
+            {
+                //let user know you can't play an episode if not downloaded and offline
+                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+            }
+            EpisodeList.SelectedItem = null;
+            GlobalResources.WaitStop();
+            EpisodeList.IsEnabled = true;
         }
 
-        public void OnMonthSelected(object o, EventArgs e)
+        public async void OnMonthSelected(object o, EventArgs e)
         {
-            TimedActions();
+            //filter to a given month
+            await Refresh(EpisodeRefreshType.NoRefresh);
         }
 
         public async void OnListened(object o, EventArgs e)
         {
+            /*
+             * handle listened of an episode via the list
+             */
+
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
@@ -156,6 +149,10 @@ namespace DABApp
 
         public async void OnFavorite(object o, EventArgs e)
         {
+            /*
+             * handle favorite of an episode via the list
+             */
+
             var mi = ((Xamarin.Forms.MenuItem)o);
             var model = ((EpisodeViewModel)mi.CommandParameter);
             var ep = model.Episode;
@@ -165,69 +162,71 @@ namespace DABApp
 
 
 
-        async Task Refresh(bool ReloadAll)
+        async Task Refresh(EpisodeRefreshType refreshType)
         {
+            /* 
+             * this routine pulls any new episodes for the selected channel, 
+             * updates the ui, 
+             * and downloads them
+             * 
+             */
+
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
-            int pullToRefreshRate = GlobalResources.PullToRefreshRate;
             DateTime minQueryDate;
-            if (ReloadAll)
+
+            if (refreshType != EpisodeRefreshType.NoRefresh)
             {
-#if DEBUG
-                minQueryDate = GlobalResources.DabMinDate;
-                GlobalResources.SetLastRefreshDate(_resource.id);
-#else
-                if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
+                //refresh episodes
+
+                if (refreshType == EpisodeRefreshType.FullRefresh)
                 {
-                    minQueryDate = GlobalResources.DabMinDate;
-                    GlobalResources.SetLastRefreshDate(_resource.id);
+                    //only let them reload everything at a rate we set.
+                    int pullToRefreshRate = GlobalResources.PullToRefreshRate; //how often the user can refresh
+                    if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
+                    {
+                        minQueryDate = GlobalResources.DabMinDate;
+                    }
+                    else
+                    {
+                        return; //don't do anything if they've recently pulled to refresh
+                    }
                 }
                 else
                 {
-                    return; //don't do anything if they've recently pulled to refresh
+                    //incremental refresh
+                    minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
                 }
-#endif
+
+
+                //get the episodes - this routine handles resetting the date and raising events
+                GlobalResources.WaitStart($"Refreshing episodes...");
+                var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh)) ;
+                GlobalResources.WaitStop();
             }
-            else
+
+            //get the rull list of episodes for the resource
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+
+            //Update month list
+            if (Months.Items.Contains("All Episodes") == false)
             {
-                minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
+                Months.Items.Insert(0, "All Episodes"); //default selector
+                Months.SelectedIndex = 0;
+
             }
-
-            GlobalResources.WaitStart($"Refreshing episodes...");
-
-            var result = await DabServiceRoutines.GetEpisodes(_resource.id, ReloadAll);
-
-
-            //TODO - END OF NEW CODE - FIX WHAT'S BELOW
-
-            if (_resource.availableOffline && PlayerFeedAPI.DownloadIsRunning == false)
+            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
+            foreach (var month in months)
             {
-                Task.Run(async () =>
-                {
-                    await PlayerFeedAPI.DownloadEpisodes();
-                    CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                    circularProgressControl.HandleDownloadVisibleChanged(true);
-                });
+                var m = MonthConverter.ConvertToFull(month);
+                if (Months.Items.Contains(m) == false)
+                { 
+                    Months.Items.Add(m);
+                }
             }
 
-            GlobalResources.WaitStop();
-        }
+            //update the UI
 
-        void OnFilters(object o, EventArgs e)
-        {
-            var popup = new DabPopupEpisodeMenu(_resource);
-            popup.ChangedRequested += Popup_ChangedRequested;
-            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup);
-        }
-
-        private void Popup_ChangedRequested(object sender, EventArgs e)
-        {
-            var popuPage = (DabPopupEpisodeMenu)sender;
-            _resource = popuPage.Resource;
-            TimedActions();
-        }
-
-        public void TimedActions()
-        {
+            //sort the episodes
             if (_resource.AscendingSort)
             {
                 Episodes = Episodes.OrderBy(x => x.PubDate);
@@ -236,28 +235,49 @@ namespace DABApp
             {
                 Episodes = Episodes.OrderByDescending(x => x.PubDate);
             }
+
+            //update the list with any filters / sorting applied
             if (Episodes.Count() > 0)
             {
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    try
-                    {
-                        EpisodeList.ItemsSource = _Episodes = Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
-                    .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
-                    .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
-                    .Select(x => new EpisodeViewModel(x)).ToList();
-                        Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.ToString());
-                    }
+                    //filter to the right list of episodes
+                    EpisodeList.ItemsSource = _Episodes = Episodes
+                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                        .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
+                        .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
+                        .Select(x => new EpisodeViewModel(x)).ToList();
 
-
+                    Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
                 );
             }
+
+            //download any new episodes
+            await DownloadEpisodes();
+
         }
+
+        void OnFilters(object o, EventArgs e)
+        {
+            /*
+             * show the filter list
+             */
+            var popup = new DabPopupEpisodeMenu(_resource);
+            popup.ChangedRequested += Popup_ChangedRequested;
+            Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup);
+        }
+
+        private async void Popup_ChangedRequested(object sender, EventArgs e)
+        {
+            /* 
+             * handle changes to the filter list
+             */
+            var popuPage = (DabPopupEpisodeMenu)sender;
+            _resource = popuPage.Resource;
+            await Refresh(EpisodeRefreshType.NoRefresh);
+        }
+
+
     }
 }

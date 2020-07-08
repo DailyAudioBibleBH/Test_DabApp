@@ -232,11 +232,7 @@ namespace DABApp.Service
                         //TODO: Confirm all of these messages
                         Device.BeginInvokeOnMainThread(() =>
                     {
-                        MessagingCenter.Send<string>("Update", "Update");
-                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                        MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
-                        MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
-
+                        DabServiceEvents.EpisodesChanged();
                     });
                     }
 
