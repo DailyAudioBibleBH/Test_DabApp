@@ -73,7 +73,7 @@ namespace DABApp
                         episode.channel_title = channel.title;
                         //episode.channel_description = channel.;
                         episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-                        episode.PubMonth = getMonth(e.date);
+                        episode.PubMonth = e.date.Month;
                         episode.PubDay = e.date.Day;
                         await adb.InsertOrReplaceAsync(episode);
                     }
@@ -89,38 +89,6 @@ namespace DABApp
             }
         }
 
-        public static string getMonth(DateTime e)
-        {
-            switch (e.Month)
-            {
-                case (1):
-                    return "Jan";
-                case (2):
-                    return "Feb";
-                case (3):
-                    return "Mar";
-                case (4):
-                    return "Apr";
-                case (5):
-                    return "May";
-                case (6):
-                    return "Jun";
-                case (7):
-                    return "Jul";
-                case (8):
-                    return "Aug";
-                case (9):
-                    return "Sep";
-                case (10):
-                    return "Oct";
-                case (11):
-                    return "Nov";
-                case (12):
-                    return "Dec";
-                default:
-                    return "";
-            }
-        }
 
         public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource)
         {

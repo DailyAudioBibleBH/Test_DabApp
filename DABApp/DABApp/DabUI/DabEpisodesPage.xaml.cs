@@ -63,7 +63,7 @@ namespace DABApp
             {
                 await PlayerFeedAPI.DownloadEpisodes();
                 CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                circularProgressControl.HandleDownloadVisibleChanged(true);
+                circularProgressControl?.HandleDownloadVisibleChanged(true);
             }
 
             return true;
@@ -79,8 +79,7 @@ namespace DABApp
             base.OnAppearing();
 
             //get new episodes, if they exist -- this will also handle downloading
-            Refresh(EpisodeRefreshType.NoRefresh); //refresh list with no new data first
-            Refresh(EpisodeRefreshType.IncrementalRefresh); //run it again looking for new data
+            await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
 
         }
 
@@ -217,9 +216,10 @@ namespace DABApp
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
-                if (Months.Items.Contains(month) == false)
+                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
+                if (Months.Items.Contains(monthName) == false)
                 { 
-                    Months.Items.Add(month);
+                    Months.Items.Add(monthName);
                 }
             }
 
@@ -242,7 +242,7 @@ namespace DABApp
                 {
                     //filter to the right list of episodes
                     EpisodeList.ItemsSource = _Episodes = Episodes
-                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex])
+                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                         .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                         .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                         .Select(x => new EpisodeViewModel(x)).ToList();
