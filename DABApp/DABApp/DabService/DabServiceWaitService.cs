@@ -27,8 +27,7 @@ namespace DABApp.Service
         GetEpisodes,
         GetChannels,
         GetBadges,
-        LogAction
-        GetBadges,
+        LogAction,
         GetAddresses,
         UpdateUserAddress
     }
