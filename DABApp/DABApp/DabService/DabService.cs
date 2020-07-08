@@ -393,13 +393,14 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send register mutation
-            string command = $"mutation {{registerUser(email: \"{EmailAddress}\", firstName: \"{FirstName}\", lastName: \"{LastName}\", password: \"{Password}\"){{ token }}}}";
-            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
-            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            string command = $"mutation {{registerUser(email: \"{EmailAddress}\", firstName: \"{FirstName}\", lastName: \"{LastName}\", password: \"{Password}\"){{ id wpId firstName lastName nickname email language channel channels userRegistered token }}}}";
+            var mRegister = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", mRegister)));
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser);
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,40000); //Added longer wait time to register user since it was not recieving a response fast enough
 
             //return the response
             return response;
