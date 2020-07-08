@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabUI.DabServiceConnect">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="FillAndExpand">
-            <Label HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Text="Connecting to Daily Audio Bible Servers..."/>
+        <StackLayout VerticalOptions="FillAndExpand" BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Image x:Name="AppIcon" Source="SplashAppIcon.png" HeightRequest="100" WidthRequest="100" Margin="0, 27, 0, 0"></Image>
+                <Label Text="Connecting to Daily Audio Bible Servers..."/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

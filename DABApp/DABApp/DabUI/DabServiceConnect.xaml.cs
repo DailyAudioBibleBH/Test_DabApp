@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DABApp.Service;
 using Xamarin.Forms;
 
@@ -10,6 +11,7 @@ namespace DABApp.DabUI
 
         ContentAPI contentAPI = new ContentAPI();
         ContentConfig contentConfig = new ContentConfig();
+        bool rotateImage = true;
 
         public DabServiceConnect()
         {
@@ -19,6 +21,8 @@ namespace DABApp.DabUI
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+
+            RotateIconContinuously();
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
@@ -66,7 +70,19 @@ namespace DABApp.DabUI
             }
 
             Application.Current.MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+            rotateImage = false;
+        }
 
+        async Task RotateIconContinuously()
+        {
+            while (rotateImage)
+            {
+                for (int i = 1; i < 7; i++)
+                {
+                    if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
+                    await AppIcon.RotateTo(i * (360 / 6), 1000, Easing.Linear);
+                }
+            }
         }
     }
 }

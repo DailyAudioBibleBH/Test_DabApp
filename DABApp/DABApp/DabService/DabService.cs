@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.DabUI;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp.Service
@@ -29,6 +32,11 @@ namespace DABApp.Service
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
 
         private static List<int> SubscriptionIds = new List<int>();  //list of subscription id's managed by Service
+        public static string userName;
+
+        //DATABASE CONNECTION
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 
         //WEBSOCKET CONNECTION
 
@@ -400,7 +408,7 @@ namespace DABApp.Service
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,40000); //Added longer wait time to register user since it was not recieving a response fast enough
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser); //Added longer wait time to register user since it was not recieving a response fast enough
 
             //return the response
             return response;
@@ -989,16 +997,58 @@ namespace DABApp.Service
 
         }
 
+        //Progress was made, show popup if 100 percent achieved
         private static async void HandleProgressUpdated(DabGraphQlProgressUpdated data)
         {
             /*
              * Handle an incoming pogress update notification
              */
 
+            userName = GlobalResources.GetUserEmail();
+
             Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
 
-            //TODO: Handle this by updating database (don't think we have any UI notifications here
+            DabGraphQlProgress progress = new DabGraphQlProgress(data.progress);
+            if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
+            {
+                //log to firebase
+                var fbInfo = new Dictionary<string, string>();
+                fbInfo.Add("user", GlobalResources.GetUserEmail());
+                fbInfo.Add("idiom", Device.Idiom.ToString());
+                fbInfo.Add("badgeId", progress.badgeId.ToString());
+                DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
 
+
+                await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
+                progress.seen = true;
+            }
+            dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            try
+            {
+                if (badgeData == null)
+                {
+                    await adb.InsertOrReplaceAsync(newProgress);
+                }
+                else
+                {
+                    badgeData.percent = newProgress.percent;
+                    await adb.InsertOrReplaceAsync(data);
+                }
+            }
+            catch (Exception)
+            {
+                if (badgeData == null)
+                {
+                    await adb.InsertOrReplaceAsync(newProgress);
+                }
+                else
+                {
+                    badgeData.percent = newProgress.percent;
+                    await adb.InsertOrReplaceAsync(data);
+                }
+            }
         }
 
         private static async void HandleTokenRemoved(TokenRemoved data)
