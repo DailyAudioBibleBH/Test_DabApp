@@ -11,16 +11,17 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-    enum EpisodeRefreshType
+    enum EpisodeRefreshType //enum specifying white type of episode refresh to perform
     {
-        FullRefresh,
-        IncrementalRefresh,
-        NoRefresh
+        FullRefresh, //load all episodes we can back to min date
+        IncrementalRefresh, //load all episodes back to last date
+        NoRefresh //simply refresh / filter data, not loading of new episodes
     }
-
 
     public partial class DabEpisodesPage : DabBaseContentPage
     {
+        #region constructor and startup methods
+
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         List<EpisodeViewModel> _Episodes;
@@ -48,27 +49,6 @@ namespace DABApp
 
         }
 
-        private async void DabServiceEvents_EpisodesChangedEvent()
-        {
-            //new episodes added - refresh the list
-            await Refresh(EpisodeRefreshType.IncrementalRefresh);
-        }
-
-        async Task<bool> DownloadEpisodes()
-        {
-            /*
-             * download episodes 
-             */
-            if (_resource.availableOffline)
-            {
-                await PlayerFeedAPI.DownloadEpisodes();
-                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                circularProgressControl?.HandleDownloadVisibleChanged(true);
-            }
-
-            return true;
-        }
-
         protected async override void OnAppearing()
         {
             /*
@@ -83,83 +63,9 @@ namespace DABApp
 
         }
 
-        public async void OnRefresh(object o, EventArgs e)
-        {
-            /*
-             * handles the click of the refresh button 
-             */
-            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this as we want to get started with the code right away
-            await Refresh(EpisodeRefreshType.FullRefresh);
-        }
+        #endregion
 
-        public async void OnEpisode(object o, ItemTappedEventArgs e)
-        {
-            /*
-             * click on an episode to play it
-             */
-
-            EpisodeList.IsEnabled = false;
-            GlobalResources.WaitStart();
-            var chosenVM = (EpisodeViewModel)e.Item;
-            var chosen = chosenVM.Episode;
-            EpisodeList.SelectedItem = null;
-            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link);
-
-            if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
-            {
-                //play the local file or stream it via the internet
-
-                if (chosen.id != GlobalResources.CurrentEpisodeId)
-                {
-                    //TODO: Replace this with sync
-                    //JournalTracker.Current.Content = null;
-                }
-                //Push the new player page
-                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
-            }
-            else
-            {
-                //let user know you can't play an episode if not downloaded and offline
-                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
-            }
-            EpisodeList.SelectedItem = null;
-            GlobalResources.WaitStop();
-            EpisodeList.IsEnabled = true;
-        }
-
-        public async void OnMonthSelected(object o, EventArgs e)
-        {
-            //filter to a given month
-            await Refresh(EpisodeRefreshType.NoRefresh);
-        }
-
-        public async void OnListened(object o, EventArgs e)
-        {
-            /*
-             * handle listened of an episode via the list
-             */
-
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, !ep.UserData.IsListenedTo);
-            model.IsListenedTo = !ep.UserData.IsListenedTo;
-        }
-
-        public async void OnFavorite(object o, EventArgs e)
-        {
-            /*
-             * handle favorite of an episode via the list
-             */
-
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
-            model.IsFavorite = !ep.UserData.IsFavorite;
-        }
-
-
+        #region refresh and download processing
 
         async Task Refresh(EpisodeRefreshType refreshType)
         {
@@ -218,7 +124,7 @@ namespace DABApp
             {
                 string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
                 if (Months.Items.Contains(monthName) == false)
-                { 
+                {
                     Months.Items.Add(monthName);
                 }
             }
@@ -257,6 +163,100 @@ namespace DABApp
 
         }
 
+        async Task<bool> DownloadEpisodes()
+        {
+            /*
+             * download episodes 
+             */
+            if (_resource.availableOffline)
+            {
+                await PlayerFeedAPI.DownloadEpisodes();
+                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                circularProgressControl?.HandleDownloadVisibleChanged(true);
+            }
+
+            return true;
+        }
+
+        private async void DabServiceEvents_EpisodesChangedEvent()
+        {
+            //new episodes added - refresh the list
+            await Refresh(EpisodeRefreshType.IncrementalRefresh);
+        }
+
+        #endregion
+
+        #region user interaction methods
+
+        public async void OnRefresh(object o, EventArgs e)
+        {
+            /*
+             * handles the click of the refresh button 
+             */
+            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this as we want to get started with the code right away
+            await Refresh(EpisodeRefreshType.FullRefresh);
+        }
+
+        public async void OnEpisode(object o, ItemTappedEventArgs e)
+        {
+            /*
+             * click on an episode to play it
+             */
+
+            EpisodeList.IsEnabled = false; //disable the list while we work with it.
+            GlobalResources.WaitStart();
+            var chosenVM = (EpisodeViewModel)e.Item;
+            var chosen = chosenVM.Episode;
+            EpisodeList.SelectedItem = null;
+            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link); //TODO - move this to the actual player page?
+
+            if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
+            {
+                //Push the new player page
+                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+            }
+            else
+            {
+                //let user know you can't play an episode if not downloaded and offline
+                await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
+            }
+            EpisodeList.SelectedItem = null; //deselect the item
+            GlobalResources.WaitStop();
+            EpisodeList.IsEnabled = true;
+        }
+
+        public async void OnMonthSelected(object o, EventArgs e)
+        {
+            //filter to a given month
+            await Refresh(EpisodeRefreshType.NoRefresh);
+        }
+
+        public async void OnListened(object o, EventArgs e)
+        {
+            /*
+             * handle listened of an episode via the list
+             */
+
+            var mi = ((Xamarin.Forms.MenuItem)o);
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
+            model.IsListenedTo = !ep.UserData.IsListenedTo;
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, !ep.UserData.IsListenedTo);
+        }
+
+        public async void OnFavorite(object o, EventArgs e)
+        {
+            /*
+             * handle favorite of an episode via the list
+             */
+
+            var mi = ((Xamarin.Forms.MenuItem)o);
+            var model = ((EpisodeViewModel)mi.CommandParameter);
+            var ep = model.Episode;
+            model.IsFavorite = !ep.UserData.IsFavorite;
+            await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
+        }
+
         void OnFilters(object o, EventArgs e)
         {
             /*
@@ -277,6 +277,7 @@ namespace DABApp
             await Refresh(EpisodeRefreshType.NoRefresh);
         }
 
+        #endregion
 
     }
 }
