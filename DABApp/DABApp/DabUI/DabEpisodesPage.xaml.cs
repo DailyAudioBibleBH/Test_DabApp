@@ -44,6 +44,10 @@ namespace DABApp
                 EpisodeList.IsRefreshing = false;
             });
 
+            //initially bind to episodes we have before trying to reload on appearing
+            Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
+
+
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
