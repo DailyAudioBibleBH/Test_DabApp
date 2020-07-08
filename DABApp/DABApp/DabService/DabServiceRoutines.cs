@@ -28,8 +28,6 @@ namespace DABApp.Service
             {
                 //common routines (logged in or not)
                 //TODO: fill these in
-                //TODO: get recent episodes
-                //TODO: get recent badges
 
                 var adb = DabData.AsyncDatabase;
 
@@ -93,7 +91,7 @@ namespace DABApp.Service
 
         public static async Task<bool> NotifyOnConnectionKeepAlive()
         {
-            //Keepalive message received - let the UI do something about it
+            //Keepalive message received - nothing to do.
             return true;
         }
 

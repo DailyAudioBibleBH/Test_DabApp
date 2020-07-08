@@ -79,19 +79,19 @@ namespace DABApp.Service
             //Return the appropriate response
             DabServiceWaitResponse result; //result to be returned
 
-            if (_qlObject != null) //result found
+            if (_error != "") //error received
+            {
+                result = new DabServiceWaitResponse(DabServiceErrorResponses.CustomError, _error);
+            }
+
+            else if (_qlObject != null) //result found
             {
                 result = new DabServiceWaitResponse(_qlObject);
             }
 
-            else if (_qlObject == null && _error == "") //timeout expired
+            else if (_qlObject == null && _error == "") //timeout expired (no specific error)
             {
                 result = new DabServiceWaitResponse(DabServiceErrorResponses.TimeoutOccured);
-            }
-
-            else if (_error != "") //error received
-            {
-                result = new DabServiceWaitResponse(DabServiceErrorResponses.CustomError, _error);
             }
 
             else //other unexpected result
@@ -166,7 +166,6 @@ namespace DABApp.Service
                             }
                             if (response?.type == "connection_error")
                             {
-                                _qlObject = response;
                                 _waiting = false;
                                 _error = response.payload.message;
                                 break;
@@ -308,6 +307,20 @@ namespace DABApp.Service
                             {
                                 _qlObject = response;
                                 _waiting = false;
+                                break;
+                            }
+                            if (response?.payload?.errors.Count() > 0)
+                            {
+                                //check for logaction errors we should deal with
+                                foreach (var error in response.payload.errors)
+                                {
+                                    if (error.path.Contains("logAction"))
+                                    {
+                                        _error = error.message;
+                                        _waiting = false;
+                                        break;
+                                    }
+                                }
                             }
                             break;
                         case DabServiceWaitTypes.GetAddresses:
