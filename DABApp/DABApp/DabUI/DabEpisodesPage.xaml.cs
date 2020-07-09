@@ -52,7 +52,7 @@ namespace DABApp
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
             //episode user data changed event
-            DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
         }
 
@@ -81,6 +81,10 @@ namespace DABApp
              * updates the ui, 
              * and downloads them
              * 
+             * You can have it to no refresh (sort/filter),
+             * incremental refresh (look for new episodes),
+             * or full refresh (go back and query all episodes)
+             * 
              */
 
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
@@ -88,7 +92,7 @@ namespace DABApp
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
             {
-                //refresh episodes
+                //refresh episodes from the server
 
                 if (refreshType == EpisodeRefreshType.FullRefresh)
                 {
@@ -108,7 +112,6 @@ namespace DABApp
                     //incremental refresh
                     minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
                 }
-
 
                 //get the episodes - this routine handles resetting the date and raising events
                 GlobalResources.WaitStart($"Refreshing episodes...");
@@ -135,8 +138,6 @@ namespace DABApp
                     Months.Items.Add(monthName);
                 }
             }
-
-            //update the UI
 
             //sort the episodes
             if (_resource.AscendingSort)
@@ -191,12 +192,11 @@ namespace DABApp
             await Refresh(EpisodeRefreshType.IncrementalRefresh);
         }
 
-        private async void DabServiceEvents_UserProfileChangedEvent(GraphQlUser user)
+        private async void DabServiceEvents_EpisodeUserDataChangedEvent()
         {
             //user data has changed (not episode list itself)
             await Refresh(EpisodeRefreshType.NoRefresh);
         }
-
 
         #endregion
 
