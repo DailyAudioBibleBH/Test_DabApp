@@ -873,10 +873,9 @@ namespace DABApp.Service
         public static async Task<DabServiceWaitResponse> SeeProgress(int ProgressId)
         {
             DabGraphQlVariables variables = new DabGraphQlVariables();
-            string seenQuery = "mutation { seeProgress(id:" + ProgressId + ") { id badgeId percent year seen } }";
-            var seenPayload = new DabGraphQlPayload(seenQuery, variables);
-            var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
-            socket.Send(seenJsonIn);
+            string command = "mutation { seeProgress(id:" + ProgressId + ") { id badgeId percent year seen } }";
+            var payload = new DabGraphQlPayload(command, variables);
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
@@ -1005,58 +1004,16 @@ namespace DABApp.Service
 
         }
 
-        //Progress was made, show popup if 100 percent achieved
+        //Progress was made
         private static async void HandleProgressUpdated(DabGraphQlProgressUpdated data)
         {
             /*
              * Handle an incoming pogress update notification
              */
 
-            userName = GlobalResources.GetUserEmail();
+            await DabServiceRoutines.UpdateProgress(data);
 
-            Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
-
-            DabGraphQlProgress progress = new DabGraphQlProgress(data.progress);
-            if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
-            {
-                //log to firebase
-                var fbInfo = new Dictionary<string, string>();
-                fbInfo.Add("user", GlobalResources.GetUserEmail());
-                fbInfo.Add("idiom", Device.Idiom.ToString());
-                fbInfo.Add("badgeId", progress.badgeId.ToString());
-                DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
-
-
-                await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
-                progress.seen = true;
-            }
-            dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
-
-            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
-            try
-            {
-                if (badgeData == null)
-                {
-                    await adb.InsertOrReplaceAsync(newProgress);
-                }
-                else
-                {
-                    badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(badgeData);
-                }
-            }
-            catch (Exception)
-            {
-                if (badgeData == null)
-                {
-                    await adb.InsertOrReplaceAsync(newProgress);
-                }
-                else
-                {
-                    badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(badgeData);
-                }
-            }
+            
         }
 
         private static async void HandleTokenRemoved(TokenRemoved data)

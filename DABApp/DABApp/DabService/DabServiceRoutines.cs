@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.DabUI;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 using static DABApp.Service.DabService;
 
@@ -499,13 +502,64 @@ namespace DABApp.Service
             return user;
 
         }
+
         #endregion
 
         #region Badge and Progress Routines
 
+        public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
+        {
+            var adb = DabData.AsyncDatabase;
+            userName = GlobalResources.GetUserEmail();
+
+            Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
+
+            //Build out progress object
+            DabGraphQlProgress progress = new DabGraphQlProgress(data.progress);
+            if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
+            {
+                //log to firebase
+                var fbInfo = new Dictionary<string, string>();
+                fbInfo.Add("user", GlobalResources.GetUserEmail());
+                fbInfo.Add("idiom", Device.Idiom.ToString());
+                fbInfo.Add("badgeId", progress.badgeId.ToString());
+                DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
+
+
+                await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
+            }
+            //Tie badge to progress data
+            dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+
+            //Save badge progress data
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            try
+            {
+                if (badgeData == null)
+                {
+                    await adb.InsertOrReplaceAsync(newProgress);
+                }
+                else
+                {
+                    badgeData.percent = newProgress.percent;
+                    await adb.InsertOrReplaceAsync(badgeData);
+                }
+            }
+            catch (Exception)
+            {
+                if (badgeData == null)
+                {
+                    await adb.InsertOrReplaceAsync(newProgress);
+                }
+                else
+                {
+                    badgeData.percent = newProgress.percent;
+                    await adb.InsertOrReplaceAsync(badgeData);
+                }
+            }
+        }
 
         #endregion
-
     }
 }
 

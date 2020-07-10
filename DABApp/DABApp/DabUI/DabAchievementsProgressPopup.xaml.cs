@@ -14,6 +14,7 @@ namespace DABApp.DabUI
     public partial class AchievementsProgressPopup
     {
         dbBadges currentBadge;
+        DabGraphQlProgress progress;
         string badgeName;
         int progressId;
         public AchievementsProgressPopup(DabSockets.DabGraphQlProgress progress)
@@ -21,6 +22,8 @@ namespace DABApp.DabUI
             InitializeComponent();
 
             progressId = progress.id;
+
+            this.progress = progress;
 
             //Connection to db
             SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -73,8 +76,44 @@ namespace DABApp.DabUI
 
         async void OnContinue(object o, EventArgs e)
         {
-            //TODO: Fully implement this - it's not working yet and will crash the app
-            await Service.DabService.SeeProgress(progressId);
+            //Update that achievement as been seen by user and dismiss popup
+            var adb = DabData.AsyncDatabase;
+            var userName = GlobalResources.GetUserName();
+            var result = await Service.DabService.SeeProgress(progressId);
+            if (result.Success == true)
+            {
+                progress.seen = true;
+
+                //Save that progress has been seen
+                dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+                dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+                try
+                {
+                    if (badgeData == null)
+                    {
+                        await adb.InsertOrReplaceAsync(newProgress);
+                    }
+                    else
+                    {
+                        badgeData.seen = true;
+                        await adb.InsertOrReplaceAsync(badgeData);
+                    }
+                }
+                catch (Exception)
+                {
+                    if (badgeData == null)
+                    {
+                        await adb.InsertOrReplaceAsync(newProgress);
+                    }
+                    else
+                    {
+                        badgeData.seen = true;
+                        await adb.InsertOrReplaceAsync(badgeData);
+                    }
+                }
+            }
+            
+
             await PopupNavigation.Instance.PopAsync();
         }
     }
