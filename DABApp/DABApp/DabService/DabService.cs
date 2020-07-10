@@ -878,7 +878,9 @@ namespace DABApp.Service
             var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
             socket.Send(seenJsonIn);
 
-            DabServiceWaitResponse response = new DabServiceWaitResponse(new DabGraphQlRootObject() { type = "complete" }); //imitation ql response
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.SeeProgress);
 
             //return the response
             return response;

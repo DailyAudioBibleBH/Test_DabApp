@@ -18,6 +18,16 @@ namespace DABApp.DabSockets
         }
     }
 
+    public class DabGraphQlSeeProgress
+    {
+        public int id { get; set; }
+        public int badgeId { get; set; }
+        public int percent { get; set; }
+        public int year { get; set; }
+        public bool seen { get; set; }
+
+    }
+
 
     public class DabGraphQlAction
     {
@@ -43,6 +53,7 @@ namespace DABApp.DabSockets
     {
         public bool updatePassword { get; set; }
         public bool resetPassword { get; set; }
+        public DabGraphQlSeeProgress seeProgress { get; set; }
         public DabGraphQlRegisterUser registerUser { get; set; }
         public DabGraphQlUpdateUser updateUser { get; set; } //User Information
         public DabGraphQlActionLogged actionLogged { get; set; } //Actions Logged
