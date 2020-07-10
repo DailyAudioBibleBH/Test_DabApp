@@ -58,7 +58,7 @@ namespace DABApp.Service
              * it should be awaited in the calling method unless it is an intentional fire-and-forget
              * type of task
              */
-            
+
             _waitType = WaitType;
 
             //Connect a listener
@@ -111,213 +111,213 @@ namespace DABApp.Service
              * message being processed and handle appropriate messages as needed
              */
             {
-                try
+                //deserialize the message into an object
+                DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+
+                if (response.type == "ka")
                 {
-                    //deserialize the message into an object
-                    DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
+                    //nothing to do...
+                    return;
+                }
 
-                    if (response.type=="ka")
-                    {
-                        //nothing to do...
-                        return;
-                    }
+                switch (_waitType) //one of the enum values
+                {
+                    //Login Processor Messages
+                    case DabServiceWaitTypes.LoginUser:
+                        //successful login
+                        if (response?.payload?.data?.loginUser != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                            break;
+                        }
 
-                    switch (_waitType) //one of the enum values
-                    {
-                        //Login Processor Messages
-                        case DabServiceWaitTypes.LoginUser:
-                            //successful login
-                            if (response?.payload?.data?.loginUser != null)
+                        //error during login
+                        if (response?.payload?.errors != null)
+                        {
+                            //Find the relevant error
+                            var loginError = response.payload.errors.Where(x => x.path.Contains("loginUser")).FirstOrDefault();
+                            if (loginError != null)
                             {
-                                _qlObject = response;
+                                _error = loginError.message;
+                                _waiting = false;
+                                break;
+                            }
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.SeeProgress:
+                        if (response?.payload?.data?.seeProgress != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetUserProfile:
+                        //successful user profile reception
+                        if (response?.payload?.data?.user != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.InitConnection:
+                        //successful connection
+                        if (response?.type == "connection_ack")
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                            break;
+                        }
+                        if (response?.type == "connection_error")
+                        {
+                            _waiting = false;
+                            _error = response.payload.message;
+                            break;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.StartSubscription:
+                        //successful subscription
+                        if (response.type == "complete")
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.CheckEmail:
+                        //check email query finished
+                        if (response?.payload?.data?.checkEmail != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                            break;
+                        }
+
+                        //error during check email
+                        if (response?.payload?.errors != null)
+                        {
+                            //Find the relevant error
+                            var error = response.payload.errors.FirstOrDefault();
+                            if (error != null)
+                            {
+                                _error = error.message;
                                 _waiting = false;
                                 break;
                             }
 
-                            //error during login
-                            if (response?.payload?.errors != null)
-                            {
-                                //Find the relevant error
-                                var loginError = response.payload.errors.Where(x => x.path.Contains("loginUser")).FirstOrDefault();
-                                if (loginError != null)
-                                {
-                                    _error = loginError.message;
-                                    _waiting = false;
-                                    break;
-                                }
-                            }
-                            break;
+                        }
+                        break;
 
-                        case DabServiceWaitTypes.SeeProgress:
-                            if(response?.payload?.data?.seeProgress != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
+                    case DabServiceWaitTypes.RegisterUser:
+                        //registration finished
+                        if (response?.payload?.data?.registerUser != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
 
-                        case DabServiceWaitTypes.GetUserProfile:
-                            //successful user profile reception
-                            if (response?.payload?.data?.user != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
+                    case DabServiceWaitTypes.UpdateToken:
+                        //update token finished
+                        if (response?.payload?.data?.updateToken != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
 
-                        case DabServiceWaitTypes.InitConnection:
-                            //successful connection
-                            if (response?.type == "connection_ack")
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                                break;
-                            }
-                            if (response?.type == "connection_error")
-                            {
-                                _waiting = false;
-                                _error = response.payload.message;
-                                break;
-                            }
-                            break;
+                    case DabServiceWaitTypes.ResetPassword:
+                        //reset password finished
+                        if (response?.payload?.data?.resetPassword != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
 
-                        case DabServiceWaitTypes.StartSubscription:
-                            //successful subscription
-                            if (response.type=="complete")
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
+                    case DabServiceWaitTypes.ChangePassword:
+                        //change password finished
+                        if (response?.payload?.data?.updatePassword != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
                             break;
+                        }
 
-                        case DabServiceWaitTypes.CheckEmail:
-                            //check email query finished
-                            if (response?.payload?.data?.checkEmail != null)
+                        //error during check email
+                        if (response?.payload?.errors != null)
+                        {
+                            //Find the relevant error
+                            var error = response.payload.errors.FirstOrDefault();
+                            if (error != null)
                             {
-                                _qlObject = response;
+                                _error = error.message;
                                 _waiting = false;
                                 break;
                             }
 
-                            //error during check email
-                            if (response?.payload?.errors != null)
-                            {
-                                //Find the relevant error
-                                var error = response.payload.errors.FirstOrDefault();
-                                if (error != null)
-                                {
-                                    _error = error.message;
-                                    _waiting = false;
-                                    break;
-                                }
+                        }
+                        break;
 
-                            }
+                    case DabServiceWaitTypes.SaveUserProfile:
+                        //user profile saved
+                        if (response?.payload?.data?.updateUserFields != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetActions:
+                        //actions received
+                        if (response?.payload?.data?.lastActions != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetEpisodes:
+                        //episodes received
+                        if (response?.payload?.data?.episodes != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetChannels:
+                        //channels received
+                        if (response?.payload?.data?.channels != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetBadges:
+                        //badges received
+                        if (response?.payload?.data?.updatedBadges != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.LogAction:
+                        //action logged
+                        if (response?.payload?.data?.logAction != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
                             break;
-
-                        case DabServiceWaitTypes.RegisterUser:
-                            //registration finished
-                            if (response?.payload?.data?.registerUser != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.UpdateToken:
-                            //update token finished
-                            if (response?.payload?.data?.updateToken != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.ResetPassword:
-                            //reset password finished
-                            if (response?.payload?.data?.resetPassword != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.ChangePassword:
-                            //change password finished
-                            if (response?.payload?.data?.updatePassword != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                                break;
-                            }
-
-                            //error during check email
-                            if (response?.payload?.errors != null)
-                            {
-                                //Find the relevant error
-                                var error = response.payload.errors.FirstOrDefault();
-                                if (error != null)
-                                {
-                                    _error = error.message;
-                                    _waiting = false;
-                                    break;
-                                }
-
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.SaveUserProfile:
-                            //user profile saved
-                            if (response?.payload?.data?.updateUserFields != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.GetActions:
-                            //actions received
-                            if (response?.payload?.data?.lastActions != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.GetEpisodes:
-                            //episodes received
-                            if (response?.payload?.data?.episodes != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.GetChannels:
-                            //channels received
-                            if (response?.payload?.data?.channels != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.GetBadges:
-                            //badges received
-                            if (response?.payload?.data?.updatedBadges != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-
-                        case DabServiceWaitTypes.LogAction:
-                            //action logged
-                            if (response?.payload?.data?.logAction != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                                break;
-                            }
+                        }
+                        if (response?.payload?.errors != null)
+                        {
                             if (response?.payload?.errors.Count() > 0)
                             {
                                 //check for logaction errors we should deal with
@@ -332,28 +332,25 @@ namespace DABApp.Service
                                 }
                             }
                             break;
-                        case DabServiceWaitTypes.GetAddresses:
-                            //addresses recieved
-                            if (response?.payload?.data?.addresses != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-                        case DabServiceWaitTypes.UpdateUserAddress:
-                            //update address response recieved
-                            if (response?.payload?.data?.updateUserAddress != null)
-                            {
-                                _qlObject = response;
-                                _waiting = false;
-                            }
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //ignore the message and keep waiting...
-                    Debug.WriteLine($"Exception processing message: {ex.Message}");
+                        }
+
+                        break;
+                    case DabServiceWaitTypes.GetAddresses:
+                        //addresses recieved
+                        if (response?.payload?.data?.addresses != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.UpdateUserAddress:
+                        //update address response recieved
+                        if (response?.payload?.data?.updateUserAddress != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
                 }
 
             };
