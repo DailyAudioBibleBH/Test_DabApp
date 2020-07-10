@@ -29,7 +29,8 @@ namespace DABApp.Service
         GetBadges,
         LogAction,
         GetAddresses,
-        UpdateUserAddress
+        UpdateUserAddress,
+        SeeProgress
     }
 
     public class DabServiceWaitService
@@ -144,6 +145,14 @@ namespace DABApp.Service
                                     _waiting = false;
                                     break;
                                 }
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.SeeProgress:
+                            if(response?.payload?.data?.seeProgress != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
                             }
                             break;
 

@@ -872,8 +872,18 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponse> SeeProgress(int ProgressId)
         {
-            //TODO: send progress seen and wait for confiramation
-            throw new NotImplementedException();
+            DabGraphQlVariables variables = new DabGraphQlVariables();
+            string seenQuery = "mutation { seeProgress(id:" + ProgressId + ") { id badgeId percent year seen } }";
+            var seenPayload = new DabGraphQlPayload(seenQuery, variables);
+            var seenJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", seenPayload));
+            socket.Send(seenJsonIn);
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.SeeProgress);
+
+            //return the response
+            return response;
         }
 
         //SUBSCRIPTIONS
@@ -1034,7 +1044,7 @@ namespace DABApp.Service
                 else
                 {
                     badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(data);
+                    await adb.InsertOrReplaceAsync(badgeData);
                 }
             }
             catch (Exception)
@@ -1046,7 +1056,7 @@ namespace DABApp.Service
                 else
                 {
                     badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(data);
+                    await adb.InsertOrReplaceAsync(badgeData);
                 }
             }
         }
