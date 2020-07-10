@@ -14,6 +14,7 @@ namespace DABApp.DabUI
     public partial class AchievementsProgressPopup
     {
         dbBadges currentBadge;
+        DabGraphQlProgress progress;
         string badgeName;
         int progressId;
         public AchievementsProgressPopup(DabSockets.DabGraphQlProgress progress)
@@ -21,6 +22,8 @@ namespace DABApp.DabUI
             InitializeComponent();
 
             progressId = progress.id;
+
+            this.progress = progress;
 
             //Connection to db
             SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -73,8 +76,12 @@ namespace DABApp.DabUI
 
         async void OnContinue(object o, EventArgs e)
         {
-            //TODO: Fully implement this - it's not working yet and will crash the app
+            //Update that achievement as been seen by user and dismiss popup
+            var adb = DabData.AsyncDatabase;
             await Service.DabService.SeeProgress(progressId);
+            progress.seen = true;
+            await adb.UpdateAsync(progress);
+
             await PopupNavigation.Instance.PopAsync();
         }
     }
