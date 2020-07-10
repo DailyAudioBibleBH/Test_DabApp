@@ -551,6 +551,18 @@ namespace DABApp.Service
             }
         }
 
+        public static async Task RemoveToken()
+        {
+            //log to firebase
+            var fbInfo = new Dictionary<string, string>();
+            fbInfo.Add("user", GlobalResources.GetUserEmail());
+            fbInfo.Add("idiom", Device.Idiom.ToString());
+            DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
+
+
+            await GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
+        }
+
         #endregion
     }
 }
