@@ -76,13 +76,15 @@ namespace DABApp.DabUI
 
         async Task RotateIconContinuously()
         {
+            int steps = 1;
+
             while (rotateImage)
             {
-                for (int i = 1; i < 7; i++)
+                for (int i = 1; i < steps+1 ; i++)
                 {
                     if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
-                    await AppIcon.RotateTo(i * (360 / 6), 1000, Easing.Linear);
-                }
+                    await AppIcon.RotateTo(i * (360 / steps), 1500, Easing.Linear);
+                } 
             }
         }
     }
