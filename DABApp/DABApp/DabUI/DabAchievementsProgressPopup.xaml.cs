@@ -78,9 +78,41 @@ namespace DABApp.DabUI
         {
             //Update that achievement as been seen by user and dismiss popup
             var adb = DabData.AsyncDatabase;
-            await Service.DabService.SeeProgress(progressId);
-            progress.seen = true;
-            await adb.UpdateAsync(progress);
+            var userName = GlobalResources.GetUserName();
+            var result = await Service.DabService.SeeProgress(progressId);
+            if (result.Success == true)
+            {
+                progress.seen = true;
+
+                //Save that progress has been seen
+                dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+                dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+                try
+                {
+                    if (badgeData == null)
+                    {
+                        await adb.InsertOrReplaceAsync(newProgress);
+                    }
+                    else
+                    {
+                        badgeData.seen = true;
+                        await adb.InsertOrReplaceAsync(badgeData);
+                    }
+                }
+                catch (Exception)
+                {
+                    if (badgeData == null)
+                    {
+                        await adb.InsertOrReplaceAsync(newProgress);
+                    }
+                    else
+                    {
+                        badgeData.seen = true;
+                        await adb.InsertOrReplaceAsync(badgeData);
+                    }
+                }
+            }
+            
 
             await PopupNavigation.Instance.PopAsync();
         }
