@@ -139,8 +139,17 @@ namespace DABApp
                 await DabServiceRoutines.RunConnectionEstablishedRoutines();
 
                 //push up the channels page
-                await Navigation.PushAsync(new DabChannelsPage());
+                DabChannelsPage _nav = new DabChannelsPage();
+                _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+                //Application.Current.MainPage = _nav;
+                await Navigation.PushAsync(_nav);
 
+                //Delete nav stack so user cant back into login screen
+                var existingPages = Navigation.NavigationStack.ToList();
+                foreach (var page in existingPages)
+                {
+                    Navigation.RemovePage(page);
+                }
 
             }
             catch (Exception ex)
