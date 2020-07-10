@@ -46,7 +46,6 @@ namespace DABApp.Service
         public static event GraphQlEpisodeUserDataChanged EpisodeUserDataChangedEvent;
         public static void EpisodeUserDataChanged()
         {
-            Debug.WriteLine($"GraphQlEpisodeUserDataChanged Fired");
             Device.BeginInvokeOnMainThread(async () =>
             {
                 EpisodeUserDataChangedEvent?.Invoke();
@@ -57,7 +56,6 @@ namespace DABApp.Service
         public static event GraphQlEpisodesChanged EpisodesChangedEvent;
         public static void EpisodesChanged()
         {
-            Debug.WriteLine($"EpisodesChanged Fired");
             Device.BeginInvokeOnMainThread(async () =>
             {
                 EpisodesChangedEvent?.Invoke();

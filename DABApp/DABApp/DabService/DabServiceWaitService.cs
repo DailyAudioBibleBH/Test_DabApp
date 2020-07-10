@@ -46,6 +46,8 @@ namespace DABApp.Service
         string _error = ""; //friendly error message to return
         DabGraphQlRootObject _qlObject = null; //starts null
         bool _waiting = true; //start off true, will set to false once ready
+        bool _firstWait = true; //indicator first time through the loop to show detail...
+        bool _multipleWaits = false; // indicator of multiple waits for the debugger
 
         public DabServiceWaitService()
         {
@@ -70,9 +72,20 @@ namespace DABApp.Service
             while (_waiting == true && DateTime.Now < timeout)
             {
                 TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                Debug.WriteLine($"Waiting {remaining.ToString()} for {WaitType} - Wait: {_waiting} - Result: {JsonConvert.SerializeObject(_qlObject)}");
+                if (_firstWait == true)
+                {
+                    Debug.WriteLine($"Waiting {remaining.ToString()} for {WaitType}:");
+                }
+                else
+                {
+                    Debug.Write($"{remaining.TotalSeconds:0.0}|"); //write to same line to reduce debugger clutter
+                    _multipleWaits = true;
+                }
                 await Task.Delay(DabService.WaitDelayInterval); //wait interval
+                _firstWait = false;
             }
+
+            if (_multipleWaits) Debug.WriteLine("");//end of line if we wrote to the same line earlier
 
             //Disconnect the listener
             DabService.Socket.DabGraphQlMessage -= Service_GraphQlMessage;
