@@ -37,6 +37,21 @@ namespace DABApp.DabSockets
         public int? position { get; set; }
         public bool? favorite { get; set; }
         public object entryDate { get; set; }
+
+        public bool? hasJournal
+        {
+            get
+            {
+                if (entryDate == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
     }
 
     public class DabGraphQlActionLogged

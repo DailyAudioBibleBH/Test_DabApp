@@ -990,9 +990,7 @@ namespace DABApp.Service
              * Handle an incoming action log
              */
 
-            Debug.WriteLine($"ACTIONLOGGED: {JsonConvert.SerializeObject(data)}");
-
-            //TODO: Handle this by storing the action in the database and sending messaging out so any UI will know to update
+            await DabServiceRoutines.ReceiveActionLog(data.action);
 
         }
 

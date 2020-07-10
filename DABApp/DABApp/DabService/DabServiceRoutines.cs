@@ -378,7 +378,7 @@ namespace DABApp.Service
                     if (DabService.IsConnected == true)
                     {
                         //get actions to process
-                        var adb = DabData.AsyncDatabase;
+                        var adb =DabData.AsyncDatabase;
                         var actions = await adb.Table<dbPlayerActions>().ToListAsync();
 
                         //loop through actions
@@ -458,6 +458,18 @@ namespace DABApp.Service
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
+        }
+
+        public static async Task<bool> ReceiveActionLog(DabGraphQlAction action)
+        {
+            /*
+             * This routine handles incoming action logs. 
+             * It updates the database and notifies any listners of changes
+             */
+
+            await PlayerFeedAPI.UpdateEpisodeUserData(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position,true);
+
+            return true;
         }
 
         #endregion

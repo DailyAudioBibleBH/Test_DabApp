@@ -255,8 +255,9 @@ namespace DABApp
                 var mi = ((Xamarin.Forms.MenuItem)o);
                 var model = ((EpisodeViewModel)mi.CommandParameter);
                 var ep = model.Episode;
-                model.IsListenedTo = !ep.UserData.IsListenedTo;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, !ep.UserData.IsListenedTo);
+                var newValue = !ep.UserData.IsListenedTo;
+                model.IsListenedTo = newValue;
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, newValue);
             }
             else
             {
@@ -275,8 +276,9 @@ namespace DABApp
                 var mi = ((Xamarin.Forms.MenuItem)o);
                 var model = ((EpisodeViewModel)mi.CommandParameter);
                 var ep = model.Episode;
-                model.IsFavorite = !ep.UserData.IsFavorite;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, !ep.UserData.IsFavorite);
+                var newValue = !ep.UserData.IsFavorite;
+                model.IsFavorite = newValue;
+                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, newValue);
             }
             else
             {
