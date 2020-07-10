@@ -896,7 +896,7 @@ namespace DABApp.Service
             //TODO: Consider replacing this with a wait for response, but it doesn't appear we get responses when establishing subscriptions, so just a slight delay here for now.
             ////Wait for appropriate response
             //var service = new DabServiceWaitService();
-            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
+            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription);
             await Task.Delay(QuickPause);
             DabServiceWaitResponse response = new DabServiceWaitResponse(new DabGraphQlRootObject() { type = "complete" }); //imitation ql response
 

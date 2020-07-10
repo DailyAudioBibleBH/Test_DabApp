@@ -421,8 +421,18 @@ namespace DABApp.Service
                                 await adb.DeleteAsync(action);
                             } else {
                                 //leave the action alone, it will be processed later.
-                                //other actions may continue to get processed.
-                                Debug.WriteLine($"Action failed to be processed: {JsonConvert.SerializeObject(action)} / ERROR: {response.ErrorMessage}");
+                                switch (response.ErrorMessage)
+                                {
+                                    case "Invalid episode id.": //probably a junk / 0 episode to be deleted
+                                        Debug.WriteLine($"Deleting action for invaild episodeid {action.EpisodeId}.");
+                                        await adb.DeleteAsync(action);
+                                        break;
+
+                                    default: // keep other episodes in the queue, will try again
+                                        Debug.WriteLine($"Action failed to be processed: {JsonConvert.SerializeObject(action)} / ERROR: {response.ErrorMessage}");
+                                        break;
+                                }
+
                             }
 
                         }
