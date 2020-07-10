@@ -10,6 +10,7 @@ using DABApp.DabAudio;
 using DABApp.DabSockets;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -571,6 +572,9 @@ namespace DABApp
             //Database
             await dbSettings.DeleteLoginSettings();
 
+            //Websocket
+            await DabService.TerminateConnection();
+
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -580,7 +584,5 @@ namespace DABApp
 
             return true;
         }
-
-
     }
 }

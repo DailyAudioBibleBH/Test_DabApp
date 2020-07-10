@@ -1024,8 +1024,7 @@ namespace DABApp.Service
 
             Debug.WriteLine($"TOKENREMOVED: {JsonConvert.SerializeObject(data)}");
 
-            //TODO: Handle this by logging the user out. Within that method, we should terminate the connection and reset it to the generic API token
-
+            await DabServiceRoutines.RemoveToken();
         }
 
         private static async void HandleUpdateUser(GraphQlUser data)
