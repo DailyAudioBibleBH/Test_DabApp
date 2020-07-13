@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Version.Plugin;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public partial class DabAppInfoPage : DabBaseContentPage
-	{
-		public DabAppInfoPage()
-		{
-			InitializeComponent();
+    public partial class DabAppInfoPage : DabBaseContentPage
+    {
+        public DabAppInfoPage()
+        {
+            InitializeComponent();
             if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
-			BindingContext = ContentConfig.Instance.blocktext;
-			VersionNumber.Text = $"Version Number {CrossVersion.Current.Version}";
+            BindingContext = ContentConfig.Instance.blocktext;
+            VersionNumber.Text = $"Version Number {CrossVersion.Current.Version}";
 
             //build stats
             var adb = DabData.AsyncDatabase;
@@ -29,6 +30,30 @@ namespace DABApp
             stats.AppendLine($"Last Action Date GMT: {GlobalResources.LastActionDate}");
             stats.AppendLine($"Badges: {adb.Table<dbBadges>().CountAsync().Result}");
             stats.AppendLine($"User Progress Data: {adb.Table<dbUserBadgeProgress>().CountAsync().Result}");
+            stats.AppendLine();
+
+            //settings
+            foreach (var s in adb.Table<dbSettings>().ToListAsync().Result)
+            {
+                switch (s.Key.ToLower())
+                {
+                    case "contentjson":
+                    case "country":
+                    case "token":
+                    case "labels":
+                    case "states":
+                        //do nothing for some settings
+                        break;
+                    default:
+                        //show the settings
+                        Debug.WriteLine(s.Key);
+                        stats.AppendLine($"{s.Key}: \"{s.Value}\"");
+                        stats.AppendLine();
+                        break;
+                }
+            }
+
+
             lblStats.Text = stats.ToString();
 
         }
