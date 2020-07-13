@@ -60,6 +60,12 @@ namespace DABApp.Service
                     }
                 }
 
+                if (GlobalResources.Instance.IsLoggedIn)
+                {
+
+                }
+                
+
 
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
@@ -82,8 +88,8 @@ namespace DABApp.Service
                     //get recent actions
                     await GetRecentActions();
 
-                    //get recent progress
-                    //TODO: get recent progress
+                    //get badge progress tied to user
+                    await GetUserBadgesProgress();
                 }
 
                 return true;
@@ -498,6 +504,57 @@ namespace DABApp.Service
         #endregion
 
         #region Badge and Progress Routines
+
+        public static async Task GetUserBadgesProgress()
+        {
+            var adb = DabData.AsyncDatabase;
+            userName = GlobalResources.GetUserName();
+
+            //get user badge progress
+            DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
+            var qlll = await DabService.GetUserProgress(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        foreach (var d in item.payload.data.updatedProgress.edges)
+                        {
+                            dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == d.id && x.userName == userName).FirstOrDefaultAsync().Result;
+
+                            if (data == null)
+                            {
+                                d.userName = userName;
+                                await adb.InsertOrReplaceAsync(d);
+                            }
+                            else
+                            {
+                                data.percent = d.percent;
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+
+                        }
+
+                    }
+                    //update last time checked for badge progress
+                    string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                    dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
+                    if (sBadgeProgressSettings == null)
+                    {
+                        sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
+                    }
+
+                    sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
+                    await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while grabbing user's badge progress: {ex.Message}");
+                }
+                
+            }
+        }
 
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
