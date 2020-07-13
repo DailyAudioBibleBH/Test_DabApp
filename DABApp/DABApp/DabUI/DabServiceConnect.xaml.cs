@@ -60,7 +60,9 @@ namespace DABApp.DabUI
                         //perform post-login functions
                         await DabServiceRoutines.RunConnectionEstablishedRoutines();
 
-                        Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+                        var _nav = new DabChannelsPage();
+                        _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                        Application.Current.MainPage = new NavigationPage(_nav);
                     }
                 }
             }
@@ -69,7 +71,6 @@ namespace DABApp.DabUI
                 Application.Current.MainPage = new DabNetworkUnavailablePage(); //Take to network unavailable page if not logged in.
             }
 
-            Application.Current.MainPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
             rotateImage = false;
         }
 

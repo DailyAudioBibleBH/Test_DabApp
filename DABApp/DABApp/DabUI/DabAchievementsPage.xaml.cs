@@ -42,7 +42,7 @@ namespace DABApp
 			//currentYear = 2020;
 
 			//separate badge and progress list from db
-			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
+			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().Where(x => x.visible == true).ToListAsync().Result;
 			List<dbUserBadgeProgress> dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().Where(x => x.year == currentYear).ToListAsync().Result;
 
 			//find badges that have progress
@@ -61,7 +61,6 @@ namespace DABApp
 
 			var allBadges = allBadgesQuery.ToList();
 			var badgesWithoutProgress = dbBadgeList.Where(p => allBadgesQuery.All(p2 => p2.Progress.badgeId != p.id)).ToList();
-			var badgesWithProgress = dbBadgeList.Where(p => allBadgesQuery.All(p2 => p2.Progress.badgeId == p.id)).ToList();
 
 			foreach (var item in badgesWithoutProgress)
 			{
@@ -70,7 +69,6 @@ namespace DABApp
 
 				allBadges.Add(newItem);
 			}
-
 
 			//combined list of both badges with progress and badges with empty progress to bind to UI
 			ObservableCollection<dabUserBadgeProgress> allAchievementsPageList = new ObservableCollection<dabUserBadgeProgress>(allBadges as List<dabUserBadgeProgress>);

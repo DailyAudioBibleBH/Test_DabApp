@@ -508,7 +508,7 @@ namespace DABApp.Service
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = GlobalResources.GetUserName();
+            userName = GlobalResources.GetUserEmail();
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
