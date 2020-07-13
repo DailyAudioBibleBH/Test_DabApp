@@ -6,6 +6,7 @@ using DABApp.DabSockets;
 using DABApp.DabUI;
 using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using static DABApp.Service.DabService;
 

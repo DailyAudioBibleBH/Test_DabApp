@@ -11,6 +11,7 @@ using DABApp.DabSockets;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.Service;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -25,6 +26,35 @@ namespace DABApp
         public static readonly TimeSpan ImageCacheValidity = TimeSpan.FromDays(31); //Cache images for a month.
 
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
+        public GlobalResources()
+        {
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
+        }
+
+        async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            var access = e.NetworkAccess;
+            var profiles = e.ConnectionProfiles;
+            var current = Connectivity.NetworkAccess;
+
+            if (current == NetworkAccess.Internet)
+            {
+                // Connection to internet is available
+                // If websocket is not connected, reconnect
+                if (!DabService.IsConnected)
+                {
+                    //reconnect to service
+                    var ql = await DabService.InitializeConnection();
+
+                    if (ql.Success)
+                    {
+                        //perform post-connection operations with service
+                        await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                    }
+                }
+            }
+        }
 
 
         /* This string determins the database version. 

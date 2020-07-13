@@ -47,15 +47,16 @@ namespace DABApp.DabUI
                 else
                 {
                     //attempt to connect to service
-                    var ql=  await DabService.InitializeConnection(token);
-                    if (ql.Success == false && ql.ErrorMessage == "xxx") //TODO: Replace this text with error messgae for invalid token
+                    var ql =  await DabService.InitializeConnection(token);
+                    if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
                     {
                         //token is validated as expired - make them log back in
                         await DabService.TerminateConnection();
                         await DabService.InitializeConnection(GlobalResources.APIKey);
                         Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
 
-                    } else
+                    }
+                    else
                     {
                         //perform post-login functions
                         await DabServiceRoutines.RunConnectionEstablishedRoutines();
