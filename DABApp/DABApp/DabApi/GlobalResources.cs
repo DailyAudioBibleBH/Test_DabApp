@@ -40,6 +40,7 @@ namespace DABApp
 
             if (current == NetworkAccess.Internet)
             {
+                Debug.WriteLine("Gained internet access");
                 // Connection to internet is available
                 // If websocket is not connected, reconnect
                 if (!DabService.IsConnected)
@@ -53,6 +54,11 @@ namespace DABApp
                         await DabServiceRoutines.RunConnectionEstablishedRoutines();
                     }
                 }
+            }
+            else
+            {
+                Debug.WriteLine("Lost internet access");
+                await DabService.TerminateConnection();
             }
         }
 
