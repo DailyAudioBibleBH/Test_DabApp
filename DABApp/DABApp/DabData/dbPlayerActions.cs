@@ -12,6 +12,7 @@ namespace DABApp
         public string entity_type { get; set; }
         public int EpisodeId { get; set; }
         public string ActionType { get; set; }
+        public bool HasJournal { get; set; }
         public string listened_status { get; set; }
         public double PlayerTime { get; set; }
         public string UserEmail { get; set; }

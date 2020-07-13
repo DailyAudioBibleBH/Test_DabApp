@@ -754,6 +754,10 @@ namespace DABApp.Service
                     break;
                 case ServiceActionsEnum.Journaled:
                     //TODO: Implement this
+                    string entryDate = DateTime.Now.ToString("yyyy-M-dd");
+                    if (!BoolValue.HasValue) throw new NotSupportedException("No journal value provided.");
+                    command = "mutation {logAction(episodeId: " + EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
+                    break;
                     /* Old Code
                      *  string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                                         var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
@@ -762,7 +766,6 @@ namespace DABApp.Service
                                         var entPayload = new DabGraphQlPayload(entQuery, variables);
                                         var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
                     */
-                    throw new NotImplementedException();
                 default:
                     //Nothing to do here, unuspported action style
                     throw new NotImplementedException();

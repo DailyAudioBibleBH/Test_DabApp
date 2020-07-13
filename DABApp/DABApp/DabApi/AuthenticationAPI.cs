@@ -305,8 +305,10 @@ namespace DABApp
                         actionLog.Favorite = favorite.Value;
                         break;
                     case ServiceActionsEnum.Journaled:
+                        actionLog.ActionType = "entryDate";
+                        actionLog.HasJournal = true;
+                        break;
                         //TODO: Fix this
-                        throw new NotSupportedException("journal not working yet");
                     case ServiceActionsEnum.PositionChanged:
                         //TODO: Confirm this is the right code.
                         actionLog.ActionType = "pause";

@@ -423,9 +423,11 @@ namespace DABApp.Service
                                 case "pause":
                                     response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime) );
                                     break;
-                                case "entryDate":
+                                case "entrydate":
                                     //TODO: Implement this
-                                    throw new NotSupportedException("Journals not working yet.");
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Journaled, actionDate, true, null);
+                                    //throw new NotSupportedException("Journals not working yet.");
+                                    break;
                                 default:
                                     throw new NotSupportedException();
                             }
