@@ -994,7 +994,7 @@ namespace DABApp.Service
             //TODO: Consider replacing this with a wait for response, but it doesn't appear we get responses when establishing subscriptions, so just a slight delay here for now.
             ////Wait for appropriate response
             //var service = new DabServiceWaitService();
-            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription, ShortTimeout);
+            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.StartSubscription);
             await Task.Delay(QuickPause);
             DabServiceWaitResponse response = new DabServiceWaitResponse(new DabGraphQlRootObject() { type = "complete" }); //imitation ql response
 
@@ -1078,9 +1078,7 @@ namespace DABApp.Service
              * Handle an incoming action log
              */
 
-            Debug.WriteLine($"ACTIONLOGGED: {JsonConvert.SerializeObject(data)}");
-
-            //TODO: Handle this by storing the action in the database and sending messaging out so any UI will know to update
+            await DabServiceRoutines.ReceiveActionLog(data.action);
 
         }
 

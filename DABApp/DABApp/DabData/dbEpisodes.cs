@@ -24,7 +24,7 @@ namespace DABApp
             author = episode.author;
             PubDate = episode.date;
             PubYear = episode.date.Year;
-            PubMonth = episode.date.Month.ToString();
+            PubMonth = episode.date.Month;
             PubDay = episode.date.Day;
             url = episode.audioURL;
             audio_size = episode.audioSize;
@@ -105,7 +105,7 @@ namespace DABApp
         [Indexed]
         public int PubDay { get; set; }
         [Indexed]
-        public string PubMonth { get; set; }
+        public int PubMonth { get; set; }
         [Indexed]
         public int PubYear { get; set; }
         public string url { get; set; }

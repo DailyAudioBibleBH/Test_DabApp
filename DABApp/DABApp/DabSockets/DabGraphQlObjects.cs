@@ -37,6 +37,21 @@ namespace DABApp.DabSockets
         public int? position { get; set; }
         public bool? favorite { get; set; }
         public object entryDate { get; set; }
+
+        public bool? hasJournal
+        {
+            get
+            {
+                if (entryDate == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
     }
 
     public class DabGraphQlActionLogged
@@ -194,17 +209,7 @@ namespace DABApp.DabSockets
         {
 
         }
-
-        public DabGraphQlProgress(DabGraphQlProgress progress)
-        {
-            this.id = progress.id;
-            this.badgeId = progress.badgeId;
-            this.percent = progress.percent;
-            this.seen = progress.seen;
-            this.updatedAt = progress.updatedAt;
-            this.createdAt = progress.createdAt;
-            this.year = progress.year;
-        }
+    
     }
 
     public class DabGraphQlUpdatedProgress

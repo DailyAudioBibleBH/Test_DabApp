@@ -128,11 +128,42 @@ namespace DABApp.Service
                 //deserialize the message into an object
                 DabGraphQlRootObject response = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
 
+<<<<<<< HEAD
+                            //error during login
+                            if (response?.payload?.errors != null)
+                            {
+                                //Find the relevant error
+                                var loginError = response.payload.errors.Where(x => x.path.Contains("loginUser")).FirstOrDefault();
+                                if (loginError != null)
+                                {
+                                    _error = loginError.message;
+                                    _waiting = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        case DabServiceWaitTypes.GetBadgeProgresses:
+                            if(response?.payload?.data?.updatedProgress != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+
+                        case DabServiceWaitTypes.SeeProgress:
+                            if(response?.payload?.data?.seeProgress != null)
+                            {
+                                _qlObject = response;
+                                _waiting = false;
+                            }
+                            break;
+=======
                 if (response.type == "ka")
                 {
                     //nothing to do...
                     return;
                 }
+>>>>>>> chet-graphql-services
 
                 switch (_waitType) //one of the enum values
                 {
@@ -157,14 +188,6 @@ namespace DABApp.Service
                                 _waiting = false;
                                 break;
                             }
-                        }
-                        break;
-
-                    case DabServiceWaitTypes.GetBadgeProgresses:
-                        if (response?.payload?.data?.updatedProgress != null)
-                        {
-                            _qlObject = response;
-                            _waiting = false;
                         }
                         break;
 

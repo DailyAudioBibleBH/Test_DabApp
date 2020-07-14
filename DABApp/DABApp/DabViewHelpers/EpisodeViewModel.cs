@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -32,7 +33,7 @@ namespace DABApp
             noProgress = episode.is_downloaded;
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
-            fm.EpisodeCompleted += DownloadStarted;
+            fm.EpisodeCompleted += DownloadComplete;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }      
 
@@ -205,7 +206,6 @@ namespace DABApp
             {
                 downloadVisible = true;
                 downloadProgress = -.01;
-                //This isn't being called 
             }
         }
 

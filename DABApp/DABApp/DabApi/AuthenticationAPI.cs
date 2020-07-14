@@ -245,42 +245,7 @@ namespace DABApp
             }
         }
 
-        static void CreateSettings(APIToken token)//Class which creates new user settings
-        {
-            var TokenSettings = new dbSettings();
-            TokenSettings.Key = "Token";
-            TokenSettings.Value = token.value;
-            var CreationSettings = new dbSettings();
-            CreationSettings.Key = "TokenCreation";
-            CreationSettings.Value = token.expires;
-            var EmailSettings = new dbSettings();
-            EmailSettings.Key = "Email";
-            EmailSettings.Value = token.user_email;
-            var FirstNameSettings = new dbSettings();
-            FirstNameSettings.Key = "FirstName";
-            FirstNameSettings.Value = token.user_first_name;
-            var LastNameSettings = new dbSettings();
-            LastNameSettings.Key = "LastName";
-            LastNameSettings.Value = token.user_last_name;
-            var AvatarSettings = new dbSettings();
-            AvatarSettings.Key = "Avatar";
-            AvatarSettings.Value = token.user_avatar;
-            int x = adb.InsertOrReplaceAsync(TokenSettings).Result;
-            x = adb.InsertOrReplaceAsync(CreationSettings).Result;
-            x = adb.InsertOrReplaceAsync(EmailSettings).Result;
-            x = adb.InsertOrReplaceAsync(FirstNameSettings).Result;
-            x = adb.InsertOrReplaceAsync(LastNameSettings).Result;
-            x = adb.InsertOrReplaceAsync(AvatarSettings).Result;
-
-            dbSettings.StoreSetting("Language", "English");
-            dbSettings.StoreSetting("Channel", "");
-            dbSettings.StoreSetting("Channels", "");
-            dbSettings.StoreSetting("NickName", "");
-
-            GuestStatus.Current.UserName = $"{token.user_first_name} {token.user_last_name}";
-        }
-
-        public static async Task CreateNewActionLog(int episodeId,ServiceActionsEnum actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
+        public static async Task CreateNewActionLog(int episodeId, ServiceActionsEnum actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
@@ -336,76 +301,6 @@ namespace DABApp
             }
         }
 
-        static void CleanMemberData()
-        {
-            //Determine if this is the furst run of this version and if we need to do some cleanup           
-            var version = Version.Plugin.CrossVersion.Current.Version;
-            var firstRun = dbSettings.GetSetting($"FirstRun_{version}", "");
-            if (firstRun == "")
-            {
-
-                //cleans up database for the first time for specific versions of the app
-                var adb = DabData.AsyncDatabase;
-                var a = version.Split(".");
-                var shortVersion = a[0] + "." + a[1] + "." + a[2]; //xx.xx.xx format
-
-                //reset action date for specific version of the app.
-                List<string> VersionsToResetActionsOn = new List<string>() { "1.1.72", "1.1.73", "1.1.74", "1.1.80" };
-                if (VersionsToResetActionsOn.Contains(shortVersion))
-                {
-                    //delete action dates
-                    var dateSettings = adb.Table<dbSettings>().Where(x => x.Key.StartsWith("ActionDate-")).ToListAsync().Result;
-                    foreach (var item in dateSettings)
-                    {
-                        int j = adb.DeleteAsync(item).Result;
-                    }
-
-                    //delete actions
-                    int i = adb.ExecuteAsync("delete from dbPlayerActions").Result;
-                    i = adb.ExecuteAsync("delete from dbEpisodeUserData").Result;
-                }
-
-                //store the setting that we have ran through this for the first run of the version
-                dbSettings.StoreSetting($"FirstRun_{version}", DateTime.Now.ToString());
-
-            }
-
-        }
-
-        static async Task SaveMemberData(List<dbEpisodes> episodes)//Saves member data for each episode gotten from GetMemberData method.
-        {
-            var savedEps = await adb.Table<dbEpisodes>().ToListAsync();
-            List<dbEpisodes> update = new List<dbEpisodes>();
-            var start = DateTime.Now;
-            var potential = savedEps.Where(x => x.UserData.IsFavorite == true || x.UserData.IsListenedTo == true).ToList();
-            foreach (dbEpisodes p in potential)
-            {
-                if (!episodes.Any(x => x.id == p.id))
-                {
-                    p.UserData.IsFavorite = false;
-                    p.UserData.IsListenedTo = false;
-                    update.Add(p);
-                }
-            }
-            foreach (dbEpisodes episode in episodes)
-            {
-                var saved = savedEps.SingleOrDefault(x => x.id == episode.id);
-                
-                if (saved != null)
-                {
-                    if (!(saved.UserData.CurrentPosition == episode.UserData.CurrentPosition && saved.UserData.IsFavorite == episode.UserData.IsFavorite && saved.UserData.IsListenedTo == episode.UserData.IsListenedTo && saved.UserData.HasJournal == episode.UserData.HasJournal))
-                    {
-                        saved.UserData.CurrentPosition = episode.UserData.CurrentPosition;
-                        saved.UserData.IsFavorite = episode.UserData.IsFavorite;
-                        saved.UserData.IsListenedTo = episode.UserData.IsListenedTo;
-                        saved.UserData.HasJournal = episode.UserData.HasJournal;
-                        update.Add(saved);
-                    }
-                }
-            }
-            await adb.UpdateAllAsync(update);
-            Debug.WriteLine($"Writing new episode data {(DateTime.Now - start).TotalMilliseconds}");
-        }
 
         public static bool GetTestMode()
         {
@@ -439,14 +334,6 @@ namespace DABApp
             }
         }
 
-        public static string CurrentToken
-        //Return the current token
-        {
-            get
-            {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                return TokenSettings?.Value;
-            }
-        }
+ 
     }
 }

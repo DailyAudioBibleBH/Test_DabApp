@@ -32,8 +32,6 @@ namespace DABApp.Service
             {
                 //common routines (logged in or not)
                 //TODO: fill these in
-                //TODO: get recent episodes
-                //TODO: get recent badges
 
                 var adb = DabData.AsyncDatabase;
 
@@ -103,7 +101,7 @@ namespace DABApp.Service
 
         public static async Task<bool> NotifyOnConnectionKeepAlive()
         {
-            //Keepalive message received - let the UI do something about it
+            //Keepalive message received - nothing to do.
             return true;
         }
 
@@ -244,11 +242,7 @@ namespace DABApp.Service
                         //TODO: Confirm all of these messages
                         Device.BeginInvokeOnMainThread(() =>
                     {
-                        MessagingCenter.Send<string>("Update", "Update");
-                        MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                        MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
-                        MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
-
+                        DabServiceEvents.EpisodesChanged();
                     });
                     }
 
@@ -301,15 +295,7 @@ namespace DABApp.Service
                 await adb.InsertOrReplaceAsync(dbe);
 
                 //notify the UI
-                //TODO: Confirm all of these messages
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    MessagingCenter.Send<string>("Update", "Update");
-                    MessagingCenter.Send<string>("dabapp", "EpisodeDataChanged");
-                    MessagingCenter.Send<string>("dabapp", "OnEpisodesUpdated");
-                    MessagingCenter.Send<string>("dabapp", "ShowTodaysEpisode");
-
-                });
+                DabServiceEvents.EpisodesChanged();
 
                 return true;
 
@@ -363,7 +349,7 @@ namespace DABApp.Service
                             GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
 
                             //raise an event to notify anything listening that new actions have been received
-                            DabServiceEvents.EpisodesChanged();
+                            DabServiceEvents.EpisodeUserDataChanged();
                         }
 
                         //stop the wait indicator
@@ -402,7 +388,7 @@ namespace DABApp.Service
                     if (DabService.IsConnected == true)
                     {
                         //get actions to process
-                        var adb = DabData.AsyncDatabase;
+                        var adb =DabData.AsyncDatabase;
                         var actions = await adb.Table<dbPlayerActions>().ToListAsync();
 
                         //loop through actions
@@ -452,8 +438,18 @@ namespace DABApp.Service
                                 await adb.DeleteAsync(action);
                             } else {
                                 //leave the action alone, it will be processed later.
-                                //other actions may continue to get processed.
-                                Debug.WriteLine($"Action failed to be processed: {JsonConvert.SerializeObject(action)} / ERROR: {response.ErrorMessage}");
+                                switch (response.ErrorMessage)
+                                {
+                                    case "Invalid episode id.": //probably a junk / 0 episode to be deleted
+                                        Debug.WriteLine($"Deleting action for invaild episodeid {action.EpisodeId}.");
+                                        await adb.DeleteAsync(action);
+                                        break;
+
+                                    default: // keep other episodes in the queue, will try again
+                                        Debug.WriteLine($"Action failed to be processed: {JsonConvert.SerializeObject(action)} / ERROR: {response.ErrorMessage}");
+                                        break;
+                                }
+
                             }
 
                         }
@@ -479,6 +475,18 @@ namespace DABApp.Service
                 Debug.WriteLine(ex.ToString());
                 return false;
             }
+        }
+
+        public static async Task<bool> ReceiveActionLog(DabGraphQlAction action)
+        {
+            /*
+             * This routine handles incoming action logs. 
+             * It updates the database and notifies any listners of changes
+             */
+
+            await PlayerFeedAPI.UpdateEpisodeUserData(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position,true);
+
+            return true;
         }
 
         #endregion
@@ -569,10 +577,8 @@ namespace DABApp.Service
             var adb = DabData.AsyncDatabase;
             userName = GlobalResources.GetUserEmail();
 
-            Debug.WriteLine($"PROGRESSUPDATED: {JsonConvert.SerializeObject(data)}");
-
             //Build out progress object
-            DabGraphQlProgress progress = new DabGraphQlProgress(data.progress);
+            DabGraphQlProgress progress = data.progress;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
                 //log to firebase
@@ -582,37 +588,29 @@ namespace DABApp.Service
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
 
-
                 await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
             }
-            //Tie badge to progress data
-            dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
 
             //Save badge progress data
-            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == newProgress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
                 if (badgeData == null)
                 {
-                    await adb.InsertOrReplaceAsync(newProgress);
+                    //new user badge progress
+                    badgeData = new dbUserBadgeProgress(progress, userName);
+                    await adb.InsertOrReplaceAsync(badgeData);
                 }
                 else
                 {
-                    badgeData.percent = newProgress.percent;
+                    //existing user badge progress
+                    badgeData.percent = progress.percent;
                     await adb.InsertOrReplaceAsync(badgeData);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (badgeData == null)
-                {
-                    await adb.InsertOrReplaceAsync(newProgress);
-                }
-                else
-                {
-                    badgeData.percent = newProgress.percent;
-                    await adb.InsertOrReplaceAsync(badgeData);
-                }
+                Debug.WriteLine($"Error saving badge / progress data: {JsonConvert.SerializeObject(progress)}: {ex.Message}");
             }
         }
 

@@ -73,15 +73,21 @@ namespace DABApp
             BackgroundImage.Source = backgroundImage;
             Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
-            //break episodes months out into list
+            if (Months.Items.Contains("All Episodes") == false)
+            {
+                Months.Items.Insert(0, "All Episodes"); //default selector
+                Months.SelectedIndex = 0;
+
+            }
             var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
             foreach (var month in months)
             {
-                var m = MonthConverter.ConvertToFull(month);
-                Months.Items.Add(m);
+                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
+                if (Months.Items.Contains(monthName) == false)
+                {
+                    Months.Items.Add(monthName);
+                }
             }
-            Months.Items.Insert(0, "All Episodes");
-            Months.SelectedIndex = 0;
 
             //Run timed actions and subscribe to events to update them
             MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
@@ -1140,7 +1146,7 @@ namespace DABApp
                 try
                 {
                     EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Months.Items[Months.SelectedIndex].Substring(0, 3))
+                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)));

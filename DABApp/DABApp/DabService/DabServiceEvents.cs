@@ -16,7 +16,9 @@ namespace DABApp.Service
     public delegate void GraphQlTraffic(GraphQlTrafficDirection direction, string traffic);
     public delegate void GraphQlProfileChanged(GraphQlUser user);
     public delegate void GraphQlEpisodesChanged();
-    
+    public delegate void GraphQlEpisodeUserDataChanged();
+
+
 
     public static class DabServiceEvents
     {
@@ -40,11 +42,20 @@ namespace DABApp.Service
            });
         }
 
-        //Episode Property Changed Event
+        //Episode User Data Changed Event
+        public static event GraphQlEpisodeUserDataChanged EpisodeUserDataChangedEvent;
+        public static void EpisodeUserDataChanged()
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                EpisodeUserDataChangedEvent?.Invoke();
+            });
+        }
+
+        //Episode List Changed Event
         public static event GraphQlEpisodesChanged EpisodesChangedEvent;
         public static void EpisodesChanged()
         {
-            Debug.WriteLine($"EpisodesChanged Fired");
             Device.BeginInvokeOnMainThread(async () =>
             {
                 EpisodesChangedEvent?.Invoke();
