@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DABApp.Service;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace DABApp.DabUI
@@ -35,37 +36,52 @@ namespace DABApp.DabUI
                 versionList = contentConfig.versions;
                 contentAPI.GetModes();
 
+                NavigationPage navPage;
+
                 if (versionList != null)
                 {
                     //version list in place, force user to log in
-                    Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+                    navPage = new NavigationPage(new DabCheckEmailPage());
                 }
                 else if (token == "")
                 {
                     //user last logged in as a guest, take them to enter their email
-                    Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+                    navPage = new NavigationPage(new DabCheckEmailPage());
                 }
                 else
                 {
-                    //attempt to connect to service
-                    var ql =  await DabService.InitializeConnection(token);
-                    if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
-                    {
-                        //token is validated as expired - make them log back in
-                        await DabService.TerminateConnection();
-                        await DabService.InitializeConnection(GlobalResources.APIKey);
-                        Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+                    //user was logged in last time
 
+                    //check for internet
+                    if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+                    {
+                        //we have internet access - establish a connection with the token
+                        var ql = await DabService.InitializeConnection(token);
+                        if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
+                        {
+                            //token is validated as expired - make them log back in
+                            await DabService.TerminateConnection();
+                            await DabService.InitializeConnection(GlobalResources.APIKey);
+                            navPage = new NavigationPage(new DabCheckEmailPage());
+                        }
+                        else
+                        {
+                            //token is good. perform post-login functions and continue on
+                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                            navPage = new NavigationPage(new DabChannelsPage());
+                        }
                     }
                     else
                     {
-                        //perform post-login functions
-                        await DabServiceRoutines.RunConnectionEstablishedRoutines();
-
-                        var _nav = new DabChannelsPage();
-                        _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                        Application.Current.MainPage = new NavigationPage(_nav);
+                        //no internet access - proceed on hoping the token is good
+                        DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Disconnected,"no internet");
+                        navPage = new NavigationPage(new DabChannelsPage());
                     }
+
+                    //proceed on to the appopriate nav page
+                    navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                    Application.Current.MainPage = navPage;
+                    return;
                 }
             }
             else
@@ -73,8 +89,10 @@ namespace DABApp.DabUI
                 Application.Current.MainPage = new DabNetworkUnavailablePage(); //Take to network unavailable page if not logged in.
             }
 
+            //finish rotating the image
             rotateImage = false;
         }
+
 
         async Task RotateIconContinuously()
         {
@@ -82,11 +100,11 @@ namespace DABApp.DabUI
 
             while (rotateImage)
             {
-                for (int i = 1; i < steps+1 ; i++)
+                for (int i = 1; i < steps + 1; i++)
                 {
                     if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
                     await AppIcon.RotateTo(i * (360 / steps), 1500, Easing.Linear);
-                } 
+                }
             }
         }
     }

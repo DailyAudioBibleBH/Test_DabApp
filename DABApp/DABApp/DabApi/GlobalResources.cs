@@ -41,6 +41,7 @@ namespace DABApp
             if (current == NetworkAccess.Internet)
             {
                 Debug.WriteLine("Gained internet access");
+                DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
                 // Connection to internet is available
                 // If websocket is not connected, reconnect
                 if (!DabService.IsConnected)
@@ -58,6 +59,7 @@ namespace DABApp
             else
             {
                 Debug.WriteLine("Lost internet access");
+                DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Disconnected, "disconnected");
                 await DabService.TerminateConnection();
             }
         }

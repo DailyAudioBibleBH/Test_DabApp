@@ -167,16 +167,61 @@ namespace DABApp
 
         private async void DabServiceEvents_TrafficOccuredEvent(GraphQlTrafficDirection direction, string traffic)
         {
-            if (direction == GraphQlTrafficDirection.Inbound)
+            //display icon in nav bar based on traffic type
+            bool hideWhenDone = true;
+            switch (direction)
             {
-                keepaliveButton.Text = "·";
-            } else
-            {
-                keepaliveButton.Text = "·"; //"◦";
-            }
-            await Task.Delay(100);
-            keepaliveButton.Text = "";
+                
+#if   DEBUG
+                case GraphQlTrafficDirection.Inbound:
+                    //inbound traffic
+                    keepaliveButton.Text = "↓";
+                    break;
 
+                case GraphQlTrafficDirection.Outbound:
+                    //outbound traffic
+                    keepaliveButton.Text = "↑"; 
+                    break;
+                case GraphQlTrafficDirection.Connected:
+                    //internet connected
+                    keepaliveButton.Text = "👌"; //"◦";
+                    hideWhenDone = false;
+                    break;
+                case GraphQlTrafficDirection.Disconnected:
+                    //internet disconnected
+                    keepaliveButton.Text = "🚫"; //"◦";
+                    hideWhenDone = false;
+                    break;
+#else
+                case GraphQlTrafficDirection.Inbound:
+                    //inbound traffic
+                    keepaliveButton.Text = "·";
+                    break;
+
+                case GraphQlTrafficDirection.Outbound:
+                    //outbound traffic
+                    keepaliveButton.Text = "·"; 
+                    break;
+                case GraphQlTrafficDirection.Connected:
+                    //internet connected
+                    keepaliveButton.Text = "⊙"; //"◦";
+                    hideWhenDone = false;
+                    break;
+                case GraphQlTrafficDirection.Disconnected:
+                    //internet disconnected
+                    keepaliveButton.Text = "◦"; //"◦";
+                    hideWhenDone = false;
+                    break;
+#endif
+
+            }
+
+            //hide the button after a moment for traffic
+            if (hideWhenDone)
+            {
+                await Task.Delay(100);
+                keepaliveButton.Text = "";
+            }
         }
 
         private void StopWait(object sender, EventArgs e)

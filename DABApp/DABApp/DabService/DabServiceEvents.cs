@@ -9,7 +9,9 @@ namespace DABApp.Service
     public enum GraphQlTrafficDirection
     {
         Inbound,
-        Outbound
+        Outbound,
+        Connected,
+        Disconnected
     }
 
 
