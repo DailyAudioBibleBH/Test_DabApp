@@ -63,7 +63,7 @@ namespace DABApp.Service
                 {
 
                 }
-                
+
 
 
                 //logged in user routines
@@ -388,7 +388,7 @@ namespace DABApp.Service
                     if (DabService.IsConnected == true)
                     {
                         //get actions to process
-                        var adb =DabData.AsyncDatabase;
+                        var adb = DabData.AsyncDatabase;
                         var actions = await adb.Table<dbPlayerActions>().ToListAsync();
 
                         //loop through actions
@@ -399,15 +399,15 @@ namespace DABApp.Service
                             switch (action.ActionType.ToLower())
                             {
                                 case "favorite":
-                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Favorite, actionDate, action.Favorite,null);
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Favorite, actionDate, action.Favorite, null);
                                     break;
                                 case "listened_status":
-                                    //same as listened
+                                //same as listened
                                 case "listened":
-                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Listened, actionDate, action.Listened,null);
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Listened, actionDate, action.Listened, null);
                                     break;
                                 case "pause":
-                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime) );
+                                    response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime));
                                     break;
                                 case "entrydate":
                                     //TODO: Implement this
@@ -422,21 +422,46 @@ namespace DABApp.Service
                             {
                                 //check to ensure action was not overwritten by another newer action
                                 var lastAction = response.Data.payload.data.logAction;
-                                var lastActionAge = lastAction.updatedAt.Subtract(actionDate);
+                                DateTime lastActionDateTime;
+                                switch (action.ActionType.ToLower())
+                                {
+                                    case "favorite":
+                                        lastActionDateTime = lastAction.favoriteUpdatedAt;
+                                        break;
+                                    case "listened_status":
+                                    case "listened":
+                                        lastActionDateTime = lastAction.listenUpdatedAt;
+                                        break;
+                                    case "pause":
+                                        lastActionDateTime = lastAction.positionUpdatedAt;
+                                        break;
+                                    case "entrydate":
+                                        lastActionDateTime = lastAction.entryDateUpdatedAt;
+                                        break;
+                                    default:
+                                        lastActionDateTime = lastAction.updatedAt;
+                                        break;
+                                }
+                                var lastActionAge = lastActionDateTime.Subtract(actionDate);
                                 bool? hasJournal;
                                 if (lastAction.entryDate != null)
                                     hasJournal = true;
                                 else
                                     hasJournal = null;
-                                if (lastActionAge.TotalSeconds>1) //TODO: This should be replaced with action update dates that match per LUTD 7/7/2020
+                                if (lastActionAge.TotalMilliseconds > 1)  //Should be accurate to 0.000 
                                 {
                                     await PlayerFeedAPI.UpdateEpisodeUserData(lastAction.episodeId, lastAction.listen, lastAction.favorite, hasJournal, lastAction.position, true);
-                                    Debug.WriteLine($"Action was overwritten by newer action. OLD: {JsonConvert.SerializeObject(action)} / NEW: {JsonConvert.SerializeObject(lastAction)}");
+                                    Debug.WriteLine($"Sent Action Date: {actionDate.TimeOfDay} \n" +
+                                        $"Specific Updated At: {lastActionDateTime.TimeOfDay} \n" +
+                                        $"Generic Updated At: {lastAction.updatedAt.TimeOfDay}");
+
                                 }
 
                                 //delete the action from the queue
                                 await adb.DeleteAsync(action);
-                            } else {
+                            }
+                            else
+                            {
                                 //leave the action alone, it will be processed later.
                                 switch (response.ErrorMessage)
                                 {
@@ -463,7 +488,8 @@ namespace DABApp.Service
                         //not connected - nothing to do
                         return false;
                     }
-                } else
+                }
+                else
                 {
                     //guest - nothing to do
                     return false;
@@ -484,7 +510,7 @@ namespace DABApp.Service
              * It updates the database and notifies any listners of changes
              */
 
-            await PlayerFeedAPI.UpdateEpisodeUserData(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position,true);
+            await PlayerFeedAPI.UpdateEpisodeUserData(action.episodeId, action.listen, action.favorite, action.hasJournal, action.position, true);
 
             return true;
         }
@@ -492,7 +518,7 @@ namespace DABApp.Service
         #endregion
 
         #region User Profile Routines
-        public static async Task<GraphQlUser> UpdateUserProfile (GraphQlUser user)
+        public static async Task<GraphQlUser> UpdateUserProfile(GraphQlUser user)
         {
             /*this routine takes a graphql user object and updates
              * the local database with the new information.
@@ -568,7 +594,7 @@ namespace DABApp.Service
                 {
                     Debug.WriteLine($"Error while grabbing user's badge progress: {ex.Message}");
                 }
-                
+
             }
         }
 

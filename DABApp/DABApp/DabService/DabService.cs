@@ -742,30 +742,22 @@ namespace DABApp.Service
             {
                 case ServiceActionsEnum.Favorite:
                     if (! BoolValue.HasValue) throw new NotSupportedException("No favorite value provided.");
-                    command = $"mutation {{logAction(episodeId: {EpisodeId}, favorite: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt}}}}";
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, favorite: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt favoriteUpdatedAt}}}}";
                     break;
                 case ServiceActionsEnum.Listened:
                     if (!BoolValue.HasValue) throw new NotSupportedException("No listened value provided.");
-                    command = $"mutation {{logAction(episodeId: {EpisodeId}, listen: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId listen updatedAt}}}}";
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, listen: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId listen updatedAt listenUpdatedAt}}}}";
                     break;
                 case ServiceActionsEnum.PositionChanged:
                     if (!IntValue.HasValue) throw new NotSupportedException("No position value provided.");
-                    command = $"mutation {{logAction(episodeId: {EpisodeId}, position: {IntValue.Value}, updatedAt: \"{updatedAt}\") {{episodeId userId position updatedAt}}}}";
+                    command = $"mutation {{logAction(episodeId: {EpisodeId}, position: {IntValue.Value}, updatedAt: \"{updatedAt}\") {{episodeId userId position updatedAt positionUpdatedAt}}}}";
                     break;
                 case ServiceActionsEnum.Journaled:
                     //TODO: Implement this
                     string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                     if (!BoolValue.HasValue) throw new NotSupportedException("No journal value provided.");
-                    command = "mutation {logAction(episodeId: " + EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
+                    command = "mutation {logAction(episodeId: " + EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt entryDateUpdatedAt}}";
                     break;
-                    /* Old Code
-                     *  string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
-                                        var entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
-                                        if (hasEmptyJournal == true)
-                                            entQuery = "mutation {logAction(episodeId: " + i.EpisodeId + ", entryDate: null , updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
-                                        var entPayload = new DabGraphQlPayload(entQuery, variables);
-                                        var entJsonIn = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", entPayload));
-                    */
                 default:
                     //Nothing to do here, unuspported action style
                     throw new NotImplementedException();

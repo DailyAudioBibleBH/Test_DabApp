@@ -138,7 +138,11 @@ namespace DABApp.DabSockets
         public int? position { get; set; }
         public bool? favorite { get; set; }
         public object entryDate { get; set; }
-        public DateTime updatedAt { get; set; }
+        public DateTime updatedAt { get; set; } //server timestamp of update
+        public DateTime favoriteUpdatedAt { get; set; } //device timestamp
+        public DateTime listenUpdatedAt { get; set; } //device timestamp
+        public DateTime positionUpdatedAt { get; set; } //device timestamp
+        public DateTime entryDateUpdatedAt { get; set; } //device timestamp
     }
 
 
