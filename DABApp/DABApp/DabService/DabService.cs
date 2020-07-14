@@ -754,7 +754,7 @@ namespace DABApp.Service
                     break;
                 case ServiceActionsEnum.Journaled:
                     //TODO: Implement this
-                    string entryDate = DateTime.Now.ToString("yyyy-M-dd");
+                    string entryDate = DateTime.Now.ToString("yyyy-MM-dd");
                     if (!BoolValue.HasValue) throw new NotSupportedException("No journal value provided.");
                     command = "mutation {logAction(episodeId: " + EpisodeId + ", entryDate: \"" + entryDate + "\", updatedAt: \"" + updatedAt + "\") {episodeId userId entryDate updatedAt}}";
                     break;

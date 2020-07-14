@@ -437,9 +437,14 @@ namespace DABApp.Service
                                 //check to ensure action was not overwritten by another newer action
                                 var lastAction = response.Data.payload.data.logAction;
                                 var lastActionAge = lastAction.updatedAt.Subtract(actionDate);
+                                bool? hasJournal;
+                                if (lastAction.entryDate != null)
+                                    hasJournal = true;
+                                else
+                                    hasJournal = null;
                                 if (lastActionAge.TotalSeconds>1) //TODO: This should be replaced with action update dates that match per LUTD 7/7/2020
                                 {
-                                    await PlayerFeedAPI.UpdateEpisodeUserData(lastAction.episodeId, lastAction.listen, lastAction.favorite, null, lastAction.position, true);
+                                    await PlayerFeedAPI.UpdateEpisodeUserData(lastAction.episodeId, lastAction.listen, lastAction.favorite, hasJournal, lastAction.position, true);
                                     Debug.WriteLine($"Action was overwritten by newer action. OLD: {JsonConvert.SerializeObject(action)} / NEW: {JsonConvert.SerializeObject(lastAction)}");
                                 }
 
