@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DABApp.Service;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace DABApp.DabUI
@@ -47,25 +48,40 @@ namespace DABApp.DabUI
                 }
                 else
                 {
-                    //attempt to connect to service
-                    var ql =  await DabService.InitializeConnection(token);
-                    if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
+                    if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                     {
-                        //token is validated as expired - make them log back in
-                        await DabService.TerminateConnection();
-                        await DabService.InitializeConnection(GlobalResources.APIKey);
-                        Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+                        //attempt to connect to service
+                        var ql = await DabService.InitializeConnection(token);
+                        if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized."))
+                        {
+                            var qll = await DabService.UpdateToken();
+                            if (qll.Success)
+                            {
+                                //token was updated successfully
+                                dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
+                                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
 
+                                //reset the connection using the new token
+                                await DabService.TerminateConnection();
+                                await DabService.InitializeConnection();
+                            }
+                            Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
+                        }
+                        else
+                        {
+                            //perform post-login functions
+                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+
+                            var _nav = new DabChannelsPage();
+                            _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                            Application.Current.MainPage = new NavigationPage(_nav);
+                        }
                     }
                     else
                     {
-                        //perform post-login functions
-                        await DabServiceRoutines.RunConnectionEstablishedRoutines();
-
-                        var _nav = new DabChannelsPage();
-                        _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                        Application.Current.MainPage = new NavigationPage(_nav);
+                        Application.Current.MainPage = new NavigationPage(new DabCheckEmailPage());
                     }
+                    
                 }
             }
             else

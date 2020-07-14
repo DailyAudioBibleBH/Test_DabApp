@@ -63,11 +63,29 @@ namespace DABApp
             }
             else
             {
-               var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
+                var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
+                if(ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized.")
+                {
+                    var qll = await DabService.UpdateToken();
+                    if (qll.Success)
+                    {
+                        //token was updated successfully
+                        dbSettings.StoreSetting("Token", qll.Data.payload.data.updateToken.token);
+                        dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+                    }
+                }
                 if (reconnect == true)
                 {
                     GlobalResources.WaitStart("Retrying...");
-                    await DabService.InitializeConnection();
+                    await DabService.TerminateConnection();
+                    //reconnect to service
+                    var qlll = await DabService.InitializeConnection();
+
+                    if (qlll.Success)
+                    {
+                        //perform post-connection operations with service
+                        await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                    }
                     OnNext(o, e);
                     GlobalResources.WaitStop();
                 }
