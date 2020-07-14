@@ -32,7 +32,8 @@ namespace DABApp
             stats.AppendLine($"User Progress Data: {adb.Table<dbUserBadgeProgress>().CountAsync().Result}");
             stats.AppendLine();
 
-            //settings
+            //settings (debug mode only)
+#if DEBUG
             foreach (var s in adb.Table<dbSettings>().ToListAsync().Result)
             {
                 switch (s.Key.ToLower())
@@ -52,6 +53,8 @@ namespace DABApp
                         break;
                 }
             }
+
+#endif
 
 
             lblStats.Text = stats.ToString();
