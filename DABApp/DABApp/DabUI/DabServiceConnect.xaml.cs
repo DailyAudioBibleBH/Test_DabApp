@@ -101,8 +101,8 @@ namespace DABApp.DabUI
             {
                 for (int i = 1; i < steps + 1; i++)
                 {
-                    if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
-                    await AppIcon.RotateTo(i * (360 / steps), 1500, Easing.Linear);
+                    if (AppIcon.Rotation >=  360f) AppIcon.Rotation = 0;
+                    await AppIcon.RotateTo(i * ( 360 / steps), 1000, Easing.CubicInOut);
                 }
             }
         }
