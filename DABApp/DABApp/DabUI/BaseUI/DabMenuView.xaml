@@ -12,7 +12,7 @@
     </t:SlideMenuView.Resources>
     <StackLayout BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
         <StackLayout VerticalOptions="FillAndExpand" Padding="10,40,10,0">
-            <local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent" ItemsSource="{Binding Source={x:Static local:ContentConfig.Instance}, Path=nav}"
+            <local:NonScrollingListView x:Name="pageList"  BackgroundColor="Transparent"
 				ItemTapped="OnItemTapped">
                 <local:NonScrollingListView.ItemTemplate>
                     <DataTemplate>
