@@ -345,10 +345,17 @@ namespace DABApp
                 _resource = (Resource)ChannelsList.SelectedItem;
                 BackgroundImage.Source = _resource.images.backgroundTablet;
 
+                
+
+                //get the episodes - this routine handles resetting the date and raising events
+                GlobalResources.WaitStart($"Refreshing episodes...");
+                var result = await DabServiceRoutines.GetEpisodes(_resource.id);
+
                 //Load the list if episodes for the channel.
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+                TimedActions();
 
-                //TODO: Get new episodes from the socket
+                GlobalResources.WaitStop();
             }
             else
             {
