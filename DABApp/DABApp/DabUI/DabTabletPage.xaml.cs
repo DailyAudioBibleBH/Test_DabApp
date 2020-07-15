@@ -38,7 +38,7 @@ namespace DABApp
         int count;
 
 
-
+        #region constructor and startup methods
 
         //Open up the page and optionally init it with an episode
         public DabTabletPage(Resource resource, dbEpisodes Episode = null)
@@ -94,13 +94,6 @@ namespace DABApp
                     Months.Items.Add(monthName);
                 }
             }
-
-            //Run timed actions and subscribe to events to update them
-            MessagingCenter.Subscribe<string>("Update", "Update", (obj) =>
-            {
-                TimedActions();
-                Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
-            });
 
             //Load the specified episode
             if (Episode != null)
@@ -177,6 +170,49 @@ namespace DABApp
             });
         }
 
+        //Page appears event
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            OnRefresh(null, null); //load episodes
+
+            BindControls(true, true); //rebind controls when clicking on miniplayer
+            if (Device.RuntimePlatform == "iOS")
+            {
+                JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height
+                //original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
+            }
+            if (LoginJournal.IsVisible || Journal.IsVisible)
+            {
+                if (GuestStatus.Current.IsGuestLogin)
+                {
+                    LoginJournal.IsVisible = true;
+                    Journal.IsVisible = false;
+                }
+                else
+                {
+                    LoginJournal.IsVisible = false;
+                    Journal.IsVisible = true;
+                }
+            }
+            ////TODO: Replace for journal?
+            if (episode != null && !GuestStatus.Current.IsGuestLogin)
+            {
+                journal.JoinRoom(episode.Episode.PubDate);
+            }
+            if (Initializer.IsVisible)
+            {
+                Initializer.Focus();
+            }
+            else
+            {
+                PlayPause.Focus();
+            }
+        }
+
+        #endregion
+
         async Task<bool> DownloadEpisodes()
         {
             /*
@@ -201,6 +237,11 @@ namespace DABApp
 
         private async void DabServiceEvents_EpisodeUserDataChangedEvent()
         {
+            //Get fresh reference to the episode
+            if (episode != null)
+            {
+                episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
+            }
             //user data has changed (not episode list itself)
             await Refresh(EpisodeRefreshType.NoRefresh);
             BindControls(true, true);
@@ -636,47 +677,6 @@ namespace DABApp
         void OnShare(object o, EventArgs e)
         {
             Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.PubDate.ToString("MMddyyyy"));
-        }
-
-        //Page appears event
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            OnRefresh(null, null); //load episodes
-
-            BindControls(true, true); //rebind controls when clicking on miniplayer
-            if (Device.RuntimePlatform == "iOS")
-            {
-                JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height
-                //original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
-            }
-            if (LoginJournal.IsVisible || Journal.IsVisible)
-            {
-                if (GuestStatus.Current.IsGuestLogin)
-                {
-                    LoginJournal.IsVisible = true;
-                    Journal.IsVisible = false;
-                }
-                else
-                {
-                    LoginJournal.IsVisible = false;
-                    Journal.IsVisible = true;
-                }
-            }
-            ////TODO: Replace for journal?
-            if (episode != null && !GuestStatus.Current.IsGuestLogin)
-            {
-                journal.JoinRoom(episode.Episode.PubDate);
-            }
-            if (Initializer.IsVisible)
-            {
-                Initializer.Focus();
-            }
-            else
-            {
-                PlayPause.Focus();
-            }
         }
 
         //User login
