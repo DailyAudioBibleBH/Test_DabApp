@@ -77,12 +77,11 @@ namespace DABApp.DabUI
                         DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Disconnected,"no internet");
                         navPage = new NavigationPage(new DabChannelsPage());
                     }
-
-                    //proceed on to the appopriate nav page
-                    navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                    Application.Current.MainPage = navPage;
-                    return;
                 }
+                //proceed on to the appopriate nav page
+                navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                Application.Current.MainPage = navPage;
+                return;
             }
             else
             {
