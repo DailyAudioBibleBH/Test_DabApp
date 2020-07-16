@@ -23,7 +23,7 @@ namespace DABApp
         DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
         Resource _resource; //The current resource (initially passed from the channels page)
         IEnumerable<dbEpisodes> Episodes; //List of episodes for current channel
-        ObservableCollection<EpisodeViewModel> list;
+        ObservableCollection<EpisodeViewModel> episodeObservableCollection;
         string backgroundImage; //background image in the header?
         EpisodeViewModel episode;
         EpisodeViewModel previousEpisode;
@@ -219,13 +219,11 @@ namespace DABApp
             //to start an episode after a different one is loaded.
             try
             {
-
                 if (episode == null && Episodes.Count() > 0)
                 {
                     episode = new EpisodeViewModel(Episodes.First());
                     currentIndex = 0;
-                    count = list.Count();
-                    previousEpisode = list.ElementAt(currentIndex + 1);
+                    previousEpisode = new EpisodeViewModel(Episodes.ElementAt(currentIndex + 1));// episodeObservableCollection.ElementAt(currentIndex + 1);
                     previousButton.Opacity = 0;
                     nextEpisode = null;
                     nextButton.IsEnabled = false;
@@ -550,7 +548,7 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
+                    EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
                     .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
@@ -585,7 +583,7 @@ namespace DABApp
             {
                 try
                 {
-                    EpisodeList.ItemsSource = list = new ObservableCollection<EpisodeViewModel>(Episodes
+                    EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
                     .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
@@ -709,17 +707,15 @@ namespace DABApp
             {
                 GlobalResources.WaitStart("Refreshing episodes...");
 
-
-                //TODO: Get episodes
-
+                var result = await DabServiceRoutines.GetEpisodes(_resource.id);
+                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
                 if (episode == null && Episodes.Count() > 0)
                 {
                     //pick the first episode
                     episode = new EpisodeViewModel(Episodes.First());
                     currentIndex = 0;
-                    count = list.Count();
-                    previousEpisode = list.ElementAt(currentIndex + 1);
+                    previousEpisode = new EpisodeViewModel(Episodes.ElementAt(currentIndex + 1));// episodeObservableCollection.ElementAt(currentIndex + 1);
                     nextEpisode = null;
                     nextButton.IsEnabled = false;
                 }
@@ -828,14 +824,14 @@ namespace DABApp
             //Load the episode
             GlobalResources.WaitStart("Loading episode...");
             var newEp = (EpisodeViewModel)e.Item;
-            currentIndex = list.IndexOf(newEp);
+            currentIndex = episodeObservableCollection.IndexOf(newEp);
             previousEpIndex = currentIndex + 1;
             nextEpIndex = currentIndex - 1;
-            count = list.Count();
+            count = episodeObservableCollection.Count();
 
             if (previousEpIndex < count)
             {
-                previousEpisode = list.ElementAt(previousEpIndex);
+                previousEpisode = episodeObservableCollection.ElementAt(previousEpIndex);
                 previousButton.IsEnabled = true;
             }
             else
@@ -845,7 +841,7 @@ namespace DABApp
             }
             if (nextEpIndex >= 0)
             {
-                nextEpisode = list.ElementAt(nextEpIndex);
+                nextEpisode = episodeObservableCollection.ElementAt(nextEpIndex);
                 nextButton.IsEnabled = true;
             }
             else
@@ -953,11 +949,11 @@ namespace DABApp
                 currentIndex = currentIndex + 1;
                 previousEpIndex = currentIndex + 1;
                 nextEpIndex = currentIndex - 1;
-                count = list.Count();
+                count = episodeObservableCollection.Count();
 
                 if (previousEpIndex < count)
                 {
-                    previousEpisode = list.ElementAt(previousEpIndex);
+                    previousEpisode = episodeObservableCollection.ElementAt(previousEpIndex);
                     previousButton.IsEnabled = true;
                 }
                 else
@@ -967,7 +963,7 @@ namespace DABApp
                 }
                 if (nextEpIndex >= 0)
                 {
-                    nextEpisode = list.ElementAt(nextEpIndex);
+                    nextEpisode = episodeObservableCollection.ElementAt(nextEpIndex);
                     nextButton.IsEnabled = true;
                 }
                 else
@@ -1040,12 +1036,12 @@ namespace DABApp
                 currentIndex = currentIndex - 1;
                 previousEpIndex = currentIndex + 1;
                 nextEpIndex = currentIndex - 1;
-                count = list.Count();
+                count = episodeObservableCollection.Count();
 
 
                 if (previousEpIndex < count)
                 {
-                    previousEpisode = list.ElementAt(previousEpIndex);
+                    previousEpisode = episodeObservableCollection.ElementAt(previousEpIndex);
                     previousButton.IsEnabled = true;
                 }
                 else
@@ -1055,7 +1051,7 @@ namespace DABApp
                 }
                 if (nextEpIndex >= 0)
                 {
-                    nextEpisode = list.ElementAt(nextEpIndex);
+                    nextEpisode = episodeObservableCollection.ElementAt(nextEpIndex);
                     nextButton.IsEnabled = true;
                 }
                 else
