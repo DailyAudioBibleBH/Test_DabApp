@@ -153,21 +153,6 @@ namespace DABApp
                 Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
-
-            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    //Get fresh reference to the episode
-                    if (episode != null)
-                    {
-                        episode = new EpisodeViewModel(PlayerFeedAPI.GetEpisode(episode.Episode.id.Value));
-                    }
-                    BindControls(true, true);
-                    //Bind episode data in the list
-                    TimedActions();
-                });
-            });
         }
 
         //Page appears event
