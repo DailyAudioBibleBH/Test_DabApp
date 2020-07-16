@@ -622,6 +622,7 @@ namespace DABApp.Service
             DabGraphQlProgress progress = data.progress;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
+                progress.seen = true;
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
                 fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
@@ -629,45 +630,9 @@ namespace DABApp.Service
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
 
-                progress.seen = true;
-                //Update that achievement as been seen by user
-                var userName = GlobalResources.GetUserName();
-                var result = await Service.DabService.SeeProgress(progress.id);
-                if (result.Success == true)
-                {
-                    //Save that progress has been seen
-                    dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
-                    dbUserBadgeProgress newBadgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
-                    try
-                    {
-                        if (newBadgeData == null)
-                        {
-                            await adb.InsertOrReplaceAsync(newProgress);
-                        }
-                        else
-                        {
-                            newBadgeData.seen = true;
-                            await adb.InsertOrReplaceAsync(newBadgeData);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        if (newBadgeData == null)
-                        {
-                            await adb.InsertOrReplaceAsync(newProgress);
-                        }
-                        else
-                        {
-                            newBadgeData.seen = true;
-                            await adb.InsertOrReplaceAsync(newBadgeData);
-                        }
-                    }
-                }
-
-
                 await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
             }
-
+            
             //Save badge progress data
             dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
             try
