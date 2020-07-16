@@ -77,6 +77,8 @@ namespace DABApp.DabUI
         async void OnContinue(object o, EventArgs e)
         {
             //Dismiss popup
+            //Send GraphQl the achievement has been seen 
+            Service.DabService.SeeProgress(progress.id);
             await PopupNavigation.Instance.PopAsync();
         }
     }
