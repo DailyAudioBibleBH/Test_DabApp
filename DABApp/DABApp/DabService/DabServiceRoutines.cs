@@ -200,11 +200,17 @@ namespace DABApp.Service
                     startdate = GlobalResources.GetLastEpisodeQueryDate(ChannelId);
                 }
 
+                var adb = DabData.AsyncDatabase;
+                var alreadyDownloadedEpisodes = adb.Table<dbEpisodes>().Where(x => x.channel_title == "Daily Audio Bible").Where(x => x.is_downloaded == true).ToListAsync().Result;
+                List<int> downloadedEpsIds = new List<int>();
+                foreach (var item in alreadyDownloadedEpisodes)
+                {
+                    downloadedEpsIds.Add((int)item.id);
+                }
                 var ql = await DabService.GetEpisodes(startdate, ChannelId);
                 if (ql.Success)
                 {
                     //store episodes in the database
-                    var adb = DabData.AsyncDatabase;
                     var channel = await adb.Table<dbChannels>().Where(x => x.channelId == ChannelId).FirstOrDefaultAsync();
 
                     //loop through the episodes
@@ -221,7 +227,15 @@ namespace DABApp.Service
                             var code = channel.key;
                             dbe.channel_code = code;
                             dbe.channel_title = channel.title;
-                            dbe.is_downloaded = false;
+                            if (downloadedEpsIds.Contains((int)dbe.id))
+                            {
+                                dbe.is_downloaded = true;
+                                dbe.progressVisible = true;
+                            }
+                            else
+                            {
+                                dbe.is_downloaded = false;
+                            }
                             if (GlobalResources.TestMode)
                             {
                                 dbe.description += $" ({DateTime.Now.ToShortTimeString()})";
@@ -613,6 +627,42 @@ namespace DABApp.Service
                 fbInfo.Add("idiom", Device.Idiom.ToString());
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
+
+                progress.seen = true;
+                //Update that achievement as been seen by user
+                var userName = GlobalResources.GetUserName();
+                var result = await Service.DabService.SeeProgress(progress.id);
+                if (result.Success == true)
+                {
+                    //Save that progress has been seen
+                    dbUserBadgeProgress newProgress = new dbUserBadgeProgress(progress, userName);
+                    dbUserBadgeProgress newBadgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+                    try
+                    {
+                        if (newBadgeData == null)
+                        {
+                            await adb.InsertOrReplaceAsync(newProgress);
+                        }
+                        else
+                        {
+                            newBadgeData.seen = true;
+                            await adb.InsertOrReplaceAsync(newBadgeData);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        if (newBadgeData == null)
+                        {
+                            await adb.InsertOrReplaceAsync(newProgress);
+                        }
+                        else
+                        {
+                            newBadgeData.seen = true;
+                            await adb.InsertOrReplaceAsync(newBadgeData);
+                        }
+                    }
+                }
+
 
                 await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
             }

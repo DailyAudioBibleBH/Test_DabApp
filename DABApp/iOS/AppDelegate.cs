@@ -46,6 +46,9 @@ namespace DABApp.iOS
             //Popup INit
             Rg.Plugins.Popup.Popup.Init();
 
+            //Ios Default Tint Color
+            UINavigationBar.Appearance.TintColor = UIColor.FromRGB(203, 203, 203);
+
 
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.DependencyService.Register<ShareIntent>();
