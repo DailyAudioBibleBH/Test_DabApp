@@ -25,6 +25,11 @@ namespace DABApp.DabUI
 
             RotateIconContinuously(); //start rotation
             WaitContent.FadeTo(1, 250); //fade it in
+            if (GlobalResources.TestMode)
+            {
+                lblTestMode.IsVisible = true;
+                lblTestMode.FadeTo(1, 500, Easing.BounceIn);
+            }
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {

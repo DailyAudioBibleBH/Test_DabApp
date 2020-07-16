@@ -23,6 +23,7 @@ namespace DABApp
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
             Email.Text = dbSettings.GetSetting("Email", "");
+            lblTestMode.IsVisible = GlobalResources.TestMode;
             if (Device.Idiom == TargetIdiom.Phone)
             {
                 Logo.WidthRequest = 250;
