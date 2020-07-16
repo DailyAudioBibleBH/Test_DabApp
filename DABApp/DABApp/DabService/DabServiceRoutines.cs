@@ -613,16 +613,34 @@ namespace DABApp.Service
             }
         }
 
+        public static async Task<bool> SeeProgress(int ProgressId)
+        {
+
+            //wait for graphql
+            var rv = await Service.DabService.SeeProgress(ProgressId);
+
+            if (rv.Success)
+            {
+                //mark databas as seen locally
+                var adb = DabData.AsyncDatabase;
+                dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == ProgressId && x.userName == userName).FirstOrDefaultAsync().Result;
+                if (badgeData != null)
+                {
+                    badgeData.seen = true;
+                }
+            }
+            return rv.Success;
+        }
+
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
             userName = dbSettings.GetSetting("Email", "");
 
             //Build out progress object
-            DabGraphQlProgress progress = data.progress;
+            DabGraphQlProgress progress = data.progress ;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
-                progress.seen = true;
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
                 fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
