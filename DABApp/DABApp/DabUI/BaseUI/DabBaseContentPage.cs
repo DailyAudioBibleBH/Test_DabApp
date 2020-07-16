@@ -31,7 +31,14 @@ namespace DABApp
         {
             //Default Page properties
             //this.Padding = new Thickness(10, 10); //Add some padding around all page controls
-            Title = "DAILY AUDIO BIBLE";
+            if (GlobalResources.TestMode)
+            {
+                Title = "*** TEST MODE ***";
+            }
+            else
+            {
+                Title = "DAILY AUDIO BIBLE";
+            }
             //Control template (adds the player bar)
             ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
             RelativeLayout container = new RelativeLayout();
@@ -61,8 +68,8 @@ namespace DABApp
                     {
                         activityHolder.Opacity = 0;
                         activityContent.Opacity = 0;
-                        activityHolder.FadeTo(.75, 500,Easing.CubicIn);
-                        activityContent.FadeTo(1, 500,Easing.CubicIn);
+                        activityHolder.FadeTo(.75, 500, Easing.CubicIn);
+                        activityContent.FadeTo(1, 500, Easing.CubicIn);
                     }
                     activityButton.Clicked += StopWait;
                     activityLabel.Text = message;
@@ -171,8 +178,8 @@ namespace DABApp
             bool hideWhenDone = true;
             switch (direction)
             {
-                
-#if   DEBUG
+
+#if DEBUG
                 case GraphQlTrafficDirection.Inbound:
                     //inbound traffic
                     keepaliveButton.Text = "↓";
@@ -180,7 +187,7 @@ namespace DABApp
 
                 case GraphQlTrafficDirection.Outbound:
                     //outbound traffic
-                    keepaliveButton.Text = "↑"; 
+                    keepaliveButton.Text = "↑";
                     break;
                 case GraphQlTrafficDirection.Connected:
                     //internet connected

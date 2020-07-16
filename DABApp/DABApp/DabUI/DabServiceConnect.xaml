@@ -4,7 +4,8 @@
         <StackLayout VerticalOptions="FillAndExpand" BackgroundColor="{StaticResource SlideMenuBackgroundColor}">
             <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Spacing="40"  Opacity="0" x:Name="WaitContent" >
                 <Image x:Name="AppIcon" Source="SplashAppIcon.png" HeightRequest="100" WidthRequest="100" Margin="0, 27, 0, 0"/>
-                <Label Text="Connecting to Daily Audio Bible Servers..." TextColor="White"/>
+                <Label Text="Connecting to Daily Audio Bible Servers..." TextColor="White" />
+                <Label x:Name="lblTestMode" IsVisible="False"  Opacity="0" Text="*** TEST MODE ***" TextColor="White" FontSize="Large" HorizontalOptions="Center"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

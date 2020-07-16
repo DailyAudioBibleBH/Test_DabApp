@@ -166,6 +166,13 @@ namespace DABApp
 		}
 	}
 
+	public enum ViewVisibility
+    {
+		both,
+		logged_in
+			
+    }
+
 	public class View
 	{
 		public string type { get; set; } //"content", "app", or "links" 
@@ -178,6 +185,7 @@ namespace DABApp
 		public string content { get; set; } //HTML text
 		public List<View> children { get; set; } //array of children content views
 		public List<Link> links { get; set; } //aray of links
+		public ViewVisibility visible { get; set; } //where the view shoudld be visible
 	}
 
 	public class modeData

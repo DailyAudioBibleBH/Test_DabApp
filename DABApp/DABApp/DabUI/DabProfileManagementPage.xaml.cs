@@ -23,9 +23,9 @@ namespace DABApp
 			InitializeComponent();
             if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
 			var UserName = GlobalResources.GetUserName().Split(' ');
-			FirstName.Text = UserName[0];
-			LastName.Text = UserName[1];
-			Email.Text = GlobalResources.GetUserEmail();
+			FirstName.Text = dbSettings.GetSetting("FirstName", "");
+			LastName.Text = dbSettings.GetSetting("LastName", "");
+			Email.Text = dbSettings.GetSetting("Email", "");
 		}
 
 		async void OnSave(object o, EventArgs e) 

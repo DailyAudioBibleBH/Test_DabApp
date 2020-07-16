@@ -25,6 +25,11 @@ namespace DABApp.DabUI
 
             RotateIconContinuously(); //start rotation
             WaitContent.FadeTo(1, 250); //fade it in
+            if (GlobalResources.TestMode)
+            {
+                lblTestMode.IsVisible = true;
+                lblTestMode.FadeTo(1, 500, Easing.BounceIn);
+            }
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
@@ -101,8 +106,8 @@ namespace DABApp.DabUI
             {
                 for (int i = 1; i < steps + 1; i++)
                 {
-                    if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
-                    await AppIcon.RotateTo(i * (360 / steps), 1500, Easing.Linear);
+                    if (AppIcon.Rotation >=  360f) AppIcon.Rotation = 0;
+                    await AppIcon.RotateTo(i * ( 360 / steps), 1000, Easing.CubicInOut);
                 }
             }
         }

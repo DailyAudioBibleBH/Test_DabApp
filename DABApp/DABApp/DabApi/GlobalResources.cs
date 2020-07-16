@@ -273,16 +273,7 @@ namespace DABApp
 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    //Returns WpId for non-guest users
-                    dbSettings s = adb.Table<dbSettings>().Where(x => x.Key == "WpId").FirstOrDefaultAsync().Result;
-                    if (s == null)
-                    {
-                        return "-1"; //unknown (haven't stored it yet)
-                    }
-                    else
-                    {
-                        return s.Value;
-                    }
+                    return dbSettings.GetSetting("WpId", "-1");
                 }
                 else
                 {
@@ -291,36 +282,15 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                return "-1"; //error
+                return "-2"; //error
             }
 
-        }
-
-        public static string GetUserEmail()
-        {
-            dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-            if (EmailSettings == null)
-            {
-                return "";
-            }
-            else
-            {
-                return EmailSettings.Value;
-            }
         }
 
         public static string GetUserName()
         {
-            dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-            dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-            if (FirstNameSettings == null || LastNameSettings == null)
-            {
-                return "";
-            }
-            else
-            {
-                return FirstNameSettings.Value + " " + LastNameSettings.Value;
-            }
+            //friendly user name
+            return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
@@ -377,7 +347,7 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
                 dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
                 if (BadgeProgressSettings == null)
@@ -398,7 +368,7 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
                 string progressDate = value.ToString();
                 dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                 BadgeProgressSettings.Key = settingsKey;
@@ -412,7 +382,7 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
+                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
                 DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
                 return LastActionDate;
             }
@@ -420,7 +390,7 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"ActionDate-{GlobalResources.GetUserEmail()}";
+                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
                 string actionDate = value.ToString();
                 dbSettings.StoreSetting(settingsKey, actionDate);
             }

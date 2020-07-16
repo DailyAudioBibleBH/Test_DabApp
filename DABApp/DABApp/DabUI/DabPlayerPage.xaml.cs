@@ -699,22 +699,37 @@ namespace DABApp
         //User favorites (or unfavorites) an episode
         async void OnFavorite(object o, EventArgs e)
         {
-            Episode.IsFavorite = !Episode.IsFavorite;
-            AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Favorite, null, null, Episode.Episode.UserData.IsFavorite, null);
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+
+                Episode.IsFavorite = !Episode.IsFavorite;
+                AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Favorite, null, null, Episode.Episode.UserData.IsFavorite, null);
+            } else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
+
         }
 
         //User listens to (or unlistens to) an episode
         async void OnListened(object o, EventArgs e)
         {
-
-            //Mark episode as listened to
-            //Episode.Episode.is_listened_to = "";
-            //check this
-            Episode.IsListenedTo = !Episode.IsListenedTo;
-            AutomationProperties.SetName(Completed, Episode.listenAccessible);
-            await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Listened, null, Episode.Episode.UserData.IsListenedTo, null, null);
-
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                //Mark episode as listened to
+                //Episode.Episode.is_listened_to = "";
+                //check this
+                Episode.IsListenedTo = !Episode.IsListenedTo;
+                AutomationProperties.SetName(Completed, Episode.listenAccessible);
+                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Listened, null, Episode.Episode.UserData.IsListenedTo, null, null);
+            }
+            else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
             //TODO: Bind accessibiliyt text
         }
 

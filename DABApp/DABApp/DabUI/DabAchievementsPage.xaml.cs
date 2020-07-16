@@ -26,7 +26,7 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = contentView; 
 			BindingContext = AchievementsView;
-			string userName = GlobalResources.GetUserEmail();
+			string userName = dbSettings.GetSetting("Email", "");
 
 			banner.Source = new UriImageSource
 			{

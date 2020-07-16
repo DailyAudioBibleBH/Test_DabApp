@@ -593,86 +593,118 @@ namespace DABApp
 
         async void OnListened(object o, EventArgs e)
         {
-            episode.IsListenedTo = !episode.IsListenedTo;
-            AutomationProperties.SetName(Completed, episode.listenAccessible);
-            await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Listened, null, episode.Episode.UserData.IsListenedTo);
-            await Refresh(EpisodeRefreshType.NoRefresh);
-            BindControls(true, true);
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                episode.IsListenedTo = !episode.IsListenedTo;
+                AutomationProperties.SetName(Completed, episode.listenAccessible);
+                await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Listened, null, episode.Episode.UserData.IsListenedTo);
+                await Refresh(EpisodeRefreshType.NoRefresh);
+                BindControls(true, true);
+            }
+            else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
         }
 
 
 
         async void OnFavorite(object o, EventArgs e)
         {
-            episode.IsFavorite = !episode.IsFavorite;
-            AutomationProperties.SetName(Favorite, episode.favoriteAccessible);
-            await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
-            await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Favorite, null, null, episode.Episode.UserData.IsFavorite);
-            await Refresh(EpisodeRefreshType.NoRefresh);
-            BindControls(true, true);
+            if (GuestStatus.Current.IsGuestLogin == false)
+            {
+                episode.IsFavorite = !episode.IsFavorite;
+                AutomationProperties.SetName(Favorite, episode.favoriteAccessible);
+                await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null);
+                await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Favorite, null, null, episode.Episode.UserData.IsFavorite);
+                await Refresh(EpisodeRefreshType.NoRefresh);
+                BindControls(true, true);
+            }
+            else
+            {
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+            }
         }
 
         async void OnListFavorite(object o, EventArgs e)
         {
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            //start new
-
-            model.IsFavorite = !ep.UserData.IsFavorite;
-
-            if (episode == null && Episodes.Count() > 0)
+            if (GuestStatus.Current.IsGuestLogin == false)
             {
-                episode = new EpisodeViewModel(Episodes.First());
+                var mi = ((Xamarin.Forms.MenuItem)o);
+                var model = ((EpisodeViewModel)mi.CommandParameter);
+                var ep = model.Episode;
+                //start new
+
+                model.IsFavorite = !ep.UserData.IsFavorite;
+
+                if (episode == null && Episodes.Count() > 0)
+                {
+                    episode = new EpisodeViewModel(Episodes.First());
+                }
+                if (episode != null)
+                {
+
+                    if (ep.id == episode.Episode.id)
+                    {
+                        episode.Episode.UserData.IsFavorite = model.IsFavorite;
+                        Favorite.Source = episode.favoriteSource;
+                        await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                        await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
+                    }
+                    else
+                    {
+                        await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                        await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
+                    }
+                }
             }
-            if (episode != null)
+            else
             {
-
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.UserData.IsFavorite = model.IsFavorite;
-                    Favorite.Source = episode.favoriteSource;
-                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
-                }
-                else
-                {
-                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, model.IsFavorite);
-                }
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
             }
         }
 
         async void OnListListened(object o, EventArgs e)
         {
-            var mi = ((Xamarin.Forms.MenuItem)o);
-            var model = ((EpisodeViewModel)mi.CommandParameter);
-            var ep = model.Episode;
-            //start new
-
-            model.IsListenedTo = !ep.UserData.IsListenedTo;
-            if (episode == null && Episodes.Count() > 0)
+            if (GuestStatus.Current.IsGuestLogin == false)
             {
-                episode = new EpisodeViewModel(Episodes.First());
+                var mi = ((Xamarin.Forms.MenuItem)o);
+                var model = ((EpisodeViewModel)mi.CommandParameter);
+                var ep = model.Episode;
+                //start new
+
+                model.IsListenedTo = !ep.UserData.IsListenedTo;
+                if (episode == null && Episodes.Count() > 0)
+                {
+                    episode = new EpisodeViewModel(Episodes.First());
+                }
+                if (episode != null)
+                {
+                    if (ep.id == episode.Episode.id)
+                    {
+                        episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
+                        //TODO: Fix completed image
+                        Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+
+                        AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
+                        await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                        await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
+                    }
+                    else
+                    {
+                        await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
+                        await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
+                    }
+                }
             }
-            if (episode != null)
+            else
             {
-                if (ep.id == episode.Episode.id)
-                {
-                    episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
-                    //TODO: Fix completed image
-                    Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
-
-                    AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
-                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
-                }
-                else
-                {
-                    await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
-                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, model.IsListenedTo, null);
-                }
+                //guest mode - do nothing
+                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
             }
         }
 
@@ -898,7 +930,7 @@ namespace DABApp
                 _resource = (Resource)ChannelsList.SelectedItem;
                 BackgroundImage.Source = _resource.images.backgroundTablet;
 
-                
+
 
                 //get the episodes - this routine handles resetting the date and raising events
                 GlobalResources.WaitStart($"Refreshing episodes...");
@@ -1145,7 +1177,7 @@ namespace DABApp
             }
             Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
             {
-                AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.PositionChanged, player.CurrentPosition, null, null);
+                AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.PositionChanged, player.CurrentPosition, null, null);
                 return true;
             });
         }
@@ -1177,7 +1209,7 @@ namespace DABApp
                     episode.HasJournal = false;
 
                     await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, false, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Journaled, null, null, null, true);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Journaled, null, null, null, true);
                 }
                 else if (episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
@@ -1185,7 +1217,7 @@ namespace DABApp
                     episode.HasJournal = true;
 
                     await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id,  DabService.ServiceActionsEnum.Journaled, null, null, null, null);
+                    await AuthenticationAPI.CreateNewActionLog((int)episode.Episode.id, DabService.ServiceActionsEnum.Journaled, null, null, null, null);
                 }
             }
 

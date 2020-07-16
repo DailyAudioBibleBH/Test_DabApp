@@ -549,6 +549,7 @@ namespace DABApp.Service
             dbSettings.StoreSetting("Channel", user.channel);
             dbSettings.StoreSetting("Channels", user.channels);
             dbSettings.StoreSetting("Language", user.language);
+            dbSettings.StoreSetting("WpId", user.wpId.ToString());
 
             //alert anything that is listening
             DabServiceEvents.UserProfileChanged(user);
@@ -564,7 +565,7 @@ namespace DABApp.Service
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = GlobalResources.GetUserEmail();
+            userName = dbSettings.GetSetting("Email", "");
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
@@ -594,7 +595,7 @@ namespace DABApp.Service
 
                     }
                     //update last time checked for badge progress
-                    string settingsKey = $"BadgeProgressDate-{GlobalResources.GetUserEmail()}";
+                    string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
                     dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
                     if (sBadgeProgressSettings == null)
                     {
@@ -612,19 +613,37 @@ namespace DABApp.Service
             }
         }
 
+        public static async Task<bool> SeeProgress(int ProgressId)
+        {
+
+            //wait for graphql
+            var rv = await Service.DabService.SeeProgress(ProgressId);
+
+            if (rv.Success)
+            {
+                //mark databas as seen locally
+                var adb = DabData.AsyncDatabase;
+                dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == ProgressId && x.userName == userName).FirstOrDefaultAsync().Result;
+                if (badgeData != null)
+                {
+                    badgeData.seen = true;
+                }
+            }
+            return rv.Success;
+        }
+
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
-            userName = GlobalResources.GetUserEmail();
+            userName = dbSettings.GetSetting("Email", "");
 
             //Build out progress object
-            DabGraphQlProgress progress = data.progress;
+            DabGraphQlProgress progress = data.progress ;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
-                progress.seen = true;
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
-                fbInfo.Add("user", GlobalResources.GetUserEmail());
+                fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
                 fbInfo.Add("idiom", Device.Idiom.ToString());
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
@@ -659,7 +678,7 @@ namespace DABApp.Service
         {
             //log to firebase
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user", GlobalResources.GetUserEmail());
+            fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 
