@@ -48,7 +48,9 @@ namespace DABApp.iOS
 
             //Ios Default Tint Color
             UINavigationBar.Appearance.TintColor = UIColor.FromRGB(203, 203, 203);
-
+            UITextAttributes att = new UITextAttributes();
+            att.TextColor = UIColor.FromRGB(203, 203, 203);
+            UINavigationBar.Appearance.SetTitleTextAttributes(att);
 
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.DependencyService.Register<ShareIntent>();
