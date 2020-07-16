@@ -262,7 +262,7 @@ namespace DABApp
                 try
                 {
                     episodeId = id.Value;
-                    userName = GlobalResources.GetUserEmail();
+                    userName = dbSettings.GetSetting("Email", "");
                     adb = DabData.AsyncDatabase; //TODO - Verify this doesn't get overused
 
                     var data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == id && x.UserName == userName).FirstOrDefaultAsync().Result;

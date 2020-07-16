@@ -42,7 +42,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = GlobalResources.GetUserEmail();
+            var email = dbSettings.GetSetting("Email", "");
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;
@@ -75,7 +75,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = GlobalResources.GetUserEmail();
+            var email = dbSettings.GetSetting("Email", "");
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;

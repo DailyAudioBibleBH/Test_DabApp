@@ -49,7 +49,7 @@ namespace DABApp.DabUI
                 //Send info to Firebase analytics that user achieveed the badge
                 var infoJ = new Dictionary<string, string>();
                 infoJ.Add("badge", currentBadge.name);
-                infoJ.Add("user", GlobalResources.GetUserEmail());
+                infoJ.Add("user", dbSettings.GetSetting("Email", ""));
                 DependencyService.Get<IAnalyticsService>().LogEvent("badge_earned", infoJ);
 
             }

@@ -311,7 +311,7 @@ namespace DABApp
                 else
                 {
                     //find the user episode data (ued) in question
-                    var userName = GlobalResources.GetUserEmail();
+                    var userName = dbSettings.GetSetting("Email", "");
                     dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
 
                     //add new ued if needed 

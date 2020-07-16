@@ -105,7 +105,7 @@ namespace DABApp
 				update.first_name = FirstName.Text;
 				update.last_name = LastName.Text;
 				update.company = CompanyName.Text;
-				update.email = GlobalResources.GetUserEmail();
+				update.email = dbSettings.GetSetting("Email", "");
 				update.phone = Phone.Text;
 				update.address_1 = Address1.Text;
 				update.address_2 = Address2.Text;
