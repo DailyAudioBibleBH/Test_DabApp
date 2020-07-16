@@ -46,9 +46,12 @@ namespace DABApp.iOS
             //Popup INit
             Rg.Plugins.Popup.Popup.Init();
 
-            //Ios Default Tint Color
+            //Ios Nav bar decoration
             UINavigationBar.Appearance.TintColor = UIColor.FromRGB(203, 203, 203);
-
+            UITextAttributes att = new UITextAttributes();
+            att.TextColor = UIColor.FromRGB(203, 203, 203);
+            att.Font = UIFont.FromName("FetteEngD", 25);
+            UINavigationBar.Appearance.SetTitleTextAttributes(att);
 
             global::Xamarin.Forms.Forms.Init();
             Xamarin.Forms.DependencyService.Register<ShareIntent>();
