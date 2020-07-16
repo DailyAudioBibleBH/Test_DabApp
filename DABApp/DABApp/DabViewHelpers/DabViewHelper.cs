@@ -9,7 +9,14 @@ namespace DABApp
 	{
 		public static void InitDabForm(DabBaseContentPage page)
 		{
-			page.Title = "DAILY AUDIO BIBLE";
+			if (GlobalResources.TestMode)
+			{
+				page.Title = "*** TEST MODE ***";
+			}
+			else
+			{
+				page.Title = "DAILY AUDIO BIBLE";
+			}
 		}
 	}
 
