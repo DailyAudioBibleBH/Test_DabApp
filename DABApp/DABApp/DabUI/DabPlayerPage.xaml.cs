@@ -9,6 +9,7 @@ using DABApp.DabAudio;
 using DABApp.DabSockets;
 using SQLite;
 using System.Collections.ObjectModel;
+using DABApp.Service;
 
 namespace DABApp
 {
@@ -149,19 +150,20 @@ namespace DABApp
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
-            MessagingCenter.Subscribe<string>("dabapp", "EpisodeDataChanged", (obj) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    BindControls(true, true);
-                });
 
-            });
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
             //Play-Pause button binding
             //Moved here to take away flicker when favoriting and marking an episode as listened to 
             PlayPause.BindingContext = player;
             PlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+        }
+
+        private async void DabServiceEvents_EpisodeUserDataChangedEvent()
+        {
+            //user data has changed (not episode list itself)
+            BindControls(true, true);
         }
 
         async void GetNextPreviousEpisodes(EpisodeViewModel _episode)
