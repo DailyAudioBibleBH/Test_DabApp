@@ -39,6 +39,7 @@ namespace DABApp
             {
                 Title = "DAILY AUDIO BIBLE";
             }
+            keepaliveButton = new ToolbarItem();
             //Control template (adds the player bar)
             ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
             RelativeLayout container = new RelativeLayout();
