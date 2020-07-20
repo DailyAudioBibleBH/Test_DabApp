@@ -24,7 +24,6 @@ namespace DABApp
         string backgroundImage;
         bool IsGuest;
         static double original;
-        double lastLogPlayerPosition;
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
@@ -222,33 +221,6 @@ namespace DABApp
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
                 }
             }
-            Device.StartTimer(TimeSpan.FromSeconds(ContentConfig.Instance.options.log_position_interval), () =>
-            {
-                var difference = Math.Abs(lastLogPlayerPosition - player.CurrentPosition);
-                if (lastLogPlayerPosition != player.CurrentPosition && (difference >= 30 || difference <= -30))
-                {
-                    AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId,  Service.DabService.ServiceActionsEnum.PositionChanged, player.CurrentPosition, null, null, null);
-                    
-                    lastLogPlayerPosition = player.CurrentPosition;
-                    if (GlobalResources.CurrentEpisodeId != (int)Episode.Episode.id)
-                    {
-                        BindControls(true, true);
-                    }
-                    return true;
-                }
-                else if (lastLogPlayerPosition == player.CurrentPosition)
-                {
-                    return false;
-                }
-                else if (player.IsPlaying == false)
-                {
-                    return false; //we'll start the timers up again when they press play.
-                }
-                else
-                {
-                    return true;
-                }
-            });
         }
 
         //Go to previous episode

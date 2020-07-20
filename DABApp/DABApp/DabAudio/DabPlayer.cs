@@ -44,6 +44,7 @@ namespace DABApp.DabAudio
         private double LastPosition = 0;
         private bool shouldResumePlay = false;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+        private double lastLogPlayerPosition;
 
 
 
@@ -383,6 +384,16 @@ namespace DABApp.DabAudio
 
                 //Fire event to tell native players to update lock screen
                 OnEpisodeProgressChanged(this, new DabPlayerEventArgs(this)); //Notify lock screen of new position
+
+                //Log position change to an action log
+                var difference = Math.Abs(lastLogPlayerPosition - CurrentPosition);
+                if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
+                {
+                    Debug.WriteLine($"Logging progress...{DateTime.Now}");
+                    _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
+                    lastLogPlayerPosition = CurrentPosition;
+                }
+
             }
         }
 
@@ -400,6 +411,7 @@ namespace DABApp.DabAudio
             {
                 PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
                 AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+                lastLogPlayerPosition = CurrentPosition;
             }
 
         }
