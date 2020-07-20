@@ -74,7 +74,7 @@ namespace DABApp
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
 					dbSettings.StoreSetting("Token", token);
-					dbSettings.StoreSetting("TokenCreated", DateTime.Now.ToString()); ;
+					dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
 					await DabService.TerminateConnection();
 					await DabService.InitializeConnection(token);
 					//get user profile information and update it.
