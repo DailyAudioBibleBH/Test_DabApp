@@ -373,7 +373,6 @@ namespace DABApp.DabAudio
 
         private void OnTimerFired(object sender, ElapsedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(DateTime.Now.Ticks);
             //Raise an event if the players progress has moved
             if (LastPosition != nativePlayer.CurrentPosition)
             {

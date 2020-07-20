@@ -240,6 +240,10 @@ namespace DABApp
                 {
                     return false;
                 }
+                else if (player.IsPlaying == false)
+                {
+                    return false; //we'll start the timers up again when they press play.
+                }
                 else
                 {
                     return true;
