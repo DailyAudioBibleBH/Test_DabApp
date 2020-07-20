@@ -187,11 +187,12 @@ namespace DABApp.Service
 
             if (socket != null)
             {
+                //disconnect the event listeners
+                socket.DabSocketEvent -= Socket_DabSocketEvent;
+                socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
+
                 if (socket.IsConnected == true)
                 {
-                    //disconnect the event listeners
-                    socket.DabSocketEvent -= Socket_DabSocketEvent;
-                    socket.DabGraphQlMessage -= Socket_DabGraphQlMessage;
 
                     //disconnect the socket
                     socket.Disconnect();
