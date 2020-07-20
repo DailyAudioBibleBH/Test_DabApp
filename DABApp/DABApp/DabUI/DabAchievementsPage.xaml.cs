@@ -38,8 +38,7 @@ namespace DABApp
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
-			int currentYear = ContentConfig.Instance.options.progress_year;
-			//currentYear = 2020;
+			int currentYear = DateTime.Now.Year; //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
 
 			//separate badge and progress list from db
 			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().Where(x => x.visible == true).ToListAsync().Result;

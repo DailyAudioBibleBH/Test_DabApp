@@ -397,8 +397,11 @@ namespace DABApp.DabAudio
         {
             //Call other methods related to stopping / pausing an episode
             int e = GlobalResources.CurrentEpisodeId;
-            PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-            AuthenticationAPI.CreateNewActionLog(e,ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+            if (e > 0)
+            {
+                PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
+                AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+            }
 
         }
 

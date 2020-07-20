@@ -386,7 +386,7 @@ namespace DABApp
 	{
 		public int token_life { get; set; } = 5;
 		public int log_position_interval { get; set; } = 30;
-		public int progress_year { get; set; } = 2020;
+		public int progress_year { get; set; } = DateTime.Now.Year;
 	}
 
 

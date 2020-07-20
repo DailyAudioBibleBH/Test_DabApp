@@ -32,7 +32,7 @@ namespace DABApp
         {
             this.badgeId = badgeId;
             this.userName = userName;
-            this.year = ContentConfig.Instance.options.progress_year;
+            this.year = DateTime.Now.Year; //TODO: Replace with ContentConfig.Instance.options.progress_year; and future years
         }
 
         [PrimaryKey, NotNull]
