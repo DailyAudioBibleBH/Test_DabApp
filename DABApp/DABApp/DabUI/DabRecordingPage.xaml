@@ -27,7 +27,7 @@
                     <ColumnDefinition x:Name="c1" Width="*" />
                 </Grid.ColumnDefinitions>
                 <RelativeLayout x:Name="bannerContainer" Grid.ColumnSpan="2" Grid.Row="0" VerticalOptions="FillAndExpand">
-                    <ff:CachedImage x:Name="banner" Aspect="Fill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
+                    <Image x:Name="banner" Aspect="Fill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}" />
                     <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
                         <local:PlayerLabel x:Name="Title" Text="Prayer and Encouragement" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="Large" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="True" />
                     </StackLayout>

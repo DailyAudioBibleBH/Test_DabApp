@@ -28,11 +28,11 @@
                     <local:NonScrollingFlowListView.FlowColumnTemplate>
                         <DataTemplate>
                             <StackLayout Padding="10" Spacing="0" Opacity="{Binding IsNotSelected}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding title}">
-                                <ff:CachedImage Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
-                                    <ff:CachedImage.Source>
-                                        <UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" />
-                                    </ff:CachedImage.Source>
-                                </ff:CachedImage>
+                                <Image Aspect="AspectFill" HeightRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}">
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding images.thumbnail}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}" CachingEnabled="True" />
+                                    </Image.Source>
+                                </Image>
                                 <StackLayout Orientation="Horizontal" Padding="10" Spacing="0" WidthRequest="{Binding Source={x:Static local:GlobalResources.Instance}, Path=ThumbnailImageHeight}" BackgroundColor="{DynamicResource InputBackgroundColor}">
                                     <Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
                                 </StackLayout>

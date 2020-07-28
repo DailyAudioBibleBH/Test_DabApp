@@ -4,7 +4,7 @@
 	<ContentPage.Content>
 		<StackLayout>
 			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-				<ff:CachedImage x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
 				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
 					<Label Text="{Binding title}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
 				</StackLayout>
@@ -43,11 +43,11 @@
 									<StackLayout.Padding>
 									<OnPlatform x:TypeArguments="Thickness" iOS="20, 10, 20, 20" Android="20, 10, 20, 20"/>
 									</StackLayout.Padding>
-									<ff:CachedImage Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
-										<ff:CachedImage.Source>
+									<Image Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
+										<Image.Source>
 											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
-										</ff:CachedImage.Source>
-									</ff:CachedImage>
+										</Image.Source>
+									</Image>
 									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="{DynamicResource InputBackgroundColor}" IsVisible="{Binding HasGraphic}">
 										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
 										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
