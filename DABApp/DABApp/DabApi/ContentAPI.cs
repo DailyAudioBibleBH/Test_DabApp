@@ -59,11 +59,11 @@ namespace DABApp
                         var y = results.ToString();
                         var x = JsonConvert.SerializeObject(res);
                         if(y.Contains("names"))
-                            dbSettings.StoreSetting("Country", x);
+                            dbSettings.StoreSetting("Country", System.Net.WebUtility.HtmlDecode(x));
                         if (y.Contains("labels"))
-                            dbSettings.StoreSetting("Labels", x);
+                            dbSettings.StoreSetting("Labels", System.Net.WebUtility.HtmlDecode(x));
                         if (y.Contains("states"))
-                            dbSettings.StoreSetting("States", x);
+                            dbSettings.StoreSetting("States", System.Net.WebUtility.HtmlDecode(x));
                     }
                 }
 
