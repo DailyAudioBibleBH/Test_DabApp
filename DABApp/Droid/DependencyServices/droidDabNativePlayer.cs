@@ -148,7 +148,7 @@ namespace DABApp.Droid
                     const int firstPendingIntentId = 1;
                     const int skipPendingIntentId = 2;
                     const int previousPendingIntentId = 3;
-                   
+
                     PendingIntent backToAppPendingIntent =
                         PendingIntent.GetActivity(Application.Context, firstPendingIntentId, intent, 0);
                     PendingIntent playPausePendingIntent =
@@ -425,33 +425,42 @@ namespace DABApp.Droid
 
         protected override void OnCreate(Bundle bundle)
         {
-            base.OnCreate(bundle);
-
-            if (player.IsReady)
+            try
             {
-                if (player.IsPlaying)
+                base.OnCreate(bundle);
+
+                if (player.IsReady)
                 {
-                    player.Pause();
+                    if (player.IsPlaying)
+                    {
+                        player.Pause();
+                    }
+                    else
+                    {
+                        player.Play();
+                    }
                 }
                 else
                 {
-                    player.Play();
+                    if (player.Load(Episode.Episode))
+                    {
+                        player.Play();
+                    }
+                    else
+                    {
+                        //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
+                    }
+
                 }
+
+                Finish();
+
             }
-            else
+            catch (System.Exception ex)
             {
-                if (player.Load(Episode.Episode))
-                {
-                    player.Play();
-                }
-                else
-                {
-                    //DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                }
 
             }
 
-            Finish();
         }
     }
 
@@ -501,7 +510,7 @@ namespace DABApp.Droid
             if (player.IsReady)
             {
                 MessagingCenter.Send<string>("droid", "previous");
-                
+
             }
             else
             {

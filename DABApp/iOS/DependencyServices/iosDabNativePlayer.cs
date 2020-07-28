@@ -151,7 +151,16 @@ namespace DABApp.iOS
         {
             get
             {
-                return player == null ? 0 : player.CurrentItem.CurrentTime.Seconds;
+                try
+                {
+
+                    return player == null ? 0 : player.CurrentItem.CurrentTime.Seconds;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
+
             }
         }
 
@@ -241,7 +250,7 @@ namespace DABApp.iOS
         private void OnPlaybackInterupted(object sender, AVAudioSessionInterruptionEventArgs e)
         {
             //Handle player interupttions by a call. Only fires if the player is currently playing
-               switch (e.InterruptionType)
+            switch (e.InterruptionType)
             {
                 case AVAudioSessionInterruptionType.Began:
                     if (dabplayer.IsReady)
@@ -260,7 +269,7 @@ namespace DABApp.iOS
                     break;
 
             }
-            
+
         }
 
         void DeletePlayer()
@@ -278,7 +287,7 @@ namespace DABApp.iOS
             }
         }
 
-      
+
 
         //Playback has ended - raise event
         private void OnPlaybackEnded(NSNotification notification)
@@ -289,26 +298,35 @@ namespace DABApp.iOS
         /// Begin playback or resume if paused
         public void Play()
         {
-            if (player == null)
-                return;
+            try
+            {
+
+                if (player == null)
+                    return;
 
 
-            if (IsPlaying)
-            {
-                //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
-                player.Seek(new CoreMedia.CMTime(0, 1));
+                if (IsPlaying)
+                {
+                    //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
+                    player.Seek(new CoreMedia.CMTime(0, 1));
+                }
+                else if (player.CurrentTime >= player.CurrentItem.Duration)
+                {
+                    //Start over from the beginning if at the end of the file
+                    player.Seek(new CoreMedia.CMTime(0, 1));
+                    player.Play();
+                }
+                else
+                {
+                    //Play from where we're at
+                    player?.Play();
+                }
             }
-            else if (player.CurrentTime >= player.CurrentItem.Duration)
+            catch (Exception ex)
             {
-                //Start over from the beginning if at the end of the file
-                player.Seek(new CoreMedia.CMTime(0, 1));
-                player.Play();
+
             }
-            else
-            {
-                //Play from where we're at
-                player?.Play();
-            }
+
         }
 
         /// Pause playback if playing (does not resume)
