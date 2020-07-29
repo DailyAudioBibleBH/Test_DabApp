@@ -593,11 +593,16 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
+            GlobalResources.WaitStart("Reconnecting to the journal service.");
             journal.Reconnect();
             journal.JoinRoom(Episode.Episode.PubDate);
             await Task.Delay(1000);
             if (!journal.IsConnected)
             {
+                JournalWarning.IsVisible = true;
+                JournalContent.IsEnabled = false;
+                int paddingMulti = journal.IsConnected ? 4 : 8;
+                JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
             if (journal.IsConnected)
@@ -607,6 +612,7 @@ namespace DABApp
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
+            GlobalResources.WaitStop();
         }
 
         //Journal reconnecting

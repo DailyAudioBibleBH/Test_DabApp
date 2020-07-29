@@ -1225,7 +1225,7 @@ namespace DABApp
 
         async void OnReconnect(object o, EventArgs e)
         {
-
+            GlobalResources.WaitStart("Reconnecting to the journal service.");
             journal.Reconnect();
             if (episode != null)
             {
@@ -1240,6 +1240,7 @@ namespace DABApp
             {
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
+            GlobalResources.WaitStop();
         }
 
 
