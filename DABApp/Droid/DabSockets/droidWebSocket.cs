@@ -5,6 +5,7 @@ using DABApp.DabSockets;
 using WebSocket4Net;
 using System.Diagnostics;
 using DataReceivedEventArgs = WebSocket4Net.DataReceivedEventArgs;
+using DABApp.Service;
 
 [assembly: Dependency(typeof(droidWebSocket))]
 namespace DABApp.Droid.DabSockets
@@ -53,6 +54,7 @@ namespace DABApp.Droid.DabSockets
 
         private async void OnMessage(MessageReceivedEventArgs data)
         {
+            DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Inbound, data.Message);
             Debug.WriteLine("SOCKET RCVD:" + data.Message);
             DabGraphQlMessage?.Invoke(this, new DabGraphQlMessageEventHandler(data.Message));
         }
@@ -114,6 +116,7 @@ namespace DABApp.Droid.DabSockets
 
         public void Send(string JsonIn)
         {
+            DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Outbound, JsonIn);
             Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);
         }
