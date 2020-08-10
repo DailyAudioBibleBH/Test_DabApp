@@ -188,6 +188,7 @@ namespace DABApp.Service
                 //Determine the start date
                 DateTime startdate;
                 int cnt = 0; //number of episodes updated;
+                DateTime lastDate = DateTime.MinValue; //most recent episode date
 
                 GlobalResources.WaitStart("Checking for new episodes...");
 
@@ -221,6 +222,10 @@ namespace DABApp.Service
                         {
                             //process each episode
                             cnt++;
+                            if (episode.date > lastDate)
+                            {
+                                lastDate = episode.date;
+                            }
                             dbEpisodes dbe = new dbEpisodes(episode);
 
                             //set up additional properties
@@ -250,7 +255,7 @@ namespace DABApp.Service
                     if (cnt > 0)
                     {
                         //mark the last query date
-                        GlobalResources.SetLastEpisodeQueryDate(ChannelId);
+                        GlobalResources.SetLastEpisodeQueryDate(ChannelId, lastDate.AddSeconds(1));//add a second to keep it from looping
 
                         //notify the UI
                         //TODO: Confirm all of these messages

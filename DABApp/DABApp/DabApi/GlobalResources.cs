@@ -302,10 +302,11 @@ namespace DABApp
             return querydate;
         }
 
-        public static void SetLastEpisodeQueryDate(int ChannelId)
+        public static void SetLastEpisodeQueryDate(int ChannelId, DateTime LastDate)
         {
             string k = "EpisodeQueryDate" + ChannelId;
-            dbSettings.StoreSetting(k, DateTime.Now.ToUniversalTime().ToString());
+            Debug.WriteLine($"Setting last episode query date for Channel {ChannelId}: { LastDate.ToString()}");
+            dbSettings.StoreSetting(k, $"{LastDate.ToString()}");
         }
 
         //Last badge check date in GMT (get/set universal time)

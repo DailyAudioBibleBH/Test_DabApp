@@ -41,6 +41,28 @@ namespace DABApp.DabUI
                 versionList = contentConfig.versions;
                 contentAPI.GetModes();
 
+
+#if DEBUG
+                /*
+                 * Area to do some database operations to prep app for debugging operations,
+                 * such as database cleaning, setting resets, etc.
+                 */
+
+                //reset the dab episodelastquerydate
+                //var queryDate = new DateTime(2020, 8, 7, 20, 0, 0);
+                //dbSettings.StoreSetting("EpisodeQueryDate227", queryDate.ToUniversalTime().ToString());
+
+                ////delete episodes from today
+                //var adb = DabData.AsyncDatabase;
+                //var eps = await adb.Table<dbEpisodes>().Where(x => x.PubDate >= queryDate).ToListAsync();
+                //foreach( var ep in eps)
+                //{
+                //    await adb.DeleteAsync(ep);
+                //}                    
+
+
+#endif
+
                 NavigationPage navPage;
 
                 if (versionList != null)
