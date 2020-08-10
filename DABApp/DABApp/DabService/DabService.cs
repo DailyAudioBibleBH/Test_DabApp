@@ -27,6 +27,7 @@ namespace DABApp.Service
         private static IWebSocket socket; //websocket used by service
 
         public const int WaitDelayInterval = 500; //milliseconds to pause for anything that waits on another thread to provide input
+        public const int ExtraLongTimeout = 20000; //super long timeout for things that take a long time
         public const int LongTimeout = 10000; //timeout for calls we expect return values from
         public const int ShortTimeout = 250; //timeout for quick calls or items we don't expect values from
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
@@ -495,7 +496,7 @@ namespace DABApp.Service
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,20000); //Added longer wait time to register user since it was not recieving a response fast enough
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,ExtraLongTimeout); //Added longer wait time to register user since it was not recieving a response fast enough
 
             //return the response
             return response;
@@ -673,7 +674,7 @@ namespace DABApp.Service
 
                 //Wait for the appropriate response
                 var service = new DabServiceWaitService();
-                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes);
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes,ExtraLongTimeout);
 
                 //Process the episodes
                 if (response.Success == true)
