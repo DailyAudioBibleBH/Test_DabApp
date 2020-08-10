@@ -58,7 +58,8 @@ namespace DABApp
         {
             try
             {
-
+                //Indicator so double socket connection doesn't happen on check email page
+                DabCheckEmailPage.fromOnResume = true;
                 //reconnect to service
                 var ql = await DabService.InitializeConnection();
 

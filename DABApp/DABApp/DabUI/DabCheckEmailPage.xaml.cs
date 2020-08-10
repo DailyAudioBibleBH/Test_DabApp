@@ -12,6 +12,9 @@ namespace DABApp
     public partial class DabCheckEmailPage : DabBaseContentPage
     {
         int TapNumber = 0;
+        //Indicator so double connection doesn't get hit from OnResume
+
+        public static bool fromOnResume;
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -74,6 +77,9 @@ namespace DABApp
                 }
                 
             }
+
+            //Indicator so double connection doesn't get hit from OnResume
+            fromOnResume = false;
         }
 
         async void OnGuestLogin(object o, EventArgs e)
@@ -81,11 +87,22 @@ namespace DABApp
             //log the user in as a guest
             AuthenticationAPI.LoginGuest();
 
-            //open up the channels page
-            NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-            _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-            Application.Current.MainPage = _nav;
-            await Navigation.PopToRootAsync();
+            //push up the channels page
+            DabChannelsPage _nav = new DabChannelsPage();
+            _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
+            //Application.Current.MainPage = _nav;
+            await Navigation.PushAsync(_nav);
+
+            //Delete nav stack so user cant back into login screen
+            var existingPages = Navigation.NavigationStack.ToList();
+            foreach (var page in existingPages)
+            {
+                Navigation.RemovePage(page);
+            }
+
+
+            //Indicator so double connection doesn't get hit from OnResume
+            fromOnResume = false;
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
@@ -129,9 +146,12 @@ namespace DABApp
 
             base.OnAppearing();
 
-            //reset service connection to generic token
-            await DabService.TerminateConnection();
-            await DabService.InitializeConnection(GlobalResources.APIKey); //connect with generic token
+            if (fromOnResume == false)
+            {
+                //reset service connection to generic token
+                await DabService.TerminateConnection();
+                await DabService.InitializeConnection(GlobalResources.APIKey); //connect with generic token
+            }
 
             if (GlobalResources.playerPodcast.IsPlaying)
             {
