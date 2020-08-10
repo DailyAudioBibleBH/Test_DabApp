@@ -14,7 +14,7 @@ namespace DABApp
         int TapNumber = 0;
         //Indicator so double connection doesn't get hit from OnResume
 
-        public static bool fromOnResume;
+        private bool hasAppeared; //used to only connect the first time through;
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -78,8 +78,7 @@ namespace DABApp
                 
             }
 
-            //Indicator so double connection doesn't get hit from OnResume
-            fromOnResume = false;
+           
         }
 
         async void OnGuestLogin(object o, EventArgs e)
@@ -101,8 +100,6 @@ namespace DABApp
             }
 
 
-            //Indicator so double connection doesn't get hit from OnResume
-            fromOnResume = false;
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
@@ -146,12 +143,13 @@ namespace DABApp
 
             base.OnAppearing();
 
-            if (fromOnResume == false)
+            if (hasAppeared == false)
             {
                 //reset service connection to generic token
                 await DabService.TerminateConnection();
                 await DabService.InitializeConnection(GlobalResources.APIKey); //connect with generic token
             }
+            hasAppeared = true; //don't reset the service connection in the future appearances
 
             if (GlobalResources.playerPodcast.IsPlaying)
             {
