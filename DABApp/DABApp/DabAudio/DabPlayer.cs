@@ -45,7 +45,7 @@ namespace DABApp.DabAudio
         private bool shouldResumePlay = false;
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         private double lastLogPlayerPosition;
-
+        public DateTime LogPositionInterval = DateTime.MinValue;
 
 
 
@@ -390,8 +390,13 @@ namespace DABApp.DabAudio
                 if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
                 {
                     Debug.WriteLine($"Logging progress...{DateTime.Now}");
-                    _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
+                    if (LogPositionInterval.AddSeconds(30) < DateTime.Now)
+                    {
+                        _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
+                        LogPositionInterval = DateTime.Now;
+                    }
                     lastLogPlayerPosition = CurrentPosition;
+
                 }
 
             }
