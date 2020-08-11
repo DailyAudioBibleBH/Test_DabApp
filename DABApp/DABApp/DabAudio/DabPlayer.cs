@@ -297,9 +297,6 @@ namespace DABApp.DabAudio
         public void NotifyPlayStateChanged()
         {
             OnPropertyChanged("PlayPauseButtonImageBig");
-            OnPropertyChanged("CurrentPosition");
-            OnPropertyChanged("RemainingSeconds");
-            OnPropertyChanged("CurrentProgressPercentage");
         }
 
         public void Pause()
@@ -338,9 +335,6 @@ namespace DABApp.DabAudio
         public void Seek(double position)
         {
             nativePlayer.Seek(position);
-            OnPropertyChanged("CurrentPosition");
-            OnPropertyChanged("RemainingSeconds");
-            OnPropertyChanged("CurrentProgressPercentage");
         }
 
         public void Stop()
