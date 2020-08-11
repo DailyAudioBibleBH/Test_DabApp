@@ -415,7 +415,12 @@ namespace DABApp.DabAudio
             if (e > 0)
             {
                 PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-                AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+                if (LogPositionInterval.AddSeconds(30) < DateTime.Now)
+                {
+                    Debug.WriteLine($"Logging progress...{DateTime.Now}");
+                    AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+                    LogPositionInterval = DateTime.Now;
+                }
                 lastLogPlayerPosition = CurrentPosition;
             }
 
