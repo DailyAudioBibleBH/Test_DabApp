@@ -389,9 +389,9 @@ namespace DABApp.DabAudio
                 var difference = Math.Abs(lastLogPlayerPosition - CurrentPosition);
                 if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
                 {
-                    Debug.WriteLine($"Logging progress...{DateTime.Now}");
                     if (LogPositionInterval.AddSeconds(30) < DateTime.Now)
                     {
+                        Debug.WriteLine($"Logging progress...{DateTime.Now}");
                         _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
                         LogPositionInterval = DateTime.Now;
                     }
