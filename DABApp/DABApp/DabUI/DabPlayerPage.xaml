@@ -87,11 +87,11 @@
                                       HorizontalOptions="FillAndExpand"
                                       Minimum="0"
                                       VerticalOptions="EndAndExpand"
-                                      Margin="20, 0, 20, 0" />
+                                      Margin="40, 0, 40, 0" />
                     <StackLayout x:Name="TimeStrings"
                                  Orientation="Horizontal"
                                  VerticalOptions="Start"
-                                 Padding="25, 0, 25, 0">
+                                 Padding="45, 0, 45, 0">
                         <local:PlayerLabel x:Name="lblCurrentTime"
                                            HorizontalOptions="StartAndExpand"
                                            Style="{StaticResource playerLabelStyle}"
