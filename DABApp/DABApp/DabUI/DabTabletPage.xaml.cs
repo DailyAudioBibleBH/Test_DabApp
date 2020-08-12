@@ -325,6 +325,11 @@ namespace DABApp
                 SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
                 SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
 
+                SeekBar.UserInteraction += (object sender, EventArgs e) =>
+                {
+                    player.Seek(SeekBar.Value);
+                };
+
                 if (Device.RuntimePlatform == "Android")
                 {
                     SeekBar.TouchUp += (object sender, EventArgs e) =>
