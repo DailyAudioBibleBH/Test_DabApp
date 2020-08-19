@@ -674,7 +674,7 @@ namespace DABApp.Service
 
                 //Wait for the appropriate response
                 var service = new DabServiceWaitService();
-                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes,ExtraLongTimeout);
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes,LongTimeout);
 
                 //Process the episodes
                 if (response.Success == true)
