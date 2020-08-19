@@ -181,26 +181,6 @@ namespace DABApp
             Navigation.PopAsync();
         }
 
-        async void OnGuestLogin(object o, EventArgs e)
-        {
-            //GuestLogin.IsEnabled = false;
-            GlobalResources.WaitStart("Logging you in as a guest...");
-
-            AuthenticationAPI.LoginGuest();
-            if (_fromPlayer)
-            {
-                await Navigation.PopModalAsync();
-            }
-            else
-            {
-                NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-                _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                Application.Current.MainPage = _nav;
-                await Navigation.PopToRootAsync();
-            }
-            GlobalResources.WaitStop();
-        }
-
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
         {
             try
@@ -327,12 +307,6 @@ namespace DABApp
                     DisableAllInputs("Restart app after updating.");
 
 
-                    break;
-                case "guest": //login as guest
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        OnGuestLogin(null, null);
-                    });
                     break;
                 case "ok": //ok button signifies it's currently offline
                            //Disable inputs

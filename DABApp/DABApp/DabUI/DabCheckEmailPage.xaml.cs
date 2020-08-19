@@ -86,6 +86,9 @@ namespace DABApp
             //log the user in as a guest
             AuthenticationAPI.LoginGuest();
 
+            //perform post-login functions
+            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+
             //push up the channels page
             DabChannelsPage _nav = new DabChannelsPage();
             _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
