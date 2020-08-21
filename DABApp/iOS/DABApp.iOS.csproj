@@ -273,6 +273,84 @@
     <Reference Include="Xamarin.Forms.Platform.iOS">
       <HintPath>..\packages\Xamarin.Forms.4.4.0.991864\lib\Xamarin.iOS10\Xamarin.Forms.Platform.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="SkiaSharp">
+      <HintPath>..\packages\SkiaSharp.1.68.0\lib\Xamarin.iOS\SkiaSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp.Views.iOS">
+      <HintPath>..\packages\SkiaSharp.Views.1.68.0\lib\Xamarin.iOS\SkiaSharp.Views.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp.Views.Forms">
+      <HintPath>..\packages\SkiaSharp.Views.Forms.1.68.0\lib\Xamarin.iOS\SkiaSharp.Views.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Core">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Fixed">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Fixed.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Flow">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Flow.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Flow.FormatProviders.Pdf">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Flow.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.OpenXml">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.Pdf">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.SpreadsheetStreaming">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Xamarin.iOS">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Barcode">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Chart">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Chart.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Common">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.ConversationalUI">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.ConversationalUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataControls">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataGrid">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataVisualization">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.ImageEditor">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.ImageEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Input">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Map">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Map.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.PdfViewer">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.PdfViewer.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Primitives">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.SkiaSharp">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Zip">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Zip.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
