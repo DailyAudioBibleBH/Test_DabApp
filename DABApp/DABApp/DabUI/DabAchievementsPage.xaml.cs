@@ -17,14 +17,15 @@ namespace DABApp
 	{
 		View AchievementsView;
 		Resource _resource;
-		public DabAchievementsPage(DABApp.View contentView) 
+		public int variable = 1;
+		public DabAchievementsPage(DABApp.View contentView)
 		{
 			InitializeComponent();
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
 			NavigationPage.SetHasBackButton(this, true);
 			//Init the form
 			DabViewHelper.InitDabForm(this);
-			AchievementsView = contentView; 
+			AchievementsView = contentView;
 			BindingContext = AchievementsView;
 			string userName = dbSettings.GetSetting("Email", "");
 
@@ -38,7 +39,7 @@ namespace DABApp
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
-			int currentYear = DateTime.Now.Year; //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
+			int currentYear = ContentConfig.Instance.options.progress_year;  //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
 
 			//separate badge and progress list from db
 			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().Where(x => x.visible == true).ToListAsync().Result;
@@ -93,32 +94,54 @@ namespace DABApp
 
 			//int i = 0;
 			foreach (var item in visibleAchievementsPageList)
-            {
+			{
 				//i++;
 
 				item.Progress.percent = (float)item.Progress.percent / 100;
 				if (item.Progress.percent == 1 || item.Progress.percent == 0)
-                {
+				{
 					item.Progress.progressBarVisible = false;
-                }
-                else
-                {
+				}
+				else
+				{
 					item.Progress.progressBarVisible = true;
-                }
+				}
 
-//#if DEBUG
-//				int r;
-//				Math.DivRem(i, 2, out r);
-//				if (r == 0)
-//				{
-//					item.Badge.imageURL = $"https://via.placeholder.com/400/ffffff/555555?text={item.Badge.badgeId}"; //testing image capture
-//				}
-//#endif
+				//#if DEBUG
+				//				int r;
+				//				Math.DivRem(i, 2, out r);
+				//				if (r == 0)
+				//				{
+				//					item.Badge.imageURL = $"https://via.placeholder.com/400/ffffff/555555?text={item.Badge.badgeId}"; //testing image capture
+				//				}
+				//#endif
 			}
+
+			List<string> yearList = makeYearList(2000);
+
+
 
 			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 			progressYear.SelectedItem = currentYear.ToString() + " ^";
+			progressYear.ItemsSource = yearList;
+
+			var breakpoint = "";
+		}
+
+		public List<string> makeYearList(int currentYear)
+        {
+			List<string> yearList = new List<string>();
+			yearList.Add(currentYear.ToString());
+
+            for (int i = currentYear; i < DateTime.Now.Year; i++)
+            {
+				var nextYear = currentYear - variable;
+				yearList.Add(nextYear.ToString());
+				variable = variable + 1;
+				i++;
+            }
+			return yearList;
 		}
 	}
 }

@@ -28,14 +28,10 @@
                     </telerikInput:RadSegmentedControl>
                     <StackLayout Orientation="Horizontal" Padding="20">
                         <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
-                        <!--<Label x:Name="progressYear" FontSize="Medium"/>-->
-                        <telerikInput:RadListPicker x:Name="progressYear" ItemsSource="{Binding Source}" BorderColor="Transparent">
+                        <telerikInput:RadListPicker x:Name="progressYear" BorderColor="Transparent" Margin="-10, 0, 0, 0">
                         </telerikInput:RadListPicker>
                     </StackLayout>
                 </StackLayout>
-                <!--<StackLayout Orientation="Horizontal" Padding="20">
-                    <Label x:Name="progressYear" FontSize="Medium"/>
-                </StackLayout>-->
                 <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
