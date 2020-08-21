@@ -2,7 +2,7 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabAchievementsPage"
 	xmlns:local="clr-namespace:DABApp"	
     xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit"
-    xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
 >
     <ContentPage.Content>
             <StackLayout Orientation="Vertical">
@@ -12,6 +12,21 @@
                         <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
                     </StackLayout>
                 </RelativeLayout>
+                <StackLayout Padding="10">
+                    <telerikInput:RadSegmentedControl x:Name="segmentControl" 
+                                            SegmentBackgroundColor="{StaticResource PageBackgroundColor}"
+                                            SegmentTextColor="#FFFFFF"
+                                            SelectedSegmentBackgroundColor="#FFFFFF"
+                                            SelectedSegmentTextColor="#000000">
+                        <telerikInput:RadSegmentedControl.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Summary</x:String>
+                                <x:String>Books</x:String>
+                                <x:String>Channels</x:String>
+                            </x:Array>
+                        </telerikInput:RadSegmentedControl.ItemsSource>
+                    </telerikInput:RadSegmentedControl>
+                </StackLayout>
                 <StackLayout Orientation="Horizontal" Padding="20">
                     <Label x:Name="progressYear" FontSize="Medium"/>
                 </StackLayout>
