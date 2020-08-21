@@ -12,7 +12,7 @@
                         <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
                     </StackLayout>
                 </RelativeLayout>
-                <StackLayout Padding="10">
+                <StackLayout Padding="10" Orientation="Vertical">
                     <telerikInput:RadSegmentedControl x:Name="segmentControl" 
                                             SegmentBackgroundColor="{StaticResource PageBackgroundColor}"
                                             SegmentTextColor="#FFFFFF"
@@ -26,10 +26,16 @@
                             </x:Array>
                         </telerikInput:RadSegmentedControl.ItemsSource>
                     </telerikInput:RadSegmentedControl>
+                    <StackLayout Orientation="Horizontal" Padding="20">
+                        <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
+                        <!--<Label x:Name="progressYear" FontSize="Medium"/>-->
+                        <telerikInput:RadListPicker x:Name="progressYear" ItemsSource="{Binding Source}" BorderColor="Transparent">
+                        </telerikInput:RadListPicker>
+                    </StackLayout>
                 </StackLayout>
-                <StackLayout Orientation="Horizontal" Padding="20">
+                <!--<StackLayout Orientation="Horizontal" Padding="20">
                     <Label x:Name="progressYear" FontSize="Medium"/>
-                </StackLayout>
+                </StackLayout>-->
                 <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
