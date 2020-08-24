@@ -117,12 +117,16 @@ namespace DABApp
 				//#endif
 			}
 
-			List<string> yearList = makeYearList(currentYear);
-
-
-
-			achievementListView.ItemsSource = visibleAchievementsPageList.OrderBy(x => x.Badge.id).ToList();
+			//Books Tab Collection View
+			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
+
+			//Channels Tab Collection View
+			channelsListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "channels").OrderBy(x => x.Badge.id).ToList();
+			channelsListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
+
+			//Setting Progress Year picker
+			List<string> yearList = makeYearList(currentYear);
 			progressYear.SelectedItem = currentYear.ToString() + " ^";
 			progressYear.ItemsSource = yearList;
 
@@ -130,6 +134,7 @@ namespace DABApp
 			segmentControl.SelectedIndex = 0;
 
 			BooksTab.IsVisible = false;
+			ChannelsTab.IsVisible = false;
 
 			var breakpoint = "";
 		}
@@ -141,14 +146,17 @@ namespace DABApp
 				case 0:
 					Console.WriteLine("case 0");
 					BooksTab.IsVisible = false;
+					ChannelsTab.IsVisible = false;
 					break;
 				case 1:
 					Console.WriteLine("case 1");
 					BooksTab.IsVisible = true;
+					ChannelsTab.IsVisible = false;
 					break;
 				case 2:
 					Console.WriteLine("case 2");
 					BooksTab.IsVisible = false;
+					ChannelsTab.IsVisible = true;
 					break;
                 default:
                     break;
