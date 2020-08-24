@@ -51,15 +51,17 @@
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="-78.78" Color="#D5272C" />
-                                        <telerikCommon:RadGradientStop Offset="-17.59" Color="#FB5E48" />
+                                        <telerikCommon:RadGradientStop Offset="0" Color="#D5272C" />
+                                        <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#FB5E48" />
                                     </telerikGauges:GaugeBarIndicator.GradientStops>
                                 </telerikGauges:GaugeBarIndicator>
                             </telerikGauges:RadRadialGauge.Indicators>
                         </telerikGauges:RadRadialGauge>
                         </Grid>
-                        <Label Text="Entire Bible" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                        <Label x:Name="EntireBibleLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
+                        <StackLayout Padding="0, 15, 0, 15">
+                            <Label Text="Entire Bible" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
+                            <Label x:Name="EntireBibleLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
+                        </StackLayout>
                     </StackLayout>
 
                     <BoxView WidthRequest="1" Color="Black" BackgroundColor="Black" Margin="0, 0, 0, -5"></BoxView>
@@ -80,8 +82,8 @@
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="-78.78" Color="#45AFBA" />
-                                        <telerikCommon:RadGradientStop Offset="-17.59" Color="#84F6E1" />
+                                        <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
+                                        <telerikCommon:RadGradientStop x:Name="OldTestamentGradientOffset" Color="#84F6E1" />
                                     </telerikGauges:GaugeBarIndicator.GradientStops>
                                 </telerikGauges:GaugeBarIndicator>
                             </telerikGauges:RadRadialGauge.Indicators>
@@ -106,8 +108,8 @@
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="-78.78" Color="#45AFBA" />
-                                        <telerikCommon:RadGradientStop Offset="-17.59" Color="#84F6E1" />
+                                        <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
+                                        <telerikCommon:RadGradientStop x:Name="NewTestamentGradientOffset" Color="#84F6E1" />
                                     </telerikGauges:GaugeBarIndicator.GradientStops>
                                 </telerikGauges:GaugeBarIndicator>
                             </telerikGauges:RadRadialGauge.Indicators>

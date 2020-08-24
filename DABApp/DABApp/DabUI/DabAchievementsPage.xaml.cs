@@ -128,6 +128,9 @@ namespace DABApp
 			EntireBibleLabel.Text = entireBibleBadge.Progress.percent + "% Complete";
 			OldTestamentLabel.Text = oldTestamentBadge.Progress.percent + "% Complete";
 			NewTestamentLabel.Text = newTestamentBadge.Progress.percent + "% Complete";
+			EntireBibleGradientOffset.Offset = entireBibleBadge.Progress.percent;
+			OldTestamentGradientOffset.Offset = oldTestamentBadge.Progress.percent;
+			NewTestamentGradientOffset.Offset = newTestamentBadge.Progress.percent;
 
 			//Books Tab Collection View
 			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
