@@ -139,7 +139,7 @@ namespace DABApp
 
 			//Setting Progress Year picker
 			List<string> yearList = makeYearList(currentYear);
-			progressYear.SelectedItem = currentYear.ToString() + " ^";
+			progressYear.SelectedItem = currentYear.ToString() + " ∨";
 			progressYear.ItemsSource = yearList;
 
             segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
@@ -152,7 +152,7 @@ namespace DABApp
 			var breakpoint = "";
 		}
 
-		private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
+        private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
         {
             switch (e.NewValue)
             {
