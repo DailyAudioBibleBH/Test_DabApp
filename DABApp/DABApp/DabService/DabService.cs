@@ -660,14 +660,14 @@ namespace DABApp.Service
                 if (cursor == null)
                 {
                     //First run
-                    command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
 
                 }
                 else
                 {
                     //Subsequent runs, use the cursor
                     //TODO: Make sure this is formatted correctly
-                    command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
@@ -679,7 +679,7 @@ namespace DABApp.Service
                 //Process the episodes
                 if (response.Success == true)
                 {
-                    var data = response.Data.payload.data.episodes;
+                    var data = response.Data.payload.data.updatedEpisodes;
 
                     //add what we receied to the list
                     result.Add(response.Data);

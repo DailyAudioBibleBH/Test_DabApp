@@ -217,14 +217,14 @@ namespace DABApp.Service
                     //loop through the episodes
                     foreach (var data in ql.Data)
                     {
-                        var episodes = data.payload.data.episodes;
+                        var episodes = data.payload.data.updatedEpisodes;
                         foreach (var episode in episodes.edges)
                         {
                             //process each episode
                             cnt++;
-                            if (episode.date > lastDate)
+                            if (episode.updatedAt > lastDate)
                             {
-                                lastDate = episode.date;
+                                lastDate = episode.updatedAt;
                             }
                             dbEpisodes dbe = new dbEpisodes(episode);
 
