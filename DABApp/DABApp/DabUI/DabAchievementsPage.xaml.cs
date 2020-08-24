@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Telerik.XamarinForms.DataVisualization.Gauges;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -42,8 +42,8 @@ namespace DABApp
 			int currentYear = ContentConfig.Instance.options.progress_year;  //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
 
 			//separate badge and progress list from db
-			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().Where(x => x.visible == true).ToListAsync().Result;
-			List<dbUserBadgeProgress> dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().Where(x => x.year == currentYear).ToListAsync().Result;
+			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
+			List<dbUserBadgeProgress> dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().ToListAsync().Result;
 
 			//find badges that have progress
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
@@ -117,6 +117,18 @@ namespace DABApp
 				//#endif
 			}
 
+			//Summary Tab View
+			dabUserBadgeProgress entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id).ToList().SingleOrDefault();
+			dabUserBadgeProgress oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id).ToList().SingleOrDefault();
+			dabUserBadgeProgress newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id).ToList().SingleOrDefault();
+
+			EntireBibleGauge.Value = entireBibleBadge.Progress.percent;
+			OldTestamentGauge.Value = oldTestamentBadge.Progress.percent;
+			NewTestatmentGauge.Value = newTestamentBadge.Progress.percent;
+			EntireBibleLabel.Text = entireBibleBadge.Progress.percent + "% Complete";
+			OldTestamentLabel.Text = oldTestamentBadge.Progress.percent + "% Complete";
+			NewTestamentLabel.Text = newTestamentBadge.Progress.percent + "% Complete";
+
 			//Books Tab Collection View
 			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
@@ -140,7 +152,7 @@ namespace DABApp
 			var breakpoint = "";
 		}
 
-        private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
+		private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
         {
             switch (e.NewValue)
             {

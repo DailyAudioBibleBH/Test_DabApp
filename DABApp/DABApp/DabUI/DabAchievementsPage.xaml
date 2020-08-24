@@ -26,26 +26,28 @@
                             </x:Array>
                         </telerikInput:RadSegmentedControl.ItemsSource>
                     </telerikInput:RadSegmentedControl>
-                    <StackLayout Orientation="Horizontal" Padding="20">
+                    <StackLayout Orientation="Horizontal" Padding="15">
                         <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
                         <telerikInput:RadListPicker x:Name="progressYear" BorderColor="Transparent" Margin="-10, 0, 0, 0">
                         </telerikInput:RadListPicker>
                     </StackLayout>
                 </StackLayout>
-                <StackLayout x:Name="SummaryTab" Orientation="Vertical" BackgroundColor="#222222" Margin="15, 0, 15, 15" HorizontalOptions="FillAndExpand">
-                    <StackLayout HeightRequest="200" Margin="10">
+
+                <Frame x:Name="SummaryTab" Padding="0" BackgroundColor="#222222" BorderColor="#222222" CornerRadius="10" Margin="15, 0, 15, 0">
+                <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
+            
+                    <StackLayout Padding="0, 40, 0, 0">
                         <Grid>
                             <Image Source="Entire Bible Dark.png" HeightRequest="250" WidthRequest="250"></Image>
-                            <telerikGauges:RadRadialGauge x:Name="EntireBibleGauge" SweepAngle="340" StartAngle="-100" Padding="0">
+                            <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
                             </telerikGauges:RadRadialGauge.Axis>
                             <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator 
-                                                     StartThickness="7"
-                                                     EndThickness="7"
+                                <telerikGauges:GaugeBarIndicator x:Name="EntireBibleGauge"
+                                                     StartThickness="12"
+                                                     EndThickness="12"
                                                      Offset="-10"
-                                                     Value="75"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
@@ -57,23 +59,24 @@
                         </telerikGauges:RadRadialGauge>
                         </Grid>
                         <Label Text="Entire Bible" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                        <Label Text="75% Complete" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
-                        <BoxView WidthRequest="1" Color="Black" BackgroundColor="Black"></BoxView>
+                        <Label x:Name="EntireBibleLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
                     </StackLayout>
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                        <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical">
+
+                    <BoxView WidthRequest="1" Color="Black" BackgroundColor="Black" Margin="0, 0, 0, -5"></BoxView>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" HeightRequest="200">
+                        <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid>
-                            <Image Source="OldandNewTestamentDark.png" HeightRequest="100" WidthRequest="100"></Image>
-                            <telerikGauges:RadRadialGauge x:Name="OldTestamentGauge" HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
+                            <Image Source="OldandNewTestamentDark.png"></Image>
+                            <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
                             </telerikGauges:RadRadialGauge.Axis>
                             <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator Fill="OrangeRed" 
+                                <telerikGauges:GaugeBarIndicator x:Name="OldTestamentGauge"
                                                      StartThickness="5"
                                                      EndThickness="5"
                                                      Offset="-10"
-                                                     Value="75"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
@@ -85,21 +88,21 @@
                         </telerikGauges:RadRadialGauge>
                         </Grid>
                             <Label Text="Old Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                            <Label Text="75% Complete" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
+                            <Label x:Name="OldTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
-                        <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical">
+                        <BoxView WidthRequest="1" HeightRequest="100" Color="Black" BackgroundColor="Black"></BoxView>
+                        <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid HorizontalOptions="CenterAndExpand" Padding="0">
-                            <Image Source="OldandNewTestamentDark.png" HeightRequest="100" WidthRequest="100"></Image>
-                            <telerikGauges:RadRadialGauge x:Name="NewTestatmentGauge" HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
+                            <Image Source="OldandNewTestamentDark.png"></Image>
+                            <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
                             </telerikGauges:RadRadialGauge.Axis>
                             <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator Fill="OrangeRed" 
+                                <telerikGauges:GaugeBarIndicator x:Name="NewTestatmentGauge"
                                                      StartThickness="5"
                                                      EndThickness="5"
                                                      Offset="-10"
-                                                     Value="80"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
                                     <telerikGauges:GaugeBarIndicator.GradientStops>
@@ -111,10 +114,11 @@
                             </telerikGauges:RadRadialGauge>
                             </Grid>
                             <Label Text="New Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                            <Label Text="80% Complete" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand"></Label>
+                            <Label x:Name="NewTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>
+                </Frame>
                 <StackLayout x:Name="BooksTab">
                         <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
                         <CollectionView.ItemTemplate>
