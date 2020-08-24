@@ -117,7 +117,7 @@ namespace DABApp
 				//#endif
 			}
 
-			List<string> yearList = makeYearList(2000);
+			List<string> yearList = makeYearList(currentYear);
 
 
 
@@ -126,10 +126,36 @@ namespace DABApp
 			progressYear.SelectedItem = currentYear.ToString() + " ^";
 			progressYear.ItemsSource = yearList;
 
+            segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
+			segmentControl.SelectedIndex = 0;
+
+			BooksTab.IsVisible = false;
+
 			var breakpoint = "";
 		}
 
-		public List<string> makeYearList(int currentYear)
+        private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
+        {
+            switch (e.NewValue)
+            {
+				case 0:
+					Console.WriteLine("case 0");
+					BooksTab.IsVisible = false;
+					break;
+				case 1:
+					Console.WriteLine("case 1");
+					BooksTab.IsVisible = true;
+					break;
+				case 2:
+					Console.WriteLine("case 2");
+					BooksTab.IsVisible = false;
+					break;
+                default:
+                    break;
+            }
+        }
+
+        public List<string> makeYearList(int currentYear)
         {
 			List<string> yearList = new List<string>();
 			yearList.Add(currentYear.ToString());
