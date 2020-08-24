@@ -135,6 +135,7 @@ namespace DABApp
 
 			BooksTab.IsVisible = false;
 			ChannelsTab.IsVisible = false;
+			SummaryTab.IsVisible = true;
 
 			var breakpoint = "";
 		}
@@ -147,15 +148,18 @@ namespace DABApp
 					Console.WriteLine("case 0");
 					BooksTab.IsVisible = false;
 					ChannelsTab.IsVisible = false;
+					SummaryTab.IsVisible = true;
 					break;
 				case 1:
 					Console.WriteLine("case 1");
-					BooksTab.IsVisible = true;
 					ChannelsTab.IsVisible = false;
+					SummaryTab.IsVisible = false;
+					BooksTab.IsVisible = true;
 					break;
 				case 2:
 					Console.WriteLine("case 2");
 					BooksTab.IsVisible = false;
+					SummaryTab.IsVisible = false;
 					ChannelsTab.IsVisible = true;
 					break;
                 default:

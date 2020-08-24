@@ -591,6 +591,8 @@
     <BundleResource Include="Resources\Font Awesome 5 Free-Regular-400.otf" />
     <BundleResource Include="Resources\Font Awesome 5 Free-Solid-900.otf" />
     <BundleResource Include="Resources\SplashAppIcon.png" />
+    <BundleResource Include="Resources\Entire Bible Dark.png" />
+    <BundleResource Include="Resources\OldandNewTestamentDark.png" />
   </ItemGroup>
   <ItemGroup>
     <ITunesArtwork Include="iTunesArtwork" />
