@@ -155,11 +155,25 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    EpisodeList.ItemsSource = _Episodes = Episodes
+                    List<EpisodeViewModel> EpisodesList = _Episodes = Episodes
                         .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                         .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                         .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                         .Select(x => new EpisodeViewModel(x)).ToList();
+
+                    foreach (var item in EpisodesList)
+                    {
+                        if (item.Episode.is_downloaded == true)
+                        {
+                            item.downloadProgress = 100;
+                        }
+                        if (EpisodesList.IndexOf(item) >= 20)
+                        {
+                            break;
+                        }
+                    }
+
+                    EpisodeList.ItemsSource = EpisodesList;
 
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }

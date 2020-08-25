@@ -197,10 +197,6 @@ namespace DABApp
             {
                 downloadVisible = true;
                 downloadProgress = e.ProgressPercentage * 100;
-                if (downloadProgress > 100)
-                {
-                    downloadProgress = 100;
-                }
             }
         }
 
