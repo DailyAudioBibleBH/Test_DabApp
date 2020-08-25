@@ -142,7 +142,7 @@ namespace DABApp
 
 			//Setting Progress Year picker
 			List<string> yearList = makeYearList(currentYear);
-			progressYear.SelectedItem = currentYear.ToString() + " ∨";
+			progressYear.SelectedItem = " " + currentYear.ToString() + " ∨";
 			progressYear.ItemsSource = yearList;
 
             segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
