@@ -33,7 +33,6 @@ namespace DABApp
             noProgress = episode.is_downloaded;
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
-            //fm.EpisodeCompleted += DownloadComplete;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }      
 

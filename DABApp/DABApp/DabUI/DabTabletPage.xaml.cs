@@ -430,8 +430,6 @@ namespace DABApp
             if (_resource.availableOffline)
             {
                 await PlayerFeedAPI.DownloadEpisodes();
-                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                circularProgressControl?.HandleDownloadVisibleChanged(true);
             }
 
             return true;

@@ -521,9 +521,6 @@
     <BundleResource Include="Resources\ic_chevron_right_white_2x.png" />
     <BundleResource Include="Resources\ic_keyboard_arrow_down_white_2x.png" />
     <BundleResource Include="Resources\ic_keyboard_arrow_down_white_3x.png" />
-    <BundleResource Include="Resources\ic_cloud_download_white_2x.png" />
-    <BundleResource Include="Resources\ic_cloud_download_white_3x.png" />
-    <BundleResource Include="Resources\ic_cloud_download_white.png" />
     <BundleResource Include="Resources\ic_share_white_2x.png" />
     <BundleResource Include="Resources\ic_share_white_3x.png" />
     <BundleResource Include="Resources\ic_share_white.png" />
@@ -616,15 +613,6 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\cloud_w_circle_gray.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\cloud_teal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\progress_pending.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <BundleResource Include="Resources\progress_done.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\ic_keyboard_arrow_down_white.png" />
