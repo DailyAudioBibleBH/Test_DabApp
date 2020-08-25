@@ -38,7 +38,7 @@
             
                     <StackLayout Padding="0, 40, 0, 0">
                         <Grid>
-                            <Image Source="EntireBibleDark.png" HeightRequest="250" WidthRequest="250"></Image>
+                            <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png" HeightRequest="250" WidthRequest="250"></Image>
                             <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
@@ -69,7 +69,7 @@
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" HeightRequest="200">
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid>
-                            <Image Source="OldandNewTestamentDark.png"></Image>
+                            <Image x:Name="OldTestamentImage" Source="OldandNewTestamentDark.png"></Image>
                             <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
@@ -95,7 +95,7 @@
                         <BoxView WidthRequest="1" HeightRequest="100" Color="Black" BackgroundColor="Black"></BoxView>
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid HorizontalOptions="CenterAndExpand" Padding="0">
-                            <Image Source="OldandNewTestamentDark.png"></Image>
+                            <Image x:Name="NewTestamentImage" Source="OldandNewTestamentDark.png"></Image>
                             <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                             <telerikGauges:RadRadialGauge.Axis>
                                 <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
