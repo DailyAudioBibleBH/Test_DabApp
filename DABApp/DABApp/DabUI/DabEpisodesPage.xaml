@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabEpisodesPage"
-		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:generic="clr-namespace:System;assembly=mscorlib" >
+		xmlns:local="clr-namespace:DABApp;" xmlns:t="clr-namespace:SlideOverKit;assembly=SlideOverKit" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:generic="clr-namespace:System;assembly=mscorlib"
+                          xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input" xmlns:telerikGauges="clr-namespace:Telerik.XamarinForms.DataVisualization.Gauges;assembly=Telerik.XamarinForms.DataVisualization" xmlns:telerikCommon="clr-namespace:Telerik.XamarinForms.Common;assembly=Telerik.XamarinForms.Common">
     <local:DabBaseContentPage.Resources>
         <ResourceDictionary>
             <local:InverseConverter x:Key="inverser" />
@@ -56,7 +57,29 @@
                                     <Image IsVisible="{Binding IsFavorite}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="ic_star_white.png"/>
                                     <Image IsVisible="{Binding HasJournal}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
                                 </StackLayout>
-                                <local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>
+                                <Grid HeightRequest="15" Grid.Column="2" Grid.RowSpan="2" IsVisible="{Binding downloadVisible}">
+                                    <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png"></Image>
+                                    <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13">
+                                        <telerikGauges:RadRadialGauge.Axis>
+                                            <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
+                                        </telerikGauges:RadRadialGauge.Axis>
+                                        <telerikGauges:RadRadialGauge.Indicators>
+                                            <telerikGauges:GaugeBarIndicator x:Name="EntireBibleGauge"
+                                                     StartThickness="5"
+                                                     EndThickness="5"
+                                                     Offset="0"
+                                                     StartCap="Oval"
+                                                     EndCap="Oval"
+                                                     Value="{Binding downloadProgress}">
+                                                <telerikGauges:GaugeBarIndicator.GradientStops>
+                                                    <telerikCommon:RadGradientStop Offset="0" Color="#D5272C" />
+                                                    <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#FB5E48" />
+                                                </telerikGauges:GaugeBarIndicator.GradientStops>
+                                            </telerikGauges:GaugeBarIndicator>
+                                        </telerikGauges:RadRadialGauge.Indicators>
+                                    </telerikGauges:RadRadialGauge>
+                                </Grid>
+                                <!--<local:CircularProgressControl Progress="{Binding downloadProgress}" ProgressVisible="{Binding progressVisible}" DownloadVisible="{Binding downloadVisible}" HeightRequest="15" Grid.Column="2" Grid.RowSpan="2"/>-->
                                 <local:DabLabel Text="{Binding description}" FontSize="Micro" Grid.Row="1" Grid.Column="1" Style="{StaticResource secondaryLabelStyle}" LineBreakMode="TailTruncation"/>
                             </Grid>
                         </local:DabViewCell>

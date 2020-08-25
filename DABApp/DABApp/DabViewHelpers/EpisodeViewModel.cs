@@ -33,7 +33,7 @@ namespace DABApp
             noProgress = episode.is_downloaded;
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
-            fm.EpisodeCompleted += DownloadComplete;
+            //fm.EpisodeCompleted += DownloadComplete;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
         }      
 
@@ -195,17 +195,12 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                downloadVisible = false;
-                downloadProgress = e.ProgressPercentage;
-            }
-        }
-
-        void DownloadComplete(object o, DabEventArgs e)
-        {
-            if (Episode.id.Value == e.EpisodeId && !e.Cancelled)
-            {
                 downloadVisible = true;
-                downloadProgress = -.01;
+                downloadProgress = e.ProgressPercentage * 100;
+                if (downloadProgress > 100)
+                {
+                    downloadProgress = 100;
+                }
             }
         }
 
