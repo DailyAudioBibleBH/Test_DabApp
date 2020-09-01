@@ -652,61 +652,124 @@ namespace DABApp.Service
             bool getMore = true;
             object cursor = null;
 
-            //start a loop to get all episodes
-            while (getMore == true)
+            if (StartDateUtc == GlobalResources.DabMinDate.ToUniversalTime())
             {
-                //Send the command
-                string command;
-                if (cursor == null)
+                //start a loop to get all episodes
+                while (getMore == true)
                 {
-                    //First run
-                    command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-
-                }
-                else
-                {
-                    //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
-                    command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
-                }
-                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
-                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
-
-                //Wait for the appropriate response
-                var service = new DabServiceWaitService();
-                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes,LongTimeout);
-
-                //Process the episodes
-                if (response.Success == true)
-                {
-                    var data = response.Data.payload.data.updatedEpisodes;
-
-                    //add what we receied to the list
-                    result.Add(response.Data);
-
-                    //determine if we have more data to process or not
-                    if (data.pageInfo.hasNextPage == true)
+                    //Send the command
+                    string command;
+                    if (cursor == null)
                     {
-                        cursor = data.pageInfo.endCursor;
+                        //First run
+                        command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+
                     }
                     else
                     {
-                        //nomore data - break the loop
-                        getMore = false;
+                        //Subsequent runs, use the cursor
+                        //TODO: Make sure this is formatted correctly
+                        command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                     }
-                }
-                else
-                {
-                    //something went wrong - return an error message (still in a list)
-                    return new DabServiceWaitResponseList()
+                    var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                    socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                    //Wait for the appropriate response
+                    var service = new DabServiceWaitService();
+                    var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes, LongTimeout);
+
+                    //Process the episodes
+                    if (response.Success == true)
                     {
-                        Success = false,
-                        ErrorMessage = response.ErrorMessage
-                    };
+                        var data = response.Data.payload.data.episodes;
+
+                        //add what we receied to the list
+                        result.Add(response.Data);
+
+                        //determine if we have more data to process or not
+                        if (data.pageInfo.hasNextPage == true)
+                        {
+                            cursor = data.pageInfo.endCursor;
+                        }
+                        else
+                        {
+                            //nomore data - break the loop
+                            getMore = false;
+                        }
+                    }
+                    else
+                    {
+                        //something went wrong - return an error message (still in a list)
+                        return new DabServiceWaitResponseList()
+                        {
+                            Success = false,
+                            ErrorMessage = response.ErrorMessage
+                        };
+
+                    }
 
                 }
-
             }
+            else
+            {
+                //start a loop to get all episodes
+                while (getMore == true)
+                {
+                    //Send the command
+                    string command;
+                    if (cursor == null)
+                    {
+                        //First run
+                        command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+
+                    }
+                    else
+                    {
+                        //Subsequent runs, use the cursor
+                        //TODO: Make sure this is formatted correctly
+                        command = "query { updatedEpisodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    }
+                    var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                    socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                    //Wait for the appropriate response
+                    var service = new DabServiceWaitService();
+                    var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes, LongTimeout);
+
+                    //Process the episodes
+                    if (response.Success == true)
+                    {
+                        var data = response.Data.payload.data.updatedEpisodes;
+
+                        //add what we receied to the list
+                        result.Add(response.Data);
+
+                        //determine if we have more data to process or not
+                        if (data.pageInfo.hasNextPage == true)
+                        {
+                            cursor = data.pageInfo.endCursor;
+                        }
+                        else
+                        {
+                            //nomore data - break the loop
+                            getMore = false;
+                        }
+                    }
+                    else
+                    {
+                        //something went wrong - return an error message (still in a list)
+                        return new DabServiceWaitResponseList()
+                        {
+                            Success = false,
+                            ErrorMessage = response.ErrorMessage
+                        };
+
+                    }
+
+                }
+            }
+
+            
 
             return new DabServiceWaitResponseList()
             {

@@ -217,7 +217,16 @@ namespace DABApp.Service
                     //loop through the episodes
                     foreach (var data in ql.Data)
                     {
-                        var episodes = data.payload.data.updatedEpisodes;
+                        DabGraphQlEpisodes episodes;
+                        if (data.payload.data.updatedEpisodes != null)
+                        {
+                            episodes = data.payload.data.updatedEpisodes;
+                        }
+                        else
+                        {
+                            episodes = data.payload.data.episodes;
+                        }
+
                         foreach (var episode in episodes.edges)
                         {
                             //process each episode

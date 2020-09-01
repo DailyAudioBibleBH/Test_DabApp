@@ -305,7 +305,7 @@ namespace DABApp.Service
 
                     case DabServiceWaitTypes.GetEpisodes:
                         //episodes received
-                        if (response?.payload?.data?.updatedEpisodes != null)
+                        if (response?.payload?.data?.updatedEpisodes != null || response?.payload?.data?.episodes != null)
                         {
                             _qlObject = response;
                             _waiting = false;
