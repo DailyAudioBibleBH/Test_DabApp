@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -167,7 +168,27 @@ namespace DABApp
             catch (Exception ex)
             {
                 GlobalResources.WaitStop();
-                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
+                var current = Connectivity.NetworkAccess;
+
+                if (current == NetworkAccess.Internet)
+                {
+                    Debug.WriteLine("Gained internet access");
+                    DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
+                    // Connection to internet is available
+                    // If websocket is not connected, reconnect
+                    if (!DabService.IsConnected)
+                    {
+                        //reconnect to service
+                        var ql = await DabService.InitializeConnection();
+
+                        if (ql.Success)
+                        {
+                            //perform post-connection operations with service
+                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                        }
+                    }
+                }
             }
 
 
