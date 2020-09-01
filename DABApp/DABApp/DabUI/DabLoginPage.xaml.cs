@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
+using UIKit;
 
 namespace DABApp
 {
@@ -94,6 +95,18 @@ namespace DABApp
             Email.Text = emailInput;
 
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
+        }
+
+        private void CustomEntryFocused(object sender, FocusEventArgs e)
+        {
+            var stackParent = Container as StackLayout;
+            stackParent?.Children.Add(new StackLayout() { HeightRequest = 400 });
+        }
+
+        private void CustomEntryUnfocused(object sender, FocusEventArgs e)
+        {
+            var stackParent = Container as StackLayout;
+            stackParent?.Children.RemoveAt(stackParent.Children.Count - 1);
         }
 
 
