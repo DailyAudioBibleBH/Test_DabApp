@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
-using UIKit;
 
 namespace DABApp
 {
@@ -100,7 +99,7 @@ namespace DABApp
         private void CustomEntryFocused(object sender, FocusEventArgs e)
         {
             var stackParent = Container as StackLayout;
-            stackParent?.Children.Add(new StackLayout() { HeightRequest = 400 });
+            stackParent?.Children.Add(new StackLayout() { HeightRequest = 300 });
         }
 
         private void CustomEntryUnfocused(object sender, FocusEventArgs e)

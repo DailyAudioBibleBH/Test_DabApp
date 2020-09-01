@@ -2,6 +2,7 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabLoginPage"
 	xmlns:local="clr-namespace:DABApp;">
 	<ContentPage.Content>
+        <ScrollView>
             <StackLayout x:Name="Container" Padding="10" Spacing="5">
                 <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png">
                     <Image.GestureRecognizers>
@@ -22,5 +23,6 @@
                 </StackLayout>
                 <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/>
             </StackLayout>
+        </ScrollView>
 	</ContentPage.Content>
 </local:DabBaseContentPage>
