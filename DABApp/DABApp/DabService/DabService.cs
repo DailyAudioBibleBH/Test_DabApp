@@ -849,8 +849,8 @@ namespace DABApp.Service
              * note that this routine is different as it returns a LIST of responses as it builds all actions together
              */
 
-                    //check for a connecting before proceeding
-                    if (!IsConnected)
+            //check for a connecting before proceeding
+            if (!IsConnected)
             {
                 return new DabServiceWaitResponseList()
                 {
@@ -885,7 +885,7 @@ namespace DABApp.Service
 
                 //Wait for the appropriate response
                 var service = new DabServiceWaitService();
-                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetActions);
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetActions, ExtraLongTimeout);
 
                 //Process the actions
                 if (response.Success == true)

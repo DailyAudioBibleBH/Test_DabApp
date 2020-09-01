@@ -163,7 +163,6 @@ namespace DABApp
                 {
                     Navigation.RemovePage(page);
                 }
-
             }
             catch (Exception ex)
             {
