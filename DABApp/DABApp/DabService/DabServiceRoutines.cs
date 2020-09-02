@@ -218,14 +218,10 @@ namespace DABApp.Service
                     foreach (var data in ql.Data)
                     {
                         DabGraphQlEpisodes episodes;
-                        if (data.payload.data.updatedEpisodes != null)
-                        {
+                        if (data!.payload!.data!.updatedEpisodes != null)
                             episodes = data.payload.data.updatedEpisodes;
-                        }
                         else
-                        {
                             episodes = data.payload.data.episodes;
-                        }
 
                         foreach (var episode in episodes.edges)
                         {
