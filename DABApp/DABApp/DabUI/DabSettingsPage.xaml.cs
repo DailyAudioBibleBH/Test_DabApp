@@ -31,6 +31,18 @@ namespace DABApp
             InitializeComponent();
             DabViewHelper.InitDabForm(this);
             NavigationPage.SetHasBackButton(this, false);
+
+            //Setting up experiment mode viewcell
+            StackLayout experimentStack = new StackLayout { Orientation = StackOrientation.Horizontal,
+                                                            BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"],
+                                                            Padding = 10, Children = {
+                                                                new Label { Text = "Experiment Mode", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
+                                                                new Image { Source="ic_chevron_right_white_3x.png", HorizontalOptions=LayoutOptions.EndAndExpand, Aspect=Aspect.AspectFit}
+                                                            }
+            };
+            ViewCell experimentCell = new ViewCell();
+            experimentCell.View = experimentStack;
+
             _offline = Offline;
             //_reset = Reset;
             _appInfo = AppInfo;
@@ -48,9 +60,9 @@ namespace DABApp
                 Account.Clear();
             }
             if (GlobalResources.ExperimentMode)
-                ExperimentStack.IsVisible = true;
+                Other.Add(experimentCell);
             else
-                ExperimentStack.IsVisible = false;
+                Other.Remove(experimentCell);
             //if (Device.Idiom == TargetIdiom.Tablet)
             //{
             //	ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];

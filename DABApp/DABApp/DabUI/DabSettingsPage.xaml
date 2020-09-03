@@ -73,12 +73,6 @@
 								<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
 							</StackLayout>
 						</ViewCell>
-						<ViewCell>
-							<StackLayout x:Name="ExperimentStack" Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}" Padding="10">
-								<Label Text="Experiment Mode" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-								<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" Aspect="AspectFit"/>
-							</StackLayout>
-						</ViewCell>
 					</TableSection>
 				</TableRoot>
 			</TableView>
