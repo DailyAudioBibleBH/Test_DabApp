@@ -273,27 +273,30 @@ namespace DABApp
             {
                 if (display.Value == "LightMode")
                 {
+                    ExperimentalModeSettings.Instance.Display = "LightMode";
                     App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#FFFFFF");
                     App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#FFFFFF");
-                    App.Current.Resources["TextColor"] = Color.FromHex("#FFFFFF");
                     App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#FFFFFF");
                     App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#000000");
                 }
                 else if (display.Value == "DarkMode")
                 {
+                    ExperimentalModeSettings.Instance.Display = "DarkMode";
                     App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
                     App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
-                    App.Current.Resources["TextColor"] = Color.FromHex("#CBCBCB");
                     App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
                     App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
                 }
                 else
                 {
+                    ExperimentalModeSettings.Instance.Display = "System";
                     App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
                     App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
-                    App.Current.Resources["TextColor"] = Color.FromHex("#CBCBCB");
                     App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
                     App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
                 }
                 adb.InsertOrReplaceAsync(display);
             }

@@ -13,14 +13,14 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			switch (ExperimentalModeSettings.Instance.Display)
 			{
-				case "Light Mode":
-					FirstIcon.IsVisible = true;
-					break;
-				case "Dark Mode":
+				case "LightMode":
 					SecondIcon.IsVisible = true;
 					break;
-				case "System":
+				case "DarkMode":
 					ThirdIcon.IsVisible = true;
+					break;
+				case "System":
+					FirstIcon.IsVisible = true;
 					break;
 			}
 		}
