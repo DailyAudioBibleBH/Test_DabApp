@@ -18,19 +18,20 @@ namespace DABApp
     {
         public App()
         {
+
             if (AuthenticationAPI.GetTestMode())
             {
                 GlobalResources.TestMode = true;
-            }
-            if (AuthenticationAPI.GetExperimentMode())
-            {
-                GlobalResources.ExperimentMode = true;
             }
             Xamarin.Forms.Internals.Log.Listeners.Add(new DelegateLogListener((arg1, arg2) => Debug.WriteLine(arg2)));
             InitializeComponent();
 
             FlowListView.Init();
-
+            if (AuthenticationAPI.GetExperimentMode())
+            {
+                GlobalResources.ExperimentMode = true;
+                GlobalResources.SetDisplay();
+            }
             MainPage = new DabServiceConnect();
 
         }

@@ -266,6 +266,39 @@ namespace DABApp
             }
         }
 
+        public static void SetDisplay()
+        {
+            var display = adb.Table<dbSettings>().Where(x => x.Key == "Display").FirstOrDefaultAsync().Result;
+            if (display != null)
+            {
+                if (display.Value == "LightMode")
+                {
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["TextColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#FFFFFF");
+                }
+                else if (display.Value == "DarkMode")
+                {
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
+                    App.Current.Resources["TextColor"] = Color.FromHex("#CBCBCB");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                }
+                else
+                {
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
+                    App.Current.Resources["TextColor"] = Color.FromHex("#CBCBCB");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                }
+                adb.InsertOrReplaceAsync(display);
+            }
+        }
+
         public static string GetUserWpId()
         {
             try

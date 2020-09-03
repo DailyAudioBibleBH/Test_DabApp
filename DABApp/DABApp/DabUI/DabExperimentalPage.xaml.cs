@@ -31,24 +31,28 @@ namespace DABApp
 			switch (item.AutomationId)
 			{
 				case "SystemMode":
+					dbSettings.StoreSetting("Display", "SystemMode");
+					ExperimentalModeSettings.Instance.Display = "System";
 					FirstIcon.IsVisible = true;
 					SecondIcon.IsVisible = false;
 					ThirdIcon.IsVisible = false;
-					ExperimentalModeSettings.Instance.Display = "System";
 					break;
 				case "LightMode":
+					dbSettings.StoreSetting("Display", "LightMode");
+					ExperimentalModeSettings.Instance.Display = "LightMode";
 					FirstIcon.IsVisible = false;
 					SecondIcon.IsVisible = true;
 					ThirdIcon.IsVisible = false;
-					ExperimentalModeSettings.Instance.Display = "LightMode";
 					break;
 				case "DarkMode":
+					dbSettings.StoreSetting("Display", "DarkMode");
+					ExperimentalModeSettings.Instance.Display = "DarkMode";
 					FirstIcon.IsVisible = false;
 					SecondIcon.IsVisible = false;
 					ThirdIcon.IsVisible = true;
-					ExperimentalModeSettings.Instance.Display = "DarkMode";
 					break;
 			}
+			GlobalResources.SetDisplay();
 		}
 
 		protected override void OnDisappearing()
