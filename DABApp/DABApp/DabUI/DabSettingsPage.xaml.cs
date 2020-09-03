@@ -36,12 +36,13 @@ namespace DABApp
             StackLayout experimentStack = new StackLayout { Orientation = StackOrientation.Horizontal,
                                                             BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"],
                                                             Padding = 10, Children = {
-                                                                new Label { Text = "Experiment Mode", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
+                                                                new Label { Text = "Experiment Mode Settings", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
                                                                 new Image { Source="ic_chevron_right_white_3x.png", HorizontalOptions=LayoutOptions.EndAndExpand, Aspect=Aspect.AspectFit}
                                                             }
             };
             ViewCell experimentCell = new ViewCell();
             experimentCell.View = experimentStack;
+            experimentCell.Tapped += OnExperiment;
 
             _offline = Offline;
             //_reset = Reset;
@@ -82,6 +83,14 @@ namespace DABApp
         {
             base.OnDisappearing();
             LogOut.IsEnabled = true;
+        }
+
+        void OnExperiment(object o, EventArgs e)
+        {
+            if (GlobalResources.ShouldUseSplitScreen == false)
+            {
+                Navigation.PushAsync(new DabExperimentalPage());
+            }
         }
 
         void OnOffline(object o, EventArgs e)
