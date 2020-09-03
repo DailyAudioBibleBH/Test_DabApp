@@ -35,7 +35,6 @@ namespace DABApp
             dbSettings.StoreSetting("LastName", "Guest");
             dbSettings.StoreSetting("Avatar", "");
             dbSettings.StoreSetting("WpId", "");
-
         }
 
 
@@ -313,28 +312,32 @@ namespace DABApp
             else return false;
         }
 
-        public static void SetTestMode()
+        public static bool GetExperimentMode()
         {
-            var testMode = adb.Table<dbSettings>().Where(x => x.Key == "TestMode").FirstOrDefaultAsync().Result;
-            dbSettings newMode = new dbSettings();
+            var experimentmode = adb.Table<dbSettings>().Where(x => x.Key == "ExperimentMode").FirstOrDefaultAsync().Result;
+            if (experimentmode != null)
+            {
+                return Convert.ToBoolean(experimentmode.Value);
+            }
+            else return false;
+        }
+
+        public static void SetExternalMode(bool isTest)
+        {
             adb.QueryAsync<dbEpisodes>("delete from dbEpisodes");
             adb.ExecuteAsync("delete from dbPlayerActions");
             adb.ExecuteAsync("delete from Badge");
             adb.ExecuteAsync("delete from dbUserBadgeProgress");
             adb.ExecuteAsync("delete from Channel");
             adb.ExecuteAsync("delete from dbEpisodeUserData");
-            newMode.Key = "TestMode";
-            newMode.Value = GlobalResources.TestMode.ToString();
-            if (testMode != null)
+            if (isTest)
             {
-                var x = adb.UpdateAsync(newMode).Result;
+                dbSettings.StoreSetting("TestMode", GlobalResources.TestMode.ToString());
             }
             else
             {
-                var x = adb.InsertOrReplaceAsync(newMode).Result;
+                dbSettings.StoreSetting("ExperimentMode", GlobalResources.ExperimentMode.ToString());
             }
         }
-
- 
     }
 }

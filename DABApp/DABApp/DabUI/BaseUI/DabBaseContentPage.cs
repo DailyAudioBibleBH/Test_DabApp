@@ -35,6 +35,10 @@ namespace DABApp
             {
                 Title = "*** TEST MODE ***";
             }
+            else if (GlobalResources.ExperimentMode)
+            {
+                Title = "*** EXPERIMENT MODE ***";
+            }
             else
             {
                 Title = "DAILY AUDIO BIBLE";

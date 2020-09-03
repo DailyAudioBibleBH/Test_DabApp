@@ -12,6 +12,7 @@ namespace DABApp
     public partial class DabCheckEmailPage : DabBaseContentPage
     {
         int TapNumber = 0;
+        int ExperimentNumber = 0;
         //Indicator so double connection doesn't get hit from OnResume
 
         private bool hasAppeared; //used to only connect the first time through;
@@ -283,8 +284,27 @@ namespace DABApp
                     var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
-                    AuthenticationAPI.SetTestMode();
+                    AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
+                    DisableAllInputs("Shutdown and restart app");
+                }
+            }
+        }
+
+        async void OnExperiment(object sender, EventArgs e)
+        {
+            ExperimentNumber++;
+            if (ExperimentNumber >= 2)
+            {
+                var experimentMode = GlobalResources.ExperimentMode ? "production" : "experiment";
+                var accept = await DisplayAlert($"Do you want to switch to {experimentMode} mode?", "This mode will allow you to use new (and unsupported) features of the app. These features may be unstable and may require a deletion and reinstallation of the app if they do not perform as expected. You will have to restart the app after selecting \"Yes\"", "Yes", "No");
+                if (accept)
+                {
+                    var adb = DabData.AsyncDatabase;
+                    await adb.ExecuteAsync("DELETE FROM dbSettings");
+                    GlobalResources.ExperimentMode = !GlobalResources.ExperimentMode;
+                    AuthenticationAPI.SetExternalMode(false);
+                    await DisplayAlert($"Switching to {experimentMode} mode.", $"Please restart the app after receiving this message to fully go into {experimentMode} mode.", "OK");
                     DisableAllInputs("Shutdown and restart app");
                 }
             }

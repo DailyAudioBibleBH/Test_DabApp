@@ -47,6 +47,10 @@ namespace DABApp
                 Account.Title = null;
                 Account.Clear();
             }
+            if (GlobalResources.ExperimentMode)
+                ExperimentStack.IsVisible = true;
+            else
+                ExperimentStack.IsVisible = false;
             //if (Device.Idiom == TargetIdiom.Tablet)
             //{
             //	ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];

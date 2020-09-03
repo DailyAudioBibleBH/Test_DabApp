@@ -18,7 +18,11 @@
             <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
                 
             </StackLayout>
-            <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/>
+            <Label TextColor="{DynamicResource OutlineColor}" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnExperiment"/>
+                </Label.GestureRecognizers>
+            </Label>
         </StackLayout>
     </ContentPage.Content>
 </local:DabBaseContentPage>

@@ -457,6 +457,9 @@ namespace DABApp
         //Get or set Test Mode
         public static bool TestMode { get; set; }
 
+        //Get or set Experiment Mode
+        public static bool ExperimentMode { get; set; }
+
         //Return the base URL to give
         public static string GiveUrl
         {
