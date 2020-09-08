@@ -126,7 +126,7 @@ namespace DABApp
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //process the data we got back.
-                  string token = result.Data.payload.data.loginUser.token;
+                string token = result.Data.payload.data.loginUser.token;
                 dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
                 dbSettings.StoreSetting("Token", token);
 

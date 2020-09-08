@@ -318,25 +318,8 @@ namespace DABApp.Droid
             FrameLayout content = (FrameLayout)activity.FindViewById(Android.Resource.Id.Content);
             mChildOfContent = content.GetChildAt(0);
             ViewTreeObserver vto = mChildOfContent.ViewTreeObserver;
-            vto.GlobalLayout += (object sender, EventArgs e) => {
-                possiblyResizeChildOfContent();
-            };
+
             frameLayoutParams = (FrameLayout.LayoutParams)mChildOfContent.LayoutParameters;
-        }
-
-        private void possiblyResizeChildOfContent()
-        {
-            int usableHeightNow = computeUsableHeight();
-            if (usableHeightNow != usableHeightPrevious)
-            {
-                int usableHeightSansKeyboard = mChildOfContent.RootView.Height;
-                int heightDifference = usableHeightSansKeyboard - usableHeightNow;
-
-                frameLayoutParams.Height = usableHeightSansKeyboard - heightDifference;
-
-                mChildOfContent.RequestLayout();
-                usableHeightPrevious = usableHeightNow;
-            }
         }
 
         private int computeUsableHeight()

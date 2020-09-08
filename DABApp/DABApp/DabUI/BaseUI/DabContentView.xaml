@@ -1,66 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
 		xmlns:local="clr-namespace:DABApp;" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
-	<ContentPage.Content>
-		<StackLayout>
-			<RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-				<Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
-				<StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-					<Label Text="{Binding title}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
-				</StackLayout>
-			</RelativeLayout>
-			<local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" BackgroundColor="Transparent" HasUnevenRows="true" SeparatorColor="{StaticResource EpisodeMenuColor}">
-			<ListView.Header>
-				<StackLayout>
-					<BoxView HeightRequest="25" Color="{StaticResource PageBackgroundColor}"/>
-				</StackLayout>
-			</ListView.Header>
-			<ListView.Footer>
-				<StackLayout VerticalOptions="FillAndExpand"/>
-			</ListView.Footer>
-				<local:NonScrollingListView.ItemTemplate>
-					<DataTemplate>
-						<ViewCell>
-							<ViewCell.View>
-								<StackLayout Padding="10" Spacing="5" Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}">
-									<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontSize="Medium"/>
-									<Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" HeightRequest="20" Aspect="AspectFit"/>
-								</StackLayout>
-							</ViewCell.View>
-						</ViewCell>
-					</DataTemplate>
-				</local:NonScrollingListView.ItemTemplate>
-			</local:NonScrollingListView>
-			<StackLayout x:Name="ContentContainer" Padding="10">
-				<local:HtmlLabel x:Name="Content" Text="{Binding content}" Style="{StaticResource playerLabelStyle}"/>
-			</StackLayout>
-			<ListView x:Name="Links" ItemsSource="{Binding links}" HasUnevenRows="true" ItemTapped="OnLinkTapped">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<ViewCell>
-							<ViewCell.View>
-								<StackLayout Spacing="0">
-									<StackLayout.Padding>
-									<OnPlatform x:TypeArguments="Thickness" iOS="20, 10, 20, 20" Android="20, 10, 20, 20"/>
-									</StackLayout.Padding>
-									<Image Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
-										<Image.Source>
-											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
-										</Image.Source>
-									</Image>
-									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="{DynamicResource InputBackgroundColor}" IsVisible="{Binding HasGraphic}">
-										<Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
-										<Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
-									</StackLayout>
-									<StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="{DynamicResource NonScrollingListViewColor}" Padding="10" Spacing="0" Orientation="Horizontal">
-										<Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
-									</StackLayout>
-								</StackLayout>
-							</ViewCell.View>
-						</ViewCell>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
-			</StackLayout>
-	</ContentPage.Content>
+    <ScrollView>
+        <ContentPage.Content>
+            <StackLayout>
+                <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+                    <Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                    <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+                        <Label Text="{Binding title}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+                    </StackLayout>
+                </RelativeLayout>
+                <local:NonScrollingListView x:Name="Children" ItemsSource="{Binding children}" ItemTapped="OnChildTapped" BackgroundColor="Transparent" HasUnevenRows="true" SeparatorColor="{StaticResource EpisodeMenuColor}">
+                    <ListView.Header>
+                        <StackLayout>
+                            <BoxView HeightRequest="25" Color="{StaticResource PageBackgroundColor}"/>
+                        </StackLayout>
+                    </ListView.Header>
+                    <ListView.Footer>
+                        <StackLayout VerticalOptions="FillAndExpand"/>
+                    </ListView.Footer>
+                    <local:NonScrollingListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Padding="10" Spacing="5" Orientation="Horizontal" BackgroundColor="{DynamicResource InputBackgroundColor}">
+                                        <Label Text="{Binding title}" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Style="{StaticResource playerLabelStyle}" FontSize="Medium"/>
+                                        <Image Source="ic_chevron_right_white_3x.png" HorizontalOptions="EndAndExpand" HeightRequest="20" Aspect="AspectFit"/>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </local:NonScrollingListView.ItemTemplate>
+                </local:NonScrollingListView>
+                <StackLayout x:Name="ContentContainer" Padding="10">
+                    <local:HtmlLabel x:Name="Content" Text="{Binding content}" Style="{StaticResource playerLabelStyle}"/>
+                </StackLayout>
+                <ListView x:Name="Links" ItemsSource="{Binding links}" HasUnevenRows="true" ItemTapped="OnLinkTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Spacing="0">
+                                        <StackLayout.Padding>
+                                            <OnPlatform x:TypeArguments="Thickness" iOS="20, 10, 20, 20" Android="20, 10, 20, 20"/>
+                                        </StackLayout.Padding>
+                                        <Image Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
+                                            <Image.Source>
+                                                <UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
+                                            </Image.Source>
+                                        </Image>
+                                        <StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="{DynamicResource InputBackgroundColor}" IsVisible="{Binding HasGraphic}">
+                                            <Label Text="{Binding title}" HorizontalOptions="StartAndExpand" FontSize="Small" Style="{StaticResource playerLabelStyle}"/>
+                                            <Label Text="{Binding linkText}" HorizontalOptions="EndAndExpand" Style="{StaticResource secondaryLabelStyle}" FontSize="Small"/>
+                                        </StackLayout>
+                                        <StackLayout IsVisible="{Binding HasNoGraphic}" BackgroundColor="{DynamicResource NonScrollingListViewColor}" Padding="10" Spacing="0" Orientation="Horizontal">
+                                            <Label Text="{Binding linkText}" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ContentPage.Content>
+    </ScrollView>
 </local:DabBaseContentPage>
