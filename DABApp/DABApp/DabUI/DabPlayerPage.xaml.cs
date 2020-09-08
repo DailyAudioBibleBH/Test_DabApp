@@ -150,8 +150,6 @@ namespace DABApp
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             });
 
-            //episode user data changed event
-            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
             //Play-Pause button binding
             //Moved here to take away flicker when favoriting and marking an episode as listened to 
@@ -407,10 +405,24 @@ namespace DABApp
             }
         }
 
+        //Form disappears
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent -= DabServiceEvents_EpisodeUserDataChangedEvent;
+
+        }
+
         //Form appears
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
+
 
             //TODO: Put this back in for journal
             //Set up padding for the journal tab with the keyboard
