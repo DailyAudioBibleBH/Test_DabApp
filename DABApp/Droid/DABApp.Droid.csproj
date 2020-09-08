@@ -369,6 +369,7 @@
     <Compile Include="DabSockets\droidWebSocket.cs" />
     <Compile Include="DependencyServices\AnalyticsService.cs" />
     <Compile Include="DependencyServices\CallReceiver.cs" />
+    <Compile Include="DependencyServices\CustomEntryRenderer.cs" />
     <Compile Include="DependencyServices\DroidAudioFocus.cs" />
     <Compile Include="DependencyServices\MaintenanceModeService.cs" />
     <Compile Include="DependencyServices\MediaButtonBroadcastReceiver.cs" />
@@ -493,8 +494,10 @@
       </Generator>
     </AndroidResource>
     <AndroidResource Include="Resources\drawable\SplashAppIcon.png">
-      <SubType></SubType>
-      <Generator></Generator>
+      <SubType>
+      </SubType>
+      <Generator>
+      </Generator>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
