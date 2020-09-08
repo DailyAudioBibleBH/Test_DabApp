@@ -48,11 +48,19 @@ namespace DABApp
             Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
 
 
+
+        }
+
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
             //episodes changed event
-            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
+            DabServiceEvents.EpisodesChangedEvent -= DabServiceEvents_EpisodesChangedEvent;
 
             //episode user data changed event
-            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
+            DabServiceEvents.EpisodeUserDataChangedEvent -= DabServiceEvents_EpisodeUserDataChangedEvent;
 
         }
 
@@ -64,6 +72,13 @@ namespace DABApp
              */
 
             base.OnAppearing();
+
+
+            //episodes changed event
+            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
             //get new episodes, if they exist -- this will also handle downloading
             await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list

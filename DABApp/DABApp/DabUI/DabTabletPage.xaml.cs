@@ -62,11 +62,6 @@ namespace DABApp
             //Set up events
             SegControl.ValueChanged += Handle_SegControlValueChanged;
 
-            //episodes changed event
-            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
-
-            //episode user data changed event
-            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
             //Channels list
             ChannelsList.ItemsSource = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources;
@@ -154,12 +149,31 @@ namespace DABApp
             AboutFormat.GestureRecognizers.Add(tapper);
         }
 
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            //episodes changed event
+            DabServiceEvents.EpisodesChangedEvent -= DabServiceEvents_EpisodesChangedEvent;
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent -= DabServiceEvents_EpisodeUserDataChangedEvent;
+
+        }
+
         //Page appears event
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             OnRefresh(null, null); //load episodes
+
+            //episodes changed event
+            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
+
 
             BindControls(true, true); //rebind controls when clicking on miniplayer
             if (Device.RuntimePlatform == "iOS")
