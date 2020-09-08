@@ -29,6 +29,7 @@ namespace DABApp.Service
         public const int WaitDelayInterval = 500; //milliseconds to pause for anything that waits on another thread to provide input
         public const int ExtraLongTimeout = 20000; //super long timeout for things that take a long time
         public const int LongTimeout = 10000; //timeout for calls we expect return values from
+        public const int SocketTerminationWaitTime = 1000; //time to wait for socket terminate time to close the socket
         public const int ShortTimeout = 250; //timeout for quick calls or items we don't expect values from
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
 
@@ -87,7 +88,7 @@ namespace DABApp.Service
                 {
                     TimeSpan remaining = timeout.Subtract(DateTime.Now);
                     Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection...");
-                    await Task.Delay(500); //check every 1/2 second
+                    await Task.Delay(WaitDelayInterval); //check every 1/2 second
                 }
 
             }
@@ -199,7 +200,6 @@ namespace DABApp.Service
                     socket.Disconnect();
 
                     //wait for the socket to become disconnected
-                    //Wait for the socket to connect
                     DateTime start = DateTime.Now;
                     DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
                     while (socket.IsConnected == false && DateTime.Now < timeout)
@@ -207,6 +207,11 @@ namespace DABApp.Service
                         TimeSpan remaining = timeout.Subtract(DateTime.Now);
                         Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection to close...");
                         await Task.Delay(WaitDelayInterval); //check every 1/2 second
+                    }
+
+                    if (socket.IsConnected)
+                    {
+                        Debug.WriteLine("Socket error - the socket was unable to disconnect in the timeout provided."); //TODO: Breakpoint here ,this should not happen.
                     }
                 }
             }
@@ -360,7 +365,7 @@ namespace DABApp.Service
                 socket.Send(command);
 
                 //wait for the graphql connection to end (which may terminate the socket also)
-                await Task.Delay(500);
+                await Task.Delay(SocketTerminationWaitTime);
 
                 //disconnect the socket
                 if (socket != null)
