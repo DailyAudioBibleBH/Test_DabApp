@@ -333,18 +333,18 @@ namespace DABApp
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            //if (Device.RuntimePlatform == "Android")
-            //{
-            //    MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
-            //    {
-            //        if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
-            //        {
-            //            this.ShowMenu();
-            //        }
-            //    });
-            //    MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
-            //    MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
-            //}
+            if (Device.RuntimePlatform == "Android")
+            {
+                MessagingCenter.Subscribe<string>("Menu", "Menu", (sender) =>
+                {
+                    if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
+                    {
+                        this.ShowMenu();
+                    }
+                });
+                MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
+                MessagingCenter.Subscribe<string>("Record", "Record", (sender) => { OnRecord(sender, new EventArgs()); });
+            }
         }
 
 
