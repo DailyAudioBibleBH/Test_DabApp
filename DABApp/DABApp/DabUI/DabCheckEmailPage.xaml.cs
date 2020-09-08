@@ -37,21 +37,10 @@ namespace DABApp
                 Container.Padding = 100;
                 Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
             }
+
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
-
-        private void CustomEntryFocused(object sender, FocusEventArgs e)
-        {
-            var stackParent = Container as StackLayout;
-            stackParent?.Children.Add(new StackLayout() { HeightRequest = 300 });
-        }
-
-        private void CustomEntryUnfocused(object sender, FocusEventArgs e)
-        {
-            var stackParent = Container as StackLayout;
-            stackParent?.Children.RemoveAt(stackParent.Children.Count - 1);
-        }
-
+        
         async void OnNext(object o, EventArgs e)
         {
             /* Handles when they click next to continue with an email address

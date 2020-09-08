@@ -97,19 +97,6 @@ namespace DABApp
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
-        private void CustomEntryFocused(object sender, FocusEventArgs e)
-        {
-            var stackParent = Container as StackLayout;
-            stackParent?.Children.Add(new StackLayout() { HeightRequest = 300 });
-        }
-
-        private void CustomEntryUnfocused(object sender, FocusEventArgs e)
-        {
-            var stackParent = Container as StackLayout;
-            stackParent?.Children.RemoveAt(stackParent.Children.Count - 1);
-        }
-
-
         public string CalculateMD5Hash(string email)
         {
             // step 1, calculate MD5 hash from input
@@ -139,7 +126,7 @@ namespace DABApp
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //process the data we got back.
-                string token = result.Data.payload.data.loginUser.token;
+                  string token = result.Data.payload.data.loginUser.token;
                 dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
                 dbSettings.StoreSetting("Token", token);
 

@@ -47,18 +47,7 @@ namespace DABApp
 			}
 			SignUp.IsEnabled = true;
 		}
-		private void CustomEntryFocused(object sender, FocusEventArgs e)
-		{
-			var stackParent = Container as StackLayout;
-			stackParent?.Children.Add(new StackLayout() { HeightRequest = 300 });
-		}
-
-		private void CustomEntryUnfocused(object sender, FocusEventArgs e)
-		{
-			var stackParent = Container as StackLayout;
-			stackParent?.Children.RemoveAt(stackParent.Children.Count - 1);
-		}
-
+		
 		public FormattedString TermsText
 		{
 			get
