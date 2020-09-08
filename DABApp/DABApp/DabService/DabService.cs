@@ -641,12 +641,12 @@ namespace DABApp.Service
 
             if (StartDateUtc <= GlobalResources.DabMinDate.ToUniversalTime())
             {
-                queryName = "episodes";
+                queryName = "episodes"; //first time through, use episodes
                 isFirstTime = true;
             }
             else
             {
-                queryName = "updatedEpisodes";
+                queryName = "updatedEpisodes"; //not first time through, use updatedepisodes
                 isFirstTime = false;
             }
                 
@@ -697,9 +697,9 @@ namespace DABApp.Service
                 if (response.Success == true)
                 {
                     if (isFirstTime)
-                        data = response.Data.payload.data.episodes;
+                        data = response.Data.payload.data.episodes; //first time through, use episodes
                     else
-                        data = response.Data.payload.data.updatedEpisodes;
+                        data = response.Data.payload.data.updatedEpisodes; //later times through, use updatedepisdoes
 
 
                     //add what we receied to the list

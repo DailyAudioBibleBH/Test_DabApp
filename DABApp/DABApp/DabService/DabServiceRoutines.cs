@@ -194,7 +194,7 @@ namespace DABApp.Service
 
                 if (ReloadAll)
                 {
-                    startdate = GlobalResources.DabMinDate;
+                    startdate = GlobalResources.DabMinDate.ToUniversalTime();
                 }
                 else
                 {
@@ -218,10 +218,10 @@ namespace DABApp.Service
                     foreach (var data in ql.Data)
                     {
                         DabGraphQlEpisodes episodes;
-                        if (data!.payload!.data!.updatedEpisodes != null)
-                            episodes = data.payload.data.updatedEpisodes;
+                        if (data!.payload!.data!.updatedEpisodes != null) //determine if we should use episodes or updatedepisodes object
+                            episodes = data.payload.data.updatedEpisodes;  //use updatedepisodes if we got them (all but the first request)
                         else
-                            episodes = data.payload.data.episodes;
+                            episodes = data.payload.data.episodes; //use episdoes for the first time through.
 
                         foreach (var episode in episodes.edges)
                         {
