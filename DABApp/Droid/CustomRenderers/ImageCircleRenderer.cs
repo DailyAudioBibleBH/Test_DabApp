@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
+using Android.Content;
 using Android.Graphics;
 using DABApp;
 using DABApp.Droid;
-using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 [assembly:ExportRenderer(typeof(ImageCircle), typeof(ImageCircleRenderer))]
 namespace DABApp.Droid
 {
-	public class ImageCircleRenderer: CachedImageRenderer
+	public class ImageCircleRenderer: ImageRenderer
 	{
+        //Come back to this
+        public ImageCircleRenderer(Context context) : base(context)
+		{
+
+		}
 		protected override bool DrawChild(Canvas canvas, global::Android.Views.View child, long drawingTime)
 		{
 			try

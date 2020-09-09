@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
-using FFImageLoading;
 using SlideOverKit;
 using Version.Plugin;
 using Xamarin.Forms;
@@ -41,8 +40,8 @@ namespace DABApp
 
             // This is shadow view color, you can set a transparent color
             BackgroundViewColor = ((Color)App.Current.Resources["PageBackgroundColor"]).MultiplyAlpha(.75);
-            OnAvatarChanged(this, new EventArgs());
-			GuestStatus.Current.AvatarChanged += OnAvatarChanged;
+            //OnAvatarChanged(this, new EventArgs());
+			//GuestStatus.Current.AvatarChanged += OnAvatarChanged;
 			GuestStatus.Current.UserName = GlobalResources.GetUserName();
 
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
@@ -56,6 +55,8 @@ namespace DABApp
             {
 				pageList.ItemsSource = ContentConfig.Instance.nav; //show all
 			}
+
+			var test = Avatar;
 
 
 			DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;
@@ -174,15 +175,16 @@ namespace DABApp
 			pageList.SelectedItem = null;
 		}
 
-		async void OnAvatarChanged(object o, EventArgs e)
-		{ 
-			try
-			{
-				await ImageService.Instance.LoadUrl(GuestStatus.Current.AvatarUrl).DownloadOnlyAsync();
-			}
-			catch(Exception ex) {
-				Debug.WriteLine($"Error in OnAvatarChanged: {ex.Message}");
-			}
-		}
+		//async void OnAvatarChanged(object o, EventArgs e)
+		//{
+		//	//Come back to this
+		//	//try
+		//	//{
+		//	//	await ImageService.Instance.LoadUrl(GuestStatus.Current.AvatarUrl).DownloadOnlyAsync();
+		//	//}
+		//	//catch(Exception ex) {
+		//	//	Debug.WriteLine($"Error in OnAvatarChanged: {ex.Message}");
+		//	//}
+		//}
 	}
 }

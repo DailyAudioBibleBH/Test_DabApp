@@ -2,7 +2,6 @@
 using SlideOverKit;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using FFImageLoading.Forms;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using System.Linq;

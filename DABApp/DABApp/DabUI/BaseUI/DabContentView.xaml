@@ -45,7 +45,7 @@
 									</StackLayout.Padding>
 									<Image Aspect="AspectFill" IsVisible="{Binding HasGraphic}">
 										<Image.Source>
-											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
+											<UriImageSource x:Name="linkSource" Uri="{Binding PhoneOrTab}" CachingEnabled="True" CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"/>
 										</Image.Source>
 									</Image>
 									<StackLayout Orientation="Horizontal" Padding="10" Spacing="0" BackgroundColor="{DynamicResource InputBackgroundColor}" IsVisible="{Binding HasGraphic}">

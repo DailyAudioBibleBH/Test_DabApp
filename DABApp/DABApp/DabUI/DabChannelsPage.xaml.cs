@@ -4,7 +4,6 @@ using System.Linq;
 using SlideOverKit;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
-using FFImageLoading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DABApp.DabSockets;

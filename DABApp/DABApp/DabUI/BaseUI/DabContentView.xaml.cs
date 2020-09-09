@@ -65,8 +65,9 @@ namespace DABApp
 
 			banner.Source = new UriImageSource
 			{
-				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
-				CacheValidity = GlobalResources.ImageCacheValidity
+				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
+				CacheValidity = GlobalResources.ImageCacheValidity,
+				CachingEnabled = true
 			};
 			//BannerTitle.Text = $"<h1 style=\"font-size:28px\">{contentView.title}</h1>";
 		}

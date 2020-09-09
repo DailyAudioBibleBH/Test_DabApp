@@ -134,10 +134,10 @@ namespace DABApp
             var OfflineSettings = adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
-            Task.Run(async () =>
-            {
-                await ContentConfig.Instance.cachImages();
-            });
+            //Task.Run(async () =>
+            //{
+            //    await ContentConfig.Instance.cachImages();
+            //});
             if (OfflineSettings == null)
             {
                 OfflineSettings = new dbSettings();
