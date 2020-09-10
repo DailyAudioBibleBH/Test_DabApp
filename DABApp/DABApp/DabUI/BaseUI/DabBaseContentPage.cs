@@ -196,8 +196,9 @@ namespace DABApp
                     activityHolder.FadeTo(.75, 500, Easing.CubicIn);
                     activityContent.FadeTo(1, 500, Easing.CubicIn);
                 }
+                activityButton.IsVisible = e.hasCancel;
                 activityButton.Clicked += StopWait;
-                activityLabel.Text = "This is working";//message;
+                activityLabel.Text = e.message;
                 activity.IsVisible = true;
                 activityContent.IsVisible = true;
                 activityHolder.IsVisible = true;
@@ -274,12 +275,13 @@ namespace DABApp
             {
                 //Send info to Firebase analytics that user tapped an action we track
                 var info = new Dictionary<string, string>();
+                object source = new object();
                 info.Add("title", "give");
                 DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
 
                 if (!giving)
                 {
-                    GlobalResources.WaitStart("Connecting to the DAB Server...");
+                    DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Connecting to the DAB Server...", true));
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {

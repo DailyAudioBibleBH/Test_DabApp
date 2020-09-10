@@ -519,20 +519,20 @@ namespace DABApp
             }
         }
 
-        public static void WaitStart()
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
-        }
+        //public static void WaitStart()
+        //{
+        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
+        //}
 
-        public static void WaitStart(string message, bool ShowDismissButton)
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start_WithoutDismiss", message);
-        }
+        //public static void WaitStart(string message, bool ShowDismissButton)
+        //{
+        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start_WithoutDismiss", message);
+        //}
 
-        public static void WaitStart(string message)
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
-        }
+        //public static void WaitStart(string message)
+        //{
+        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
+        //}
 
         public static void WaitStop()
         {

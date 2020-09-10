@@ -10,6 +10,7 @@ using DABApp.DabSockets;
 using SQLite;
 using System.Collections.ObjectModel;
 using DABApp.Service;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -27,6 +28,7 @@ namespace DABApp
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
+        object source = new object();
 
         public DabPlayerPage(dbEpisodes episode, Reading Reading)
         {
@@ -593,7 +595,8 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
-            GlobalResources.WaitStart("Reconnecting to the journal service.");
+            DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Reconnecting to the journal service...", true));
+
             journal.Reconnect();
             journal.JoinRoom(Episode.Episode.PubDate);
             await Task.Delay(1000);

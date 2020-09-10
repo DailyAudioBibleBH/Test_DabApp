@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
@@ -25,6 +26,7 @@ namespace DABApp
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         List<EpisodeViewModel> _Episodes;
+        object source;
 
         public DabEpisodesPage(Resource resource)
         {
@@ -114,7 +116,8 @@ namespace DABApp
                 }
 
                 //get the episodes - this routine handles resetting the date and raising events
-                GlobalResources.WaitStart($"Refreshing episodes...");
+                source = new object();
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
                 GlobalResources.WaitStop();
             }
@@ -232,7 +235,7 @@ namespace DABApp
              */
 
             EpisodeList.IsEnabled = false; //disable the list while we work with it.
-            GlobalResources.WaitStart();
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             var chosenVM = (EpisodeViewModel)e.Item;
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;

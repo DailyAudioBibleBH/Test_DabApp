@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
+using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using Xamarin.Essentials;
@@ -189,8 +190,10 @@ namespace DABApp.Service
                 DateTime startdate;
                 int cnt = 0; //number of episodes updated;
                 DateTime lastDate = DateTime.MinValue; //most recent episode date
+                object source = new object();
 
-                GlobalResources.WaitStart("Checking for new episodes...");
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Checking for new episodes...", true));
+
 
                 if (ReloadAll)
                 {
@@ -347,7 +350,9 @@ namespace DABApp.Service
                     {
 
                         //wait
-                        GlobalResources.WaitStart("Getting your recent activity...");
+                        object source = new object();
+                        DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting your recent activity...", true));
+
 
                         //get last actions
                         var qlList = await DabService.GetActions(GlobalResources.LastActionDate);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
@@ -36,6 +37,7 @@ namespace DABApp
         int previousEpIndex;
         int nextEpIndex;
         int count;
+        object source;
 
         #region constructor and startup methods
 
@@ -494,7 +496,8 @@ namespace DABApp
                 }
 
                 //get the episodes - this routine handles resetting the date and raising events
-                GlobalResources.WaitStart($"Refreshing episodes...");
+                source = new object();
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refresing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
                 GlobalResources.WaitStop();
             }
@@ -724,7 +727,8 @@ namespace DABApp
 
             if (ok)
             {
-                GlobalResources.WaitStart("Refreshing episodes...");
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Refreshing episodes...", true));
+
 
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
@@ -841,7 +845,7 @@ namespace DABApp
         //Handle the selection of a different episode
         {
             //Load the episode
-            GlobalResources.WaitStart("Loading episode...");
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Loading episode...", true));
             var newEp = (EpisodeViewModel)e.Item;
             currentIndex = episodeObservableCollection.IndexOf(newEp);
             previousEpIndex = currentIndex + 1;
@@ -921,7 +925,8 @@ namespace DABApp
         /* User selected a different channel */
         {
             //Wait indicator 
-            GlobalResources.WaitStart("Loading channel...");
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Loading channel...", true));
+
 
             List<string> emptyList = new List<string>();
 
@@ -935,7 +940,7 @@ namespace DABApp
 
 
                 //get the episodes - this routine handles resetting the date and raising events
-                GlobalResources.WaitStart($"Refreshing episodes...");
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Refreshing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
 
                 //Load the list if episodes for the channel.
@@ -963,7 +968,7 @@ namespace DABApp
                 player.Pause(); //should save position
 
                 //Load the episode
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 var newEp = previousEpisode;
                 currentIndex = currentIndex + 1;
                 previousEpIndex = currentIndex + 1;
@@ -1050,7 +1055,7 @@ namespace DABApp
                 player.Pause();//should save position
 
                 //Load the episode
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 var newEp = nextEpisode;
                 currentIndex = currentIndex - 1;
                 previousEpIndex = currentIndex + 1;
@@ -1228,7 +1233,8 @@ namespace DABApp
 
         async void OnReconnect(object o, EventArgs e)
         {
-            GlobalResources.WaitStart("Reconnecting to the journal service.");
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Reconnecting to the journal service...", true));
+
             journal.Reconnect();
             if (episode != null)
             {

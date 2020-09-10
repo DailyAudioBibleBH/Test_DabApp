@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
@@ -32,7 +33,7 @@ namespace DABApp
 		{
 			if (Validation()) 
 			{
-				GlobalResources.WaitStart("Saving your information...");
+				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Saving your information...", true));
 
 				bool okToClose = true;
 				string oldFirstName = dbSettings.GetSetting("FirstName","");

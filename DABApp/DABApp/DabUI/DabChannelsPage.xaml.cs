@@ -13,6 +13,7 @@ using Rg.Plugins.Popup.Services;
 using DABApp.DabUI;
 using Plugin.Connectivity;
 using DABApp.Service;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -28,6 +29,7 @@ namespace DABApp
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         private bool todaysEpisodeVisible = false;
         bool shouldShowTodaysEpisode = false;
+        object source = new object();
 
         public DabChannelsPage()
         {
@@ -93,7 +95,7 @@ namespace DABApp
 
         async void OnPlayer(object o, EventArgs e)
         {
-            GlobalResources.WaitStart();
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             var reading = await PlayerFeedAPI.GetReading(episode.read_link);
             if (Device.Idiom == TargetIdiom.Tablet)
             {
@@ -118,7 +120,7 @@ namespace DABApp
         {
             try
             {
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 
                 //Selected resource
                 var selected = (Resource)e.Item;
@@ -260,7 +262,7 @@ namespace DABApp
                         //Set up button
                         TodaysEpisodeButton.Clicked += async (sender, e) =>
                         {
-                            GlobalResources.WaitStart("Getting today's episode...");
+                            DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting today's episode...", true));
                             var _reading = await PlayerFeedAPI.GetReading(ep.read_link);
                             if (ep.File_name_local != null || CrossConnectivity.Current.IsConnected)
                             {

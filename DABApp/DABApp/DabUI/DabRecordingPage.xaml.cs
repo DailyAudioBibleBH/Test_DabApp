@@ -13,6 +13,7 @@ using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
 using DABApp.DabAudio;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -283,7 +284,8 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    GlobalResources.WaitStart("Submitting recording...", false);
+                    DabUserInteractionEvents.WaitStarted(sender, new DabAppEventArgs("Submitting recording...", true));
+
                     var result = await SendAudio(audio);
                     GlobalResources.WaitStop();
                     if (result) await Navigation.PopModalAsync();

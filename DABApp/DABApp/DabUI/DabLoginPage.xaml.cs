@@ -122,8 +122,7 @@ namespace DABApp
             try
             {
                 //log the user in 
-                //GlobalResources.WaitStart("Checking your credentials...");
-                DabUserInteractionEvents.WaitStartedWithoutMessageWithoutCancel(o, e);
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Checking your credentials...", true));
                 var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
@@ -186,7 +185,7 @@ namespace DABApp
         async void OnGuestLogin(object o, EventArgs e)
         {
             //GuestLogin.IsEnabled = false;
-            GlobalResources.WaitStart("Logging you in as a guest...");
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Logging you in as a guest...", true));
 
             AuthenticationAPI.LoginGuest();
             if (_fromPlayer)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.DabUI.BaseUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +11,7 @@ namespace DABApp
 	{
 		Card[] _cards;
 		bool isInitialized = false;
+		object source;
 
 		public DabWalletPage(Card[] cards)
 		{
@@ -38,7 +40,8 @@ namespace DABApp
 			base.OnAppearing();
 			if (isInitialized)
 			{
-				GlobalResources.WaitStart();
+				source = new object();
+				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 				var result = await AuthenticationAPI.GetWallet();
 				if (result != null)
 				{

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -121,8 +122,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 await Navigation.PushAsync(new DabProfileManagementPage());
                 GlobalResources.WaitStop();
             }
@@ -141,7 +141,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 var result = await AuthenticationAPI.GetWallet();
                 if (result != null)
                 {
@@ -159,7 +159,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                GlobalResources.WaitStart();
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 var don = await AuthenticationAPI.GetDonations();
                 if (don != null)
                 {

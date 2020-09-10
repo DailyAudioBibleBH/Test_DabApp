@@ -1,4 +1,5 @@
 ﻿using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
@@ -67,7 +68,8 @@ namespace DABApp
 		{
 			if (SignUpValidation())
 			{
-				GlobalResources.WaitStart("Registering your account...");
+				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Registering your account...", true));
+
 				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (ql.Success)
                 {

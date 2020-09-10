@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -14,7 +15,7 @@ namespace DABApp
         int TapNumber = 0;
         int ExperimentNumber = 0;
         //Indicator so double connection doesn't get hit from OnResume
-
+        object source = new object();
         private bool hasAppeared; //used to only connect the first time through;
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
@@ -46,8 +47,7 @@ namespace DABApp
         {
             /* Handles when they click next to continue with an email address
              */
-            GlobalResources.WaitStart();
-
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             //check for existing/new email
             var ql = await  DabService.CheckEmail(Email.Text.Trim());
             GlobalResources.WaitStop();
@@ -71,7 +71,7 @@ namespace DABApp
                var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
                 if (reconnect == true)
                 {
-                    GlobalResources.WaitStart("Retrying...");
+                    DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Retrying...", true));
                     await DabService.InitializeConnection();
                     OnNext(o, e);
                     GlobalResources.WaitStop();
