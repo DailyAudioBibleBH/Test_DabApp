@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DABApp.Service;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -54,6 +55,8 @@ namespace DABApp
 
             //Keepalive indicator
             DabServiceEvents.TrafficOccuredEvent += DabServiceEvents_TrafficOccuredEvent;
+
+            DabUserInteractionEvents.WaitStartedWithoutMessageWithoutCancelEvent += DabUserInteractionEvents_WaitStartedWithoutMessageWithoutCancelEvent;
 
 
             //Wait Indicator
@@ -174,6 +177,35 @@ namespace DABApp
             {
                 MessagingCenter.Send("Setup", "Setup");
             }
+        }
+
+        private void DabUserInteractionEvents_WaitStartedWithoutMessageWithoutCancelEvent(object source, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                Button activityButton = ControlTemplateAccess.FindTemplateElementByName<Button>(this, "activityButton");
+                Label fakeLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "fakeLabel");
+                //Reset the fade if needed.
+                if (activityHolder.IsVisible == false)
+                {
+                    activityHolder.Opacity = 0;
+                    activityContent.Opacity = 0;
+                    activityHolder.FadeTo(.75, 500, Easing.CubicIn);
+                    activityContent.FadeTo(1, 500, Easing.CubicIn);
+                }
+                activityButton.Clicked += StopWait;
+                activityButton.IsEnabled = false;
+                activityButton.IsVisible = false;
+                //fakeLabel.IsVisible = true;
+                activityLabel.Text = "This is working";//message;
+                activity.IsVisible = true;
+                activityContent.IsVisible = true;
+                activityHolder.IsVisible = true;
+            }); ;
         }
 
         private async void DabServiceEvents_TrafficOccuredEvent(GraphQlTrafficDirection direction, string traffic)

@@ -633,4 +633,9 @@ namespace DABApp
             return true;
         }
     }
+
+    public class DabWideEvents : EventArgs
+    {
+
+    }
 }

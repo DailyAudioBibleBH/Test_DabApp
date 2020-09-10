@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -121,7 +122,8 @@ namespace DABApp
             try
             {
                 //log the user in 
-                GlobalResources.WaitStart("Checking your credentials...");
+                //GlobalResources.WaitStart("Checking your credentials...");
+                DabUserInteractionEvents.WaitStartedWithoutMessageWithoutCancel(o, e);
                 var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
