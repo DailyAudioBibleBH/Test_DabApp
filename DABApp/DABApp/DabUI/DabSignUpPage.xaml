@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabSignUpPage" xmlns:generic="clr-namespace:System;assembly=mscorlib"	xmlns:local="clr-namespace:DABApp;" >
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabSignUpPage" xmlns:generic="clr-namespace:System;assembly=mscorlib" xmlns:local="clr-namespace:DABApp;" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls">
     <ContentPage.Content>
-        <ScrollView>
             <StackLayout x:Name="Container" Padding="10" Spacing="10">
                 <local:HtmlLabel Text="{Binding signUp}"/>
                 <Label Text="First Name" FontSize="Micro"/>
-                <Entry x:Name="FirstName" Focused="CustomEntryFocused" UnFocused="CustomEntryUnfocused" Completed="OnFirstNameCompleted"/>
+                <controls:CustomEntry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
                 <Label Text="Last Name" FontSize="Micro"/>
-                <Entry x:Name="LastName" Focused="CustomEntryFocused" UnFocused="CustomEntryUnfocused" Completed="OnLastNameCompleted"/>
+                <controls:CustomEntry x:Name="LastName" Completed="OnLastNameCompleted"/>
                 <Label Text="Email Address" FontSize="Micro"/>
-                <Entry x:Name="Email" Focused="CustomEntryFocused" UnFocused="CustomEntryUnfocused" IsEnabled="false" Keyboard="Email"/>
+                <controls:CustomEntry x:Name="Email" IsEnabled="false" Keyboard="Email"/>
                 <Label Text="Password" FontSize="Micro"/>
-                <Entry x:Name="Password" Focused="CustomEntryFocused" UnFocused="CustomEntryUnfocused" IsPassword="true" Completed="OnPasswordCompleted"/>
+                <controls:CustomEntry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
                 <Label Text="Confirm Password" FontSize="Micro"/>
-                <Entry x:Name="PasswordAgain" Focused="CustomEntryFocused" UnFocused="CustomEntryUnfocused" IsPassword="true" Completed="OnSignUp"/>
+                <controls:CustomEntry x:Name="PasswordAgain"  IsPassword="true" Completed="OnSignUp"/>
                 <StackLayout Orientation="Horizontal">
                     <Switch x:Name="Agreement" VerticalOptions="Start">
                         <Switch.AutomationProperties.Name>
@@ -24,8 +23,7 @@
                 </StackLayout>
                 <Button x:Name="SignUp" FontSize="Small" Text="Sign up" HeightRequest="40" Style="{StaticResource highlightedButtonStyle}" Clicked="OnSignUp" VerticalOptions="EndAndExpand"/>
             </StackLayout>
-        </ScrollView>
-    </ContentPage.Content>
+        </ContentPage.Content>
 </local:DabBaseContentPage>
     
 
