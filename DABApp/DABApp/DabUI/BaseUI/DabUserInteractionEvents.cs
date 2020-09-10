@@ -18,18 +18,18 @@ namespace DABApp.DabUI.BaseUI
 
         public static event WaitStartWithoutMessageWithoutCancel WaitStartedWithoutMessageWithoutCancelEvent;
 
-        public static void WaitStartedWithoutMessageWithoutCancel(object source, EventArgs e)
+        public static void WaitStartedWithoutMessageWithoutCancel(object source, DabAppEventArgs e)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                WaitStartedWithoutMessageWithoutCancelEvent?.Invoke(source, EventArgs.Empty);
+                WaitStartedWithoutMessageWithoutCancelEvent?.Invoke(source, e);
             });
         }
     }
 
     public class DabAppEventArgs : EventArgs
     {
-        public DabAppEventArgs()
+        public DabAppEventArgs(string message, bool hasCancel)
         {
             this.message = message;
             this.hasCancel = hasCancel;
