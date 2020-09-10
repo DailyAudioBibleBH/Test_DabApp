@@ -124,9 +124,9 @@ namespace DABApp
             {
                 DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 await Navigation.PushAsync(new DabProfileManagementPage());
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
             }
-            
+
         }
 
         async void OnAddresses(object o, EventArgs e)
@@ -151,7 +151,7 @@ namespace DABApp
                 {
                     await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
                 }
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
             }
         }
 
@@ -166,7 +166,7 @@ namespace DABApp
                     await Navigation.PushAsync(new DabManageDonationsPage(don));
                 }
                 else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
             }
         }
     }

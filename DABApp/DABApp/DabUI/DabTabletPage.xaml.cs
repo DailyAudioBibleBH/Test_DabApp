@@ -499,7 +499,7 @@ namespace DABApp
                 source = new object();
                 DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refresing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 
             //get the rull list of episodes for the resource
@@ -756,7 +756,7 @@ namespace DABApp
                 GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                 GlobalResources.SetLastRefreshDate(_resource.id);
 
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 
             EpisodeList.IsRefreshing = false;
@@ -913,7 +913,7 @@ namespace DABApp
             }
             //TODO: Set completed image
             //Completed.Image = episode.listenedToSource;
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
         }
 
         public void OnMonthSelected(object o, EventArgs e)
@@ -947,7 +947,7 @@ namespace DABApp
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
 
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
             else
             {
@@ -955,7 +955,7 @@ namespace DABApp
                 await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             }
 
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
         }
 
         //Go to previous episode
@@ -1035,12 +1035,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 player.Pause();
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
         }
 
@@ -1125,12 +1125,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 player.Pause();
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
             }
 
         }
@@ -1249,7 +1249,7 @@ namespace DABApp
             {
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
         }
 
 

@@ -106,7 +106,7 @@ namespace DABApp
             {
                 await Navigation.PushAsync(new DabPlayerPage(episode, reading));
             }
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
         }
 
         protected override void OnDisappearing()
@@ -139,7 +139,7 @@ namespace DABApp
                 }
 
                 selected.IsNotSelected = 1.0;
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 
                 //Send info to Firebase analytics that user accessed a channel
                 var infoJ = new Dictionary<string, string>();
@@ -151,7 +151,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 var r = await DisplayAlert("Unexpected error.", "We ran into an unexpected problem getting the episode list. Please try again.", "OK", "Details");
                 if (r)
                 {
@@ -268,7 +268,7 @@ namespace DABApp
                             {
                                 await Navigation.PushAsync(new DabPlayerPage(ep, _reading));
                             }
-                            GlobalResources.WaitStop();
+                            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                         };
                     }
                 }

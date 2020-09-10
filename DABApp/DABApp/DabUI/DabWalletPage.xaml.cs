@@ -59,7 +59,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Wallet information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					await Navigation.PopAsync();
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 			isInitialized = true;
 		}

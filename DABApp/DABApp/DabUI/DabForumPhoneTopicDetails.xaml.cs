@@ -92,7 +92,7 @@ namespace DABApp
 				}
 				fromPost = false;
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 	}
 }

@@ -59,7 +59,7 @@ namespace DABApp
 				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
 			}
 			ContentList.topicList.SelectedItem = null;
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		protected override async void OnAppearing()
@@ -92,7 +92,7 @@ namespace DABApp
 					fromPost = false;
 					unInitialized = false;
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 		}
 	}

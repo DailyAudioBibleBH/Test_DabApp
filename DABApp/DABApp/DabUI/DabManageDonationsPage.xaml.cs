@@ -107,7 +107,7 @@ namespace DABApp
 				await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			}
 			isInitialized = false;
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnRecurring(object o, EventArgs e) 
@@ -117,7 +117,7 @@ namespace DABApp
 			Card[] cards = await AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.id.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnGive(object o, EventArgs e) 
@@ -133,7 +133,7 @@ namespace DABApp
 			{
 				await DisplayAlert("An Error has occured.", url, "OK");
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		protected override async void OnAppearing()
@@ -187,7 +187,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					//await Navigation.PopAsync();
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 			isInitialized = true;
 		}

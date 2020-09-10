@@ -519,25 +519,10 @@ namespace DABApp
             }
         }
 
-        //public static void WaitStart()
+        //public static void WaitStop()
         //{
-        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
+        //    MessagingCenter.Send<string>("dabapp", "Wait_Stop");
         //}
-
-        //public static void WaitStart(string message, bool ShowDismissButton)
-        //{
-        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start_WithoutDismiss", message);
-        //}
-
-        //public static void WaitStart(string message)
-        //{
-        //    MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
-        //}
-
-        public static void WaitStop()
-        {
-            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
-        }
 
 
 
@@ -632,10 +617,5 @@ namespace DABApp
 
             return true;
         }
-    }
-
-    public class DabWideEvents : EventArgs
-    {
-
     }
 }

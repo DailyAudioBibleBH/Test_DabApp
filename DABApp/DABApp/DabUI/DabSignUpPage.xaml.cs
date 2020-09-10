@@ -93,13 +93,13 @@ namespace DABApp
 						dbSettings.StoreSetting("Language", profile.language);
 						dbSettings.StoreSetting("Nickname", profile.nickname);
 					}
-					GlobalResources.WaitStop();
+					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 
 					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 				}
 				else
                 {
-					GlobalResources.WaitStop();
+					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 					await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}","OK");
                 }
 			}

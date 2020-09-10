@@ -47,7 +47,7 @@ namespace DABApp
 			topic = await ContentAPI.GetTopic(topic);
 			DetailsView.replies.ItemsSource = topic.replies;
 			DetailsView.last.Text = TimeConvert();
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnPost(object o, EventArgs e)
@@ -145,8 +145,8 @@ namespace DABApp
                 ContentList.BindingContext = _forum;
                 ContentList.topicList.ItemsSource = _forum.topics;
             }
-			GlobalResources.WaitStop();
-            fromPost = false;
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			fromPost = false;
             unInitialized = false;
         }
 

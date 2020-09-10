@@ -74,7 +74,7 @@ namespace DABApp
 				}
 
 				//close the form if done
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 				if (okToClose)
 				{
 					await Navigation.PopAsync();

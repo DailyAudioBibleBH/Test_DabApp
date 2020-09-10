@@ -119,7 +119,7 @@ namespace DABApp
                 source = new object();
                 DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 
             //get the rull list of episodes for the resource
@@ -252,7 +252,7 @@ namespace DABApp
                 await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
             }
             EpisodeList.SelectedItem = null; //deselect the item
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             EpisodeList.IsEnabled = true;
         }
 

@@ -50,7 +50,7 @@ namespace DABApp
             DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             //check for existing/new email
             var ql = await  DabService.CheckEmail(Email.Text.Trim());
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 
             //determine next path
             if (ql.Success)
@@ -74,9 +74,9 @@ namespace DABApp
                     DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Retrying...", true));
                     await DabService.InitializeConnection();
                     OnNext(o, e);
-                    GlobalResources.WaitStop();
+                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 }
-                
+
             }
 
            

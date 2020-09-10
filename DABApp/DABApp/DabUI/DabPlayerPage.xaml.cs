@@ -615,7 +615,7 @@ namespace DABApp
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
         }
 
         //Journal reconnecting

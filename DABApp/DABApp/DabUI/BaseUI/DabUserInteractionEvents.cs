@@ -8,14 +8,24 @@ namespace DABApp.DabUI.BaseUI
     public class DabUserInteractionEvents
     {
         public delegate void WaitStart(object source, DabAppEventArgs e);
+        public delegate void WaitStop(object source, EventArgs e);
 
-        public static event WaitStart WaitStartedWithoutMessageWithoutCancelEvent;
+        public static event WaitStart WaitStartedEvent;
+        public static event WaitStop WaitStoppedEvent;
 
         public static void WaitStarted(object source, DabAppEventArgs e)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                WaitStartedWithoutMessageWithoutCancelEvent?.Invoke(source, e);
+                WaitStartedEvent?.Invoke(source, e);
+            });
+        }
+
+        public static void WaitStopped(object source, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                WaitStoppedEvent?.Invoke(source, e);
             });
         }
     }

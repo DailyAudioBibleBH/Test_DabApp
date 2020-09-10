@@ -84,7 +84,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 			}
 			else 
 			{
@@ -109,7 +109,7 @@ namespace DABApp
 					await DisplayAlert("Error", result, "OK");
 				}
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 
 		bool Validation() 

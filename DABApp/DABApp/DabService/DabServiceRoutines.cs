@@ -274,17 +274,15 @@ namespace DABApp.Service
                     //nothing to do, no new episodes
                 }
 
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 return true;
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                object source = new object();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 return false;
             }
-
-
-
         }
 
         public static async Task<bool> EpisodePublished(DabGraphQlEpisode episode)
@@ -377,7 +375,7 @@ namespace DABApp.Service
                         }
 
                         //stop the wait indicator
-                        GlobalResources.WaitStop();
+                        DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                     }
                 }
                 return true;

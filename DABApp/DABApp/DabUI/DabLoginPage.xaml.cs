@@ -155,7 +155,8 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                //GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
             }
 
@@ -199,7 +200,8 @@ namespace DABApp
                 Application.Current.MainPage = _nav;
                 await Navigation.PopToRootAsync();
             }
-            GlobalResources.WaitStop();
+            //GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
