@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>Apple Development: C2IT Consulting (6LRRVD7BNH)</CodesignKey>
+    <CodesignKey>iPhone Developer: C2IT Consulting (6LRRVD7BNH)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchFastDev>true</MtouchFastDev>
     <IOSDebuggerPort>27841</IOSDebuggerPort>
@@ -33,7 +33,7 @@
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>8.0</LangVersion>
-    <CodesignProvision>VS: com.dailyaudiobible.dabapp Development</CodesignProvision>
+    <CodesignProvision>iOS Team Provisioning Profile: com.dailyaudiobible.dabapp</CodesignProvision>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <Optimize>true</Optimize>
