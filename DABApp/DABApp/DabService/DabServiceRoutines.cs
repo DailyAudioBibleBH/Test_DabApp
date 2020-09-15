@@ -669,7 +669,6 @@ namespace DABApp.Service
                 {
                     //new user badge progress
                     badgeData = new dbUserBadgeProgress(progress, userName);
-                    await adb.InsertOrReplaceAsync(badgeData);
                 }
                 if (badgeFirstEarned)
                 {
@@ -679,8 +678,8 @@ namespace DABApp.Service
                 {
                     //existing user badge progress
                     badgeData.percent = progress.percent;
-                    await adb.InsertOrReplaceAsync(badgeData);
                 }
+                await adb.InsertOrReplaceAsync(badgeData);
             }
             catch (Exception ex)
             {

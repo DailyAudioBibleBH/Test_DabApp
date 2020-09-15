@@ -40,6 +40,7 @@ namespace DABApp
 
 
 			int currentYear = ContentConfig.Instance.options.progress_year;  //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
+			int progressDuration = ContentConfig.Instance.options.new_progress_duration;
 
 			//separate badge and progress list from db
 			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
@@ -78,7 +79,7 @@ namespace DABApp
 			{
 				if (item.Progress.percent == 100)
 				{
-					if (item.Progress.whenBadgeEarned.AddDays(7) >= DateTime.Now)
+					if (item.Progress.whenBadgeEarned.AddDays(progressDuration) >= DateTime.Now)
 						item.Progress.showNewIndicator = true;
 					else
 						item.Progress.showNewIndicator = false;
