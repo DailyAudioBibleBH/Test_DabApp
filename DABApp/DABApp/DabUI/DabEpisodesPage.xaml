@@ -72,8 +72,8 @@
                                                      EndCap="Oval"
                                                      Value="{Binding downloadProgress}">
                                                 <telerikGauges:GaugeBarIndicator.GradientStops>
-                                                    <telerikCommon:RadGradientStop Offset="0" Color="#D5272C" />
-                                                    <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#FB5E48" />
+                                                    <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
+                                                    <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#84F6E1" />
                                                 </telerikGauges:GaugeBarIndicator.GradientStops>
                                             </telerikGauges:GaugeBarIndicator>
                                         </telerikGauges:RadRadialGauge.Indicators>
