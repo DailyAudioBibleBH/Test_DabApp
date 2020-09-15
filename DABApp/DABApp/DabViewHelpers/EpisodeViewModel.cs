@@ -22,6 +22,8 @@ namespace DABApp
         public string title { get; set; }
         public string channelTitle { get; set; }
         public string notes { get; set; }
+        public bool isDownloaded { get; set; }
+        public bool isNotDownloaded { get; set; }
 
         public EpisodeViewModel(dbEpisodes episode)
         {
@@ -31,6 +33,8 @@ namespace DABApp
             title = episode.title;
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
+            isDownloaded = episode.is_downloaded;
+            isNotDownloaded = !isDownloaded;
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
@@ -45,6 +49,8 @@ namespace DABApp
             set
             {
                 Episode.is_downloaded = value;
+                isDownloaded = value;
+                isNotDownloaded = !value;
                 OnPropertyChanged("downloadVisible");
             }
         }

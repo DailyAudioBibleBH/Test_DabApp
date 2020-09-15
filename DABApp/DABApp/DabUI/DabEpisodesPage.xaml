@@ -58,8 +58,9 @@
                                     <Image IsVisible="{Binding HasJournal}" Opacity=".5" HeightRequest="15" Aspect="AspectFit" Source="pencil_white.png"/>
                                 </StackLayout>
                                 <Grid HeightRequest="15" Grid.Column="2" Grid.RowSpan="2" IsVisible="{Binding downloadVisible}">
-                                    <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png"></Image>
-                                    <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13">
+                                    <Image x:Name="DownloadCompleteImage" Source="ic_cloud_download_white.png" IsVisible="{Binding isDownloaded}"></Image>
+                                    <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png" IsVisible="{Binding isNotDownloaded}"></Image>
+                                    <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13" IsVisible="{Binding isNotDownloaded}">
                                         <telerikGauges:RadRadialGauge.Axis>
                                             <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
                                         </telerikGauges:RadRadialGauge.Axis>
