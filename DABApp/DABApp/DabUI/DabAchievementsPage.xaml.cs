@@ -78,10 +78,17 @@ namespace DABApp
 			{
 				if (item.Progress.percent == 100)
 				{
+					if (item.Progress.whenBadgeEarned.AddDays(7) >= DateTime.Now)
+						item.Progress.showNewIndicator = true;
+					else
+						item.Progress.showNewIndicator = false;
+
+
 					item.Progress.opacity = 1;
 				}
 				else
 				{
+					item.Progress.showNewIndicator = false;
 					item.Progress.opacity = .4;
 				}
 				if (item.Badge.visible == true && item.Progress.userName == userName)
