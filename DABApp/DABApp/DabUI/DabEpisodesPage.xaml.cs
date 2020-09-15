@@ -168,7 +168,13 @@ namespace DABApp
                     {
                         if (item.Episode.is_downloaded == true)
                         {
+                            item.isDownloaded = true;
+                            item.isNotDownloaded = false;
                             item.downloadProgress = 100;
+                        }
+                        else
+                        {
+                            item.isNotDownloaded = true;
                         }
                         if (EpisodesList.IndexOf(item) >= 20)
                         {

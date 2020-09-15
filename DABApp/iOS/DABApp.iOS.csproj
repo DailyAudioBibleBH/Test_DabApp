@@ -617,6 +617,7 @@
     <BundleResource Include="Resources\ic_check_box_teal_3x.png" />
     <BundleResource Include="Resources\OldTestamentCompleteDark1.png" />
     <BundleResource Include="Resources\EntireBibleCompleteDark1.png" />
+    <BundleResource Include="Resources\cloud_teal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
