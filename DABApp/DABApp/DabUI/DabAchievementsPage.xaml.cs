@@ -157,7 +157,7 @@ namespace DABApp
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 
 			//Channels Tab Collection View
-			channelsListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "channels").OrderBy(x => x.Badge.id).ToList();
+			channelsListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "channels" && x.Progress.percent > 0).OrderBy(x => x.Badge.id).ToList();
 			channelsListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 
 			//Setting Progress Year picker
