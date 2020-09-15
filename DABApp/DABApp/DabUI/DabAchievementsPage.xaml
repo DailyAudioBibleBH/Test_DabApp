@@ -132,7 +132,7 @@
                                     <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="Center" Orientation="Vertical">
                                         <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                         <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
-                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="15" CornerRadius="0" HorizontalOptions="Start" WidthRequest="200">
+                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="5" CornerRadius="5" HorizontalOptions="Start" WidthRequest="200">
                                             <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
                                         </Frame>
                                     </StackLayout>
@@ -152,7 +152,7 @@
                                     <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="Center" Orientation="Vertical">
                                         <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                         <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
-                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="15" CornerRadius="0" HorizontalOptions="Start" WidthRequest="200">
+                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="5" CornerRadius="5" HorizontalOptions="Start" WidthRequest="200">
                                             <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
                                         </Frame>
                                     </StackLayout>
