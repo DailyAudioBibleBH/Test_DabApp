@@ -129,39 +129,63 @@ namespace DABApp
 			double entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
 			double oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
 			double newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
-
-			EntireBibleGauge.Value = entireBibleBadge;
-			OldTestamentGauge.Value = oldTestamentBadge;
-			NewTestatmentGauge.Value = newTestamentBadge;
-			EntireBibleLabel.Text = entireBibleBadge + "% Complete";
-			OldTestamentLabel.Text = oldTestamentBadge + "% Complete";
-			NewTestamentLabel.Text = newTestamentBadge + "% Complete";
-			EntireBibleGradientOffset.Offset = entireBibleBadge;
-			OldTestamentGradientOffset.Offset = oldTestamentBadge;
-			NewTestamentGradientOffset.Offset = newTestamentBadge;
-
-			if (entireBibleBadge == 100)
+			//Value of 0 breaks gauge so change to .01 for now and have label say 0
+			if (entireBibleBadge == 0)
             {
-				EntireBibleImage.Source = "EntireBibleCompleteDark1.png";
-				EntireBibleGauge.StartThickness = 0;
-				EntireBibleGauge.EndThickness = 0;
+				entireBibleBadge = .01;
+				EntireBibleLabel.Text = "0% Complete";
 			}
-				
+            else
+            {
+				EntireBibleLabel.Text = entireBibleBadge + "% Complete";
+			}
+			if (oldTestamentBadge == 0)
+            {
+				oldTestamentBadge = .01;
+				OldTestamentLabel.Text = "0% Complete";
+			}
+            else
+            {
+				OldTestamentLabel.Text = oldTestamentBadge + "% Complete";
+			}
+			if (newTestamentBadge == 0)
+            {
+				newTestamentBadge = .01;
+				NewTestamentLabel.Text = "0 % Complete";
+			}
+            else
+            {
+				NewTestamentLabel.Text = newTestamentBadge + "% Complete";
+			}
+			EntireBibleGauge.Value = entireBibleBadge;
+            OldTestamentGauge.Value = oldTestamentBadge;
+            NewTestatmentGauge.Value = newTestamentBadge;
+            EntireBibleGradientOffset.Offset = entireBibleBadge;
+            OldTestamentGradientOffset.Offset = oldTestamentBadge;
+            NewTestamentGradientOffset.Offset = newTestamentBadge;
+
+            if (entireBibleBadge == 100)
+            {
+                EntireBibleImage.Source = "EntireBibleCompleteDark1.png";
+                EntireBibleGauge.StartThickness = 0;
+                EntireBibleGauge.EndThickness = 0;
+            }
+
             if (oldTestamentBadge == 100)
             {
-				OldTestamentImage.Source = "OldTestamentCompleteDark1.png";
-				OldTestamentGauge.StartThickness = 0;
-				OldTestamentGauge.EndThickness = 0;
-			}
+                OldTestamentImage.Source = "OldTestamentCompleteDark1.png";
+                OldTestamentGauge.StartThickness = 0;
+                OldTestamentGauge.EndThickness = 0;
+            }
             if (newTestamentBadge == 100)
             {
-				NewTestamentImage.Source = "OldTestamentCompleteDark1.png";
-				NewTestatmentGauge.StartThickness = 0;
-				NewTestatmentGauge.EndThickness = 0;
-			}
+                NewTestamentImage.Source = "OldTestamentCompleteDark1.png";
+                NewTestatmentGauge.StartThickness = 0;
+                NewTestatmentGauge.EndThickness = 0;
+            }
 
-			//Books Tab Collection View
-			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
+            //Books Tab Collection View
+            achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 
 			//Channels Tab Collection View
