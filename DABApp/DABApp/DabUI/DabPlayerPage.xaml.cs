@@ -211,12 +211,14 @@ namespace DABApp
                 {
                     player.Play();
                 }
+                player.IsReady = true;
             }
             else
             {
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                    player.IsReady = true;
                 }
                 else
                 {

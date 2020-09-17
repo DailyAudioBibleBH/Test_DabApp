@@ -1182,6 +1182,7 @@ namespace DABApp
                 //start playback
                 player.Play();
             }
+            player.IsReady = true;
         }
 
         //Share the episode
