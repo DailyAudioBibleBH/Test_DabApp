@@ -99,27 +99,6 @@ namespace DABApp
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
             {
-                //refresh episodes from the server
-
-                if (refreshType == EpisodeRefreshType.FullRefresh)
-                {
-                    //only let them reload everything at a rate we set.
-                    int pullToRefreshRate = GlobalResources.PullToRefreshRate; //how often the user can refresh
-                    if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
-                    {
-                        minQueryDate = GlobalResources.DabMinDate;
-                    }
-                    else
-                    {
-                        return; //don't do anything if they've recently pulled to refresh
-                    }
-                }
-                else
-                {
-                    //incremental refresh
-                    minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
-                }
-
                 //get the episodes - this routine handles resetting the date and raising events
                 source = new object();
                 DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
