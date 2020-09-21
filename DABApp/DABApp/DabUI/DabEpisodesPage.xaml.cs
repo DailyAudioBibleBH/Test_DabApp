@@ -49,6 +49,12 @@ namespace DABApp
             //initially bind to episodes we have before trying to reload on appearing
             Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
 
+            //Subscribe to stopping wait ui
+            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
+            {
+                //get new episodes, if they exist -- this will also handle downloading
+                Task task = Refresh(EpisodeRefreshType.FullRefresh); //refresh episode list
+            });
 
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
@@ -67,8 +73,7 @@ namespace DABApp
 
             base.OnAppearing();
 
-            //get new episodes, if they exist -- this will also handle downloading
-            await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
+           
 
         }
 
