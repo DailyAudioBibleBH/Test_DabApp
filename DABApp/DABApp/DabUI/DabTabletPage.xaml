@@ -179,7 +179,7 @@
                     <Grid VerticalOptions="EndAndExpand"
                           x:Name="ExtraControls"
                           Padding="0, 0, 5, 0"
-                          Margin="0, -25, 0, 0">
+                          Margin="0, -35, 0, 0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
