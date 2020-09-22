@@ -53,7 +53,7 @@ namespace DABApp
             MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
             {
                 //get new episodes, if they exist -- this will also handle downloading
-                Task task = Refresh(EpisodeRefreshType.FullRefresh); //refresh episode list
+                Task task = Refresh(EpisodeRefreshType.FullRefresh, true); //refresh episode list
             });
 
             //episodes changed event
@@ -61,6 +61,18 @@ namespace DABApp
 
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
+
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            //episodes changed event
+            DabServiceEvents.EpisodesChangedEvent -= DabServiceEvents_EpisodesChangedEvent;
+
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent -= DabServiceEvents_EpisodeUserDataChangedEvent;
 
         }
 
@@ -73,15 +85,21 @@ namespace DABApp
 
             base.OnAppearing();
 
-           
+            //episodes changed event
+            DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
+            //episode user data changed event
+            DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
+
+            //get new episodes, if they exist -- this will also handle downloading
+            await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
         }
 
         #endregion
 
         #region refresh and download processing
 
-        async Task Refresh(EpisodeRefreshType refreshType)
+        async Task Refresh(EpisodeRefreshType refreshType, bool fromRefresh = false)
         {
             /* 
              * this routine pulls any new episodes for the selected channel, 
@@ -102,7 +120,14 @@ namespace DABApp
                 //get the episodes - this routine handles resetting the date and raising events
                 source = new object();
                 DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
-                var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
+                if (fromRefresh == true)
+                {
+                    var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh), true);
+                }
+                else
+                {
+                    var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
+                }
                 DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 

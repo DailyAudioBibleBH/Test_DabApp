@@ -176,7 +176,7 @@ namespace DABApp.Service
 
         #region Channel and Episode Routines
 
-        public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false)
+        public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false, bool FromResume = false)
         {
             /*
              * This method gets episodes for a channel based on the last query date, or back to the beginning, if requested
@@ -198,6 +198,10 @@ namespace DABApp.Service
                 if (ReloadAll)
                 {
                     startdate = GlobalResources.DabMinDate;
+                }
+                else if (FromResume)
+                {
+                    startdate = GlobalResources.GetLastEpisodeQueryDate(ChannelId).AddDays(-1);
                 }
                 else
                 {
