@@ -284,9 +284,6 @@ namespace DABApp.Service
                 GlobalResources.WaitStop();
                 return false;
             }
-
-
-
         }
 
         public static async Task<bool> EpisodePublished(DabGraphQlEpisode episode)
