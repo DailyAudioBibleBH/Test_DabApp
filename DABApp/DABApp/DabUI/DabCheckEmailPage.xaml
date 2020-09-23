@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabCheckEmailPage"
-	xmlns:local="clr-namespace:DABApp">
+	xmlns:local="clr-namespace:DABApp" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls">
     <ContentPage.Content>
         <StackLayout x:Name="Container" Padding="10" Spacing="5">
             <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png">
@@ -10,7 +10,7 @@
             </Image>
             <Frame/>
             <Label Text="To log in please use your dailyaudiobible.com account. If you do not have a dailyaudiobible.com account you can create one below." FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
-            <Entry x:Name="Email" VerticalOptions="Center" Margin="0, 10, 0, 10" Unfocused="OnNext"  Keyboard="Email" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+            <controls:CustomEntry x:Name="Email" VerticalOptions="Center" Margin="0, 10, 0, 10" Unfocused="OnNext"  Keyboard="Email" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
             <Button x:Name="NextButton" Margin="0, 0, 0, 10" HeightRequest="40" WidthRequest="120" Text="Next" Clicked="OnNext"  Style="{StaticResource highlightedButtonStyle}"/>
             <Button x:Name="btnGuest" Text="Login as guest" Clicked="OnGuestLogin" BorderColor="Transparent"/>
             <Label x:Name="lblTestMode" Text="*** TEST MODE ***" IsVisible="false" FontSize="Large" HorizontalOptions="Center"/>

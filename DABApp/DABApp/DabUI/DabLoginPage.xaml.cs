@@ -158,33 +158,32 @@ namespace DABApp
                 //GlobalResources.WaitStop();
                 DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
-            {
-                GlobalResources.WaitStop();
-                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
-                var current = Connectivity.NetworkAccess;
-
-                if (current == NetworkAccess.Internet)
                 {
-                    Debug.WriteLine("Gained internet access");
-                    DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
-                    // Connection to internet is available
-                    // If websocket is not connected, reconnect
-                    if (!DabService.IsConnected)
-                    {
-                        //reconnect to service
-                        var ql = await DabService.InitializeConnection();
+                    await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
+                    var current = Connectivity.NetworkAccess;
 
-                        if (ql.Success)
+                    if (current == NetworkAccess.Internet)
+                    {
+                        Debug.WriteLine("Gained internet access");
+                        DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
+                        // Connection to internet is available
+                        // If websocket is not connected, reconnect
+                        if (!DabService.IsConnected)
                         {
-                            //perform post-connection operations with service
-                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                            //reconnect to service
+                            var ql = await DabService.InitializeConnection();
+
+                            if (ql.Success)
+                            {
+                                //perform post-connection operations with service
+                                await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                            }
                         }
                     }
                 }
             }
-
-
         }
+
 
         async void OnForgot(object o, EventArgs e)
         {

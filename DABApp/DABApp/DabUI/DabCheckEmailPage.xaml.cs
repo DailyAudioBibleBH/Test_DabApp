@@ -6,19 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
-
-namespace DABApp
-{
-    public partial class DabCheckEmailPage : DabBaseContentPage
-    {
-using DABApp.DabSockets;
-using DABApp.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Version.Plugin;
-using Xamarin.Forms;
 using DABApp.DabUI.BaseUI;
+
 
 namespace DABApp
 {

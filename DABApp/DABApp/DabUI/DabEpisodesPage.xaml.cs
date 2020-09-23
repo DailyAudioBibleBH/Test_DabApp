@@ -39,6 +39,9 @@ namespace DABApp
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
 
+            //For Wait Start and Stop
+            source = new object();
+
             //pull to refresh
             EpisodeList.RefreshCommand = new Command(async () => //pull to refresh command
             {
@@ -117,9 +120,9 @@ namespace DABApp
             {
                 //refresh episodes from the server
                 //get the episodes - this routine handles resetting the date and raising events
-                GlobalResources.WaitStart($"Refreshing episodes...");
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 
             //get the rull list of episodes for the resource
