@@ -49,11 +49,11 @@ namespace DABApp
             //initially bind to episodes we have before trying to reload on appearing
             Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
 
-            //Subscribe to stopping wait ui
+            //Subscribe to looking for new episodes when user returns to app
             MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
             {
                 //get new episodes, if they exist -- this will also handle downloading
-                Task task = Refresh(EpisodeRefreshType.FullRefresh, true); //refresh episode list
+                Task task = Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
             });
 
             //episodes changed event
@@ -61,7 +61,6 @@ namespace DABApp
 
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
-
         }
 
         protected override void OnDisappearing()
@@ -99,7 +98,7 @@ namespace DABApp
 
         #region refresh and download processing
 
-        async Task Refresh(EpisodeRefreshType refreshType, bool fromRefresh = false)
+        async Task Refresh(EpisodeRefreshType refreshType)
         {
             /* 
              * this routine pulls any new episodes for the selected channel, 
@@ -113,22 +112,14 @@ namespace DABApp
              */
 
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
-            DateTime minQueryDate;
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
             {
+                //refresh episodes from the server
                 //get the episodes - this routine handles resetting the date and raising events
-                source = new object();
-                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
-                if (fromRefresh == true)
-                {
-                    var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh), true);
-                }
-                else
-                {
-                    var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                }
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStart($"Refreshing episodes...");
+                var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
+                GlobalResources.WaitStop();
             }
 
             //get the rull list of episodes for the resource

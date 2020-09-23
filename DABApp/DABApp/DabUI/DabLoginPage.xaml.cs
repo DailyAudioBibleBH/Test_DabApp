@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading;
 using Version.Plugin;
 using Xamarin.Forms;
+using Xamarin.Essentials;
+
 using DABApp.DabUI.BaseUI;
 
 namespace DABApp
@@ -97,7 +99,6 @@ namespace DABApp
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
-
         public string CalculateMD5Hash(string email)
         {
             // step 1, calculate MD5 hash from input
@@ -151,13 +152,35 @@ namespace DABApp
                 {
                     Navigation.RemovePage(page);
                 }
-
             }
             catch (Exception ex)
             {
                 //GlobalResources.WaitStop();
                 DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
+            {
+                GlobalResources.WaitStop();
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
+                var current = Connectivity.NetworkAccess;
+
+                if (current == NetworkAccess.Internet)
+                {
+                    Debug.WriteLine("Gained internet access");
+                    DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
+                    // Connection to internet is available
+                    // If websocket is not connected, reconnect
+                    if (!DabService.IsConnected)
+                    {
+                        //reconnect to service
+                        var ql = await DabService.InitializeConnection();
+
+                        if (ql.Success)
+                        {
+                            //perform post-connection operations with service
+                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
+                        }
+                    }
+                }
             }
 
 
@@ -181,27 +204,6 @@ namespace DABApp
         {
             BackButton.IsEnabled = false;
             Navigation.PopAsync();
-        }
-
-        async void OnGuestLogin(object o, EventArgs e)
-        {
-            //GuestLogin.IsEnabled = false;
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Logging you in as a guest...", true));
-
-            AuthenticationAPI.LoginGuest();
-            if (_fromPlayer)
-            {
-                await Navigation.PopModalAsync();
-            }
-            else
-            {
-                NavigationPage _nav = new NavigationPage(new DabChannelsPage());
-                _nav.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-                Application.Current.MainPage = _nav;
-                await Navigation.PopToRootAsync();
-            }
-            //GlobalResources.WaitStop();
-            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
@@ -330,12 +332,6 @@ namespace DABApp
                     DisableAllInputs("Restart app after updating.");
 
 
-                    break;
-                case "guest": //login as guest
-                    Device.BeginInvokeOnMainThread(() =>
-                    {
-                        OnGuestLogin(null, null);
-                    });
                     break;
                 case "ok": //ok button signifies it's currently offline
                            //Disable inputs

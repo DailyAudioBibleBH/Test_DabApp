@@ -75,6 +75,7 @@ namespace DABApp.DabSockets
         public List<Channel> channels { get; set; } //Channels
         public DabGraphQlLastActions lastActions { get; set; } //Last Actions
         public DabGraphQlEpisodes episodes { get; set; } //Episodes
+        public DabGraphQlEpisodes updatedEpisodes { get; set; } //Updated Episodes (only query used for episodes right now)
         public TriggerEpisodeSubscription triggerEpisodeSubscription { get; set; } //New Episodes
         public TokenRemoved tokenRemoved { get; set; } //Forceful logout
         public GraphQlLoginUser loginUser { get; set; }

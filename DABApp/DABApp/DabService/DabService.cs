@@ -634,6 +634,23 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponseList> GetEpisodes(DateTime StartDateUtc, int ChannelId)
         {
+            //Figuring if this is first run of GetEpisodes or not
+            string queryName;
+            bool isFirstTime;
+            DabGraphQlEpisodes data;
+
+            if (StartDateUtc <= GlobalResources.DabMinDate.ToUniversalTime())
+            {
+                queryName = "episodes";
+                isFirstTime = true;
+            }
+            else
+            {
+                queryName = "updatedEpisodes";
+                isFirstTime = false;
+            }
+                
+
             //this routine gets episodes for a channel
             //it returns a list of ql objects
 
@@ -660,26 +677,30 @@ namespace DABApp.Service
                 if (cursor == null)
                 {
                     //First run
-                    command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { " + queryName + "(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
 
                 }
                 else
                 {
                     //Subsequent runs, use the cursor
                     //TODO: Make sure this is formatted correctly
-                    command = "query { episodes(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { " + queryName + "(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 
                 //Wait for the appropriate response
                 var service = new DabServiceWaitService();
-                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes,ExtraLongTimeout);
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetEpisodes, LongTimeout);
 
                 //Process the episodes
                 if (response.Success == true)
                 {
-                    var data = response.Data.payload.data.episodes;
+                    if (isFirstTime)
+                        data = response.Data.payload.data.episodes;
+                    else
+                        data = response.Data.payload.data.updatedEpisodes;
+
 
                     //add what we receied to the list
                     result.Add(response.Data);
@@ -713,9 +734,8 @@ namespace DABApp.Service
                 Success = true,
                 Data = result
             };
-
-
         }
+
 
 
         //ACTIONS

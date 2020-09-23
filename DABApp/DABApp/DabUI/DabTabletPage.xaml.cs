@@ -59,7 +59,6 @@ namespace DABApp
             ArchiveHeader.Padding = Device.RuntimePlatform == "Android" ? new Thickness(20, 0, 20, 0) : new Thickness(10, 0, 10, 0);
             PlayerOverlay.Padding = new Thickness(25, 10, 25, 25);
             EpDescription.Margin = new Thickness(40, 0, 40, 0);
-            JournalContent.HeightRequest = 450;
 
             //Set up events
             SegControl.ValueChanged += Handle_SegControlValueChanged;
@@ -141,12 +140,6 @@ namespace DABApp
                 }
             }
 
-            //Keyboard events on iOS for Journal
-            if (Device.RuntimePlatform == "iOS")
-            {
-                KeyboardHelper.KeyboardChanged += OnKeyboardChanged;
-            }
-
             //Tap event for the MarkDownDeep link
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
@@ -164,11 +157,9 @@ namespace DABApp
             OnRefresh(null, null); //load episodes
 
             BindControls(true, true); //rebind controls when clicking on miniplayer
-            if (Device.RuntimePlatform == "iOS")
-            {
-                JournalContent.HeightRequest = Content.Height * 2 / 3 - SegControl.Height - 90; //- Divider.Height
-                //original = Content.Height * 2 / 3 - SegControl.Height - -90; //- Divider.Height
-            }
+            
+            JournalContent.HeightRequest = Content.Height; //* 2 / 3; //- SegControl.Height; //- Divider.Height
+       
             if (LoginJournal.IsVisible || Journal.IsVisible)
             {
                 if (GuestStatus.Current.IsGuestLogin)
@@ -395,7 +386,6 @@ namespace DABApp
                 Initializer.HeightRequest = size;
                 backwardButton.Margin = 7;
                 forwardButton.Margin = 7;
-                JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .3 : height * .3;
                 original = 0;
             }
             else
@@ -415,7 +405,6 @@ namespace DABApp
                     Initializer.WidthRequest = 90;
                     Initializer.HeightRequest = 90;
                 }
-                JournalContent.HeightRequest = Device.RuntimePlatform == Device.iOS ? height * .5 : height * .5;
                 original = JournalContent.HeightRequest;
             }
         }
@@ -1268,23 +1257,6 @@ namespace DABApp
             if (!journal.IsConnected)
             {
                 journal.Reconnect();
-            }
-        }
-
-        void OnKeyboardChanged(object o, KeyboardHelperEventArgs e)
-        {
-            if (journal.IsConnected)
-            {
-                spacer.HeightRequest = e.Visible ? e.Height : 0;
-                if (e.IsExternalKeyboard)
-                {
-                    JournalContent.HeightRequest = original;
-                }
-                else
-                {
-                    JournalContent.HeightRequest = e.Visible ? original - e.Height : original;
-                }
-                //lastKeyboardStatus = e.IsExternalKeyboard;
             }
         }
 

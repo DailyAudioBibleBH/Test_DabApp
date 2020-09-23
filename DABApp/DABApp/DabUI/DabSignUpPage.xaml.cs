@@ -47,8 +47,12 @@ namespace DABApp
 				Email.Text = emailInput;
 			}
 			SignUp.IsEnabled = true;
+            if (Device.RuntimePlatform == Device.Android)
+            {
+				Container.Padding = new Thickness(10, 10, 10, 30);
+            }
 		}
-
+		
 		public FormattedString TermsText
 		{
 			get

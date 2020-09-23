@@ -6,6 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
+
+namespace DABApp
+{
+    public partial class DabCheckEmailPage : DabBaseContentPage
+    {
+using DABApp.DabSockets;
+using DABApp.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Version.Plugin;
+using Xamarin.Forms;
 using DABApp.DabUI.BaseUI;
 
 namespace DABApp
@@ -86,6 +98,9 @@ namespace DABApp
         {
             //log the user in as a guest
             AuthenticationAPI.LoginGuest();
+
+            //perform post-login functions
+            await DabServiceRoutines.RunConnectionEstablishedRoutines();
 
             //push up the channels page
             DabChannelsPage _nav = new DabChannelsPage();
