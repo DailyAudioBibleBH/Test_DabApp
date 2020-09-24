@@ -75,7 +75,7 @@ namespace DABApp
                     GlobalResources.playerPodcast.NotifyPlayStateChanged();
                 }
 
-                //Notify UI that app is active again
+                //Check if new episodes were published while app was in background
                 MessagingCenter.Send<string>("DabApp", "OnResume");
 
             }

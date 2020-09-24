@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -47,6 +47,12 @@ namespace DABApp
             //initially bind to episodes we have before trying to reload on appearing
             Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
 
+            //Subscribe to looking for new episodes when user returns to app
+            MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
+            {
+                //get new episodes, if they exist -- this will also handle downloading
+                Task task = Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
+            });
 
 
         }
@@ -103,31 +109,10 @@ namespace DABApp
              */
 
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
-            DateTime minQueryDate;
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
             {
                 //refresh episodes from the server
-
-                if (refreshType == EpisodeRefreshType.FullRefresh)
-                {
-                    //only let them reload everything at a rate we set.
-                    int pullToRefreshRate = GlobalResources.PullToRefreshRate; //how often the user can refresh
-                    if (DateTime.Now.Subtract(lastRefreshDate).TotalMinutes >= pullToRefreshRate)
-                    {
-                        minQueryDate = GlobalResources.DabMinDate;
-                    }
-                    else
-                    {
-                        return; //don't do anything if they've recently pulled to refresh
-                    }
-                }
-                else
-                {
-                    //incremental refresh
-                    minQueryDate = GlobalResources.GetLastEpisodeQueryDate(_resource.id);
-                }
-
                 //get the episodes - this routine handles resetting the date and raising events
                 GlobalResources.WaitStart($"Refreshing episodes...");
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
