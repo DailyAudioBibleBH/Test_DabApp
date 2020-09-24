@@ -38,7 +38,8 @@ namespace DABApp.iOS.CustomRenderers
                 UIBarButtonItem submit = new UIBarButtonItem();
                 submit.Title = "Submit";
                 submit.Style = UIBarButtonItemStyle.Done;
-                UIBarButtonItem flexibleSpace = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, null);
+                EventHandler eh = null;
+                UIBarButtonItem flexibleSpace = new UIBarButtonItem(UIBarButtonSystemItem.FlexibleSpace, eh);
                 submit.Clicked += (sender, EventArgs) => { el.Submission(sender, EventArgs); };
                 toolbar.SetItems(new UIBarButtonItem[] { title, flexibleSpace, cancel, submit }, true);
                 Control.InputAccessoryView = toolbar;
