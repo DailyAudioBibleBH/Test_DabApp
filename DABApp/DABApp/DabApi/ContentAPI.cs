@@ -22,12 +22,12 @@ namespace DABApp
         {
 
             //Get the content API from the settings database
-            dbSettings ContentSettings = adb.Table<dbSettings>().Where(x => x.Key == "ContentJSON").FirstOrDefaultAsync().Result;
-            dbSettings DataSettings = adb.Table<dbSettings>().Where(x => x.Key == "data").FirstOrDefaultAsync().Result;
+            string ContentSettings = dbSettings.GetSetting("ContentJSON", "");
+            string DataSettings = dbSettings.GetSetting("data", "");
 
-            if (ContentConfig.Instance.app_settings == null && ContentSettings != null)
+            if (ContentConfig.Instance.app_settings == null && ContentSettings != "")
             {
-                ParseContent(ContentSettings.Value);
+                ParseContent(ContentSettings);
             }
             try
             {
@@ -88,27 +88,20 @@ namespace DABApp
 
                 if (ContentSettings == null || DataSettings == null)
                 {
-                    ContentSettings = new dbSettings();
-                    ContentSettings.Key = "ContentJSON";
-                    ContentSettings.Value = jsonOut;
-                    DataSettings = new dbSettings();
-                    DataSettings.Key = "data";
-                    DataSettings.Value = updated;
-                    var x = adb.InsertOrReplaceAsync(ContentSettings).Result;
-                    x = adb.InsertOrReplaceAsync(DataSettings).Result;
-
+                    dbSettings.StoreSetting("ContentJSON", jsonOut);
+                    dbSettings.StoreSetting("data", updated);
                     ParseContent(jsonOut);
                 }
                 else
                 {
-                    if (DataSettings.Value == updated)
+                    if (DataSettings == updated)
                     {
-                        ParseContent(ContentSettings.Value);
+                        ParseContent(ContentSettings);
                     }
                     else
                     {
-                        DataSettings.Value = updated;
-                        ContentSettings.Value = jsonOut;
+                        DataSettings = updated;
+                        ContentSettings = jsonOut;
                         ParseContent(jsonOut);
                     }
                 }
@@ -117,13 +110,13 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                if (ContentSettings == null)
+                if (ContentSettings == "")
                 {
                     return false;
                 }
                 else
                 {
-                    ParseContent(ContentSettings.Value);
+                    ParseContent(ContentSettings);
                     return true;
                 }
             }
