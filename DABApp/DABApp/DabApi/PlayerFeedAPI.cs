@@ -554,20 +554,21 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
-                dbSettings CreationSettings = adb.Table<dbSettings>().Where(x => x.Key == "TokenCreation").FirstOrDefaultAsync().Result;
-                dbSettings EmailSettings = adb.Table<dbSettings>().Where(x => x.Key == "Email").FirstOrDefaultAsync().Result;
-                dbSettings FirstNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "FirstName").FirstOrDefaultAsync().Result;
-                dbSettings LastNameSettings = adb.Table<dbSettings>().Where(x => x.Key == "LastName").FirstOrDefaultAsync().Result;
-                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
+                var tokenValue = dbSettings.GetSetting("Token", "");
+                var creation = dbSettings.GetSetting("TokenCreation", "");
+                var email = dbSettings.GetSetting("Email", "");
+                var firstName = dbSettings.GetSetting("FirstName", "");
+                var lastName = dbSettings.GetSetting("LastName", "");
+                var avatar = dbSettings.GetSetting("Avatar", "");
+                
                 var token = new APIToken
                 {
-                    value = TokenSettings.Value,
-                    expires = CreationSettings.Value,
-                    user_email = EmailSettings.Value,
-                    user_first_name = FirstNameSettings.Value,
-                    user_last_name = LastNameSettings.Value,
-                    user_avatar = AvatarSettings.Value
+                    value = tokenValue,
+                    expires = creation,
+                    user_email = email,
+                    user_first_name = firstName,
+                    user_last_name = lastName,
+                    user_avatar = avatar
                 };
                 HttpClient client = new HttpClient();
                 var tres = await client.GetAsync($"{GlobalResources.GiveUrl}donation/request_access");
@@ -579,7 +580,7 @@ namespace DABApp
                     csrf_dab_token = en.csrf.token_value,
                     campaign_id = campaignId
                 };
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenValue);
                 string JsonIn = JsonConvert.SerializeObject(send);
                 HttpContent content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
