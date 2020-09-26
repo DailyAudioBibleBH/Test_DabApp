@@ -103,31 +103,27 @@ namespace DABApp
 
         public static void CheckOfflineEpisodeSettings()
         {
-            var offlineSettings = adb.Table<dbSettings>().Where(x => x.Key == "OfflineEpisodes").FirstOrDefaultAsync().Result;
-            if (offlineSettings == null)
+            string offlineSettingsValue = dbSettings.GetSetting("OfflineEpisodes", "");
+            if (offlineSettingsValue == "")
             {
-                offlineSettings = new dbSettings();
-                offlineSettings.Key = "OfflineEpisodes";
                 OfflineEpisodeSettings settings = new OfflineEpisodeSettings();
                 settings.Duration = "One Day";
                 settings.DeleteAfterListening = false;
                 var jsonSettings = JsonConvert.SerializeObject(settings);
-                offlineSettings.Value = jsonSettings;
-                var x = adb.InsertAsync(offlineSettings).Result;
+                dbSettings.StoreSetting("OfflineEpisodes", jsonSettings);
                 OfflineEpisodeSettings.Instance = settings;
             }
             else
             {
-                var current = offlineSettings.Value;
+                var current = offlineSettingsValue;
                 OfflineEpisodeSettings.Instance = JsonConvert.DeserializeObject<OfflineEpisodeSettings>(current);
             }
         }
 
         public static void UpdateOfflineEpisodeSettings()
         {
-            var offlineSettings = adb.Table<dbSettings>().Where(x => x.Key == "OfflineEpisodes").FirstAsync().Result;
-            offlineSettings.Value = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
-            var x = adb.UpdateAsync(offlineSettings).Result;
+            string offlineSettingsValue = JsonConvert.SerializeObject(OfflineEpisodeSettings.Instance);
+            dbSettings.StoreSetting("OfflineEpisodes", offlineSettingsValue);
         }
 
         public static async Task<bool> DownloadEpisodes()

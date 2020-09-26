@@ -315,31 +315,20 @@ namespace DABApp
             get
             {
                 string settingsKey = "BadgeUpdateDate";
-                dbSettings BadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-
-                if (BadgeUpdateSettings == null)
+                string BadgeUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                if (BadgeUpdateSettingsValue == "")
                 {
                     DateTime badgeDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    BadgeUpdateSettings = new dbSettings();
-                    BadgeUpdateSettings.Key = settingsKey;
-                    BadgeUpdateSettings.Value = badgeDate.ToString();
-                    var x = adb.InsertOrReplaceAsync(BadgeUpdateSettings).Result;
-                    return DateTime.Parse(BadgeUpdateSettings.Value);
+                    dbSettings.StoreSetting(settingsKey, badgeDate.ToString());
                 }
-                else
-                {
-                    return DateTime.Parse(BadgeUpdateSettings.Value);
-                }
+                return DateTime.Parse(dbSettings.GetSetting("BadgeUpdateDate", ""));
             }
             set
             {
                 //Store the value sent in the database
                 string settingsKey = "BadgeUpdateDate";
                 string badgeDate = value.ToString();
-                dbSettings BadgeUpdateSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-                BadgeUpdateSettings.Key = settingsKey;
-                BadgeUpdateSettings.Value = badgeDate;
-                var x = adb.InsertOrReplaceAsync(BadgeUpdateSettings).Result;
+                dbSettings.StoreSetting(settingsKey, badgeDate);
             }
         }
 
@@ -349,21 +338,15 @@ namespace DABApp
             get
             {
                 string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
-                dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
+                string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
-                if (BadgeProgressSettings == null)
+                if (BadgeProgressSettingsValue == "")
                 {
                     DateTime progressDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    BadgeProgressSettings = new dbSettings();
-                    BadgeProgressSettings.Key = settingsKey;
-                    BadgeProgressSettings.Value = progressDate.ToString();
-                    var x = adb.InsertOrReplaceAsync(BadgeProgressSettings).Result;
-                    return DateTime.Parse(BadgeProgressSettings.Value);
+                    dbSettings.StoreSetting(settingsKey, progressDate.ToString());
                 }
-                else
-                {
-                    return DateTime.Parse(BadgeProgressSettings.Value);
-                }
+                return DateTime.Parse(dbSettings.GetSetting(settingsKey, ""));
             }
 
             set
@@ -371,10 +354,7 @@ namespace DABApp
                 //Store the value sent in the database
                 string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
                 string progressDate = value.ToString();
-                dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-                BadgeProgressSettings.Key = settingsKey;
-                BadgeProgressSettings.Value = progressDate;
-                var x = adb.InsertOrReplaceAsync(BadgeProgressSettings).Result;
+                dbSettings.StoreSetting(settingsKey, progressDate);
             }
         }
 
@@ -402,56 +382,39 @@ namespace DABApp
         {
             //Last episode query date by channel in GMT
             string k = "RefreshDate" + ChannelId;
-            dbSettings LastRefreshSettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
-            if (LastRefreshSettings == null)
+            //dbSettings LastRefreshSettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
+            string LastRefreshSettingsValue = dbSettings.GetSetting(k, "");
+            if (LastRefreshSettingsValue == "")
             {
                 DateTime refreshDate = GlobalResources.DabMinDate.ToUniversalTime();
-                LastRefreshSettings = new dbSettings();
-                LastRefreshSettings.Key = k;
-                LastRefreshSettings.Value = refreshDate.ToString("o");
-                var x = adb.InsertOrReplaceAsync(LastRefreshSettings).Result;
-                return refreshDate.ToString("o");
+                dbSettings.StoreSetting(k, refreshDate.ToString("o"));
             }
-            else
-            {
-                return LastRefreshSettings.Value;
-            }
+
+            return dbSettings.GetSetting(k, "");
         }
     
 
         public static void SetLastRefreshDate(int ChannelId)
         {
-            string k = "RefreshDate" + ChannelId;
-            dbSettings LastRefreshSettings = adb.Table<dbSettings>().Where(x => x.Key == k).FirstOrDefaultAsync().Result;
-
             //Store the value sent in the database
+            string k = "RefreshDate" + ChannelId;
             string queryDate = DateTime.UtcNow.ToString("o");
-            LastRefreshSettings.Key = k;
-            LastRefreshSettings.Value = queryDate;
-            var x = adb.InsertOrReplaceAsync(LastRefreshSettings).Result;
+            dbSettings.StoreSetting(k, queryDate);
         }
 
         public static string UserAvatar
         {
             get
             {
-                dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
-                if (AvatarSettings == null)
-                {
-                    return "";
-                }
-                else return AvatarSettings.Value;
+                string AvatarSettingsValue = dbSettings.GetSetting("Avatar", "");
+                return AvatarSettingsValue;
             }
         }
 
         public static string GetUserAvatar()
         {
-            dbSettings AvatarSettings = adb.Table<dbSettings>().Where(x => x.Key == "Avatar").FirstOrDefaultAsync().Result;
-            if (AvatarSettings == null)
-            {
-                return "";
-            }
-            else return AvatarSettings.Value;
+            string AvatarSettingsValue = dbSettings.GetSetting("Avatar", "");
+            return AvatarSettingsValue;
         }
 
         //Get or set Test Mode
