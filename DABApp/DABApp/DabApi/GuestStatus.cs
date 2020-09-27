@@ -24,7 +24,8 @@ namespace DABApp
 
 		private GuestStatus() 
 		{
-			_AvatarUrl = "http://placehold.it/10x10";
+			//http://placehold.it/10x10
+			_AvatarUrl = "https://www.gravatar.com/avatar/D41D8CD98F00B204E9800998ECF8427E?d=mp";
 			_AvatarSource = ImageSource.FromUri(new Uri(_AvatarUrl));
 		}
 
@@ -62,7 +63,8 @@ namespace DABApp
 			{
 				if (string.IsNullOrEmpty(GlobalResources.GetUserAvatar()))
 				{
-					return _AvatarUrl = "http://placehold.it/10x10";
+					//return _AvatarUrl = "http://placehold.it/10x10";
+					return _AvatarUrl = "https://www.gravatar.com/avatar/D41D8CD98F00B204E9800998ECF8427E?d=mp";
 				}
 				else return _AvatarUrl = GlobalResources.GetUserAvatar();
 			}

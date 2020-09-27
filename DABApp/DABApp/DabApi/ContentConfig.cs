@@ -264,9 +264,9 @@ namespace DABApp
 
 					}
 				}
-				if (GlobalResources.UserAvatar == null)
+				if (GlobalResources.UserAvatar == "")
 				{
-					await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownSample().DownloadOnlyAsync();
+					await ImageService.Instance.LoadUrl("https://www.gravatar.com/avatar/D41D8CD98F00B204E9800998ECF8427E?d=mp").DownSample().DownloadOnlyAsync();
 				}
 				else {
 					await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
