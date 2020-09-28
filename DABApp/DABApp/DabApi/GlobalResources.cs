@@ -410,7 +410,7 @@ namespace DABApp
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
                 string hash = CalculateMD5Hash(dbSettings.GetSetting("Email", ""));
-                return string.Format("https://www.gravatar.com/avatar/{0}?d=http://placehold.it/10x10", hash);
+                return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }
         public static string CalculateMD5Hash(string email)

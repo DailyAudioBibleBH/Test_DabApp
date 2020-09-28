@@ -24,7 +24,7 @@ namespace DABApp
 
 		private GuestStatus() 
 		{
-			_AvatarUrl = "http://placehold.it/10x10";
+			_AvatarUrl = "http://placehold.it/100x100";
 			_AvatarSource = ImageSource.FromUri(new Uri(_AvatarUrl));
 		}
 
