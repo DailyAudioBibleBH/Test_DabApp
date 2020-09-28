@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -33,9 +34,7 @@ namespace DABApp
             dbSettings.StoreSetting("TokenCreation", "");
             dbSettings.StoreSetting("FirstName", "Guest");
             dbSettings.StoreSetting("LastName", "Guest");
-            dbSettings.StoreSetting("Avatar", "");
             dbSettings.StoreSetting("WpId", "");
-
         }
 
 
@@ -43,9 +42,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
@@ -65,9 +64,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}wallet");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 Card[] cards = JsonConvert.DeserializeObject<Card[]>(JsonOut);
@@ -83,9 +82,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}wallet/{CardId}");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 if (JsonOut == "true")
@@ -112,12 +111,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(token);
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}wallet", content);
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 Debug.WriteLine($"Wallet Error: {JsonOut}");
@@ -142,9 +141,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
@@ -160,12 +159,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.PutAsync($"{GlobalResources.RestAPIUrl}donations", content);//Uses HttpPut method to update donation
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 if (JsonOut != "true")
@@ -185,12 +184,12 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}donations", content);
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 if (JsonOut != "true")
@@ -210,9 +209,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}donations/{id}");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 if (JsonOut != "true")
@@ -232,9 +231,9 @@ namespace DABApp
         {
             try
             {
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations/history");
                 string JsonOut = await result.Content.ReadAsStringAsync();
                 DonationRecord[] history = JsonConvert.DeserializeObject<DonationRecord[]>(JsonOut);
@@ -305,36 +304,24 @@ namespace DABApp
 
         public static bool GetTestMode()
         {
-            var testmode = adb.Table<dbSettings>().Where(x => x.Key == "TestMode").FirstOrDefaultAsync().Result;
-            if (testmode != null)
+            string testmode = dbSettings.GetSetting("TestMode", "");
+            if (testmode != "")
             {
-                return Convert.ToBoolean(testmode.Value);
+                return Convert.ToBoolean(testmode);
             }
             else return false;
         }
 
         public static void SetTestMode()
         {
-            var testMode = adb.Table<dbSettings>().Where(x => x.Key == "TestMode").FirstOrDefaultAsync().Result;
-            dbSettings newMode = new dbSettings();
+            // TODO: Check the store and getting of settings here.
             adb.QueryAsync<dbEpisodes>("delete from dbEpisodes");
             adb.ExecuteAsync("delete from dbPlayerActions");
             adb.ExecuteAsync("delete from Badge");
             adb.ExecuteAsync("delete from dbUserBadgeProgress");
             adb.ExecuteAsync("delete from Channel");
             adb.ExecuteAsync("delete from dbEpisodeUserData");
-            newMode.Key = "TestMode";
-            newMode.Value = GlobalResources.TestMode.ToString();
-            if (testMode != null)
-            {
-                var x = adb.UpdateAsync(newMode).Result;
-            }
-            else
-            {
-                var x = adb.InsertOrReplaceAsync(newMode).Result;
-            }
+            dbSettings.StoreSetting("TestMode", GlobalResources.TestMode.ToString());
         }
-
- 
     }
 }

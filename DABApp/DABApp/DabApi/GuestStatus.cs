@@ -24,7 +24,7 @@ namespace DABApp
 
 		private GuestStatus() 
 		{
-			_AvatarUrl = "http://placehold.it/10x10";
+			_AvatarUrl = "http://placehold.it/100x100";
 			_AvatarSource = ImageSource.FromUri(new Uri(_AvatarUrl));
 		}
 
@@ -60,17 +60,12 @@ namespace DABApp
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(GlobalResources.GetUserAvatar()))
-				{
-					return _AvatarUrl = "http://placehold.it/10x10";
-				}
-				else return _AvatarUrl = GlobalResources.GetUserAvatar();
+				return GlobalResources.UserAvatar;
 			}
 			set
 			{
 				_AvatarUrl = value;
 				OnPropertyChanged("AvatarUrl");
-				//AvatarChanged.Invoke(this, new EventArgs());
 			}
 		}
 

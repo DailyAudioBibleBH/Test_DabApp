@@ -264,13 +264,8 @@ namespace DABApp
 
 					}
 				}
-				if (GlobalResources.UserAvatar == null)
-				{
-					await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownSample().DownloadOnlyAsync();
-				}
-				else {
-					await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
-				}
+				
+				await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
 			}
 			catch (Exception e) {
 				Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
@@ -281,7 +276,6 @@ namespace DABApp
 	public class Member
 	{
 		public string name { get; set; }
-		public string avatarUrl { get; set; }
 		public string role { get; set; }
 		public int replyCount { get; set; }
 		public int topicCount { get; set; }

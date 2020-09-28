@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Xamarin.Forms;
 using System.Runtime.Serialization.Json;
 using Xamarin.Forms.PlatformConfiguration;
+using System.Data.Common;
 
 namespace DABApp
 {
@@ -22,12 +23,12 @@ namespace DABApp
         {
 
             //Get the content API from the settings database
-            dbSettings ContentSettings = adb.Table<dbSettings>().Where(x => x.Key == "ContentJSON").FirstOrDefaultAsync().Result;
-            dbSettings DataSettings = adb.Table<dbSettings>().Where(x => x.Key == "data").FirstOrDefaultAsync().Result;
+            string ContentSettings = dbSettings.GetSetting("ContentJSON", "");
+            string DataSettings = dbSettings.GetSetting("data", "");
 
-            if (ContentConfig.Instance.app_settings == null && ContentSettings != null)
+            if (ContentConfig.Instance.app_settings == null && ContentSettings != "")
             {
-                ParseContent(ContentSettings.Value);
+                ParseContent(ContentSettings);
             }
             try
             {
@@ -88,27 +89,20 @@ namespace DABApp
 
                 if (ContentSettings == null || DataSettings == null)
                 {
-                    ContentSettings = new dbSettings();
-                    ContentSettings.Key = "ContentJSON";
-                    ContentSettings.Value = jsonOut;
-                    DataSettings = new dbSettings();
-                    DataSettings.Key = "data";
-                    DataSettings.Value = updated;
-                    var x = adb.InsertOrReplaceAsync(ContentSettings).Result;
-                    x = adb.InsertOrReplaceAsync(DataSettings).Result;
-
+                    dbSettings.StoreSetting("ContentJSON", jsonOut);
+                    dbSettings.StoreSetting("data", updated);
                     ParseContent(jsonOut);
                 }
                 else
                 {
-                    if (DataSettings.Value == updated)
+                    if (DataSettings == updated)
                     {
-                        ParseContent(ContentSettings.Value);
+                        ParseContent(ContentSettings);
                     }
                     else
                     {
-                        DataSettings.Value = updated;
-                        ContentSettings.Value = jsonOut;
+                        DataSettings = updated;
+                        ContentSettings = jsonOut;
                         ParseContent(jsonOut);
                     }
                 }
@@ -117,13 +111,13 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                if (ContentSettings == null)
+                if (ContentSettings == "")
                 {
                     return false;
                 }
                 else
                 {
-                    ParseContent(ContentSettings.Value);
+                    ParseContent(ContentSettings);
                     return true;
                 }
             }
@@ -131,23 +125,20 @@ namespace DABApp
 
         public static void ParseContent(string jsonOut)
         {
-            var OfflineSettings = adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
+            string OfflineSettingsValue = dbSettings.GetSetting("AvailableOffline", "");
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
             Task.Run(async () =>
             {
                 await ContentConfig.Instance.cachImages();
             });
-            if (OfflineSettings == null)
+            if (OfflineSettingsValue == "")
             {
-                OfflineSettings = new dbSettings();
-                OfflineSettings.Key = "AvailableOffline";
-                OfflineSettings.Value = new JArray().ToString();
-                var x = adb.InsertAsync(OfflineSettings).Result;
+                dbSettings.StoreSetting("AvailableOffline", new JArray().ToString());
             }
             else
             {
-                List<int> ids = JsonConvert.DeserializeObject<List<int>>(OfflineSettings.Value);
+                List<int> ids = JsonConvert.DeserializeObject<List<int>>(OfflineSettingsValue);
                 List<Resource> resources = ContentConfig.Instance.views.Single(x => x.title == "Channels").resources.Where(x => ids.Contains(x.id)).ToList();
                 foreach (var item in resources)
                 {
@@ -161,10 +152,10 @@ namespace DABApp
             try
             {
                 Debug.WriteLine("Updating Offline Settings");
-                var OfflineSettings = adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
-                if (OfflineSettings != null)
+                var OfflineSettingsValue = dbSettings.GetSetting("AvailableOffline", "");//adb.Table<dbSettings>().Where(x => x.Key == "AvailableOffline").FirstOrDefaultAsync().Result;
+                if (OfflineSettingsValue != "")
                 {
-                    var jsonArray = JArray.Parse(OfflineSettings.Value);
+                    var jsonArray = JArray.Parse(OfflineSettingsValue);
                     var match = jsonArray.Where(j => j.ToString().Equals(ResourceId.ToString()));
                     if (offline && match.Count() == 0)
                     {
@@ -180,8 +171,7 @@ namespace DABApp
                             }
                         }
                     }
-                    OfflineSettings.Value = jsonArray.ToString();
-                    await adb.UpdateAsync(OfflineSettings);
+                    dbSettings.StoreSetting("AvailableOffline", jsonArray.ToString());
                     Debug.WriteLine("Updated Offline settings");
                 }
             }
@@ -243,9 +233,9 @@ namespace DABApp
                 //Sending Event to Firebase Analytics about Topic post
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(topic);
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
@@ -275,9 +265,9 @@ namespace DABApp
                 //Sending Event to Firebase Analytics to record Reply post.
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
-                dbSettings TokenSettings = adb.Table<dbSettings>().Where(x => x.Key == "Token").FirstOrDefaultAsync().Result;
+                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 var client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettings.Value);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(reply);
                 var content = new StringContent(JsonIn);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
