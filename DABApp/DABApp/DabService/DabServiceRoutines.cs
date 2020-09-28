@@ -603,14 +603,7 @@ namespace DABApp.Service
                     }
                     //update last time checked for badge progress
                     string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
-                    dbSettings sBadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-                    if (sBadgeProgressSettings == null)
-                    {
-                        sBadgeProgressSettings = new dbSettings() { Key = settingsKey };
-                    }
-
-                    sBadgeProgressSettings.Value = DateTime.UtcNow.ToString();
-                    await adb.InsertOrReplaceAsync(sBadgeProgressSettings);
+                    dbSettings.StoreSetting(settingsKey, DateTime.UtcNow.ToString());
                 }
                 catch (Exception ex)
                 {
