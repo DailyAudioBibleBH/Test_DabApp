@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.Service;
 using Xamarin.Essentials;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DABApp
 {
@@ -406,17 +408,33 @@ namespace DABApp
         {
             get
             {
-                string AvatarSettingsValue = dbSettings.GetSetting("Avatar", "");
-                return AvatarSettingsValue;
+                //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
+                string hash = CalculateMD5Hash(dbSettings.GetSetting("Email", ""));
+                return string.Format("https://www.gravatar.com/avatar/{0}?d=http://placehold.it/10x10", hash);
             }
         }
-
-        public static string GetUserAvatar()
+        public static string CalculateMD5Hash(string email)
         {
-            string AvatarSettingsValue = dbSettings.GetSetting("Avatar", "");
-            return AvatarSettingsValue;
-        }
+            // Create a new instance of the MD5CryptoServiceProvider object.  
+            MD5 md5Hasher = MD5.Create();
 
+            // Convert the input string to a byte array and compute the hash.  
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(email.ToLower().Trim()));
+
+            // Create a new Stringbuilder to collect the bytes  
+            // and create a string.  
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Loop through each byte of the hashed data  
+            // and format each one as a hexadecimal string.  
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            return sBuilder.ToString();  // Return the hexadecimal string. 
+        }
+        
         //Get or set Test Mode
         public static bool TestMode { get; set; }
 

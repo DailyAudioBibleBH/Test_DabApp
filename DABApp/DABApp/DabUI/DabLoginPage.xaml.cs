@@ -97,23 +97,6 @@ namespace DABApp
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
 
-        public string CalculateMD5Hash(string email)
-        {
-            // step 1, calculate MD5 hash from input
-            MD5 md5 = System.Security.Cryptography.MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(email);
-            byte[] hash = md5.ComputeHash(inputBytes);
-
-            // step 2, convert byte array to hex string
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
-            {
-                sb.Append(hash[i].ToString("X2"));
-            }
-            return sb.ToString();
-        }
-
-
         async void OnLogin(object o, EventArgs e)
         {
             //log the user in and push up channels page upon success.
