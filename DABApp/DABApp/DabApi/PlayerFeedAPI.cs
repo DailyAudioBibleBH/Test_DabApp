@@ -555,7 +555,7 @@ namespace DABApp
                 var email = dbSettings.GetSetting("Email", "");
                 var firstName = dbSettings.GetSetting("FirstName", "");
                 var lastName = dbSettings.GetSetting("LastName", "");
-                var avatar = dbSettings.GetSetting("Avatar", "");
+                var avatar = GlobalResources.UserAvatar;
                 
                 var token = new APIToken
                 {

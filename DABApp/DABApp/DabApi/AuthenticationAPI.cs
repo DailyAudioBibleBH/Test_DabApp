@@ -34,9 +34,7 @@ namespace DABApp
             dbSettings.StoreSetting("TokenCreation", "");
             dbSettings.StoreSetting("FirstName", "Guest");
             dbSettings.StoreSetting("LastName", "Guest");
-            dbSettings.StoreSetting("Avatar", "");
             dbSettings.StoreSetting("WpId", "");
-
         }
 
 
