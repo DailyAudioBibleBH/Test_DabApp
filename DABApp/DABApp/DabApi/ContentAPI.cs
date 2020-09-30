@@ -132,7 +132,7 @@ namespace DABApp
             //{
             //    await ContentConfig.Instance.cachImages();
             //});
-            if (OfflineSettings == null)
+            if (OfflineSettingsValue == "")
             {
                 dbSettings.StoreSetting("AvailableOffline", new JArray().ToString());
             }
