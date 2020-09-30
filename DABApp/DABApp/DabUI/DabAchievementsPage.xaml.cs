@@ -38,8 +38,15 @@ namespace DABApp
 			//Connection to db
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
+			//Get years of badges they can query
+			int minYear = ContentConfig.Instance.options.progress_year;  //The minimum year allowed by the content api
+			List<int> yearList = makeYearList(minYear); //list of years the user is allowed to query
+			int currentYear = yearList.Last();
 
-			int currentYear = ContentConfig.Instance.options.progress_year;  //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;
+			//Setting Progress Year picker
+			progressYear.ItemsSource = yearList;
+			progressYear.SelectedItem = currentYear.ToString();
+
 			int progressDuration = ContentConfig.Instance.options.new_progress_duration;
 
 			//separate badge and progress list from db
@@ -126,9 +133,10 @@ namespace DABApp
 			}
 
 			//Summary Tab View
-			double entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
-			double oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
-			double newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			var bibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id && x.Progress.year == currentYear);
+			double entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			double oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			double newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
 			//Value of 0 breaks gauge so change to .01 for now and have label say 0
 			if (entireBibleBadge == 0)
             {
@@ -192,11 +200,6 @@ namespace DABApp
 			channelsListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "channels" && x.Progress.percent > 0).OrderBy(x => x.Badge.id).ToList();
 			channelsListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 
-			//Setting Progress Year picker
-			List<string> yearList = makeYearList(currentYear);
-			progressYear.SelectedItem = " " + currentYear.ToString() + " ∨";
-			progressYear.ItemsSource = yearList;
-
             segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
 			segmentControl.SelectedIndex = 0;
 
@@ -234,17 +237,13 @@ namespace DABApp
             }
         }
 
-        public List<string> makeYearList(int currentYear)
+        public List<int> makeYearList(int firstYear)
         {
-			List<string> yearList = new List<string>();
-			yearList.Add(currentYear.ToString());
+			List<int> yearList = new List<int>();
 
-            for (int i = currentYear; i < DateTime.Now.Year; i++)
+            for (int i = firstYear; i <= DateTime.Now.Year; i++)
             {
-				var nextYear = currentYear - variable;
-				yearList.Add(nextYear.ToString());
-				variable = variable + 1;
-				i++;
+				yearList.Add(i);
             }
 			return yearList;
 		}
