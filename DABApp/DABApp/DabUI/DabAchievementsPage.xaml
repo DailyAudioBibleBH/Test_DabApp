@@ -28,8 +28,8 @@
                     </telerikInput:RadSegmentedControl>
                     <StackLayout Orientation="Horizontal" Padding="5, 15, 0, 0">
                         <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
-                        <telerikInput:RadListPicker x:Name="progressYear" BorderColor="Transparent" Margin="-10, 0, 0, 0">
-                        </telerikInput:RadListPicker>
+                        <Picker x:Name="progressYear" SelectedIndexChanged="progressYear_SelectedIndexChanged" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
+
                     </StackLayout>
                 </StackLayout>
 

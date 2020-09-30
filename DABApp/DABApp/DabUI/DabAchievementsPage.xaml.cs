@@ -18,6 +18,12 @@ namespace DABApp
 		View AchievementsView;
 		Resource _resource;
 		public int variable = 1;
+		List<dbBadges> dbBadgeList;
+		List<dbUserBadgeProgress> dbBadgeProgressList;
+		string userName;
+		int progressDuration;
+
+
 		public DabAchievementsPage(DABApp.View contentView)
 		{
 			InitializeComponent();
@@ -27,7 +33,8 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = contentView;
 			BindingContext = AchievementsView;
-			string userName = dbSettings.GetSetting("Email", "");
+			userName = dbSettings.GetSetting("Email", "");
+			progressDuration = ContentConfig.Instance.options.new_progress_duration;
 
 			banner.Source = new UriImageSource
 			{
@@ -38,29 +45,81 @@ namespace DABApp
 			//Connection to db
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
+			//separate badge and progress list from db
+			dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
+			dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().ToListAsync().Result;
+
 			//Get years of badges they can query
 			int minYear = ContentConfig.Instance.options.progress_year;  //The minimum year allowed by the content api
 			List<int> yearList = makeYearList(minYear); //list of years the user is allowed to query
-			int currentYear = yearList.Last();
+			int currentYear = yearList.First();
 
 			//Setting Progress Year picker
 			progressYear.ItemsSource = yearList;
-			progressYear.SelectedItem = currentYear.ToString();
+			progressYear.SelectedItem = currentYear;
 
-			int progressDuration = ContentConfig.Instance.options.new_progress_duration;
+			segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
+			segmentControl.SelectedIndex = 0;
 
-			//separate badge and progress list from db
-			List<dbBadges> dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
-			List<dbUserBadgeProgress> dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().ToListAsync().Result;
+			BooksTab.IsVisible = false;
+			ChannelsTab.IsVisible = false;
+			SummaryTab.IsVisible = true;
 
+			var breakpoint = "";
+		}
+
+        private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
+        {
+            switch (e.NewValue)
+            {
+				case 0:
+					Console.WriteLine("case 0");
+					BooksTab.IsVisible = false;
+					ChannelsTab.IsVisible = false;
+					SummaryTab.IsVisible = true;
+					break;
+				case 1:
+					Console.WriteLine("case 1");
+					ChannelsTab.IsVisible = false;
+					SummaryTab.IsVisible = false;
+					BooksTab.IsVisible = true;
+					break;
+				case 2:
+					Console.WriteLine("case 2");
+					BooksTab.IsVisible = false;
+					SummaryTab.IsVisible = false;
+					ChannelsTab.IsVisible = true;
+					break;
+                default:
+                    break;
+            }
+        }
+
+        public List<int> makeYearList(int firstYear)
+        {
+			List<int> yearList = new List<int>();
+
+            for (int i = DateTime.Now.Year; i >= firstYear; i--) //sort descending
+            {
+				yearList.Add(i);
+            }
+			return yearList;
+		}
+
+        void progressYear_SelectedIndexChanged(System.Object sender, System.EventArgs e)
+        {
+			var year = int.Parse(progressYear.SelectedItem.ToString());
+			BindProgressControls(year);
+        }
+
+		void BindProgressControls(int year)
+        {
 			//find badges that have progress
+
 			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
 			from badge in dbBadgeList
-			let badgeid = badge.id
 			from progress in dbBadgeProgressList
-			let progressbadgeid = progress.badgeId
-			let currentUserName = progress.userName
-			where badgeid == progressbadgeid && currentUserName == userName
+			where badge.id == progress.badgeId && progress.userName == userName && progress.year == year
 			select new dabUserBadgeProgress(badge, progress)
 			{
 				Badge = badge,
@@ -122,130 +181,75 @@ namespace DABApp
 					item.Progress.progressBarVisible = true;
 				}
 
-				//#if DEBUG
-				//				int r;
-				//				Math.DivRem(i, 2, out r);
-				//				if (r == 0)
-				//				{
-				//					item.Badge.imageURL = $"https://via.placeholder.com/400/ffffff/555555?text={item.Badge.badgeId}"; //testing image capture
-				//				}
-				//#endif
 			}
 
 			//Summary Tab View
-			var bibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id && x.Progress.year == currentYear);
-			double entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
-			double oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
-			double newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id && x.Progress.year == currentYear).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			var bibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id);
+			double entireBibleBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.entire_bible_badge_id ).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			double oldTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.old_testament_badge_id ).Select(x => x.Progress.percent).ToList().SingleOrDefault();
+			double newTestamentBadge = allAchievementsPageList.Where(x => x.Badge.badgeId == ContentConfig.Instance.options.new_testament_badge_id ).Select(x => x.Progress.percent).ToList().SingleOrDefault();
 			//Value of 0 breaks gauge so change to .01 for now and have label say 0
 			if (entireBibleBadge == 0)
-            {
+			{
 				entireBibleBadge = .01;
 				EntireBibleLabel.Text = "0% Complete";
 			}
-            else
-            {
+			else
+			{
 				EntireBibleLabel.Text = entireBibleBadge + "% Complete";
 			}
 			if (oldTestamentBadge == 0)
-            {
+			{
 				oldTestamentBadge = .01;
 				OldTestamentLabel.Text = "0% Complete";
 			}
-            else
-            {
+			else
+			{
 				OldTestamentLabel.Text = oldTestamentBadge + "% Complete";
 			}
 			if (newTestamentBadge == 0)
-            {
+			{
 				newTestamentBadge = .01;
 				NewTestamentLabel.Text = "0 % Complete";
 			}
-            else
-            {
+			else
+			{
 				NewTestamentLabel.Text = newTestamentBadge + "% Complete";
 			}
 			EntireBibleGauge.Value = entireBibleBadge;
-            OldTestamentGauge.Value = oldTestamentBadge;
-            NewTestatmentGauge.Value = newTestamentBadge;
-            EntireBibleGradientOffset.Offset = entireBibleBadge;
-            OldTestamentGradientOffset.Offset = oldTestamentBadge;
-            NewTestamentGradientOffset.Offset = newTestamentBadge;
+			OldTestamentGauge.Value = oldTestamentBadge;
+			NewTestatmentGauge.Value = newTestamentBadge;
+			EntireBibleGradientOffset.Offset = entireBibleBadge;
+			OldTestamentGradientOffset.Offset = oldTestamentBadge;
+			NewTestamentGradientOffset.Offset = newTestamentBadge;
 
-            if (entireBibleBadge == 100)
-            {
-                EntireBibleImage.Source = "EntireBibleCompleteDark1.png";
-                EntireBibleGauge.StartThickness = 0;
-                EntireBibleGauge.EndThickness = 0;
-            }
+			if (entireBibleBadge == 100)
+			{
+				EntireBibleImage.Source = "EntireBibleCompleteDark1.png";
+				EntireBibleGauge.StartThickness = 0;
+				EntireBibleGauge.EndThickness = 0;
+			}
 
-            if (oldTestamentBadge == 100)
-            {
-                OldTestamentImage.Source = "OldTestamentCompleteDark1.png";
-                OldTestamentGauge.StartThickness = 0;
-                OldTestamentGauge.EndThickness = 0;
-            }
-            if (newTestamentBadge == 100)
-            {
-                NewTestamentImage.Source = "OldTestamentCompleteDark1.png";
-                NewTestatmentGauge.StartThickness = 0;
-                NewTestatmentGauge.EndThickness = 0;
-            }
+			if (oldTestamentBadge == 100)
+			{
+				OldTestamentImage.Source = "OldTestamentCompleteDark1.png";
+				OldTestamentGauge.StartThickness = 0;
+				OldTestamentGauge.EndThickness = 0;
+			}
+			if (newTestamentBadge == 100)
+			{
+				NewTestamentImage.Source = "OldTestamentCompleteDark1.png";
+				NewTestatmentGauge.StartThickness = 0;
+				NewTestatmentGauge.EndThickness = 0;
+			}
 
-            //Books Tab Collection View
-            achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
+			//Books Tab Collection View
+			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
 			achievementListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
 
 			//Channels Tab Collection View
 			channelsListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "channels" && x.Progress.percent > 0).OrderBy(x => x.Badge.id).ToList();
 			channelsListView.HeightRequest = visibleAchievementsPageList.Count() * 200; //arbitrary number to get them tall enopugh.
-
-            segmentControl.SelectionChanged += SegmentControl_SelectionChanged;
-			segmentControl.SelectedIndex = 0;
-
-			BooksTab.IsVisible = false;
-			ChannelsTab.IsVisible = false;
-			SummaryTab.IsVisible = true;
-
-			var breakpoint = "";
 		}
-
-        private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
-        {
-            switch (e.NewValue)
-            {
-				case 0:
-					Console.WriteLine("case 0");
-					BooksTab.IsVisible = false;
-					ChannelsTab.IsVisible = false;
-					SummaryTab.IsVisible = true;
-					break;
-				case 1:
-					Console.WriteLine("case 1");
-					ChannelsTab.IsVisible = false;
-					SummaryTab.IsVisible = false;
-					BooksTab.IsVisible = true;
-					break;
-				case 2:
-					Console.WriteLine("case 2");
-					BooksTab.IsVisible = false;
-					SummaryTab.IsVisible = false;
-					ChannelsTab.IsVisible = true;
-					break;
-                default:
-                    break;
-            }
-        }
-
-        public List<int> makeYearList(int firstYear)
-        {
-			List<int> yearList = new List<int>();
-
-            for (int i = firstYear; i <= DateTime.Now.Year; i++)
-            {
-				yearList.Add(i);
-            }
-			return yearList;
-		}
-	}
+    }
 }
