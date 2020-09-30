@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
@@ -25,6 +26,7 @@ namespace DABApp
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         List<EpisodeViewModel> _Episodes;
+        object source;
 
         public DabEpisodesPage(Resource resource)
         {
@@ -36,6 +38,9 @@ namespace DABApp
             BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
+
+            //For Wait Start and Stop
+            source = new object();
 
             //pull to refresh
             EpisodeList.RefreshCommand = new Command(async () => //pull to refresh command
@@ -79,7 +84,6 @@ namespace DABApp
 
             base.OnAppearing();
 
-
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
@@ -88,7 +92,6 @@ namespace DABApp
 
             //get new episodes, if they exist -- this will also handle downloading
             await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
-
         }
 
         #endregion
@@ -114,9 +117,9 @@ namespace DABApp
             {
                 //refresh episodes from the server
                 //get the episodes - this routine handles resetting the date and raising events
-                GlobalResources.WaitStart($"Refreshing episodes...");
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             }
 
             //get the rull list of episodes for the resource
@@ -155,11 +158,31 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    EpisodeList.ItemsSource = _Episodes = Episodes
+                    List<EpisodeViewModel> EpisodesList = _Episodes = Episodes
                         .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                         .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                         .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                         .Select(x => new EpisodeViewModel(x)).ToList();
+
+                    foreach (var item in EpisodesList)
+                    {
+                        if (item.Episode.is_downloaded == true)
+                        {
+                            item.isDownloaded = true;
+                            item.isNotDownloaded = false;
+                            item.downloadProgress = 100;
+                        }
+                        else
+                        {
+                            item.isNotDownloaded = true;
+                        }
+                        if (EpisodesList.IndexOf(item) >= 20)
+                        {
+                            break;
+                        }
+                    }
+
+                    EpisodeList.ItemsSource = EpisodesList;
 
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
@@ -179,8 +202,8 @@ namespace DABApp
             if (_resource.availableOffline)
             {
                 await PlayerFeedAPI.DownloadEpisodes();
-                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                circularProgressControl?.HandleDownloadVisibleChanged(true);
+                //CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                //circularProgressControl?.HandleDownloadVisibleChanged(true);
             }
 
             return true;
@@ -218,7 +241,7 @@ namespace DABApp
              */
 
             EpisodeList.IsEnabled = false; //disable the list while we work with it.
-            GlobalResources.WaitStart();
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             var chosenVM = (EpisodeViewModel)e.Item;
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
@@ -235,7 +258,7 @@ namespace DABApp
                 await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
             }
             EpisodeList.SelectedItem = null; //deselect the item
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
             EpisodeList.IsEnabled = true;
         }
 

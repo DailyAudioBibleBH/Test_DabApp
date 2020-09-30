@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabContentView"
-		xmlns:local="clr-namespace:DABApp" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
-    <ContentPage.Content>
+		xmlns:local="clr-namespace:DABApp;" xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:flv="clr-namespace:DLToolkit.Forms.Controls;assembly=DLToolkit.Forms.Controls.FlowListView">
+        <ContentPage.Content>
         <ScrollView>
             <StackLayout>
                 <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
@@ -63,6 +63,6 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </StackLayout>
-          </ScrollView>
-        </ContentPage.Content>
+        </ScrollView>
+    </ContentPage.Content>
 </local:DabBaseContentPage>

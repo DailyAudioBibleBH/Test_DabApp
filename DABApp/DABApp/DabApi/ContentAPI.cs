@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.Generic;
@@ -128,11 +128,11 @@ namespace DABApp
             string OfflineSettingsValue = dbSettings.GetSetting("AvailableOffline", "");
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
-            Task.Run(async () =>
-            {
-                await ContentConfig.Instance.cachImages();
-            });
-            if (OfflineSettingsValue == "")
+            //Task.Run(async () =>
+            //{
+            //    await ContentConfig.Instance.cachImages();
+            //});
+            if (OfflineSettings == null)
             {
                 dbSettings.StoreSetting("AvailableOffline", new JArray().ToString());
             }

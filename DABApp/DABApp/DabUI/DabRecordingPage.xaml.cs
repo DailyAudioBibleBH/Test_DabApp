@@ -13,6 +13,7 @@ using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
 using DABApp.DabAudio;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -283,9 +284,10 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    GlobalResources.WaitStart("Submitting recording...", false);
+                    DabUserInteractionEvents.WaitStarted(sender, new DabAppEventArgs("Submitting recording...", true));
+
                     var result = await SendAudio(audio);
-                    GlobalResources.WaitStop();
+                    DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
                     if (result) await Navigation.PopModalAsync();
                 }
                 else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");

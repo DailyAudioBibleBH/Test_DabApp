@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.DabUI.BaseUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
@@ -48,7 +49,8 @@ namespace DABApp
 			if (Validation())
 			{
 				AmountWarning.IsVisible = false;
-				GlobalResources.WaitStart();
+				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+
 				var card = (Card)Cards.SelectedItem;
 				var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 				long unix = (long)(Next.Date - stime).TotalSeconds;
@@ -82,7 +84,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 			}
 			else 
 			{
@@ -92,7 +94,8 @@ namespace DABApp
 
 		async void OnCancel(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+
 			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
 			if (decision) {
 				var result = await AuthenticationAPI.DeleteDonation(_campaign.id);
@@ -106,7 +109,7 @@ namespace DABApp
 					await DisplayAlert("Error", result, "OK");
 				}
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 
 		bool Validation() 

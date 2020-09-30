@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
@@ -12,6 +13,7 @@ namespace DABApp
         public List<DabGraphQlAddress> addresses;
 		public DabGraphQlAddress billingAddress;
 		public DabGraphQlAddress shippingAddress;
+		object source = new object();
 
         public DabAddressManagementPage()
 		{
@@ -23,7 +25,7 @@ namespace DABApp
 
         async void OnBilling(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart("Getting Billing Address...");
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting Billing Address...", true));
 
 			//get user addresses
 			var result = await Service.DabService.GetAddresses();
@@ -46,12 +48,13 @@ namespace DABApp
                 await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
             }
             else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
-            GlobalResources.WaitStop();
+			//GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 
 		async void OnShipping(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart("Getting Shipping Address...");
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting Shipping Address...", true));
 
 			//get user addresses
 			var result = await Service.DabService.GetAddresses();
@@ -74,7 +77,8 @@ namespace DABApp
 				await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
-			GlobalResources.WaitStop();
+			//GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 	}
 }

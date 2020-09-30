@@ -268,6 +268,42 @@ namespace DABApp
             }
         }
 
+        public static void SetDisplay()
+        {
+            var display = adb.Table<dbSettings>().Where(x => x.Key == "Display").FirstOrDefaultAsync().Result;
+            if (display != null)
+            {
+                if (display.Value == "LightMode")
+                {
+                    ExperimentalModeSettings.Instance.Display = "LightMode";
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#FFFFFF");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#000000");
+                }
+                else if (display.Value == "DarkMode")
+                {
+                    ExperimentalModeSettings.Instance.Display = "DarkMode";
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
+                }
+                else
+                {
+                    ExperimentalModeSettings.Instance.Display = "System";
+                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
+                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
+                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
+                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
+                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
+                }
+                adb.InsertOrReplaceAsync(display);
+            }
+        }
+
         public static string GetUserWpId()
         {
             try
@@ -438,6 +474,9 @@ namespace DABApp
         //Get or set Test Mode
         public static bool TestMode { get; set; }
 
+        //Get or set Experiment Mode
+        public static bool ExperimentMode { get; set; }
+
         //Return the base URL to give
         public static string GiveUrl
         {
@@ -461,25 +500,10 @@ namespace DABApp
             }
         }
 
-        public static void WaitStart()
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
-        }
-
-        public static void WaitStart(string message, bool ShowDismissButton)
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start_WithoutDismiss", message);
-        }
-
-        public static void WaitStart(string message)
-        {
-            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
-        }
-
-        public static void WaitStop()
-        {
-            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
-        }
+        //public static void WaitStop()
+        //{
+        //    MessagingCenter.Send<string>("dabapp", "Wait_Stop");
+        //}
 
 
 

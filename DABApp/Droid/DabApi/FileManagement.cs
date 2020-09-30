@@ -22,7 +22,6 @@ namespace DABApp.Droid
         WebClient client;
         public bool keepDownloading { get; set; } = true;
         long FileSize;
-        CircularProgressControl circularProgressControl = new CircularProgressControl();
 
         public FileManagement()
         {

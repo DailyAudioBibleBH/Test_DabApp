@@ -6,14 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
+using DABApp.DabUI.BaseUI;
+
 
 namespace DABApp
 {
     public partial class DabCheckEmailPage : DabBaseContentPage
     {
         int TapNumber = 0;
+        int ExperimentNumber = 0;
         //Indicator so double connection doesn't get hit from OnResume
-
+        object source = new object();
         private bool hasAppeared; //used to only connect the first time through;
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
@@ -37,19 +40,18 @@ namespace DABApp
                 Container.Padding = 100;
                 Logo.WidthRequest = GlobalResources.Instance.ScreenSize < 1000 ? 300 : 400;
             }
-
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
         }
-        
+
+
         async void OnNext(object o, EventArgs e)
         {
             /* Handles when they click next to continue with an email address
              */
-            GlobalResources.WaitStart();
-
+            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
             //check for existing/new email
             var ql = await  DabService.CheckEmail(Email.Text.Trim());
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 
             //determine next path
             if (ql.Success)
@@ -70,12 +72,12 @@ namespace DABApp
                var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
                 if (reconnect == true)
                 {
-                    GlobalResources.WaitStart("Retrying...");
+                    DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Retrying...", true));
                     await DabService.InitializeConnection();
                     OnNext(o, e);
-                    GlobalResources.WaitStop();
+                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 }
-                
+
             }
 
            
@@ -286,8 +288,27 @@ namespace DABApp
                     var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
-                    AuthenticationAPI.SetTestMode();
+                    AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
+                    DisableAllInputs("Shutdown and restart app");
+                }
+            }
+        }
+
+        async void OnExperiment(object sender, EventArgs e)
+        {
+            ExperimentNumber++;
+            if (ExperimentNumber >= 2)
+            {
+                var experimentMode = GlobalResources.ExperimentMode ? "production" : "experiment";
+                var accept = await DisplayAlert($"Do you want to switch to {experimentMode} mode?", "This mode will allow you to use new (and unsupported) features of the app. These features may be unstable and may require a deletion and reinstallation of the app if they do not perform as expected. You will have to restart the app after selecting \"Yes\"", "Yes", "No");
+                if (accept)
+                {
+                    var adb = DabData.AsyncDatabase;
+                    await adb.ExecuteAsync("DELETE FROM dbSettings");
+                    GlobalResources.ExperimentMode = !GlobalResources.ExperimentMode;
+                    AuthenticationAPI.SetExternalMode(false);
+                    await DisplayAlert($"Switching to {experimentMode} mode.", $"Please restart the app after receiving this message to fully go into {experimentMode} mode.", "OK");
                     DisableAllInputs("Shutdown and restart app");
                 }
             }

@@ -16,7 +16,6 @@ using SQLite;
 using Xamarin.Forms.Platform.Android;
 using Android.Graphics;
 using Android.Support.V4.Media.Session;
-using FFImageLoading.Forms.Droid;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
@@ -90,8 +89,6 @@ namespace DABApp.Droid
             DependencyService.Register<AnalyticsService>();
 
             SegmentedControlRenderer.Init();
-
-            CachedImageRenderer.Init();
 
             SQLite_Droid.Assets = this.Assets;
             var metrics = new DisplayMetrics();

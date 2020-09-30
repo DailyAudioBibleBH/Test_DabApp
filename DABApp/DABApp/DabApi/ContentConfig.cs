@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FFImageLoading;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -223,54 +222,59 @@ namespace DABApp
 		public AppSettings app_settings { get; set; }
 		public Options options { get; set; }
 
-		public async Task cachImages()
-		{
-			var channelView = Instance.views.Single(x => x.title == "Channels");
-			var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
+		//public async Task cachImages()
+		//{
+		//	var channelView = Instance.views.Single(x => x.title == "Channels");
+		//	var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
 
-			try
-			{
-				foreach (var v in views) {
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownSample().DownloadOnlyAsync();
-					}
-					else {
-						await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownSample().DownloadOnlyAsync();
-					}
-				}
-				foreach (var r in channelView.resources)
-				{
-					var image = r.images;
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(image.backgroundTablet).DownSample().DownloadOnlyAsync();
-					}
-					else
-					{
-						await ImageService.Instance.LoadUrl(image.backgroundPhone).DownSample().DownloadOnlyAsync();
-					}
-					await ImageService.Instance.LoadUrl(image.bannerPhone).DownSample().DownloadOnlyAsync();
-					await ImageService.Instance.LoadUrl(image.thumbnail).DownSample().DownloadOnlyAsync();
-				}
-				foreach (var i in initiativeView.links) {
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(i.urlTablet).DownSample().DownloadOnlyAsync();
-					}
-					else
-					{
-						await ImageService.Instance.LoadUrl(i.urlPhone).DownSample().DownloadOnlyAsync();
+		//	try
+		//	{
+		//		foreach (var v in views) {
+		//			if (Device.Idiom == TargetIdiom.Tablet)
+		//			{
+		//				await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownSample().DownloadOnlyAsync();
+		//			}
+		//			else {
+		//				await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownSample().DownloadOnlyAsync();
+		//			}
+		//		}
+		//		foreach (var r in channelView.resources)
+		//		{
+		//			var image = r.images;
+		//			if (Device.Idiom == TargetIdiom.Tablet)
+		//			{
+		//				await ImageService.Instance.LoadUrl(image.backgroundTablet).DownSample().DownloadOnlyAsync();
+		//			}
+		//			else
+		//			{
+		//				await ImageService.Instance.LoadUrl(image.backgroundPhone).DownSample().DownloadOnlyAsync();
+		//			}
+		//			await ImageService.Instance.LoadUrl(image.bannerPhone).DownSample().DownloadOnlyAsync();
+		//			await ImageService.Instance.LoadUrl(image.thumbnail).DownSample().DownloadOnlyAsync();
+		//		}
+		//		foreach (var i in initiativeView.links) {
+		//			if (Device.Idiom == TargetIdiom.Tablet)
+		//			{
+		//				await ImageService.Instance.LoadUrl(i.urlTablet).DownSample().DownloadOnlyAsync();
+		//			}
+		//			else
+		//			{
+		//				await ImageService.Instance.LoadUrl(i.urlPhone).DownSample().DownloadOnlyAsync();
 
-					}
-				}
-				
-				await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
-			}
-			catch (Exception e) {
-				Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
-			}
-		}
+		//			}
+		//		}
+		//		if (GlobalResources.UserAvatar == null)
+		//		{
+		//			await ImageService.Instance.LoadUrl("http://placehold.it/10x10").DownSample().DownloadOnlyAsync();
+		//		}
+		//		else {
+		//			await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
+		//		}
+		//	}
+		//	catch (Exception e) {
+		//		Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
+		//	}
+		//}
 	}
 
 	public class Member
@@ -380,8 +384,12 @@ namespace DABApp
 	{
 		public int token_life { get; set; } = 5;
 		public int log_position_interval { get; set; } = 30;
-		public int progress_year { get; set; } = DateTime.Now.Year;
-	}
+		public int progress_year { get; set; }
+		public int new_progress_duration { get; set; }
+        public int entire_bible_badge_id { get; set; }
+        public int new_testament_badge_id { get; set; }
+        public int old_testament_badge_id { get; set; }
+    }
 
 
 	/* Information used for routing recording sessions to the right person */

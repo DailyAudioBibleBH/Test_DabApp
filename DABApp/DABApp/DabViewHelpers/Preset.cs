@@ -9,6 +9,7 @@ namespace DABApp
         //used in the offline episode page as a way to control where check marks are on the duration list.
 		private bool _Selected = false;
 		public string duration { get; set; }
+		public string display { get; set; }
 		public bool Selected { get { return _Selected;} 
 			set {
 				_Selected = value;
@@ -41,4 +42,13 @@ namespace DABApp
 			Instance = new OfflineEpisodeSettings();
 		}
 	}
+
+	public class ExperimentalModeSettings
+    {
+		public string Display { get; set; }
+		public static ExperimentalModeSettings Instance { get; set; }
+		static ExperimentalModeSettings() {
+			Instance = new ExperimentalModeSettings();
+        }
+    }
 }

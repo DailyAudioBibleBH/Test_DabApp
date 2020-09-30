@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.DabUI.BaseUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +12,7 @@ namespace DABApp
 		Donation[] _donations;
 		bool isInitialized = false;
 		bool _fromLogin;
+		object source;
 
 		public DabManageDonationsPage(Donation[] donations, bool fromLogin = false)
 		{
@@ -94,7 +96,7 @@ namespace DABApp
 
 		async void OnHistory(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			DonationRecord[] history = await AuthenticationAPI.GetDonationHistory();
 			if (history != null)
 			{
@@ -105,22 +107,22 @@ namespace DABApp
 				await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			}
 			isInitialized = false;
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnRecurring(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
 			Card[] cards = await AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.id.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnGive(object o, EventArgs e) 
 		{
-			GlobalResources.WaitStart();
+			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
 			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
 			if (!url.Contains("Error"))
@@ -131,7 +133,7 @@ namespace DABApp
 			{
 				await DisplayAlert("An Error has occured.", url, "OK");
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		protected override async void OnAppearing()
@@ -146,7 +148,9 @@ namespace DABApp
 			}
 			if (isInitialized)
 			{
-				GlobalResources.WaitStart();
+				source = new object();
+				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+
 				_donations = await AuthenticationAPI.GetDonations();
 				if (_donations != null)
 				{
@@ -183,7 +187,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					//await Navigation.PopAsync();
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 			isInitialized = true;
 		}

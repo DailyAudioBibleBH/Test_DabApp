@@ -1,4 +1,5 @@
 ﻿using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
@@ -71,7 +72,8 @@ namespace DABApp
 		{
 			if (SignUpValidation())
 			{
-				GlobalResources.WaitStart("Registering your account...");
+				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Registering your account...", true));
+
 				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (ql.Success)
                 {
@@ -95,13 +97,13 @@ namespace DABApp
 						dbSettings.StoreSetting("Language", profile.language);
 						dbSettings.StoreSetting("Nickname", profile.nickname);
 					}
-					GlobalResources.WaitStop();
+					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 
 					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 				}
 				else
                 {
-					GlobalResources.WaitStop();
+					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 					await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}","OK");
                 }
 			}
