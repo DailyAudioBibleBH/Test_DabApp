@@ -646,13 +646,12 @@ namespace DABApp.Service
         {
             var adb = DabData.AsyncDatabase;
             userName = dbSettings.GetSetting("Email", "");
-            bool badgeFirstEarned = false;
+            //bool badgeFirstEarned = false;
 
             //Build out progress object
             DabGraphQlProgress progress = data.progress ;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
-                badgeFirstEarned = true;
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
                 fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
@@ -671,10 +670,6 @@ namespace DABApp.Service
                 {
                     //new user badge progress
                     badgeData = new dbUserBadgeProgress(progress, userName);
-                }
-                if (badgeFirstEarned)
-                {
-                    badgeData.whenBadgeEarned = DateTime.Now;
                 }
                 else
                 {
