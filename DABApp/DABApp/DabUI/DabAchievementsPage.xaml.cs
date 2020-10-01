@@ -18,9 +18,9 @@ namespace DABApp
 		View AchievementsView;
 		Resource _resource;
 		public int variable = 1;
-		List<dbBadges> dbBadgeList;
-		List<dbUserBadgeProgress> dbBadgeProgressList;
-		string userName;
+        List<dbBadges> dbBadgeList;
+        List<dbUserBadgeProgress> dbBadgeProgressList;
+        string userName;
 		int progressDuration;
 
 
@@ -41,13 +41,6 @@ namespace DABApp
 				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
-
-			//Connection to db
-			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
-
-			//separate badge and progress list from db
-			dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
-			dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().ToListAsync().Result;
 
 			//Get years of badges they can query
 			int minYear = ContentConfig.Instance.options.progress_year;  //The minimum year allowed by the content api
@@ -114,9 +107,14 @@ namespace DABApp
 
 		void BindProgressControls(int year)
         {
-			//find badges that have progress
+			//Connection to db
+			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+			//separate badge and progress list from db
+			dbBadgeList = adb.Table<dbBadges>().ToListAsync().Result;
+            dbBadgeProgressList = adb.Table<dbUserBadgeProgress>().ToListAsync().Result;
 
-			IEnumerable<dabUserBadgeProgress> allBadgesQuery =
+            //find badges that have progress
+            IEnumerable<dabUserBadgeProgress> allBadgesQuery =
 			from badge in dbBadgeList
 			from progress in dbBadgeProgressList
 			where badge.id == progress.badgeId && progress.userName == userName && progress.year == year
