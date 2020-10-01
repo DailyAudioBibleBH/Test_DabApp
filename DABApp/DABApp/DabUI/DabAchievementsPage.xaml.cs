@@ -229,6 +229,12 @@ namespace DABApp
 				EntireBibleGauge.StartThickness = 0;
 				EntireBibleGauge.EndThickness = 0;
 			}
+            else
+            {
+				EntireBibleImage.Source = "EntireBibleDark.png";
+				EntireBibleGauge.StartThickness = 12;
+				EntireBibleGauge.EndThickness = 12;
+            }
 
 			if (oldTestamentBadge == 100)
 			{
@@ -236,12 +242,24 @@ namespace DABApp
 				OldTestamentGauge.StartThickness = 0;
 				OldTestamentGauge.EndThickness = 0;
 			}
+            else
+            {
+				OldTestamentImage.Source = "OldandNewTestamentDark.png";
+				OldTestamentGauge.StartThickness = 5;
+				OldTestamentGauge.EndThickness = 5;
+            }
 			if (newTestamentBadge == 100)
 			{
 				NewTestamentImage.Source = "OldTestamentCompleteDark1.png";
 				NewTestatmentGauge.StartThickness = 0;
 				NewTestatmentGauge.EndThickness = 0;
 			}
+            else
+            {
+				NewTestamentImage.Source = "OldandNewTestamentDark.png";
+				NewTestatmentGauge.StartThickness = 5;
+				NewTestatmentGauge.EndThickness = 5;
+            }
 
 			//Books Tab Collection View
 			achievementListView.ItemsSource = visibleAchievementsPageList.Where(x => x.Badge.type == "books").OrderBy(x => x.Badge.id).ToList();
