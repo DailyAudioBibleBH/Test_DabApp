@@ -57,8 +57,6 @@ namespace DABApp
 			BooksTab.IsVisible = false;
 			ChannelsTab.IsVisible = false;
 			SummaryTab.IsVisible = true;
-
-			var breakpoint = "";
 		}
 
         private void SegmentControl_SelectionChanged(object sender, Telerik.XamarinForms.Common.ValueChangedEventArgs<int> e)
@@ -143,7 +141,7 @@ namespace DABApp
 			{
 				if (item.Progress.percent == 100)
 				{
-					if (item.Progress.whenBadgeEarned.AddDays(progressDuration) >= DateTime.Now)
+					if (item.Progress.updatedAt.AddDays(progressDuration) >= DateTime.Now)
 						item.Progress.showNewIndicator = true;
 					else
 						item.Progress.showNewIndicator = false;
