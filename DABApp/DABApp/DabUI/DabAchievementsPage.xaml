@@ -133,7 +133,7 @@
                                     <StackLayout Orientation="Horizontal">
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
-                                            <Button Text="NEW" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" BorderColor="{StaticResource SlideMenuBackgroundColor}" IsVisible="{Binding Progress.showNewIndicator}" FontAttributes="Bold" TextColor="White" CornerRadius="3" HeightRequest="15" WidthRequest="30"></Button>
+                                            <Button Text="NEW" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" BorderColor="{StaticResource SlideMenuBackgroundColor}" IsVisible="{Binding Progress.showNewIndicator}" FontAttributes="Bold" TextColor="White" CornerRadius="3" HeightRequest="17" WidthRequest="34"></Button>
                                         </StackLayout>
                                     </StackLayout>
                                         <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
