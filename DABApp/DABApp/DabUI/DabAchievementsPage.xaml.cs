@@ -152,7 +152,7 @@ namespace DABApp
 				else
 				{
 					item.Progress.showNewIndicator = false;
-					item.Progress.opacity = .4;
+					item.Progress.opacity = .35;
 				}
 				if (item.Badge.visible == true && item.Progress.userName == userName)
 				{

@@ -60,6 +60,7 @@
             <Color x:Key="OutlineColor">#979797</Color>
             <Color x:Key="RecordColor">#ee878b</Color>
             <Color x:Key="AchievementsProgressColor">#4fb3bd</Color>
+            <Color x:Key="AchievementsProgressBackgroundColor">#000000</Color>
             <!--Player Bar ControlTemplate-->
             <ControlTemplate x:Key="PlayerPageTemplate">
                 <RelativeLayout>

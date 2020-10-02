@@ -5,58 +5,58 @@
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input" xmlns:telerikGauges="clr-namespace:Telerik.XamarinForms.DataVisualization.Gauges;assembly=Telerik.XamarinForms.DataVisualization" xmlns:telerikCommon="clr-namespace:Telerik.XamarinForms.Common;assembly=Telerik.XamarinForms.Common"
 >
     <ContentPage.Content>
-            <StackLayout Orientation="Vertical">
-                <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-                    <Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
-                    <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                        <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
-                    </StackLayout>
-                </RelativeLayout>
-                <StackLayout Padding="10" Orientation="Vertical">
-                    <telerikInput:RadSegmentedControl x:Name="segmentControl" 
+        <StackLayout Orientation="Vertical">
+            <RelativeLayout x:Name="bannerContainer" HeightRequest="70" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
+                <Image x:Name="banner" Aspect="AspectFill" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}"/>
+                <StackLayout RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
+                    <Label Text="Achievements" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
+                </StackLayout>
+            </RelativeLayout>
+            <StackLayout Padding="10" Orientation="Vertical">
+                <telerikInput:RadSegmentedControl x:Name="segmentControl" 
                                             SegmentBackgroundColor="{StaticResource PageBackgroundColor}"
                                             SegmentTextColor="#FFFFFF"
                                             SelectedSegmentBackgroundColor="#FFFFFF"
                                             SelectedSegmentTextColor="#000000">
-                        <telerikInput:RadSegmentedControl.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>Summary</x:String>
-                                <x:String>Books</x:String>
-                                <x:String>Channels</x:String>
-                            </x:Array>
-                        </telerikInput:RadSegmentedControl.ItemsSource>
-                    </telerikInput:RadSegmentedControl>
-                    <StackLayout Orientation="Horizontal" Padding="5, 15, 0, 0">
-                        <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
-                        <Picker x:Name="progressYear" SelectedIndexChanged="progressYear_SelectedIndexChanged" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
+                    <telerikInput:RadSegmentedControl.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Summary</x:String>
+                            <x:String>Books</x:String>
+                            <x:String>Channels</x:String>
+                        </x:Array>
+                    </telerikInput:RadSegmentedControl.ItemsSource>
+                </telerikInput:RadSegmentedControl>
+                <StackLayout Orientation="Horizontal" Padding="5, 15, 0, 0">
+                    <Label Text="Year:" FontSize="Medium" VerticalTextAlignment="Center" TextColor="White"></Label>
+                    <Picker x:Name="progressYear" SelectedIndexChanged="progressYear_SelectedIndexChanged" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
 
-                    </StackLayout>
                 </StackLayout>
+            </StackLayout>
 
-                <Frame x:Name="SummaryTab" Padding="0" BackgroundColor="#222222" BorderColor="#222222" CornerRadius="10" Margin="15, 0, 15, 0">
+            <Frame x:Name="SummaryTab" Padding="0" BackgroundColor="#222222" BorderColor="#222222" CornerRadius="10" Margin="15, 0, 15, 0">
                 <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
-            
+
                     <StackLayout Padding="0, 40, 0, 0">
                         <Grid>
                             <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png" HeightRequest="250" WidthRequest="250"></Image>
                             <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13">
-                            <telerikGauges:RadRadialGauge.Axis>
-                                <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
-                            </telerikGauges:RadRadialGauge.Axis>
-                            <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator x:Name="EntireBibleGauge"
+                                <telerikGauges:RadRadialGauge.Axis>
+                                    <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
+                                </telerikGauges:RadRadialGauge.Axis>
+                                <telerikGauges:RadRadialGauge.Indicators>
+                                    <telerikGauges:GaugeBarIndicator x:Name="EntireBibleGauge"
                                                      StartThickness="12"
                                                      EndThickness="12"
                                                      Offset="-10"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
-                                    <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="0" Color="#D5272C" />
-                                        <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#FB5E48" />
-                                    </telerikGauges:GaugeBarIndicator.GradientStops>
-                                </telerikGauges:GaugeBarIndicator>
-                            </telerikGauges:RadRadialGauge.Indicators>
-                        </telerikGauges:RadRadialGauge>
+                                        <telerikGauges:GaugeBarIndicator.GradientStops>
+                                            <telerikCommon:RadGradientStop Offset="0" Color="#D5272C" />
+                                            <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#FB5E48" />
+                                        </telerikGauges:GaugeBarIndicator.GradientStops>
+                                    </telerikGauges:GaugeBarIndicator>
+                                </telerikGauges:RadRadialGauge.Indicators>
+                            </telerikGauges:RadRadialGauge>
                         </Grid>
                         <StackLayout Padding="0, 15, 0, 15">
                             <Label Text="Entire Bible" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
@@ -69,107 +69,109 @@
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" HeightRequest="200">
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid>
-                            <Image x:Name="OldTestamentImage" Source="OldandNewTestamentDark.png"></Image>
-                            <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
-                            <telerikGauges:RadRadialGauge.Axis>
-                                <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
-                            </telerikGauges:RadRadialGauge.Axis>
-                            <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator x:Name="OldTestamentGauge"
+                                <Image x:Name="OldTestamentImage" Source="OldandNewTestamentDark.png"></Image>
+                                <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
+                                    <telerikGauges:RadRadialGauge.Axis>
+                                        <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
+                                    </telerikGauges:RadRadialGauge.Axis>
+                                    <telerikGauges:RadRadialGauge.Indicators>
+                                        <telerikGauges:GaugeBarIndicator x:Name="OldTestamentGauge"
                                                      StartThickness="5"
                                                      EndThickness="5"
                                                      Offset="-10"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
-                                    <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
-                                        <telerikCommon:RadGradientStop x:Name="OldTestamentGradientOffset" Color="#84F6E1" />
-                                    </telerikGauges:GaugeBarIndicator.GradientStops>
-                                </telerikGauges:GaugeBarIndicator>
-                            </telerikGauges:RadRadialGauge.Indicators>
-                        </telerikGauges:RadRadialGauge>
-                        </Grid>
+                                            <telerikGauges:GaugeBarIndicator.GradientStops>
+                                                <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
+                                                <telerikCommon:RadGradientStop x:Name="OldTestamentGradientOffset" Color="#84F6E1" />
+                                            </telerikGauges:GaugeBarIndicator.GradientStops>
+                                        </telerikGauges:GaugeBarIndicator>
+                                    </telerikGauges:RadRadialGauge.Indicators>
+                                </telerikGauges:RadRadialGauge>
+                            </Grid>
                             <Label Text="Old Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
                             <Label x:Name="OldTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
                         <BoxView WidthRequest="1" HeightRequest="100" Color="Black" BackgroundColor="Black"></BoxView>
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
                             <Grid HorizontalOptions="CenterAndExpand" Padding="0">
-                            <Image x:Name="NewTestamentImage" Source="OldandNewTestamentDark.png"></Image>
-                            <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
-                            <telerikGauges:RadRadialGauge.Axis>
-                                <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
-                            </telerikGauges:RadRadialGauge.Axis>
-                            <telerikGauges:RadRadialGauge.Indicators>
-                                <telerikGauges:GaugeBarIndicator x:Name="NewTestatmentGauge"
+                                <Image x:Name="NewTestamentImage" Source="OldandNewTestamentDark.png"></Image>
+                                <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
+                                    <telerikGauges:RadRadialGauge.Axis>
+                                        <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
+                                    </telerikGauges:RadRadialGauge.Axis>
+                                    <telerikGauges:RadRadialGauge.Indicators>
+                                        <telerikGauges:GaugeBarIndicator x:Name="NewTestatmentGauge"
                                                      StartThickness="5"
                                                      EndThickness="5"
                                                      Offset="-10"
                                                      StartCap="Oval"
                                                      EndCap="Oval">
-                                    <telerikGauges:GaugeBarIndicator.GradientStops>
-                                        <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
-                                        <telerikCommon:RadGradientStop x:Name="NewTestamentGradientOffset" Color="#84F6E1" />
-                                    </telerikGauges:GaugeBarIndicator.GradientStops>
-                                </telerikGauges:GaugeBarIndicator>
-                            </telerikGauges:RadRadialGauge.Indicators>
-                            </telerikGauges:RadRadialGauge>
+                                            <telerikGauges:GaugeBarIndicator.GradientStops>
+                                                <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
+                                                <telerikCommon:RadGradientStop x:Name="NewTestamentGradientOffset" Color="#84F6E1" />
+                                            </telerikGauges:GaugeBarIndicator.GradientStops>
+                                        </telerikGauges:GaugeBarIndicator>
+                                    </telerikGauges:RadRadialGauge.Indicators>
+                                </telerikGauges:RadRadialGauge>
                             </Grid>
                             <Label Text="New Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
                             <Label x:Name="NewTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>
-                </Frame>
-                <StackLayout x:Name="BooksTab">
-                        <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
-                                    <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}" >
-                                        <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
-                                    </Frame>
-                                    <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="Center" Orientation="Vertical">
+            </Frame>
+            <StackLayout x:Name="BooksTab">
+                <CollectionView x:Name="achievementListView" IsEnabled="False" Margin="10, 0, 10, 0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
+                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}" >
+                                    <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
+                                </Frame>
+                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Vertical">
                                     <StackLayout Orientation="Horizontal">
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
                                             <Button Text="NEW" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" BorderColor="{StaticResource SlideMenuBackgroundColor}" IsVisible="{Binding Progress.showNewIndicator}" FontAttributes="Bold" TextColor="White" CornerRadius="3" HeightRequest="17" WidthRequest="34"></Button>
                                         </StackLayout>
                                     </StackLayout>
-                                        <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
-                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="5" CornerRadius="5" HorizontalOptions="Start" WidthRequest="200">
-                                            <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
-                                        </Frame>
-                                    </StackLayout>
-                                </StackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </StackLayout>
-                <StackLayout x:Name="ChannelsTab">
-                        <CollectionView x:Name="channelsListView" IsEnabled="False" Margin="10, 0, 10, 0">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <StackLayout HorizontalOptions="StartAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
-                                    <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}" >
-                                        <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
+                                    <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
+                                    <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="Transparent" BackgroundColor="{DynamicResource AchievementsProgressBackgroundColor}"  Padding="0" Margin="0" HeightRequest="5" CornerRadius="3" HorizontalOptions="FillAndExpand">
+                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
                                     </Frame>
-                                    <StackLayout HorizontalOptions="StartAndExpand" VerticalOptions="Center" Orientation="Vertical">
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
-                                        <Button Text="NEW" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" BorderColor="{StaticResource SlideMenuBackgroundColor}" IsVisible="{Binding Progress.showNewIndicator}" FontAttributes="Bold" TextColor="White" CornerRadius="3" HeightRequest="15" WidthRequest="30"></Button>
-                                    </StackLayout>
-                                        <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
-                                        <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="{DynamicResource AchievementsProgressColor}" Padding="0" Margin="0" HeightRequest="5" CornerRadius="5" HorizontalOptions="Start" WidthRequest="200">
-                                            <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
-                                        </Frame>
-                                    </StackLayout>
                                 </StackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </StackLayout>
-            <ContentView VerticalOptions="EndAndExpand"/>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </StackLayout>
+            <StackLayout x:Name="ChannelsTab">
+                <CollectionView x:Name="channelsListView" IsEnabled="False" Margin="10, 0, 10, 0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="0, 10, 0, 10">
+                                <Frame BackgroundColor="{StaticResource PageBackgroundColor}" VerticalOptions="Center" Opacity="{Binding Progress.opacity}" >
+                                    <Image x:Name="achievementImage" Source="{Binding Badge.imageURL}" VerticalOptions="Center"  HeightRequest="50" WidthRequest="50"/>
+                                </Frame>
+                                <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Vertical">
+                                    <StackLayout Orientation="Horizontal">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Badge.name}" Font="Bold" TextColor="White"></Label>
+                                            <Button Text="NEW" BackgroundColor="{StaticResource SlideMenuBackgroundColor}" BorderColor="{StaticResource SlideMenuBackgroundColor}" IsVisible="{Binding Progress.showNewIndicator}" FontAttributes="Bold" TextColor="White" CornerRadius="3" HeightRequest="17" WidthRequest="34"></Button>
+                                        </StackLayout>
+                                    </StackLayout>
+                                    <Label Text="{Binding Badge.description}" FontSize="Micro"></Label>
+                                    <Frame IsVisible="{Binding Progress.progressBarVisible}" IsClippedToBounds="True" BorderColor="Transparent" BackgroundColor="{DynamicResource AchievementsProgressBackgroundColor}"  Padding="0" Margin="0" HeightRequest="5" CornerRadius="3" HorizontalOptions="FillAndExpand">
+                                        <local:DabAchievementsProgressBar Progress="{Binding Progress.percent}" VerticalOptions="Start" HorizontalOptions="FillAndExpand"/>
+                                    </Frame>
+                                </StackLayout>
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+            <ContentView VerticalOptions="EndAndExpand"/>
+        </StackLayout>
     </ContentPage.Content>
 </local:DabBaseContentPage>
