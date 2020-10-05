@@ -85,8 +85,10 @@
 	<key>CFBundleDisplayName</key>
 	<string>DAB</string>
 	<key>CFBundleVersion</key>
-	<string>2020100201</string>
+	<string>2020100501</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.2.1</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>DAB would like to access your calendar for scheduling purposes.</string>
 </dict>
 </plist>
