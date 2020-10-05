@@ -597,6 +597,12 @@ namespace DABApp.Service
                         {
                             dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == d.id && x.userName == userName).FirstOrDefaultAsync().Result;
 
+                            //set percentage to 1 to make visible even if 0 (received as an int)
+                            if (d.percent <= 0)
+                            {
+                                d.percent = 1;
+                            }
+
                             if (data == null)
                             {
                                 d.userName = userName;
@@ -649,7 +655,7 @@ namespace DABApp.Service
             //bool badgeFirstEarned = false;
 
             //Build out progress object
-            DabGraphQlProgress progress = data.progress ;
+            DabGraphQlProgress progress = data.progress;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
                 //log to firebase
@@ -661,11 +667,18 @@ namespace DABApp.Service
 
                 await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
             }
-            
+
             //Save badge progress data
             dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
+                //set percentage to 1 to make visible even if 0 (received as an int)
+                if (progress.percent <= 0)
+                {
+                    progress.percent = 1;
+                }
+
+
                 if (badgeData == null)
                 {
                     //new user badge progress
