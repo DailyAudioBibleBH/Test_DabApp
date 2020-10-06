@@ -185,6 +185,7 @@ namespace DABApp
         void OnBack(object o, EventArgs e)
         {
             BackButton.IsEnabled = false;
+            DabCheckEmailPage.NextHit = false;
             Navigation.PopAsync();
         }
 

@@ -18,6 +18,7 @@ namespace DABApp
         //Indicator so double connection doesn't get hit from OnResume
         object source = new object();
         private bool hasAppeared; //used to only connect the first time through;
+        public static bool NextHit = false;
 
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -48,39 +49,45 @@ namespace DABApp
         {
             /* Handles when they click next to continue with an email address
              */
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-            //check for existing/new email
-            var ql = await  DabService.CheckEmail(Email.Text.Trim());
-            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
-
-            //determine next path
-            if (ql.Success)
+            if (!NextHit)
             {
-                if (ql.Data.payload.data.checkEmail == true)
+                NextHit = true;
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                //check for existing/new email
+                var ql = await DabService.CheckEmail(Email.Text.Trim());
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+
+                //determine next path
+                if (ql.Success)
                 {
-                    //existing user - log them in
-                    await Navigation.PushAsync(new DabLoginPage(Email.Text));
+                    if (ql.Data.payload.data.checkEmail == true)
+                    {
+                        //existing user - log them in
+                        await Navigation.PushAsync(new DabLoginPage(Email.Text));
+                    }
+                    else
+                    {
+                        //new user - register them
+                        await Navigation.PushAsync(new DabSignUpPage(Email.Text));
+                    }
                 }
                 else
                 {
-                    //new user - register them
-                    await Navigation.PushAsync(new DabSignUpPage(Email.Text));
+                    var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again", "OK");
+                    if (reconnect == true)
+                    {
+                        DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Retrying...", true));
+                        await DabService.InitializeConnection();
+                        OnNext(o, e);
+                        DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                    }
+
                 }
             }
             else
             {
-               var reconnect = await DisplayAlert("Error Occured", ql.ErrorMessage, "Try Again","OK");
-                if (reconnect == true)
-                {
-                    DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Retrying...", true));
-                    await DabService.InitializeConnection();
-                    OnNext(o, e);
-                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
-                }
-
+                NextHit = false;
             }
-
-           
         }
 
         async void OnGuestLogin(object o, EventArgs e)
