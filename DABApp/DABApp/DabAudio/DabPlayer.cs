@@ -142,16 +142,24 @@ namespace DABApp.DabAudio
         {
             get
             {
-                //Return the duration of the player, ensuring it's >0
-                if (nativePlayer.Duration <= 0)
+                try
                 {
-                    //TODO: Use the episodes total length if possible
-                    return _episodeDuration;
+                    //Return the duration of the player, ensuring it's >0
+                    if (nativePlayer.Duration <= 0)
+                    {
+                        //TODO: Use the episodes total length if possible
+                        return _episodeDuration;
+                    }
+                    else
+                    {
+                        return nativePlayer.Duration;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return nativePlayer.Duration;
+                    return 0;
                 }
+                
             }
         }
 
@@ -181,7 +189,14 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return nativePlayer.Duration - CurrentPosition;
+                try
+                {
+                    return nativePlayer.Duration - CurrentPosition;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
             }
         }
 
