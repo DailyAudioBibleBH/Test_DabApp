@@ -15,6 +15,7 @@ using Xamarin.Forms.Platform.Android;
 using Android.Views.InputMethods;
 using static Android.Views.ViewTreeObserver;
 using DABApp.DabViewHelpers;
+using Plugin.CurrentActivity;
 
 [assembly: ExportRenderer(typeof(CustomEntry), typeof(CustomEntryRenderer))]
 namespace DABApp.Droid.DependencyServices
@@ -59,13 +60,13 @@ namespace DABApp.Droid.DependencyServices
         {
             if (inputMethodManager == null || inputMethodManager.Handle == IntPtr.Zero)
             {
-                inputMethodManager = (InputMethodManager)Xamarin.Forms.Forms.Context.GetSystemService(Context.InputMethodService);
+                inputMethodManager = (InputMethodManager)CrossCurrentActivity.Current.AppContext.GetSystemService(Context.InputMethodService);
             }
         }
 
         private void SubscribeEvents()
         {
-            ((Activity)Xamarin.Forms.Forms.Context).Window.DecorView.ViewTreeObserver.GlobalLayout += this.OnGlobalLayout;
+            (CrossCurrentActivity.Current.Activity).Window.DecorView.ViewTreeObserver.GlobalLayout += this.OnGlobalLayout;
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<Entry> e)
@@ -82,9 +83,11 @@ namespace DABApp.Droid.DependencyServices
         {
             //if entry has focus and using system keyboard
             if (e.HasFocus && IsCurrentlyShown())
-                (Forms.Context as Activity).Window.SetSoftInputMode(SoftInput.AdjustResize);
+            {
+                (CrossCurrentActivity.Current.Activity).Window.SetSoftInputMode(SoftInput.AdjustResize);
+            }
             else
-                (Forms.Context as Activity).Window.SetSoftInputMode(SoftInput.AdjustNothing);
+                (CrossCurrentActivity.Current.Activity).Window.SetSoftInputMode(SoftInput.AdjustNothing);
         }
     }
 }

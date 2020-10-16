@@ -35,6 +35,7 @@ using Microsoft.AppCenter.Crashes;
 using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
+using Plugin.CurrentActivity;
 
 namespace DABApp.Droid
 {
@@ -52,6 +53,8 @@ namespace DABApp.Droid
             SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
             SQLitePCL.raw.sqlite3_enable_shared_cache(1);
             SQLitePCL.raw.sqlite3_initialize();
+
+            CrossCurrentActivity.Current.Init(this, bundle);
 
             MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) =>
             {

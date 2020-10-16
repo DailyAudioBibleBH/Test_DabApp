@@ -1,6 +1,7 @@
 ﻿using System;
 using Android.Content;
 using DABApp.Droid;
+using Plugin.CurrentActivity;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(ShareIntent))]
@@ -14,7 +15,7 @@ namespace DABApp.Droid
 			var myIntent = new Intent(Android.Content.Intent.ActionSend);
 			myIntent.PutExtra(Intent.ExtraText, $"https://player.dailyaudiobible.com/{Channelcode}/{episodeId}");
 			myIntent.SetType("text/plain");
-			Forms.Context.StartActivity(Intent.CreateChooser(myIntent, "Choose an App"));
+			CrossCurrentActivity.Current.AppContext.StartActivity(Intent.CreateChooser(myIntent, "Choose an App"));
 		}
 	}
 }

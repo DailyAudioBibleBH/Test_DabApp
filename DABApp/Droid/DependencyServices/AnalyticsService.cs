@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using DABApp.Droid;
 using Firebase.Analytics;
+using Plugin.CurrentActivity;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(AnalyticsService))]
@@ -38,7 +39,7 @@ namespace DABApp.Droid
 
             
 
-            var fireBaseAnalytics = FirebaseAnalytics.GetInstance(Forms.Context);
+            var fireBaseAnalytics = FirebaseAnalytics.GetInstance(CrossCurrentActivity.Current.AppContext);
 
             if (parameters == null)
             {
