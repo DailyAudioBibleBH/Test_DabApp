@@ -120,7 +120,7 @@ namespace DABApp
             }
 
             //get the rull list of episodes for the resource
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
             //Update month list
             if (Months.Items.Contains("All Episodes") == false)

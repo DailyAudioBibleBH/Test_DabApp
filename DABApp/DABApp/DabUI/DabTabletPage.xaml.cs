@@ -70,7 +70,7 @@ namespace DABApp
             _resource = resource;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
+            Episodes = (IEnumerable<dbEpisodes>)PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
             if (Months.Items.Contains("All Episodes") == false)
             {
@@ -505,7 +505,7 @@ namespace DABApp
             }
 
             //get the rull list of episodes for the resource
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
             //Update month list
             if (Months.Items.Contains("All Episodes") == false)
@@ -732,7 +732,7 @@ namespace DABApp
                 GlobalResources.WaitStart("Refreshing episodes...");
 
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
-                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
                 if (episode == null && Episodes.Count() > 0)
                 {
@@ -931,7 +931,7 @@ namespace DABApp
             List<string> emptyList = new List<string>();
 
             //Load the episode list
-            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
+            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Result.Count() > 0)
             {
                 //Store the resource / channel
                 _resource = (Resource)ChannelsList.SelectedItem;
@@ -944,7 +944,7 @@ namespace DABApp
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
 
                 //Load the list if episodes for the channel.
-                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
 
                 GlobalResources.WaitStop();
