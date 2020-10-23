@@ -38,11 +38,12 @@ namespace DABApp.Droid
             double MaxAmp = 1;
 
             recorder = new MediaRecorder();
-            recorder.SetAudioSource(AudioSource.Mic);
+            recorder.SetAudioSource(AudioSource.VoiceRecognition);
             recorder.SetOutputFormat(OutputFormat.Mpeg4);
             recorder.SetAudioEncoder(AudioEncoder.Aac);
             recorder.SetOutputFile(fileName);
-            recorder.SetAudioEncodingBitRate(16);
+            recorder.SetAudioEncodingBitRate(128000);
+            recorder.SetAudioSamplingRate(16000);
             recorder.Prepare();
             recorder.Start();
             IsRecording = true;
