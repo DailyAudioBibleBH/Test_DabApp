@@ -549,33 +549,14 @@ namespace DABApp.Service
 
 
             //save user profile settings
-            var adb = DabData.AsyncDatabase;
-
-            dbUserData userData = new DABApp.dbUserData();
-            userData.Id = user.id;
-            userData.WpId = user.wpId;
-            userData.FirstName = user.firstName;
-            userData.LastName = user.lastName;
-            userData.NickName = user.nickname;
-            userData.Email = user.email;
-            userData.Language = user.language;
-            userData.Channel = user.channel;
-            userData.Channels = user.channels;
-            userData.UserRegistered = user.userRegistered;
-            userData.Token = user.token;
-
-            await adb.InsertOrReplaceAsync(userData);
-            
-
-
-            //dbSettings.StoreSetting("FirstName", user.firstName);
-            //dbSettings.StoreSetting("LastName", user.lastName);
-            //dbSettings.StoreSetting("Email", user.email);
-            //dbSettings.StoreSetting("Nickname", user.nickname);
-            //dbSettings.StoreSetting("Channel", user.channel);
-            //dbSettings.StoreSetting("Channels", user.channels);
-            //dbSettings.StoreSetting("Language", user.language);
-            //dbSettings.StoreSetting("WpId", user.wpId.ToString());
+            dbSettings.StoreSetting("FirstName", user.firstName);
+            dbSettings.StoreSetting("LastName", user.lastName);
+            dbSettings.StoreSetting("Email", user.email);
+            dbSettings.StoreSetting("Nickname", user.nickname);
+            dbSettings.StoreSetting("Channel", user.channel);
+            dbSettings.StoreSetting("Channels", user.channels);
+            dbSettings.StoreSetting("Language", user.language);
+            dbSettings.StoreSetting("WpId", user.wpId.ToString());
 
             //alert anything that is listening
             DabServiceEvents.UserProfileChanged(user);
