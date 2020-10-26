@@ -586,7 +586,7 @@ namespace DABApp.Service
             //dbSettings.StoreSetting("WpId", user.wpId.ToString());
 
             //alert anything that is listening
-            DabServiceEvents.UserProfileChanged(user);
+             DabServiceEvents.UserProfileChanged(user);
 
             return user;
 

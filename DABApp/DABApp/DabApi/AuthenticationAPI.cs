@@ -43,6 +43,8 @@ namespace DABApp
             guestUserData.NickName = "Guest";
             guestUserData.UserRegistered = DateTime.MinValue;
             guestUserData.TokenCreation = DateTime.Now;
+
+            adb.InsertAsync(guestUserData);
             //dbSettings.StoreSetting("TokenCreation", "");
             //dbSettings.StoreSetting("Token", "");
             //dbSettings.StoreSetting("Email", "");
