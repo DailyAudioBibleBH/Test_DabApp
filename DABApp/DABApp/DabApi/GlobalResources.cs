@@ -87,7 +87,8 @@ namespace DABApp
         }
 
         public static DateTime DabMinDate //The min date we use throughout the DAB app
-        { get
+        {
+            get
             {
                 return new DateTime(2019, 12, 31).ToUniversalTime();
             }
@@ -96,6 +97,20 @@ namespace DABApp
         public static string APIVersion { get; set; } = "2";
 
         public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4OTk5NDcxOSwibmJmIjoxNTg5OTk0NzE5LCJleHAiOjE3NDc2NzQ3MTksImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.JCt2vuC2tSkyY2Y5YUFZK6DpQ9I_EoVt3KAUqrzQQ0A";
+
+        public static string CleanupJson(string json)
+        {
+            //clean up json strings
+
+
+            if (json.Contains("ZZ\\\"")) //clean up dates with double Z's for universal time.
+            {
+                Debug.WriteLine($"Cleaning up JSON with double Z's in UTC: {json}");
+                json = json.Replace("ZZ\\\"", "Z\\\"");
+            }
+            return json;
+        }
+
         public static readonly string StripeApiKey = "pk_live_O0E92mb0sHFrAD5JGBiU9fgK";
 
 
@@ -375,7 +390,7 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
+                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
                 string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
                 //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
@@ -430,7 +445,7 @@ namespace DABApp
 
             return dbSettings.GetSetting(k, "");
         }
-    
+
 
         public static void SetLastRefreshDate(int ChannelId)
         {
@@ -470,7 +485,7 @@ namespace DABApp
 
             return sBuilder.ToString();  // Return the hexadecimal string. 
         }
-        
+
         //Get or set Test Mode
         public static bool TestMode { get; set; }
 
