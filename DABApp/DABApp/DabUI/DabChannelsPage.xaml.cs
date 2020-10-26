@@ -197,7 +197,7 @@ namespace DABApp
             }
 
             //Get channel and episode
-            string favoriteChannel = dbSettings.GetSetting("Channel", "");
+            string favoriteChannel = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Channel;//dbSettings.GetSetting("Channel", "");
             if (favoriteChannel != "")
             {
                 favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;

@@ -115,6 +115,7 @@ namespace DABApp.Service
             */
             try
             {
+                var adb = DabData.AsyncDatabase;
 
                 if (GuestStatus.Current.IsGuestLogin == false)
                 {
@@ -126,7 +127,7 @@ namespace DABApp.Service
                         try
                         {
                             //get the expiration date
-                            var creation = DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
+                            DateTime creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;//DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
                             int days = ContentConfig.Instance.options.token_life;
                             if (DateTime.Now > creation.AddDays(days))
                             {
@@ -591,7 +592,7 @@ namespace DABApp.Service
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = dbSettings.GetSetting("Email", "");
+            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;//dbSettings.GetSetting("Email", "");
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
@@ -621,7 +622,7 @@ namespace DABApp.Service
 
                     }
                     //update last time checked for badge progress
-                    string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
+                    string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
                     dbSettings.StoreSetting(settingsKey, DateTime.UtcNow.ToString());
                 }
                 catch (Exception ex)
@@ -654,7 +655,7 @@ namespace DABApp.Service
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
-            userName = dbSettings.GetSetting("Email", "");
+            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;//dbSettings.GetSetting("Email", "");
 
             //Build out progress object
             DabGraphQlProgress progress = data.progress ;
@@ -662,7 +663,7 @@ namespace DABApp.Service
             {
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
-                fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
+                fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
                 fbInfo.Add("idiom", Device.Idiom.ToString());
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
@@ -697,7 +698,7 @@ namespace DABApp.Service
         {
             //log to firebase
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
+            fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 

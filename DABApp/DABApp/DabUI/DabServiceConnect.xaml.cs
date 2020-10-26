@@ -34,7 +34,7 @@ namespace DABApp.DabUI
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
                 //Determine if the user was logged in at last use
-                string token = dbSettings.GetSetting("Token", "");
+                string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
 
                 //check for version list for required upgrade
                 List<Versions> versionList = new List<Versions>();

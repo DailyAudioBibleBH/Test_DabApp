@@ -9,7 +9,7 @@ namespace DABApp
     public class dbUserData
     {
         public int Id { get; set; }
-        public int WpId { get; set; }
+        public string WpId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NickName { get; set; }
@@ -19,5 +19,6 @@ namespace DABApp
         public string Channels { get; set; }
         public DateTime UserRegistered { get; set; }
         public string Token { get; set; }
+        public DateTime TokenCreation { get; set; }
     }
 }

@@ -25,7 +25,7 @@ namespace DABApp
             NavigationPage.SetHasNavigationBar(this, false);
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            Email.Text = dbSettings.GetSetting("Email", "");
+            Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;//dbSettings.GetSetting("Email", "");
             lblTestMode.IsVisible = GlobalResources.TestMode;
             if (Device.Idiom == TargetIdiom.Phone)
             {

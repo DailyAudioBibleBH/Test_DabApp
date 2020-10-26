@@ -233,7 +233,8 @@ namespace DABApp
                 //Sending Event to Firebase Analytics about Topic post
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                //string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(topic);
@@ -265,7 +266,8 @@ namespace DABApp
                 //Sending Event to Firebase Analytics to record Reply post.
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                //string TokenSettingsValue = dbSettings.GetSetting("Token", "");
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(reply);

@@ -275,7 +275,16 @@ namespace DABApp
 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    return dbSettings.GetSetting("WpId", "-1");
+                    string wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
+                    if (wpID != null)
+                    {
+                        return wpID;
+                    }
+                    else
+                    {
+                        return "-1";
+                    }
+                    //return dbSettings.GetSetting("WpId", "-1");
                 }
                 else
                 {
@@ -292,7 +301,8 @@ namespace DABApp
         public static string GetUserName()
         {
             //friendly user name
-            return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
+            //return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
+            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName).Trim();
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
@@ -339,7 +349,8 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
+                string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
+                //string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
                 string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
                 //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
 
@@ -354,7 +365,7 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
+                string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
                 string progressDate = value.ToString();
                 dbSettings.StoreSetting(settingsKey, progressDate);
             }
@@ -365,7 +376,7 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
+                string settingsKey = $"ActionDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
                 DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
                 return LastActionDate;
             }
@@ -373,7 +384,7 @@ namespace DABApp
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
+                string settingsKey = $"ActionDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
                 string actionDate = value.ToString();
                 dbSettings.StoreSetting(settingsKey, actionDate);
             }
@@ -409,7 +420,7 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
-                string hash = CalculateMD5Hash(dbSettings.GetSetting("Email", ""));
+                string hash = CalculateMD5Hash(adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }
