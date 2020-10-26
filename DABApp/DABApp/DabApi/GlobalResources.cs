@@ -206,7 +206,7 @@ namespace DABApp
 
         static GlobalResources()
         {
-            Instance = new GlobalResources();
+             Instance = new GlobalResources();
         }
 
         public int FlowListViewColumns
@@ -220,7 +220,7 @@ namespace DABApp
             {
                 flowListViewColumns = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("FlowListViewColumns"));
-            }
+            } 
         }
 
 
@@ -268,32 +268,33 @@ namespace DABApp
             }
         }
 
-        public static string GetUserWpId()
+        public static int GetUserWpId()
         {
             try
             {
 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    string wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
-                    if (wpID != null)
-                    {
-                        return wpID;
-                    }
-                    else
-                    {
-                        return "-1";
-                    }
+                    int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
+                    return wpID;
+                    //if (wpID != null)
+                    //{
+                    //    return wpID;
+                    //}
+                    //else
+                    //{
+                    //    return -1;
+                    //}
                     //return dbSettings.GetSetting("WpId", "-1");
                 }
                 else
                 {
-                    return "0"; //guest
+                    return 0; //guest
                 }
             }
             catch (Exception ex)
             {
-                return "-2"; //error
+                return -2; //error
             }
 
         }

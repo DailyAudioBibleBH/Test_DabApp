@@ -46,9 +46,16 @@ namespace DABApp
 					if (ql.Success)
 					{
 						var data = ql.Data.payload.data.updateUserFields;
-						dbSettings.StoreSetting("FirstName", data.firstName);
-						dbSettings.StoreSetting("LastName", data.lastName);
-						dbSettings.StoreSetting("Email", data.email);
+						//token was updated successfully
+						var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+						await adb.DeleteAsync(oldUserData);
+						oldUserData.FirstName = data.firstName;
+						oldUserData.LastName = data.lastName;
+						oldUserData.Email = data.email;
+						await adb.InsertAsync(oldUserData);
+						//dbSettings.StoreSetting("FirstName", data.firstName);
+						//dbSettings.StoreSetting("LastName", data.lastName);
+						//dbSettings.StoreSetting("Email", data.email);
 					} else
                     {
 						await DisplayAlert("User profile could not be changed", ql.ErrorMessage, "OK");

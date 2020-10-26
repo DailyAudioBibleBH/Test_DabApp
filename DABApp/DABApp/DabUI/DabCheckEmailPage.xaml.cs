@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
+using SQLite;
 
 namespace DABApp
 {
@@ -19,6 +20,8 @@ namespace DABApp
         public DabCheckEmailPage(bool fromPlayer = false, bool fromDonation = false)
         {
             InitializeComponent();
+
+            SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
             /* UI Prep
              */

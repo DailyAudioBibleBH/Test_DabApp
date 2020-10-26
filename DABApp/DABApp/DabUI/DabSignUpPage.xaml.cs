@@ -75,10 +75,18 @@ namespace DABApp
 				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (ql.Success)
                 {
+					SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
-					dbSettings.StoreSetting("Token", token);
-					dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
+					//token was updated successfully
+					var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+					await adb.DeleteAsync(oldUserData);
+					oldUserData.Token = token;
+					oldUserData.TokenCreation = DateTime.Now;
+					await adb.InsertAsync(oldUserData);
+					//dbSettings.StoreSetting("Token", token);
+					//dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
 					await DabService.TerminateConnection();
 					await DabService.InitializeConnection(token);
 					//get user profile information and update it.
@@ -87,13 +95,24 @@ namespace DABApp
 					{
 						//process user profile information
 						var profile = ql.Data.payload.data.user;
-						dbSettings.StoreSetting("FirstName", profile.firstName);
-						dbSettings.StoreSetting("LastName", profile.lastName);
-						dbSettings.StoreSetting("Email", profile.email);
-						dbSettings.StoreSetting("Channel", profile.channel);
-						dbSettings.StoreSetting("Channels", profile.channels);
-						dbSettings.StoreSetting("Language", profile.language);
-						dbSettings.StoreSetting("Nickname", profile.nickname);
+
+						oldUserData.FirstName = profile.firstName;
+						oldUserData.LastName = profile.lastName;
+						oldUserData.Email = profile.email;
+						oldUserData.Channel = profile.channel;
+						oldUserData.Channels = profile.channels;
+						oldUserData.Language = profile.language;
+						oldUserData.NickName = profile.nickname;
+
+						await adb.InsertAsync(oldUserData);
+
+						//dbSettings.StoreSetting("FirstName", profile.firstName);
+						//dbSettings.StoreSetting("LastName", profile.lastName);
+						//dbSettings.StoreSetting("Email", profile.email);
+						//dbSettings.StoreSetting("Channel", profile.channel);
+						//dbSettings.StoreSetting("Channels", profile.channels);
+						//dbSettings.StoreSetting("Language", profile.language);
+						//dbSettings.StoreSetting("Nickname", profile.nickname);
 					}
 					GlobalResources.WaitStop();
 

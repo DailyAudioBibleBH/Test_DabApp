@@ -150,8 +150,13 @@ namespace DABApp.Service
                             if (ql.Success)
                             {
                                 //token was updated successfully
-                                dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
-                                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+                                var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                                await adb.DeleteAsync(oldUserData);
+                                oldUserData.Token = ql.Data.payload.data.updateToken.token;
+                                oldUserData.TokenCreation = DateTime.Now;
+                                await adb.InsertAsync(oldUserData);
+                                //dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
+                                //dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
 
                                 //reset the connection using the new token
                                 await DabService.TerminateConnection();
@@ -552,7 +557,7 @@ namespace DABApp.Service
             //save user profile settings
             var adb = DabData.AsyncDatabase;
 
-            dbUserData userData = new DABApp.dbUserData();
+            dbUserData userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
             userData.Id = user.id;
             userData.WpId = user.wpId;
             userData.FirstName = user.firstName;
@@ -566,6 +571,8 @@ namespace DABApp.Service
             userData.Token = user.token;
 
             await adb.InsertOrReplaceAsync(userData);
+
+            var test = adb.Table<dbUserData>().ToListAsync().Result;
             
 
 
@@ -697,6 +704,7 @@ namespace DABApp.Service
         public static async Task RemoveToken()
         {
             //log to firebase
+            var adb = DabData.AsyncDatabase;
             var fbInfo = new Dictionary<string, string>();
             fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
             fbInfo.Add("idiom", Device.Idiom.ToString());

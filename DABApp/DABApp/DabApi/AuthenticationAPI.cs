@@ -36,7 +36,7 @@ namespace DABApp
             guestUserData.Email = "";
             guestUserData.FirstName = "Guest";
             guestUserData.LastName = "Guest";
-            guestUserData.WpId = "";
+            guestUserData.WpId = 0;
             guestUserData.Channel = "";
             guestUserData.Channels = "";
             guestUserData.Id = 0;

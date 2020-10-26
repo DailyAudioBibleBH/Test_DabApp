@@ -8,8 +8,9 @@ namespace DABApp
     [Table("UserData")]
     public class dbUserData
     {
+        [PrimaryKey]
         public int Id { get; set; }
-        public string WpId { get; set; }
+        public int WpId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NickName { get; set; }

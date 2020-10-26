@@ -612,7 +612,7 @@ namespace DABApp
                 var token = new APIToken
                 {
                     value = tokenValue,
-                    expires = creation,
+                    expires = creation.ToString(),
                     user_email = email,
                     user_first_name = firstName,
                     user_last_name = lastName,

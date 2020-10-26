@@ -1,4 +1,5 @@
 ﻿using Acr.DeviceInfo;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +79,7 @@ namespace DABApp
 		}
 
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {
+			SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 			var item = (Link)e.Item;
             if (item.linkText.Contains("Report an Issue"))
             {

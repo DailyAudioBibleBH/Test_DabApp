@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AddressBook;
 using DABApp.Service;
+using SQLite;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -33,8 +35,25 @@ namespace DABApp.DabUI
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
                 //Determine if the user was logged in at last use
-                string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                if (token == null)
+                {
+                    dbUserData guestUserData = new dbUserData();
+                    guestUserData.Token = "";
+                    guestUserData.Email = "";
+                    guestUserData.FirstName = "Guest";
+                    guestUserData.LastName = "Guest";
+                    guestUserData.WpId = 0;
+                    guestUserData.Channel = "";
+                    guestUserData.Channels = "";
+                    guestUserData.Id = 0;
+                    guestUserData.NickName = "Guest";
+                    guestUserData.UserRegistered = DateTime.MinValue;
+                    guestUserData.TokenCreation = DateTime.Now;
+                    await adb.InsertOrReplaceAsync(guestUserData);
+                }
 
                 //check for version list for required upgrade
                 List<Versions> versionList = new List<Versions>();
@@ -64,13 +83,14 @@ namespace DABApp.DabUI
 //#endif
 
                 NavigationPage navPage;
+                token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
 
                 if (versionList != null)
                 {
                     //version list in place, force user to log in
                     navPage = new NavigationPage(new DabCheckEmailPage());
                 }
-                else if (token == "")
+                else if (token.Token == "")
                 {
                     //user last logged in as a guest, take them to enter their email
                     navPage = new NavigationPage(new DabCheckEmailPage());
@@ -83,7 +103,7 @@ namespace DABApp.DabUI
                     if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                     {
                         //we have internet access - establish a connection with the token
-                        var ql = await DabService.InitializeConnection(token);
+                        var ql = await DabService.InitializeConnection(token.Token);
                         if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
                         {
                             //token is validated as expired - make them log back in
