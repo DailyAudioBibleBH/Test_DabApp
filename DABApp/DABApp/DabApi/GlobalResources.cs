@@ -474,7 +474,7 @@ namespace DABApp
         //Get or set Test Mode
         public static bool TestMode { get; set; }
 
-        //Get or set Experiment Mode
+        //Get or set Experimental Mode
         public static bool ExperimentMode { get; set; }
 
         //Return the base URL to give

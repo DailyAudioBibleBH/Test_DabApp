@@ -288,6 +288,7 @@ namespace DABApp.Service
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 object source = new object();
                 DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 return false;

@@ -33,11 +33,11 @@ namespace DABApp
             DabViewHelper.InitDabForm(this);
             NavigationPage.SetHasBackButton(this, false);
 
-            //Setting up experiment mode viewcell
+            //Setting up experimental mode viewcell
             StackLayout experimentStack = new StackLayout { Orientation = StackOrientation.Horizontal,
                                                             BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"],
                                                             Padding = 10, Children = {
-                                                                new Label { Text = "Experiment Mode Settings", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
+                                                                new Label { Text = "Experimental Mode Settings", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
                                                                 new Image { Source="ic_chevron_right_white_3x.png", HorizontalOptions=LayoutOptions.EndAndExpand, Aspect=Aspect.AspectFit}
                                                             }
             };
