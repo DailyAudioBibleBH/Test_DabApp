@@ -47,12 +47,16 @@ namespace DABApp
 					{
 						var data = ql.Data.payload.data.updateUserFields;
 						//token was updated successfully
-						var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-						await adb.DeleteAsync(oldUserData);
-						oldUserData.FirstName = data.firstName;
-						oldUserData.LastName = data.lastName;
-						oldUserData.Email = data.email;
-						await adb.InsertAsync(oldUserData);
+						var userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+						await adb.DeleteAsync(userData);
+						userData.FirstName = data.firstName;
+						userData.LastName = data.lastName;
+						userData.Email = data.email;
+						await adb.InsertAsync(userData);
+
+						GraphQlUser newUser = new GraphQlUser(userData);
+						DabServiceEvents.UserProfileChanged(newUser);
+
 						//dbSettings.StoreSetting("FirstName", data.firstName);
 						//dbSettings.StoreSetting("LastName", data.lastName);
 						//dbSettings.StoreSetting("Email", data.email);
