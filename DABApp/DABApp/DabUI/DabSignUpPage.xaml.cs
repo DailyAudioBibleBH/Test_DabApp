@@ -80,13 +80,10 @@ namespace DABApp
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
 					//token was updated successfully
-					var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-					await adb.DeleteAsync(oldUserData);
-					oldUserData.Token = token;
-					oldUserData.TokenCreation = DateTime.Now;
-					await adb.InsertAsync(oldUserData);
-					//dbSettings.StoreSetting("Token", token);
-					//dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
+					var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+					newUserData.Token = token;
+					newUserData.TokenCreation = DateTime.Now;
+					await adb.InsertOrReplaceAsync(newUserData);
 					await DabService.TerminateConnection();
 					await DabService.InitializeConnection(token);
 					//get user profile information and update it.
@@ -96,23 +93,15 @@ namespace DABApp
 						//process user profile information
 						var profile = ql.Data.payload.data.user;
 
-						oldUserData.FirstName = profile.firstName;
-						oldUserData.LastName = profile.lastName;
-						oldUserData.Email = profile.email;
-						oldUserData.Channel = profile.channel;
-						oldUserData.Channels = profile.channels;
-						oldUserData.Language = profile.language;
-						oldUserData.NickName = profile.nickname;
+						newUserData.FirstName = profile.firstName;
+						newUserData.LastName = profile.lastName;
+						newUserData.Email = profile.email;
+						newUserData.Channel = profile.channel;
+						newUserData.Channels = profile.channels;
+						newUserData.Language = profile.language;
+						newUserData.NickName = profile.nickname;
 
-						await adb.InsertAsync(oldUserData);
-
-						//dbSettings.StoreSetting("FirstName", profile.firstName);
-						//dbSettings.StoreSetting("LastName", profile.lastName);
-						//dbSettings.StoreSetting("Email", profile.email);
-						//dbSettings.StoreSetting("Channel", profile.channel);
-						//dbSettings.StoreSetting("Channels", profile.channels);
-						//dbSettings.StoreSetting("Language", profile.language);
-						//dbSettings.StoreSetting("Nickname", profile.nickname);
+						await adb.InsertAsync(newUserData);
 					}
 					GlobalResources.WaitStop();
 

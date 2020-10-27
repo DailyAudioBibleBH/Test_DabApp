@@ -277,15 +277,6 @@ namespace DABApp
                 {
                     int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
                     return wpID;
-                    //if (wpID != null)
-                    //{
-                    //    return wpID;
-                    //}
-                    //else
-                    //{
-                    //    return -1;
-                    //}
-                    //return dbSettings.GetSetting("WpId", "-1");
                 }
                 else
                 {
@@ -302,8 +293,7 @@ namespace DABApp
         public static string GetUserName()
         {
             //friendly user name
-            //return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
-            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName).Trim();
+            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId

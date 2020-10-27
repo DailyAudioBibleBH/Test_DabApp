@@ -48,19 +48,15 @@ namespace DABApp
 						var data = ql.Data.payload.data.updateUserFields;
 						//token was updated successfully
 						var userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-						await adb.DeleteAsync(userData);
 						userData.FirstName = data.firstName;
 						userData.LastName = data.lastName;
 						userData.Email = data.email;
-						await adb.InsertAsync(userData);
+						await adb.InsertOrReplaceAsync(userData);
 
 						GraphQlUser newUser = new GraphQlUser(userData);
 						DabServiceEvents.UserProfileChanged(newUser);
-
-						//dbSettings.StoreSetting("FirstName", data.firstName);
-						//dbSettings.StoreSetting("LastName", data.lastName);
-						//dbSettings.StoreSetting("Email", data.email);
-					} else
+					} 
+					else
                     {
 						await DisplayAlert("User profile could not be changed", ql.ErrorMessage, "OK");
 						okToClose = false;

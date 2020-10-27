@@ -15,36 +15,21 @@ namespace DABApp
         {
             try
             {
-                await DeleteSetting("Token");
-                await DeleteSetting("TokenCreation");
-                await DeleteSetting("FirstName");
-                await DeleteSetting("LastName");
-                await DeleteSetting("Email");
-            }
-            catch (Exception ex)
-            {
-                //ignore exceptions
-            }
-            return true;
-        }
-
-        public static async Task<bool> DeleteSetting(string Key)
-        {
-            try
-            {
                 SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-                var s = adb.Table<dbSettings>().Where(x => x.Key == Key).FirstOrDefaultAsync().Result;
-                if (s != null)
-                {
-                    await adb.DeleteAsync(s);
-                }
+                var a = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                a.Token = "";
+                a.TokenCreation = DateTime.MinValue;
+                a.FirstName = "";
+                a.LastName = "";
+                a.Email = "";
+                await adb.InsertOrReplaceAsync(a);
+                var test = adb.Table<dbUserData>().ToListAsync().Result;
             }
             catch (Exception ex)
             {
                 //ignore exceptions
             }
             return true;
-
         }
 
         public static string GetSetting(string Key, string DefaultValue)

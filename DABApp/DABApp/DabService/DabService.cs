@@ -270,7 +270,7 @@ namespace DABApp.Service
         {
             /* this routine inits a new connection without a token and determines which one to use based on login state
              */
-            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;//dbSettings.GetSetting("Token", "");
+            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token
             if (token == "")
             {
                 //use the api token

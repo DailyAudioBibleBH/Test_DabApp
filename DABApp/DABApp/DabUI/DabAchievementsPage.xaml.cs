@@ -29,7 +29,7 @@ namespace DABApp
 			//Connection to db
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-			string userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;//dbSettings.GetSetting("Email", "");
+			string userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
 			banner.Source = new UriImageSource
 			{

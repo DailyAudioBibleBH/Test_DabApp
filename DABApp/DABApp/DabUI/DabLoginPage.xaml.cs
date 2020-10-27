@@ -113,13 +113,10 @@ namespace DABApp
 
                 //token was updated successfully
                 var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                await adb.DeleteAsync(oldUserData);
                 oldUserData.Token = user.token;
                 oldUserData.TokenCreation = DateTime.Now;
-                await adb.InsertAsync(oldUserData);
-                //dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                //dbSettings.StoreSetting("Token", token);
-
+                await adb.InsertOrReplaceAsync(oldUserData);
+                
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
                 result = await DabService.InitializeConnection(user.token);
