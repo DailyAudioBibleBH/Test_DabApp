@@ -555,7 +555,6 @@ namespace DABApp.Service
             var adb = DabData.AsyncDatabase;
 
             dbUserData userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-            userData.Id = user.id;
             userData.WpId = user.wpId;
             userData.FirstName = user.firstName;
             userData.LastName = user.lastName;
@@ -565,7 +564,6 @@ namespace DABApp.Service
             userData.Channel = user.channel;
             userData.Channels = user.channels;
             userData.UserRegistered = user.userRegistered;
-            userData.Token = user.token;
 
             await adb.InsertOrReplaceAsync(userData);
             //alert anything that is listening

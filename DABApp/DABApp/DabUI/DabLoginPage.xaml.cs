@@ -112,14 +112,14 @@ namespace DABApp
                 GraphQlLoginUser user = result.Data.payload.data.loginUser;
 
                 //token was updated successfully
-                var oldUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                oldUserData.Token = user.token;
-                oldUserData.TokenCreation = DateTime.Now;
-                await adb.InsertOrReplaceAsync(oldUserData);
+                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                newUserData.Token = user.token;
+                newUserData.TokenCreation = DateTime.Now;
+                await adb.InsertOrReplaceAsync(newUserData);
                 
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
-                result = await DabService.InitializeConnection(user.token);
+                result = await DabService.InitializeConnection(newUserData.Token);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //perform post-login functions

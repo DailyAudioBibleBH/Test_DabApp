@@ -101,7 +101,7 @@ namespace DABApp
 						newUserData.Language = profile.language;
 						newUserData.NickName = profile.nickname;
 
-						await adb.InsertAsync(newUserData);
+						await adb.InsertOrReplaceAsync(newUserData);
 					}
 					GlobalResources.WaitStop();
 

@@ -37,8 +37,8 @@ namespace DABApp.DabUI
             {
                 SQLiteAsyncConnection adb = DabData.AsyncDatabase;
                 //Determine if the user was logged in at last use
-                var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                if (token == null)
+                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                if (user == null)
                 {
                     dbUserData guestUserData = new dbUserData();
                     guestUserData.Token = "";
@@ -83,14 +83,14 @@ namespace DABApp.DabUI
 //#endif
 
                 NavigationPage navPage;
-                token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
 
                 if (versionList != null)
                 {
                     //version list in place, force user to log in
                     navPage = new NavigationPage(new DabCheckEmailPage());
                 }
-                else if (token.Token == "")
+                else if (user.Token == "")
                 {
                     //user last logged in as a guest, take them to enter their email
                     navPage = new NavigationPage(new DabCheckEmailPage());
@@ -103,7 +103,7 @@ namespace DABApp.DabUI
                     if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                     {
                         //we have internet access - establish a connection with the token
-                        var ql = await DabService.InitializeConnection(token.Token);
+                        var ql = await DabService.InitializeConnection(user.Token);
                         if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
                         {
                             //token is validated as expired - make them log back in
