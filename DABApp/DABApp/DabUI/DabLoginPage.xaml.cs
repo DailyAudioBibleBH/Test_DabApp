@@ -43,7 +43,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = dbSettings.GetSetting("Email", "");
+            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;
@@ -76,7 +76,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = dbSettings.GetSetting("Email", "");
+            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;
@@ -109,13 +109,17 @@ namespace DABApp
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //process the data we got back.
-                string token = result.Data.payload.data.loginUser.token;
-                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                dbSettings.StoreSetting("Token", token);
+                GraphQlLoginUser user = result.Data.payload.data.loginUser;
 
+                //token was updated successfully
+                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                newUserData.Token = user.token;
+                newUserData.TokenCreation = DateTime.Now;
+                await adb.InsertOrReplaceAsync(newUserData);
+                
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
-                result = await DabService.InitializeConnection(token);
+                result = await DabService.InitializeConnection(newUserData.Token);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //perform post-login functions
@@ -356,6 +360,7 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    await adb.ExecuteAsync("DELETE FROM UserData");
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();

@@ -23,9 +23,9 @@ namespace DABApp
 			InitializeComponent();
             if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
 			var UserName = GlobalResources.GetUserName().Split(' ');
-			FirstName.Text = dbSettings.GetSetting("FirstName", "");
-			LastName.Text = dbSettings.GetSetting("LastName", "");
-			Email.Text = dbSettings.GetSetting("Email", "");
+			FirstName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
+			LastName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
+			Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 		}
 
 		async void OnSave(object o, EventArgs e) 
@@ -35,20 +35,28 @@ namespace DABApp
 				GlobalResources.WaitStart("Saving your information...");
 
 				bool okToClose = true;
-				string oldFirstName = dbSettings.GetSetting("FirstName","");
-				string oldLastName = dbSettings.GetSetting("LastName","");
-				string oldEmail = dbSettings.GetSetting("Email","");
+				string oldFirstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
+				string oldLastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
+				string oldEmail = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
-                if (FirstName.Text != oldFirstName || LastName.Text != oldLastName || Email.Text != oldEmail)
+
+				if (FirstName.Text != oldFirstName || LastName.Text != oldLastName || Email.Text != oldEmail)
                 {
 					var ql = await DabService.SaveUserProfile(FirstName.Text, LastName.Text, Email.Text);
 					if (ql.Success)
 					{
 						var data = ql.Data.payload.data.updateUserFields;
-						dbSettings.StoreSetting("FirstName", data.firstName);
-						dbSettings.StoreSetting("LastName", data.lastName);
-						dbSettings.StoreSetting("Email", data.email);
-					} else
+						//token was updated successfully
+						var userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+						userData.FirstName = data.firstName;
+						userData.LastName = data.lastName;
+						userData.Email = data.email;
+						await adb.InsertOrReplaceAsync(userData);
+
+						GraphQlUser newUser = new GraphQlUser(userData);
+						DabServiceEvents.UserProfileChanged(newUser);
+					} 
+					else
                     {
 						await DisplayAlert("User profile could not be changed", ql.ErrorMessage, "OK");
 						okToClose = false;

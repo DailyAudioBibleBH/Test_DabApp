@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
 using Xamarin.Forms;
+using SQLite;
 
 namespace DABApp
 {
@@ -20,12 +21,14 @@ namespace DABApp
         {
             InitializeComponent();
 
+            SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
             /* UI Prep
              */
             NavigationPage.SetHasNavigationBar(this, false);
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            Email.Text = dbSettings.GetSetting("Email", "");
+            Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
             lblTestMode.IsVisible = GlobalResources.TestMode;
             if (Device.Idiom == TargetIdiom.Phone)
             {
@@ -284,6 +287,7 @@ namespace DABApp
                 if (accept)
                 {
                     var adb = DabData.AsyncDatabase;
+                    await adb.ExecuteAsync("DELETE FROM UserData");
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();

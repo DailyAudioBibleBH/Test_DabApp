@@ -359,7 +359,7 @@ namespace DABApp
                 else
                 {
                     //find the user episode data (ued) in question
-                    var userName = dbSettings.GetSetting("Email", "");
+                    var userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
                     dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
 
                     //add new ued if needed 
@@ -602,17 +602,17 @@ namespace DABApp
         {
             try
             {
-                var tokenValue = dbSettings.GetSetting("Token", "");
-                var creation = dbSettings.GetSetting("TokenCreation", "");
-                var email = dbSettings.GetSetting("Email", "");
-                var firstName = dbSettings.GetSetting("FirstName", "");
-                var lastName = dbSettings.GetSetting("LastName", "");
+                var tokenValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                var creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
+                var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+                var firstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
+                var lastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
                 var avatar = GlobalResources.UserAvatar;
                 
                 var token = new APIToken
                 {
                     value = tokenValue,
-                    expires = creation,
+                    expires = creation.ToString(),
                     user_email = email,
                     user_first_name = firstName,
                     user_last_name = lastName,

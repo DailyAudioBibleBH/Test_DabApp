@@ -26,16 +26,16 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = contentView; 
 			BindingContext = AchievementsView;
-			string userName = dbSettings.GetSetting("Email", "");
+			//Connection to db
+			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+			string userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
 			banner.Source = new UriImageSource
 			{
 				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
 				CacheValidity = GlobalResources.ImageCacheValidity
 			};
-
-			//Connection to db
-			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
 			int currentYear = DateTime.Now.Year; //TODO - replace with contentconfig for multi-year... ContentConfig.Instance.options.progress_year;

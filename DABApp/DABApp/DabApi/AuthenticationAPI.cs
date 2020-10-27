@@ -29,12 +29,22 @@ namespace DABApp
 
         public static void LoginGuest()
         {
-            dbSettings.StoreSetting("Token", "");
-            dbSettings.StoreSetting("Email", "");
-            dbSettings.StoreSetting("TokenCreation", "");
-            dbSettings.StoreSetting("FirstName", "Guest");
-            dbSettings.StoreSetting("LastName", "Guest");
-            dbSettings.StoreSetting("WpId", "");
+            var guestUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+            guestUserData.Token = "";
+            guestUserData.Email = "";
+            guestUserData.FirstName = "Guest";
+            guestUserData.LastName = "Guest";
+            guestUserData.WpId = 0;
+            guestUserData.Channel = "";
+            guestUserData.Channels = "";
+            guestUserData.Id = 0;
+            guestUserData.NickName = "Guest";
+            guestUserData.UserRegistered = DateTime.MinValue;
+            guestUserData.TokenCreation = DateTime.Now;
+            guestUserData.ActionDate = DateTime.MinValue;
+            guestUserData.ProgressDate = DateTime.MinValue;
+
+            adb.InsertOrReplaceAsync(guestUserData);
         }
 
 
@@ -42,7 +52,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
@@ -64,7 +74,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}wallet");
@@ -82,7 +92,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}wallet/{CardId}");
@@ -111,7 +121,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(token);
                 var content = new StringContent(JsonIn);
@@ -141,7 +151,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations");
@@ -159,7 +169,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -184,7 +194,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -209,7 +219,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}donations/{id}");
@@ -231,7 +241,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations/history");
@@ -253,7 +263,7 @@ namespace DABApp
 
                 //build a basic action log
                 var actionLog = new DABApp.dbPlayerActions();
-                string email = dbSettings.GetSetting("Email", "");
+                string email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
                 actionLog.EpisodeId = episodeId;
                 actionLog.UserEmail = email;

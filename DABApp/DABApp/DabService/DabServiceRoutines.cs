@@ -115,6 +115,7 @@ namespace DABApp.Service
             */
             try
             {
+                var adb = DabData.AsyncDatabase;
 
                 if (GuestStatus.Current.IsGuestLogin == false)
                 {
@@ -126,7 +127,7 @@ namespace DABApp.Service
                         try
                         {
                             //get the expiration date
-                            var creation = DateTime.Parse(dbSettings.GetSetting("TokenCreation", DateTime.MinValue.ToString()));
+                            DateTime creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
                             int days = ContentConfig.Instance.options.token_life;
                             if (DateTime.Now > creation.AddDays(days))
                             {
@@ -149,8 +150,10 @@ namespace DABApp.Service
                             if (ql.Success)
                             {
                                 //token was updated successfully
-                                dbSettings.StoreSetting("Token", ql.Data.payload.data.updateToken.token);
-                                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
+                                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                                newUserData.Token = ql.Data.payload.data.updateToken.token;
+                                newUserData.TokenCreation = DateTime.Now;
+                                await adb.InsertOrReplaceAsync(newUserData);
 
                                 //reset the connection using the new token
                                 await DabService.TerminateConnection();
@@ -549,17 +552,22 @@ namespace DABApp.Service
 
 
             //save user profile settings
-            dbSettings.StoreSetting("FirstName", user.firstName);
-            dbSettings.StoreSetting("LastName", user.lastName);
-            dbSettings.StoreSetting("Email", user.email);
-            dbSettings.StoreSetting("Nickname", user.nickname);
-            dbSettings.StoreSetting("Channel", user.channel);
-            dbSettings.StoreSetting("Channels", user.channels);
-            dbSettings.StoreSetting("Language", user.language);
-            dbSettings.StoreSetting("WpId", user.wpId.ToString());
+            var adb = DabData.AsyncDatabase;
 
+            dbUserData userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+            userData.WpId = user.wpId;
+            userData.FirstName = user.firstName;
+            userData.LastName = user.lastName;
+            userData.NickName = user.nickname;
+            userData.Email = user.email;
+            userData.Language = user.language;
+            userData.Channel = user.channel;
+            userData.Channels = user.channels;
+            userData.UserRegistered = user.userRegistered;
+
+            await adb.InsertOrReplaceAsync(userData);
             //alert anything that is listening
-            DabServiceEvents.UserProfileChanged(user);
+             DabServiceEvents.UserProfileChanged(user);
 
             return user;
 
@@ -572,7 +580,7 @@ namespace DABApp.Service
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = dbSettings.GetSetting("Email", "");
+            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
@@ -602,8 +610,7 @@ namespace DABApp.Service
 
                     }
                     //update last time checked for badge progress
-                    string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
-                    dbSettings.StoreSetting(settingsKey, DateTime.UtcNow.ToString());
+                    GlobalResources.BadgeProgressUpdatesDate = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -635,7 +642,7 @@ namespace DABApp.Service
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
-            userName = dbSettings.GetSetting("Email", "");
+            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
             //Build out progress object
             DabGraphQlProgress progress = data.progress ;
@@ -643,7 +650,7 @@ namespace DABApp.Service
             {
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
-                fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
+                fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
                 fbInfo.Add("idiom", Device.Idiom.ToString());
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
@@ -677,8 +684,9 @@ namespace DABApp.Service
         public static async Task RemoveToken()
         {
             //log to firebase
+            var adb = DabData.AsyncDatabase;
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user", dbSettings.GetSetting("Email", ""));
+            fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 

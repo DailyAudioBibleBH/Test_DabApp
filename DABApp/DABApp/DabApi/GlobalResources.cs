@@ -87,7 +87,7 @@ namespace DABApp
         }
 
         public static DateTime DabMinDate //The min date we use throughout the DAB app
-        { get
+        {   get
             {
                 return new DateTime(2019, 12, 31).ToUniversalTime();
             }
@@ -206,7 +206,7 @@ namespace DABApp
 
         static GlobalResources()
         {
-            Instance = new GlobalResources();
+             Instance = new GlobalResources();
         }
 
         public int FlowListViewColumns
@@ -220,7 +220,7 @@ namespace DABApp
             {
                 flowListViewColumns = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("FlowListViewColumns"));
-            }
+            } 
         }
 
 
@@ -268,23 +268,24 @@ namespace DABApp
             }
         }
 
-        public static string GetUserWpId()
+        public static int GetUserWpId()
         {
             try
             {
 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    return dbSettings.GetSetting("WpId", "-1");
+                    int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
+                    return wpID;
                 }
                 else
                 {
-                    return "0"; //guest
+                    return 0; //guest
                 }
             }
             catch (Exception ex)
             {
-                return "-2"; //error
+                return -2; //error
             }
 
         }
@@ -292,7 +293,7 @@ namespace DABApp
         public static string GetUserName()
         {
             //friendly user name
-            return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
+            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
@@ -339,24 +340,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
-                string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
-                //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-
-                if (BadgeProgressSettingsValue == "")
-                {
-                    DateTime progressDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    dbSettings.StoreSetting(settingsKey, progressDate.ToString());
-                }
-                return DateTime.Parse(dbSettings.GetSetting(settingsKey, ""));
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ProgressDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
-                string progressDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, progressDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ProgressDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 
@@ -365,17 +357,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
-                DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
-                return LastActionDate;
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ActionDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
-                string actionDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, actionDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ActionDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 
@@ -409,7 +399,7 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
-                string hash = CalculateMD5Hash(dbSettings.GetSetting("Email", ""));
+                string hash = CalculateMD5Hash(adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }

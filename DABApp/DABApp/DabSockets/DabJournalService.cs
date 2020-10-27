@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xamarin.Forms;
 using Html2Markdown;
+using SQLite;
 
 /* This is the DAB Journal Service that drives the journalling system of the DAB App.
  * It uses native iDabSocket objects to maintain a connection to the socket
@@ -25,6 +26,7 @@ namespace DABApp.DabSockets
         public event PropertyChangedEventHandler PropertyChanged; //For binding
         public string content { get; set; } //Bindable content property (internal use)
         public bool ExternalUpdate = true; //Helps us only update content when externally updated
+        static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
         //Create a journalling socket basec on an instance of a generic socket
         public DabJournalService()
@@ -86,7 +88,7 @@ namespace DABApp.DabSockets
         {
             //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
-            var token = dbSettings.GetSetting("Token", "");
+            var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
             var data = new DabJournalObject(content, room, token);
             data.html = CommonMark.CommonMarkConverter.Convert(content);
             var json = JObject.FromObject(data);
@@ -102,7 +104,7 @@ namespace DABApp.DabSockets
         {
             //Joins a room for a specific date
             var room = date.ToString("yyyy-MM-dd");
-            var token = dbSettings.GetSetting("Token", "");
+            var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
             //Send data to the socket

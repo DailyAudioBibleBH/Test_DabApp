@@ -75,10 +75,15 @@ namespace DABApp
 				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (ql.Success)
                 {
+					SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
-					dbSettings.StoreSetting("Token", token);
-					dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
+					//token was updated successfully
+					var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+					newUserData.Token = token;
+					newUserData.TokenCreation = DateTime.Now;
+					await adb.InsertOrReplaceAsync(newUserData);
 					await DabService.TerminateConnection();
 					await DabService.InitializeConnection(token);
 					//get user profile information and update it.
@@ -87,13 +92,18 @@ namespace DABApp
 					{
 						//process user profile information
 						var profile = ql.Data.payload.data.user;
-						dbSettings.StoreSetting("FirstName", profile.firstName);
-						dbSettings.StoreSetting("LastName", profile.lastName);
-						dbSettings.StoreSetting("Email", profile.email);
-						dbSettings.StoreSetting("Channel", profile.channel);
-						dbSettings.StoreSetting("Channels", profile.channels);
-						dbSettings.StoreSetting("Language", profile.language);
-						dbSettings.StoreSetting("Nickname", profile.nickname);
+
+						newUserData.FirstName = profile.firstName;
+						newUserData.LastName = profile.lastName;
+						newUserData.Email = profile.email;
+						newUserData.Channel = profile.channel;
+						newUserData.Channels = profile.channels;
+						newUserData.Language = profile.language;
+						newUserData.NickName = profile.nickname;
+						newUserData.ProgressDate = GlobalResources.DabMinDate;
+						newUserData.ActionDate = GlobalResources.DabMinDate;
+
+						await adb.InsertOrReplaceAsync(newUserData);
 					}
 					GlobalResources.WaitStop();
 

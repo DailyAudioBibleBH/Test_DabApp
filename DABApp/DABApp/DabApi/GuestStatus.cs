@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using FFImageLoading;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -14,6 +15,7 @@ namespace DABApp
 		string _UserName = GlobalResources.GetUserName();
 		string _AvatarUrl;
 		ImageSource _AvatarSource;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
 		public static GuestStatus Current { get; private set; }
 
@@ -32,7 +34,7 @@ namespace DABApp
 		{
 			get
 			{
-				if (dbSettings.GetSetting("Token", "") == "")
+				if (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token == "")
 				{
 					return true;
 				}

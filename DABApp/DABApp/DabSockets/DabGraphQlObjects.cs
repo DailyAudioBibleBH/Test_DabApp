@@ -245,6 +245,21 @@ namespace DABApp.DabSockets
             this.wpId = user.wpId;
         }
 
+        public GraphQlUser(dbUserData userData)
+        {
+            this.id = userData.Id;
+            this.wpId = userData.WpId;
+            this.firstName = userData.FirstName;
+            this.lastName = userData.LastName;
+            this.nickname = userData.NickName;
+            this.email = userData.Email;
+            this.language = userData.Language;
+            this.channel = userData.Channel;
+            this.channels = userData.Channels;
+            this.userRegistered = userData.UserRegistered;
+            this.token = userData.Token;
+        }
+
         public int id { get; set; }
         public int wpId { get; set; }
         public string firstName { get; set; }
