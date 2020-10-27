@@ -100,6 +100,8 @@ namespace DABApp
 						newUserData.Channels = profile.channels;
 						newUserData.Language = profile.language;
 						newUserData.NickName = profile.nickname;
+						newUserData.ProgressDate = GlobalResources.DabMinDate;
+						newUserData.ActionDate = GlobalResources.DabMinDate;
 
 						await adb.InsertOrReplaceAsync(newUserData);
 					}

@@ -87,7 +87,7 @@ namespace DABApp
         }
 
         public static DateTime DabMinDate //The min date we use throughout the DAB app
-        { get
+        {   get
             {
                 return new DateTime(2019, 12, 31).ToUniversalTime();
             }
