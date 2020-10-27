@@ -28,7 +28,7 @@ namespace DABApp
         public async static Task<IEnumerable<dbEpisodes>> GetEpisodeList(Resource resource)
         {
             DateTime firstOfYearDate = new DateTime(DateTime.Now.Year, 1, 1);
-            DateTime beginEpisodeDate = firstOfYearDate;
+            DateTime beginEpisodeDate = GlobalResources.DabMinDate;
             List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
 
             //If guest figure which episodes to display to user
@@ -37,17 +37,13 @@ namespace DABApp
                 dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
                 int bufferLength = channel.bufferLength;
                 int bufferPeriod = channel.bufferPeriod;
-                DateTime todaysDate = firstOfYearDate.AddDays(7);// DateTime.Now;
+                DateTime todaysDate = DateTime.Now;
                 DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
                 DateTime startNegativeImpactDate = firstOfYearDate.AddDays(bufferPeriod);
-                bool afterRolloverBeginDate = false;
+                //if today with buffer period is after jan 1st
                 if (todaysDate.AddDays(-bufferPeriod).CompareTo(firstOfYearDate) >= 0)
                 {
-                    afterRolloverBeginDate = true;
-                }
-
-                if (afterRolloverBeginDate)
-                {
+                    //if within rollover period
                     if (todaysDate.CompareTo(firstOfYearDate.AddDays(bufferPeriod)) >= 0 && todaysDate.CompareTo(firstOfYearDate.AddDays(bufferLength + bufferPeriod)) < 0)
                     {
                         beginEpisodeDate = todaysDate.AddDays(-(bufferLength + bufferPeriod));
@@ -56,91 +52,6 @@ namespace DABApp
             }
             return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
         }
-
-        //grab episodes by channel
-        //public static async Task<string> GetEpisodes(List<dbEpisodes> episodesList, dbChannels channel)
-        //{
-        //    try
-        //    {
-        //        var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-
-        //        if (GuestStatus.Current.IsGuestLogin)
-        //        {
-        //            int bufferLength = channel.bufferLength;
-        //            int bufferPeriod = channel.bufferPeriod;
-        //            DateTime startRolloverDate = DateTime.Now.AddDays(-bufferLength);
-        //            DateTime firstOfYearDate = new DateTime(DateTime.Now.Year, 1, 1);
-        //            DateTime todaysDate = firstOfYearDate;//DateTime.Now;
-        //            DateTime startNegativeImpactDate = firstOfYearDate.AddDays(bufferPeriod);
-        //            bool afterRolloverBeginDate = false;
-        //            if (todaysDate.AddDays(-bufferLength).CompareTo(firstOfYearDate) >= 0)
-        //            {
-        //                afterRolloverBeginDate = true;
-        //            }
-
-        //            if (afterRolloverBeginDate)
-        //            {
-        //                if (todaysDate < firstOfYearDate.AddDays(bufferPeriod))
-        //                {
-        //                    fromDate = todaysDate.AddDays(-bufferLength).ToString();
-        //                }
-        //            }
-        //            else
-        //            {
-        //                fromDate = new DateTime(DateTime.Now.Year, 1, 1).ToString();
-        //            }
-        //        }
-
-        //        List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
-
-        //        foreach (var item in episodesList)
-        //        {
-        //            if (item.PubDate  >= Convert.ToDateTime(fromDate) && item.id == channel.channelId)
-        //            {
-        //                currentEpisodes.Add(item);
-        //            }
-        //            else
-        //            {
-        //                currentEpisodes.Remove(item);
-        //            }
-        //        }
-
-        //        //var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
-        //        List<int> episodesToGetActionsFor = new List<int>();
-        //        if (currentEpisodes == null)
-        //        {
-        //            return "Server Error";
-        //        }
-        //        var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-        //        var existingEpisodes = adb.Table<dbEpisodes>().Where(x => x.channel_code == code).ToListAsync().Result;
-        //        var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
-        //        var newEpisodeIds = currentEpisodes.Select(x => x.episodeId);
-        //        var start = DateTime.Now;
-        //        foreach (var e in currentEpisodes)
-        //        {
-        //            if (!existingEpisodeIds.Contains(e.episodeId))
-        //            {
-        //                //build out rest of episodes object since we don't get this from websocket
-        //                dbEpisodes episode = new dbEpisodes(e);
-        //                episode.channel_title = channel.title;
-        //                //episode.channel_description = channel.;
-        //                episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-        //                episode.PubMonth = e.date.Month;
-        //                episode.PubDay = e.date.Day;
-        //                await adb.InsertOrReplaceAsync(episode);
-        //            }
-        //        }
-
-        //        Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
-        //        return "OK";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
-        //        return ex.Message;
-        //    }
-        //}
-
 
         public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource)
         {

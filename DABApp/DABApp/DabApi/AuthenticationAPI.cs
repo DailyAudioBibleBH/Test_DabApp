@@ -39,7 +39,7 @@ namespace DABApp
             guestUserData.Channels = "";
             guestUserData.Id = 0;
             guestUserData.NickName = "Guest";
-            guestUserData.UserRegistered = DateTime.MinValue;
+            guestUserData.UserRegistered = new DateTime(DateTime.Now.Year, 1, 1);
             guestUserData.TokenCreation = DateTime.Now;
             guestUserData.ActionDate = DateTime.MinValue;
             guestUserData.ProgressDate = DateTime.MinValue;
