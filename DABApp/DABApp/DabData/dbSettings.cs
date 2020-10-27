@@ -22,8 +22,9 @@ namespace DABApp
                 a.FirstName = "";
                 a.LastName = "";
                 a.Email = "";
+                a.ActionDate = GlobalResources.DabMinDate;
+                a.ProgressDate = GlobalResources.DabMinDate;
                 await adb.InsertOrReplaceAsync(a);
-                var test = adb.Table<dbUserData>().ToListAsync().Result;
             }
             catch (Exception ex)
             {

@@ -21,5 +21,7 @@ namespace DABApp
         public DateTime UserRegistered { get; set; }
         public string Token { get; set; }
         public DateTime TokenCreation { get; set; }
+        public DateTime ProgressDate { get; set; }
+        public DateTime ActionDate { get; set; }
     }
 }

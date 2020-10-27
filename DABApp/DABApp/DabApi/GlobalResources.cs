@@ -340,25 +340,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
-                //string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email","")}";
-                string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
-                //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-
-                if (BadgeProgressSettingsValue == "")
-                {
-                    DateTime progressDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    dbSettings.StoreSetting(settingsKey, progressDate.ToString());
-                }
-                return DateTime.Parse(dbSettings.GetSetting(settingsKey, ""));
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ProgressDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
-                string progressDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, progressDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ProgressDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 
@@ -367,17 +357,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"ActionDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
-                DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
-                return LastActionDate;
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ActionDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"ActionDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
-                string actionDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, actionDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ActionDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 

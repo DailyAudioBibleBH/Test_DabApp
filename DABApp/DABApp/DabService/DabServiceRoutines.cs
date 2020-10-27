@@ -610,8 +610,7 @@ namespace DABApp.Service
 
                     }
                     //update last time checked for badge progress
-                    string settingsKey = $"BadgeProgressDate-{adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}";
-                    dbSettings.StoreSetting(settingsKey, DateTime.UtcNow.ToString());
+                    GlobalResources.BadgeProgressUpdatesDate = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {

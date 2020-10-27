@@ -41,6 +41,8 @@ namespace DABApp
             guestUserData.NickName = "Guest";
             guestUserData.UserRegistered = DateTime.MinValue;
             guestUserData.TokenCreation = DateTime.Now;
+            guestUserData.ActionDate = DateTime.MinValue;
+            guestUserData.ProgressDate = DateTime.MinValue;
 
             adb.InsertOrReplaceAsync(guestUserData);
         }

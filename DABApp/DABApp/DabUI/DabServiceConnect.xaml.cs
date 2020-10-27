@@ -50,8 +50,10 @@ namespace DABApp.DabUI
                     guestUserData.Channels = "";
                     guestUserData.Id = 0;
                     guestUserData.NickName = "Guest";
-                    guestUserData.UserRegistered = DateTime.MinValue;
+                    guestUserData.UserRegistered = GlobalResources.DabMinDate;
                     guestUserData.TokenCreation = DateTime.Now;
+                    guestUserData.ActionDate = GlobalResources.DabMinDate;
+                    guestUserData.ProgressDate = GlobalResources.DabMinDate;
                     await adb.InsertOrReplaceAsync(guestUserData);
                 }
 
