@@ -21,7 +21,7 @@
                             </StackLayout>
                         </RelativeLayout>
                         <StackLayout Orientation="Horizontal" Padding="10" Spacing="5" BackgroundColor="{DynamicResource PageBackgroundColor}">
-                            <Picker x:Name="Months" SelectedIndexChanged="OnMonthSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
+                            <Picker x:Name="Years" SelectedIndexChanged="OnYearSelected" HorizontalOptions="StartAndExpand" Style="{StaticResource monthPickerStyle}" AutomationProperties.IsInAccessibleTree="true" WidthRequest="150"/>
 
                             <Image x:Name="Filters" AutomationProperties.IsInAccessibleTree="true" Source="more_horiz" WidthRequest="40">
                                 <Image.GestureRecognizers>

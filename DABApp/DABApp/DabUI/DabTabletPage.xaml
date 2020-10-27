@@ -315,7 +315,7 @@
                             <StackLayout Orientation="Horizontal"
                                          x:Name="ArchiveHeader"
                                          BackgroundColor="{DynamicResource PageBackgroundColor}">
-                                <Picker x:Name="Months"
+                                <Picker x:Name="Years"
                                         SelectedIndexChanged="OnMonthSelected"
                                         HorizontalOptions="StartAndExpand"
                                         WidthRequest="140"

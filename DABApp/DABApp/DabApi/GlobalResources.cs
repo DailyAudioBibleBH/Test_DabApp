@@ -89,7 +89,10 @@ namespace DABApp
         public static DateTime DabMinDate //The min date we use throughout the DAB app
         {   get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered;
+                int registerYear = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered.Year;
+                int episodeYear = ContentConfig.Instance.options.episode_year;
+                int minYear = Math.Max(registerYear, episodeYear);
+                return new DateTime(minYear, 1 , 1);
             }
         }
 

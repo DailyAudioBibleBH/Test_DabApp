@@ -72,19 +72,18 @@ namespace DABApp
             BackgroundImage.Source = backgroundImage;
             Episodes = (IEnumerable<dbEpisodes>)PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
-            if (Months.Items.Contains("All Episodes") == false)
+            if (Years.Items.Contains("All Episodes") == false)
             {
-                Months.Items.Insert(0, "All Episodes"); //default selector
-                Months.SelectedIndex = 0;
+                Years.Items.Insert(0, "All Episodes"); //default selector
+                Years.SelectedIndex = 0;
 
             }
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+            var years = Episodes.Select(x => x.PubYear).Distinct().ToList();
+            foreach (var year in years)
             {
-                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
-                if (Months.Items.Contains(monthName) == false)
+                if (Years.Items.Contains(year.ToString()) == false)
                 {
-                    Months.Items.Add(monthName);
+                    Years.Items.Add(year.ToString());
                 }
             }
 
@@ -508,19 +507,18 @@ namespace DABApp
             Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
             //Update month list
-            if (Months.Items.Contains("All Episodes") == false)
+            if (Years.Items.Contains("All Episodes") == false)
             {
-                Months.Items.Insert(0, "All Episodes"); //default selector
-                Months.SelectedIndex = 0;
+                Years.Items.Insert(0, "All Episodes"); //default selector
+                Years.SelectedIndex = 0;
 
             }
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+            var years = Episodes.Select(x => x.PubYear).Distinct().ToList();
+            foreach (var year in years)
             {
-                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
-                if (Months.Items.Contains(monthName) == false)
+                if (Years.Items.Contains(year.ToString()) == false)
                 {
-                    Months.Items.Add(monthName);
+                    Years.Items.Add(year.ToString());
                 }
             }
 
@@ -541,7 +539,7 @@ namespace DABApp
                 {
                     //filter to the right list of episodes
                     EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
+                    .Where(x => Years.Items[Years.SelectedIndex] == "All Episodes" ? true : x.PubYear.ToString() == Years.Items[Years.SelectedIndex])
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)));
@@ -576,7 +574,7 @@ namespace DABApp
                 try
                 {
                     EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
+                    .Where(x => Years.Items[Years.SelectedIndex] == "All Episodes" ? true : x.PubYear.ToString() == Years.Items[Years.SelectedIndex])
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)));
