@@ -100,6 +100,8 @@ namespace DABApp
 						newUserData.Channels = profile.channels;
 						newUserData.Language = profile.language;
 						newUserData.NickName = profile.nickname;
+						newUserData.UserRegistered = profile.userRegistered;
+						newUserData.WpId = profile.wpId;
 						newUserData.ProgressDate = GlobalResources.DabMinDate;
 						newUserData.ActionDate = GlobalResources.DabMinDate;
 
