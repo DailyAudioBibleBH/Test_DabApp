@@ -288,6 +288,7 @@ namespace DABApp
                 {
                     var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM UserData");
+                    await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
