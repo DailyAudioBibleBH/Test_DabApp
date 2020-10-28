@@ -544,17 +544,36 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
+                    ObservableCollection<EpisodeViewModel> episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
                     .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
-                    .Select(x => new EpisodeViewModel(x)));
+                    .Select(x => new EpisodeViewModel(x)).ToList());
 
                     if (episode != null)
                     {
                         Favorite.Source = episode.favoriteSource;
                     }
 
+                    foreach (var item in episodeObservableCollection)
+                    {
+                        if (item.Episode.is_downloaded == true)
+                        {
+                            item.isDownloaded = true;
+                            item.isNotDownloaded = false;
+                            item.downloadProgress = 100;
+                        }
+                        else
+                        {
+                            item.isNotDownloaded = true;
+                        }
+                        if (episodeObservableCollection.IndexOf(item) >= 20)
+                        {
+                            break;
+                        }
+                    }
+
+                    EpisodeList.ItemsSource = episodeObservableCollection;
                     //Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
                 );
