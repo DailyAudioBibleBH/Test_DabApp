@@ -551,11 +551,20 @@ namespace DABApp
         public float AndroidDensity { get; set; }
 
         //Build an array of email destinations for various recording submissions
-        public List<PodcastEmail> PodcastEmails { get; set; } = new List<PodcastEmail>()
-                {
-                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
-                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com"}
-        };
+        public List<PodcastEmail> PodcastEmails
+        {
+            get
+            {
+                var l = new List<PodcastEmail>();
+#if DEBUG
+                l.Add(new PodcastEmail() { Podcast = "C2IT Test", Email = "appalerts@c2itconsulting.net" });
+#endif
+                l.Add(new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com" });
+                l.Add(new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com" });
+                return l;
+            }
+            
+        }
 
 
 
