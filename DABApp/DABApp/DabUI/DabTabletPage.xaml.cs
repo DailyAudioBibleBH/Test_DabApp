@@ -1334,11 +1334,11 @@ namespace DABApp
             await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup, false);
         }
 
-        private void Popup_ChangedRequested(object sender, EventArgs e)
+        private async void Popup_ChangedRequested(object sender, EventArgs e)
         {
             var popuPage = (DabPopupEpisodeMenu)sender;
             _resource = popuPage.Resource;
-            TimedActions();
+            await Refresh(EpisodeRefreshType.NoRefresh);
         }
 
         #endregion
