@@ -103,6 +103,9 @@ namespace DABApp
                 }
             }
 
+            //initially bind to episodes we have before trying to reload on appearing
+            Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
+
             //Bind to the active episode
             Favorite.BindingContext = episode;
             PlayerLabels.BindingContext = episode;
@@ -157,11 +160,9 @@ namespace DABApp
         }
 
         //Page appears event
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
             base.OnAppearing();
-
-            OnRefresh(null, null); //load episodes
 
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
@@ -169,6 +170,8 @@ namespace DABApp
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
+            //get new episodes, if they exist -- this will also handle downloading
+            await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
 
             BindControls(true, true); //rebind controls when clicking on miniplayer
             
@@ -736,6 +739,8 @@ namespace DABApp
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
                 Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
+                await Refresh(EpisodeRefreshType.FullRefresh);
+
                 if (episode == null && Episodes.Count() > 0)
                 {
                     //pick the first episode
@@ -754,7 +759,6 @@ namespace DABApp
                 {
                     //no episode available yet.
                 }
-                TimedActions();
 
                 GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                 GlobalResources.SetLastRefreshDate(_resource.id);
