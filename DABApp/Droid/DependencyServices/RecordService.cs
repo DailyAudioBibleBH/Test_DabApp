@@ -42,8 +42,8 @@ namespace DABApp.Droid
             recorder.SetOutputFormat(OutputFormat.Mpeg4);
             recorder.SetAudioEncoder(AudioEncoder.Aac);
             recorder.SetOutputFile(fileName);
-            recorder.SetAudioEncodingBitRate(256000);
-            recorder.SetAudioSamplingRate(16000);
+            recorder.SetAudioEncodingBitRate(384000);
+            recorder.SetAudioSamplingRate(48000);
             recorder.Prepare();
             recorder.Start();
             IsRecording = true;
