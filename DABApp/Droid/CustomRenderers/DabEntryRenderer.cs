@@ -1,5 +1,4 @@
 ﻿using System;
-using Acr.DeviceInfo;
 using Android.Content;
 using DABApp.Droid;
 using Xamarin.Forms;

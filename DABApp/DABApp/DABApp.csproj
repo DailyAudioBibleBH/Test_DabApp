@@ -11,7 +11,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Acr.DeviceInfo" version="4.0.3" Version="4.0.3" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="DLToolkit.Forms.Controls.FlowListView" version="2.0.4" Version="2.0.4" />
     <PackageReference Include="Html2Markdown" Version="3.2.1.341" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Acr.DeviceInfo;
 using Foundation;
 using UIKit;
 using Xamarin.Forms;

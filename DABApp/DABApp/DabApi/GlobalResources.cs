@@ -577,7 +577,7 @@ namespace DABApp
                 var r = await Application.Current.MainPage.DisplayAlert("Login Required", "You must be logged into use this feature.", "Login", "Cancel");
                 if (r == true)
                 {
-                    GlobalResources.LogoffAndResetApp();
+                    await GlobalResources.LogoffAndResetApp();
                 }
             }
             else

@@ -10,6 +10,7 @@ using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -142,9 +143,21 @@ namespace DABApp
             var tapper = new TapGestureRecognizer();
             tapper.Tapped += (sender, e) =>
             {
-                Device.OpenUri(new Uri("https://en.wikipedia.org/wiki/Markdown"));
+                OpenBrowser(new Uri("https://en.wikipedia.org/wiki/Markdown"));
             };
             AboutFormat.GestureRecognizers.Add(tapper);
+        }
+
+        public async Task OpenBrowser(Uri uri)
+        {
+            try
+            {
+                await Browser.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception ex)
+            {
+                // An unexpected error occured. No browser may be installed on the device.
+            }
         }
 
         protected override void OnDisappearing()
@@ -305,7 +318,7 @@ namespace DABApp
 
                 //Completed button
                 Completed.BindingContext = episode;
-                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 

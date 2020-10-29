@@ -22,11 +22,6 @@ namespace DABApp
 
         static DabGraphQlVariables variables = new DabGraphQlVariables(); //Instance used for websocket communication
 
-
-        static bool notPosting = true;
-        static bool notGetting = true;
-        static bool favorite;
-
         public static void LoginGuest()
         {
             dbSettings.StoreSetting("Token", "");

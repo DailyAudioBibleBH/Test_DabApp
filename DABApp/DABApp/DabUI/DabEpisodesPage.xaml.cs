@@ -230,7 +230,7 @@ namespace DABApp
             /*
              * handles the click of the refresh button 
              */
-            btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this as we want to get started with the code right away
+            await btnRefresh.RotateTo(360, 2000).ContinueWith(x => btnRefresh.RotateTo(0, 0)); ; //don't await this as we want to get started with the code right away
             await Refresh(EpisodeRefreshType.FullRefresh);
         }
 

@@ -1,8 +1,8 @@
-﻿using Acr.DeviceInfo;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Version.Plugin;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -82,8 +82,8 @@ namespace DABApp
 			var item = (Link)e.Item;
             if (item.linkText.Contains("Report an Issue"))
             {
-                string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Hardware.OperatingSystem}" +
-                    $"&screenWidth={DeviceInfo.Hardware.ScreenWidth}&screenHeight={DeviceInfo.Hardware.ScreenHeight}&manufacturer={DeviceInfo.Hardware.Manufacturer}&model={DeviceInfo.Hardware.Model}" +
+                string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Platform}" +
+                    $"&screenWidth={DeviceDisplay.MainDisplayInfo.Width}&screenHeight={DeviceDisplay.MainDisplayInfo.Height}&manufacturer={DeviceInfo.Manufacturer}&model={DeviceInfo.Model}" +
                     $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={dbSettings.GetSetting("Email","")}&userWpId={GlobalResources.GetUserWpId()}";
                 Device.OpenUri(new Uri(url));
             }
