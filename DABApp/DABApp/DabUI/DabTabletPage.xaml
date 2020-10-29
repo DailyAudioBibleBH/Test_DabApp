@@ -36,11 +36,6 @@
                              x:Name="PlayerOverlay"
                              RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width, Factor=1}"
                              RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=1}">
-                    <StackLayout.AutomationProperties.IsInAccessibleTree>
-                        <OnPlatform x:TypeArguments="x:Boolean"
-                                    iOS="false"
-                                    Android="true" />
-                    </StackLayout.AutomationProperties.IsInAccessibleTree>
                     <StackLayout x:Name="PlayerLabels"
                                  VerticalOptions="CenterAndExpand"
                                  Margin="-10">

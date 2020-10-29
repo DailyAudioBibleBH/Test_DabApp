@@ -50,13 +50,15 @@ namespace DABApp
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
 					Label card = new Label();
 					Label recurr = new Label();
-					monthly.Text = "Edit Monthly";
+					Label interval = new Label();
+					monthly.Text = "Edit interval";
 					monthly.Clicked += OnRecurring;
 					monthly.WidthRequest = 150;
 					monthly.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
-						cTitle.Text = $"{don.name}-${don.pro.amount}/month";
+						monthly.Text = $"Edit {don.pro.interval}";
+						cTitle.Text = $"{don.name}-${don.pro.amount}/{don.pro.interval}";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
 						card.VerticalOptions = LayoutOptions.End;

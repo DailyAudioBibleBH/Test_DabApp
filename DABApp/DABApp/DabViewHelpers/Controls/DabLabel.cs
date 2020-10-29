@@ -38,5 +38,11 @@ namespace DABApp
 				}
 			}
 		}
+
+		public bool IsTitle
+		{
+			get { return (bool)this.GetValue(IsTitleProperty); }
+			set { SetValue(IsTitleProperty, value); }
+		}
 	}
 }

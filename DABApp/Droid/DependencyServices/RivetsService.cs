@@ -13,7 +13,7 @@ namespace DABApp.Droid
 		{
 			Intent browserIntent = new Intent(Intent.ActionView);
 			browserIntent.SetData(Android.Net.Uri.Parse(Url));
-			var activity = CrossCurrentActivity.Current.AppContext;
+			var activity = CrossCurrentActivity.Current.Activity;
 			activity.StartActivity(browserIntent);
 		}
 	}

@@ -156,6 +156,12 @@ namespace DABApp
             set { SetValue(DownloadVisibleProperty, value); }
         }
 
+        public bool ProgressVisible
+        {
+            get { return (bool)this.GetValue(ProgressVisibleProperty); }
+            set { SetValue(ProgressVisibleProperty, value); }
+        }
+
         protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (propertyName == "IsVisible" && IsVisible && reset)
