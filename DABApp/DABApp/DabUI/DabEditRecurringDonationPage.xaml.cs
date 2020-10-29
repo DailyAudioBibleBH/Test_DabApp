@@ -26,6 +26,8 @@ namespace DABApp
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			Title.Text = campaign.name;
+			Intervals.ItemsSource = campaign.recurringIntervalOptions;
+			Intervals.SelectedIndex = campaign.recurringIntervalOptions.Where(x => x.Equals(campaign.pro.interval)).Select(x => x.IndexOf(x)).FirstOrDefault();
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
 			if (campaign.pro != null)
