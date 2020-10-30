@@ -49,8 +49,9 @@ namespace DABApp.DabUI
                     guestUserData.Channel = "";
                     guestUserData.Channels = "";
                     guestUserData.Id = 0;
+                    guestUserData.Language = "";
                     guestUserData.NickName = "Guest";
-                    guestUserData.UserRegistered = GlobalResources.DabMinDate;
+                    guestUserData.UserRegistered = DateTime.Now;
                     guestUserData.TokenCreation = DateTime.Now;
                     guestUserData.ActionDate = GlobalResources.DabMinDate;
                     guestUserData.ProgressDate = GlobalResources.DabMinDate;
