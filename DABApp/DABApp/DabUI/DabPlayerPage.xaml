@@ -220,7 +220,7 @@
                                                HeightRequest="25"
                                                Grid.Row="0"
                                                Grid.Column="1" />
-                        <Button x:Name="Share"
+                        <Button x:Name="btnShare"
                                 Clicked="OnShare"
                                 Image="ic_share_white_3x.png"
                                 Style="{StaticResource imageButtonStyle}"

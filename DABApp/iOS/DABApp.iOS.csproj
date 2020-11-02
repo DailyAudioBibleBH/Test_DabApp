@@ -413,7 +413,6 @@
     <Compile Include="CustomRenderers\ButtonDisabledTextColorRenderer.cs" />
     <Compile Include="CustomRenderers\ColoredSlider.cs" />
     <Compile Include="CustomRenderers\ColoredMPVolumeView.cs" />
-    <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
     <Compile Include="DependencyServices\SocketService.cs" />

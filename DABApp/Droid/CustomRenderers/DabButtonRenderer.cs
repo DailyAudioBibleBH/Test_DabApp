@@ -1,4 +1,5 @@
 ﻿using System;
+using Android.Content;
 using DABApp.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
@@ -8,6 +9,10 @@ namespace DABApp.Droid
 {
 	public class DabButtonRenderer: ButtonRenderer
 	{
+		public DabButtonRenderer(Context context) : base(context)
+		{
+		}
+
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
 			base.OnDraw(canvas);

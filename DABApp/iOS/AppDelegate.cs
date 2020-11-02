@@ -54,7 +54,6 @@ namespace DABApp.iOS
             UINavigationBar.Appearance.SetTitleTextAttributes(att);
 
             global::Xamarin.Forms.Forms.Init();
-            Xamarin.Forms.DependencyService.Register<ShareIntent>();
             //TODO: Replace for journal?
             //DependencyService.Register<SocketService>();
             DependencyService.Register<KeyboardHelper>();

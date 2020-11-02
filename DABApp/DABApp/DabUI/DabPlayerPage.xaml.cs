@@ -10,6 +10,7 @@ using DABApp.DabSockets;
 using SQLite;
 using System.Collections.ObjectModel;
 using DABApp.Service;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -480,13 +481,13 @@ namespace DABApp
 
                 //Favorite button
                 Favorite.BindingContext = Episode;
-                Favorite.SetBinding(Button.ImageProperty, "favoriteSource");
+                Favorite.SetBinding(Button.ImageSourceProperty, "favoriteSource");
                 Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
                 //Completed button
                 Completed.BindingContext = Episode;
-                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
@@ -587,9 +588,13 @@ namespace DABApp
         }
 
         //Share the episode
-        void OnShare(object o, EventArgs e)
+        async void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.PubDate.ToString("MMddyyyy"));
+            await Share.RequestAsync(new ShareTextRequest
+            {
+                Uri = $"https://player.dailyaudiobible.com/{Episode.Episode.channel_code}/{Episode.Episode.PubDate.ToString("MMddyyyy")}",
+                Title = "Share Web Link"
+            });
         }
 
         //Journal disconnected

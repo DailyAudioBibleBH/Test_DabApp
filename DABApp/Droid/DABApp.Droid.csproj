@@ -387,7 +387,6 @@
     <Compile Include="DabApi\FileManagement.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
-    <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
     <Compile Include="DependencyServices\droidDabNativePlayer.cs" />
     <Compile Include="CustomRenderers\DabAndroidAchievementsProgressBarRenderer.cs" />

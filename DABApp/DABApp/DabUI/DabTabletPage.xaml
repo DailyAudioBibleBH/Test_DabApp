@@ -231,7 +231,7 @@
                                                Grid.Column="3"
                                                AutomationProperties.IsInAccessibleTree="true"
                                                AutomationProperties.HelpText="Change Audio Output" />
-                        <local:PlayerImage x:Name="Share"
+                        <local:PlayerImage x:Name="btnShare"
                                            Source="ic_share_white_3x.png"
                                            
                                            Grid.Row="0"

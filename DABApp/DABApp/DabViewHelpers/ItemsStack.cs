@@ -22,9 +22,9 @@ namespace DABApp
 	public class ItemsStack : StackLayout
 	{
 		#region BindAble
-		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create<ItemsStack, IEnumerable>(p => p.ItemsSource, default(IEnumerable<object>), BindingMode.TwoWay, null, ItemsSourceChanged);
-		public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create<ItemsStack, object>(p => p.SelectedItem, default(object), BindingMode.TwoWay, null, OnSelectedItemChanged);
-		public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create<ItemsStack, DataTemplate>(p => p.ItemTemplate, default(DataTemplate));
+		public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create("ItemsSource", typeof(List<string>), typeof(ItemsStack), null, BindingMode.TwoWay, null, propertyChanged: ItemsSourceChanged);
+		public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create("SelectedItem", typeof(List<string>), typeof(ItemsStack), null, BindingMode.TwoWay, null, propertyChanged: OnSelectedItemChanged);
+		public static readonly BindableProperty ItemTemplateProperty = BindableProperty.Create("ItemTemplate", typeof(List<string>), typeof(ItemsStack), null, BindingMode.TwoWay, null);
 
 		public event EventHandler<SelectedItemChangedEventArgs> SelectedItemChanged;
 
@@ -46,7 +46,7 @@ namespace DABApp
 			set { SetValue(ItemTemplateProperty, value); }
 		}
 
-		private static void ItemsSourceChanged(BindableObject bindable, IEnumerable oldValue, IEnumerable newValue)
+		private static void ItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
 		{
 			var itemsLayout = (ItemsStack)bindable;
 			itemsLayout.SetItems();

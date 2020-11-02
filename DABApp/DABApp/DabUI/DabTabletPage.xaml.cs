@@ -9,6 +9,7 @@ using DABApp.DabSockets;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -299,7 +300,7 @@ namespace DABApp
 
                 //Completed button
                 Completed.BindingContext = episode;
-                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
@@ -693,7 +694,7 @@ namespace DABApp
                     {
                         episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
                         //TODO: Fix completed image
-                        Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+                        Completed.ImageSource = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
 
                         AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                         await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
@@ -1183,9 +1184,13 @@ namespace DABApp
         }
 
         //Share the episode
-        void OnShare(object o, EventArgs e)
+        async void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.PubDate.ToString("MMddyyyy"));
+            await Share.RequestAsync(new ShareTextRequest
+            {
+                Uri = $"https://player.dailyaudiobible.com/{episode.Episode.channel_code}/{episode.Episode.PubDate.ToString("MMddyyyy")}",
+                Title = "Share Web Link"
+            });
         }
 
         //User login
@@ -1288,7 +1293,7 @@ namespace DABApp
             else
                 previousButton.Opacity = opa;
             Output.IsVisible = par;
-            Share.IsVisible = par;
+            btnShare.IsVisible = par;
             Favorite.IsVisible = par;
             ListenedFrame.IsVisible = par;
             PlayPause.IsVisible = par;
