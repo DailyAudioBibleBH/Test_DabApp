@@ -43,7 +43,7 @@ namespace DABApp
 					StackLayout layout = new StackLayout();
 					StackLayout buttons = new StackLayout();
 					buttons.Orientation = StackOrientation.Horizontal;
-					Button monthly = new Button();
+					Button btnInterval = new Button();
 					Button once = new Button();
 					Label cTitle = new Label();
 					cTitle.Text = $"{don.name}-${don.suggestedRecurringDonation}/month";
@@ -51,13 +51,13 @@ namespace DABApp
 					Label card = new Label();
 					Label recurr = new Label();
 					Label interval = new Label();
-					monthly.Text = "Edit interval";
-					monthly.Clicked += OnRecurring;
-					monthly.WidthRequest = 150;
-					monthly.AutomationId = don.id.ToString();
+					btnInterval.Text = "Edit interval";
+					btnInterval.Clicked += OnRecurring;
+					btnInterval.WidthRequest = 150;
+					btnInterval.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
-						monthly.Text = $"Edit {don.pro.interval}";
+						btnInterval.Text = $"Edit {don.pro.interval}";
 						cTitle.Text = $"{don.name}-${don.pro.amount}/{don.pro.interval}";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
@@ -65,13 +65,13 @@ namespace DABApp
 						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
-						monthly.IsVisible = true;
+						btnInterval.IsVisible = true;
 						once.Text = "One-time gift";
-						buttons.Children.Add(monthly);
+						buttons.Children.Add(btnInterval);
 					}
 					else 
 					{
-						monthly.IsVisible = false;
+						btnInterval.IsVisible = false;
 						once.Text = "Give";
 						once.HeightRequest = 40;
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
@@ -79,7 +79,7 @@ namespace DABApp
 					once.WidthRequest = 150;
 					once.AutomationId = don.id.ToString();
 					once.Clicked += OnGive;
-					buttons.Children.Add(monthly);
+					buttons.Children.Add(btnInterval);
 					buttons.Children.Add(once);
 					layout.Children.Add(cTitle);
 					layout.Children.Add(card);

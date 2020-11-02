@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AddressBook;
 using DABApp.Service;
 using SQLite;
 using Xamarin.Essentials;

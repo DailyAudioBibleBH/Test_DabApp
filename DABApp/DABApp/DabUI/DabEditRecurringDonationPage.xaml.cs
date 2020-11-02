@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -113,13 +114,16 @@ namespace DABApp
 
 		bool Validation() 
 		{
-			if (Amount.Text.Contains("."))
+			string a = @"^\$?\-?([1-9]{1}[0-9]{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\-?\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\(\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))\)$";
+			Regex rg = new Regex(a);
+
+			if (rg.IsMatch(Amount.Text))
 			{
-				return false;
+				return true;
 			}
 			else 
 			{
-				return true;
+				return false;
 			}
 		}
 	}

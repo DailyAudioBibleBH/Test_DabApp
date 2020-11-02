@@ -7,7 +7,7 @@
 			<Picker x:Name="Cards"/>
 			<Label Text="Amount" FontSize="Micro"/>
 			<Entry x:Name="Amount" Keyboard="Numeric"/>
-			<Label x:Name="AmountWarning" Text="Payment amount must be a whole number." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
+			<Label x:Name="AmountWarning" Text="Payment amount must be a valid currency format" Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
             <Label Text="Select Interval" FontSize="Micro"/>
             <Picker x:Name="Intervals"/>
             <Label Text="Next Payment" FontSize="Micro"/>
