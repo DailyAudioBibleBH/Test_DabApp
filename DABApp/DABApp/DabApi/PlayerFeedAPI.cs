@@ -40,7 +40,7 @@ namespace DABApp
                 DateTime todaysDate = DateTime.Now;
                 DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
                 DateTime startNegativeImpactDate = firstOfYearDate.AddDays(bufferPeriod);
-                //if today with buffer period is after jan 1st
+                //if today with buffer period is biggger than or equal to jan 1st
                 if (todaysDate.AddDays(-bufferPeriod).CompareTo(firstOfYearDate) >= 0)
                 {
                     //if within rollover period
@@ -50,6 +50,7 @@ namespace DABApp
                     }
                 }
             }
+
             return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
         }
 

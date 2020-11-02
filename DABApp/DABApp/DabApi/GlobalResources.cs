@@ -94,12 +94,14 @@ namespace DABApp
                     int registerYear = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered.Year;
                     int episodeYear = ContentConfig.Instance.options.episode_year;
                     int minYear = Math.Max(registerYear, episodeYear);
-                    return new DateTime(minYear, 1, 1);
+                    //Go back one day to get January 1st episodes
+                    return new DateTime(minYear-1, 12, 31);
                 }
                 else
                 {
                     int episodeYear = ContentConfig.Instance.options.episode_year;
-                    return new DateTime(episodeYear, 1, 1);
+                    //Go back one day to get January 1st episodes
+                    return new DateTime(episodeYear-1, 12, 31);
                 }
             }
         }
