@@ -92,20 +92,7 @@ namespace DABApp
 					{
 						//process user profile information
 						var profile = ql.Data.payload.data.user;
-
-						newUserData.FirstName = profile.firstName;
-						newUserData.LastName = profile.lastName;
-						newUserData.Email = profile.email;
-						newUserData.Channel = profile.channel;
-						newUserData.Channels = profile.channels;
-						newUserData.Language = profile.language;
-						newUserData.NickName = profile.nickname;
-						newUserData.UserRegistered = profile.userRegistered;
-						newUserData.WpId = profile.wpId;
-						newUserData.ProgressDate = GlobalResources.DabMinDate;
-						newUserData.ActionDate = GlobalResources.DabMinDate;
-
-						await adb.InsertOrReplaceAsync(newUserData);
+						await DabServiceRoutines.UpdateUserProfile(profile);
 					}
 					GlobalResources.WaitStop();
 
