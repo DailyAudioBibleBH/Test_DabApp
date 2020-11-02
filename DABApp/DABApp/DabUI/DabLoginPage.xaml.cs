@@ -128,23 +128,6 @@ namespace DABApp
                 //perform post-login functions
                 await DabServiceRoutines.RunConnectionEstablishedRoutines();
 
-                //update user data
-                var userResult = await Service.DabService.GetUserData();
-                if (userResult.Success == false) throw new Exception(result.ErrorMessage);
-
-                GraphQlUser userInfo = userResult.Data.payload.data.user;
-                newUserData.Channel = userInfo.channel;
-                newUserData.Channels = userInfo.channels;
-                newUserData.Email = userInfo.email;
-                newUserData.FirstName = userInfo.firstName;
-                newUserData.LastName = userInfo.lastName;
-                newUserData.Language = userInfo.language;
-                newUserData.NickName = userInfo.nickname;
-                newUserData.UserRegistered = userInfo.userRegistered;
-                newUserData.WpId = userInfo.wpId;
-
-                await adb.InsertOrReplaceAsync(newUserData);
-
                 //push up the channels page
                 DabChannelsPage _nav = new DabChannelsPage();
                 _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);

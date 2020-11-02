@@ -80,8 +80,6 @@ namespace DABApp.Service
                         //process user profile information
                         var profile = ql.Data.payload.data.user;
                         await UpdateUserProfile(profile);
-
-
                     }
 
                     //get recent actions
@@ -567,7 +565,7 @@ namespace DABApp.Service
 
             await adb.InsertOrReplaceAsync(userData);
             //alert anything that is listening
-             DabServiceEvents.UserProfileChanged(user);
+            DabServiceEvents.UserProfileChanged(user);
 
             return user;
 
