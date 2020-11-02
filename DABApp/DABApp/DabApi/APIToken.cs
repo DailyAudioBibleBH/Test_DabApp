@@ -170,7 +170,7 @@ namespace DABApp
 	public class Pro
 	{
 		public string status { get; set; }
-		public int amount { get; set; }
+		public double amount { get; set; }
 		public string card_last_four { get; set; }
 		public int card_exp_month { get; set; }
 		public int card_exp_year { get; set; }
