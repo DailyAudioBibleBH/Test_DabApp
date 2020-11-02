@@ -558,7 +558,7 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send the Login mutation
-            string command = $"query {{user{{wpId,firstName,lastName,email}}}}";
+            string command = $"query {{user{{id wpId firstName lastName nickname email language channel channels userRegistered token}}}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 

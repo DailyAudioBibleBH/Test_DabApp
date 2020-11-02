@@ -108,13 +108,16 @@ namespace DABApp
                 var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
+                
                 //process the data we got back.
                 GraphQlLoginUser user = result.Data.payload.data.loginUser;
+
 
                 //token was updated successfully
                 var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
                 newUserData.Token = user.token;
                 newUserData.TokenCreation = DateTime.Now;
+               
                 await adb.InsertOrReplaceAsync(newUserData);
                 
                 //re-establish service connection as the user
@@ -124,6 +127,23 @@ namespace DABApp
 
                 //perform post-login functions
                 await DabServiceRoutines.RunConnectionEstablishedRoutines();
+
+                //update user data
+                var userResult = await Service.DabService.GetUserData();
+                if (userResult.Success == false) throw new Exception(result.ErrorMessage);
+
+                GraphQlUser userInfo = userResult.Data.payload.data.user;
+                newUserData.Channel = userInfo.channel;
+                newUserData.Channels = userInfo.channels;
+                newUserData.Email = userInfo.email;
+                newUserData.FirstName = userInfo.firstName;
+                newUserData.LastName = userInfo.lastName;
+                newUserData.Language = userInfo.language;
+                newUserData.NickName = userInfo.nickname;
+                newUserData.UserRegistered = userInfo.userRegistered;
+                newUserData.WpId = userInfo.wpId;
+
+                await adb.InsertOrReplaceAsync(newUserData);
 
                 //push up the channels page
                 DabChannelsPage _nav = new DabChannelsPage();
