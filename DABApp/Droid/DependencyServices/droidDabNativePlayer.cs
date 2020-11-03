@@ -2,7 +2,6 @@
 using Android.Content;
 using DABApp.DabAudio;
 using DABApp.Droid;
-using Xamarin.Forms;
 using Android.Support.V4.App;
 using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 using Android.OS;
@@ -22,6 +21,8 @@ using Android.Telephony;
 using Android.Runtime;
 using System.Drawing;
 using Android.Graphics;
+using Android.Support.V4.Media;
+using Color = System.Drawing.Color;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -125,6 +126,10 @@ namespace DABApp.Droid
         {
             dabplayer = Player;
             var mSession = new MediaSessionCompat(Application.Context, "MusicService");
+            mSession.SetMetadata(
+                new MediaMetadataCompat.Builder()
+                    .Build()
+                );
             mSession.SetFlags(MediaSessionCompat.FlagHandlesMediaButtons | MediaSessionCompat.FlagHandlesTransportControls);
             var controller = mSession.Controller;
             var description = GlobalResources.playerPodcast;
@@ -178,6 +183,15 @@ namespace DABApp.Droid
                                   .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
                                   .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
+                    if (Android.OS.Build.VERSION.SdkInt >= Build.VERSION_CODES.Lollipop)
+                    {
+                        builder.SetSmallIcon(R.drawable.icon_transperent);
+                        builder.SetColor(Color.Transparent);
+                    }
+                    else
+                    {
+                        notification.setSmallIcon(R.drawable.icon);
+                    }
 
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);

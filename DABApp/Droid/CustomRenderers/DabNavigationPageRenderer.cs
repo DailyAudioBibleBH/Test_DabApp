@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Android.Widget;
 using DABApp.Droid;
 using Xamarin.Forms;
