@@ -85,10 +85,6 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-
-
-
-
         }
 
 
@@ -103,7 +99,7 @@ namespace DABApp
             }
             else
             {
-                await Navigation.PushAsync(new DabPlayerPage(episode, reading));
+                await Navigation.PushAsync(new DabPlayerPage(episode));
             }
             GlobalResources.WaitStop();
         }
@@ -177,7 +173,6 @@ namespace DABApp
             {
                 await PlayerFeedAPI.DownloadEpisodes();
             });
-
         }
 
         protected override async void OnAppearing()
@@ -265,7 +260,7 @@ namespace DABApp
                             var _reading = await PlayerFeedAPI.GetReading(ep.read_link);
                             if (ep.File_name_local != null || CrossConnectivity.Current.IsConnected)
                             {
-                                await Navigation.PushAsync(new DabPlayerPage(ep, _reading));
+                                await Navigation.PushAsync(new DabPlayerPage(ep));
                             }
                             GlobalResources.WaitStop();
                         };

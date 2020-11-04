@@ -78,7 +78,6 @@ namespace DABApp
 				stackPodcastTitle.IsEnabled = false;
 				NavigationPage page = (NavigationPage)Application.Current.MainPage;
 				var currentEpisode = PlayerFeedAPI.GetEpisode(GlobalResources.CurrentEpisodeId);
-				var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
@@ -86,7 +85,7 @@ namespace DABApp
 				}
 				else
 				{
-					await page.PushAsync(new DabPlayerPage(currentEpisode, reading));
+					await page.PushAsync(new DabPlayerPage(currentEpisode));
 				}
 				stackPodcastTitle.IsEnabled = true;
 				PlayerButton.IsEnabled = true;

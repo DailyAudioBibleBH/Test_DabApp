@@ -107,7 +107,7 @@ namespace DABApp
              * or full refresh (go back and query all episodes)
              * 
              */
-
+            
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
@@ -221,12 +221,11 @@ namespace DABApp
             var chosenVM = (EpisodeViewModel)e.Item;
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
-            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link); //TODO - move this to the actual player page?
 
             if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
                 //Push the new player page
-                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+                await Navigation.PushAsync(new DabPlayerPage(chosen));
             }
             else
             {

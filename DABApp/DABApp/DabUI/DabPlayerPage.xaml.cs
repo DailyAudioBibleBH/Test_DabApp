@@ -29,7 +29,7 @@ namespace DABApp
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
 
-        public DabPlayerPage(dbEpisodes episode, Reading Reading)
+        public DabPlayerPage(dbEpisodes episode)
         {
             InitializeComponent();
 
@@ -87,19 +87,7 @@ namespace DABApp
             /* Set up other tabs (segmented control) */
             SegControl.ValueChanged += Handle_SegControlValueChanged;
 
-            //Update properties of the reading
-            Reading reading = Reading;
-            ReadTitle.Text = reading.title;
-            ReadText.Text = reading.text;
-            if (reading.IsAlt)
-            {
-                AltWarning.IsVisible = true;
-            }
-            else AltWarning.IsVisible = false;
-            if (reading.excerpts != null)
-            {
-                ReadExcerpts.Text = String.Join(", ", reading.excerpts);
-            }
+            
 
             //Connect to the journal and set up events
             journal.InitAndConnect();
@@ -417,13 +405,26 @@ namespace DABApp
         }
 
         //Form appears
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
+            Reading reading = await PlayerFeedAPI.GetReading(_episode.read_link);
+            //Update properties of the reading
+            ReadTitle.Text = reading.title;
+            ReadText.Text = reading.text;
+            if (reading.IsAlt)
+            {
+                AltWarning.IsVisible = true;
+            }
+            else AltWarning.IsVisible = false;
+            if (reading.excerpts != null)
+            {
+                ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+            }
 
             //TODO: Put this back in for journal
             //Set up padding for the journal tab with the keyboard
