@@ -23,6 +23,8 @@ using System.Drawing;
 using Android.Graphics;
 using Android.Support.V4.Media;
 using Color = System.Drawing.Color;
+using Xamarin.Forms;
+using Android.Support.V4.Content;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -163,6 +165,8 @@ namespace DABApp.Droid
                     PendingIntent previousPendingIntent =
                         PendingIntent.GetActivity(Application.Context, previousPendingIntentId, previousIntent, 0);
 
+                    int color = ContextCompat.GetColor(Application.Context, Resource.Color.dab_red);
+
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
@@ -182,16 +186,9 @@ namespace DABApp.Droid
                                   .SetShowWhen(false)
                                   .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
-                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
-                    if (Android.OS.Build.VERSION.SdkInt >= Build.VERSION_CODES.Lollipop)
-                    {
-                        builder.SetSmallIcon(R.drawable.icon_transperent);
-                        builder.SetColor(Color.Transparent);
-                    }
-                    else
-                    {
-                        notification.setSmallIcon(R.drawable.icon);
-                    }
+                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle)
+                                  .SetColor(color)
+                                  .SetBadgeIconType(1);
 
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);
