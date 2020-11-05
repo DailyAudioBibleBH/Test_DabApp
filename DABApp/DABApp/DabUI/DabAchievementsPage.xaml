@@ -35,7 +35,7 @@
 
             <Frame x:Name="SummaryTab" Padding="0" BackgroundColor="#222222" BorderColor="#222222" CornerRadius="10" Margin="15, 0, 15, 0">
                 <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Fill">
-
+                    <!--MainGauge-->
                     <StackLayout Padding="0, 40, 0, 0">
                         <Grid>
                             <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png" HeightRequest="250" WidthRequest="250"></Image>
@@ -65,10 +65,10 @@
                     </StackLayout>
 
                     <BoxView WidthRequest="1" Color="Black" BackgroundColor="Black" Margin="0, 0, 0, -5"></BoxView>
-
-                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" HeightRequest="200">
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                        <!--OldGauge-->
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
-                            <Grid>
+                            <Grid HeightRequest="100">
                                 <Image x:Name="OldTestamentImage" Source="OldandNewTestamentDark.png"></Image>
                                 <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                                     <telerikGauges:RadRadialGauge.Axis>
@@ -89,12 +89,13 @@
                                     </telerikGauges:RadRadialGauge.Indicators>
                                 </telerikGauges:RadRadialGauge>
                             </Grid>
-                            <Label Text="Old Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                            <Label x:Name="OldTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
+                            <Label Text="Old Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
+                            <Label x:Name="OldTestamentLabel" TextColor="White" Opacity=".5" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
                         <BoxView WidthRequest="1" HeightRequest="100" Color="Black" BackgroundColor="Black"></BoxView>
+                        <!--NewGauge-->
                         <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Vertical" Padding="0, 10, 0, 0">
-                            <Grid HorizontalOptions="CenterAndExpand" Padding="0">
+                            <Grid HorizontalOptions="CenterAndExpand" HeightRequest="100">
                                 <Image x:Name="NewTestamentImage" Source="OldandNewTestamentDark.png"></Image>
                                 <telerikGauges:RadRadialGauge HeightRequest="300" SweepAngle="340" StartAngle="-100" Padding="4">
                                     <telerikGauges:RadRadialGauge.Axis>
@@ -115,8 +116,8 @@
                                     </telerikGauges:RadRadialGauge.Indicators>
                                 </telerikGauges:RadRadialGauge>
                             </Grid>
-                            <Label Text="New Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
-                            <Label x:Name="NewTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
+                            <Label Text="New Testament" TextColor="White" FontAttributes="Bold" FontSize="Large" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" VerticalOptions="Center" HorizontalOptions="CenterAndExpand"></Label>
+                            <Label x:Name="NewTestamentLabel" TextColor="White" Opacity=".5" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand" Padding="0, 0, 0, 40"></Label>
                         </StackLayout>
                     </StackLayout>
                 </StackLayout>

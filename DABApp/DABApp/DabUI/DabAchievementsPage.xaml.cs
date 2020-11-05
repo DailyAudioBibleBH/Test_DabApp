@@ -141,6 +141,7 @@ namespace DABApp
 			{
 				if (item.Progress.percent == 100)
 				{
+					item.Badge.description.Replace("Listen","Listened");
 					if (item.Progress.updatedAt.AddDays(progressDuration) >= DateTime.Now)
 						item.Progress.showNewIndicator = true;
 					else
