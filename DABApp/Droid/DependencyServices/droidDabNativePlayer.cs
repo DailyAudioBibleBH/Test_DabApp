@@ -178,7 +178,7 @@ namespace DABApp.Droid
                                   .SetVisibility(NotificationCompat.VisibilityPublic)
                                   .SetContentIntent(backToAppPendingIntent) // Start up this activity when the user clicks the intent.
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
-                                  .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
+                                  .SetSmallIcon(Resource.Drawable.AppIcon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
                                   .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
                                   .AddAction(Resource.Drawable.baseline_play_arrow_white_36, "Play or Pause", playPausePendingIntent)
