@@ -27,24 +27,26 @@ namespace DABApp
 
         public async static Task<IEnumerable<dbEpisodes>> GetEpisodeList(Resource resource)
         {
-            DateTime firstOfYearDate = new DateTime(DateTime.Now.Year, 1, 1);
-            DateTime beginEpisodeDate = GlobalResources.DabMinDate;
+            dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
             List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
+
+            DateTime rolloverDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
+            DateTime beginEpisodeDate = GlobalResources.DabMinDate;
+            DateTime todaysDate = DateTime.Now;
+
 
             //If guest figure which episodes to display to user
             if (GuestStatus.Current.IsGuestLogin)
             {
-                dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
                 int bufferLength = channel.bufferLength;
                 int bufferPeriod = channel.bufferPeriod;
-                DateTime todaysDate = DateTime.Now;
-                DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
-                DateTime startNegativeImpactDate = firstOfYearDate.AddDays(bufferPeriod);
+                DateTime startRolloverDate = rolloverDate.AddDays(-bufferLength);
+                DateTime startNegativeImpactDate = rolloverDate.AddDays(bufferPeriod);
                 //if today with buffer period is biggger than or equal to jan 1st
-                if (todaysDate.AddDays(-bufferPeriod).CompareTo(firstOfYearDate) >= 0)
+                if (todaysDate.AddDays(-bufferPeriod).CompareTo(rolloverDate) >= 0)
                 {
                     //if within rollover period
-                    if (todaysDate.CompareTo(firstOfYearDate.AddDays(bufferPeriod)) >= 0 && todaysDate.CompareTo(firstOfYearDate.AddDays(bufferLength + bufferPeriod)) < 0)
+                    if (todaysDate.CompareTo(rolloverDate.AddDays(bufferPeriod)) >= 0 && todaysDate.CompareTo(rolloverDate.AddDays(bufferLength + bufferPeriod)) < 0)
                     {
                         beginEpisodeDate = todaysDate.AddDays(-(bufferLength + bufferPeriod));
                     }
