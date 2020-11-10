@@ -22,7 +22,6 @@ using Android.Runtime;
 using System.Drawing;
 using Android.Graphics;
 using Android.Support.V4.Media;
-using Android.Support.V4.Media;
 using Color = System.Drawing.Color;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
@@ -30,7 +29,7 @@ using Android.Support.V4.Content;
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {
-    public class DroidDabNativePlayer : Service, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
+    public class DroidDabNativePlayer : Android.App.Service, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
     {
 
         //Based on Xamarin.Android documentation:
@@ -585,17 +584,16 @@ namespace DABApp.Droid
         private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder(droid);
         public MediaSessionCallback(MediaPlayerServiceBinder service)
         {
-            mediaPlayerService = service;
+            //mediaPlayerService = service;
         }
 
         public override void OnPause()
         {
             if (player.IsPlaying)
-                player.Pause();
+                mediaPlayerService.GetMediaPlayerService().Pause();
             else
-                player.Play();
-            //player.Pause();
-            //mediaPlayerService.GetMediaPlayerService().Pause();
+                mediaPlayerService.GetMediaPlayerService().Play();
+
             base.OnPause();
         }
 
@@ -605,17 +603,17 @@ namespace DABApp.Droid
             base.OnPlay();
         }
 
-        //public override void OnSkipToNext()
-        //{
-        //    mediaPlayerService.GetMediaPlayerService().PlayNext();
-        //    base.OnSkipToNext();
-        //}
+        public override void OnSkipToNext()
+        {
+            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition + 30);
+            base.OnSkipToNext();
+        }
 
-        //public override void OnSkipToPrevious()
-        //{
-        //    mediaPlayerService.GetMediaPlayerService().PlayPrevious();
-        //    base.OnSkipToPrevious();
-        //}
+        public override void OnSkipToPrevious()
+        {
+            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition - 30);
+            base.OnSkipToPrevious();
+        }
 
         public override void OnStop()
         {
@@ -626,14 +624,14 @@ namespace DABApp.Droid
 
     public class MediaPlayerServiceBinder : Binder
     {
-        private DroidDabNativePlayer service;
+        private DabPlayer service;
 
         public MediaPlayerServiceBinder(DroidDabNativePlayer service)
         {
-            this.service = service;
+            this.service = GlobalResources.playerPodcast;
         }
 
-        public DroidDabNativePlayer GetMediaPlayerService()
+        public DabPlayer GetMediaPlayerService()
         {
             return service;
         }
