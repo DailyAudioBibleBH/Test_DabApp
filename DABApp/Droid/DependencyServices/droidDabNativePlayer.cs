@@ -3,26 +3,16 @@ using Android.Content;
 using DABApp.DabAudio;
 using DABApp.Droid;
 using Android.Support.V4.App;
-using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 using Android.OS;
 using Android.App;
 using Application = Android.App.Application;
-using Java.Lang;
-using Android.Content.Res;
 using Android.Media.Session;
 using Android.Support.V4.Media.Session;
-using Plugin.SimpleAudioPlayer;
 using System.IO;
 using Math = System.Math;
 using Android.Media;
-
-using DABApp.Droid.DependencyServices;
-using Android.Telephony;
-using Android.Runtime;
-using System.Drawing;
 using Android.Graphics;
 using Android.Support.V4.Media;
-using Color = System.Drawing.Color;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
 
@@ -220,16 +210,18 @@ namespace DABApp.Droid
                     //Building the lock screen
                     MediaMetadataCompat.Builder lockBuilder = new MediaMetadataCompat.Builder()
                             .PutString(MediaMetadata.MetadataKeyAlbum, GlobalResources.playerPodcast.ChannelTitle)
-                            .PutString(MediaMetadata.MetadataKeyArtist, "DAB")
+                            .PutString(MediaMetadata.MetadataKeyArtist, GlobalResources.playerPodcast.EpisodeDescription)
+                            .PutString(MediaMetadata.MetadataKeyAlbumArtist, GlobalResources.playerPodcast.EpisodeDescription)
                             .PutString(MediaMetadata.MetadataKeyTitle, GlobalResources.playerPodcast.EpisodeTitle);
+                            
 
                     PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
                     .SetActions(
                         PlaybackStateCompat.ActionPause |
                         PlaybackStateCompat.ActionPlay |
                         PlaybackStateCompat.ActionPlayPause |
-                        PlaybackStateCompat.ActionSkipToNext |
-                        PlaybackStateCompat.ActionSkipToPrevious |
+                        PlaybackStateCompat.ActionFastForward |
+                        PlaybackStateCompat.ActionRewind |
                         PlaybackStateCompat.ActionStop
                     )
                     .SetState(PlaybackStateCompat.StatePlaying, player.CurrentPosition, 1.0f, SystemClock.ElapsedRealtime());
@@ -498,8 +490,8 @@ namespace DABApp.Droid
                         PlaybackStateCompat.ActionPause |
                         PlaybackStateCompat.ActionPlay |
                         PlaybackStateCompat.ActionPlayPause |
-                        PlaybackStateCompat.ActionSkipToNext |
-                        PlaybackStateCompat.ActionSkipToPrevious |
+                        PlaybackStateCompat.ActionFastForward |
+                        PlaybackStateCompat.ActionRewind |
                         PlaybackStateCompat.ActionStop
                     );
 
@@ -652,16 +644,16 @@ namespace DABApp.Droid
             base.OnPlay();
         }
 
-        public override void OnSkipToNext()
+        public override void OnFastForward()
         {
             mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition + 30);
-            base.OnSkipToNext();
+            base.OnFastForward();
         }
 
-        public override void OnSkipToPrevious()
+        public override void OnRewind()
         {
             mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition - 30);
-            base.OnSkipToPrevious();
+            base.OnRewind();
         }
 
         public override void OnStop()
