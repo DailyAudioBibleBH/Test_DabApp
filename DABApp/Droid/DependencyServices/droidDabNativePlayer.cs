@@ -40,6 +40,10 @@ namespace DABApp.Droid
         static readonly string CHANNEL_ID = "location_notification";
         DabPlayer dabplayer;
         bool wasPlaying = false;
+        MediaSessionCompat mSession = new MediaSessionCompat(Application.Context, "MusicService");
+
+        public PlaybackStateCode State { get; set; }
+
 
         public DroidDabNativePlayer()
         {
@@ -76,7 +80,11 @@ namespace DABApp.Droid
                 case AudioFocus.Gain:
                     //Check to make sure it's not going to start playing an episode if they had already paused it before the interruption
                     if (wasPlaying == true)
+                    {
                         Play();
+                        State = PlaybackStateCode.Playing;
+                        UpdatePlaybackState(null);
+                    }
                     //Gain when other Music Player app releases the audio service   
                     break;
                 case AudioFocus.Loss:
@@ -86,6 +94,8 @@ namespace DABApp.Droid
                     else
                         wasPlaying = false;
                     Stop();
+                    State = PlaybackStateCode.Paused;
+                    UpdatePlaybackState(null);
                     break;
                 case AudioFocus.LossTransient:
                     //We have lost focus for a short time, but likely to resume so pause   
@@ -94,6 +104,8 @@ namespace DABApp.Droid
                     else
                         wasPlaying = false;
                     Pause();
+                    State = PlaybackStateCode.Paused;
+                    UpdatePlaybackState(null);
                     break;
                 case AudioFocus.LossTransientCanDuck:
                     //We have lost focus but should till play at a muted 10% volume   
@@ -135,7 +147,6 @@ namespace DABApp.Droid
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
             dabplayer = Player;
-            var mSession = new MediaSessionCompat(Application.Context, "MusicService");
             mSession.SetMetadata(
                 new MediaMetadataCompat.Builder()
                     .Build()
@@ -365,23 +376,27 @@ namespace DABApp.Droid
                 //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
                 Pause();
                 Seek(0);
+                State = PlaybackStateCode.Paused;
             }
             else if (player.CurrentPosition >= player.Duration)
             {
                 //Start over from the beginning if at the end of the file
                 player.Pause();
                 Seek(0);
+                State = PlaybackStateCode.Paused;
             }
             else
             {
                 //Play from where we're at
-
+                State = PlaybackStateCode.Playing;
             }
 
             if (RequestAudioFocus())
             {
                 player.Start();
+                State = PlaybackStateCode.Playing;
             }
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -394,6 +409,8 @@ namespace DABApp.Droid
 
             Pause();
             Seek(0);
+            State = PlaybackStateCode.Stopped;
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -402,6 +419,8 @@ namespace DABApp.Droid
         public void Pause()
         {
             player?.Pause();
+            State = PlaybackStateCode.Paused;
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -438,6 +457,8 @@ namespace DABApp.Droid
                 player.SeekTo(0);
                 player.Stop();
                 player.Prepare();
+                State = PlaybackStateCode.Stopped;
+                UpdatePlaybackState(null);
             }
         }
 
@@ -462,6 +483,80 @@ namespace DABApp.Droid
             Dispose(true);
 
             GC.SuppressFinalize(this);
+        }
+
+        void UpdatePlaybackState(string error)
+        {
+            var position = PlaybackState.PlaybackPositionUnknown;
+            if (player != null)
+            {
+                position = player.CurrentPosition;
+            }
+
+            PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    .SetActions(
+                        PlaybackStateCompat.ActionPause |
+                        PlaybackStateCompat.ActionPlay |
+                        PlaybackStateCompat.ActionPlayPause |
+                        PlaybackStateCompat.ActionSkipToNext |
+                        PlaybackStateCompat.ActionSkipToPrevious |
+                        PlaybackStateCompat.ActionStop
+                    );
+
+            PlaybackStateCode state = State;
+
+            // If there is an error message, send it to the playback state:
+            if (error != null)
+            {
+                // Error states are really only supposed to be used for errors that cause playback to
+                // stop unexpectedly and persist until the user takes action to fix it.
+                stateBuilder.SetErrorMessage(error);
+                state = PlaybackStateCode.Error;
+            }
+
+            stateBuilder.SetState(Convert.ToInt32(state), position, 1.0f, SystemClock.ElapsedRealtime());
+
+            // Set the activeQueueItemId if the current index is valid.
+            //if (QueueHelper.isIndexPlayable(currentIndexOnQueue, playingQueue))
+            //{
+            //    var item = playingQueue[currentIndexOnQueue];
+            //    stateBuilder.SetActiveQueueItemId(item.QueueId);
+            //}
+
+            mSession.SetPlaybackState(stateBuilder.Build());
+
+            //if (state == PlaybackStateCode.Playing || state == PlaybackStateCode.Paused)
+            //{
+            //    mediaNotificationManager.StartNotification();
+            //}
+        }
+
+        long GetAvailableActions()
+        {
+            long actions = PlaybackState.ActionPlay | PlaybackState.ActionPlayFromMediaId |
+                           PlaybackState.ActionPlayFromSearch;
+            //if (playingQueue == null || playingQueue.Count == 0)
+            //{
+            //    return actions;
+            //}
+            if (player.IsPlaying)
+            {
+                actions |= PlaybackState.ActionPause;
+            }
+            else
+            {
+                actions |= PlaybackState.ActionPlay;
+            }
+
+            //if (currentIndexOnQueue > 0)
+            //{
+            //    actions |= PlaybackState.ActionSkipToPrevious;
+            //}
+            //if (currentIndexOnQueue < playingQueue.Count - 1)
+            //{
+            //    actions |= PlaybackState.ActionSkipToNext;
+            //}
+            return actions;
         }
     }
 
@@ -589,11 +684,7 @@ namespace DABApp.Droid
 
         public override void OnPause()
         {
-            if (player.IsPlaying)
-                mediaPlayerService.GetMediaPlayerService().Pause();
-            else
-                mediaPlayerService.GetMediaPlayerService().Play();
-
+            mediaPlayerService.GetMediaPlayerService().Pause();
             base.OnPause();
         }
 
