@@ -140,7 +140,7 @@ namespace DABApp.Droid
 
         public override IBinder OnBind(Intent intent)
         {
-            binder = new MediaPlayerServiceBinder(this);
+            binder = new MediaPlayerServiceBinder();
             return binder;
         }
 
@@ -215,7 +215,7 @@ namespace DABApp.Droid
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
 
                     mSession.Active = true;
-                    mSession.SetCallback(new MediaSessionCallback((MediaPlayerServiceBinder)binder));
+                    mSession.SetCallback(new MediaSessionCallback());
 
                     //Building the lock screen
                     MediaMetadataCompat.Builder lockBuilder = new MediaMetadataCompat.Builder()
@@ -515,48 +515,8 @@ namespace DABApp.Droid
             }
 
             stateBuilder.SetState(Convert.ToInt32(state), position, 1.0f, SystemClock.ElapsedRealtime());
-
-            // Set the activeQueueItemId if the current index is valid.
-            //if (QueueHelper.isIndexPlayable(currentIndexOnQueue, playingQueue))
-            //{
-            //    var item = playingQueue[currentIndexOnQueue];
-            //    stateBuilder.SetActiveQueueItemId(item.QueueId);
-            //}
-
+            
             mSession.SetPlaybackState(stateBuilder.Build());
-
-            //if (state == PlaybackStateCode.Playing || state == PlaybackStateCode.Paused)
-            //{
-            //    mediaNotificationManager.StartNotification();
-            //}
-        }
-
-        long GetAvailableActions()
-        {
-            long actions = PlaybackState.ActionPlay | PlaybackState.ActionPlayFromMediaId |
-                           PlaybackState.ActionPlayFromSearch;
-            //if (playingQueue == null || playingQueue.Count == 0)
-            //{
-            //    return actions;
-            //}
-            if (player.IsPlaying)
-            {
-                actions |= PlaybackState.ActionPause;
-            }
-            else
-            {
-                actions |= PlaybackState.ActionPlay;
-            }
-
-            //if (currentIndexOnQueue > 0)
-            //{
-            //    actions |= PlaybackState.ActionSkipToPrevious;
-            //}
-            //if (currentIndexOnQueue < playingQueue.Count - 1)
-            //{
-            //    actions |= PlaybackState.ActionSkipToNext;
-            //}
-            return actions;
         }
     }
 
@@ -675,11 +635,9 @@ namespace DABApp.Droid
     public class MediaSessionCallback : MediaSessionCompat.Callback
     {
         DabPlayer player = GlobalResources.playerPodcast;
-        static DroidDabNativePlayer droid = new DroidDabNativePlayer();
-        private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder(droid);
-        public MediaSessionCallback(MediaPlayerServiceBinder service)
+        private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder();
+        public MediaSessionCallback()
         {
-            //mediaPlayerService = service;
         }
 
         public override void OnPause()
@@ -717,7 +675,7 @@ namespace DABApp.Droid
     {
         private DabPlayer service;
 
-        public MediaPlayerServiceBinder(DroidDabNativePlayer service)
+        public MediaPlayerServiceBinder()
         {
             this.service = GlobalResources.playerPodcast;
         }
