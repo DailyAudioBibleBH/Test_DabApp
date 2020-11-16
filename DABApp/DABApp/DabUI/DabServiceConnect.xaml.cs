@@ -12,7 +12,7 @@ namespace DABApp.DabUI
 
         ContentAPI contentAPI = new ContentAPI();
         ContentConfig contentConfig = new ContentConfig();
-        bool rotateImage = true;
+        //bool rotateImage = true;
 
         public DabServiceConnect()
         {
@@ -23,12 +23,12 @@ namespace DABApp.DabUI
         {
             base.OnAppearing();
 
-            RotateIconContinuously(); //start rotation
-            WaitContent.FadeTo(1, 250); //fade it in
+            //RotateIconContinuously(); //start rotation
+            //WaitContent.FadeTo(1, 250); //fade it in
             if (GlobalResources.TestMode)
             {
                 lblTestMode.IsVisible = true;
-                lblTestMode.FadeTo(1, 500, Easing.BounceIn);
+                //lblTestMode.FadeTo(1, 500, Easing.BounceIn);
             }
 
             if (ContentAPI.CheckContent()) //Check for valid content API
@@ -116,22 +116,22 @@ namespace DABApp.DabUI
             }
 
             //finish rotating the image
-            rotateImage = false;
+            //rotateImage = false;
         }
 
 
-        async Task RotateIconContinuously()
-        {
-            int steps = 1;
+        //async Task RotateIconContinuously()
+        //{
+        //    int steps = 1;
 
-            while (rotateImage)
-            {
-                for (int i = 1; i < steps + 1; i++)
-                {
-                    if (AppIcon.Rotation >=  360f) AppIcon.Rotation = 0;
-                    await AppIcon.RotateTo(i * ( 360 / steps), 1000, Easing.CubicInOut);
-                }
-            }
-        }
+        //    while (rotateImage)
+        //    {
+        //        for (int i = 1; i < steps + 1; i++)
+        //        {
+        //            if (AppIcon.Rotation >=  360f) AppIcon.Rotation = 0;
+        //            await AppIcon.RotateTo(i * ( 360 / steps), 1000, Easing.CubicInOut);
+        //        }
+        //    }
+        //}
     }
 }
