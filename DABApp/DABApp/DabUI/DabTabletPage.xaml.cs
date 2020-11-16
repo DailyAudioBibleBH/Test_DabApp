@@ -205,7 +205,7 @@ namespace DABApp
             }
         }
 
-        void OnInitialized(object o, EventArgs e)
+        async void OnInitialized(object o, EventArgs e)
         {
 
             //Initialize an episode for playback. This may fire when initially loading
@@ -246,6 +246,7 @@ namespace DABApp
 
                     //Bind controls for playback
                     BindControls(true, true);
+                    await SetReading();
 
                     //Set up journal
                     ////TODO: Replace for journal?
