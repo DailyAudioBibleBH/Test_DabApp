@@ -34,7 +34,7 @@ namespace DABApp.DabAudio
 
     //Class that extends the basic player used by the apps.
 
-    public class DabPlayer :  INotifyPropertyChanged
+    public class DabPlayer : INotifyPropertyChanged
     {
         private IDabNativePlayer nativePlayer;
         private string _channelTitle = "";
@@ -50,15 +50,15 @@ namespace DABApp.DabAudio
 
 
         //Constructor 
-        public DabPlayer( bool IntegrateWithLockScreen)
+        public DabPlayer(bool IntegrateWithLockScreen)
         {
 
-            
-            
+
+
             //Connect the native player interface
             //nativePlayer = DependencyService.Get<IDabNativePlayer>();
             nativePlayer = DependencyService.Get<IDabNativePlayer>(DependencyFetchTarget.NewInstance);
-            
+
             nativePlayer.Init(this, IntegrateWithLockScreen);
             //Set up events tied to the player
             nativePlayer.PlaybackEnded += Player_PlaybackEnded;
@@ -99,40 +99,6 @@ namespace DABApp.DabAudio
             OnPropertyChanged("PlayPauseButtonImageBig");
         }
 
-        //public int NextEpisode
-        //{
-        //    get
-        //    {
-        //        if (hasNext == true) //if there is another episode set hasNext to true then return the next episodes id
-        //        {
-        //            //get next episode
-        //            return 1;
-        //        }
-        //        else // set hasNext to false and not sure what to return yet 
-        //        {
-        //            return 1;
-        //        }
-        //    }
-        //}
-
-        //public int PreviousEpisode
-        //{
-        //    get
-        //    {
-        //        var existingEpisodes = db.Table<dbEpisodes>().Where(x => x.id == 227).ToList();
-
-        //        if (hasPrevious == true) //If there is a previous episode set hasPrevious to true then return previous episodes id
-        //        {
-        //            //get previous episde
-        //            return 1;
-        //        }
-        //        else
-        //        {
-        //            //set has previous to false;
-        //            return 1;
-        //        }
-        //    }
-        //}
 
         /********************************
         ISimpleAudioPlayer Implementation 
@@ -142,16 +108,24 @@ namespace DABApp.DabAudio
         {
             get
             {
-                //Return the duration of the player, ensuring it's >0
-                if (nativePlayer.Duration <= 0)
+                try
                 {
-                    //TODO: Use the episodes total length if possible
-                    return _episodeDuration;
+                    //Return the duration of the player, ensuring it's >0
+                    if (nativePlayer.Duration <= 0)
+                    {
+                        //TODO: Use the episodes total length if possible
+                        return _episodeDuration;
+                    }
+                    else
+                    {
+                        return nativePlayer.Duration;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return nativePlayer.Duration;
+                    return 0;
                 }
+
             }
         }
 
@@ -160,20 +134,19 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return nativePlayer.CurrentPosition;
+                try
+                {
+                    return nativePlayer.CurrentPosition;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
             }
             set
             {
                 //do nothing - player position can't be set directly.
             }
-                //set
-                //{
-                //    double offset = Math.Abs(value - nativePlayer.CurrentPosition);
-                //    if (offset >=5) //only allow setting of 
-                //    {
-                //        Seek(value);
-                //    }
-                //}
         }
 
         //Remaining time for the player
@@ -181,7 +154,14 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return nativePlayer.Duration - CurrentPosition;
+                try
+                {
+                    return nativePlayer.Duration - CurrentPosition;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
             }
         }
 
@@ -205,22 +185,60 @@ namespace DABApp.DabAudio
         {
             get
             {
-                return nativePlayer.Volume;
+                try
+                {
+                    return nativePlayer.Volume;
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
 
             }
             set
             {
-                nativePlayer.Volume = value;
-                OnPropertyChanged("Volume");
+                try
+                {
+                    nativePlayer.Volume = value;
+                    OnPropertyChanged("Volume");
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
 
 
-        public bool IsPlaying => nativePlayer.IsPlaying;
+        public bool IsPlaying
+        {
+            get
+            {
+                try
+                {
+                    return nativePlayer.IsPlaying;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+        }
 
+        public bool CanSeek
+        {
+            get
+            {
+                try
+                {
+                    return nativePlayer.CanSeek;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
 
-
-        public bool CanSeek => nativePlayer.CanSeek;
+        }
 
         public event EventHandler PlaybackEnded
         {
@@ -239,22 +257,6 @@ namespace DABApp.DabAudio
         {
             //nativePlayer.Dispose();
         }
-
-
-        //public bool Load(Stream audioStream)
-        //{
-        //    //Load a stream
-        //    Task.Run(() =>
-        //    {
-        //        bool rv = nativePlayer.Load(audioStream);
-        //        OnPropertyChanged("Duration");
-        //    }
-        //    );
-
-        //    OnPropertyChanged("IsReady");
-        //    return true;
-        //}
-
 
         public bool Load(string fileName)
         {
@@ -309,41 +311,72 @@ namespace DABApp.DabAudio
 
         public void PlayPauseBluetooth()
         {
-            if (IsPlaying)
+
+            try
             {
-                nativePlayer.Pause();
+
+                if (IsPlaying)
+                {
+                    nativePlayer.Pause();
+                }
+                else
+                {
+                    nativePlayer.Play();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                nativePlayer.Play();
+
             }
         }
 
         public void Play()
         {
-            if (IsPlaying)
-            {
-                //Stop the current episode properly if needed.
-                Stop();
-            }
 
-            nativePlayer.Play();
-            timer.Start();
-            OnPropertyChanged("PlayPauseButtonImageBig");
+            try
+            {
+                if (IsPlaying)
+                {
+                    //Stop the current episode properly if needed.
+                    Stop();
+                }
+
+                nativePlayer.Play();
+                timer.Start();
+                OnPropertyChanged("PlayPauseButtonImageBig");
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void Seek(double position)
         {
-            nativePlayer.Seek(position);
+            try
+            {
+                nativePlayer.Seek(position);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public void Stop()
         {
-            nativePlayer.Stop();
-            timer.Stop();
-            OnPropertyChanged("PlayPauseButtonImageBig");
+            try
+            {
+                nativePlayer.Stop();
+                timer.Stop();
+                OnPropertyChanged("PlayPauseButtonImageBig");
 
-            UpdateEpisodeDataOnStop(); //episode has stopped
+                UpdateEpisodeDataOnStop(); //episode has stopped
+            }
+            catch (Exception ex)
+            {
+
+            }
 
         }
 
@@ -357,7 +390,7 @@ namespace DABApp.DabAudio
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null)
@@ -368,25 +401,32 @@ namespace DABApp.DabAudio
 
         private void OnTimerFired(object sender, ElapsedEventArgs e)
         {
-            //Raise an event if the players progress has moved
-            if (LastPosition != nativePlayer.CurrentPosition)
+            try
             {
-                LastPosition = nativePlayer.CurrentPosition;
-                OnPropertyChanged("CurrentPosition");
-                OnPropertyChanged("RemainingSeconds");
-                OnPropertyChanged("CurrentProgressPercentage");
-
-                //Fire event to tell native players to update lock screen
-                OnEpisodeProgressChanged(this, new DabPlayerEventArgs(this)); //Notify lock screen of new position
-
-                //Log position change to an action log
-                var difference = Math.Abs(lastLogPlayerPosition - CurrentPosition);
-                if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
+                //Raise an event if the players progress has moved
+                if (LastPosition != nativePlayer.CurrentPosition)
                 {
-                    Debug.WriteLine($"Logging progress...{DateTime.Now}");
-                    _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
-                    lastLogPlayerPosition = CurrentPosition;
+                    LastPosition = nativePlayer.CurrentPosition;
+                    OnPropertyChanged("CurrentPosition");
+                    OnPropertyChanged("RemainingSeconds");
+                    OnPropertyChanged("CurrentProgressPercentage");
+
+                    //Fire event to tell native players to update lock screen
+                    OnEpisodeProgressChanged(this, new DabPlayerEventArgs(this)); //Notify lock screen of new position
+
+                    //Log position change to an action log
+                    var difference = Math.Abs(lastLogPlayerPosition - CurrentPosition);
+                    if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
+                    {
+                        Debug.WriteLine($"Logging progress...{DateTime.Now}");
+                        _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
+                        lastLogPlayerPosition = CurrentPosition;
+                    }
+
                 }
+            }
+            catch (Exception ex)
+            {
 
             }
         }
@@ -399,39 +439,60 @@ namespace DABApp.DabAudio
 
         private void UpdateEpisodeDataOnStop()
         {
-            //Call other methods related to stopping / pausing an episode
-            int e = GlobalResources.CurrentEpisodeId;
-            if (e > 0)
+            try
             {
-                PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-                AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
-                lastLogPlayerPosition = CurrentPosition;
+                //Call other methods related to stopping / pausing an episode
+                int e = GlobalResources.CurrentEpisodeId;
+                if (e > 0)
+                {
+                    PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
+                    AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+                    lastLogPlayerPosition = CurrentPosition;
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
 
         }
 
         public void Skip(double seconds)
         {
-            //Skip forward or backward from current position
-            double newPosition = nativePlayer.CurrentPosition + seconds;
-            if (newPosition < 0) { newPosition = 0; }
-            if (newPosition > nativePlayer.Duration)
+            try
             {
-                newPosition = nativePlayer.Duration;
+                //Skip forward or backward from current position
+                double newPosition = nativePlayer.CurrentPosition + seconds;
+                if (newPosition < 0) { newPosition = 0; }
+                if (newPosition > nativePlayer.Duration)
+                {
+                    newPosition = nativePlayer.Duration;
+                }
+                Seek(newPosition);
             }
-            Seek(newPosition);
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public bool IsReady
         {
             get
             {
-                //Return if the player is ready to go.
-                if (GlobalResources.CurrentEpisodeId > 0)
+                try
                 {
-                    return true;
+                    //Return if the player is ready to go.
+                    if (GlobalResources.CurrentEpisodeId > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
                     return false;
                 }
