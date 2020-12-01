@@ -78,7 +78,7 @@ namespace DABApp
 				}
 				else
 				{
-					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, unix);
+					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, Intervals.SelectedItem.ToString(), unix);
 					result = await AuthenticationAPI.UpdateDonation(send);
 				}
 				if (result == "Success")

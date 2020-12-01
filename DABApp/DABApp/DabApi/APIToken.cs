@@ -186,12 +186,14 @@ namespace DABApp
 		public int campaign_number { get; set; }
 		public string card_id { get; set; }
 		public string amount { get; set; }
+        public string donation_type { get; set; }
         public long next_date_timestamp { get; set; }
-		public putDonation(int campaign, string card, string Amount, long date)
+		public putDonation(int campaign, string card, string Amount, string DonationType, long date)
 		{
 			campaign_number = campaign;
 			card_id = card;
 			amount = Amount;
+			donation_type = DonationType;
 			next_date_timestamp = date;
 		}
 	}
