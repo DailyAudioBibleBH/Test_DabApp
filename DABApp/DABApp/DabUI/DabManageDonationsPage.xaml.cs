@@ -54,6 +54,7 @@ namespace DABApp
 					btnInterval.Text = "Edit interval";
 					btnInterval.Clicked += OnRecurring;
 					btnInterval.WidthRequest = 150;
+					btnInterval.HeightRequest = 40;
 					btnInterval.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
@@ -67,6 +68,7 @@ namespace DABApp
 						recurr.VerticalOptions = LayoutOptions.Start;
 						btnInterval.IsVisible = true;
 						once.Text = "One-time gift";
+						once.HeightRequest = 40;
 						buttons.Children.Add(btnInterval);
 					}
 					else 
@@ -160,7 +162,7 @@ namespace DABApp
 						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
 						if (don.pro != null)
 						{
-							Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
+							Labels[0].Text = $"{don.name}-${don.pro.amount}/{don.pro.interval}";
 							Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
 							Labels[2].Text = $"Recurs: {don.pro.next}";
 							Labels[1].IsVisible = true;
@@ -169,6 +171,7 @@ namespace DABApp
 							Labels[2].FontSize = 14;
 							Buttons[0].IsVisible = true;
 							Buttons[1].Text = "One-time gift";
+							Buttons[0].Text = $"Edit {don.pro.interval}";
 						}
 						else
 						{
