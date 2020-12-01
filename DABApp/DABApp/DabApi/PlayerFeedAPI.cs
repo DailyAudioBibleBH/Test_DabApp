@@ -29,27 +29,23 @@ namespace DABApp
         {
             dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
             List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
-
-            DateTime rolloverDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
             DateTime beginEpisodeDate = GlobalResources.DabMinDate;
-            DateTime todaysDate = DateTime.Now;
 
-
-            //If guest figure which episodes to display to user
+            //Year end rollover process for guest
             if (GuestStatus.Current.IsGuestLogin)
             {
+                DateTime startDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
+                DateTime todaysDate = DateTime.Now;
+
                 int bufferLength = channel.bufferLength;
                 int bufferPeriod = channel.bufferPeriod;
-                DateTime startRolloverDate = rolloverDate.AddDays(-bufferLength);
-                DateTime startNegativeImpactDate = rolloverDate.AddDays(bufferPeriod);
-                //if today with buffer period is biggger than or equal to jan 1st
-                if (todaysDate.AddDays(-bufferPeriod).CompareTo(rolloverDate) >= 0)
+                DateTime startRolloverDate = startDate.AddDays(-bufferLength);
+                DateTime startNegativeImpactDate = startDate.AddDays(bufferPeriod);
+                
+                //if today is within buffer period
+                if (todaysDate.CompareTo(startDate) >= 0 && todaysDate.CompareTo(startNegativeImpactDate) <= 0)
                 {
-                    //if within rollover period
-                    if (todaysDate.CompareTo(rolloverDate.AddDays(bufferPeriod)) >= 0 && todaysDate.CompareTo(rolloverDate.AddDays(bufferLength + bufferPeriod)) < 0)
-                    {
-                        beginEpisodeDate = todaysDate.AddDays(-(bufferLength + bufferPeriod));
-                    }
+                    return episodesTable.Where(x => x.PubDate.CompareTo(startRolloverDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
             }
 
