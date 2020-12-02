@@ -14,6 +14,7 @@ using DABApp.Service;
 using Xamarin.Essentials;
 using System.Security.Cryptography;
 using System.Text;
+using System.Globalization;
 
 namespace DABApp
 {
@@ -307,6 +308,18 @@ namespace DABApp
         {
             //friendly user name
             return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
+        }
+
+        //Used to convert to a currency amount without dollar sign
+        public static string ToCurrency(double amount)
+        {
+            NumberFormatInfo nfi = CultureInfo.CurrentCulture.NumberFormat;
+            nfi = (NumberFormatInfo)nfi.Clone();
+
+            nfi.CurrencySymbol = "";
+            string newAmount = string.Format(nfi, "{0:c}", amount);
+
+            return newAmount;
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId

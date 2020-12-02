@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Xamarin.Forms;
@@ -38,7 +37,8 @@ namespace DABApp
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
 			if (campaign.pro != null)
 			{
-				Amount.Text = campaign.pro.amount.ToString();
+				string currencyAmount = GlobalResources.ToCurrency(campaign.pro.amount);
+				Amount.Text = currencyAmount;
 				Next.Date = Convert.ToDateTime(campaign.pro.next);
 				Cards.SelectedItem = cards.Single(x => x.id == campaign.pro.card_id);
 				Status.Text = campaign.pro.status;

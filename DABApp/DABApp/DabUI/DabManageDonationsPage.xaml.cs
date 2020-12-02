@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using Xamarin.Forms;
@@ -58,8 +57,9 @@ namespace DABApp
 					btnInterval.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
+						string currencyAmount = GlobalResources.ToCurrency(don.pro.amount); 
 						btnInterval.Text = $"Edit {don.pro.interval}";
-						cTitle.Text = $"{don.name}-${don.pro.amount}/{don.pro.interval}";
+						cTitle.Text = $"{don.name}-${currencyAmount}/{don.pro.interval}";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
 						card.VerticalOptions = LayoutOptions.End;
@@ -162,7 +162,9 @@ namespace DABApp
 						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
 						if (don.pro != null)
 						{
-							Labels[0].Text = $"{don.name}-${don.pro.amount}/{don.pro.interval}";
+							string currencyAmount = GlobalResources.ToCurrency(don.pro.amount);
+
+							Labels[0].Text = $"{don.name}-${currencyAmount}/{don.pro.interval}";
 							Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
 							Labels[2].Text = $"Recurs: {don.pro.next}";
 							Labels[1].IsVisible = true;
