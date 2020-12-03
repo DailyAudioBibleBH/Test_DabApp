@@ -359,6 +359,11 @@ namespace DABApp
                 //Attach the file
                 var att = new Attachment(fileName, "audio/wav");
                 mailMessage.Attachments.Add(att);
+                mailMessage.To.Clear();
+                foreach (var address in podcastEmail.Email.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    mailMessage.To.Add(address);
+                }
 
                 //Set up the SMTP client using Mandril API credentials
                 var smtp = new SmtpClient();
