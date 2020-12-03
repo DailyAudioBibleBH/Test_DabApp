@@ -33,13 +33,48 @@ namespace DABApp
             _AsyncDatabase.GetConnection().BusyTimeout = TimeSpan.FromSeconds(60);
             _database.ExecuteScalar<string>("PRAGMA journal_mode=WAL");//Enabling Write Ahead Log instead of rollback journal.
             _database.CreateTable<dbSettings>();
+            _database.CreateTable<dbUserData>();
             //Insert any settings preserved from prior version
             if (GlobalResources.SettingsToPreserve != null)
             {
+                dbUserData userData = new dbUserData();
+                //TODO: see if you can refactor this better using the dbUserData
                 foreach (dbSettings s in GlobalResources.SettingsToPreserve)
                 {
-                    _database.InsertOrReplace(s);
+                    if (s.Key == "WpId")
+                    {
+                        userData.WpId = Convert.ToInt32(s.Value);
+                    }
+                    else if (s.Key == "FirstName")
+                    {
+                        userData.FirstName = s.Value;
+                    }
+                    else if (s.Key == "LastName")
+                    {
+                        userData.LastName = s.Value;
+                    }
+                    else if (s.Key == "Token")
+                    {
+                        userData.Token = s.Value;
+                    }
+                    else if (s.Key == "TokenCreation")
+                    {
+                        userData.TokenCreation = Convert.ToDateTime(s.Value);
+                    }
+                    else if (s.Key == "Email")
+                    {
+                        userData.Email = s.Value;
+                    }
+                    else if (s.Key == "UserRegistered")
+                    {
+                        userData.UserRegistered = Convert.ToDateTime(s.Value);
+                    }
+                    else
+                    {
+                        _database.InsertOrReplace(s);
+                    }
                 }
+                _database.InsertOrReplace(userData);
             }
             _database.CreateTable<dbEpisodes>();
             _database.CreateTable<dbPlayerActions>();
@@ -47,7 +82,6 @@ namespace DABApp
             _database.CreateTable<dbUserBadgeProgress>();
             _database.CreateTable<dbChannels>();
             _database.CreateTable<dbEpisodeUserData>();
-            _database.CreateTable<dbUserData>();
             _databaseInitiated = true;
         }
 
