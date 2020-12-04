@@ -48,7 +48,7 @@ namespace DABApp
                 }
                 else
                 {
-                    episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
+                    return episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
             }
 
