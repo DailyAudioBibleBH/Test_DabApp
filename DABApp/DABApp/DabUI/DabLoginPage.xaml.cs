@@ -336,6 +336,7 @@ namespace DABApp
                 //GuestLogin.IsEnabled = false;
                 Login.IsEnabled = false;
                 btnForgot.IsEnabled = false;
+                BackButton.IsEnabled = false;
                 //SignUp.IsEnabled = false;
                 Login.Text = MainButtonText;
             }
@@ -368,9 +369,7 @@ namespace DABApp
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
-                    Login.IsEnabled = false;
-                    //GuestLogin.IsEnabled = false;
-                    //SignUp.IsEnabled = false;
+                    DisableAllInputs("Shutdown and restart app");
                 }
             }
         }
