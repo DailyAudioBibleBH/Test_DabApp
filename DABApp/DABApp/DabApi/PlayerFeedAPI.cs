@@ -34,10 +34,10 @@ namespace DABApp
             //Year end rollover process for guest
             if (GuestStatus.Current.IsGuestLogin)
             {
-                DateTime startDate = new DateTime(DateTime.Now.Year, 12, 1);//new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
-                DateTime todaysDate = new DateTime(DateTime.Now.Year, 12, 6);//DateTime.Now.Date;
-                int bufferLength = 7;//channel.bufferLength;
-                int bufferPeriod = 7; // channel.bufferPeriod;
+                DateTime startDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
+                DateTime todaysDate = DateTime.Now.Date;
+                int bufferLength = channel.bufferLength;
+                int bufferPeriod = channel.bufferPeriod;
                 DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
                 DateTime stopImpactDate = startDate.AddDays(bufferPeriod);
                 
@@ -48,7 +48,7 @@ namespace DABApp
                 }
                 else
                 {
-                    episodesTable.Where(x => x.PubDate.CompareTo(new DateTime(DateTime.Now.Year, 1, 1)) >= 0).OrderByDescending(x => x.PubDate).ToList();
+                    episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
             }
 
