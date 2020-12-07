@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
+using Android.Content;
 using Android.Graphics;
 using DABApp;
 using DABApp.Droid;
-using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-[assembly:ExportRenderer(typeof(ImageCircle), typeof(ImageCircleRenderer))]
+[assembly: ExportRenderer(typeof(ImageCircle), typeof(ImageCircleRenderer))]
 namespace DABApp.Droid
 {
-	public class ImageCircleRenderer: CachedImageRenderer
+	public class ImageCircleRenderer : ImageRenderer
 	{
+		//Come back to this
+		public ImageCircleRenderer(Context context) : base(context)
+		{
+
+		}
 		protected override bool DrawChild(Canvas canvas, global::Android.Views.View child, long drawingTime)
 		{
 			try
@@ -26,7 +31,7 @@ namespace DABApp.Droid
 				path.AddCircle(Width / 2, Height / 2, radius, Path.Direction.Ccw);
 				canvas.Save();
 				canvas.ClipPath(path);
-				canvas.DrawRGB(Convert.ToInt32(color.R*255), Convert.ToInt32(color.G*255), Convert.ToInt32(color.B*255));
+				canvas.DrawRGB(Convert.ToInt32(color.R * 255), Convert.ToInt32(color.G * 255), Convert.ToInt32(color.B * 255));
 				var result = base.DrawChild(canvas, child, drawingTime);
 
 				canvas.Restore();

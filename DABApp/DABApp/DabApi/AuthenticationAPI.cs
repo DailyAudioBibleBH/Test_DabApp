@@ -311,7 +311,6 @@ namespace DABApp
             }
         }
 
-
         public static bool GetTestMode()
         {
             string testmode = dbSettings.GetSetting("TestMode", "");
@@ -322,16 +321,32 @@ namespace DABApp
             else return false;
         }
 
-        public static void SetTestMode()
+        public static bool GetExperimentMode()
         {
-            // TODO: Check the store and getting of settings here.
+            var experimentmode = adb.Table<dbSettings>().Where(x => x.Key == "ExperimentMode").FirstOrDefaultAsync().Result;
+            if (experimentmode != null)
+            {
+                return Convert.ToBoolean(experimentmode.Value);
+            }
+            else return false;
+        }
+
+        public static void SetExternalMode(bool isTest)
+        {
             adb.QueryAsync<dbEpisodes>("delete from dbEpisodes");
             adb.ExecuteAsync("delete from dbPlayerActions");
             adb.ExecuteAsync("delete from Badge");
             adb.ExecuteAsync("delete from dbUserBadgeProgress");
             adb.ExecuteAsync("delete from Channel");
             adb.ExecuteAsync("delete from dbEpisodeUserData");
-            dbSettings.StoreSetting("TestMode", GlobalResources.TestMode.ToString());
+            if (isTest)
+            {
+                dbSettings.StoreSetting("TestMode", GlobalResources.TestMode.ToString());
+            }
+            else
+            {
+                dbSettings.StoreSetting("ExperimentMode", GlobalResources.ExperimentMode.ToString());
+            }
         }
     }
 }

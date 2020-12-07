@@ -1,10 +1,10 @@
 ﻿using System;
-using FFImageLoading.Forms;
 using Xamarin.Forms;
 
 namespace DABApp
 {
-	public class ImageCircle : CachedImage
+	//Come back to this
+	public class ImageCircle : Image
 	{
 		public ImageCircle()
 		{

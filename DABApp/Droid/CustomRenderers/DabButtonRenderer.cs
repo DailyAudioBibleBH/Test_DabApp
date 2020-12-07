@@ -7,7 +7,7 @@ using Xamarin.Forms.Platform.Android;
 [assembly: ExportRenderer(typeof(Button), typeof(DabButtonRenderer))]
 namespace DABApp.Droid
 {
-	public class DabButtonRenderer: ButtonRenderer
+	public class DabButtonRenderer : ButtonRenderer
 	{
 		public DabButtonRenderer(Context context) : base(context)
 		{

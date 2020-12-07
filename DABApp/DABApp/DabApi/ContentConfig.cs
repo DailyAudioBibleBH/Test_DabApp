@@ -380,7 +380,11 @@ namespace DABApp
 	{
 		public int token_life { get; set; } = 5;
 		public int log_position_interval { get; set; } = 30;
-		public int progress_year { get; set; } = DateTime.Now.Year;
+		public int progress_year { get; set; }
+		public int new_progress_duration { get; set; }
+		public int entire_bible_badge_id { get; set; }
+		public int new_testament_badge_id { get; set; }
+		public int old_testament_badge_id { get; set; }
         public int episode_year { get; set; }
     }
 

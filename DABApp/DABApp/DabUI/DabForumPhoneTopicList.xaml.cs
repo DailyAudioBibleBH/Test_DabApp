@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -11,21 +12,22 @@ namespace DABApp
 		bool login = false;
 		bool fromPost = false;
 		bool unInitialized = true;
-        int pageNumber;
+		int pageNumber;
 		Forum _forum;
 		View _view;
+		object source;
 
 		public DabForumPhoneTopicList(View view)
 		{
 			InitializeComponent();
-            pageNumber = 1;
+			pageNumber = 1;
 			base.ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlPhone;
 			bannerTitle.Text = view.title;
 			_view = view;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
-			ContentList.topicList.RefreshCommand = new Command(async () => { fromPost = true; await Update(); ContentList.topicList.IsRefreshing = false;});
+			ContentList.topicList.RefreshCommand = new Command(async () => { fromPost = true; await Update(); ContentList.topicList.IsRefreshing = false; });
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", async (obj) => { await Update(); });
 		}
 
@@ -33,7 +35,7 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-                //Take them back to log on so they can get back to this.
+				//Take them back to log on so they can get back to this.
 				GlobalResources.LogoffAndResetApp();
 			}
 			else
@@ -45,7 +47,7 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			GlobalResources.WaitStart();
+			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			var topic = (Topic)e.Item;
 			var result = await ContentAPI.GetTopic(topic);
 			if (result == null)
@@ -57,7 +59,7 @@ namespace DABApp
 				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
 			}
 			ContentList.topicList.SelectedItem = null;
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		protected override async void OnAppearing()
@@ -76,7 +78,8 @@ namespace DABApp
 		{
 			if (fromPost || unInitialized)
 			{
-				GlobalResources.WaitStart();
+				source = new object();
+				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 				_forum = await ContentAPI.GetForum(_view, pageNumber);
 				if (_forum == null)
 				{
@@ -84,12 +87,12 @@ namespace DABApp
 				}
 				else
 				{
-                    ContentList.topicList.BindingContext = _forum;
+					ContentList.topicList.BindingContext = _forum;
 					ContentList.topicList.ItemsSource = _forum.topics;
 					fromPost = false;
 					unInitialized = false;
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 		}
 	}

@@ -16,8 +16,8 @@ using Xamarin.Forms;
 
 [assembly: Dependency(typeof(AnalyticsService))]
 namespace DABApp.Droid
-{ 
-    public class AnalyticsService: IAnalyticsService
+{
+    public class AnalyticsService : IAnalyticsService
     {
         public void LogEvent(string eventId)
         {
@@ -37,25 +37,25 @@ namespace DABApp.Droid
             try
             {
 
-            
 
-            var fireBaseAnalytics = FirebaseAnalytics.GetInstance(CrossCurrentActivity.Current.AppContext);
 
-            if (parameters == null)
-            {
-                fireBaseAnalytics.LogEvent(eventId, null);
-                return;
-            }
+                var fireBaseAnalytics = FirebaseAnalytics.GetInstance(CrossCurrentActivity.Current.AppContext);
 
-            var bundle = new Bundle();
+                if (parameters == null)
+                {
+                    fireBaseAnalytics.LogEvent(eventId, null);
+                    return;
+                }
 
-            foreach (var item in parameters)
-            {
-                bundle.PutString(FirebaseAnalytics.Param.ItemId, item.Key);
-                bundle.PutString(FirebaseAnalytics.Param.ItemName, item.Value);
-            }
+                var bundle = new Bundle();
 
-            fireBaseAnalytics.LogEvent(eventId, bundle);
+                foreach (var item in parameters)
+                {
+                    bundle.PutString(FirebaseAnalytics.Param.ItemId, item.Key);
+                    bundle.PutString(FirebaseAnalytics.Param.ItemName, item.Value);
+                }
+
+                fireBaseAnalytics.LogEvent(eventId, bundle);
             }
             catch (Exception ex)
             {

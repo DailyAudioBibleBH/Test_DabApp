@@ -145,7 +145,6 @@ namespace DABApp.Droid
                                                 }
                                             }
                                         }
-                                        var test = GlobalResources.SettingsToPreserve;
 
                                         break;
 

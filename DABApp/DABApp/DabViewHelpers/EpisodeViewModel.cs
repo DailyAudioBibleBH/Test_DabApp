@@ -22,6 +22,8 @@ namespace DABApp
         public string title { get; set; }
         public string channelTitle { get; set; }
         public string notes { get; set; }
+        public bool isDownloaded { get; set; }
+        public bool isNotDownloaded { get; set; }
 
         public EpisodeViewModel(dbEpisodes episode)
         {
@@ -31,11 +33,12 @@ namespace DABApp
             title = episode.title;
             channelTitle = episode.channel_title;
             noProgress = episode.is_downloaded;
+            isDownloaded = episode.is_downloaded;
+            isNotDownloaded = !isDownloaded;
             FileManager fm = new FileManager();
             fm.EpisodeDownloading += UpdateDownload;
-            fm.EpisodeCompleted += DownloadComplete;
             PlayerFeedAPI.MakeProgressVisible += DownloadStarted;
-        }      
+        }
 
         public bool downloadVisible
         {
@@ -46,6 +49,8 @@ namespace DABApp
             set
             {
                 Episode.is_downloaded = value;
+                isDownloaded = value;
+                isNotDownloaded = !value;
                 OnPropertyChanged("downloadVisible");
             }
         }
@@ -87,7 +92,7 @@ namespace DABApp
             {
                 unTouched = value;
                 var data = Episode.UserData;
-                data.IsListenedTo = value ;
+                data.IsListenedTo = value;
                 data.Save();
                 OnPropertyChanged("listenedToSource");
                 OnPropertyChanged("IsListenedTo");
@@ -99,7 +104,7 @@ namespace DABApp
         {
             get
             {
-                return IsListenedTo ? "listen to status Completed": "listen to status not completed";
+                return IsListenedTo ? "listen to status Completed" : "listen to status not completed";
             }
             set { throw new Exception("You cannot set this directly"); }
         }
@@ -133,7 +138,8 @@ namespace DABApp
                     {
                         return ImageSource.FromFile("ic_star_white_3x.png");
                     }
-                    else {
+                    else
+                    {
                         return ImageSource.FromFile("ic_star_border_white_3x.png");
                     }
                 }
@@ -142,7 +148,8 @@ namespace DABApp
                     if (Episode.UserData.IsFavorite)
                     {
                         return ImageSource.FromFile("ic_star_white.png");
-                    } else
+                    }
+                    else
                     {
                         return ImageSource.FromFile("ic_star_border_white.png");
                     }
@@ -156,7 +163,7 @@ namespace DABApp
         {
             get
             {
-                return Episode.UserData.IsFavorite ? "favorite status favorited": "favorite status not favorited";
+                return Episode.UserData.IsFavorite ? "favorite status favorited" : "favorite status not favorited";
             }
             set { throw new Exception("You cannot set this directly"); }
         }
@@ -171,7 +178,7 @@ namespace DABApp
                 }
                 else
                 {
-                    
+
                     return ImageSource.FromFile("ic_check_box_outline_blank_white_3x.png");
                 }
             }
@@ -195,17 +202,8 @@ namespace DABApp
         {
             if (Episode.id.Value == e.EpisodeId)
             {
-                downloadVisible = false;
-                downloadProgress = e.ProgressPercentage;
-            }
-        }
-
-        void DownloadComplete(object o, DabEventArgs e)
-        {
-            if (Episode.id.Value == e.EpisodeId && !e.Cancelled)
-            {
                 downloadVisible = true;
-                downloadProgress = -.01;
+                downloadProgress = e.ProgressPercentage * 100;
             }
         }
 
@@ -217,7 +215,7 @@ namespace DABApp
             }
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
             if (handler != null)

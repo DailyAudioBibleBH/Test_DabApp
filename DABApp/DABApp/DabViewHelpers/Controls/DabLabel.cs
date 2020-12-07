@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace DABApp
 {
-	public class DabLabel: Label
+	public class DabLabel : Label
 	{
 		public static readonly BindableProperty IsTitleProperty = BindableProperty.Create("IsTitle", typeof(bool), typeof(bool), false);
 		string Title;
@@ -21,7 +21,8 @@ namespace DABApp
 					{
 						Text = Title;
 					}
-					else {
+					else
+					{
 						Title = ((EpisodeViewModel)BindingContext).title;
 					}
 				}
@@ -31,7 +32,7 @@ namespace DABApp
 					{
 						Text = Desc;
 					}
-					else 
+					else
 					{
 						Desc = ((EpisodeViewModel)BindingContext).description;
 					}

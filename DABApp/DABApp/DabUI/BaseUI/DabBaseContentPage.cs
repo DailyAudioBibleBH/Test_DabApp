@@ -2,13 +2,13 @@
 using SlideOverKit;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using FFImageLoading.Forms;
 using System.Threading.Tasks;
 using Plugin.Connectivity;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using DABApp.Service;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -35,6 +35,10 @@ namespace DABApp
             {
                 Title = "*** TEST MODE ***";
             }
+            else if (GlobalResources.ExperimentMode)
+            {
+                Title = "*** EXPERIMENT ***";
+            }
             else
             {
                 Title = "DAILY AUDIO BIBLE";
@@ -52,63 +56,9 @@ namespace DABApp
             //Keepalive indicator
             DabServiceEvents.TrafficOccuredEvent += DabServiceEvents_TrafficOccuredEvent;
 
-
-            //Wait Indicator
-            //Subscribe to starting wait ui
-            MessagingCenter.Subscribe<string, string>("dabapp", "Wait_Start", (sender, message) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
-                    Button activityButton = ControlTemplateAccess.FindTemplateElementByName<Button>(this, "activityButton");
-                    //Reset the fade if needed.
-                    if (activityHolder.IsVisible == false)
-                    {
-                        activityHolder.Opacity = 0;
-                        activityContent.Opacity = 0;
-                        activityHolder.FadeTo(.75, 500, Easing.CubicIn);
-                        activityContent.FadeTo(1, 500, Easing.CubicIn);
-                    }
-                    activityButton.Clicked += StopWait;
-                    activityLabel.Text = message;
-                    activity.IsVisible = true;
-                    activityContent.IsVisible = true;
-                    activityHolder.IsVisible = true;
-                });
-            });
-
-            //WaitStart without a dismiss button
-            MessagingCenter.Subscribe<string, string>("dabapp", "Wait_Start_WithoutDismiss", (sender, message) =>
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
-                    StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
-                    ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
-                    Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
-                    Button activityButton = ControlTemplateAccess.FindTemplateElementByName<Button>(this, "activityButton");
-                    Label fakeLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "fakeLabel");
-                    //Reset the fade if needed.
-                    if (activityHolder.IsVisible == false)
-                    {
-                        activityHolder.Opacity = 0;
-                        activityContent.Opacity = 0;
-                        activityHolder.FadeTo(.75, 500, Easing.CubicIn);
-                        activityContent.FadeTo(1, 500, Easing.CubicIn);
-                    }
-                    activityButton.Clicked += StopWait;
-                    activityButton.IsEnabled = false;
-                    activityButton.IsVisible = false;
-                    //fakeLabel.IsVisible = true;
-                    activityLabel.Text = message;
-                    activity.IsVisible = true;
-                    activityContent.IsVisible = true;
-                    activityHolder.IsVisible = true;
-                });
-            });
+            //Wait indicator
+            DabUserInteractionEvents.WaitStartedEvent += DabUserInteractionEvents_WaitStartedEvent;
+            DabUserInteractionEvents.WaitStoppedEvent += DabUserInteractionEvents_WaitStoppedEvent;
 
             //Subscribe to stopping wait ui
             MessagingCenter.Subscribe<string>("dabapp", "Wait_Stop", (obj) =>
@@ -173,6 +123,43 @@ namespace DABApp
             }
         }
 
+        private void DabUserInteractionEvents_WaitStoppedEvent(object source, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                activityHolder.IsVisible = false;
+                activityContent.IsVisible = false;
+            });
+        }
+
+        private void DabUserInteractionEvents_WaitStartedEvent(object source, DabAppEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                StackLayout activityHolder = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityHolder");
+                StackLayout activityContent = ControlTemplateAccess.FindTemplateElementByName<StackLayout>(this, "activityContent");
+                ActivityIndicator activity = ControlTemplateAccess.FindTemplateElementByName<ActivityIndicator>(this, "activity");
+                Label activityLabel = ControlTemplateAccess.FindTemplateElementByName<Label>(this, "activityLabel");
+                Button activityButton = ControlTemplateAccess.FindTemplateElementByName<Button>(this, "activityButton");
+                //Reset the fade if needed.
+                if (activityHolder.IsVisible == false)
+                {
+                    activityHolder.Opacity = 0;
+                    activityContent.Opacity = 0;
+                    activityHolder.FadeTo(.75, 500, Easing.CubicIn);
+                    activityContent.FadeTo(1, 500, Easing.CubicIn);
+                }
+                activityButton.IsVisible = e.hasCancel;
+                activityButton.Clicked += StopWait;
+                activityLabel.Text = e.message;
+                activity.IsVisible = true;
+                activityContent.IsVisible = true;
+                activityHolder.IsVisible = true;
+            });
+        }
+
         private async void DabServiceEvents_TrafficOccuredEvent(GraphQlTrafficDirection direction, string traffic)
         {
             //display icon in nav bar based on traffic type
@@ -234,7 +221,8 @@ namespace DABApp
 
         private void StopWait(object sender, EventArgs e)
         {
-            GlobalResources.WaitStop();
+            //GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
         }
 
         async void OnGive(object sender, EventArgs e)
@@ -243,12 +231,13 @@ namespace DABApp
             {
                 //Send info to Firebase analytics that user tapped an action we track
                 var info = new Dictionary<string, string>();
+                object source = new object();
                 info.Add("title", "give");
                 DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
 
                 if (!giving)
                 {
-                    GlobalResources.WaitStart("Connecting to the DAB Server...");
+                    DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Connecting to the DAB Server...", true));
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
@@ -296,7 +285,8 @@ namespace DABApp
                         }
                         else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
                     }
-                    GlobalResources.WaitStop();
+                    //GlobalResources.WaitStop();
+                    DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
                     giving = false;
                 }
             }
@@ -354,4 +344,3 @@ namespace DABApp
         }
     }
 }
-

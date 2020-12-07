@@ -11,6 +11,7 @@ using SQLite;
 using System.Collections.ObjectModel;
 using DABApp.Service;
 using Xamarin.Essentials;
+using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -28,6 +29,7 @@ namespace DABApp
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
+        object source = new object();
 
         public DabPlayerPage(dbEpisodes episode)
         {
@@ -195,6 +197,7 @@ namespace DABApp
                 else
                 {
                     player.Play();
+                    player.IsReady = true;
                 }
             }
             else
@@ -202,6 +205,7 @@ namespace DABApp
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
+                    player.IsReady = true;
                 }
                 else
                 {
@@ -611,8 +615,7 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
-            GlobalResources.WaitStart("Reconnecting to the journal service.");
-            journal.Reconnect();
+            DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Reconnecting to the journal service...", true)); journal.Reconnect();
             journal.JoinRoom(Episode.Episode.PubDate);
             await Task.Delay(1000);
             if (!journal.IsConnected)
@@ -630,7 +633,7 @@ namespace DABApp
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
-            GlobalResources.WaitStop();
+            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
         }
 
         //Journal reconnecting

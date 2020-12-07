@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -14,15 +15,16 @@ namespace DABApp
 		bool loginTop = false;
 		bool fromPost = false;
 		bool unInitialized = true;
-        int pageNumber;
+		int pageNumber;
 		Forum _forum;
 		Topic topic;
 		View _view;
+		object source;
 
 		public DabForumTabletTopicPage(View view)
 		{
 			InitializeComponent();
-            pageNumber = 1;
+			pageNumber = 1;
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlTablet;
 			bannerTitle.Text = view.title;
@@ -31,32 +33,31 @@ namespace DABApp
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
 			DetailsView.reply.Clicked += OnReply;
-			ContentList.topicList.RefreshCommand = new Command(async () => { await Update(); ContentList.topicList.IsRefreshing = false;});
-			DetailsView.replies.RefreshCommand = new Command(async () => { await Update(); DetailsView.replies.IsRefreshing = false;});
-            MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
+			ContentList.topicList.RefreshCommand = new Command(async () => { await Update(); ContentList.topicList.IsRefreshing = false; });
+			DetailsView.replies.RefreshCommand = new Command(async () => { await Update(); DetailsView.replies.IsRefreshing = false; });
+			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", (obj) => { OnAppearing(); });
 		}
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			GlobalResources.WaitStart();
 			topic = (Topic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
 			topic = await ContentAPI.GetTopic(topic);
 			DetailsView.replies.ItemsSource = topic.replies;
 			DetailsView.last.Text = TimeConvert();
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		async void OnPost(object o, EventArgs e)
-		{ 
+		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				GlobalResources.LogoffAndResetApp();
 
 			}
-			else 
+			else
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
 				fromPost = true;
@@ -64,13 +65,13 @@ namespace DABApp
 		}
 
 		async void OnReply(object o, EventArgs e)
-		{ 
+		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				GlobalResources.LogoffAndResetApp();
 
 			}
-			else 
+			else
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(topic));
 				fromPost = true;
@@ -115,7 +116,8 @@ namespace DABApp
 
 		async Task Update()
 		{
-			GlobalResources.WaitStart();
+			source = new object();
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 			if (topic != null)
 			{
 				topic = await ContentAPI.GetTopic(topic);
@@ -133,25 +135,25 @@ namespace DABApp
 					}
 				}
 			}
-            _forum = await ContentAPI.GetForum(_view);
-            if (_forum == null)
-            {
-                await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
-            }
-            else
-            {
-                ContentList.BindingContext = _forum;
-                ContentList.topicList.ItemsSource = _forum.topics;
-            }
-			GlobalResources.WaitStop();
-            fromPost = false;
-            unInitialized = false;
-        }
+			_forum = await ContentAPI.GetForum(_view);
+			if (_forum == null)
+			{
+				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
+			}
+			else
+			{
+				ContentList.BindingContext = _forum;
+				ContentList.topicList.ItemsSource = _forum.topics;
+			}
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			fromPost = false;
+			unInitialized = false;
+		}
 
-        protected override void OnSizeAllocated(double width, double height)
-        {
-            base.OnSizeAllocated(width, height);
-            banner.Aspect = width > height ? Aspect.Fill : Aspect.AspectFill;
-        }
-    }
+		protected override void OnSizeAllocated(double width, double height)
+		{
+			base.OnSizeAllocated(width, height);
+			banner.Aspect = width > height ? Aspect.Fill : Aspect.AspectFill;
+		}
+	}
 }

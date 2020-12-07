@@ -16,7 +16,6 @@ using SQLite;
 using Xamarin.Forms.Platform.Android;
 using Android.Graphics;
 using Android.Support.V4.Media.Session;
-using FFImageLoading.Forms.Droid;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
@@ -53,8 +52,6 @@ namespace DABApp.Droid
             SQLitePCL.raw.sqlite3_config(Convert.ToInt32(SQLite3.ConfigOption.Serialized));
             SQLitePCL.raw.sqlite3_enable_shared_cache(1);
             SQLitePCL.raw.sqlite3_initialize();
-
-            CrossCurrentActivity.Current.Init(this, bundle);
 
             MessagingCenter.Subscribe<string>("Setup", "Setup", (obj) =>
             {
@@ -94,8 +91,6 @@ namespace DABApp.Droid
 
             SegmentedControlRenderer.Init();
 
-            CachedImageRenderer.Init();
-
             SQLite_Droid.Assets = this.Assets;
             var metrics = new DisplayMetrics();
             WindowManager.DefaultDisplay.GetRealMetrics(metrics);
@@ -110,12 +105,12 @@ namespace DABApp.Droid
             {
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
-            
+
 
             //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();
             TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
-            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);           
+            telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);
         }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)

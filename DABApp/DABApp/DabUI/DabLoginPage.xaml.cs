@@ -14,6 +14,8 @@ using Version.Plugin;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
+using DABApp.DabUI.BaseUI;
+
 namespace DABApp
 {
     public partial class DabLoginPage : DabBaseContentPage
@@ -104,11 +106,11 @@ namespace DABApp
             try
             {
                 //log the user in 
-                GlobalResources.WaitStart("Checking your credentials...");
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Checking your credentials...", true));
                 var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
-                
+
                 //process the data we got back.
                 GraphQlLoginUser user = result.Data.payload.data.loginUser;
 
@@ -117,9 +119,9 @@ namespace DABApp
                 var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
                 newUserData.Token = user.token;
                 newUserData.TokenCreation = DateTime.Now;
-               
+
                 await adb.InsertOrReplaceAsync(newUserData);
-                
+
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
                 result = await DabService.InitializeConnection(newUserData.Token);
@@ -143,7 +145,7 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                 await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
                 var current = Connectivity.NetworkAccess;
 
@@ -166,9 +168,8 @@ namespace DABApp
                     }
                 }
             }
-
-
         }
+
 
         async void OnForgot(object o, EventArgs e)
         {
@@ -187,6 +188,7 @@ namespace DABApp
         void OnBack(object o, EventArgs e)
         {
             BackButton.IsEnabled = false;
+            DabCheckEmailPage.NextHit = false;
             Navigation.PopAsync();
         }
 
@@ -364,12 +366,13 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
-                    await adb.ExecuteAsync("DELETE FROM UserData");
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
-                    AuthenticationAPI.SetTestMode();
+                    AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
-                    DisableAllInputs("Shutdown and restart app");
+                    Login.IsEnabled = false;
+                    //GuestLogin.IsEnabled = false;
+                    //SignUp.IsEnabled = false;
                 }
             }
         }

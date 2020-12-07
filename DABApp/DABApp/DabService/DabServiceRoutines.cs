@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
+using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using Xamarin.Essentials;
@@ -80,6 +81,8 @@ namespace DABApp.Service
                         //process user profile information
                         var profile = ql.Data.payload.data.user;
                         await UpdateUserProfile(profile);
+
+
                     }
 
                     //get recent actions
@@ -176,7 +179,7 @@ namespace DABApp.Service
 
         #region Channel and Episode Routines
 
-        public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false)
+        public static async Task<bool> GetEpisodes(int ChannelId, bool ReloadAll = false, bool FromResume = false)
         {
             /*
              * This method gets episodes for a channel based on the last query date, or back to the beginning, if requested
@@ -190,12 +193,18 @@ namespace DABApp.Service
                 DateTime startdate;
                 int cnt = 0; //number of episodes updated;
                 DateTime lastDate = DateTime.MinValue; //most recent episode date
+                object source = new object();
 
-                GlobalResources.WaitStart("Checking for new episodes...");
+                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Checking for new episodes...", true));
+
 
                 if (ReloadAll)
                 {
                     startdate = GlobalResources.DabMinDate.ToUniversalTime();
+                }
+                else if (FromResume)
+                {
+                    startdate = GlobalResources.GetLastEpisodeQueryDate(ChannelId).AddDays(-1);
                 }
                 else
                 {
@@ -266,9 +275,9 @@ namespace DABApp.Service
                         //notify the UI
                         //TODO: Confirm all of these messages
                         Device.BeginInvokeOnMainThread(() =>
-                    {
-                        DabServiceEvents.EpisodesChanged();
-                    });
+                        {
+                            DabServiceEvents.EpisodesChanged();
+                        });
                     }
 
                 }
@@ -277,12 +286,14 @@ namespace DABApp.Service
                     //nothing to do, no new episodes
                 }
 
-                GlobalResources.WaitStop();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 return true;
             }
             catch (Exception ex)
             {
-                GlobalResources.WaitStop();
+                Debug.WriteLine(ex.ToString());
+                object source = new object();
+                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                 return false;
             }
         }
@@ -350,7 +361,9 @@ namespace DABApp.Service
                     {
 
                         //wait
-                        GlobalResources.WaitStart("Getting your recent activity...");
+                        object source = new object();
+                        DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting your recent activity...", true));
+
 
                         //get last actions
                         var qlList = await DabService.GetActions(GlobalResources.LastActionDate);
@@ -375,7 +388,7 @@ namespace DABApp.Service
                         }
 
                         //stop the wait indicator
-                        GlobalResources.WaitStop();
+                        DabUserInteractionEvents.WaitStopped(source, new EventArgs());
                     }
                 }
                 return true;
@@ -593,6 +606,12 @@ namespace DABApp.Service
                         {
                             dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == d.id && x.userName == userName).FirstOrDefaultAsync().Result;
 
+                            //set percentage to 1 to make visible even if 0 (received as an int)
+                            if (d.percent <= 0)
+                            {
+                                d.percent = 1;
+                            }
+
                             if (data == null)
                             {
                                 d.userName = userName;
@@ -609,6 +628,7 @@ namespace DABApp.Service
                     }
                     //update last time checked for badge progress
                     GlobalResources.BadgeProgressUpdatesDate = DateTime.UtcNow;
+
                 }
                 catch (Exception ex)
                 {
@@ -641,37 +661,44 @@ namespace DABApp.Service
         {
             var adb = DabData.AsyncDatabase;
             userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            //bool badgeFirstEarned = false;
 
             //Build out progress object
-            DabGraphQlProgress progress = data.progress ;
+            DabGraphQlProgress progress = data.progress;
             if (progress.percent == 100 && (progress.seen == null || progress.seen == false))
             {
                 //log to firebase
                 var fbInfo = new Dictionary<string, string>();
-                fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
+                fbInfo.Add("user", userName);
                 fbInfo.Add("idiom", Device.Idiom.ToString());
                 fbInfo.Add("badgeId", progress.badgeId.ToString());
                 DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_progressAchieved", fbInfo);
 
                 await PopupNavigation.Instance.PushAsync(new AchievementsProgressPopup(progress));
             }
-            
+
             //Save badge progress data
             dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
+                //set percentage to 1 to make visible even if 0 (received as an int)
+                if (progress.percent <= 0)
+                {
+                    progress.percent = 1;
+                }
+
+
                 if (badgeData == null)
                 {
                     //new user badge progress
                     badgeData = new dbUserBadgeProgress(progress, userName);
-                    await adb.InsertOrReplaceAsync(badgeData);
                 }
                 else
                 {
                     //existing user badge progress
                     badgeData.percent = progress.percent;
-                    await adb.InsertOrReplaceAsync(badgeData);
                 }
+                await adb.InsertOrReplaceAsync(badgeData);
             }
             catch (Exception ex)
             {
@@ -695,5 +722,3 @@ namespace DABApp.Service
         #endregion
     }
 }
-
-

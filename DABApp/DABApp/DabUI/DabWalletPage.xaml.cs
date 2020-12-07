@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using DABApp.DabUI.BaseUI;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -10,6 +10,7 @@ namespace DABApp
 	{
 		Card[] _cards;
 		bool isInitialized = false;
+		object source;
 
 		public DabWalletPage(Card[] cards)
 		{
@@ -38,7 +39,9 @@ namespace DABApp
 			base.OnAppearing();
 			if (isInitialized)
 			{
-				GlobalResources.WaitStart();
+				source = new object();
+				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+
 				var result = await AuthenticationAPI.GetWallet();
 				if (result != null)
 				{
@@ -56,7 +59,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Wallet information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					await Navigation.PopAsync();
 				}
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			}
 			isInitialized = true;
 		}

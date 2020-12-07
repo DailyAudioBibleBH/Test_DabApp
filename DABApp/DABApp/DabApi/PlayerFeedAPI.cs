@@ -40,7 +40,7 @@ namespace DABApp
                 int bufferPeriod = channel.bufferPeriod;
                 DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
                 DateTime stopImpactDate = startDate.AddDays(bufferPeriod);
-                
+
                 //if today is within buffer period
                 if (todaysDate.CompareTo(startDate) >= 0 && todaysDate.CompareTo(stopImpactDate) <= 0)
                 {

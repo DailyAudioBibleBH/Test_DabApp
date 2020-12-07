@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
@@ -22,7 +23,6 @@ namespace DABApp
 		{
 			InitializeComponent();
             if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
-			var UserName = GlobalResources.GetUserName().Split(' ');
 			FirstName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
 			LastName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
 			Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
@@ -32,7 +32,7 @@ namespace DABApp
 		{
 			if (Validation()) 
 			{
-				GlobalResources.WaitStart("Saving your information...");
+				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Saving your information...", true));
 
 				bool okToClose = true;
 				string oldFirstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
@@ -81,7 +81,7 @@ namespace DABApp
 				}
 
 				//close the form if done
-				GlobalResources.WaitStop();
+				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 				if (okToClose)
 				{
 					await Navigation.PopAsync();

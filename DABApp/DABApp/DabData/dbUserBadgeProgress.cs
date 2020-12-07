@@ -45,6 +45,7 @@ namespace DABApp
         public int badgeId { get; set; }
         [NotNull]
         public double percent { get; set; }
+        public bool showNewIndicator { get; set; }
         [NotNull]
         public int year { get; set; }
         public double opacity { get; set; }

@@ -501,6 +501,10 @@ namespace DABApp.DabAudio
                     return false;
                 }
             }
+            set
+            {
+                OnPropertyChanged("IsReady");
+            }
         }
 
         public bool SwitchOutputs()

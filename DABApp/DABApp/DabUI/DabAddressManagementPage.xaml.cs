@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 
@@ -9,21 +10,23 @@ namespace DABApp
 {
 	public partial class DabAddressManagementPage : DabBaseContentPage
 	{
-        public List<DabGraphQlAddress> addresses;
+		public List<DabGraphQlAddress> addresses;
 		public DabGraphQlAddress billingAddress;
 		public DabGraphQlAddress shippingAddress;
+		object source = new object();
 
-        public DabAddressManagementPage()
+		public DabAddressManagementPage()
 		{
 			InitializeComponent();
-			if (GlobalResources.ShouldUseSplitScreen){
+			if (GlobalResources.ShouldUseSplitScreen)
+			{
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 		}
 
-        async void OnBilling(object o, EventArgs e) 
+		async void OnBilling(object o, EventArgs e)
 		{
-			GlobalResources.WaitStart("Getting Billing Address...");
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting Billing Address...", true));
 
 			//get user addresses
 			var result = await Service.DabService.GetAddresses();
@@ -33,25 +36,26 @@ namespace DABApp
 			addresses = results;
 
 			billingAddress = new DabGraphQlAddress();
-            foreach (var item in addresses)
-            {
+			foreach (var item in addresses)
+			{
 				if (item.type == "billing")
 					billingAddress = item;
-            }
+			}
 			string CountrySettings = dbSettings.GetSetting("Country", "");
 			Dictionary<string, string> countries = JsonConvert.DeserializeObject<Dictionary<string, string>>(CountrySettings);
 
 			if (countries != null)
-            {
-                await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
-            }
-            else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
-            GlobalResources.WaitStop();
+			{
+				await Navigation.PushAsync(new DabUpdateAddressPage(billingAddress, countries, false));
+			}
+			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
+			//GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 
-		async void OnShipping(object o, EventArgs e) 
+		async void OnShipping(object o, EventArgs e)
 		{
-			GlobalResources.WaitStart("Getting Shipping Address...");
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting Shipping Address...", true));
 
 			//get user addresses
 			var result = await Service.DabService.GetAddresses();
@@ -74,7 +78,8 @@ namespace DABApp
 				await Navigation.PushAsync(new DabUpdateAddressPage(shippingAddress, countries, true));
 			}
 			else await DisplayAlert("Unable to retrieve Address information", "This might be due to a loss of internet connectivity.  Please check your internet connection and try again.", "OK");
-			GlobalResources.WaitStop();
+			//GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 	}
 }

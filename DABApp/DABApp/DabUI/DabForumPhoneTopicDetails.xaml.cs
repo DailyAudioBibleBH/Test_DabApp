@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -13,6 +14,7 @@ namespace DABApp
 		bool login = false;
 		bool fromPost = false;
 		Topic _topic;
+		object source;
 
 		public DabForumPhoneTopicDetails(Topic topic)
 		{
@@ -24,23 +26,23 @@ namespace DABApp
 				DetailsView.replies.ItemsSource = topic.replies;
 				DetailsView.last.Text = TimeConvert();
 			}
-			else 
+			else
 			{
 				DetailsView.replies.SeparatorVisibility = SeparatorVisibility.None;
 				DetailsView.last.Text = topic.lastActivity;
 			}
 			DetailsView.reply.Clicked += OnReply;
-			DetailsView.replies.RefreshCommand = new Command(async () => { fromPost = true; await Update(); DetailsView.replies.IsRefreshing = false;});
+			DetailsView.replies.RefreshCommand = new Command(async () => { fromPost = true; await Update(); DetailsView.replies.IsRefreshing = false; });
 			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 		}
 
 		async void OnReply(object o, EventArgs e)
-		{ 
+		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				GlobalResources.LogoffAndResetApp();
 			}
-			else 
+			else
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(_topic));
 				fromPost = true;
@@ -54,7 +56,7 @@ namespace DABApp
 			{
 				await Update();
 			}
-			if (login && !GuestStatus.Current.IsGuestLogin) 
+			if (login && !GuestStatus.Current.IsGuestLogin)
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(_topic));
 				login = false;
@@ -63,7 +65,7 @@ namespace DABApp
 		}
 
 		string TimeConvert()
-		{ 
+		{
 			var dateTime = DateTimeOffset.Parse(_topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
 			var month = dateTime.ToString("MMMM");
 			var time = dateTime.ToString("t");
@@ -72,7 +74,8 @@ namespace DABApp
 
 		async Task Update()
 		{
-			GlobalResources.WaitStart();
+			source = new object();
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 			var result = await ContentAPI.GetTopic(_topic);
 			if (result == null)
 			{
@@ -89,7 +92,7 @@ namespace DABApp
 				}
 				fromPost = false;
 			}
-			GlobalResources.WaitStop();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 	}
 }

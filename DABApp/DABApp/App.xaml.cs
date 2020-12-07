@@ -18,7 +18,6 @@ namespace DABApp
     {
         public App()
         {
-
             if (AuthenticationAPI.GetTestMode())
             {
                 GlobalResources.TestMode = true;
@@ -27,11 +26,7 @@ namespace DABApp
             InitializeComponent();
 
             FlowListView.Init();
-            if (AuthenticationAPI.GetExperimentMode())
-            {
-                GlobalResources.ExperimentMode = true;
-                GlobalResources.SetDisplay();
-            }
+
             MainPage = new DabServiceConnect();
 
         }
