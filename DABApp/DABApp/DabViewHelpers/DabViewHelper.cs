@@ -2,6 +2,7 @@
 using System.Globalization;
 using SlideOverKit;
 using Xamarin.Forms;
+using static DABApp.ContentConfig;
 
 namespace DABApp
 {

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
+using static DABApp.ContentConfig;
 
 namespace DABApp
 {

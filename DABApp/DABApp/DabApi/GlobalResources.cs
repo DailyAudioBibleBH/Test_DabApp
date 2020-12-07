@@ -15,6 +15,7 @@ using Xamarin.Essentials;
 using System.Security.Cryptography;
 using System.Text;
 using System.Globalization;
+using static DABApp.ContentConfig;
 
 namespace DABApp
 {

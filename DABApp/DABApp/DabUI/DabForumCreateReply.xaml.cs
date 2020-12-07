@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using static DABApp.ContentConfig;
 
 namespace DABApp
 {

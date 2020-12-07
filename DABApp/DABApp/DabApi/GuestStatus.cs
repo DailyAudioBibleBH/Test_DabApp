@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using FFImageLoading;
 using SQLite;
 using Xamarin.Forms;
 

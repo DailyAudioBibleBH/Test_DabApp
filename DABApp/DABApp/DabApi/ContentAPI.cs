@@ -12,6 +12,7 @@ using Xamarin.Forms;
 using System.Runtime.Serialization.Json;
 using Xamarin.Forms.PlatformConfiguration;
 using System.Data.Common;
+using static DABApp.ContentConfig;
 
 namespace DABApp
 {
@@ -128,10 +129,10 @@ namespace DABApp
             string OfflineSettingsValue = dbSettings.GetSetting("AvailableOffline", "");
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
-            Task.Run(async () =>
-            {
-                await ContentConfig.Instance.cachImages();
-            });
+            //Task.Run(async () =>
+            //{
+            //    await ContentConfig.Instance.cachImages();
+            //});
             if (OfflineSettingsValue == "")
             {
                 dbSettings.StoreSetting("AvailableOffline", new JArray().ToString());

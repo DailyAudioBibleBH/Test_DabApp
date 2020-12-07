@@ -7,7 +7,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FFImageLoading;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -63,11 +62,14 @@ namespace DABApp
 
 		// Available Offline - notifies bound objects of changes */
 		private bool _availableOffline = false;
-		public bool availableOffline {
-			get {
+		public bool availableOffline
+		{
+			get
+			{
 				return _availableOffline;
 			}
-			set {
+			set
+			{
 				_availableOffline = value;
 				OnPropertyChanged("availableOffline");
 			}
@@ -75,11 +77,14 @@ namespace DABApp
 
 
 		private double _IsNotSelected = 1.0;
-		public double IsNotSelected {
-			get {
+		public double IsNotSelected
+		{
+			get
+			{
 				return _IsNotSelected;
 			}
-			set {
+			set
+			{
 				_IsNotSelected = value;
 				OnPropertyChanged("IsNotSelected");
 			}
@@ -143,8 +148,10 @@ namespace DABApp
 
 		//Boolean that determins if we have text only or not
 		//TODO: Simply this and combine with the HasGraphic if possible
-		public bool HasNoGraphic {
-			get {
+		public bool HasNoGraphic
+		{
+			get
+			{
 				if (type == "image")
 				{
 					return false;
@@ -155,8 +162,10 @@ namespace DABApp
 
 		//String of URL to use for the Link based on idiom.
 		//TODO: Better naming 
-		public string PhoneOrTab {
-			get {
+		public string PhoneOrTab
+		{
+			get
+			{
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					return urlTablet;
@@ -167,11 +176,11 @@ namespace DABApp
 	}
 
 	public enum ViewVisibility
-    {
+	{
 		both,
 		logged_in
-			
-    }
+
+	}
 
 	public class View
 	{
@@ -223,177 +232,181 @@ namespace DABApp
 		public AppSettings app_settings { get; set; }
 		public Options options { get; set; }
 
-		public async Task cachImages()
-		{
-			var channelView = Instance.views.Single(x => x.title == "Channels");
-			var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
+		//	public async Task cachImages()
+		//	{
+		//		var channelView = Instance.views.Single(x => x.title == "Channels");
+		//		var initiativeView = Instance.views.Single(x => x.title == "Initiatives");
 
-			try
+		//		try
+		//		{
+		//			foreach (var v in views) {
+		//				if (Device.Idiom == TargetIdiom.Tablet)
+		//				{
+		//					await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownSample().DownloadOnlyAsync();
+		//				}
+		//				else {
+		//					await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownSample().DownloadOnlyAsync();
+		//				}
+		//			}
+		//			foreach (var r in channelView.resources)
+		//			{
+		//				var image = r.images;
+		//				if (Device.Idiom == TargetIdiom.Tablet)
+		//				{
+		//					await ImageService.Instance.LoadUrl(image.backgroundTablet).DownSample().DownloadOnlyAsync();
+		//				}
+		//				else
+		//				{
+		//					await ImageService.Instance.LoadUrl(image.backgroundPhone).DownSample().DownloadOnlyAsync();
+		//				}
+		//				await ImageService.Instance.LoadUrl(image.bannerPhone).DownSample().DownloadOnlyAsync();
+		//				await ImageService.Instance.LoadUrl(image.thumbnail).DownSample().DownloadOnlyAsync();
+		//			}
+		//			foreach (var i in initiativeView.links) {
+		//				if (Device.Idiom == TargetIdiom.Tablet)
+		//				{
+		//					await ImageService.Instance.LoadUrl(i.urlTablet).DownSample().DownloadOnlyAsync();
+		//				}
+		//				else
+		//				{
+		//					await ImageService.Instance.LoadUrl(i.urlPhone).DownSample().DownloadOnlyAsync();
+
+		//				}
+		//			}
+
+		//			await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
+		//		}
+		//		catch (Exception e) {
+		//			Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
+		//		}
+		//	}
+		//}
+
+		public class Member
+		{
+			public string name { get; set; }
+			public string role { get; set; }
+			public int replyCount { get; set; }
+			public int topicCount { get; set; }
+		}
+
+		public class Reply
+		{
+			public int id { get; set; }
+			public string content { get; set; }
+			public string gmtDate { get; set; }
+			public Member member { get; set; }
+		}
+
+		public class Topic
+		{
+			public int id { get; set; }
+			public string title { get; set; }
+			public string content { get; set; }
+			public string lastActivity { get; set; }
+			public string replyCount { get; set; }
+			public string voiceCount { get; set; }
+			public string link { get; set; }
+			public Member member { get; set; }
+			public List<Reply> replies { get; set; }
+		}
+
+		public class PostTopic
+		{
+			public string title { get; set; }
+			public string content { get; set; }
+			public int forumId { get; set; }
+			public PostTopic(string Title, string Content, int ForumId)
 			{
-				foreach (var v in views) {
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(v.banner.urlTablet).DownSample().DownloadOnlyAsync();
-					}
-					else {
-						await ImageService.Instance.LoadUrl(v.banner.urlPhone).DownSample().DownloadOnlyAsync();
-					}
-				}
-				foreach (var r in channelView.resources)
-				{
-					var image = r.images;
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(image.backgroundTablet).DownSample().DownloadOnlyAsync();
-					}
-					else
-					{
-						await ImageService.Instance.LoadUrl(image.backgroundPhone).DownSample().DownloadOnlyAsync();
-					}
-					await ImageService.Instance.LoadUrl(image.bannerPhone).DownSample().DownloadOnlyAsync();
-					await ImageService.Instance.LoadUrl(image.thumbnail).DownSample().DownloadOnlyAsync();
-				}
-				foreach (var i in initiativeView.links) {
-					if (Device.Idiom == TargetIdiom.Tablet)
-					{
-						await ImageService.Instance.LoadUrl(i.urlTablet).DownSample().DownloadOnlyAsync();
-					}
-					else
-					{
-						await ImageService.Instance.LoadUrl(i.urlPhone).DownSample().DownloadOnlyAsync();
-
-					}
-				}
-				
-				await ImageService.Instance.LoadUrl(GlobalResources.UserAvatar).DownSample().DownloadOnlyAsync();
-			}
-			catch (Exception e) {
-				Debug.WriteLine($"FFImageLoading Exception caught: {e.Message}");
+				title = Title;
+				content = Content;
+				forumId = ForumId;
 			}
 		}
-	}
 
-	public class Member
-	{
-		public string name { get; set; }
-		public string role { get; set; }
-		public int replyCount { get; set; }
-		public int topicCount { get; set; }
-	}
-
-	public class Reply
-	{
-		public int id { get; set; }
-		public string content { get; set; }
-		public string gmtDate { get; set; }
-		public Member member { get; set; }
-	}
-
-	public class Topic
-	{
-		public int id { get; set; }
-		public string title { get; set; }
-		public string content { get; set; }
-		public string lastActivity { get; set; }
-		public string replyCount { get; set; }
-		public string voiceCount { get; set; }
-		public string link { get; set; }
-		public Member member { get; set; }
-		public List<Reply> replies { get; set; }
-	}
-
-	public class PostTopic
-	{
-		public string title { get; set; }
-		public string content { get; set; }
-		public int forumId { get; set; }
-		public PostTopic(string Title, string Content, int ForumId)
+		public class Forum : INotifyPropertyChanged
 		{
-			title = Title;
-			content = Content;
-			forumId = ForumId;
-		}
-	}
-
-	public class Forum : INotifyPropertyChanged
-	{
-		public int id { get; set; }
-		public string title { get; set; }
-		public View view { get; set; }
-		public string link { get; set; }
-		public int topicCount { get; set; }
-		private bool _IsBusy;
-		public bool IsBusy {
-			get { return _IsBusy; }
-			set { _IsBusy = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsBusy"));
-			}
-		}
-		public ICommand LoadMore { get; set; }
-		public ObservableCollection<Topic> topics { get; set; }
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public Forum()
-		{
-			int page = 2;
-			this.LoadMore = new Command(async () =>
+			public int id { get; set; }
+			public string title { get; set; }
+			public View view { get; set; }
+			public string link { get; set; }
+			public int topicCount { get; set; }
+			private bool _IsBusy;
+			public bool IsBusy
 			{
-				IsBusy = true;
-				var f = await ContentAPI.GetForum(view, page);
-				page++;
-				foreach (var t in f.topics)
+				get { return _IsBusy; }
+				set
 				{
-					topics.Add(t);
+					_IsBusy = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsBusy"));
 				}
-				IsBusy = false;
-			});
-		}
-	}
+			}
+			public ICommand LoadMore { get; set; }
+			public ObservableCollection<Topic> topics { get; set; }
 
-	public class PostReply
-	{
-		public string content { get; set; }
-		public int topicId { get; set; }
-		public PostReply(string Content, int TopicId)
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			public Forum()
+			{
+				int page = 2;
+				this.LoadMore = new Command(async () =>
+				{
+					IsBusy = true;
+					var f = await ContentAPI.GetForum(view, page);
+					page++;
+					foreach (var t in f.topics)
+					{
+						topics.Add(t);
+					}
+					IsBusy = false;
+				});
+			}
+		}
+
+		public class PostReply
 		{
-			content = Content;
-			topicId = TopicId;
+			public string content { get; set; }
+			public int topicId { get; set; }
+			public PostReply(string Content, int TopicId)
+			{
+				content = Content;
+				topicId = TopicId;
+			}
 		}
+
+		public class AppSettings
+		{
+			public string prod_main_link { get; set; } //Production link to the main website (HTTPS://)
+			public string prod_give_link { get; set; } //Production link to start giving process (HTTPS://)
+			public string prod_journal_link { get; set; } //Production link for journal (WSS://)
+			public string prod_feed_link { get; set; } //Production link for feed data (content API HTTPS://)
+			public string prod_service_link { get; set; }
+			public string stage_main_link { get; set; } //Stage link to the main website (HTTPS://)
+			public string stage_give_link { get; set; } //Stage link to start giving process (HTTPS://)
+			public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
+			public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
+			public string stage_service_link { get; set; }
+		}
+
+		public class Options
+		{
+			public int token_life { get; set; } = 5;
+			public int log_position_interval { get; set; } = 30;
+			public int progress_year { get; set; }
+			public int new_progress_duration { get; set; }
+			public int entire_bible_badge_id { get; set; }
+			public int new_testament_badge_id { get; set; }
+			public int old_testament_badge_id { get; set; }
+			public int episode_year { get; set; }
+		}
+
+
+		/* Information used for routing recording sessions to the right person */
+		public class PodcastEmail
+		{
+			public string Podcast { get; set; }
+			public string Email { get; set; }
+		}
+
 	}
-
-	public class AppSettings
-	{
-		public string prod_main_link { get; set; } //Production link to the main website (HTTPS://)
-		public string prod_give_link { get; set; } //Production link to start giving process (HTTPS://)
-		public string prod_journal_link { get; set; } //Production link for journal (WSS://)
-		public string prod_feed_link { get; set; } //Production link for feed data (content API HTTPS://)
-		public string prod_service_link { get; set; }
-		public string stage_main_link { get; set; } //Stage link to the main website (HTTPS://)
-		public string stage_give_link { get; set; } //Stage link to start giving process (HTTPS://)
-		public string stage_journal_link { get; set; } //Stage link for journal (WSS://)
-		public string stage_feed_link { get; set; }//Stage link for feed data (content API HTTPS://)
-		public string stage_service_link { get; set; }
-	}
-
-	public class Options
-	{
-		public int token_life { get; set; } = 5;
-		public int log_position_interval { get; set; } = 30;
-		public int progress_year { get; set; }
-		public int new_progress_duration { get; set; }
-		public int entire_bible_badge_id { get; set; }
-		public int new_testament_badge_id { get; set; }
-		public int old_testament_badge_id { get; set; }
-        public int episode_year { get; set; }
-    }
-
-
-	/* Information used for routing recording sessions to the right person */
-	public class PodcastEmail
-	{
-		public string Podcast { get; set; }
-		public string Email { get; set; }
-	}
-
 }
