@@ -89,6 +89,7 @@ namespace DABApp.Droid
             DependencyService.Register<RecordService>();
             DependencyService.Register<AnalyticsService>();
 
+            CrossCurrentActivity.Current.Init(this, bundle);
             SegmentedControlRenderer.Init();
 
             SQLite_Droid.Assets = this.Assets;
