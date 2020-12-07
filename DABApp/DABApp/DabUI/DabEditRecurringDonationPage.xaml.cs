@@ -1,7 +1,6 @@
-﻿using DABApp.DabUI.BaseUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -26,12 +25,20 @@ namespace DABApp
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+
+            var test = campaign.recurringIntervalOptions;
+
+
 			Title.Text = campaign.name;
+			Intervals.ItemsSource = campaign.recurringIntervalOptions;
+			//Intervals.SelectedItem = campaign.recurringIntervalOptions.Where(x => x.Equals(campaign.pro.interval));
+			Intervals.SelectedIndex = campaign.recurringIntervalOptions.FindIndex(x => x == campaign.pro.interval);
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
 			if (campaign.pro != null)
 			{
-				Amount.Text = campaign.pro.amount.ToString();
+				string currencyAmount = GlobalResources.ToCurrency(campaign.pro.amount);
+				Amount.Text = currencyAmount;
 				Next.Date = Convert.ToDateTime(campaign.pro.next);
 				Cards.SelectedItem = cards.Single(x => x.id == campaign.pro.card_id);
 				Status.Text = campaign.pro.status;
@@ -49,8 +56,7 @@ namespace DABApp
 			if (Validation())
 			{
 				AmountWarning.IsVisible = false;
-				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-
+				GlobalResources.WaitStart();
 				var card = (Card)Cards.SelectedItem;
 				var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 				long unix = (long)(Next.Date - stime).TotalSeconds;
@@ -72,7 +78,7 @@ namespace DABApp
 				}
 				else
 				{
-					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, unix);
+					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, Intervals.SelectedItem.ToString(), unix);
 					result = await AuthenticationAPI.UpdateDonation(send);
 				}
 				if (result == "Success")
@@ -84,7 +90,7 @@ namespace DABApp
 				{
 					await DisplayAlert("Error", result, "OK");
 				}
-				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+				GlobalResources.WaitStop();
 			}
 			else 
 			{
@@ -94,8 +100,7 @@ namespace DABApp
 
 		async void OnCancel(object o, EventArgs e) 
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-
+			GlobalResources.WaitStart();
 			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
 			if (decision) {
 				var result = await AuthenticationAPI.DeleteDonation(_campaign.id);
@@ -109,18 +114,21 @@ namespace DABApp
 					await DisplayAlert("Error", result, "OK");
 				}
 			}
-			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		bool Validation() 
 		{
-			if (Amount.Text.Contains("."))
+			string a = @"^\$?\-?([1-9]{1}[0-9]{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\-?\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))$|^\(\$?([1-9]{1}\d{0,2}(\,\d{3})*(\.\d{0,2})?|[1-9]{1}\d{0,}(\.\d{0,2})?|0(\.\d{0,2})?|(\.\d{1,2}))\)$";
+			Regex rg = new Regex(a);
+
+			if (rg.IsMatch(Amount.Text))
 			{
-				return false;
+				return true;
 			}
 			else 
 			{
-				return true;
+				return false;
 			}
 		}
 	}

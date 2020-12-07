@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
-using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
@@ -26,7 +25,6 @@ namespace DABApp
         Resource _resource;
         IEnumerable<dbEpisodes> Episodes;
         List<EpisodeViewModel> _Episodes;
-        object source;
 
         public DabEpisodesPage(Resource resource)
         {
@@ -38,9 +36,6 @@ namespace DABApp
             BindingContext = this;
             bannerImage.Source = resource.images.bannerPhone;
             bannerContent.Text = resource.title;
-
-            //For Wait Start and Stop
-            source = new object();
 
             //pull to refresh
             EpisodeList.RefreshCommand = new Command(async () => //pull to refresh command
@@ -84,6 +79,7 @@ namespace DABApp
 
             base.OnAppearing();
 
+
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
 
@@ -92,6 +88,7 @@ namespace DABApp
 
             //get new episodes, if they exist -- this will also handle downloading
             await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
+
         }
 
         #endregion
@@ -110,35 +107,34 @@ namespace DABApp
              * or full refresh (go back and query all episodes)
              * 
              */
-
+            
             DateTime lastRefreshDate = Convert.ToDateTime(GlobalResources.GetLastRefreshDate(_resource.id));
 
             if (refreshType != EpisodeRefreshType.NoRefresh)
             {
                 //refresh episodes from the server
                 //get the episodes - this routine handles resetting the date and raising events
-                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refreshing episodes...", true));
+                GlobalResources.WaitStart($"Refreshing episodes...");
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
             }
 
             //get the rull list of episodes for the resource
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
-            //Update month list
-            if (Months.Items.Contains("All Episodes") == false)
+            //Update year list
+            if (Years.Items.Contains("All Episodes") == false)
             {
-                Months.Items.Insert(0, "All Episodes"); //default selector
-                Months.SelectedIndex = 0;
+                Years.Items.Insert(0, "All Episodes"); //default selector
+                Years.SelectedIndex = 0;
 
             }
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+            var years = Episodes.Select(x => x.PubYear).Distinct().ToList();
+            foreach (var year in years)
             {
-                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
-                if (Months.Items.Contains(monthName) == false)
+                if (Years.Items.Contains(year.ToString()) == false)
                 {
-                    Months.Items.Add(monthName);
+                    Years.Items.Add(year.ToString());
                 }
             }
 
@@ -158,31 +154,11 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    List<EpisodeViewModel> EpisodesList = _Episodes = Episodes
-                        .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
+                    EpisodeList.ItemsSource = _Episodes = Episodes
+                        .Where(x => Years.Items[Years.SelectedIndex] == "All Episodes" ? true : x.PubYear.ToString() == Years.Items[Years.SelectedIndex])
                         .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                         .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                         .Select(x => new EpisodeViewModel(x)).ToList();
-
-                    foreach (var item in EpisodesList)
-                    {
-                        if (item.Episode.is_downloaded == true)
-                        {
-                            item.isDownloaded = true;
-                            item.isNotDownloaded = false;
-                            item.downloadProgress = 100;
-                        }
-                        else
-                        {
-                            item.isNotDownloaded = true;
-                        }
-                        if (EpisodesList.IndexOf(item) >= 20)
-                        {
-                            break;
-                        }
-                    }
-
-                    EpisodeList.ItemsSource = EpisodesList;
 
                     Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
@@ -202,8 +178,8 @@ namespace DABApp
             if (_resource.availableOffline)
             {
                 await PlayerFeedAPI.DownloadEpisodes();
-                //CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
-                //circularProgressControl?.HandleDownloadVisibleChanged(true);
+                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                circularProgressControl?.HandleDownloadVisibleChanged(true);
             }
 
             return true;
@@ -241,16 +217,15 @@ namespace DABApp
              */
 
             EpisodeList.IsEnabled = false; //disable the list while we work with it.
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+            GlobalResources.WaitStart();
             var chosenVM = (EpisodeViewModel)e.Item;
             var chosen = chosenVM.Episode;
             EpisodeList.SelectedItem = null;
-            var _reading = await PlayerFeedAPI.GetReading(chosen.read_link); //TODO - move this to the actual player page?
 
             if (chosen.File_name_local != null || CrossConnectivity.Current.IsConnected)
             {
                 //Push the new player page
-                await Navigation.PushAsync(new DabPlayerPage(chosen, _reading));
+                await Navigation.PushAsync(new DabPlayerPage(chosen));
             }
             else
             {
@@ -258,13 +233,13 @@ namespace DABApp
                 await DisplayAlert("Unable to stream episode.", "To ensure episodes can be played offline download them before going offline.", "OK");
             }
             EpisodeList.SelectedItem = null; //deselect the item
-            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+            GlobalResources.WaitStop();
             EpisodeList.IsEnabled = true;
         }
 
-        public async void OnMonthSelected(object o, EventArgs e)
+        public async void OnYearSelected(object o, EventArgs e)
         {
-            //filter to a given month
+            //filter to a given year
             await Refresh(EpisodeRefreshType.NoRefresh);
         }
 
@@ -273,20 +248,28 @@ namespace DABApp
             /*
              * handle listened of an episode via the list
              */
-            if (GuestStatus.Current.IsGuestLogin == false)
+            try
             {
-                var mi = ((Xamarin.Forms.MenuItem)o);
-                var model = ((EpisodeViewModel)mi.CommandParameter);
-                var ep = model.Episode;
-                var newValue = !ep.UserData.IsListenedTo;
-                model.IsListenedTo = newValue;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, newValue);
+                if (GuestStatus.Current.IsGuestLogin == false)
+                {
+                    var mi = ((Xamarin.Forms.MenuItem)o);
+                    var model = ((EpisodeViewModel)mi.CommandParameter);
+                    var ep = model.Episode;
+                    var newValue = !ep.UserData.IsListenedTo;
+                    model.IsListenedTo = newValue;
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, newValue);
+                }
+                else
+                {
+                    //guest mode - do nothing
+                    await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+                }
             }
-            else
+            catch (Exception)
             {
-                //guest mode - do nothing
-                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+
             }
+            
         }
 
         public async void OnFavorite(object o, EventArgs e)
@@ -294,20 +277,28 @@ namespace DABApp
             /*
              * handle favorite of an episode via the list
              */
-            if (GuestStatus.Current.IsGuestLogin == false)
+            try
             {
-                var mi = ((Xamarin.Forms.MenuItem)o);
-                var model = ((EpisodeViewModel)mi.CommandParameter);
-                var ep = model.Episode;
-                var newValue = !ep.UserData.IsFavorite;
-                model.IsFavorite = newValue;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, newValue);
+                if (GuestStatus.Current.IsGuestLogin == false)
+                {
+                    var mi = ((Xamarin.Forms.MenuItem)o);
+                    var model = ((EpisodeViewModel)mi.CommandParameter);
+                    var ep = model.Episode;
+                    var newValue = !ep.UserData.IsFavorite;
+                    model.IsFavorite = newValue;
+                    await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, newValue);
+                }
+                else
+                {
+                    //guest mode - do nothing
+                    await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+                }
             }
-            else
+            catch (Exception)
             {
-                //guest mode - do nothing
-                await DisplayAlert("Guest Mode", "You are currently logged in as a guest. Please log in to use this feature", "OK");
+
             }
+            
         }
 
         void OnFilters(object o, EventArgs e)

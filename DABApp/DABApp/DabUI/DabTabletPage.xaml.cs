@@ -6,10 +6,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
-using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 
@@ -37,7 +37,6 @@ namespace DABApp
         int previousEpIndex;
         int nextEpIndex;
         int count;
-        object source;
 
         #region constructor and startup methods
 
@@ -72,21 +71,20 @@ namespace DABApp
             _resource = resource;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
+            Episodes = (IEnumerable<dbEpisodes>)PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
-            if (Months.Items.Contains("All Episodes") == false)
+            if (Years.Items.Contains("All Episodes") == false)
             {
-                Months.Items.Insert(0, "All Episodes"); //default selector
-                Months.SelectedIndex = 0;
+                Years.Items.Insert(0, "All Episodes"); //default selector
+                Years.SelectedIndex = 0;
 
             }
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+            var years = Episodes.Select(x => x.PubYear).Distinct().ToList();
+            foreach (var year in years)
             {
-                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
-                if (Months.Items.Contains(monthName) == false)
+                if (Years.Items.Contains(year.ToString()) == false)
                 {
-                    Months.Items.Add(monthName);
+                    Years.Items.Add(year.ToString());
                 }
             }
 
@@ -102,9 +100,6 @@ namespace DABApp
                     episode = new EpisodeViewModel(Episodes.First());
                 }
             }
-
-            //initially bind to episodes we have before trying to reload on appearing
-            Refresh(EpisodeRefreshType.NoRefresh); //refresh episode list
 
             //Bind to the active episode
             Favorite.BindingContext = episode;
@@ -160,9 +155,11 @@ namespace DABApp
         }
 
         //Page appears event
-        protected async override void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            OnRefresh(null, null); //load episodes
 
             //episodes changed event
             DabServiceEvents.EpisodesChangedEvent += DabServiceEvents_EpisodesChangedEvent;
@@ -170,8 +167,6 @@ namespace DABApp
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
-            //get new episodes, if they exist -- this will also handle downloading
-            await Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
 
             BindControls(true, true); //rebind controls when clicking on miniplayer
             
@@ -306,7 +301,7 @@ namespace DABApp
 
                 //Completed button
                 Completed.BindingContext = episode;
-                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
@@ -439,6 +434,8 @@ namespace DABApp
             if (_resource.availableOffline)
             {
                 await PlayerFeedAPI.DownloadEpisodes();
+                CircularProgressControl circularProgressControl = ControlTemplateAccess.FindTemplateElementByName<CircularProgressControl>(this, "circularProgressControl");
+                circularProgressControl?.HandleDownloadVisibleChanged(true);
             }
 
             return true;
@@ -503,29 +500,27 @@ namespace DABApp
                 }
 
                 //get the episodes - this routine handles resetting the date and raising events
-                source = new object();
-                DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Refresing episodes...", true));
+                GlobalResources.WaitStart($"Refreshing episodes...");
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id, (refreshType == EpisodeRefreshType.FullRefresh));
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
             }
 
             //get the rull list of episodes for the resource
-            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
             //Update month list
-            if (Months.Items.Contains("All Episodes") == false)
+            if (Years.Items.Contains("All Episodes") == false)
             {
-                Months.Items.Insert(0, "All Episodes"); //default selector
-                Months.SelectedIndex = 0;
+                Years.Items.Insert(0, "All Episodes"); //default selector
+                Years.SelectedIndex = 0;
 
             }
-            var months = Episodes.Select(x => x.PubMonth).Distinct().ToList();
-            foreach (var month in months)
+            var years = Episodes.Select(x => x.PubYear).Distinct().ToList();
+            foreach (var year in years)
             {
-                string monthName = Helpers.MonthNameHelper.MonthNameFromNumber(month);
-                if (Months.Items.Contains(monthName) == false)
+                if (Years.Items.Contains(year.ToString()) == false)
                 {
-                    Months.Items.Add(monthName);
+                    Years.Items.Add(year.ToString());
                 }
             }
 
@@ -545,36 +540,17 @@ namespace DABApp
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     //filter to the right list of episodes
-                    ObservableCollection<EpisodeViewModel> episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
+                    EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
+                    .Where(x => Years.Items[Years.SelectedIndex] == "All Episodes" ? true : x.PubYear.ToString() == Years.Items[Years.SelectedIndex])
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
-                    .Select(x => new EpisodeViewModel(x)).ToList());
+                    .Select(x => new EpisodeViewModel(x)));
 
                     if (episode != null)
                     {
                         Favorite.Source = episode.favoriteSource;
                     }
 
-                    foreach (var item in episodeObservableCollection)
-                    {
-                        if (item.Episode.is_downloaded == true)
-                        {
-                            item.isDownloaded = true;
-                            item.isNotDownloaded = false;
-                            item.downloadProgress = 100;
-                        }
-                        else
-                        {
-                            item.isNotDownloaded = true;
-                        }
-                        if (episodeObservableCollection.IndexOf(item) >= 20)
-                        {
-                            break;
-                        }
-                    }
-
-                    EpisodeList.ItemsSource = episodeObservableCollection;
                     //Container.HeightRequest = EpisodeList.RowHeight * _Episodes.Count();
                 }
                 );
@@ -600,7 +576,7 @@ namespace DABApp
                 try
                 {
                     EpisodeList.ItemsSource = episodeObservableCollection = new ObservableCollection<EpisodeViewModel>(Episodes
-                    .Where(x => Months.Items[Months.SelectedIndex] == "All Episodes" ? true : x.PubMonth == Helpers.MonthNameHelper.MonthNumberFromName(Months.Items[Months.SelectedIndex]))
+                    .Where(x => Years.Items[Years.SelectedIndex] == "All Episodes" ? true : x.PubYear.ToString() == Years.Items[Years.SelectedIndex])
                     .Where(x => _resource.filter == EpisodeFilters.Favorite ? x.UserData.IsFavorite : true)
                     .Where(x => _resource.filter == EpisodeFilters.Journal ? x.UserData.HasJournal : true)
                     .Select(x => new EpisodeViewModel(x)));
@@ -719,7 +695,7 @@ namespace DABApp
                     {
                         episode.Episode.UserData.IsListenedTo = model.IsListenedTo;
                         //TODO: Fix completed image
-                        Completed.Image = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
+                        Completed.ImageSource = (Xamarin.Forms.FileImageSource)episode.listenedToSource;
 
                         AutomationProperties.SetHelpText(Completed, episode.listenAccessible);
                         await PlayerFeedAPI.UpdateEpisodeUserData((int)episode.Episode.id, episode.IsListenedTo, episode.IsFavorite, episode.HasJournal, null, false);
@@ -753,13 +729,10 @@ namespace DABApp
 
             if (ok)
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Refreshing episodes...", true));
-
+                GlobalResources.WaitStart("Refreshing episodes...");
 
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
-                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
-
-                await Refresh(EpisodeRefreshType.FullRefresh);
+                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
 
                 if (episode == null && Episodes.Count() > 0)
                 {
@@ -779,11 +752,12 @@ namespace DABApp
                 {
                     //no episode available yet.
                 }
+                TimedActions();
 
                 GlobalResources.LastActionDate = DateTime.Now.ToUniversalTime();
                 GlobalResources.SetLastRefreshDate(_resource.id);
 
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
             }
 
             EpisodeList.IsRefreshing = false;
@@ -872,7 +846,7 @@ namespace DABApp
         //Handle the selection of a different episode
         {
             //Load the episode
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Loading episode...", true));
+            GlobalResources.WaitStart("Loading episode...");
             var newEp = (EpisodeViewModel)e.Item;
             currentIndex = episodeObservableCollection.IndexOf(newEp);
             previousEpIndex = currentIndex + 1;
@@ -940,7 +914,7 @@ namespace DABApp
             }
             //TODO: Set completed image
             //Completed.Image = episode.listenedToSource;
-            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+            GlobalResources.WaitStop();
         }
 
         public void OnMonthSelected(object o, EventArgs e)
@@ -952,13 +926,12 @@ namespace DABApp
         /* User selected a different channel */
         {
             //Wait indicator 
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Loading channel...", true));
-
+            GlobalResources.WaitStart("Loading channel...");
 
             List<string> emptyList = new List<string>();
 
             //Load the episode list
-            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
+            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Result.Count() > 0)
             {
                 //Store the resource / channel
                 _resource = (Resource)ChannelsList.SelectedItem;
@@ -967,14 +940,14 @@ namespace DABApp
 
 
                 //get the episodes - this routine handles resetting the date and raising events
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Refreshing episodes...", true));
+                GlobalResources.WaitStart($"Refreshing episodes...");
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
 
                 //Load the list if episodes for the channel.
-                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
+                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
 
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
             }
             else
             {
@@ -982,7 +955,7 @@ namespace DABApp
                 await DisplayAlert("Unable to get episodes for channel.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
             }
 
-            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+            GlobalResources.WaitStop();
         }
 
         //Go to previous episode
@@ -995,7 +968,7 @@ namespace DABApp
                 player.Pause(); //should save position
 
                 //Load the episode
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
                 var newEp = previousEpisode;
                 currentIndex = currentIndex + 1;
                 previousEpIndex = currentIndex + 1;
@@ -1062,12 +1035,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
                 player.Pause();
             }
             catch (Exception ex)
             {
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
             }
         }
 
@@ -1082,7 +1055,7 @@ namespace DABApp
                 player.Pause();//should save position
 
                 //Load the episode
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
                 var newEp = nextEpisode;
                 currentIndex = currentIndex - 1;
                 previousEpIndex = currentIndex + 1;
@@ -1152,12 +1125,12 @@ namespace DABApp
                 }
                 //TODO: Set completed image
                 //Completed.Image = episode.listenedToSource;
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
                 player.Pause();
             }
             catch (Exception ex)
             {
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
             }
 
         }
@@ -1209,13 +1182,16 @@ namespace DABApp
                 //start playback
                 player.Play();
             }
-            player.IsReady = true;
         }
 
         //Share the episode
-        void OnShare(object o, EventArgs e)
+        async void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(episode.Episode.channel_code, episode.Episode.PubDate.ToString("MMddyyyy"));
+            await Share.RequestAsync(new ShareTextRequest
+            {
+                Uri = $"https://player.dailyaudiobible.com/{episode.Episode.channel_code}/{episode.Episode.PubDate.ToString("MMddyyyy")}",
+                Title = "Share Web Link"
+            });
         }
 
         //User login
@@ -1261,8 +1237,7 @@ namespace DABApp
 
         async void OnReconnect(object o, EventArgs e)
         {
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Reconnecting to the journal service...", true));
-
+            GlobalResources.WaitStart("Reconnecting to the journal service.");
             journal.Reconnect();
             if (episode != null)
             {
@@ -1277,7 +1252,7 @@ namespace DABApp
             {
                 await DisplayAlert("Unable to reconnect to journal server", "Please check your internet connection and try again.", "OK");
             }
-            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+            GlobalResources.WaitStop();
         }
 
 
@@ -1319,7 +1294,7 @@ namespace DABApp
             else
                 previousButton.Opacity = opa;
             Output.IsVisible = par;
-            Share.IsVisible = par;
+            btnShare.IsVisible = par;
             Favorite.IsVisible = par;
             ListenedFrame.IsVisible = par;
             PlayPause.IsVisible = par;
@@ -1335,11 +1310,11 @@ namespace DABApp
             await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(popup, false);
         }
 
-        private async void Popup_ChangedRequested(object sender, EventArgs e)
+        private void Popup_ChangedRequested(object sender, EventArgs e)
         {
             var popuPage = (DabPopupEpisodeMenu)sender;
             _resource = popuPage.Resource;
-            await Refresh(EpisodeRefreshType.NoRefresh);
+            TimedActions();
         }
 
         #endregion

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using DABApp.DabAudio;
 using DABApp.DabSockets;
-using DABApp.DabUI.BaseUI;
 using SlideOverKit;
 using Xamarin.Forms;
 
@@ -32,19 +31,6 @@ namespace DABApp
             InitializeComponent();
             DabViewHelper.InitDabForm(this);
             NavigationPage.SetHasBackButton(this, false);
-
-            //Setting up experimental mode viewcell
-            StackLayout experimentStack = new StackLayout { Orientation = StackOrientation.Horizontal,
-                                                            BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"],
-                                                            Padding = 10, Children = {
-                                                                new Label { Text = "Experimental Mode Settings", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.StartAndExpand },
-                                                                new Image { Source="ic_chevron_right_white_3x.png", HorizontalOptions=LayoutOptions.EndAndExpand, Aspect=Aspect.AspectFit}
-                                                            }
-            };
-            ViewCell experimentCell = new ViewCell();
-            experimentCell.View = experimentStack;
-            experimentCell.Tapped += OnExperiment;
-
             _offline = Offline;
             //_reset = Reset;
             _appInfo = AppInfo;
@@ -61,10 +47,6 @@ namespace DABApp
                 Account.Title = null;
                 Account.Clear();
             }
-            if (GlobalResources.ExperimentMode)
-                Other.Add(experimentCell);
-            else
-                Other.Remove(experimentCell);
             //if (Device.Idiom == TargetIdiom.Tablet)
             //{
             //	ControlTemplate NoPlayerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
@@ -84,14 +66,6 @@ namespace DABApp
         {
             base.OnDisappearing();
             LogOut.IsEnabled = true;
-        }
-
-        void OnExperiment(object o, EventArgs e)
-        {
-            if (GlobalResources.ShouldUseSplitScreen == false)
-            {
-                Navigation.PushAsync(new DabExperimentalPage());
-            }
         }
 
         void OnOffline(object o, EventArgs e)
@@ -122,11 +96,12 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                
+                GlobalResources.WaitStart();
                 await Navigation.PushAsync(new DabProfileManagementPage());
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
             }
-
+            
         }
 
         async void OnAddresses(object o, EventArgs e)
@@ -141,7 +116,7 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
                 var result = await AuthenticationAPI.GetWallet();
                 if (result != null)
                 {
@@ -151,7 +126,7 @@ namespace DABApp
                 {
                     await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
                 }
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
             }
         }
 
@@ -159,14 +134,14 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
                 var don = await AuthenticationAPI.GetDonations();
                 if (don != null)
                 {
                     await Navigation.PushAsync(new DabManageDonationsPage(don));
                 }
                 else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
             }
         }
     }

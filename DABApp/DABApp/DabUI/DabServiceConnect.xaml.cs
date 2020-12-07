@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DABApp.Service;
+using SQLite;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -12,7 +13,7 @@ namespace DABApp.DabUI
 
         ContentAPI contentAPI = new ContentAPI();
         ContentConfig contentConfig = new ContentConfig();
-        //bool rotateImage = true;
+        bool rotateImage = true;
 
         public DabServiceConnect()
         {
@@ -23,18 +24,53 @@ namespace DABApp.DabUI
         {
             base.OnAppearing();
 
-            //RotateIconContinuously(); //start rotation
-            //WaitContent.FadeTo(1, 250); //fade it in
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                RotateIconContinuously(); //start rotation
+                WaitContent.FadeTo(1, 250); //fade it in
+            }
+            else
+            {
+                WaitContent.Opacity = 1;
+            }
+            
             if (GlobalResources.TestMode)
             {
                 lblTestMode.IsVisible = true;
-                //lblTestMode.FadeTo(1, 500, Easing.BounceIn);
+                if (Device.RuntimePlatform == Device.iOS)
+                {
+                    lblTestMode.FadeTo(1, 500, Easing.BounceIn);
+                }
+                else
+                {
+                    lblTestMode.Opacity = 1;
+                }
             }
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
+                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
                 //Determine if the user was logged in at last use
-                string token = dbSettings.GetSetting("Token", "");
+                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                if (user == null)
+                {
+                    dbUserData guestUserData = new dbUserData();
+                    guestUserData.Token = "";
+                    guestUserData.Email = "";
+                    guestUserData.FirstName = "Guest";
+                    guestUserData.LastName = "Guest";
+                    guestUserData.WpId = 0;
+                    guestUserData.Channel = "";
+                    guestUserData.Channels = "";
+                    guestUserData.Id = 0;
+                    guestUserData.Language = "";
+                    guestUserData.NickName = "Guest";
+                    guestUserData.UserRegistered = DateTime.Now;
+                    guestUserData.TokenCreation = DateTime.Now;
+                    guestUserData.ActionDate = DateTime.MinValue;
+                    guestUserData.ProgressDate = DateTime.MinValue;
+                    await adb.InsertOrReplaceAsync(guestUserData);
+                }
 
                 //check for version list for required upgrade
                 List<Versions> versionList = new List<Versions>();
@@ -64,13 +100,14 @@ namespace DABApp.DabUI
 //#endif
 
                 NavigationPage navPage;
+                user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
 
                 if (versionList != null)
                 {
                     //version list in place, force user to log in
                     navPage = new NavigationPage(new DabCheckEmailPage());
                 }
-                else if (token == "")
+                else if (user.Token == "")
                 {
                     //user last logged in as a guest, take them to enter their email
                     navPage = new NavigationPage(new DabCheckEmailPage());
@@ -83,7 +120,7 @@ namespace DABApp.DabUI
                     if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                     {
                         //we have internet access - establish a connection with the token
-                        var ql = await DabService.InitializeConnection(token);
+                        var ql = await DabService.InitializeConnection(user.Token);
                         if (ql.Success == false && (ql.ErrorMessage == "Not authenticated as user." || ql.ErrorMessage == "Not authorized")) //TODO: Replace this text with error messgae for invalid token
                         {
                             //token is validated as expired - make them log back in
@@ -116,22 +153,22 @@ namespace DABApp.DabUI
             }
 
             //finish rotating the image
-            //rotateImage = false;
+            rotateImage = false;
         }
 
 
-        //async Task RotateIconContinuously()
-        //{
-        //    int steps = 1;
+        async Task RotateIconContinuously()
+        {
+            int steps = 1;
 
-        //    while (rotateImage)
-        //    {
-        //        for (int i = 1; i < steps + 1; i++)
-        //        {
-        //            if (AppIcon.Rotation >=  360f) AppIcon.Rotation = 0;
-        //            await AppIcon.RotateTo(i * ( 360 / steps), 1000, Easing.CubicInOut);
-        //        }
-        //    }
-        //}
+            while (rotateImage)
+            {
+                for (int i = 1; i < steps + 1; i++)
+                {
+                    if (AppIcon.Rotation >= 360f) AppIcon.Rotation = 0;
+                    await AppIcon.RotateTo(i * (360 / steps), 1000, Easing.CubicInOut);
+                }
+            }
+        }
     }
 }

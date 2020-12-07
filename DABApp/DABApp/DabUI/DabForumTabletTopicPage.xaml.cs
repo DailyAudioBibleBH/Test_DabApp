@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -19,7 +18,6 @@ namespace DABApp
 		Forum _forum;
 		Topic topic;
 		View _view;
-		object source;
 
 		public DabForumTabletTopicPage(View view)
 		{
@@ -41,13 +39,14 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
+			GlobalResources.WaitStart();
 			topic = (Topic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
 			topic = await ContentAPI.GetTopic(topic);
 			DetailsView.replies.ItemsSource = topic.replies;
 			DetailsView.last.Text = TimeConvert();
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		async void OnPost(object o, EventArgs e)
@@ -116,8 +115,7 @@ namespace DABApp
 
 		async Task Update()
 		{
-			source = new object();
-			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			if (topic != null)
 			{
 				topic = await ContentAPI.GetTopic(topic);
@@ -145,8 +143,8 @@ namespace DABApp
                 ContentList.BindingContext = _forum;
                 ContentList.topicList.ItemsSource = _forum.topics;
             }
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
-			fromPost = false;
+			GlobalResources.WaitStop();
+            fromPost = false;
             unInitialized = false;
         }
 

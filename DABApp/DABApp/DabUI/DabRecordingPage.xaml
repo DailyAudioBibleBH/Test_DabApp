@@ -49,7 +49,7 @@
                 <local:PlayerLabel x:Name="lblGuide" Grid.Row="5" Grid.ColumnSpan="2" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" FontSize="Small" />
                 <Button x:Name="Submit" Text="Submit" FontAttributes="Bold" FontSize="Large" Margin="10" Clicked="OnSubmit"  VerticalOptions="EndAndExpand" Grid.Row="6"
                 Grid.ColumnSpan="2" AutomationProperties.Name="Submit" />
-                <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" FontSize="Large" VerticalOptions="EndAndExpand" />
+                <Button x:Name="Delete" Text="Start Over" Clicked="OnDelete" Grid.Row="7" Grid.Column="0" Margin="10, 10, 5, 10" FontSize="Large" HeightRequest="40" VerticalOptions="EndAndExpand" />
                 <Button x:Name="Cancel" Text="Cancel" HeightRequest="40" Clicked="OnCancel" Margin="10" Grid.Row="7" Grid.Column="1" FontSize="Large" VerticalOptions="EndAndExpand" />
                 <local:ConfirmationPicker x:Name="Destination" Title="Select which podcast your recording should be sent to." IsEnabled="False" IsVisible="False" />
             </Grid>

@@ -3,7 +3,9 @@
                           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                           x:Class="DABApp.DabTabletPage"
                           xmlns:local="clr-namespace:DABApp;assembly=DABApp"
-                          xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions" xmlns:telerikGauges="clr-namespace:Telerik.XamarinForms.DataVisualization.Gauges;assembly=Telerik.XamarinForms.DataVisualization" xmlns:telerikCommon="clr-namespace:Telerik.XamarinForms.Common;assembly=Telerik.XamarinForms.Common">
+                          xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+                          xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                          >
     <local:DabBaseContentPage.Resources>
         <ResourceDictionary>
             <local:StringConverter x:Key="stringer" />
@@ -230,7 +232,7 @@
                                                Grid.Column="3"
                                                AutomationProperties.IsInAccessibleTree="true"
                                                AutomationProperties.HelpText="Change Audio Output" />
-                        <local:PlayerImage x:Name="Share"
+                        <local:PlayerImage x:Name="btnShare"
                                            Source="ic_share_white_3x.png"
                                            
                                            Grid.Row="0"
@@ -309,7 +311,7 @@
                             <StackLayout Orientation="Horizontal"
                                          x:Name="ArchiveHeader"
                                          BackgroundColor="{DynamicResource PageBackgroundColor}">
-                                <Picker x:Name="Months"
+                                <Picker x:Name="Years"
                                         SelectedIndexChanged="OnMonthSelected"
                                         HorizontalOptions="StartAndExpand"
                                         WidthRequest="140"
@@ -370,8 +372,7 @@
                                                WidthRequest="20"
                                                HeightRequest="20"
                                                VerticalOptions="Center" />
-                                        <StackLayout Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-                                            <local:DabLabel Text="{Binding title}"
+                                        <local:DabLabel Text="{Binding title}"
                                                         FontSize="Medium"
                                                         HorizontalOptions="Start"
                                                         Grid.Row="0"
@@ -379,53 +380,34 @@
                                                         Style="{StaticResource playerLabelStyle}"
                                                         FontAttributes="Bold"
                                                         IsTitle="true" />
-                                            <Image IsVisible="{Binding IsFavorite}"
+                                        <Image IsVisible="{Binding IsFavorite}"
                                                Source="ic_star_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
                                                Aspect="AspectFit"
                                                Grid.RowSpan="2"
                                                Grid.Column="2" />
-                                            <Image IsVisible="{Binding HasJournal}"
+                                        <Image IsVisible="{Binding HasJournal}"
                                                Source="pencil_white.png"
                                                Opacity=".5"
                                                HeightRequest="15"
                                                Aspect="AspectFit"
                                                Grid.RowSpan="2"
                                                Grid.Column="3" />
-                                        </StackLayout>
-                                        <Grid HeightRequest="15" Grid.Column="2" Grid.RowSpan="2" IsVisible="{Binding downloadVisible}">
-                                            <Image x:Name="DownloadCompleteImage" Source="cloud_teal.png" IsVisible="{Binding isDownloaded}"></Image>
-                                            <Image x:Name="EntireBibleImage" Source="EntireBibleDark.png" IsVisible="{Binding isNotDownloaded}"></Image>
-                                            <telerikGauges:RadRadialGauge SweepAngle="340" StartAngle="-100" Padding="-13" IsVisible="{Binding isNotDownloaded}">
-                                                <telerikGauges:RadRadialGauge.Axis>
-                                                    <telerikGauges:GaugeLinearAxis Minimum="0" Maximum="100" Step="0" ShowLabels="False" TickLength="0" TickThickness="0" StrokeThickness="0"/>
-                                                </telerikGauges:RadRadialGauge.Axis>
-                                                <telerikGauges:RadRadialGauge.Indicators>
-                                                    <telerikGauges:GaugeBarIndicator x:Name="EntireBibleGauge"
-                                                     StartThickness="5"
-                                                     EndThickness="5"
-                                                     Offset="0"
-                                                     StartCap="Oval"
-                                                     EndCap="Oval"
-                                                     Value="{Binding downloadProgress}">
-                                                        <telerikGauges:GaugeBarIndicator.GradientStops>
-                                                            <telerikCommon:RadGradientStop Offset="0" Color="#45AFBA" />
-                                                            <telerikCommon:RadGradientStop x:Name="EntireBibleGradientOffset" Color="#84F6E1" />
-                                                        </telerikGauges:GaugeBarIndicator.GradientStops>
-                                                    </telerikGauges:GaugeBarIndicator>
-                                                </telerikGauges:RadRadialGauge.Indicators>
-                                            </telerikGauges:RadRadialGauge>
-                                        </Grid>
                                         <local:DabLabel Text="{Binding description}"
                                                         FontSize="Micro"
                                                         Grid.Row="1"
                                                         Grid.Column="1"
                                                         Style="{StaticResource secondaryLabelStyle}"
                                                         LineBreakMode="TailTruncation" />
-                                       
+                                        <local:CircularProgressControl Progress="{Binding downloadProgress}"
+                                                                       ProgressVisible="{Binding progressVisible}"
+                                                                       DownloadVisible="{Binding downloadVisible}"
+                                                                       HeightRequest="15"
+                                                                       Grid.RowSpan="2"
+                                                                       Grid.Column="4" />
                                     </Grid>
-                                  </local:DabViewCell>
+                                </local:DabViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>

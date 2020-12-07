@@ -1,6 +1,4 @@
-﻿using DABApp.DabUI.BaseUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 
 using Xamarin.Forms;
@@ -12,7 +10,6 @@ namespace DABApp
 		Donation[] _donations;
 		bool isInitialized = false;
 		bool _fromLogin;
-		object source;
 
 		public DabManageDonationsPage(Donation[] donations, bool fromLogin = false)
 		{
@@ -45,33 +42,38 @@ namespace DABApp
 					StackLayout layout = new StackLayout();
 					StackLayout buttons = new StackLayout();
 					buttons.Orientation = StackOrientation.Horizontal;
-					Button monthly = new Button();
+					Button btnInterval = new Button();
 					Button once = new Button();
 					Label cTitle = new Label();
 					cTitle.Text = $"{don.name}-${don.suggestedRecurringDonation}/month";
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
 					Label card = new Label();
 					Label recurr = new Label();
-					monthly.Text = "Edit Monthly";
-					monthly.Clicked += OnRecurring;
-					monthly.WidthRequest = 150;
-					monthly.AutomationId = don.id.ToString();
+					Label interval = new Label();
+					btnInterval.Text = "Edit interval";
+					btnInterval.Clicked += OnRecurring;
+					btnInterval.WidthRequest = 150;
+					btnInterval.HeightRequest = 40;
+					btnInterval.AutomationId = don.id.ToString();
 					if (don.pro != null)
 					{
-						cTitle.Text = $"{don.name}-${don.pro.amount}/month";
+						string currencyAmount = GlobalResources.ToCurrency(don.pro.amount); 
+						btnInterval.Text = $"Edit {don.pro.interval}";
+						cTitle.Text = $"{don.name}-${currencyAmount}/{don.pro.interval}";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
 						card.FontSize = 14;
 						card.VerticalOptions = LayoutOptions.End;
 						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
-						monthly.IsVisible = true;
+						btnInterval.IsVisible = true;
 						once.Text = "One-time gift";
-						buttons.Children.Add(monthly);
+						once.HeightRequest = 40;
+						buttons.Children.Add(btnInterval);
 					}
 					else 
 					{
-						monthly.IsVisible = false;
+						btnInterval.IsVisible = false;
 						once.Text = "Give";
 						once.HeightRequest = 40;
 						once.HorizontalOptions = LayoutOptions.StartAndExpand;
@@ -79,7 +81,7 @@ namespace DABApp
 					once.WidthRequest = 150;
 					once.AutomationId = don.id.ToString();
 					once.Clicked += OnGive;
-					buttons.Children.Add(monthly);
+					buttons.Children.Add(btnInterval);
 					buttons.Children.Add(once);
 					layout.Children.Add(cTitle);
 					layout.Children.Add(card);
@@ -96,7 +98,7 @@ namespace DABApp
 
 		async void OnHistory(object o, EventArgs e) 
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			DonationRecord[] history = await AuthenticationAPI.GetDonationHistory();
 			if (history != null)
 			{
@@ -107,22 +109,22 @@ namespace DABApp
 				await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			}
 			isInitialized = false;
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		async void OnRecurring(object o, EventArgs e) 
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			Button chosen = (Button)o;
 			Card[] cards = await AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.id.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		async void OnGive(object o, EventArgs e) 
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			Button chosen = (Button)o;
 			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
 			if (!url.Contains("Error"))
@@ -133,7 +135,7 @@ namespace DABApp
 			{
 				await DisplayAlert("An Error has occured.", url, "OK");
 			}
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		protected override async void OnAppearing()
@@ -148,9 +150,7 @@ namespace DABApp
 			}
 			if (isInitialized)
 			{
-				source = new object();
-				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-
+				GlobalResources.WaitStart();
 				_donations = await AuthenticationAPI.GetDonations();
 				if (_donations != null)
 				{
@@ -162,7 +162,9 @@ namespace DABApp
 						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
 						if (don.pro != null)
 						{
-							Labels[0].Text = $"{don.name}-${don.pro.amount}/month";
+							string currencyAmount = GlobalResources.ToCurrency(don.pro.amount);
+
+							Labels[0].Text = $"{don.name}-${currencyAmount}/{don.pro.interval}";
 							Labels[1].Text = $"Card ending in {don.pro.card_last_four}";
 							Labels[2].Text = $"Recurs: {don.pro.next}";
 							Labels[1].IsVisible = true;
@@ -171,6 +173,7 @@ namespace DABApp
 							Labels[2].FontSize = 14;
 							Buttons[0].IsVisible = true;
 							Buttons[1].Text = "One-time gift";
+							Buttons[0].Text = $"Edit {don.pro.interval}";
 						}
 						else
 						{
@@ -187,7 +190,7 @@ namespace DABApp
 					await DisplayAlert("Unable to retrieve Donation information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 					//await Navigation.PopAsync();
 				}
-				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+				GlobalResources.WaitStop();
 			}
 			isInitialized = true;
 		}

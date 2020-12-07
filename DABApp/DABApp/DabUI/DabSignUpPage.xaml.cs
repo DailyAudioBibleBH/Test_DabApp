@@ -1,5 +1,4 @@
 ﻿using DABApp.DabSockets;
-using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Newtonsoft.Json;
 using SQLite;
@@ -72,15 +71,19 @@ namespace DABApp
 		{
 			if (SignUpValidation())
 			{
-				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Registering your account...", true));
-
+				GlobalResources.WaitStart("Registering your account...");
 				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
 				if (ql.Success)
                 {
+					SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
-					dbSettings.StoreSetting("Token", token);
-					dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString()); ;
+					//token was updated successfully
+					var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+					newUserData.Token = token;
+					newUserData.TokenCreation = DateTime.Now;
+					await adb.InsertOrReplaceAsync(newUserData);
 					await DabService.TerminateConnection();
 					await DabService.InitializeConnection(token);
 					//get user profile information and update it.
@@ -89,21 +92,15 @@ namespace DABApp
 					{
 						//process user profile information
 						var profile = ql.Data.payload.data.user;
-						dbSettings.StoreSetting("FirstName", profile.firstName);
-						dbSettings.StoreSetting("LastName", profile.lastName);
-						dbSettings.StoreSetting("Email", profile.email);
-						dbSettings.StoreSetting("Channel", profile.channel);
-						dbSettings.StoreSetting("Channels", profile.channels);
-						dbSettings.StoreSetting("Language", profile.language);
-						dbSettings.StoreSetting("Nickname", profile.nickname);
+						await DabServiceRoutines.UpdateUserProfile(profile);
 					}
-					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+					GlobalResources.WaitStop();
 
 					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
 				}
 				else
                 {
-					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+					GlobalResources.WaitStop();
 					await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}","OK");
                 }
 			}

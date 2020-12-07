@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -15,7 +14,6 @@ namespace DABApp
         int pageNumber;
 		Forum _forum;
 		View _view;
-		object source;
 
 		public DabForumPhoneTopicList(View view)
 		{
@@ -47,7 +45,7 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			var topic = (Topic)e.Item;
 			var result = await ContentAPI.GetTopic(topic);
 			if (result == null)
@@ -59,7 +57,7 @@ namespace DABApp
 				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
 			}
 			ContentList.topicList.SelectedItem = null;
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 
 		protected override async void OnAppearing()
@@ -78,8 +76,7 @@ namespace DABApp
 		{
 			if (fromPost || unInitialized)
 			{
-				source = new object();
-				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+				GlobalResources.WaitStart();
 				_forum = await ContentAPI.GetForum(_view, pageNumber);
 				if (_forum == null)
 				{
@@ -92,7 +89,7 @@ namespace DABApp
 					fromPost = false;
 					unInitialized = false;
 				}
-				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+				GlobalResources.WaitStop();
 			}
 		}
 	}

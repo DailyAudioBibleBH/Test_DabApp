@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.Generic;
@@ -128,10 +128,10 @@ namespace DABApp
             string OfflineSettingsValue = dbSettings.GetSetting("AvailableOffline", "");
             ContentConfig.Instance = JsonConvert.DeserializeObject<ContentConfig>(jsonOut);
             
-            //Task.Run(async () =>
-            //{
-            //    await ContentConfig.Instance.cachImages();
-            //});
+            Task.Run(async () =>
+            {
+                await ContentConfig.Instance.cachImages();
+            });
             if (OfflineSettingsValue == "")
             {
                 dbSettings.StoreSetting("AvailableOffline", new JArray().ToString());
@@ -233,7 +233,7 @@ namespace DABApp
                 //Sending Event to Firebase Analytics about Topic post
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_written");
 
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(topic);
@@ -265,7 +265,7 @@ namespace DABApp
                 //Sending Event to Firebase Analytics to record Reply post.
                 DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_replied");
 
-                string TokenSettingsValue = dbSettings.GetSetting("Token", "");
+                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var JsonIn = JsonConvert.SerializeObject(reply);

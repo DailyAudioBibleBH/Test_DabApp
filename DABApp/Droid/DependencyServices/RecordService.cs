@@ -34,7 +34,7 @@ namespace DABApp.Droid
         public string StartRecording()
         {
             var doc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            fileName = Path.Combine(doc, $"DABRecording_{DateTime.Now.ToString("yyyyMMddHHmmss").Replace("/", string.Empty).Replace(" ", string.Empty).Replace(":", string.Empty)}.m4a");
+            fileName = Path.Combine(doc, $"DABRecording_{DateTime.Now.ToString("yyyyMMddHHmmss").Replace("/", string.Empty).Replace(" ", string.Empty).Replace(":", string.Empty)}.mp4");
             double MaxAmp = 1;
 
             recorder = new MediaRecorder();

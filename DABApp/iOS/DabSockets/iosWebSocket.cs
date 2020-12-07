@@ -115,8 +115,6 @@ namespace DABApp.iOS.DabSockets
 
         public void Send(string JsonIn)
         {
-            JsonIn = GlobalResources.CleanupJson(JsonIn); //prep the json
-
             DABApp.Service.DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Outbound, JsonIn);
             Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);

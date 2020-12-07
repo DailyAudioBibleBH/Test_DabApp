@@ -1,6 +1,7 @@
 ﻿using System;
 using Android.Content;
 using DABApp.Droid;
+using Plugin.CurrentActivity;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(RivetsService))]
@@ -12,7 +13,7 @@ namespace DABApp.Droid
 		{
 			Intent browserIntent = new Intent(Intent.ActionView);
 			browserIntent.SetData(Android.Net.Uri.Parse(Url));
-			var activity = Forms.Context;
+			var activity = CrossCurrentActivity.Current.Activity;
 			activity.StartActivity(browserIntent);
 		}
 	}

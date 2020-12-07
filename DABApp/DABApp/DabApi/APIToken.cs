@@ -170,7 +170,7 @@ namespace DABApp
 	public class Pro
 	{
 		public string status { get; set; }
-		public int amount { get; set; }
+		public double amount { get; set; }
 		public string card_last_four { get; set; }
 		public int card_exp_month { get; set; }
 		public int card_exp_year { get; set; }
@@ -186,12 +186,14 @@ namespace DABApp
 		public int campaign_number { get; set; }
 		public string card_id { get; set; }
 		public string amount { get; set; }
-		public long next_date_timestamp { get; set; }
-		public putDonation(int campaign, string card, string Amount, long date)
+        public string donation_type { get; set; }
+        public long next_date_timestamp { get; set; }
+		public putDonation(int campaign, string card, string Amount, string DonationType, long date)
 		{
 			campaign_number = campaign;
 			card_id = card;
 			amount = Amount;
+			donation_type = DonationType;
 			next_date_timestamp = date;
 		}
 	}

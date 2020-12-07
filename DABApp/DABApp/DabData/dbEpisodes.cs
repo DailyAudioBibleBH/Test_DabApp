@@ -257,12 +257,12 @@ namespace DABApp
                 //go get new UserData if needed
                 int episodeId = 0;
                 string userName = "";
-                SQLiteAsyncConnection adb;
+                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
                 try
                 {
                     episodeId = id.Value;
-                    userName = dbSettings.GetSetting("Email", "");
+                    userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
                     adb = DabData.AsyncDatabase; //TODO - Verify this doesn't get overused
 
                     var data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == id && x.UserName == userName).FirstOrDefaultAsync().Result;

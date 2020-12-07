@@ -13,7 +13,6 @@ using Xamarin.Forms.Xaml;
 using System.Net;
 using System.IO;
 using DABApp.DabAudio;
-using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -284,10 +283,9 @@ namespace DABApp
             {
                 if (CrossConnectivity.Current.IsConnected)
                 {
-                    DabUserInteractionEvents.WaitStarted(sender, new DabAppEventArgs("Submitting recording...", true));
-
+                    GlobalResources.WaitStart("Submitting recording...", false);
                     var result = await SendAudio(audio);
-                    DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
+                    GlobalResources.WaitStop();
                     if (result) await Navigation.PopModalAsync();
                 }
                 else await DisplayAlert("No Internet Connection", "Your audio recording could not be submitted at this time. Please check your network connection and try again.", "OK");
@@ -361,6 +359,11 @@ namespace DABApp
                 //Attach the file
                 var att = new Attachment(fileName, "audio/wav");
                 mailMessage.Attachments.Add(att);
+                mailMessage.To.Clear();
+                foreach (var address in podcastEmail.Email.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    mailMessage.To.Add(address);
+                }
 
                 //Set up the SMTP client using Mandril API credentials
                 var smtp = new SmtpClient();

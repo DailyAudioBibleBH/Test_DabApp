@@ -1,4 +1,5 @@
 ﻿using Acr.DeviceInfo;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,9 +66,8 @@ namespace DABApp
 
 			banner.Source = new UriImageSource
 			{
-				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
-				CacheValidity = GlobalResources.ImageCacheValidity,
-				CachingEnabled = true
+				Uri =  new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
+				CacheValidity = GlobalResources.ImageCacheValidity
 			};
 			//BannerTitle.Text = $"<h1 style=\"font-size:28px\">{contentView.title}</h1>";
 		}
@@ -79,12 +79,13 @@ namespace DABApp
 		}
 
 		void OnLinkTapped(object o, ItemTappedEventArgs e) {
+			SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 			var item = (Link)e.Item;
             if (item.linkText.Contains("Report an Issue"))
             {
                 string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Hardware.OperatingSystem}" +
                     $"&screenWidth={DeviceInfo.Hardware.ScreenWidth}&screenHeight={DeviceInfo.Hardware.ScreenHeight}&manufacturer={DeviceInfo.Hardware.Manufacturer}&model={DeviceInfo.Hardware.Model}" +
-                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={dbSettings.GetSetting("Email","")}&userWpId={GlobalResources.GetUserWpId()}";
+                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}&userWpId={GlobalResources.GetUserWpId()}";
                 Device.OpenUri(new Uri(url));
             }
             else

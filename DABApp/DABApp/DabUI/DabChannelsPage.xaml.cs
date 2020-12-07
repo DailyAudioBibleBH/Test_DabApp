@@ -4,6 +4,7 @@ using System.Linq;
 using SlideOverKit;
 using Xamarin.Forms;
 using DLToolkit.Forms.Controls;
+using FFImageLoading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using DABApp.DabSockets;
@@ -13,7 +14,6 @@ using Rg.Plugins.Popup.Services;
 using DABApp.DabUI;
 using Plugin.Connectivity;
 using DABApp.Service;
-using DABApp.DabUI.BaseUI;
 
 namespace DABApp
 {
@@ -29,7 +29,6 @@ namespace DABApp
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         private bool todaysEpisodeVisible = false;
         bool shouldShowTodaysEpisode = false;
-        object source = new object();
 
         public DabChannelsPage()
         {
@@ -86,16 +85,12 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
-
-
-
-
         }
 
 
         async void OnPlayer(object o, EventArgs e)
         {
-            DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+            GlobalResources.WaitStart();
             var reading = await PlayerFeedAPI.GetReading(episode.read_link);
             if (Device.Idiom == TargetIdiom.Tablet)
             {
@@ -104,9 +99,9 @@ namespace DABApp
             }
             else
             {
-                await Navigation.PushAsync(new DabPlayerPage(episode, reading));
+                await Navigation.PushAsync(new DabPlayerPage(episode));
             }
-            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+            GlobalResources.WaitStop();
         }
 
         protected override void OnDisappearing()
@@ -120,7 +115,7 @@ namespace DABApp
         {
             try
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
 
                 //Selected resource
                 var selected = (Resource)e.Item;
@@ -139,7 +134,7 @@ namespace DABApp
                 }
 
                 selected.IsNotSelected = 1.0;
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
 
                 //Send info to Firebase analytics that user accessed a channel
                 var infoJ = new Dictionary<string, string>();
@@ -151,7 +146,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.ToString());
-                DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                GlobalResources.WaitStop();
                 var r = await DisplayAlert("Unexpected error.", "We ran into an unexpected problem getting the episode list. Please try again.", "OK", "Details");
                 if (r)
                 {
@@ -178,7 +173,6 @@ namespace DABApp
             {
                 await PlayerFeedAPI.DownloadEpisodes();
             });
-
         }
 
         protected override async void OnAppearing()
@@ -198,7 +192,7 @@ namespace DABApp
             }
 
             //Get channel and episode
-            string favoriteChannel = dbSettings.GetSetting("Channel", "");
+            string favoriteChannel = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Channel;
             if (favoriteChannel != "")
             {
                 favChannel = adb.Table<dbChannels>().Where(x => x.title == favoriteChannel).FirstOrDefaultAsync().Result;
@@ -262,13 +256,13 @@ namespace DABApp
                         //Set up button
                         TodaysEpisodeButton.Clicked += async (sender, e) =>
                         {
-                            DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Getting today's episode...", true));
+                            GlobalResources.WaitStart("Getting today's episode...");
                             var _reading = await PlayerFeedAPI.GetReading(ep.read_link);
                             if (ep.File_name_local != null || CrossConnectivity.Current.IsConnected)
                             {
-                                await Navigation.PushAsync(new DabPlayerPage(ep, _reading));
+                                await Navigation.PushAsync(new DabPlayerPage(ep));
                             }
-                            DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+                            GlobalResources.WaitStop();
                         };
                     }
                 }

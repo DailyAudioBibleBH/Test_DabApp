@@ -25,70 +25,35 @@ namespace DABApp
         static bool ResumeNotSet = true;
         public static event EventHandler<DabEventArgs> MakeProgressVisible;
 
-        public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
+        public async static Task<IEnumerable<dbEpisodes>> GetEpisodeList(Resource resource)
         {
-            //GetEpisodes(resource);
-            return adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
+            dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
+            List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
+            DateTime beginEpisodeDate = GlobalResources.DabMinDate;
+
+            //Year end rollover process for guest
+            if (GuestStatus.Current.IsGuestLogin)
+            {
+                DateTime startDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
+                DateTime todaysDate = DateTime.Now.Date;
+                int bufferLength = channel.bufferLength;
+                int bufferPeriod = channel.bufferPeriod;
+                DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
+                DateTime stopImpactDate = startDate.AddDays(bufferPeriod);
                 
-        }
-
-        //grab episodes by channel
-        public static async Task<string> GetEpisodes(List<DabGraphQlEpisode> episodesList, dbChannels channel)
-        {
-            try
-            {
-                var fromDate = DateTime.Now.Month == 1 ? $"{(DateTime.Now.Year - 1).ToString()}-12-01" : $"{DateTime.Now.Year}-01-01";
-
-                List<DabGraphQlEpisode> currentEpisodes = new List<DabGraphQlEpisode>();
-
-                foreach (var item in episodesList)
+                //if today is within buffer period
+                if (todaysDate.CompareTo(startDate) >= 0 && todaysDate.CompareTo(stopImpactDate) <= 0)
                 {
-                    if (item.date >= Convert.ToDateTime(fromDate) && item.channelId == channel.channelId)
-                    {
-                        currentEpisodes.Add(item);
-                    }
-                    else
-                    {
-                        currentEpisodes.Remove(item);
-                    }
+                    return episodesTable.Where(x => x.PubDate.CompareTo(startRolloverDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
-
-                //var EpisodeMeta = db.Table<dbUserEpisodeMeta>().ToList();
-                List<int> episodesToGetActionsFor = new List<int>();
-                if (currentEpisodes == null)
+                else
                 {
-                    return "Server Error";
+                    return episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
-                var code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-                var existingEpisodes = adb.Table<dbEpisodes>().Where(x => x.channel_code == code).ToListAsync().Result;
-                var existingEpisodeIds = existingEpisodes.Select(x => x.id).ToList();
-                var newEpisodeIds = currentEpisodes.Select(x => x.episodeId);
-                var start = DateTime.Now;
-                foreach (var e in currentEpisodes)
-                {
-                    if (!existingEpisodeIds.Contains(e.episodeId))
-                    {
-                        //build out rest of episodes object since we don't get this from websocket
-                        dbEpisodes episode = new dbEpisodes(e);
-                        episode.channel_title = channel.title;
-                        //episode.channel_description = channel.;
-                        episode.channel_code = channel.title == "Daily Audio Bible" ? "dab" : channel.title.ToLower();
-                        episode.PubMonth = e.date.Month;
-                        episode.PubDay = e.date.Day;
-                        await adb.InsertOrReplaceAsync(episode);
-                    }
-                }
-
-                Debug.WriteLine($"Finished with GetEpisodes() {(DateTime.Now - start).TotalMilliseconds}");
-                return "OK";
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Exception called in Getting episodes: {ex.Message}");
-                return ex.Message;
-            }
-        }
 
+            return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
+        }
 
         public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource)
         {
@@ -307,7 +272,7 @@ namespace DABApp
                 else
                 {
                     //find the user episode data (ued) in question
-                    var userName = dbSettings.GetSetting("Email", "");
+                    var userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
                     dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
 
                     //add new ued if needed 
@@ -550,17 +515,17 @@ namespace DABApp
         {
             try
             {
-                var tokenValue = dbSettings.GetSetting("Token", "");
-                var creation = dbSettings.GetSetting("TokenCreation", "");
-                var email = dbSettings.GetSetting("Email", "");
-                var firstName = dbSettings.GetSetting("FirstName", "");
-                var lastName = dbSettings.GetSetting("LastName", "");
+                var tokenValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                var creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
+                var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+                var firstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
+                var lastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
                 var avatar = GlobalResources.UserAvatar;
                 
                 var token = new APIToken
                 {
                     value = tokenValue,
-                    expires = creation,
+                    expires = creation.ToString(),
                     user_email = email,
                     user_first_name = firstName,
                     user_last_name = lastName,

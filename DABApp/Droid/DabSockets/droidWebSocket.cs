@@ -116,8 +116,6 @@ namespace DABApp.Droid.DabSockets
 
         public void Send(string JsonIn)
         {
-            JsonIn = GlobalResources.CleanupJson(JsonIn); //prep the json
-
             DabServiceEvents.TrafficOccured(Service.GraphQlTrafficDirection.Outbound, JsonIn);
             Debug.WriteLine("SOCKET SEND:" + JsonIn);
             sock.Send(JsonIn);

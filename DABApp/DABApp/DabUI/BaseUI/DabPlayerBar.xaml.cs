@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabAudio;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 //TODO: Tablet player bar crashes app when you tap the arrow.
@@ -13,37 +14,37 @@ namespace DABApp
 	public partial class DabPlayerBar : ContentView
 	{
 		bool Repeat = true;
-        DabPlayer player = GlobalResources.playerPodcast;
+		DabPlayer player = GlobalResources.playerPodcast;
 
 		public DabPlayerBar()
 		{
 			InitializeComponent();
 
-            //PLAYER BINDINGS
+			//PLAYER BINDINGS
 
-            //Visibility of player
-            stackPlayerBar.BindingContext = player;
-            stackPlayerBar.SetBinding(IsVisibleProperty, "IsReady");
+			//Visibility of player
+			stackPlayerBar.BindingContext = player;
+			stackPlayerBar.SetBinding(IsVisibleProperty, "IsReady");
 
-            //Play / Pause button
-            btnPlayPause.BindingContext = player;
-            btnPlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
+			//Play / Pause button
+			btnPlayPause.BindingContext = player;
+			btnPlayPause.SetBinding(Image.SourceProperty, "PlayPauseButtonImageBig");
 
-            //Progress bar (%)
-            progProgress.BindingContext = player;
-            progProgress.SetBinding(ProgressBar.ProgressProperty, "CurrentProgressPercentage");
+			//Progress bar (%)
+			progProgress.BindingContext = player;
+			progProgress.SetBinding(ProgressBar.ProgressProperty, "CurrentProgressPercentage");
 
-            //Episode Title
-            lblEpisodeTitle.BindingContext = player;
-            lblEpisodeTitle.SetBinding(Label.TextProperty, "EpisodeTitle");
+			//Episode Title
+			lblEpisodeTitle.BindingContext = player;
+			lblEpisodeTitle.SetBinding(Label.TextProperty, "EpisodeTitle");
 
-            //Channel Title
-            lblChannelTitle.BindingContext = player;
-            lblChannelTitle.SetBinding(Label.TextProperty, "ChannelTitle");
+			//Channel Title
+			lblChannelTitle.BindingContext = player;
+			lblChannelTitle.SetBinding(Label.TextProperty, "ChannelTitle");
 
 
-            //Add a tap recognizer for the podcast tit
-            var tapShowEpisode = new TapGestureRecognizer();
+			//Add a tap recognizer for the podcast tit
+			var tapShowEpisode = new TapGestureRecognizer();
 			tapShowEpisode.NumberOfTapsRequired = 1;
 			tapShowEpisode.Tapped += (sender, e) =>
 			{
@@ -52,19 +53,19 @@ namespace DABApp
 			stackPlayerBar.GestureRecognizers.Add(tapShowEpisode);
 		}
 
-        //Play - Pause
-        void OnPlayPause(object o, EventArgs e)
-        {
-            //Play or pause the
-            if (player.IsPlaying)
-            {
-                player.Pause();
-            }
-            else
-            {
-                player.Play();
-            }
-        }
+		//Play - Pause
+		void OnPlayPause(object o, EventArgs e)
+		{
+			//Play or pause the
+			if (player.IsPlaying)
+			{
+				player.Pause();
+			}
+			else
+			{
+				player.Play();
+			}
+		}
 
 
 		//Show Player Page
@@ -77,7 +78,6 @@ namespace DABApp
 				stackPodcastTitle.IsEnabled = false;
 				NavigationPage page = (NavigationPage)Application.Current.MainPage;
 				var currentEpisode = PlayerFeedAPI.GetEpisode(GlobalResources.CurrentEpisodeId);
-				var reading = await PlayerFeedAPI.GetReading(currentEpisode.read_link);
 				if (Device.Idiom == TargetIdiom.Tablet)
 				{
 					var channel = ContentConfig.Instance.views.SingleOrDefault(x => x.title == "Channels").resources.SingleOrDefault(r => r.title == currentEpisode.channel_title);
@@ -85,7 +85,7 @@ namespace DABApp
 				}
 				else
 				{
-					await page.PushAsync(new DabPlayerPage(currentEpisode, reading));
+					await page.PushAsync(new DabPlayerPage(currentEpisode));
 				}
 				stackPodcastTitle.IsEnabled = true;
 				PlayerButton.IsEnabled = true;
@@ -94,10 +94,15 @@ namespace DABApp
 		}
 
 		//Show share dialog
-		void OnShare(object o, EventArgs e)
+		async void OnShare(object o, EventArgs e)
 		{
 			var currentEpisode = PlayerFeedAPI.GetEpisode(GlobalResources.CurrentEpisodeId);
-			Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(currentEpisode.channel_code, currentEpisode.id.ToString());
-		}
+
+			await Share.RequestAsync(new ShareTextRequest
+			{
+				Uri = $"https://player.dailyaudiobible.com/{currentEpisode.channel_code}/{currentEpisode.PubDate.ToString("MMddyyyy")}",
+				Title = "Share Web Link"
+			});
+		} 
 	}
 }

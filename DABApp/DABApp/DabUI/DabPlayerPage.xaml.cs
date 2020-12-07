@@ -10,7 +10,7 @@ using DABApp.DabSockets;
 using SQLite;
 using System.Collections.ObjectModel;
 using DABApp.Service;
-using DABApp.DabUI.BaseUI;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -28,9 +28,8 @@ namespace DABApp
         dbEpisodes _episode;
         DabEpisodesPage dabEpisodes;
         DabJournalService journal;
-        object source = new object();
 
-        public DabPlayerPage(dbEpisodes episode, Reading Reading)
+        public DabPlayerPage(dbEpisodes episode)
         {
             InitializeComponent();
 
@@ -88,19 +87,7 @@ namespace DABApp
             /* Set up other tabs (segmented control) */
             SegControl.ValueChanged += Handle_SegControlValueChanged;
 
-            //Update properties of the reading
-            Reading reading = Reading;
-            ReadTitle.Text = reading.title;
-            ReadText.Text = reading.text;
-            if (reading.IsAlt)
-            {
-                AltWarning.IsVisible = true;
-            }
-            else AltWarning.IsVisible = false;
-            if (reading.excerpts != null)
-            {
-                ReadExcerpts.Text = String.Join(", ", reading.excerpts);
-            }
+            
 
             //Connect to the journal and set up events
             journal.InitAndConnect();
@@ -209,14 +196,12 @@ namespace DABApp
                 {
                     player.Play();
                 }
-                player.IsReady = true;
             }
             else
             {
                 if (player.Load(Episode.Episode))
                 {
                     player.Play();
-                    player.IsReady = true;
                 }
                 else
                 {
@@ -420,13 +405,26 @@ namespace DABApp
         }
 
         //Form appears
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             //episode user data changed event
             DabServiceEvents.EpisodeUserDataChangedEvent += DabServiceEvents_EpisodeUserDataChangedEvent;
 
+            Reading reading = await PlayerFeedAPI.GetReading(_episode.read_link);
+            //Update properties of the reading
+            ReadTitle.Text = reading.title;
+            ReadText.Text = reading.text;
+            if (reading.IsAlt)
+            {
+                AltWarning.IsVisible = true;
+            }
+            else AltWarning.IsVisible = false;
+            if (reading.excerpts != null)
+            {
+                ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+            }
 
             //TODO: Put this back in for journal
             //Set up padding for the journal tab with the keyboard
@@ -484,13 +482,13 @@ namespace DABApp
 
                 //Favorite button
                 Favorite.BindingContext = Episode;
-                Favorite.SetBinding(Button.ImageProperty, "favoriteSource");
+                Favorite.SetBinding(Button.ImageSourceProperty, "favoriteSource");
                 Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
 
                 //Completed button
                 Completed.BindingContext = Episode;
-                Completed.SetBinding(Button.ImageProperty, "listenedToSource");
+                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
                 Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
                 //TODO: Add Binding for AutomationProperties.Name for listenAccessible
 
@@ -591,9 +589,13 @@ namespace DABApp
         }
 
         //Share the episode
-        void OnShare(object o, EventArgs e)
+        async void OnShare(object o, EventArgs e)
         {
-            Xamarin.Forms.DependencyService.Get<IShareable>().OpenShareIntent(Episode.Episode.channel_code, Episode.Episode.PubDate.ToString("MMddyyyy"));
+            await Share.RequestAsync(new ShareTextRequest
+            {
+                Uri = $"https://player.dailyaudiobible.com/{Episode.Episode.channel_code}/{Episode.Episode.PubDate.ToString("MMddyyyy")}",
+                Title = "Share Web Link"
+            });
         }
 
         //Journal disconnected
@@ -609,8 +611,7 @@ namespace DABApp
         //Journal Reconnected
         async void OnReconnect(object o, EventArgs e)
         {
-            DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Reconnecting to the journal service...", true));
-
+            GlobalResources.WaitStart("Reconnecting to the journal service.");
             journal.Reconnect();
             journal.JoinRoom(Episode.Episode.PubDate);
             await Task.Delay(1000);
@@ -629,7 +630,7 @@ namespace DABApp
                 int paddingMulti = journal.IsConnected ? 4 : 8;
                 JournalContent.HeightRequest = Content.Height - JournalTitle.Height - SegControl.Height - Journal.Padding.Bottom * paddingMulti;
             }
-            DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+            GlobalResources.WaitStop();
         }
 
         //Journal reconnecting

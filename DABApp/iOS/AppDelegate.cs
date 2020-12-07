@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DLToolkit.Forms.Controls;
+using FFImageLoading.Forms.Touch;
 using Foundation;
 using SegmentedControl.FormsPlugin.iOS;
 using SQLite;
@@ -39,6 +40,9 @@ namespace DABApp.iOS
             //Added this to get journaling to work found it here: https://stackoverflow.com/questions/4926676/mono-https-webrequest-fails-with-the-authentication-or-decryption-has-failed
             ServicePointManager.ServerCertificateValidationCallback += new RemoteCertificateValidationCallback((sender, certificate, chain, sslPolicyErrors) => { return true; });
 
+            //Cached Image Init
+            CachedImageRenderer.Init();
+
             //Popup INit
             Rg.Plugins.Popup.Popup.Init();
 
@@ -50,7 +54,6 @@ namespace DABApp.iOS
             UINavigationBar.Appearance.SetTitleTextAttributes(att);
 
             global::Xamarin.Forms.Forms.Init();
-            Xamarin.Forms.DependencyService.Register<ShareIntent>();
             //TODO: Replace for journal?
             //DependencyService.Register<SocketService>();
             DependencyService.Register<KeyboardHelper>();

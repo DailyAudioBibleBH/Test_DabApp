@@ -14,8 +14,6 @@ using Version.Plugin;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
-using DABApp.DabUI.BaseUI;
-
 namespace DABApp
 {
     public partial class DabLoginPage : DabBaseContentPage
@@ -45,7 +43,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = dbSettings.GetSetting("Email", "");
+            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;
@@ -78,7 +76,7 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = dbSettings.GetSetting("Email", "");
+            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
             if (email != "Guest" && !String.IsNullOrEmpty(email))
             {
                 Email.Text = email;
@@ -106,18 +104,25 @@ namespace DABApp
             try
             {
                 //log the user in 
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Checking your credentials...", true));
+                GlobalResources.WaitStart("Checking your credentials...");
                 var result = await Service.DabService.LoginUser(Email.Text.Trim(), Password.Text);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
+                
                 //process the data we got back.
-                string token = result.Data.payload.data.loginUser.token;
-                dbSettings.StoreSetting("TokenCreation", DateTime.Now.ToString());
-                dbSettings.StoreSetting("Token", token);
+                GraphQlLoginUser user = result.Data.payload.data.loginUser;
 
+
+                //token was updated successfully
+                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                newUserData.Token = user.token;
+                newUserData.TokenCreation = DateTime.Now;
+               
+                await adb.InsertOrReplaceAsync(newUserData);
+                
                 //re-establish service connection as the user
                 await DabService.TerminateConnection();
-                result = await DabService.InitializeConnection(token);
+                result = await DabService.InitializeConnection(newUserData.Token);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //perform post-login functions
@@ -138,35 +143,32 @@ namespace DABApp
             }
             catch (Exception ex)
             {
-                //GlobalResources.WaitStop();
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
-                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message}", "OK");
+                GlobalResources.WaitStop();
+                await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
+                var current = Connectivity.NetworkAccess;
+
+                if (current == NetworkAccess.Internet)
                 {
-                    await DisplayAlert("Login Failed", $"Your login failed. Please try again.\n\nError Message: {ex.Message} If problem presists please restart your app.", "OK");
-                    var current = Connectivity.NetworkAccess;
-
-                    if (current == NetworkAccess.Internet)
+                    Debug.WriteLine("Gained internet access");
+                    DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
+                    // Connection to internet is available
+                    // If websocket is not connected, reconnect
+                    if (!DabService.IsConnected)
                     {
-                        Debug.WriteLine("Gained internet access");
-                        DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Connected, "connected");
-                        // Connection to internet is available
-                        // If websocket is not connected, reconnect
-                        if (!DabService.IsConnected)
-                        {
-                            //reconnect to service
-                            var ql = await DabService.InitializeConnection();
+                        //reconnect to service
+                        var ql = await DabService.InitializeConnection();
 
-                            if (ql.Success)
-                            {
-                                //perform post-connection operations with service
-                                await DabServiceRoutines.RunConnectionEstablishedRoutines();
-                            }
+                        if (ql.Success)
+                        {
+                            //perform post-connection operations with service
+                            await DabServiceRoutines.RunConnectionEstablishedRoutines();
                         }
                     }
                 }
             }
-        }
 
+
+        }
 
         async void OnForgot(object o, EventArgs e)
         {
@@ -185,7 +187,6 @@ namespace DABApp
         void OnBack(object o, EventArgs e)
         {
             BackButton.IsEnabled = false;
-            DabCheckEmailPage.NextHit = false;
             Navigation.PopAsync();
         }
 
@@ -335,6 +336,7 @@ namespace DABApp
                 //GuestLogin.IsEnabled = false;
                 Login.IsEnabled = false;
                 btnForgot.IsEnabled = false;
+                BackButton.IsEnabled = false;
                 //SignUp.IsEnabled = false;
                 Login.Text = MainButtonText;
             }
@@ -362,13 +364,12 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    await adb.ExecuteAsync("DELETE FROM UserData");
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
-                    AuthenticationAPI.SetExternalMode(true);
+                    AuthenticationAPI.SetTestMode();
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
-                    Login.IsEnabled = false;
-                    //GuestLogin.IsEnabled = false;
-                    //SignUp.IsEnabled = false;
+                    DisableAllInputs("Shutdown and restart app");
                 }
             }
         }

@@ -7,15 +7,17 @@
 			<Picker x:Name="Cards"/>
 			<Label Text="Amount" FontSize="Micro"/>
 			<Entry x:Name="Amount" Keyboard="Numeric"/>
-			<Label x:Name="AmountWarning" Text="Payment amount must be a whole number." Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
-			<Label Text="Next Payment" FontSize="Micro"/>
+			<Label x:Name="AmountWarning" Text="Payment amount must be a valid currency format" Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
+            <Label Text="Select Interval" FontSize="Micro"/>
+            <Picker x:Name="Intervals"/>
+            <Label Text="Next Payment" FontSize="Micro"/>
 			<DatePicker x:Name="Next" BackgroundColor="{DynamicResource InputBackgroundColor}" TextColor="{DynamicResource TextColor}"/>
 			<StackLayout Orientation="Horizontal">
 				<Label Text="Status:" Style="{StaticResource playerLabelStyle}"/>
 				<Label x:Name="Status"/>
 			</StackLayout>
-			<Button x:Name="Update" Text="Update" Style="{StaticResource highlightedButtonStyle}" Clicked="OnUpdate"/>
-			<Button x:Name="Cancel" Text="Cancel Donation" Clicked="OnCancel"/>
+			<Button x:Name="Update" Text="Update" Style="{StaticResource highlightedButtonStyle}" HeightRequest="40" Clicked="OnUpdate"/>
+			<Button x:Name="Cancel" Text="Cancel Donation" HeightRequest="40" Clicked="OnCancel"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

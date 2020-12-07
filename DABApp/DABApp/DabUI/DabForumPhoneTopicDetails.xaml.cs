@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 
@@ -14,7 +13,6 @@ namespace DABApp
 		bool login = false;
 		bool fromPost = false;
 		Topic _topic;
-		object source;
 
 		public DabForumPhoneTopicDetails(Topic topic)
 		{
@@ -74,8 +72,7 @@ namespace DABApp
 
 		async Task Update()
 		{
-			source = new object();
-			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+			GlobalResources.WaitStart();
 			var result = await ContentAPI.GetTopic(_topic);
 			if (result == null)
 			{
@@ -92,7 +89,7 @@ namespace DABApp
 				}
 				fromPost = false;
 			}
-			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			GlobalResources.WaitStop();
 		}
 	}
 }

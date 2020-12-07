@@ -33,8 +33,10 @@ namespace DABApp
 			DabViewHelper.InitDabForm(this);
 			AchievementsView = contentView;
 			BindingContext = AchievementsView;
-			userName = dbSettings.GetSetting("Email", "");
-			progressDuration = ContentConfig.Instance.options.new_progress_duration;
+			//Connection to db
+			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+			string userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
 			banner.Source = new UriImageSource
 			{

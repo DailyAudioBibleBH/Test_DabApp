@@ -11,6 +11,8 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using FFImageLoading.Forms;
+using FFImageLoading.Forms.Droid;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using DABApp.Droid;
@@ -21,14 +23,9 @@ using Android.Views.Accessibility;
 [assembly: ExportRenderer(typeof(BackgroundImage), typeof(DabCachedImageRenderer))]
 namespace DABApp.Droid
 {
-    public class DabCachedImageRenderer : ImageRenderer
+    public class DabCachedImageRenderer : CachedImageRenderer
     {
-        //Come back to this
-        public DabCachedImageRenderer(Context context) : base(context)
-        {
-
-        }
-        protected override void OnElementChanged(ElementChangedEventArgs<Image> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<CachedImage> e)
         {
             base.OnElementChanged(e);
             if (Control != null)

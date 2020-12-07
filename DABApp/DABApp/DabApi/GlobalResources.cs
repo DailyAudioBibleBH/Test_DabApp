@@ -14,6 +14,7 @@ using DABApp.Service;
 using Xamarin.Essentials;
 using System.Security.Cryptography;
 using System.Text;
+using System.Globalization;
 
 namespace DABApp
 {
@@ -87,30 +88,28 @@ namespace DABApp
         }
 
         public static DateTime DabMinDate //The min date we use throughout the DAB app
-        {
-            get
+        {   get
             {
-                return new DateTime(2019, 12, 31).ToUniversalTime();
+                if (GlobalResources.Instance.IsLoggedIn)
+                {
+                    int registerYear = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered.Year;
+                    int episodeYear = ContentConfig.Instance.options.episode_year;
+                    int minYear = Math.Max(registerYear, episodeYear);
+                    //Go back one day to get January 1st episodes
+                    return new DateTime(minYear-1, 12, 31);
+                }
+                else
+                {
+                    int episodeYear = ContentConfig.Instance.options.episode_year;
+                    //Go back one day to get January 1st episodes
+                    return new DateTime(episodeYear-1, 12, 31);
+                }
             }
         }
 
         public static string APIVersion { get; set; } = "2";
 
         public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4OTk5NDcxOSwibmJmIjoxNTg5OTk0NzE5LCJleHAiOjE3NDc2NzQ3MTksImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.JCt2vuC2tSkyY2Y5YUFZK6DpQ9I_EoVt3KAUqrzQQ0A";
-
-        public static string CleanupJson(string json)
-        {
-            //clean up json strings
-
-
-            if (json.Contains("ZZ\\\"")) //clean up dates with double Z's for universal time.
-            {
-                Debug.WriteLine($"Cleaning up JSON with double Z's in UTC: {json}");
-                json = json.Replace("ZZ\\\"", "Z\\\"");
-            }
-            return json;
-        }
-
         public static readonly string StripeApiKey = "pk_live_O0E92mb0sHFrAD5JGBiU9fgK";
 
 
@@ -221,7 +220,7 @@ namespace DABApp
 
         static GlobalResources()
         {
-            Instance = new GlobalResources();
+             Instance = new GlobalResources();
         }
 
         public int FlowListViewColumns
@@ -235,7 +234,7 @@ namespace DABApp
             {
                 flowListViewColumns = value;
                 PropertyChanged(this, new PropertyChangedEventArgs("FlowListViewColumns"));
-            }
+            } 
         }
 
 
@@ -283,59 +282,24 @@ namespace DABApp
             }
         }
 
-        public static void SetDisplay()
-        {
-            var display = adb.Table<dbSettings>().Where(x => x.Key == "Display").FirstOrDefaultAsync().Result;
-            if (display != null)
-            {
-                if (display.Value == "LightMode")
-                {
-                    ExperimentalModeSettings.Instance.Display = "LightMode";
-                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#FFFFFF");
-                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#FFFFFF");
-                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#FFFFFF");
-                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#FFFFFF");
-                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#000000");
-                }
-                else if (display.Value == "DarkMode")
-                {
-                    ExperimentalModeSettings.Instance.Display = "DarkMode";
-                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
-                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
-                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
-                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
-                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
-                }
-                else
-                {
-                    ExperimentalModeSettings.Instance.Display = "System";
-                    App.Current.Resources["InputBackgroundColor"] = Color.FromHex("#444444");
-                    App.Current.Resources["PageBackgroundColor"] = Color.FromHex("#292929");
-                    App.Current.Resources["NavBarBackgroundColor"] = Color.FromHex("#383838");
-                    App.Current.Resources["SlideMenuBackgroundColor"] = Color.FromHex("#D5272E");
-                    App.Current.Resources["PlayerLabelColor"] = Color.FromHex("#FFFFFF");
-                }
-                adb.InsertOrReplaceAsync(display);
-            }
-        }
-
-        public static string GetUserWpId()
+        public static int GetUserWpId()
         {
             try
             {
 
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
-                    return dbSettings.GetSetting("WpId", "-1");
+                    int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
+                    return wpID;
                 }
                 else
                 {
-                    return "0"; //guest
+                    return 0; //guest
                 }
             }
             catch (Exception ex)
             {
-                return "-2"; //error
+                return -2; //error
             }
 
         }
@@ -343,7 +307,19 @@ namespace DABApp
         public static string GetUserName()
         {
             //friendly user name
-            return (dbSettings.GetSetting("FirstName", "") + " " + dbSettings.GetSetting("LastName", "")).Trim();
+            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
+        }
+
+        //Used to convert to a currency amount without dollar sign
+        public static string ToCurrency(double amount)
+        {
+            NumberFormatInfo nfi = CultureInfo.CurrentCulture.NumberFormat;
+            nfi = (NumberFormatInfo)nfi.Clone();
+
+            nfi.CurrencySymbol = "";
+            string newAmount = string.Format(nfi, "{0:c}", amount);
+
+            return newAmount;
         }
 
         //Handled LastEpisodeQueryDate_{ChannelId} with methods instead of fields so I take in ChannelId
@@ -390,24 +366,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
-                string BadgeProgressSettingsValue = dbSettings.GetSetting(settingsKey, "");
-                //dbSettings BadgeProgressSettings = adb.Table<dbSettings>().Where(x => x.Key == settingsKey).FirstOrDefaultAsync().Result;
-
-                if (BadgeProgressSettingsValue == "")
-                {
-                    DateTime progressDate = GlobalResources.DabMinDate.ToUniversalTime();
-                    dbSettings.StoreSetting(settingsKey, progressDate.ToString());
-                }
-                return DateTime.Parse(dbSettings.GetSetting(settingsKey, ""));
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ProgressDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"BadgeProgressDate-{dbSettings.GetSetting("Email", "")}";
-                string progressDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, progressDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ProgressDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 
@@ -416,17 +383,15 @@ namespace DABApp
         {
             get
             {
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
-                DateTime LastActionDate = DateTime.Parse(dbSettings.GetSetting(settingsKey, DabMinDate.ToString()));
-                return LastActionDate;
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ActionDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                string settingsKey = $"ActionDate-{dbSettings.GetSetting("Email", "")}";
-                string actionDate = value.ToString();
-                dbSettings.StoreSetting(settingsKey, actionDate);
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.ActionDate = value;
+                adb.InsertOrReplaceAsync(user);
             }
         }
 
@@ -445,7 +410,7 @@ namespace DABApp
 
             return dbSettings.GetSetting(k, "");
         }
-
+    
 
         public static void SetLastRefreshDate(int ChannelId)
         {
@@ -460,7 +425,7 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
-                string hash = CalculateMD5Hash(dbSettings.GetSetting("Email", ""));
+                string hash = CalculateMD5Hash(adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }
@@ -485,12 +450,9 @@ namespace DABApp
 
             return sBuilder.ToString();  // Return the hexadecimal string. 
         }
-
+        
         //Get or set Test Mode
         public static bool TestMode { get; set; }
-
-        //Get or set Experimental Mode
-        public static bool ExperimentMode { get; set; }
 
         //Return the base URL to give
         public static string GiveUrl
@@ -515,10 +477,25 @@ namespace DABApp
             }
         }
 
-        //public static void WaitStop()
-        //{
-        //    MessagingCenter.Send<string>("dabapp", "Wait_Stop");
-        //}
+        public static void WaitStart()
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", "Please Wait...");
+        }
+
+        public static void WaitStart(string message, bool ShowDismissButton)
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start_WithoutDismiss", message);
+        }
+
+        public static void WaitStart(string message)
+        {
+            MessagingCenter.Send<string, string>("dabapp", "Wait_Start", message);
+        }
+
+        public static void WaitStop()
+        {
+            MessagingCenter.Send<string>("dabapp", "Wait_Stop");
+        }
 
 
 
@@ -551,22 +528,11 @@ namespace DABApp
         public float AndroidDensity { get; set; }
 
         //Build an array of email destinations for various recording submissions
-        public List<PodcastEmail> PodcastEmails
-        {
-            get
-            {
-                var l = new List<PodcastEmail>();
-#if DEBUG
-                l.Add(new PodcastEmail() { Podcast = "C2IT Test", Email = "appalerts@c2itconsulting.net" });
-#endif
-                l.Add(new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com" });
-                l.Add(new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com" });
-                return l;
-            }
-            
-        }
-
-
+        public List<PodcastEmail> PodcastEmails { get; set; } = new List<PodcastEmail>()
+                {
+                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
+                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com; prayer_chronological@dailyaudiobible.com"}
+        };
 
         public static async void GoToRecordingPage()
         {

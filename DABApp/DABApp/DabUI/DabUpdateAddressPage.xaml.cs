@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabSockets;
-using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
 using SQLite;
 using Xamarin.Forms;
@@ -102,12 +101,12 @@ namespace DABApp
         {
             if (Validation())
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                GlobalResources.WaitStart();
                 var update = new Address();
                 update.first_name = FirstName.Text;
                 update.last_name = LastName.Text;
                 update.company = CompanyName.Text;
-                update.email = dbSettings.GetSetting("Email", "");
+                update.email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
                 update.phone = Phone.Text;
                 update.address_1 = Address1.Text;
                 update.address_2 = Address2.Text;
@@ -132,7 +131,7 @@ namespace DABApp
                     await Navigation.PopAsync();
                 }
 
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                GlobalResources.WaitStop();
             }
         }
 

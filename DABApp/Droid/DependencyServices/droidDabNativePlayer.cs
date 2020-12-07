@@ -2,31 +2,24 @@
 using Android.Content;
 using DABApp.DabAudio;
 using DABApp.Droid;
-using Xamarin.Forms;
 using Android.Support.V4.App;
-using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 using Android.OS;
 using Android.App;
 using Application = Android.App.Application;
-using Java.Lang;
-using Android.Content.Res;
 using Android.Media.Session;
 using Android.Support.V4.Media.Session;
-using Plugin.SimpleAudioPlayer;
 using System.IO;
 using Math = System.Math;
 using Android.Media;
-
-using DABApp.Droid.DependencyServices;
-using Android.Telephony;
-using Android.Runtime;
-using System.Drawing;
 using Android.Graphics;
+using Android.Support.V4.Media;
+using Xamarin.Forms;
+using Android.Support.V4.Content;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
 {
-    public class DroidDabNativePlayer : Java.Lang.Object, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
+    public class DroidDabNativePlayer : Android.App.Service, AudioManager.IOnAudioFocusChangeListener, IDabNativePlayer
     {
 
         //Based on Xamarin.Android documentation:
@@ -37,6 +30,10 @@ namespace DABApp.Droid
         static readonly string CHANNEL_ID = "location_notification";
         DabPlayer dabplayer;
         bool wasPlaying = false;
+        MediaSessionCompat mSession = new MediaSessionCompat(Application.Context, "MusicService");
+
+        public PlaybackStateCode State { get; set; }
+
 
         public DroidDabNativePlayer()
         {
@@ -73,7 +70,11 @@ namespace DABApp.Droid
                 case AudioFocus.Gain:
                     //Check to make sure it's not going to start playing an episode if they had already paused it before the interruption
                     if (wasPlaying == true)
+                    {
                         Play();
+                        State = PlaybackStateCode.Playing;
+                        UpdatePlaybackState(null);
+                    }
                     //Gain when other Music Player app releases the audio service   
                     break;
                 case AudioFocus.Loss:
@@ -83,6 +84,8 @@ namespace DABApp.Droid
                     else
                         wasPlaying = false;
                     Stop();
+                    State = PlaybackStateCode.Paused;
+                    UpdatePlaybackState(null);
                     break;
                 case AudioFocus.LossTransient:
                     //We have lost focus for a short time, but likely to resume so pause   
@@ -91,6 +94,8 @@ namespace DABApp.Droid
                     else
                         wasPlaying = false;
                     Pause();
+                    State = PlaybackStateCode.Paused;
+                    UpdatePlaybackState(null);
                     break;
                 case AudioFocus.LossTransientCanDuck:
                     //We have lost focus but should till play at a muted 10% volume   
@@ -121,11 +126,23 @@ namespace DABApp.Droid
             notificationManager.CreateNotificationChannel(channel);
         }
 
+        IBinder binder;
+
+        public override IBinder OnBind(Intent intent)
+        {
+            binder = new MediaPlayerServiceBinder();
+            return binder;
+        }
+
         public void Init(DabPlayer Player, bool IntegrateWithLockScreen)
         {
             dabplayer = Player;
-            var mSession = new MediaSessionCompat(Application.Context, "MusicService");
+            mSession.SetMetadata(
+                new MediaMetadataCompat.Builder()
+                    .Build()
+                );
             mSession.SetFlags(MediaSessionCompat.FlagHandlesMediaButtons | MediaSessionCompat.FlagHandlesTransportControls);
+
             var controller = mSession.Controller;
             var description = GlobalResources.playerPodcast;
 
@@ -158,6 +175,8 @@ namespace DABApp.Droid
                     PendingIntent previousPendingIntent =
                         PendingIntent.GetActivity(Application.Context, previousPendingIntentId, previousIntent, 0);
 
+                    int color = ContextCompat.GetColor(Application.Context, Resource.Color.dab_red);
+
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
                                   .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
@@ -169,7 +188,7 @@ namespace DABApp.Droid
                                   .SetVisibility(NotificationCompat.VisibilityPublic)
                                   .SetContentIntent(backToAppPendingIntent) // Start up this activity when the user clicks the intent.
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
-                                  .SetSmallIcon(Resource.Drawable.app_icon) // This is the icon to display
+                                  .SetSmallIcon(Resource.Drawable.AppIcon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
                                   .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
                                   .AddAction(Resource.Drawable.baseline_play_arrow_white_36, "Play or Pause", playPausePendingIntent)
@@ -177,11 +196,43 @@ namespace DABApp.Droid
                                   .SetShowWhen(false)
                                   .SetPriority((int)Android.App.NotificationPriority.Max)
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
-                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle);
+                                  .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle)
+                                  .SetColor(color)
+                                  .SetBadgeIconType(1);
 
                     // Finally, publish the notification:
                     var notificationManager = NotificationManagerCompat.From(Application.Context);
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
+
+                    mSession.Active = true;
+                    mSession.SetCallback(new MediaSessionCallback());
+
+                    //Building the lock screen
+                    MediaMetadataCompat.Builder lockBuilder = new MediaMetadataCompat.Builder()
+                            .PutString(MediaMetadata.MetadataKeyAlbum, GlobalResources.playerPodcast.ChannelTitle)
+                            .PutString(MediaMetadata.MetadataKeyArtist, GlobalResources.playerPodcast.EpisodeDescription)
+                            .PutString(MediaMetadata.MetadataKeyAlbumArtist, GlobalResources.playerPodcast.EpisodeDescription)
+                            .PutString(MediaMetadata.MetadataKeyTitle, GlobalResources.playerPodcast.EpisodeTitle);
+                            
+
+                    PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    .SetActions(
+                        PlaybackStateCompat.ActionPause |
+                        PlaybackStateCompat.ActionPlay |
+                        PlaybackStateCompat.ActionPlayPause |
+                        PlaybackStateCompat.ActionFastForward |
+                        PlaybackStateCompat.ActionRewind |
+                        PlaybackStateCompat.ActionStop
+                    )
+                    .SetState(PlaybackStateCompat.StatePlaying, player.CurrentPosition, 1.0f, SystemClock.ElapsedRealtime());
+
+                    mSession.SetPlaybackState(stateBuilder.Build());
+
+                    lockBuilder.PutBitmap(MediaMetadata.MetadataKeyAlbumArt, BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon));
+
+                    mSession.SetMetadata(lockBuilder.Build());
+
+
                 };
 
                 dabplayer.EpisodeProgressChanged += (object sender, EventArgs e) =>
@@ -317,23 +368,27 @@ namespace DABApp.Droid
                 //Go back to the beginning (don't start playing)... not sure what this is here for if if it ever gets hit.
                 Pause();
                 Seek(0);
+                State = PlaybackStateCode.Paused;
             }
             else if (player.CurrentPosition >= player.Duration)
             {
                 //Start over from the beginning if at the end of the file
                 player.Pause();
                 Seek(0);
+                State = PlaybackStateCode.Paused;
             }
             else
             {
                 //Play from where we're at
-
+                State = PlaybackStateCode.Playing;
             }
 
             if (RequestAudioFocus())
             {
                 player.Start();
+                State = PlaybackStateCode.Playing;
             }
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -346,6 +401,8 @@ namespace DABApp.Droid
 
             Pause();
             Seek(0);
+            State = PlaybackStateCode.Stopped;
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -354,6 +411,8 @@ namespace DABApp.Droid
         public void Pause()
         {
             player?.Pause();
+            State = PlaybackStateCode.Paused;
+            UpdatePlaybackState(null);
         }
 
         ///<Summary>
@@ -390,6 +449,8 @@ namespace DABApp.Droid
                 player.SeekTo(0);
                 player.Stop();
                 player.Prepare();
+                State = PlaybackStateCode.Stopped;
+                UpdatePlaybackState(null);
             }
         }
 
@@ -414,6 +475,40 @@ namespace DABApp.Droid
             Dispose(true);
 
             GC.SuppressFinalize(this);
+        }
+
+        void UpdatePlaybackState(string error)
+        {
+            var position = PlaybackState.PlaybackPositionUnknown;
+            if (player != null)
+            {
+                position = player.CurrentPosition;
+            }
+
+            PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    .SetActions(
+                        PlaybackStateCompat.ActionPause |
+                        PlaybackStateCompat.ActionPlay |
+                        PlaybackStateCompat.ActionPlayPause |
+                        PlaybackStateCompat.ActionFastForward |
+                        PlaybackStateCompat.ActionRewind |
+                        PlaybackStateCompat.ActionStop
+                    );
+
+            PlaybackStateCode state = State;
+
+            // If there is an error message, send it to the playback state:
+            if (error != null)
+            {
+                // Error states are really only supposed to be used for errors that cause playback to
+                // stop unexpectedly and persist until the user takes action to fix it.
+                stateBuilder.SetErrorMessage(error);
+                state = PlaybackStateCode.Error;
+            }
+
+            stateBuilder.SetState(Convert.ToInt32(state), position, 1.0f, SystemClock.ElapsedRealtime());
+            
+            mSession.SetPlaybackState(stateBuilder.Build());
         }
     }
 
@@ -526,6 +621,60 @@ namespace DABApp.Droid
             }
 
             Finish();
+        }
+    }
+
+    public class MediaSessionCallback : MediaSessionCompat.Callback
+    {
+        DabPlayer player = GlobalResources.playerPodcast;
+        private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder();
+        public MediaSessionCallback()
+        {
+        }
+
+        public override void OnPause()
+        {
+            mediaPlayerService.GetMediaPlayerService().Pause();
+            base.OnPause();
+        }
+
+        public override void OnPlay()
+        {
+            mediaPlayerService.GetMediaPlayerService().Play();
+            base.OnPlay();
+        }
+
+        public override void OnFastForward()
+        {
+            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition + 30);
+            base.OnFastForward();
+        }
+
+        public override void OnRewind()
+        {
+            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition - 30);
+            base.OnRewind();
+        }
+
+        public override void OnStop()
+        {
+            mediaPlayerService.GetMediaPlayerService().Stop();
+            base.OnStop();
+        }
+    }
+
+    public class MediaPlayerServiceBinder : Binder
+    {
+        private DabPlayer service;
+
+        public MediaPlayerServiceBinder()
+        {
+            this.service = GlobalResources.playerPodcast;
+        }
+
+        public DabPlayer GetMediaPlayerService()
+        {
+            return service;
         }
     }
 }

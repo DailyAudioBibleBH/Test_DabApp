@@ -235,14 +235,35 @@ namespace DABApp.DabSockets
         {
 
         }
-        public GraphQlUser(GraphQlUser user)
+        public GraphQlUser(GraphQlUser userData)
         {
-            this.id = user.id;
-            this.email = user.email;
-            this.firstName = user.firstName;
-            this.lastName = user.lastName;
-            this.language = user.language;
-            this.wpId = user.wpId;
+            this.id = userData.id;
+            this.wpId = userData.wpId;
+            this.firstName = userData.firstName;
+            this.lastName = userData.lastName;
+            this.nickname = userData.nickname;
+            this.email = userData.email;
+            this.language = userData.language;
+            this.channel = userData.channel;
+            this.channels = userData.channels;
+            this.userRegistered = userData.userRegistered;
+            this.token = userData.token;
+
+        }
+
+        public GraphQlUser(dbUserData userData)
+        {
+            this.id = userData.Id;
+            this.wpId = userData.WpId;
+            this.firstName = userData.FirstName;
+            this.lastName = userData.LastName;
+            this.nickname = userData.NickName;
+            this.email = userData.Email;
+            this.language = userData.Language;
+            this.channel = userData.Channel;
+            this.channels = userData.Channels;
+            this.userRegistered = userData.UserRegistered;
+            this.token = userData.Token;
         }
 
         public int id { get; set; }

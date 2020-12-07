@@ -19,6 +19,7 @@ namespace DABApp.DabAudio
     {
         public string ChannelTitle;
         public string EpisodeTitle;
+        public string EpisodeDescription;
         public double Duration;
         public double CurrentPosition;
 
@@ -27,6 +28,7 @@ namespace DABApp.DabAudio
             //Init the object with known values
             ChannelTitle = player.ChannelTitle;
             EpisodeTitle = player.EpisodeTitle;
+            EpisodeDescription = player.EpisodeDescription;
             Duration = player.Duration;
             CurrentPosition = player.CurrentPosition;
         }
@@ -39,6 +41,7 @@ namespace DABApp.DabAudio
         private IDabNativePlayer nativePlayer;
         private string _channelTitle = "";
         private string _episodeTitle = "";
+        private string _episodeDescription = "";
         private double _episodeDuration = 1; //Estimated duration of the episode
         private Timer timer = new Timer(500);
         private double LastPosition = 0;
@@ -125,7 +128,7 @@ namespace DABApp.DabAudio
                 {
                     return 0;
                 }
-
+                
             }
         }
 
@@ -282,6 +285,7 @@ namespace DABApp.DabAudio
 
                 //Load a specific episode (sets text properties as well
                 EpisodeTitle = episode.title;
+                EpisodeDescription = episode.description;
                 ChannelTitle = episode.channel_title;
 
                 OnEpisodeDataChanged(this, new DabPlayerEventArgs(this));
@@ -497,10 +501,6 @@ namespace DABApp.DabAudio
                     return false;
                 }
             }
-            set
-            {
-                OnPropertyChanged("IsReady");
-            }
         }
 
         public bool SwitchOutputs()
@@ -534,6 +534,19 @@ namespace DABApp.DabAudio
             {
                 _episodeTitle = value;
                 OnPropertyChanged("EpisodeTitle");
+            }
+        }
+
+        public string EpisodeDescription
+        {
+            get
+            {
+                return _episodeDescription;
+            }
+            set
+            {
+                _episodeDescription = value;
+                OnPropertyChanged("EpisodeDescription");
             }
         }
 

@@ -19,16 +19,12 @@ namespace DABApp.Droid
 
         public SQLiteConnection GetConnection(bool ResetDatabaseOnStart)
         {
-         
-
             var connection = new SQLiteConnection(GetDatabasePath(ResetDatabaseOnStart));
             return connection;
         }
 
         public SQLiteAsyncConnection GetAsyncConnection(bool ResetDatabaseOnStart)
         {
-
-
             var connection = new SQLiteAsyncConnection(GetDatabasePath(ResetDatabaseOnStart));
             return connection;
         }
@@ -71,9 +67,19 @@ namespace DABApp.Droid
                                     {
                                         var cn = new SQLiteConnection(fil.FullName);
                                         var settings = cn.Table<dbSettings>().ToList();
+                                        var userSettings = cn.Table<dbUserData>().ToList().FirstOrDefault();
                                         cn.Close();
                                         if (GlobalResources.SettingsToPreserve == null)
                                         {
+                                            //preserve settings from user table
+                                            settings.Add(new dbSettings() { Key = "WpId", Value = userSettings.WpId.ToString() });
+                                            settings.Add(new dbSettings() { Key = "FirstName", Value = userSettings.FirstName });
+                                            settings.Add(new dbSettings() { Key = "LastName", Value = userSettings.LastName });
+                                            settings.Add(new dbSettings() { Key = "Token", Value = userSettings.Token });
+                                            settings.Add(new dbSettings() { Key = "TokenCreation", Value = userSettings.TokenCreation.ToString() });
+                                            settings.Add(new dbSettings() { Key = "Email", Value = userSettings.Email });
+                                            settings.Add(new dbSettings() { Key = "UserRegistered", Value = userSettings.UserRegistered.ToString() });
+
                                             GlobalResources.SettingsToPreserve = new List<dbSettings>();
 
                                             //Loop through settings, choose some to preserve (add them to a list in global settings that will add them back if needed later)
@@ -81,14 +87,12 @@ namespace DABApp.Droid
                                             {
                                                 try
                                                 {
-
-
                                                     switch (s.Key)
                                                     {
                                                         case "ContentJSON":
                                                             GlobalResources.SettingsToPreserve.Add(s);
                                                             break;
-                                                        case "data":
+                                                        case "data": 
                                                             GlobalResources.SettingsToPreserve.Add(s);
                                                             break;
                                                         case "AvailableOffline":
@@ -97,7 +101,7 @@ namespace DABApp.Droid
                                                         case "OfflineEpisodes":
                                                             GlobalResources.SettingsToPreserve.Add(s);
                                                             break;
-                                                        case "Token":
+                                                        case "Token": //
                                                             GlobalResources.SettingsToPreserve.Add(s);
                                                             break;
                                                         case "TokenExpiration":
@@ -141,6 +145,8 @@ namespace DABApp.Droid
                                                 }
                                             }
                                         }
+                                        var test = GlobalResources.SettingsToPreserve;
+
                                         break;
 
                                     }

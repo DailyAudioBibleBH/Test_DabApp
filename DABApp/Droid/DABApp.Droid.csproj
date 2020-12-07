@@ -71,6 +71,22 @@
     <Reference Include="EngineIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EngineIoClientDotNet.1.0.5\lib\netstandard1.3\EngineIoClientDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="FFImageLoading, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.25\lib\MonoAndroid10\FFImageLoading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FFImageLoading.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.25\lib\MonoAndroid10\FFImageLoading.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FFImageLoading.Forms.Droid, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.Forms.2.2.25\lib\MonoAndroid10\FFImageLoading.Forms.Droid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FFImageLoading.Platform, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.2.25\lib\MonoAndroid10\FFImageLoading.Platform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Html2Markdown, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Html2Markdown.3.0.0.223\lib\netstandard1.4\Html2Markdown.dll</HintPath>
       <Private>True</Private>
@@ -79,6 +95,7 @@
       <HintPath>..\packages\HtmlAgilityPack.NetCore.1.5.0.1\lib\netstandard1.3\HtmlAgilityPack.NetCore.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Java.Interop" />
     <Reference Include="Microsoft.AppCenter, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AppCenter.2.6.4\lib\MonoAndroid403\Microsoft.AppCenter.dll</HintPath>
     </Reference>
@@ -113,6 +130,9 @@
       <HintPath>..\packages\Xam.Plugin.Connectivity.3.0.2\lib\MonoAndroid10\Plugin.Connectivity.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Plugin.CurrentActivity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Plugin.CurrentActivity.2.1.0.4\lib\monoandroid44\Plugin.CurrentActivity.dll</HintPath>
+    </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -120,15 +140,6 @@
     <Reference Include="SegmentedControl.FormsPlugin.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.1.3.4\lib\MonoAndroid\SegmentedControl.FormsPlugin.Android.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="SkiaSharp, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkiaSharp.1.68.0\lib\MonoAndroid\SkiaSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SkiaSharp.Views.Android, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkiaSharp.Views.1.68.0\lib\MonoAndroid\SkiaSharp.Views.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="SkiaSharp.Views.Forms, Version=1.68.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkiaSharp.Views.Forms.1.68.0\lib\MonoAndroid\SkiaSharp.Views.Forms.dll</HintPath>
     </Reference>
     <Reference Include="SocketIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SocketIoClientDotNet.1.0.5\lib\netstandard1.3\SocketIoClientDotNet.dll</HintPath>
@@ -193,90 +204,6 @@
     <Reference Include="TEditor.Abstractions, Version=1.0.6394.28695, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TEditor.1.0.1\lib\MonoAndroid10\TEditor.Abstractions.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Telerik.Documents.Core, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Fixed, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Fixed.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Flow, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Flow.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Flow.FormatProviders.Pdf, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Flow.FormatProviders.Pdf.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Spreadsheet.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.OpenXml, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.Pdf, Version=2020.2.615.20, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.Spreadsheet.FormatProviders.Pdf.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.SpreadsheetStreaming, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.Chart, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.Chart.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.Common, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.Data, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.Input, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.List, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.List.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.Android.Primitives, Version=2020.2.624.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Xamarin.Android.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Barcode, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Barcode.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Chart, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Chart.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Common, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.ConversationalUI, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.ConversationalUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataControls, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.DataControls.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataGrid, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataVisualization, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.DataVisualization.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.ImageEditor, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.ImageEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Input, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Map, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Map.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.PdfViewer, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.PdfViewer.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Primitives, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.SkiaSharp, Version=2020.2.624.410, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Zip, Version=2020.2.615.20, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\MonoAndroid10\Telerik.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Version.Plugin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.Version.1.0.0.0\lib\MonoAndroid10\Version.Plugin.dll</HintPath>
@@ -460,7 +387,6 @@
     <Compile Include="DabApi\FileManagement.cs" />
     <Compile Include="DabApi\StripeApiManagement.cs" />
     <Compile Include="DependencyServices\RivetsService.cs" />
-    <Compile Include="DependencyServices\ShareIntent.cs" />
     <Compile Include="DabAudio\DabMediaNotificationManager.cs" />
     <Compile Include="DependencyServices\droidDabNativePlayer.cs" />
     <Compile Include="CustomRenderers\DabAndroidAchievementsProgressBarRenderer.cs" />
@@ -600,6 +526,15 @@
     <AndroidResource Include="Resources\drawable-hdpi\ic_check_box_outline_blank_white_3x.png" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\progress_done.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\progress_pending.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable-hdpi\ic_keyboard_arrow_down_black.png" />
   </ItemGroup>
   <ItemGroup>
@@ -702,21 +637,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\circle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\OldandNewTestamentDark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\EntireBibleDark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\OldTestamentCompleteDark1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\EntireBibleCompleteDark1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\cloud_teal.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.2.3.4.270\build\portable-win+net45+wp80+win81+wpa81+MonoAndroid10+Xamarin.iOS10+xamarinmac20\Xamarin.Forms.targets')" />

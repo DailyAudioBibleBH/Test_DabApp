@@ -25,28 +25,10 @@
                 </local:NonScrollingListView.ItemTemplate>
             </local:NonScrollingListView>
             <BoxView HeightRequest="2" HorizontalOptions="FillAndExpand"  BackgroundColor="#FFFFFF" Opacity=".27" Color="#FFFFFF"/>
-            <Label TextColor="#FFFFFF" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/>
+            <Label TextColor="#FFFFFF" Opacity=".5" HorizontalOptions="Center" x:Name="lblVersion" FontSize="Micro"/> 
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand" Padding="0,10,0,10">
-                <StackLayout>
-                    <Frame CornerRadius="13.5" 
-                           HeightRequest="27"
-                           WidthRequest="27"
-                           HorizontalOptions="Center"
-                           Padding="0"
-                           IsClippedToBounds="True">
-                        <Image 
-                        x:Name="Avatar" Aspect="AspectFit" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}" HorizontalOptions="Start" VerticalOptions="Center" HeightRequest="35" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}">
-                            <Image.Source>
-                                <UriImageSource 
-                                Uri="{Binding Source={x:Static local:GuestStatus.Current}, Path=AvatarUrl}"
-                                CacheValidity="{x:Static local:GlobalResources.ImageCacheValidity}"
-			                    CachingEnabled="true"/>
-                            </Image.Source>
-                        </Image>
-                    </Frame>
-                </StackLayout>
-                
-                <Button x:Name="SignUp" Text="Login or Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"></Button>
+                <local:ImageCircle x:Name="Avatar" Aspect="AspectFit" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin, Converter={StaticResource inverter}}" HorizontalOptions="Start" VerticalOptions="Center" HeightRequest="35" CacheDuration="{x:Static local:GlobalResources.ImageCacheValidity}" Source="{Binding Source={x:Static local:GuestStatus.Current}, Path=AvatarUrl}" AutomationProperties.IsInAccessibleTree="true" AutomationProperties.Name="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"/>
+                <Button x:Name="SignUp" Text="Login or Sign up »" Clicked="OnSignUp" IsVisible="{Binding Source={x:Static local:GuestStatus.Current}, Path=IsGuestLogin}" BorderColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="Small"  TextColor="White" FontAttributes="Bold" AutomationProperties.IsInAccessibleTree="true"/>
                 <Label x:Name="UserName"
                        Text="{Binding Source={x:Static local:GuestStatus.Current}, Path=UserName}"
                        TextColor="White" 
