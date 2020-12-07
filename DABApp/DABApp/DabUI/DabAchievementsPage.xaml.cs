@@ -20,7 +20,7 @@ namespace DABApp
 		public int variable = 1;
         List<dbBadges> dbBadgeList;
         List<dbUserBadgeProgress> dbBadgeProgressList;
-        string userName;
+        string userName = "";
 		int progressDuration;
 
 
@@ -36,7 +36,7 @@ namespace DABApp
 			//Connection to db
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-			string userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+			userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
 			banner.Source = new UriImageSource
 			{
