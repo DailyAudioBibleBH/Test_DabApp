@@ -123,7 +123,7 @@ namespace DABApp
             }
 
             //get the rull list of episodes for the resource
-            Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
             //Update year list
             if (Years.Items.Contains("All Episodes") == false)

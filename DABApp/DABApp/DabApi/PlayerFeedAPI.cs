@@ -25,9 +25,9 @@ namespace DABApp
         static bool ResumeNotSet = true;
         public static event EventHandler<DabEventArgs> MakeProgressVisible;
 
-        public async static Task<IEnumerable<dbEpisodes>> GetEpisodeList(Resource resource)
+        public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
         {
-            dbChannels channel = await adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync();
+            dbChannels channel = adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
             List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
             DateTime beginEpisodeDate = GlobalResources.DabMinDate;
 

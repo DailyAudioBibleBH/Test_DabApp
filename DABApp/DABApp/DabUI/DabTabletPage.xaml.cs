@@ -73,7 +73,7 @@ namespace DABApp
             _resource = resource;
             backgroundImage = _resource.images.backgroundTablet;
             BackgroundImage.Source = backgroundImage;
-            Episodes = (IEnumerable<dbEpisodes>)PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
+            Episodes = PlayerFeedAPI.GetEpisodeList(_resource); //Get episodes for selected channel
 
             if (Years.Items.Contains("All Episodes") == false)
             {
@@ -756,7 +756,7 @@ namespace DABApp
 
 
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
-                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
+                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
 
                 await Refresh(EpisodeRefreshType.FullRefresh);
 
@@ -957,7 +957,7 @@ namespace DABApp
             List<string> emptyList = new List<string>();
 
             //Load the episode list
-            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Result.Count() > 0)
+            if (CrossConnectivity.Current.IsConnected || PlayerFeedAPI.GetEpisodeList((Resource)ChannelsList.SelectedItem).Count() > 0)
             {
                 //Store the resource / channel
                 _resource = (Resource)ChannelsList.SelectedItem;
@@ -970,7 +970,7 @@ namespace DABApp
                 var result = await DabServiceRoutines.GetEpisodes(_resource.id);
 
                 //Load the list if episodes for the channel.
-                Episodes = await PlayerFeedAPI.GetEpisodeList(_resource);
+                Episodes = PlayerFeedAPI.GetEpisodeList(_resource);
                 TimedActions();
 
                 DabUserInteractionEvents.WaitStopped(source, new EventArgs());
