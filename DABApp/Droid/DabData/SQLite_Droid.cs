@@ -71,14 +71,20 @@ namespace DABApp.Droid
                                         cn.Close();
                                         if (GlobalResources.SettingsToPreserve == null)
                                         {
-                                            //preserve settings from user table
-                                            settings.Add(new dbSettings() { Key = "WpId", Value = userSettings.WpId.ToString() });
-                                            settings.Add(new dbSettings() { Key = "FirstName", Value = userSettings.FirstName });
-                                            settings.Add(new dbSettings() { Key = "LastName", Value = userSettings.LastName });
-                                            settings.Add(new dbSettings() { Key = "Token", Value = userSettings.Token });
-                                            settings.Add(new dbSettings() { Key = "TokenCreation", Value = userSettings.TokenCreation.ToString() });
-                                            settings.Add(new dbSettings() { Key = "Email", Value = userSettings.Email });
-                                            settings.Add(new dbSettings() { Key = "UserRegistered", Value = userSettings.UserRegistered.ToString() });
+                                            //if user table info is empty then nothing to save either way 
+                                            //or updating from previous version and user data is already in
+                                            //dbSettings so make sure not to overright. 
+                                            if (!string.IsNullOrEmpty(userSettings.Email))
+                                            {
+                                                //preserve user settings
+                                                settings.Add(new dbSettings() { Key = "WpId", Value = userSettings.WpId.ToString() });
+                                                settings.Add(new dbSettings() { Key = "FirstName", Value = userSettings.FirstName });
+                                                settings.Add(new dbSettings() { Key = "LastName", Value = userSettings.LastName });
+                                                settings.Add(new dbSettings() { Key = "Token", Value = userSettings.Token });
+                                                settings.Add(new dbSettings() { Key = "TokenCreation", Value = userSettings.TokenCreation.ToString() });
+                                                settings.Add(new dbSettings() { Key = "Email", Value = userSettings.Email });
+                                                settings.Add(new dbSettings() { Key = "UserRegistered", Value = userSettings.UserRegistered.ToString() });
+                                            }
 
                                             GlobalResources.SettingsToPreserve = new List<dbSettings>();
 
