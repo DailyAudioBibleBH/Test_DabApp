@@ -942,7 +942,7 @@ namespace DABApp
             DabUserInteractionEvents.WaitStopped(source, new EventArgs());
         }
 
-        public void OnMonthSelected(object o, EventArgs e)
+        public void OnYearSelected(object o, EventArgs e)
         {
             TimedActions();
         }
