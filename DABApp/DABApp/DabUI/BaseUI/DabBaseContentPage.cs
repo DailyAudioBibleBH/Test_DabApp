@@ -37,7 +37,7 @@ namespace DABApp
             }
             else if (GlobalResources.ExperimentMode)
             {
-                Title = "*** EXPERIMENT ***";
+                Title = "*** EXPERIMENTAL MODE ***";
             }
             else
             {
