@@ -38,6 +38,8 @@ namespace DABApp
 
 			userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
 
+			progressDuration = ContentConfig.Instance.options.new_progress_duration;
+
 			banner.Source = new UriImageSource
 			{
 				Uri = new Uri((Device.Idiom == TargetIdiom.Phone ? contentView.banner.urlPhone : contentView.banner.urlTablet)),
