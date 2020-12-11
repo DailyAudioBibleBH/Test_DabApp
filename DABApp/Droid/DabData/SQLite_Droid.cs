@@ -35,6 +35,7 @@ namespace DABApp.Droid
             //var filename = "DabSQLite.db3";
             bool hasUserTable = false;
             List<dbUserData> userSettings;
+            dbUserData user = new dbUserData();
             var filename = $"database.{GlobalResources.DBVersion}.db3";
             string folder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             var path = Path.Combine(folder, filename);
@@ -73,6 +74,7 @@ namespace DABApp.Droid
                                         {
                                             //depending on app version user may not have this table
                                             userSettings = cn.Table<dbUserData>().ToList();
+                                            user = cn.Table<dbUserData>().ToList().FirstOrDefault();
                                             hasUserTable = true;
                                         }
                                         catch (Exception ex)
@@ -88,7 +90,6 @@ namespace DABApp.Droid
                                             //dbSettings so make sure not to overright.
                                             if (hasUserTable)
                                             {
-                                                var user = cn.Table<dbUserData>().ToList().FirstOrDefault();
                                                 if (!string.IsNullOrEmpty(user.Email))
                                                 {
                                                     //preserve user settings

@@ -33,6 +33,7 @@ namespace DABApp.iOS
         {
             bool hasUserTable = false;
             List<dbUserData> userSettings;
+            dbUserData user = new dbUserData();
             //Build the path for storing the Android database
             //var sqliteFilename = "database.db3";
             var sqliteFilename = $"database.{GlobalResources.DBVersion}.db3";
@@ -74,6 +75,7 @@ namespace DABApp.iOS
                                         {
                                             //depending on app version user may not have this table
                                             userSettings = cn.Table<dbUserData>().ToList();
+                                            user = cn.Table<dbUserData>().ToList().FirstOrDefault();
                                             hasUserTable = true;
                                         }
                                         catch (Exception ex)
@@ -89,7 +91,6 @@ namespace DABApp.iOS
                                             //dbSettings so make sure not to overright.
                                             if (hasUserTable)
                                             {
-                                                var user = cn.Table<dbUserData>().ToList().FirstOrDefault();
                                                 if (!string.IsNullOrEmpty(user.Email))
                                                 {
                                                     //preserve user settings
