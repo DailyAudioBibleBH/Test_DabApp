@@ -31,6 +31,9 @@ namespace DABApp.iOS
 
         private string GetDatabasePath(bool ResetDatabaseOnStart)
         {
+            bool hasUserTable = false;
+            List<dbUserData> userSettings;
+            dbUserData user = new dbUserData();
             //Build the path for storing the Android database
             //var sqliteFilename = "database.db3";
             var sqliteFilename = $"database.{GlobalResources.DBVersion}.db3";
@@ -68,24 +71,39 @@ namespace DABApp.iOS
                                     {
                                         var cn = new SQLiteConnection(fil.FullName);
                                         var settings = cn.Table<dbSettings>().ToList();
-                                        var userSettings = cn.Table<dbUserData>().ToList().FirstOrDefault();
+                                        try
+                                        {
+                                            //depending on app version user may not have this table
+                                            userSettings = cn.Table<dbUserData>().ToList();
+                                            user = cn.Table<dbUserData>().ToList().FirstOrDefault();
+                                            hasUserTable = true;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            hasUserTable = false;
+                                        }
+                                        
                                         cn.Close();
                                         if (GlobalResources.SettingsToPreserve == null)
                                         {
                                             //if user table info is empty then nothing to save either way 
                                             //or updating from previous version and user data is already in
-                                            //dbSettings so make sure not to overright. 
-                                            if (!string.IsNullOrEmpty(userSettings.Email))
+                                            //dbSettings so make sure not to overright.
+                                            if (hasUserTable)
                                             {
-                                                //preserve user settings
-                                                settings.Add(new dbSettings() { Key = "WpId", Value = userSettings.WpId.ToString() });
-                                                settings.Add(new dbSettings() { Key = "FirstName", Value = userSettings.FirstName });
-                                                settings.Add(new dbSettings() { Key = "LastName", Value = userSettings.LastName });
-                                                settings.Add(new dbSettings() { Key = "Token", Value = userSettings.Token });
-                                                settings.Add(new dbSettings() { Key = "TokenCreation", Value = userSettings.TokenCreation.ToString() });
-                                                settings.Add(new dbSettings() { Key = "Email", Value = userSettings.Email });
-                                                settings.Add(new dbSettings() { Key = "UserRegistered", Value = userSettings.UserRegistered.ToString() });
+                                                if (!string.IsNullOrEmpty(user.Email))
+                                                {
+                                                    //preserve user settings
+                                                    settings.Add(new dbSettings() { Key = "WpId", Value = user.WpId.ToString() });
+                                                    settings.Add(new dbSettings() { Key = "FirstName", Value = user.FirstName });
+                                                    settings.Add(new dbSettings() { Key = "LastName", Value = user.LastName });
+                                                    settings.Add(new dbSettings() { Key = "Token", Value = user.Token });
+                                                    settings.Add(new dbSettings() { Key = "TokenCreation", Value = user.TokenCreation.ToString() });
+                                                    settings.Add(new dbSettings() { Key = "Email", Value = user.Email });
+                                                    settings.Add(new dbSettings() { Key = "UserRegistered", Value = user.UserRegistered.ToString() });
+                                                }
                                             }
+                                            
 
                                             GlobalResources.SettingsToPreserve = new List<dbSettings>();
 
