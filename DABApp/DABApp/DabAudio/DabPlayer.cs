@@ -359,7 +359,11 @@ namespace DABApp.DabAudio
         {
             try
             {
+                LastPosition = nativePlayer.CurrentPosition;
                 nativePlayer.Seek(position);
+                OnPropertyChanged("CurrentPosition");
+                OnPropertyChanged("RemainingSeconds");
+                OnPropertyChanged("CurrentProgressPercentage");
             }
             catch (Exception ex)
             {
