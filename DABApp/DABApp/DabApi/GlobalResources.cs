@@ -578,7 +578,7 @@ namespace DABApp
             #if DEBUG
                     new PodcastEmail() { Podcast = "C2IT Test", Email = "appalerts@c2itconsulting.net;chet@chetcromer.com" },
             #endif
-                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "pr ayerapp@dailyaudiobible.com"},
+                    new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com;prayer_chronological@dailyaudiobible.com"}
         };
 
