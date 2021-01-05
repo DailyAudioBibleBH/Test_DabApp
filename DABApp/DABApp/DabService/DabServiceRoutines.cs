@@ -90,6 +90,8 @@ namespace DABApp.Service
 
                     //get badge progress tied to user
                     await GetUserBadgesProgress();
+
+                    await GetUpdatedCreditCards();
                 }
 
                 return true;
@@ -586,6 +588,18 @@ namespace DABApp.Service
 
         #endregion
 
+        #region Credit Card Routines
+
+        public static async Task GetUpdatedCreditCards()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserCreditCardUpdateDate;
+
+            var qlll = await DabService.GetUsersUpdatedCreditCards(LastDate);
+        }
+
+        #endregion
+
         #region Badge and Progress Routines
 
         public static async Task GetUserBadgesProgress()
@@ -686,7 +700,6 @@ namespace DABApp.Service
                 {
                     progress.percent = 1;
                 }
-
 
                 if (badgeData == null)
                 {

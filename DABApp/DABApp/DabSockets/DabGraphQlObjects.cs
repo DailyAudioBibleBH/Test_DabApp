@@ -90,6 +90,12 @@ namespace DABApp.DabSockets
         public bool checkEmail { get; set; }
         public List<DabGraphQlAddress> addresses { get; set; }
         public DabGraphQlAddress updateUserAddress { get; set; }
+        public DabGraphQlCreditCard updatedCreditCards { get; set; }
+    }
+
+    public class DabGraphQlCreditCard
+    {
+        public int wpId { get; set; }
     }
 
     public class DabGraphQlAddress

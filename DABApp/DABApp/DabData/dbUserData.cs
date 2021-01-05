@@ -23,5 +23,6 @@ namespace DABApp
         public DateTime TokenCreation { get; set; }
         public DateTime ProgressDate { get; set; }
         public DateTime ActionDate { get; set; }
+        public DateTime CreditCardUpdateDate { get; set; }
     }
 }

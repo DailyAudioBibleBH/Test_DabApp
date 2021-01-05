@@ -31,7 +31,8 @@ namespace DABApp.Service
         GetAddresses,
         UpdateUserAddress,
         SeeProgress,
-        GetBadgeProgresses
+        GetBadgeProgresses,
+        GetCreditCardProgresses
     }
 
     public class DabServiceWaitService
@@ -162,6 +163,14 @@ namespace DABApp.Service
 
                     case DabServiceWaitTypes.GetBadgeProgresses:
                         if (response?.payload?.data?.updatedProgress != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetCreditCardProgresses:
+                        if (response?.payload?.data?.updatedCreditCards != null)
                         {
                             _qlObject = response;
                             _waiting = false;

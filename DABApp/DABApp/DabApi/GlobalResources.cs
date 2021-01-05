@@ -434,6 +434,23 @@ namespace DABApp
             }
         }
 
+        public static DateTime UserCreditCardUpdateDate
+        {
+            get
+            {
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.CreditCardUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.CreditCardUpdateDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
         public static DateTime LastActionDate
         //Last action check date in GMT (get/set universal time)
         {
