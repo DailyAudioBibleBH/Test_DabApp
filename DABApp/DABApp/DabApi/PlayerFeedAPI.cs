@@ -18,7 +18,6 @@ namespace DABApp
 {
     public class PlayerFeedAPI
     {
-
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
         public static bool DownloadIsRunning = false;
         static bool CleanupIsRunning = false;
@@ -35,58 +34,41 @@ namespace DABApp
             if (GuestStatus.Current.IsGuestLogin)
             {
                 DateTime startDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
-                DateTime todaysDate = DateTime.Now.Date.AddDays(30);
-                int bufferLength = channel.bufferLength;
-                int bufferPeriod = channel.bufferPeriod;
+                DateTime todaysDate = DateTime.Now.Date;
+                int bufferLength = 90;//channel.bufferLength;
+                int bufferPeriod = 7;// channel.bufferPeriod;
 
-                //if after start date
-                if (todaysDate.CompareTo(startDate) >= 0)
+                bool bufferMet = false;
+                //check if within buffer period
+                if (startDate.AddDays(bufferPeriod) <= todaysDate)
                 {
-                    bool bufferMet = false;
-                    //if after buffer period
-                    if (startDate.AddDays(bufferPeriod).CompareTo(todaysDate) <= 0)
+                    bufferMet = true;
+                }
+                //if within buffer period adjust buffer length
+                if (bufferMet)
+                {
+                    int differenceInDays = Convert.ToInt32((todaysDate - startDate.AddDays(bufferPeriod)).TotalDays);
+                    bufferLength = bufferLength - differenceInDays;
+                    //if starts taking from episodes into the new year, adjust to 0
+                    if (bufferLength < 0)
                     {
-                        bufferMet = true;
-                    }
-                    //if after buffer period find difference of todays date and start date and adjust buffer length
-                    if (bufferMet == true)
-                    {
-                        int difDays = Convert.ToInt32((todaysDate - startDate).TotalDays);
-                        bufferLength = bufferLength - difDays;
-                        if (bufferLength < 0)
-                        {
-                            bufferLength = 0;
-                        }
-                        //if not within buffer period keep buffer length the same.
-                        DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
-                        return episodesTable.Where(x => x.PubDate.CompareTo(startRolloverDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
-                    }
-                    else
-                    {
-                        return episodesTable.Where(x => x.PubDate.CompareTo(startDate.AddYears(-1)) >= 0).OrderByDescending(x => x.PubDate).ToList();
+                        bufferLength = 0;
                     }
 
+                    startDate = startDate.AddDays(-bufferLength);
                 }
                 else
                 {
-                    return episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
+                    //Need to find out what to do if buffer is not met
+                    startDate = startDate.AddDays(-bufferLength);
                 }
-                //DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
-                //DateTime stopImpactDate = startDate.AddDays(bufferPeriod);
 
-                ////if today is within buffer period
-                //if (todaysDate.CompareTo(startDate) >= 0 && todaysDate.CompareTo(stopImpactDate) <= 0)
-                //{
-                //    return episodesTable.Where(x => x.PubDate.CompareTo(startRolloverDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
-                //}
-                //else
-                //{
-                //    return episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
-                //}
+                return episodesTable.Where(x => x.PubDate.CompareTo(startDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
             }
-
-
-            return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
+            else
+            {
+                return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
+            }
         }
 
         public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource)

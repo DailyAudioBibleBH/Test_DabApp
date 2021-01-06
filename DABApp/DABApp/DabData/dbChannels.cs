@@ -14,6 +14,7 @@ namespace DABApp
         [Indexed]
         public string title { get; set; }
         public string imageURL { get; set; }
+        public int rolloverYear { get; set; }
         public int rolloverMonth { get; set; }
         public int rolloverDay { get; set; }
         public int bufferPeriod { get; set; }
