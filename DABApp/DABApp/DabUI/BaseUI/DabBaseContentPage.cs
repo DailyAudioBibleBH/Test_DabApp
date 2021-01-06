@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DABApp.Service;
 using DABApp.DabUI.BaseUI;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -241,15 +242,20 @@ namespace DABApp
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
+                        DependencyService.Get<IAnalyticsService>().LogEvent("guest_give");
                         if (CrossConnectivity.Current.IsConnected)
                         {
-                            var choice = await DisplayAlert("Login Required", "You must be logged in to use this feature.", "Login", "Cancel");
-                            if (choice)
+                            try
                             {
-                                GlobalResources.LogoffAndResetApp();
+                                await Browser.OpenAsync(GlobalResources.GiveUrl, BrowserLaunchMode.SystemPreferred);
+                            }
+                            catch (Exception ex)
+                            {
+                                // An unexpected error occured. No browser may be installed on the device.
                             }
                         }
-                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
+                        else await DisplayAlert("An Internet connection is needed to give.", "There is a problem with your internet connection that would prevent you from giving.  Please check your internet connection and try again.", "OK");
+                        //else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
                     else
                     {

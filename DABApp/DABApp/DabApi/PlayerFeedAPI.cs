@@ -35,8 +35,8 @@ namespace DABApp
             {
                 DateTime startDate = new DateTime(DateTime.Now.Year, channel.rolloverMonth, channel.rolloverDay);
                 DateTime todaysDate = DateTime.Now.Date;
-                int bufferLength = 90;//channel.bufferLength;
-                int bufferPeriod = 7;// channel.bufferPeriod;
+                int bufferLength = channel.bufferLength;
+                int bufferPeriod = channel.bufferPeriod;
 
                 bool bufferMet = false;
                 //check if within buffer period
@@ -59,7 +59,7 @@ namespace DABApp
                 }
                 else
                 {
-                    //Need to find out what to do if buffer is not met
+                    //if start date not met subtract buffer from start date
                     startDate = startDate.AddDays(-bufferLength);
                 }
 
