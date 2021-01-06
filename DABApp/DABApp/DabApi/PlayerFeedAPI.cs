@@ -38,12 +38,28 @@ namespace DABApp
                 DateTime todaysDate = DateTime.Now.Date;
                 int bufferLength = channel.bufferLength;
                 int bufferPeriod = channel.bufferPeriod;
-                DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
-                DateTime stopImpactDate = startDate.AddDays(bufferPeriod);
 
-                //if today is within buffer period
-                if (todaysDate.CompareTo(startDate) >= 0 && todaysDate.CompareTo(stopImpactDate) <= 0)
+                //if after start date
+                if (todaysDate.CompareTo(startDate) >= 0)
                 {
+                    bool bufferMet = false;
+                    //if after buffer period
+                    if (startDate.AddDays(bufferPeriod).CompareTo(todaysDate) >= 0)
+                    {
+                        bufferMet = true;
+                    }
+                    //if after buffer period find difference of todays date and start date and adjust buffer length
+                    if (bufferMet == true)
+                    {
+                        int difDays = Convert.ToInt32((todaysDate - startDate).TotalDays);
+                        bufferLength = bufferLength - difDays;
+                        if (bufferLength < 0)
+                        {
+                            bufferLength = 0;
+                        }
+                    }
+                    //if not within buffer period keep buffer length the same.
+                    DateTime startRolloverDate = todaysDate.AddDays(-bufferLength);
                     return episodesTable.Where(x => x.PubDate.CompareTo(startRolloverDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
                 }
                 else
@@ -52,6 +68,7 @@ namespace DABApp
                 }
             }
 
+            //if not guest return dabmin date for episodes
             return episodesTable.Where(x => x.PubDate.CompareTo(beginEpisodeDate) >= 0).OrderByDescending(x => x.PubDate).ToList();
         }
 
