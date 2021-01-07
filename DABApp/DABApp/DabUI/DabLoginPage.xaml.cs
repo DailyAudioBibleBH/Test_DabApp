@@ -233,6 +233,7 @@ namespace DABApp
                 //Stop the podcast player before continuing
                 GlobalResources.playerPodcast.Stop();
             }
+            Password.Focus();
             TapNumber = 0;
 
             //Take action based on the mode of the app

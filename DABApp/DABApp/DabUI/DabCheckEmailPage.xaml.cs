@@ -51,8 +51,16 @@ namespace DABApp
         {
             /* Handles when they click next to continue with an email address
              */
+
+
             if (!NextHit)
             {
+                if (Email.Text.Trim() == "")
+                {
+                    await DisplayAlert("Email Address Required", "Please enter the email address tied to your DailyAudioBible.com account. If you do not yet have an account, enter your email address here and we will help you set one up.'", "OK");
+                    return;
+                }
+
                 NextHit = true;
                 DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
                 //check for existing/new email
@@ -156,6 +164,8 @@ namespace DABApp
              */
 
             base.OnAppearing();
+            Email.Focus();
+
 
             if (hasAppeared == false)
             {

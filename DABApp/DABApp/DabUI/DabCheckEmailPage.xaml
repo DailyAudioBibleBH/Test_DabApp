@@ -2,15 +2,15 @@
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabCheckEmailPage"
 	xmlns:local="clr-namespace:DABApp" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls">
     <ContentPage.Content>
-        <StackLayout x:Name="Container" Padding="10" Spacing="5">
+        <StackLayout x:Name="Container" Padding="30" Spacing="5">
             <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png">
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnTest"/>
                 </Image.GestureRecognizers>
             </Image>
             <Frame/>
-            <Label Text="To log in please use your dailyaudiobible.com account. If you do not have a dailyaudiobible.com account you can create one below." FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
-            <controls:CustomEntry x:Name="Email" VerticalOptions="Center" Margin="0, 10, 0, 10" Unfocused="OnNext"  Keyboard="Email" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+            <Label Text="Please enter the email address tied to your DailyAudioBible.com account. If you do not yet have an account, enter your email address here and we will help you set one up." FontSize="Small" VerticalOptions="End" AutomationProperties.IsInAccessibleTree="true"/>
+            <controls:CustomEntry x:Name="Email" VerticalOptions="Center" Margin="0, 10, 0, 10" Completed="OnNext"  Keyboard="Email" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
             <Button x:Name="NextButton" Margin="0, 0, 0, 10" HeightRequest="40" WidthRequest="120" Text="Next" Clicked="OnNext"  Style="{StaticResource highlightedButtonStyle}"/>
             <Button x:Name="btnGuest" Text="Login as guest" Clicked="OnGuestLogin" BorderColor="Transparent"/>
             <Label x:Name="lblTestMode" Text="*** TEST MODE ***" IsVisible="false" FontSize="Large" HorizontalOptions="Center"/>
