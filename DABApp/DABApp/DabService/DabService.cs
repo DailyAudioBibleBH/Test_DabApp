@@ -134,21 +134,10 @@ namespace DABApp.Service
             //Process the actions
             if (response.Success == true)
             {
-                var data = response.Data.payload.data.updatedProgress;
+                var data = response.Data.payload.data.updatedCards;
 
                 //add what we receied to the list
                 result.Add(response.Data);
-
-                //determine if we have more data to process or not
-                if (data.pageInfo.hasNextPage == true)
-                {
-                    //cursor = data.pageInfo.endCursor;
-                }
-                else
-                {
-                    //nomore data - break the loop
-                    //getMore = false;
-                }
             }
             else
             {
@@ -404,7 +393,7 @@ namespace DABApp.Service
                 ql = await Service.DabService.AddSubscription(4, "subscription { tokenRemoved { token } }");
                 ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
                 ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
-
+                ql = await Service.DabService.AddSubscription(7, "subscription { updatedCard { card { wpId userId lastFour expMonth expYear type status } } }");
             }
 
             //return the received response
@@ -1155,6 +1144,11 @@ namespace DABApp.Service
                 HandleUpdateUser(data.updateUser.user);
 
             }
+            else if (data.updatedCard != null)
+            {
+                //credit card updated
+                HandleUpdateCreditCard(data.updatedCard);
+            }
             else
             {
                 //nothing to see here... all other incoming messages should be handled by the appropriate wait service
@@ -1214,6 +1208,15 @@ namespace DABApp.Service
 
             await DabServiceRoutines.UpdateUserProfile(data);
 
+        }
+
+        private static async void HandleUpdateCreditCard(DabGraphQlCreditCard data)
+        {
+            /* 
+             * Handle an incoming update credit card notification by updating user credit card data and making any UI notifications
+             */
+
+            await DabServiceRoutines.UpdateCreditCard(data);
         }
 
         private static async void HandleInvalidToken(DabGraphQlRootObject ql)

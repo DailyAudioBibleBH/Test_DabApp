@@ -596,6 +596,75 @@ namespace DABApp.Service
             DateTime LastDate = GlobalResources.UserCreditCardUpdateDate;
 
             var qlll = await DabService.GetUsersUpdatedCreditCards(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //reverse order incase multiple changes to same card and most current instance will come through last 
+                        item.payload.data.updatedCards.Reverse();
+                        foreach (var d in item.payload.data.updatedCards)
+                        {
+                            dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == d.wpId).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbCreditCards newCard = new dbCreditCards();
+
+                                newCard.cardExpMonth = d.expMonth;
+                                newCard.cardExpYear = d.expYear;
+                                newCard.cardLastFour = d.lastFour;
+                                newCard.cardStatus = d.status;
+                                newCard.cardType = d.type;
+                                newCard.cardUserId = d.userId;
+                                newCard.cardWpId = d.wpId;
+                                //insert new card data
+                                await adb.InsertOrReplaceAsync(newCard);
+                            }
+                            else if (data != null)
+                            {
+                                data.cardStatus = d.status;
+                                //update card status
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                        }
+
+                    }
+
+                    //update last time checked for badge progress
+                    GlobalResources.UserCreditCardUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user credit cards: {ex.Message}");
+                }
+            }
+        }
+
+        public static async Task UpdateCreditCard(DabGraphQlCreditCard data)
+        {
+            var adb = DabData.AsyncDatabase;
+            dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == data.wpId).FirstOrDefaultAsync().Result;
+            if (card == null)
+            {
+                dbCreditCards newCard = new dbCreditCards();
+
+                newCard.cardExpMonth = data.expMonth;
+                newCard.cardExpYear = data.expYear;
+                newCard.cardLastFour = data.lastFour;
+                newCard.cardStatus = data.status;
+                newCard.cardType = data.type;
+                newCard.cardUserId = data.userId;
+                newCard.cardWpId = data.wpId;
+                //insert new card data
+                await adb.InsertOrReplaceAsync(newCard);
+            }
+            else if (card != null)
+            {
+                card.cardStatus = data.status;
+                //update card status
+                await adb.InsertOrReplaceAsync(card);
+            }
         }
 
         #endregion
@@ -732,6 +801,8 @@ namespace DABApp.Service
             await GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
         }
 
-        #endregion
+        
     }
+
+        #endregion
 }

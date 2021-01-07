@@ -170,7 +170,7 @@ namespace DABApp.Service
                         break;
 
                     case DabServiceWaitTypes.GetCreditCardProgresses:
-                        if (response?.payload?.data?.updatedCreditCards != null)
+                        if (response?.payload?.data?.updatedCards != null)
                         {
                             _qlObject = response;
                             _waiting = false;
