@@ -242,23 +242,24 @@ namespace DABApp
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
-                        DependencyService.Get<IAnalyticsService>().LogEvent("guest_give");
+                        DependencyService.Get<IAnalyticsService>().LogEvent("give_guest");
                         if (CrossConnectivity.Current.IsConnected)
                         {
                             try
                             {
-                                await Browser.OpenAsync(GlobalResources.GiveUrl, BrowserLaunchMode.SystemPreferred);
+                                Device.OpenUri(new Uri(GlobalResources.GiveUrl));
                             }
                             catch (Exception ex)
                             {
                                 // An unexpected error occured. No browser may be installed on the device.
                             }
                         }
-                        else await DisplayAlert("An Internet connection is needed to give.", "There is a problem with your internet connection that would prevent you from giving.  Please check your internet connection and try again.", "OK");
+                        else await DisplayAlert("An Internet connection is needed to give.", "There is a problem with your internet connection that would prevent you from giving. Please check your internet connection and try again.", "OK");
                         //else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
                     else
                     {
+                        DependencyService.Get<IAnalyticsService>().LogEvent("give_user");
                         var num = 15000;
                         var t = AuthenticationAPI.GetDonations();
                         Donation[] dons = new Donation[] { };
