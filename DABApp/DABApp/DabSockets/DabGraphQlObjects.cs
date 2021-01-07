@@ -91,7 +91,7 @@ namespace DABApp.DabSockets
         public List<DabGraphQlAddress> addresses { get; set; }
         public DabGraphQlAddress updateUserAddress { get; set; }
         public List<DabGraphQlCreditCard> updatedCards { get; set; }
-        public DabGraphQlCreditCard updatedCard { get; set; }
+        public DabGraphQlUpdateCreditCard updatedCard { get; set; }
     }
 
     public class DabGraphQlCreditCard
@@ -103,6 +103,11 @@ namespace DABApp.DabSockets
         public int expYear { get; set; }
         public string type { get; set; }
         public string status { get; set; }
+    }
+
+    public class DabGraphQlUpdateCreditCard
+    {
+        public DabGraphQlCreditCard card { get; set; }
     }
 
     public class DabGraphQlAddress

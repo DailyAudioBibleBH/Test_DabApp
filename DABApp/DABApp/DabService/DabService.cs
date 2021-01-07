@@ -1147,7 +1147,7 @@ namespace DABApp.Service
             else if (data.updatedCard != null)
             {
                 //credit card updated
-                HandleUpdateCreditCard(data.updatedCard);
+                HandleUpdateCreditCard(data.updatedCard.card);
             }
             else
             {
