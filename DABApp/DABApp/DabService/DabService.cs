@@ -497,7 +497,7 @@ namespace DABApp.Service
         public static async Task<DabServiceWaitResponse> DeleteCard(int wpId)
         {
             /*
-             * This routine takes a specified username and password and attempts to log the user in via graphql.
+             * This routine takes a specified wpId and attempts to delte a card via graphql
              */
 
             //check for a connecting before proceeding
@@ -505,6 +505,28 @@ namespace DABApp.Service
 
             //Send the Login mutation
             string command = $"mutation {{deleteCard(wpId: {wpId}) {{token}}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdatedCard);
+
+            //return the response
+            return response;
+        }
+
+        public static async Task<DabServiceWaitResponse> AddCard(StripeContainer result)
+        {
+            /*
+             * This routine takes a specified wpId and attempts to delte a card via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the Login mutation
+            string command = $"mutation {{addCard(processor: stripe, processorData: {result.card_token}) {{token}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 

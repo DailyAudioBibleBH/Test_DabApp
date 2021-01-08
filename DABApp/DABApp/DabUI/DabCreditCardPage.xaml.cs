@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DABApp.Service;
 using SQLite;
@@ -15,7 +16,19 @@ namespace DABApp
 		public DabCreditCardPage(dbCreditCards card = null)
 		{
 			InitializeComponent();
-			var months = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+			var months = new List<string>() { "1 - " + new DateTime(2020, 1, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "2 - " + new DateTime(2020, 2, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "3 - " + new DateTime(2020, 3, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "4 - " + new DateTime(2020, 4, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "5 - " + new DateTime(2020, 5, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "6 - " + new DateTime(2020, 6, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "7 - " + new DateTime(2020, 7, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "8 - " + new DateTime(2020, 8, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "9 - " + new DateTime(2020, 9, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "10 - " + new DateTime(2020, 10, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "11 - " + new DateTime(2020, 11, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "12 - " + new DateTime(2020, 12, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture)};
 			Month.ItemsSource = months;
 			int start;
 			if (card != null) start = 2010;
@@ -35,7 +48,7 @@ namespace DABApp
 				CardType.IsVisible = true;				
 				//Month.SelectedIndex = months.IndexOf(card.cardExpMonth.ToString());
 				//Year.SelectedIndex = months.IndexOf(card.cardExpYear.ToString());
-				CVC.IsVisible = false;
+				CVV.IsVisible = false;
 				CVCLabel.IsVisible = false;
 				Delete.IsVisible = true;
 				Save.IsVisible = false;
@@ -59,12 +72,14 @@ namespace DABApp
 		async void OnSave(object o, EventArgs e)
 		{
 			Save.IsEnabled = false;
+			string[] selectedMonthArray = Month.SelectedItem.ToString().Split(' ');
+			string selectedMonth = selectedMonthArray[0];
 			var sCard = new Card
 			{
 				fullNumber = CardNumber.Text,
-				exp_month = Convert.ToInt32(Month.SelectedItem),
+				exp_month = Convert.ToInt32(selectedMonth),
 				exp_year = Convert.ToInt32(Year.SelectedItem),
-				cvc = CVC.Text
+				cvc = CVV.Text
 			};
 			var result = await DependencyService.Get<IStripe>().AddCard(sCard);
 			if (result.card_token.Contains("Error"))
@@ -73,13 +88,14 @@ namespace DABApp
 			}
 			else
 			{
-				var Result = await AuthenticationAPI.AddCard(result);
-				if (Result.Contains("code") || Result.Contains("Error"))
+				var Result = await DabService.AddCard(result);
+				if (Result.Success)
 				{
-					await DisplayAlert("Error", Result.Remove(0, 7), "OK");
+					await Navigation.PopAsync();
 				}
 				else {
-					await Navigation.PopAsync();
+					await DisplayAlert("Error", "Your card was not saved. Error: " + Result.ErrorMessage, "OK");
+
 				}
 			}
 			Save.IsEnabled = true;
@@ -106,5 +122,13 @@ namespace DABApp
 			}
 			Delete.IsEnabled = true;
 		}
-	}
+
+  //      void Month_SelectedIndexChanged(System.Object sender, System.EventArgs e)
+  //      {
+		//	string[] selectedMonthArray = Month.SelectedItem.ToString().Split(' ');
+		//	string selectedMonth = selectedMonthArray[0];
+
+		//	Month.SelectedItem = selectedMonth;
+		//}
+    }
 }

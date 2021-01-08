@@ -84,36 +84,6 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> AddCard(StripeContainer token)//Adds user credit card using the Stripe Xamarin API
-        {
-            try
-            {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                var JsonIn = JsonConvert.SerializeObject(token);
-                var content = new StringContent(JsonIn);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.PostAsync($"{GlobalResources.RestAPIUrl}wallet", content);
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                Debug.WriteLine($"Wallet Error: {JsonOut}");
-                if (JsonOut.Contains("code"))
-                {
-                    var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-                    throw new Exception($"Error: {error.message}");
-                }
-                return JsonOut;
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(HttpRequestException))
-                {
-                    return "An Http Request Exception has been called this may be due to problems with your network.  Please check your connection and try again";
-                }
-                return e.Message;
-            }
-        }
-
         public static async Task<Donation[]> GetDonations()//Gets all recurring user donations.  Not historical ones!
         {
             try
