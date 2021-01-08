@@ -164,7 +164,6 @@ namespace DABApp
              */
 
             base.OnAppearing();
-            Email.Focus();
 
 
             if (hasAppeared == false)
