@@ -110,12 +110,12 @@ namespace DABApp
                 recordButton.Clicked += OnRecord;
                 this.ToolbarItems.Add(recordButton);
 
-#if DEBUG
                 //Utility button (debug only)
                 var utilityButton = new ToolbarItem();
                 utilityButton.Text = "UT";
                 utilityButton.Priority = 0;
                 utilityButton.Clicked += UtilityButton_Clicked;
+#if DEBUG
                 this.ToolbarItems.Add(utilityButton);
 #endif
 
@@ -127,6 +127,8 @@ namespace DABApp
                 giveButton.Priority = 0; //default
                 giveButton.Clicked += OnGive;
                 this.ToolbarItems.Add(giveButton);
+
+
             }
             else
             {

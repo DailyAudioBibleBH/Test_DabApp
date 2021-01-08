@@ -59,9 +59,19 @@ namespace DABApp
 
 			DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;
 
+			//access utility via triple tap
+			var tapper = new TapGestureRecognizer();
+			tapper.NumberOfTapsRequired = 3;
+			tapper.Tapped += (sender, e) =>
+			{
+				Navigation.PushAsync(new DabUtilityPage());
+			};
+			this.lblVersion.GestureRecognizers.Add(tapper);
+
+
 		}
 
-        private void DabServiceEvents_UserProfileChangedEvent(DabSockets.GraphQlUser user)
+		private void DabServiceEvents_UserProfileChangedEvent(DabSockets.GraphQlUser user)
         {
 			this.UserName.Text = $"{user.firstName} {user.lastName}";
         }
