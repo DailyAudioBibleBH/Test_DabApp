@@ -28,6 +28,18 @@ namespace DABApp.Service
         public static event GraphQlTraffic TrafficOccuredEvent;
         public static void TrafficOccured(GraphQlTrafficDirection direction, string traffic)
         {
+            //log the data transfer
+            //ignore some traffice
+            if (traffic.Contains("\"ka\"") ||
+                1 == 2)
+            {
+               // Debug.WriteLine($"Skipping traffic log: {traffic}");
+            }
+            else
+            {
+                dbDataTransfers.LogTransfer(direction.ToString(), traffic);
+            }
+
             Device.BeginInvokeOnMainThread(async () =>
             {
                 TrafficOccuredEvent?.Invoke(direction, traffic);

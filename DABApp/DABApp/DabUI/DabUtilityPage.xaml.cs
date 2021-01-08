@@ -21,6 +21,7 @@ namespace DABApp
             pickTable.Items.Add("Channels");
             pickTable.Items.Add("dbChannels");
             pickTable.Items.Add("dbEpisodes");
+            pickTable.Items.Add("dbDataTransfers");
         }
 
 
@@ -144,7 +145,8 @@ namespace DABApp
                     {
                         result += $"{channel.channelId}: {channel.title}:\n";
                     }
-                    await DisplayAlert("Data", result, "OK");
+                    await DisplayAlert($"Data: {channels.Count}", result, "OK");
+
                     break;
 
                 case "dbChannels":
@@ -155,7 +157,7 @@ namespace DABApp
                     {
                         result += $"{dbchannel.channelId}: {dbchannel.title}:\n";
                     }
-                    await DisplayAlert("Data", result, "OK");
+                    await DisplayAlert($"Data: {dbchannels.Count}", result, "OK");
                     break;
 
                 case "dbEpisodes":
@@ -166,7 +168,18 @@ namespace DABApp
                     {
                         result += $"{dbepisode.channel_code} | {dbepisode.title} | {dbepisode.PubDate}\n";
                     }
-                    await DisplayAlert("Data", result, "OK");
+                    await DisplayAlert($"Data: {dbepisodes.Count}", result, "OK");
+                    break;
+
+                case "dbDataTransfers":
+                    //show episodes
+                    result = "";
+                    var dbts = adb.Table<dbDataTransfers>().OrderByDescending(x => x.Id).ToListAsync().Result;
+                    foreach (var dbt in dbts)
+                    {
+                        result += $"{dbt.Id} | {dbt.Direction} | {dbt.Data}\n";
+                    }
+                    await DisplayAlert($"Data: {dbts.Count}", result, "OK");
                     break;
 
                 default:
