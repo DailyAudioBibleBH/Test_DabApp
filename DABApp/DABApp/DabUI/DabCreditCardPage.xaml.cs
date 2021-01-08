@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DABApp.Service;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -8,6 +10,7 @@ namespace DABApp
 	public partial class DabCreditCardPage : DabBaseContentPage
 	{
 		dbCreditCards _card;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 		public DabCreditCardPage(dbCreditCards card = null)
 		{
@@ -85,12 +88,21 @@ namespace DABApp
 		async void OnDelete(object o, EventArgs e) 
 		{
 			Delete.IsEnabled = false;
-			var result = await AuthenticationAPI.DeleteCard(_card.cardWpId);
-			if (result.Contains("true")) {
-				await Navigation.PopAsync();
-			}
-			else {
-                await DisplayAlert("Error", result, "OK");
+			var accept = await DisplayAlert("Alert", "Are you sure you want to remove this card?", "Yes", "No");
+			if (accept)
+			{
+				var result = await DabService.DeleteCard(_card.cardWpId);
+				if (result.Success)
+				{
+					dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == _card.cardWpId).FirstOrDefaultAsync().Result;
+					card.cardStatus = "deleted";
+					await adb.UpdateAsync(card);
+					await Navigation.PopAsync();
+				}
+				else
+				{
+					await DisplayAlert("Error", $"Card was not deleted. Error: {result.ErrorMessage}", "OK");
+				}
 			}
 			Delete.IsEnabled = true;
 		}

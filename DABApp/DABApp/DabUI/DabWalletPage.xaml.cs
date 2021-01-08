@@ -18,10 +18,8 @@ namespace DABApp
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			cards = AuthenticationAPI.GetWallet();
-			foreach (var card in cards) {
-				InsertCard(card);
-			}
+			cards = new List<dbCreditCards>();
+			source = new object();
 		}
 
 		void OnCard(object o, EventArgs e) {
@@ -35,7 +33,15 @@ namespace DABApp
 
 		protected override async void OnAppearing()
 		{
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Loading cards...", true));
+			cards.Clear();
+			cards = AuthenticationAPI.GetWallet();
+			foreach (var card in cards)
+			{
+				InsertCard(card);
+			}
 			base.OnAppearing();
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
 		void InsertCard(dbCreditCards card) 

@@ -84,35 +84,6 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> DeleteCard(int CardId)//Deletes user credit card from user wallet
-        {
-            try
-            {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}wallet/{CardId}");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                if (JsonOut == "true")
-                {
-                    return JsonOut;
-                }
-                else
-                {
-                    var error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-                    throw new Exception(error.message);
-                }
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(HttpRequestException))
-                {
-                    return "An Http Request Exception has been called.  This may be due to problems with your network.  Please check your connection and try again";
-                }
-                return e.Message;
-            }
-        }
-
         public static async Task<string> AddCard(StripeContainer token)//Adds user credit card using the Stripe Xamarin API
         {
             try
