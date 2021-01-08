@@ -3,6 +3,7 @@
 	<ContentPage.Content>
 		<StackLayout Padding="10" Spacing="10">
 			<Label x:Name="Title" Text="Add Credit Card" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
+			<Label x:Name="CardType" Style="{StaticResource playerLabelStyle}" FontSize="Medium" IsVisible="false"/>
 			<Label Text="Card Number" FontSize="Micro"/>
 			<Entry x:Name="CardNumber" Keyboard="Numeric"/>
 			<Grid>
@@ -19,11 +20,13 @@
 				<Label x:Name="CVCLabel" Text="CVC" FontSize="Micro" Grid.Column="2" Grid.Row="0"/>
 				<Picker x:Name="Month" Grid.Column="0" Grid.Row="1"/>
 				<Picker x:Name="Year" Grid.Column="1" Grid.Row="1"/>
+				<Entry x:Name="entMonth" IsVisible="False" IsEnabled="False" Grid.Column="0" Grid.Row="1"/>
+				<Entry x:Name="entYear" IsVisible="False" IsEnabled="False" Grid.Column="1" Grid.Row="1"/>
 				<Entry x:Name="CVC" Grid.Column="2" Grid.Row="1" Keyboard="Numeric"/>
 			</Grid>
             <Button x:Name="Save" HeightRequest="40" Text="Save" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 			<Label x:Name="DeleteText" Text="For compliance purposes, you may not change your credit card information on this page. To update your card information, delete the card and add a new one." FontSize="Micro" IsVisible="false"/>
-			<Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="false" Style="{StaticResource deleteButtonStyle}"/>
+			<Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="false" Style="{StaticResource highlightedButtonStyle}"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

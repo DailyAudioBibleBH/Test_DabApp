@@ -28,6 +28,10 @@ namespace DABApp
 			{
 				_card = card;
 				Title.Text = "Card Details";
+				CardType.Text = card.cardType;
+				CardType.IsVisible = true;				
+				//Month.SelectedIndex = months.IndexOf(card.cardExpMonth.ToString());
+				//Year.SelectedIndex = months.IndexOf(card.cardExpYear.ToString());
 				CVC.IsVisible = false;
 				CVCLabel.IsVisible = false;
 				Delete.IsVisible = true;
@@ -35,10 +39,17 @@ namespace DABApp
 				DeleteText.IsVisible = true;
 				CardNumber.IsEnabled = false;
 				CardNumber.Text = $"**** **** **** {card.cardLastFour}";
-				Month.IsEnabled = false;
 				Month.SelectedItem = card.cardExpMonth.ToString();
-				Year.IsEnabled = false;
+				Month.IsEnabled = false;
+				Month.IsVisible = false;
 				Year.SelectedItem = card.cardExpYear.ToString();
+				Year.IsEnabled = false;
+				Year.IsVisible = false;
+				//added disabled entries since disabled pickers dont show values on ios
+				entMonth.Text = card.cardExpMonth.ToString();
+				entYear.Text = card.cardExpYear.ToString();
+				entMonth.IsVisible = true;
+				entYear.IsVisible = true;
 			}
 		}
 
