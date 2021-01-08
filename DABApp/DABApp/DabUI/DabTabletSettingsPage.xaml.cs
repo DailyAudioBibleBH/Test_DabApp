@@ -113,16 +113,16 @@ namespace DABApp
 
 		async void OnWallet(object o, EventArgs e) {
 			
-			var result = await AuthenticationAPI.GetWallet();
-			if (result != null)
-			{
-				var Wallet = new DabWalletPage(result);
+			//var result = AuthenticationAPI.GetWallet();
+			//if (result != null)
+			//{
+				var Wallet = new DabWalletPage();
                 Wallet.Unsubscribe();
 				Detail = new NavigationPage(Wallet) { BarTextColor = (Color)App.Current.Resources["TextColor"] };
 				Wallet.ToolbarItems.Clear();
 				Remove();
-			}
-			else await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+			//}
+			//else await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
 			
 		}
 

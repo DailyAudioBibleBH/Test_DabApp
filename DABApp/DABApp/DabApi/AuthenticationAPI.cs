@@ -70,16 +70,12 @@ namespace DABApp
             }
         }
 
-        public static async Task<Card[]> GetWallet()//Gets user's saved credit cards.  Used for donations
+        public static List<dbCreditCards> GetWallet()//Gets user's saved credit cards.  Used for donations
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}wallet");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                Card[] cards = JsonConvert.DeserializeObject<Card[]>(JsonOut);
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().ToListAsync().Result;
+
                 return cards;
             }
             catch (Exception e)
@@ -88,7 +84,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> DeleteCard(string CardId)//Deletes user credit card from user wallet
+        public static async Task<string> DeleteCard(int CardId)//Deletes user credit card from user wallet
         {
             try
             {

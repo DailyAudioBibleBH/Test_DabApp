@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabUI.BaseUI;
@@ -10,7 +11,7 @@ namespace DABApp
 	{
 		Donation _campaign;
 
-		public DabEditRecurringDonationPage(Donation campaign, Card[] cards)
+		public DabEditRecurringDonationPage(Donation campaign, List<dbCreditCards> cards)
 		{
 			InitializeComponent();
 			if (Device.RuntimePlatform != "Android")
@@ -41,7 +42,7 @@ namespace DABApp
 				string currencyAmount = GlobalResources.ToCurrency(campaign.pro.amount);
 				Amount.Text = currencyAmount;
 				Next.Date = Convert.ToDateTime(campaign.pro.next);
-				Cards.SelectedItem = cards.Single(x => x.id == campaign.pro.card_id);
+				Cards.SelectedItem = cards.Single(x => x.cardWpId.ToString() == campaign.pro.card_id);
 				Status.Text = campaign.pro.status;
 			}
 			else 

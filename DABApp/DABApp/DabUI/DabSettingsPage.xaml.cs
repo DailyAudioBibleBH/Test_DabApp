@@ -144,17 +144,16 @@ namespace DABApp
         {
             if (GlobalResources.ShouldUseSplitScreen == false)
             {
-                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-                var result = await AuthenticationAPI.GetWallet();
-                if (result != null)
-                {
-                    await Navigation.PushAsync(new DabWalletPage(result));
-                }
-                else
-                {
-                    await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
-                }
-                DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                //DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
+                //if (result != null)
+                //{
+                    await Navigation.PushAsync(new DabWalletPage());
+                //}
+                //else
+                //{
+                //    await DisplayAlert("Unable to retrieve Wallet information", "This may be due to a loss of internet connectivity.  Please check your connection and try again.", "OK");
+                //}
+                //DabUserInteractionEvents.WaitStopped(o, new EventArgs());
             }
         }
 

@@ -7,9 +7,9 @@ namespace DABApp
 {
 	public partial class DabCreditCardPage : DabBaseContentPage
 	{
-		Card _card;
+		dbCreditCards _card;
 
-		public DabCreditCardPage(Card card = null)
+		public DabCreditCardPage(dbCreditCards card = null)
 		{
 			InitializeComponent();
 			var months = new List<string>() { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
@@ -34,11 +34,11 @@ namespace DABApp
 				Save.IsVisible = false;
 				DeleteText.IsVisible = true;
 				CardNumber.IsEnabled = false;
-				CardNumber.Text = $"**** **** **** {card.last4}";
+				CardNumber.Text = $"**** **** **** {card.cardLastFour}";
 				Month.IsEnabled = false;
-				Month.SelectedItem = card.exp_month.ToString();
+				Month.SelectedItem = card.cardExpMonth.ToString();
 				Year.IsEnabled = false;
-				Year.SelectedItem = card.exp_year.ToString();
+				Year.SelectedItem = card.cardExpYear.ToString();
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace DABApp
 		async void OnDelete(object o, EventArgs e) 
 		{
 			Delete.IsEnabled = false;
-			var result = await AuthenticationAPI.DeleteCard(_card.id);
+			var result = await AuthenticationAPI.DeleteCard(_card.cardWpId);
 			if (result.Contains("true")) {
 				await Navigation.PopAsync();
 			}

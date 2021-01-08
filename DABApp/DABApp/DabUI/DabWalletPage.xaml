@@ -9,9 +9,8 @@
 				<TableView.Root>
 					<TableSection x:Name="Cards">
 						<ViewCell Tapped="OnAdd">
-							<StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
-								<Label Text="+ Add a card" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
-								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand" VerticalOptions="Center"/>
+							<StackLayout>
+						         <Button x:Name="AddCard" HeightRequest="40" WidthRequest="120" Text="Add a Card" Clicked="OnAdd" Style="{StaticResource highlightedButtonStyle}"/>
 							</StackLayout>
 						</ViewCell>
 					</TableSection>
