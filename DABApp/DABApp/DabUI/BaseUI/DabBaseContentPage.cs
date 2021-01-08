@@ -98,6 +98,7 @@ namespace DABApp
                 this.ToolbarItems.Add(menuButton);
 
 
+
                 //Record Button
                 var recordButton = new ToolbarItem();
                 recordButton.SetValue(AutomationProperties.NameProperty, "Record");
@@ -108,6 +109,15 @@ namespace DABApp
                 AutomationProperties.SetHelpText(recordButton, "Record");
                 recordButton.Clicked += OnRecord;
                 this.ToolbarItems.Add(recordButton);
+
+#if DEBUG
+                //Utility button (debug only)
+                var utilityButton = new ToolbarItem();
+                utilityButton.Text = "UT";
+                utilityButton.Priority = 0;
+                utilityButton.Clicked += UtilityButton_Clicked;
+                this.ToolbarItems.Add(utilityButton);
+#endif
 
                 //Give button on the right (priority 1)
                 var giveButton = new ToolbarItem();
@@ -122,6 +132,11 @@ namespace DABApp
             {
                 MessagingCenter.Send("Setup", "Setup");
             }
+        }
+
+        private async void UtilityButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DabUtilityPage());
         }
 
         private void DabUserInteractionEvents_WaitStoppedEvent(object source, EventArgs e)

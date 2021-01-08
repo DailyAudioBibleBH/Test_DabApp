@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabUtilityPage" xmlns:local="clr-namespace:DABApp">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="StartAndExpand">
+            <Label Text="Welcome to the DAB Utility Page. You can do some interesting things here!"/>
+            <Button Text="Send Fake New Episode" x:Name="btnFakeEpisode" Clicked="btnFakeEpisode_Clicked"/>
+            <Button VerticalOptions="End" Text="Close" x:Name="btnClose" Clicked="btnClose_Clicked"/>
+        </StackLayout>
+
+    </ContentPage.Content>
+</local:DabBaseContentPage>
