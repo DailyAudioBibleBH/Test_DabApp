@@ -457,6 +457,23 @@ namespace DABApp
             }
         }
 
+        public static DateTime UserDonationStatusUpdateDate
+        {
+            get
+            {
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.DonationStatusUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.DonationStatusUpdateDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
         public static DateTime UserCreditCardUpdateDate
         {
             get

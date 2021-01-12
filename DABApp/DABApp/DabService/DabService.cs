@@ -182,6 +182,92 @@ namespace DABApp.Service
 
         }
 
+        public static async Task<DabServiceWaitResponseList> GetUserDonationStatusUpdate(DateTime LastDate)
+        {
+            //TODO: Start back here tomorrow
+            /*
+            * this routine checks for user specific donation updates
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId source amount recurringInterval campaignWpId userWpId status } pageInfo { hasNextPage endCursor } } }";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    //TODO: Make sure this is formatted correctly
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { id wpId source amount recurringInterval campaignWpId userWpId status } pageInfo { hasNextPage endCursor } } }";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetDonationStatuses);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedBadges;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
+        }
+
         public static async Task<DabServiceWaitResponseList> GetUsersUpdatedCreditCards(DateTime LastDate)
         {
             /*
@@ -478,6 +564,7 @@ namespace DABApp.Service
                 ql = await Service.DabService.AddSubscription(6, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
                 ql = await Service.DabService.AddSubscription(7, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
                 ql = await Service.DabService.AddSubscription(8, "subscription { updatedCard { card { wpId userId lastFour expMonth expYear type status } } }");
+                ql = await Service.DabService.AddSubscription(9, "subscription { donationStatusUpdated { donationStatus { id wpId source amount recurringInterval campaignWpId userWpId status }}}");
             }
 
             //return the received response

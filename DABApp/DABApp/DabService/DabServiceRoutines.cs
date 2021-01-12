@@ -80,13 +80,6 @@ namespace DABApp.Service
                     }
                 }
 
-                if (GlobalResources.Instance.IsLoggedIn)
-                {
-
-                }
-
-
-
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
@@ -112,6 +105,8 @@ namespace DABApp.Service
                     await GetUserBadgesProgress();
 
                     await GetUpdatedCreditCards();
+
+                    await GetUpdatedDonationStatus();
                 }
 
                 return true;
@@ -637,6 +632,55 @@ namespace DABApp.Service
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        public static async Task GetUpdatedDonationStatus()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserDonationStatusUpdateDate;
+
+            var qlll = await DabService.GetUserDonationStatusUpdate(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //foreach (var d in item.payload.data.updatedCards)
+                        //{
+                        //    dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == d.wpId).FirstOrDefaultAsync().Result;
+                        //    if (data == null)
+                        //    {
+                        //        dbCreditCards newCard = new dbCreditCards();
+
+                        //        newCard.cardExpMonth = d.expMonth;
+                        //        newCard.cardExpYear = d.expYear;
+                        //        newCard.cardLastFour = d.lastFour;
+                        //        newCard.cardStatus = d.status;
+                        //        newCard.cardType = d.type;
+                        //        newCard.cardUserId = d.userId;
+                        //        newCard.cardWpId = d.wpId;
+                        //        //insert new card data
+                        //        await adb.InsertOrReplaceAsync(newCard);
+                        //    }
+                        //    else if (data != null)
+                        //    {
+                        //        data.cardStatus = d.status;
+                        //        //update card status
+                        //        await adb.InsertOrReplaceAsync(data);
+                        //    }
+                        //}
+
+                    }
+
+                    //update last time checked for badge progress
+                    GlobalResources.UserCreditCardUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user credit cards: {ex.Message}");
+                }
             }
         }
 

@@ -24,5 +24,6 @@ namespace DABApp
         public DateTime ProgressDate { get; set; }
         public DateTime ActionDate { get; set; }
         public DateTime CreditCardUpdateDate { get; set; }
+        public DateTime DonationStatusUpdateDate { get; set; }
     }
 }
