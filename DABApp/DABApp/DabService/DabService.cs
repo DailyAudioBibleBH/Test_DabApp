@@ -467,16 +467,17 @@ namespace DABApp.Service
             //Generic subscriptions
             var ql = await Service.DabService.AddSubscription(1, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
             ql = await Service.DabService.AddSubscription(2, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
+            ql = await Service.DabService.AddSubscription(3, "subscription { campaignUpdated { campaign { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans}}}");
 
             //logged in steps
             if (GuestStatus.Current.IsGuestLogin == false)
             {
                 //subscriptions
-                ql = await Service.DabService.AddSubscription(3, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
-                ql = await Service.DabService.AddSubscription(4, "subscription { tokenRemoved { token } }");
-                ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
-                ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
-                ql = await Service.DabService.AddSubscription(7, "subscription { updatedCard { card { wpId userId lastFour expMonth expYear type status } } }");
+                ql = await Service.DabService.AddSubscription(4, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
+                ql = await Service.DabService.AddSubscription(5, "subscription { tokenRemoved { token } }");
+                ql = await Service.DabService.AddSubscription(6, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
+                ql = await Service.DabService.AddSubscription(7, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
+                ql = await Service.DabService.AddSubscription(8, "subscription { updatedCard { card { wpId userId lastFour expMonth expYear type status } } }");
             }
 
             //return the received response
@@ -1249,6 +1250,11 @@ namespace DABApp.Service
                 HandleActionLogged(data.actionLogged);
 
             }
+            if (data.updatedCampaign != null)
+            {
+                //campaign updaed
+                HandleUpdatedCampaign(data.updatedCampaign);
+            }
             else if (data.episodePublished != null)
             {
                 //new episode published
@@ -1292,7 +1298,15 @@ namespace DABApp.Service
              */
 
             await DabServiceRoutines.ReceiveActionLog(data.action);
+        }
 
+        private static async void HandleUpdatedCampaign(DabGraphQlCampaign data)
+        {
+            /* 
+             * Handle an incoming campaign update
+             */
+
+            await DabServiceRoutines.RecieveCampaignUpdate(data);
         }
 
         private static async void HandleEpisodePublished(DabGraphQlEpisodePublished data)

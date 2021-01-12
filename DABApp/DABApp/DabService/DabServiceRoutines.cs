@@ -608,7 +608,37 @@ namespace DABApp.Service
 
         #endregion
 
-        #region Credit Card Routines
+        #region Wallet & Donation Routines
+
+        public static async Task<bool> RecieveCampaignUpdate(DabGraphQlCampaign data)
+        {
+            /*
+             * This routine handles incoming campaign updates. 
+             * It updates the database
+             */
+
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                dbCampaigns camp = adb.Table<dbCampaigns>().Where(x => x.campaignId == data.id).FirstOrDefaultAsync().Result;
+                if (camp != null)
+                {
+                    camp.campaignStatus = data.status;
+                    await adb.InsertOrReplaceAsync(camp);
+                }
+                else
+                {
+                    dbCampaigns newCamp = new dbCampaigns(data);
+                    await adb.InsertOrReplaceAsync(newCamp);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         public static async Task GetUpdatedCreditCards()
         {
@@ -820,8 +850,6 @@ namespace DABApp.Service
 
             await GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
         }
-
-        
     }
 
         #endregion
