@@ -1,4 +1,5 @@
 ﻿using System;
+using DABApp.DabSockets;
 using SQLite;
 
 namespace DABApp
@@ -16,6 +17,17 @@ namespace DABApp
 
         public dbCreditCards()
         {
+        }
+
+        public dbCreditCards(DabGraphQlCreditCard card)
+        {
+            this.cardWpId = card.wpId;
+            this.cardUserId = card.userId;
+            this.cardLastFour = card.lastFour;
+            this.cardExpMonth = card.expMonth;
+            this.cardExpYear = card.expYear;
+            this.cardType = card.type;
+            this.cardStatus = card.status;
         }
     }
 }

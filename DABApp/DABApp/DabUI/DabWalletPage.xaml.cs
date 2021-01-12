@@ -34,6 +34,8 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Loading cards...", true));
+			Cards.Clear();
+			InsertAddCardButton();
 			cards.Clear();
 			cards = AuthenticationAPI.GetWallet();
 			foreach (var card in cards)
@@ -78,6 +80,21 @@ namespace DABApp
 			var viewCell = new ViewCell();
 			viewCell.AutomationId = card.cardWpId.ToString();
 			viewCell.Tapped += OnCard;
+			viewCell.View = stackLayout;
+			Cards.Insert(0, viewCell);
+		}
+
+		void InsertAddCardButton()
+        {
+			var button = new Button();
+			button.Text = "Add a Card";
+			button.Style = (Style)Application.Current.Resources["highlightedButtonStyle"];
+
+
+			var stackLayout = new StackLayout();
+			stackLayout.Children.Add(button);
+			var viewCell = new ViewCell();
+			viewCell.Tapped += OnAdd;
 			viewCell.View = stackLayout;
 			Cards.Insert(0, viewCell);
 		}

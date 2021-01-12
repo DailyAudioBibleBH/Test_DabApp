@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DABApp.Service;
 using DABApp.DabUI.BaseUI;
+using Xamarin.Essentials;
 
 namespace DABApp
 {
@@ -97,6 +98,7 @@ namespace DABApp
                 this.ToolbarItems.Add(menuButton);
 
 
+
                 //Record Button
                 var recordButton = new ToolbarItem();
                 recordButton.SetValue(AutomationProperties.NameProperty, "Record");
@@ -108,6 +110,15 @@ namespace DABApp
                 recordButton.Clicked += OnRecord;
                 this.ToolbarItems.Add(recordButton);
 
+                //Utility button (debug only)
+                var utilityButton = new ToolbarItem();
+                utilityButton.Text = "UT";
+                utilityButton.Priority = 0;
+                utilityButton.Clicked += UtilityButton_Clicked;
+#if DEBUG
+                this.ToolbarItems.Add(utilityButton);
+#endif
+
                 //Give button on the right (priority 1)
                 var giveButton = new ToolbarItem();
                 giveButton.SetValue(AutomationProperties.NameProperty, "Give");
@@ -116,11 +127,18 @@ namespace DABApp
                 giveButton.Priority = 0; //default
                 giveButton.Clicked += OnGive;
                 this.ToolbarItems.Add(giveButton);
+
+
             }
             else
             {
                 MessagingCenter.Send("Setup", "Setup");
             }
+        }
+
+        private async void UtilityButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DabUtilityPage());
         }
 
         private void DabUserInteractionEvents_WaitStoppedEvent(object source, EventArgs e)
@@ -241,18 +259,24 @@ namespace DABApp
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
+                        DependencyService.Get<IAnalyticsService>().LogEvent("give_guest");
                         if (CrossConnectivity.Current.IsConnected)
                         {
-                            var choice = await DisplayAlert("Login Required", "You must be logged in to use this feature.", "Login", "Cancel");
-                            if (choice)
+                            try
                             {
-                                GlobalResources.LogoffAndResetApp();
+                                Device.OpenUri(new Uri(GlobalResources.GiveUrl));
+                            }
+                            catch (Exception ex)
+                            {
+                                // An unexpected error occured. No browser may be installed on the device.
                             }
                         }
-                        else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
+                        else await DisplayAlert("An Internet connection is needed to give.", "There is a problem with your internet connection that would prevent you from giving. Please check your internet connection and try again.", "OK");
+                        //else await DisplayAlert("An Internet connection is needed to log in.", "There is a problem with your internet connection that would prevent you from logging in.  Please check your internet connection and try again.", "OK");
                     }
                     else
                     {
+                        DependencyService.Get<IAnalyticsService>().LogEvent("give_user");
                         var num = 15000;
                         var t = AuthenticationAPI.GetDonations();
                         Donation[] dons = new Donation[] { };

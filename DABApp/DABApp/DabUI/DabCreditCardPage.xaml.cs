@@ -91,11 +91,20 @@ namespace DABApp
 				var Result = await DabService.AddCard(result);
 				if (Result.Success)
 				{
-					await Navigation.PopAsync();
+                    try
+                    {
+						dbCreditCards newCard = new dbCreditCards(Result.Data.payload.data.updatedCard.card);
+						await adb.InsertOrReplaceAsync(newCard);
+						await DisplayAlert("Success", "Your card was successfully added", "OK");
+						await Navigation.PopAsync();
+					}
+                    catch (Exception ex)
+                    {
+						await DisplayAlert("Error", "Your card was not saved. Error: " + ex.Message, "OK");
+					}
 				}
 				else {
 					await DisplayAlert("Error", "Your card was not saved. Error: " + Result.ErrorMessage, "OK");
-
 				}
 			}
 			Save.IsEnabled = true;

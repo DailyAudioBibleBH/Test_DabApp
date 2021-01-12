@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.Service;
 using SQLite;
@@ -33,7 +34,7 @@ namespace DABApp.DabUI
             {
                 WaitContent.Opacity = 1;
             }
-            
+
             if (GlobalResources.TestMode)
             {
                 lblTestMode.IsVisible = true;
@@ -77,27 +78,51 @@ namespace DABApp.DabUI
                 versionList = contentConfig.versions;
                 contentAPI.GetModes();
 
+                /*
+                 * database operations
+                 */
 
-//#if DEBUG
-//                /*
-//                 * Area to do some database operations to prep app for debugging operations,
-//                 * such as database cleaning, setting resets, etc.
-//                 */
+                //cleanup data transfers older than a week.
+                try
+                {
+                    var oldDataTransfersAge = 7;
+                    var deleteDate = DateTime.Now.AddDays(-1 * oldDataTransfersAge);
+                    var toDelete = adb.Table<dbDataTransfers>().Where(x => x.LogTimestamp <= deleteDate).ToListAsync().Result;
+                    int cnt = 0;
+                    foreach (var item in toDelete)
+                    {
+                        await adb.DeleteAsync(toDelete);
+                        cnt++;
+                    }
+                    //var cnt = adb.ExecuteAsync($"delete from dbDataTransfers where LogTimestamp <=\"{deleteDate}\"").Result;
+                    Debug.WriteLine($"Removed {cnt} data transfers");
+                }
+                catch (Exception ex)
+                {
+                    //ignore errors
+                }
 
-//                //reset the dab episodelastquerydate
-//                var queryDate = new DateTime(2020, 8, 21, 8, 0, 0);
-//                dbSettings.StoreSetting("EpisodeQueryDate227", queryDate.ToUniversalTime().ToString());
 
-//                ////delete episodes from today
-//                var adb = DabData.AsyncDatabase;
-//                var eps = await adb.Table<dbEpisodes>().Where(x => x.PubDate >= queryDate).ToListAsync();
-//                foreach( var ep in eps)
-//                {
-//                    await adb.DeleteAsync(ep);
-//                }                    
+                //#if DEBUG
+                //                /*
+                //                 * Area to do some database operations to prep app for debugging operations,
+                //                 * such as database cleaning, setting resets, etc.
+                //                 */
+
+                //                //reset the dab episodelastquerydate
+                //                var queryDate = new DateTime(2020, 8, 21, 8, 0, 0);
+                //                dbSettings.StoreSetting("EpisodeQueryDate227", queryDate.ToUniversalTime().ToString());
+
+                //                ////delete episodes from today
+                //                var adb = DabData.AsyncDatabase;
+                //                var eps = await adb.Table<dbEpisodes>().Where(x => x.PubDate >= queryDate).ToListAsync();
+                //                foreach( var ep in eps)
+                //                {
+                //                    await adb.DeleteAsync(ep);
+                //                }                    
 
 
-//#endif
+                //#endif
 
                 NavigationPage navPage;
                 user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
@@ -138,7 +163,7 @@ namespace DABApp.DabUI
                     else
                     {
                         //no internet access - proceed on hoping the token is good
-                        DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Disconnected,"no internet");
+                        DabServiceEvents.TrafficOccured(GraphQlTrafficDirection.Disconnected, "no internet");
                         navPage = new NavigationPage(new DabChannelsPage());
                     }
                 }

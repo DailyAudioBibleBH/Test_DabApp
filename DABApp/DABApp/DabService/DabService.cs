@@ -518,6 +518,8 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponse> AddCard(StripeContainer result)
         {
+            const string quote = "\"";
+
             /*
              * This routine takes a specified wpId and attempts to delte a card via graphql
              */
@@ -526,7 +528,7 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send the Login mutation
-            string command = $"mutation {{addCard(processor: stripe, processorData: {result.card_token}) {{token}}";
+            string command = $"mutation {{addCard(processor: " + quote + "stripe" + quote+ ", processorData: " + quote + $"{result.card_token}" + quote + ") {wpId userId lastFour expMonth expYear type status }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 

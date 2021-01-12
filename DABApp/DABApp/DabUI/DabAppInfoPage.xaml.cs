@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
+using Acr.DeviceInfo;
+using DABApp.DabUI.BaseUI;
+using Newtonsoft.Json;
 using Version.Plugin;
 using Xamarin.Forms;
 
@@ -30,6 +36,7 @@ namespace DABApp
             stats.AppendLine($"Last Action Date GMT: {GlobalResources.LastActionDate}");
             stats.AppendLine($"Badges: {adb.Table<dbBadges>().CountAsync().Result}");
             stats.AppendLine($"User Progress Data: {adb.Table<dbUserBadgeProgress>().CountAsync().Result}");
+            stats.AppendLine($"Data Transfer Logs: {adb.Table<dbDataTransfers>().CountAsync().Result}");
             stats.AppendLine();
 
             //settings (debug mode only)
@@ -77,6 +84,103 @@ namespace DABApp
 
 
             await DisplayAlert("Local User Data Reset", "We have reset your local user data. It will be reloaded when you return to the episodes page.", "OK");
+        }
+
+        private Attachment CreateAttachment(string FileName, string Content)
+        {
+            if (File.Exists(FileName))
+            {
+                File.Delete(FileName);
+            }
+            File.WriteAllText(FileName, Content);
+
+            return new Attachment(FileName);
+        }
+
+        async void btnSendLogs_Clicked(System.Object sender, System.EventArgs e)
+        {
+            try
+            {
+
+                DabUserInteractionEvents.WaitStarted(sender, new DabAppEventArgs("Gathering and Sending Diagnostics...", true));
+
+
+                //Start a new mail message with proper destination emails
+                var mailSender = new MailAddress("noreply@c2itconsulting.net", "DAB App");
+                var mailMessage = new MailMessage();
+                mailMessage.From = mailSender;
+
+                //Build the message content
+                var adb = DabData.AsyncDatabase;
+                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                if (user == null)
+                {
+                    user = new dbUserData()
+                    {
+                        Email = "noreply@c2itconsulting.net",
+                        FirstName = "Guest",
+                        LastName = "Guest"
+                    };
+                }
+
+                mailMessage.To.Add(new MailAddress("appalerts@c2itconsulting.net", "C2IT App Alerts"));
+                mailMessage.Subject = $"App Diagnostics: {user.Email}";
+                mailMessage.IsBodyHtml = true;
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"<h1>DAB Diagnostics</h1>");
+                sb.AppendLine("<table>");
+                sb.AppendLine($"<tr><td>timestamp</td></td><td>{DateTime.Now}</td></tr>");
+                sb.AppendLine($"<tr><td>email</td></td><td>{user.Email}</td></tr>");
+                sb.AppendLine($"<tr><td>name</td></td><td>{user.FirstName} {user.LastName}</td></tr>");
+                sb.AppendLine($"<tr><td>platform</td></td><td>{Device.RuntimePlatform}</td></tr>");
+                sb.AppendLine($"<tr><td>idiom</td></td><td>{Device.Idiom}</td></tr>");
+                sb.AppendLine($"<tr><td>app version</td></td><td>{CrossVersion.Current.Version}</td></tr>");
+                sb.AppendLine($"<tr><td>os version</td></td><td>{DeviceInfo.Hardware.OperatingSystem}</td></tr>");
+                sb.AppendLine($"<tr><td>width</td></td><td>{DeviceInfo.Hardware.ScreenWidth}</td></tr>");
+                sb.AppendLine($"<tr><td>height</td></td><td>{DeviceInfo.Hardware.ScreenHeight}</td></tr>");
+                sb.AppendLine($"<tr><td>manufacturer</td></td><td>{DeviceInfo.Hardware.Manufacturer}</td></tr>");
+                sb.AppendLine($"<tr><td>model</td></td><td>{DeviceInfo.Hardware.Model}</td></tr>");
+                sb.AppendLine("</table>");
+                mailMessage.Body = sb.ToString();
+
+                //Attach data files
+                mailMessage.Attachments.Add(CreateAttachment("user.txt", JsonConvert.SerializeObject(user, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbDataTransfers.txt", JsonConvert.SerializeObject(adb.Table<dbDataTransfers>().ToListAsync().Result,Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbPlayerActions.txt", JsonConvert.SerializeObject(adb.Table<dbPlayerActions>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbEpisodeUserData.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodeUserData>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbEpisodes.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodes>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbChannels.txt", JsonConvert.SerializeObject(adb.Table<dbChannels>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("Channel.txt", JsonConvert.SerializeObject(adb.Table<DabSockets.Channel>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbUserBadgeProgress.txt", JsonConvert.SerializeObject(adb.Table<dbUserBadgeProgress>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbBadges.txt", JsonConvert.SerializeObject(adb.Table<dbBadges>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("ContentConfig.txt", JsonConvert.SerializeObject(ContentConfig.Instance, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("DeviceHardware.txt", JsonConvert.SerializeObject(DeviceInfo.Hardware, Formatting.Indented)));
+
+
+                //Set up the SMTP client using Mandril API credentials
+                var smtp = new SmtpClient();
+                smtp.Port = 587;
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.UseDefaultCredentials = false;
+                smtp.Host = "smtp.mandrillapp.com";
+                smtp.Credentials = new NetworkCredential("chetcromer@c2itconsulting.net", "-M0yjVB_9EqZEzuKUDjw3A");
+                smtp.EnableSsl = true;
+
+                //Send the email
+                await smtp.SendMailAsync(mailMessage);
+
+                DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
+                await DisplayAlert("Logs sent", "Logs sent", "OK");
+
+            }
+            catch (Exception ex)
+            {
+                DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
+                await DisplayAlert("Error", $"Logs coult not be sent: {ex.Message}", "OK");
+
+            }
+
         }
     }
 }

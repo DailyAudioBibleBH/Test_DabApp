@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using SQLite;
 using Xamarin.Forms;
@@ -82,8 +82,11 @@ namespace DABApp
             _database.CreateTable<dbUserBadgeProgress>();
             _database.CreateTable<dbChannels>();
             _database.CreateTable<dbEpisodeUserData>();
+<<<<<<< HEAD
             _database.CreateTable<dbCreditCards>();
+=======
             _database.CreateTable<dbDataTransfers>();
+>>>>>>> chet
             _databaseInitiated = true;
         }
 

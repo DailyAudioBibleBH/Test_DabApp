@@ -127,5 +127,11 @@ namespace DABApp.iOS.DabSockets
             //Connect the socket
             sock.Open();
         }
+
+        public void ImitateReceive(string JsonOut)
+        {
+            var data = new MessageReceivedEventArgs(JsonOut);
+            OnMessage(data);
+        }
     }
 }
