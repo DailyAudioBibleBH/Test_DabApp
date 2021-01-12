@@ -33,7 +33,8 @@ namespace DABApp.Service
         SeeProgress,
         GetBadgeProgresses,
         GetCreditCardProgresses,
-        UpdatedCard
+        UpdatedCard,
+        GetUpdatedCampaigns
     }
 
     public class DabServiceWaitService
@@ -391,6 +392,15 @@ namespace DABApp.Service
                             _waiting = false;
                         }
                         break;
+                    case DabServiceWaitTypes.GetUpdatedCampaigns:
+                        //get updated campaigns
+                        if (response?.payload?.data?.updatedCampaigns != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
                 }
 
             };

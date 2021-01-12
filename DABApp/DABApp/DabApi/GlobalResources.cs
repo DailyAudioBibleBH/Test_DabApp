@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "2021010801-dbDataTransfers";
+                return "20210112";
             }
         }
 
@@ -416,6 +416,29 @@ namespace DABApp
             }
         }
 
+        //Last badge check date in GMT (get/set universal time)
+        public static DateTime CampaignUpdatedDate
+        {
+            get
+            {
+                string settingsKey = "CampaignUpdateDate";
+                string BadgeUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                if (BadgeUpdateSettingsValue == "")
+                {
+                    DateTime campaignDate = GlobalResources.DabMinDate.ToUniversalTime();
+                    dbSettings.StoreSetting(settingsKey, campaignDate.ToString());
+                }
+                return DateTime.Parse(dbSettings.GetSetting("CampaignUpdateDate", ""));
+            }
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = "CampaignUpdateDate";
+                string campaignDate = value.ToString();
+                dbSettings.StoreSetting(settingsKey, campaignDate);
+            }
+        }
+
         public static DateTime BadgeProgressUpdatesDate
         //Last badge progress check date in GMT (get/set universal time)
         {
@@ -598,7 +621,6 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
                     new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com;prayer_chronological@dailyaudiobible.com"}
         };
-
 
         public static async void GoToRecordingPage()
         {

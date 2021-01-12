@@ -60,6 +60,26 @@ namespace DABApp.Service
                     }
                 }
 
+                //get campaigns
+                var qlll = await DabService.GetCampaigns(GlobalResources.CampaignUpdatedDate);
+                if (qlll.Success)
+                {
+                    GlobalResources.CampaignUpdatedDate = DateTime.Now;
+                    foreach (var d in qlll.Data)
+                    {
+                        foreach (var b in d.payload.data.updatedCampaigns.edges)
+                        {
+                            dbCampaigns c = new dbCampaigns(b);
+                            foreach (var plan in b.pricingPlans)
+                            {
+                                dbPricingPlans newPlan = new dbPricingPlans(plan);
+                                await adb.InsertOrReplaceAsync(newPlan);
+                            }
+                            await adb.InsertOrReplaceAsync(c);
+                        }
+                    }
+                }
+
                 if (GlobalResources.Instance.IsLoggedIn)
                 {
 
