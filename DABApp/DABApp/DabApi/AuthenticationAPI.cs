@@ -196,8 +196,6 @@ namespace DABApp
         {
             try//Creates new action log which keeps track of user location on episodes.
             {
-                //TODO: only do this if logged in.
-
                 //build a basic action log
                 var actionLog = new DABApp.dbPlayerActions();
                 string email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
@@ -220,9 +218,7 @@ namespace DABApp
                         actionLog.ActionType = "entryDate";
                         actionLog.HasJournal = true;
                         break;
-                        //TODO: Fix this
                     case ServiceActionsEnum.PositionChanged:
-                        //TODO: Confirm this is the right code.
                         actionLog.ActionType = "pause";
                         actionLog.PlayerTime = playTime.Value;
                         break;

@@ -32,8 +32,6 @@ namespace DABApp.Service
             try
             {
                 //common routines (logged in or not)
-                //TODO: fill these in
-
                 var adb = DabData.AsyncDatabase;
 
                 // get channels
@@ -291,7 +289,6 @@ namespace DABApp.Service
                         GlobalResources.SetLastEpisodeQueryDate(ChannelId, lastDate.AddSeconds(1));//add a second to keep it from looping
 
                         //notify the UI
-                        //TODO: Confirm all of these messages
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DabServiceEvents.EpisodesChanged();
@@ -320,8 +317,6 @@ namespace DABApp.Service
         {
             /* this episode adds an episode to the system as it's published
              */
-
-            //TODO: This has not been tested.
 
             try
             {
@@ -463,9 +458,7 @@ namespace DABApp.Service
                                     response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime));
                                     break;
                                 case "entrydate":
-                                    //TODO: Implement this
                                     response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Journaled, actionDate, true, null);
-                                    //throw new NotSupportedException("Journals not working yet.");
                                     break;
                                 default:
                                     throw new NotSupportedException();
@@ -616,21 +609,36 @@ namespace DABApp.Service
             try
             {
                 var adb = DabData.AsyncDatabase;
+                var test = adb.Table<dbCreditCards>().ToListAsync().Result;
                 dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == data.id).FirstOrDefaultAsync().Result;
                 if (donation != null)
                 {
                     donation.WpId = data.wpId;
-                    donation.Source = data.source.cardId;
                     donation.Amount = data.amount;
                     donation.RecurringInterval = data.recurringInterval;
                     donation.CampaignWpId = data.campaignWpId;
                     donation.Status = data.status;
+                    //save cardid so we can tie it to source if we ever need it
+                    donation.Source = data.source.cardId;
                     await adb.InsertOrReplaceAsync(donation);
+                    
                 }
                 else
                 {
                     dbUserCampaigns newDon = new dbUserCampaigns(data);
                     await adb.InsertOrReplaceAsync(newDon);
+                }
+                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == data.source.cardId).FirstOrDefaultAsync().Result;
+                if (source != null)
+                {
+                    source.next = data.source.next;
+                    source.processor = data.source.processor;
+                    await adb.InsertOrReplaceAsync(source);
+                }
+                else
+                {
+                    dbCreditSource newSource = new dbCreditSource(data.source);
+                    await adb.InsertOrReplaceAsync(newSource);
                 }
 
                 return true;
@@ -686,7 +694,7 @@ namespace DABApp.Service
                         //find donations by donationId and update status if changed
                         foreach (var d in item.payload.data.updatedDonationStatus.edges)
                         {
-                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.donationId == d.id).FirstOrDefaultAsync().Result;
+                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.Id == d.id).FirstOrDefaultAsync().Result;
                             if (data == null)
                             {
                                 dbUserCampaigns newCamp = new dbUserCampaigns(d);
@@ -694,12 +702,27 @@ namespace DABApp.Service
                             }
                             else if (data != null)
                             {
-                                data.donationStatus = d.status;
-                                data.donationSource = d.source.cardId;
-                                data.donationAmount = d.amount;
-                                data.donationRecurringInterval = d.recurringInterval;
+                                data.Amount = d.amount;
+                                data.CampaignWpId = d.campaignWpId;
+                                data.RecurringInterval = d.recurringInterval;
+                                //save cardid so we can tie it to source if we ever need it
+                                data.Source = d.source.cardId;
+                                data.Status = d.status;
                                 //insert new card data
                                 await adb.InsertOrReplaceAsync(data);
+                            }
+                            //save card source tied to donation
+                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == d.source.cardId).FirstOrDefaultAsync().Result;
+                            if (source != null)
+                            {
+                                source.next = d.source.next;
+                                source.processor = d.source.processor;
+                                await adb.InsertOrReplaceAsync(source);
+                            }
+                            else
+                            {
+                                dbCreditSource newSource = new dbCreditSource(d.source);
+                                await adb.InsertOrReplaceAsync(newSource);
                             }
                         }
                     }

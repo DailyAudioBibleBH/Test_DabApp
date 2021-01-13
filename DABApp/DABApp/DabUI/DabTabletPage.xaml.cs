@@ -233,7 +233,6 @@ namespace DABApp
                         if (!player.Load(episode.Episode))
                         {
                             DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                            //TODO: Ensure nothing breaks if this happens.
                             return;
                         }
 

@@ -132,7 +132,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -217,7 +216,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { id wpId source amount recurringInterval campaignWpId userWpId status } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -360,7 +358,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedProgress(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -964,7 +961,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { " + queryName + "(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -1203,7 +1199,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedBadges(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { badgeId id name description imageURL type method visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());

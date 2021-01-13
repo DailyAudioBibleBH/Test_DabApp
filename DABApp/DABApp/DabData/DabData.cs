@@ -87,6 +87,7 @@ namespace DABApp
             _database.CreateTable<dbCampaigns>();
             _database.CreateTable<dbPricingPlans>();
             _database.CreateTable<dbUserCampaigns>();
+            _database.CreateTable<dbCreditSource>();
             _databaseInitiated = true;
         }
 

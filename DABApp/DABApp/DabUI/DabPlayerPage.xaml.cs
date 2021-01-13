@@ -343,7 +343,6 @@ namespace DABApp
         void OnPodcast(object o, EventArgs e)
         {
             //Go to the first tab
-            //TODO: Why is this even here?
             SegControl.SelectedSegment = 0;
         }
 
@@ -556,7 +555,6 @@ namespace DABApp
                 if (!player.Load(Episode.Episode))
                 {
                     DisplayAlert("Episode Unavailable", "The episode you are attempting to play is currently unavailable. Please try again later.", "OK");
-                    //TODO: Ensure nothing breaks if this happens.
                     return;
                 }
                 GlobalResources.CurrentEpisodeId = (int)Episode.Episode.id;
