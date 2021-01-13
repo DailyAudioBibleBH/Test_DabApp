@@ -403,11 +403,11 @@ namespace DABApp.Service
                         break;
                     case DabServiceWaitTypes.GetDonationStatuses:
                         //get updated donation status
-                        //if (response?.payload?.data?.updatedDonation != null)
-                        //{
-                        //    _qlObject = response;
-                        //    _waiting = false;
-                        //}
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
                         break;
 
                 }

@@ -64,7 +64,6 @@ namespace DABApp.Service
                 var qlll = await DabService.GetCampaigns(GlobalResources.CampaignUpdatedDate);
                 if (qlll.Success)
                 {
-                    GlobalResources.CampaignUpdatedDate = DateTime.Now;
                     foreach (var d in qlll.Data)
                     {
                         foreach (var b in d.payload.data.updatedCampaigns.edges)
@@ -78,6 +77,8 @@ namespace DABApp.Service
                             await adb.InsertOrReplaceAsync(c);
                         }
                     }
+                    //update date since last updated campaigns
+                    GlobalResources.CampaignUpdatedDate = DateTime.Now;
                 }
 
                 //logged in user routines
@@ -605,6 +606,41 @@ namespace DABApp.Service
 
         #region Wallet & Donation Routines
 
+        internal static async Task<bool> ReceiveDonationUpdate(DabGraphQlDonation data)
+        {
+            /*
+             * This routine handles incoming donation updates. 
+             * It updates the database
+             */
+
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.donationId == data.id).FirstOrDefaultAsync().Result;
+                if (donation != null)
+                {
+                    donation.donationAmount = data.amount;
+                    donation.donationRecurringInterval = data.recurringInterval;
+                    //TODO: come back to source/cardid
+                    //TODO: what is donationuserid, is that a mistake?
+                    donation.donationSource = data.source.cardId;
+                    donation.donationStatus = data.status;
+                    await adb.InsertOrReplaceAsync(donation);
+                }
+                else
+                {
+                    dbUserCampaigns newDon = new dbUserCampaigns(data);
+                    await adb.InsertOrReplaceAsync(newDon);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static async Task<bool> RecieveCampaignUpdate(DabGraphQlCampaign data)
         {
             /*
@@ -647,39 +683,31 @@ namespace DABApp.Service
                 {
                     foreach (var item in qlll.Data)
                     {
-                        //foreach (var d in item.payload.data.updatedCards)
-                        //{
-                        //    dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == d.wpId).FirstOrDefaultAsync().Result;
-                        //    if (data == null)
-                        //    {
-                        //        dbCreditCards newCard = new dbCreditCards();
-
-                        //        newCard.cardExpMonth = d.expMonth;
-                        //        newCard.cardExpYear = d.expYear;
-                        //        newCard.cardLastFour = d.lastFour;
-                        //        newCard.cardStatus = d.status;
-                        //        newCard.cardType = d.type;
-                        //        newCard.cardUserId = d.userId;
-                        //        newCard.cardWpId = d.wpId;
-                        //        //insert new card data
-                        //        await adb.InsertOrReplaceAsync(newCard);
-                        //    }
-                        //    else if (data != null)
-                        //    {
-                        //        data.cardStatus = d.status;
-                        //        //update card status
-                        //        await adb.InsertOrReplaceAsync(data);
-                        //    }
-                        //}
-
+                        //find donations by donationId and update status if changed
+                        foreach (var d in item.payload.data.updatedDonationStatus.edges)
+                        {
+                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.donationId == d.id).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbUserCampaigns newCamp = new dbUserCampaigns(d);
+                                await adb.InsertOrReplaceAsync(newCamp);
+                            }
+                            else if (data != null)
+                            {
+                                data.donationStatus = d.status;
+                                data.donationSource = d.source.cardId;
+                                data.donationAmount = d.amount;
+                                data.donationRecurringInterval = d.recurringInterval;
+                                //insert new card data
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                        }
                     }
-
-                    //update last time checked for badge progress
-                    GlobalResources.UserCreditCardUpdateDate = DateTime.UtcNow;
+                    GlobalResources.UserDonationStatusUpdateDate = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error while updating user credit cards: {ex.Message}");
+                    Debug.WriteLine($"Error while updating user donation status: {ex.Message}");
                 }
             }
         }

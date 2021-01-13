@@ -94,7 +94,39 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateCreditCard updatedCard { get; set; }
         public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
         public DabGraphQlCampaign updatedCampaign { get; set; }
+        public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
+        public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
 
+    }
+
+    public class DabGraphQlDonationStatusUpdated
+    {
+        public DabGraphQlDonation donationStatus { get; set; }
+    }
+
+    public class DabGraphQlDonationSource
+    {
+        public string cardId { get; set; }
+        public string processor { get; set; }
+        public string next { get; set; }
+    }
+
+    public class DabGraphQlDonation
+    {
+        public string id { get; set; }
+        public int wpId { get; set; }
+        public DabGraphQlDonationSource source { get; set; }
+        public int amount { get; set; }
+        public string recurringInterval { get; set; }
+        public int campaignWpId { get; set; }
+        public int userWpId { get; set; }
+        public string status { get; set; }
+    }
+
+    public class DabGraphQlUpdatedDonationStatus
+    {
+        public List<DabGraphQlDonation> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
     public class DabGraphQlUpdatedCampaigns

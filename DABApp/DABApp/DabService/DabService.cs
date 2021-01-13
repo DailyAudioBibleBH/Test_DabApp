@@ -127,13 +127,13 @@ namespace DABApp.Service
                 if (cursor == null)
                 {
                     //First run
-                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId title description status suggestedSingleDonation updatedCampaigns pricingPlans } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans } pageInfo { hasNextPage endCursor } } }";
                 }
                 else
                 {
                     //Subsequent runs, use the cursor
                     //TODO: Make sure this is formatted correctly
-                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation updatedCampaigns pricingPlans } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
@@ -184,7 +184,6 @@ namespace DABApp.Service
 
         public static async Task<DabServiceWaitResponseList> GetUserDonationStatusUpdate(DateTime LastDate)
         {
-            //TODO: Start back here tomorrow
             /*
             * this routine checks for user specific donation updates
             */
@@ -231,7 +230,7 @@ namespace DABApp.Service
                 //Process the actions
                 if (response.Success == true)
                 {
-                    var data = response.Data.payload.data.updatedBadges;
+                    var data = response.Data.payload.data.updatedDonationStatus;
 
                     //add what we receied to the list
                     result.Add(response.Data);
@@ -1371,11 +1370,25 @@ namespace DABApp.Service
                 //credit card updated
                 HandleUpdateCreditCard(data.updatedCard.card);
             }
+            else if (data.donationStatusUpdated != null)
+            {
+                //user donation updated
+                HandleUpdateDonation(data.donationStatusUpdated.donationStatus);
+            }
             else
             {
                 //nothing to see here... all other incoming messages should be handled by the appropriate wait service
             }
 
+        }
+
+        private static async void HandleUpdateDonation(DabGraphQlDonation data)
+        {
+            /* 
+             * Handle an incoming donation update
+             */
+
+            await DabServiceRoutines.ReceiveDonationUpdate(data);
         }
 
         private static async void HandleActionLogged(DabGraphQlActionLogged data)
