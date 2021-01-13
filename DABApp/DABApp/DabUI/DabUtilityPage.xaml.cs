@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DABApp.DabSockets;
 using DABApp.DabUI.BaseUI;
 using Newtonsoft.Json;
@@ -19,6 +20,7 @@ namespace DABApp
 
             //tests
             pickTest.Items.Add("Shuffle episodes to random channels");
+            pickTest.Items.Add("Remove every other episode");
 
             //episodes
             pickTable.Items.Add("Channels");
@@ -221,10 +223,23 @@ namespace DABApp
                     }
                     await adb.UpdateAllAsync(episodes);
                     await DisplayAlert("Episodes are shuffled", $"{episodes.Count} have been randomly shuffled among {channels.Count} chnanels.", "OK");
-                        
-
-
                     break;
+                case "Remove every other episode":
+                    //remove every other episode
+                    var removeEps = await adb.Table<dbEpisodes>().ToListAsync();
+                    removeEps = removeEps.OrderBy(x=> x.channel_title).ThenByDescending(x => x.PubDate).ToList();
+                    bool del = false;
+                    foreach (var ep in removeEps)
+                    {
+                        if (del)
+                        {
+                            await adb.DeleteAsync(ep);
+                        }
+                        del = !del;
+                    }
+                    await DisplayAlert("Episodes removed", $"Every other episode has been removed.", "OK");
+                    break;
+
                 default:
                     await DisplayAlert("Nothing to do.", $"This action has not been defined: {pickAction.SelectedItem}.", "OK");
                     break;
