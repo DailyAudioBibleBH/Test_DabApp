@@ -12,6 +12,12 @@
                 <Label Text="Show Table Data"/>
                 <Picker x:Name="pickTable"/>
                 <Button Text="Show Table Data" x:Name="btnShowTableData" Clicked="btnShowTableData_Clicked"/>
+
+                <Label Text="Run an action / test"/>
+                <Picker x:Name="pickTest"/>
+                <Button Text="RunActionTest" x:Name="btnRunTest" Clicked="btnRunTest_Clicked"/>
+
+
                 <Button VerticalOptions="End" Text="Close" x:Name="btnClose" Clicked="btnClose_Clicked" Style="{StaticResource highlightedButtonStyle}"/>
             </StackLayout>
         </ScrollView>

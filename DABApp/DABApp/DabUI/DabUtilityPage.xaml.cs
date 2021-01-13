@@ -17,6 +17,9 @@ namespace DABApp
             pickAction.Items.Add("Receive Profile Changed Event");
             pickAction.Items.Add("Receive new episode");
 
+            //tests
+            pickTest.Items.Add("Shuffle episodes to random channels");
+
             //episodes
             pickTable.Items.Add("Channels");
             pickTable.Items.Add("dbChannels");
@@ -190,10 +193,42 @@ namespace DABApp
 
 
 
-            
 
-            
 
+
+
+        }
+
+
+        async void btnRunTest_Clicked(System.Object sender, System.EventArgs e)
+        {
+            //show some table data
+            var adb = DabData.AsyncDatabase;
+
+            switch (pickTest.SelectedItem)
+            {
+                case "Shuffle episodes to random channels":
+                    //randomly assign episodes to different channels to mix them all up
+                    var channels = await adb.Table<Channel>().ToListAsync();
+                    var episodes = await adb.Table<dbEpisodes>().ToListAsync();
+                    var r = new Random(DateTime.Now.Millisecond);
+                    foreach (var ep in episodes)
+                    {
+                        var channel = channels[r.Next(channels.Count - 1)];
+                        ep.channel_code = channel.key;
+                        ep.channel_description = channel.title;
+                        ep.channel_title = channel.title;
+                    }
+                    await adb.UpdateAllAsync(episodes);
+                    await DisplayAlert("Episodes are shuffled", $"{episodes.Count} have been randomly shuffled among {channels.Count} chnanels.", "OK");
+                        
+
+
+                    break;
+                default:
+                    await DisplayAlert("Nothing to do.", $"This action has not been defined: {pickAction.SelectedItem}.", "OK");
+                    break;
+            }
         }
     }
 }
