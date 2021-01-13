@@ -16,6 +16,7 @@ namespace DABApp
         public double campaignSuggestedSingleDonation { get; set; }
         public double campaignSuggestedRecurringDonation { get; set; }
         //public string pricingPlans { get; set; }
+        //TODO: what are pricing plans
 
         public dbCampaigns(DabGraphQlCampaign camp)
         {

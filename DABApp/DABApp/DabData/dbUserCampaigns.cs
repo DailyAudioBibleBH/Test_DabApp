@@ -7,15 +7,15 @@ namespace DABApp
     public class dbUserCampaigns
     {
         [PrimaryKey]
-        public string donationId { get; set; }
-        public int donationUserId { get; set; }
-        public int donationWpId { get; set; }
-        public string donationSource { get; set; }
-        public double donationAmount { get; set; }
-        public string donationRecurringInterval { get; set; }
-        public int donationCampaignWpId { get; set; }
+        public string Id { get; set; }
+        //public int donationUserId { get; set; }
+        public int WpId { get; set; }
+        public string Source { get; set; }
+        public double Amount { get; set; }
+        public string RecurringInterval { get; set; }
+        public int CampaignWpId { get; set; }
         public int UserWpId { get; set; }
-        public string donationStatus { get; set; }
+        public string Status { get; set; }
 
         public dbUserCampaigns()
         {
@@ -23,15 +23,16 @@ namespace DABApp
 
         public dbUserCampaigns(DabGraphQlDonation d)
         {
-            this.donationId = d.id;
-            this.donationUserId = d.userWpId;
-            this.donationWpId = d.wpId;
-            this.donationSource = d.source.cardId;//cardid TODO:come back to this
-            this.donationAmount = d.amount;
-            this.donationRecurringInterval = d.recurringInterval;
-            this.donationCampaignWpId = d.campaignWpId;
+            this.Id = d.id;
+            //TODO: ask chet but I think tdd had an extra property here
+            //this.donationUserId = d.userWpId;
+            this.WpId = d.wpId;
+            this.Source = d.source.cardId;//cardid TODO:come back to this
+            this.Amount = d.amount;
+            this.RecurringInterval = d.recurringInterval;
+            this.CampaignWpId = d.campaignWpId;
             this.UserWpId = d.userWpId;
-            this.donationStatus = d.status;
+            this.Status = d.status;
         }
     }
 }

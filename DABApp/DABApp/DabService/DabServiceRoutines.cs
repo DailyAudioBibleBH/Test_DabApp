@@ -616,15 +616,15 @@ namespace DABApp.Service
             try
             {
                 var adb = DabData.AsyncDatabase;
-                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.donationId == data.id).FirstOrDefaultAsync().Result;
+                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == data.id).FirstOrDefaultAsync().Result;
                 if (donation != null)
                 {
-                    donation.donationAmount = data.amount;
-                    donation.donationRecurringInterval = data.recurringInterval;
-                    //TODO: come back to source/cardid
-                    //TODO: what is donationuserid, is that a mistake?
-                    donation.donationSource = data.source.cardId;
-                    donation.donationStatus = data.status;
+                    donation.WpId = data.wpId;
+                    donation.Source = data.source.cardId;
+                    donation.Amount = data.amount;
+                    donation.RecurringInterval = data.recurringInterval;
+                    donation.CampaignWpId = data.campaignWpId;
+                    donation.Status = data.status;
                     await adb.InsertOrReplaceAsync(donation);
                 }
                 else
