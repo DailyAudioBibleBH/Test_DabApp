@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabUI.BaseUI;
+using DABApp.Helpers;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -47,12 +48,13 @@ namespace DABApp
 					Button btnInterval = new Button();
 					Button once = new Button();
 					Label cTitle = new Label();
-					cTitle.Text = $"{don.name}-${don.suggestedRecurringDonation}/month";
+					cTitle.Text = $"{don.name}-${don.suggestedRecurringDonation}/Month";
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
+					cTitle.FontAttributes = FontAttributes.Bold;
 					Label card = new Label();
 					Label recurr = new Label();
 					Label interval = new Label();
-					btnInterval.Text = "Edit interval";
+					btnInterval.Text = "Edit Donation";
 					btnInterval.Clicked += OnRecurring;
 					btnInterval.WidthRequest = 150;
 					btnInterval.HeightRequest = 40;
@@ -60,16 +62,16 @@ namespace DABApp
 					if (don.pro != null)
 					{
 						string currencyAmount = GlobalResources.ToCurrency(don.pro.amount); 
-						btnInterval.Text = $"Edit {don.pro.interval}";
-						cTitle.Text = $"{don.name}-${currencyAmount}/{don.pro.interval}";
+						btnInterval.Text = $"Edit Donation";
+						cTitle.Text = $"{don.name}-${currencyAmount}/{StringExtensions.ToTitleCase(don.pro.interval)}";
 						card.Text = $"Card ending in {don.pro.card_last_four}";
-						card.FontSize = 14;
+						card.FontSize = 16;
 						card.VerticalOptions = LayoutOptions.End;
 						recurr.Text = $"Recurs: {don.pro.next}";
 						recurr.FontSize = 14;
 						recurr.VerticalOptions = LayoutOptions.Start;
 						btnInterval.IsVisible = true;
-						once.Text = "One-time gift";
+						once.Text = "Make One Time Gift";
 						once.HeightRequest = 40;
 						buttons.Children.Add(btnInterval);
 					}
