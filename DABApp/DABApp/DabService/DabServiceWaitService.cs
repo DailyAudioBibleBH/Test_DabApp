@@ -35,7 +35,8 @@ namespace DABApp.Service
         GetCreditCardProgresses,
         UpdatedCard,
         GetUpdatedCampaigns,
-        GetDonationStatuses
+        GetDonationStatuses,
+        GetDonationHistory
     }
 
     public class DabServiceWaitService
@@ -409,7 +410,14 @@ namespace DABApp.Service
                             _waiting = false;
                         }
                         break;
-
+                    case DabServiceWaitTypes.GetDonationHistory:
+                        //get updated user donation history
+                        if (response?.payload?.data?.updatedDonationHistory != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
                 }
 
             };

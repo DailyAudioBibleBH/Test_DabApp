@@ -181,6 +181,90 @@ namespace DABApp.Service
 
         }
 
+        public static async Task<DabServiceWaitResponseList> GetUserDonationHistoryUpdate(DateTime LastDate)
+        {
+            /*
+            * this routine checks for user specific donation updates
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = "query { updatedDonationHistory(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId platform paymentType chargeId date donationType currency grossDonation fee netDonation campaignWpId userWpId } pageInfo { hasNextPage endCursor } } }";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { id wpId platform paymentType chargeId date donationType currency grossDonation fee netDonation campaignWpId userWpId } pageInfo { hasNextPage endCursor } } }";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetDonationHistory);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedDonationHistory;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
+        }
+
         public static async Task<DabServiceWaitResponseList> GetUserDonationStatusUpdate(DateTime LastDate)
         {
             /*

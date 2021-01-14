@@ -106,6 +106,8 @@ namespace DABApp.Service
                     await GetUpdatedCreditCards();
 
                     await GetUpdatedDonationStatus();
+
+                    await GetUpdatedDonationHistory();
                 }
 
                 return true;
@@ -676,6 +678,54 @@ namespace DABApp.Service
             catch (Exception ex)
             {
                 return false;
+            }
+        }
+
+        public static async Task GetUpdatedDonationHistory()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserDonationHistoryUpdateDate;
+
+            var qlll = await DabService.GetUserDonationHistoryUpdate(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //find donations by donationId and update status if changed
+                        foreach (var d in item.payload.data.updatedDonationHistory.edges)
+                        {
+                            dbDonationHistory data = adb.Table<dbDonationHistory>().Where(x => x.historyId == d.id).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbDonationHistory newHist = new dbDonationHistory(d);
+                                await adb.InsertOrReplaceAsync(newHist);
+                            }
+                            else if (data != null)
+                            {
+                                data.historyCampaignWpId = d.campaignWpId;
+                                data.historyChargeId = d.chargeId;
+                                data.historyCurrency = d.currency;
+                                data.historyDate = d.date;
+                                data.historyDonationType = d.donationType;
+                                data.historyFee = d.fee;
+                                data.historyGrossDonation = d.grossDonation;
+                                data.historyNetDonation = d.netDonation;
+                                data.historyPaymentType = d.paymentType;
+                                data.historyPlatform = d.platform;
+                                data.historyWpId = d.wpId;
+                                //insert new donation history data
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                        }
+                    }
+                    GlobalResources.UserDonationHistoryUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user donation status: {ex.Message}");
+                }
             }
         }
 

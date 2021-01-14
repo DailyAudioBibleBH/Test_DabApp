@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "20210113";
+                return "20210114";
             }
         }
 
@@ -469,6 +469,23 @@ namespace DABApp
                 //Store the value sent in the database
                 dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
                 user.DonationStatusUpdateDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
+        public static DateTime UserDonationHistoryUpdateDate
+        {
+            get
+            {
+                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.DonationHistoryUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user.DonationHistoryUpdateDate = value;
                 adb.InsertOrReplaceAsync(user);
 
             }

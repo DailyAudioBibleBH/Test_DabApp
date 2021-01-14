@@ -96,7 +96,32 @@ namespace DABApp.DabSockets
         public DabGraphQlCampaign updatedCampaign { get; set; }
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
+        public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
 
+
+    }
+
+    public class DabGraphQlSingleDonationHistory
+    {
+        public string id { get; set; }
+        public int wpId { get; set; }
+        public string platform { get; set; }
+        public string paymentType { get; set; }
+        public string chargeId { get; set; }
+        public DateTime date { get; set; }
+        public string donationType { get; set; }
+        public string currency { get; set; }
+        public int grossDonation { get; set; }
+        public double fee { get; set; }
+        public double netDonation { get; set; }
+        public int campaignWpId { get; set; }
+        public int userWpId { get; set; }
+    }
+
+    public class DabGraphQlUpdatedDonationHistory
+    {
+        public List<DabGraphQlSingleDonationHistory> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
     public class DabGraphQlDonationStatusUpdated

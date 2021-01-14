@@ -1,4 +1,5 @@
 ﻿using System;
+using DABApp.DabSockets;
 using SQLite;
 
 namespace DABApp
@@ -6,7 +7,7 @@ namespace DABApp
     public class dbDonationHistory
     {
         [PrimaryKey]
-        public int historyId { get; set; }
+        public string historyId { get; set; }
 
         public int historyWpId { get; set; }
 
@@ -14,7 +15,7 @@ namespace DABApp
 
         public string historyPaymentType { get; set; }
 
-        public int historyChargeId { get; set; }
+        public string historyChargeId { get; set; }
 
         public DateTime historyDate { get; set; }
 
@@ -34,6 +35,23 @@ namespace DABApp
 
         public dbDonationHistory()
         {
+        }
+
+        public dbDonationHistory(DabGraphQlSingleDonationHistory d)
+        {
+            this.historyId = d.id;
+            this.historyWpId = d.wpId;
+            this.historyPlatform = d.platform;
+            this.historyPaymentType = d.paymentType;
+            this.historyChargeId = d.chargeId;
+            this.historyDate = d.date;
+            this.historyDonationType = d.donationType;
+            this.historyCurrency = d.currency;
+            this.historyGrossDonation = d.grossDonation;
+            this.historyFee = d.fee;
+            this.historyNetDonation = d.netDonation;
+            this.historyCampaignWpId = d.campaignWpId;
+            this.historyUserWpId = d.userWpId;
         }
     }
 }
