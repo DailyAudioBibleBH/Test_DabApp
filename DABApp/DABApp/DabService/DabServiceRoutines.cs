@@ -59,7 +59,7 @@ namespace DABApp.Service
                 }
 
                 //get campaigns
-                var qlll = await DabService.GetCampaigns(GlobalResources.CampaignUpdatedDate);
+                var qlll = await DabService.GetCampaigns(GlobalResources.DabMinDate);
                 if (qlll.Success)
                 {
                     foreach (var d in qlll.Data)
@@ -732,7 +732,7 @@ namespace DABApp.Service
         public static async Task GetUpdatedDonationStatus()
         {
             var adb = DabData.AsyncDatabase;
-            DateTime LastDate = GlobalResources.UserDonationStatusUpdateDate;
+            DateTime LastDate = GlobalResources.DabMinDate;//GlobalResources.UserDonationStatusUpdateDate;
 
             var qlll = await DabService.GetUserDonationStatusUpdate(LastDate);
             if (qlll.Success == true)

@@ -84,16 +84,11 @@ namespace DABApp
             }
         }
 
-        public static async Task<Donation[]> GetDonations()//Gets all recurring user donations.  Not historical ones!
+        public static List<dbUserCampaigns> GetDonations()//Gets all recurring user donations.  Not historical ones!
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                Donation[] donations = JsonConvert.DeserializeObject<Donation[]>(JsonOut);
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted").ToListAsync().Result;
                 return donations;
             }
             catch (Exception e)
@@ -174,17 +169,13 @@ namespace DABApp
             }
         }
 
-        public static async Task<DonationRecord[]> GetDonationHistory()//Gets user donation history
+        public static List<dbDonationHistory> GetDonationHistory()//Gets user donation history
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}donations/history");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                DonationRecord[] history = JsonConvert.DeserializeObject<DonationRecord[]>(JsonOut);
-                return history;
+                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().ToListAsync().Result;
+
+                return donations;
             }
             catch (Exception e)
             {

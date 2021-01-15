@@ -279,33 +279,30 @@ namespace DABApp
                         DependencyService.Get<IAnalyticsService>().LogEvent("give_user");
                         var num = 15000;
                         var t = AuthenticationAPI.GetDonations();
-                        Donation[] dons = new Donation[] { };
-                        if (t == await Task.WhenAny(t, Task.Delay(num)))
-                        {
-                            dons = await AuthenticationAPI.GetDonations();
-                        }
-                        else await DisplayAlert("Request Timeout exceeded for getting donation information.", "This may be a server or internet connectivity issue.", "OK");
+                        List<dbUserCampaigns> dons = AuthenticationAPI.GetDonations();
+ 
                         if (dons != null)
                         {
-                            if (dons.Length == 1)
-                            {
-                                String url = "";
-                                var ask = PlayerFeedAPI.PostDonationAccessToken();
-                                if (ask == await Task.WhenAny(ask, Task.Delay(num)))
-                                {
-                                    url = await PlayerFeedAPI.PostDonationAccessToken();
-                                }
-                                else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
-                                if (url.StartsWith("http"))
-                                {
-                                    DependencyService.Get<IRivets>().NavigateTo(url);
-                                }
-                                else
-                                {
-                                    await DisplayAlert("Error", url, "OK");
-                                }
-                            }
-                            else await Navigation.PushAsync(new DabManageDonationsPage(dons));
+                            //if (dons.Count == 1)
+                            //{
+                            //    String url = "";
+                            //    var ask = PlayerFeedAPI.PostDonationAccessToken();
+                            //    if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                            //    {
+                            //        url = await PlayerFeedAPI.PostDonationAccessToken();
+                            //    }
+                            //    else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
+                            //    if (url.StartsWith("http"))
+                            //    {
+                            //        DependencyService.Get<IRivets>().NavigateTo(url);
+                            //    }
+                            //    else
+                            //    {
+                            //        await DisplayAlert("Error", url, "OK");
+                            //    }
+                            //}
+                            //else
+                            await Navigation.PushAsync(new DabManageDonationsPage());
                         }
                         else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
                     }

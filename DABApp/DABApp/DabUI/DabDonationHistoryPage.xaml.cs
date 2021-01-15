@@ -7,7 +7,7 @@ namespace DABApp
 {
 	public partial class DabDonationHistoryPage : DabBaseContentPage
 	{
-		public DabDonationHistoryPage(DonationRecord[] history)
+		public DabDonationHistoryPage()
 		{
 			InitializeComponent();
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
@@ -23,6 +23,8 @@ namespace DABApp
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+			List<dbDonationHistory> history = AuthenticationAPI.GetDonationHistory();
+			history.OrderBy(x => x.historyDate);
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())
 			//{

@@ -15,7 +15,7 @@ namespace DABApp
         public string campaignStatus { get; set; }
         public double campaignSuggestedSingleDonation { get; set; }
         public double campaignSuggestedRecurringDonation { get; set; }
-        //public string pricingPlans { get; set; }
+        public string pricingPlans { get; set; }
         //TODO: what are pricing plans
 
         public dbCampaigns(DabGraphQlCampaign camp)
@@ -27,7 +27,7 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
-            //this.pricingPlans = camp.pricingPlans.ToString();
+            this.pricingPlans = camp.pricingPlans.ToString();
         }
 
         public dbCampaigns()

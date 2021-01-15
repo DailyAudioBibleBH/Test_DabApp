@@ -128,12 +128,12 @@ namespace DABApp
 
 		async void OnDonations(object o, EventArgs e) {
 			
-			var don = await AuthenticationAPI.GetDonations();
-			var Donations = new DabManageDonationsPage(don);
-            Donations.Unsubscribe();
-			Detail = new NavigationPage(Donations) { BarTextColor = (Color)App.Current.Resources["TextColor"]};
-			Donations.ToolbarItems.Clear();
-			Remove();
+			//var don = AuthenticationAPI.GetDonations();
+			////var Donations = new DabManageDonationsPage(don);
+   //         Donations.Unsubscribe();
+			//Detail = new NavigationPage(Donations) { BarTextColor = (Color)App.Current.Resources["TextColor"]};
+			//Donations.ToolbarItems.Clear();
+			//Remove();
 			
 		}
 

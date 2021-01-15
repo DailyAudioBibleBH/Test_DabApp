@@ -537,7 +537,7 @@ namespace DABApp
                 var firstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
                 var lastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
                 var avatar = GlobalResources.UserAvatar;
-                
+
                 var token = new APIToken
                 {
                     value = tokenValue,

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using SlideOverKit;
+using SQLite;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
 
@@ -65,19 +67,88 @@ namespace DABApp
 		}
 	}
 
-	public class HistoryConverter : IValueConverter
+	public class CardLastFourConverter : IValueConverter
 	{
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) { return null;}
+			if (value == null) { return null; }
 
-			var history = (DonationRecord)value;
-			return $"{history.campaignName}-{history.currency}{history.grossAmount}";
+			dbDonationHistory history = (dbDonationHistory)value;
+			var test = adb.Table<dbUserCampaigns>().ToListAsync().Result.Where(x => x.Id == history.historyChargeId);
+			var test2 = adb.Table<dbDonationHistory>().ToListAsync().Result;
+			string date = history.historyDate.ToString("M/dd/yyyy", CultureInfo.InvariantCulture);
+			return $"{date}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	public class DateConverter : IValueConverter
+    {
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null; }
+
+			dbDonationHistory history = (dbDonationHistory)value;
+			string date = history.historyDate.ToString("M/dd/yyyy", CultureInfo.InvariantCulture);
+			return $"{date}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class HistoryConverter : IValueConverter
+	{
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null;}
+
+			var history = (dbDonationHistory)value;
+			string campaignName = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == history.historyCampaignWpId).FirstOrDefaultAsync().Result.campaignTitle;
+			string symbol;
+			if (!TryGetCurrencySymbol(history.historyCurrency, out symbol))
+			{
+				symbol = history.historyCurrency;
+			};
+			return $"{campaignName}-{symbol}{GlobalResources.ToCurrency(history.historyGrossDonation)}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool TryGetCurrencySymbol(string ISOCurrencySymbol, out string symbol)
+		{
+			symbol = CultureInfo
+				.GetCultures(CultureTypes.AllCultures)
+				.Where(c => !c.IsNeutralCulture)
+				.Select(culture => {
+					try
+					{
+						return new RegionInfo(culture.Name);
+					}
+					catch
+					{
+						return null;
+					}
+				})
+				.Where(ri => ri != null && ri.ISOCurrencySymbol == ISOCurrencySymbol)
+				.Select(ri => ri.CurrencySymbol)
+				.FirstOrDefault();
+			return symbol != null;
 		}
 	}
 
