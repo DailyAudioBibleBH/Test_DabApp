@@ -93,16 +93,8 @@ namespace DABApp
 				}
 				else
 				{
-					var updateResult = await Service.DabService.UpdateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
-					if (updateResult.Success == false)
-					{
-						await DisplayAlert("Error", $"Error: {updateResult.ErrorMessage}", "OK");
-					}
-					else
-					{
-						await DisplayAlert("Success", "Successfully Updated Donation", "OK");
-						await Navigation.PopAsync();
-					}
+					var updateResult = Service.DabService.UpdateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
+					await Navigation.PopAsync();
 				}
 				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 			}
