@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using SlideOverKit;
@@ -74,12 +75,11 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) { return null; }
-
+			//TODO: Figure how to tie history to credit card
 			dbDonationHistory history = (dbDonationHistory)value;
-			var test = adb.Table<dbUserCampaigns>().ToListAsync().Result.Where(x => x.Id == history.historyChargeId);
-			var test2 = adb.Table<dbDonationHistory>().ToListAsync().Result;
-			string date = history.historyDate.ToString("M/dd/yyyy", CultureInfo.InvariantCulture);
-			return $"{date}";
+			dbCreditCards card = adb.Table<dbCreditCards>().FirstOrDefaultAsync().Result;
+			string cardNumber = "Card: **** **** **** " + card.cardLastFour;
+			return $"{cardNumber}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

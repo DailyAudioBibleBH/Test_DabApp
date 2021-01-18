@@ -11,6 +11,7 @@ namespace DABApp
 	public partial class DabManageDonationsPage : DabBaseContentPage
 	{
 		List<dbUserCampaigns> _donations;
+		List<dbCampaigns> _campaigns;
 		bool isInitialized = false;
 		bool _fromLogin;
 		object source;
@@ -32,7 +33,7 @@ namespace DABApp
 			{ 
 				ToolbarItems.RemoveAt(ToolbarItems.Count - 1);
 			}
-			_donations = AuthenticationAPI.GetDonations();
+			_campaigns = AuthenticationAPI.GetCampaigns();
 			_fromLogin = fromLogin;
 			if (GlobalResources.ShouldUseSplitScreen)
             {
@@ -41,80 +42,79 @@ namespace DABApp
 			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{
 				OnAppearing();
 			});
-			if (_donations != null) //&& _donations.Count() > 0)
+			if (_campaigns != null)
 			{
-				foreach (var don in _donations)
+				foreach (var cam in _campaigns)
 				{
-					if (don.Status != "deleted")
+					dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == cam.campaignWpId).FirstOrDefaultAsync().Result;
+					StackLayout layout = new StackLayout();
+					StackLayout buttons = new StackLayout();
+					buttons.Orientation = StackOrientation.Horizontal;
+					Button btnInterval = new Button();
+					Button once = new Button();
+					Label cTitle = new Label();
+					cTitle.Text = $"{donation.campaignTitle}-${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
+					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
+					cTitle.FontAttributes = FontAttributes.Bold;
+					Label card = new Label();
+					Label recurr = new Label();
+					Label interval = new Label();
+					btnInterval.Text = "Edit Donation";
+					btnInterval.Clicked += OnRecurring;
+					btnInterval.WidthRequest = 150;
+					btnInterval.HeightRequest = 40;
+					btnInterval.AutomationId = cam.campaignId.ToString();
+					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
+					if (pro != null)
 					{
-						dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == don.CampaignWpId).FirstOrDefaultAsync().Result;
-						StackLayout layout = new StackLayout();
-						StackLayout buttons = new StackLayout();
-						buttons.Orientation = StackOrientation.Horizontal;
-						Button btnInterval = new Button();
-						Button once = new Button();
-						Label cTitle = new Label();
-						cTitle.Text = $"{donation.campaignTitle}-${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
-						cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
-						cTitle.FontAttributes = FontAttributes.Bold;
-						Label card = new Label();
-						Label recurr = new Label();
-						Label interval = new Label();
-						btnInterval.Text = "Edit Donation";
-						btnInterval.Clicked += OnRecurring;
-						btnInterval.WidthRequest = 150;
-						btnInterval.HeightRequest = 40;
-						btnInterval.AutomationId = don.Id.ToString();
-						dbCreditSource pro = adb.Table<dbCreditSource>().Where(x => x.cardId == don.Source).FirstOrDefaultAsync().Result;
-						if (pro != null)
+						int cardId = Convert.ToInt32(pro.Source);
+						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
+						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
+						string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
+						btnInterval.Text = $"Edit Donation";
+						cTitle.Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
+						if (creditCard == null)
 						{
-							int cardId = Convert.ToInt32(pro.cardId);
-							dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-							string currencyAmount = GlobalResources.ToCurrency(don.Amount);
-							btnInterval.Text = $"Edit Donation";
-							cTitle.Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(don.RecurringInterval)}";
-							if (creditCard == null)
-							{
-								card.Text = $"Card not found";
-							}
-							else
-							{
-								card.Text = $"Card ending in {creditCard.cardLastFour}";
-
-							}
-							card.FontSize = 16;
-							card.VerticalOptions = LayoutOptions.End;
-							recurr.Text = $"Recurs: {Convert.ToDateTime(pro.next).ToString("MM/dd/yyyy")}";
-							recurr.FontSize = 14;
-							recurr.VerticalOptions = LayoutOptions.Start;
-							btnInterval.IsVisible = true;
-							once.Text = "Make One Time Gift";
-							once.HeightRequest = 40;
-							buttons.Children.Add(btnInterval);
+							card.Text = $"Card not found";
 						}
 						else
 						{
-							btnInterval.IsVisible = false;
-							once.Text = "Give";
-							once.HeightRequest = 40;
-							once.HorizontalOptions = LayoutOptions.StartAndExpand;
+							card.Text = $"Card ending in {creditCard.cardLastFour}";
+
 						}
-						once.WidthRequest = 150;
-						once.AutomationId = don.Id;
-						once.Clicked += OnGive;
+						card.FontSize = 16;
+						card.VerticalOptions = LayoutOptions.End;
+						recurr.Text = $"Recurs: {Convert.ToDateTime(source.next).ToString("MM/dd/yyyy")}";
+						recurr.FontSize = 14;
+						recurr.VerticalOptions = LayoutOptions.Start;
+						btnInterval.IsVisible = true;
+						once.Text = "Make One Time Gift";
+						once.HeightRequest = 40;
 						buttons.Children.Add(btnInterval);
-						buttons.Children.Add(once);
-						layout.Children.Add(cTitle);
-						layout.Children.Add(card);
-						layout.Children.Add(recurr);
-						layout.Children.Add(buttons);
-						layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
-						layout.Padding = 10;
-						layout.Spacing = 10;
-						layout.AutomationId = don.Id;
-						Container.Children.Insert(1, layout);
-					
 					}
+					else
+					{
+						btnInterval.IsVisible = false;
+						once.Text = "Give";
+						once.HeightRequest = 40;
+						once.HorizontalOptions = LayoutOptions.StartAndExpand;
+					}
+					once.WidthRequest = 150;
+					once.AutomationId = cam.campaignId.ToString();
+					once.Clicked += OnGive;
+					buttons.Children.Add(btnInterval);
+					buttons.Children.Add(once);
+					layout.Children.Add(cTitle);
+					layout.Children.Add(card);
+					layout.Children.Add(recurr);
+					layout.Children.Add(buttons);
+					layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
+					layout.Padding = 10;
+					layout.Spacing = 10;
+					layout.AutomationId = cam.campaignId.ToString();
+					Container.Children.Insert(1, layout);
+					
+					
 				}
 			}
 		}
@@ -168,7 +168,7 @@ namespace DABApp
 			{
 				source = new object();
 				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-				_donations = AuthenticationAPI.GetDonations();
+				_donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted").ToListAsync().Result;//AuthenticationAPI.GetActiveDonations(_campaigns);
 				if (_donations != null)
 				{
 					foreach (var don in _donations)

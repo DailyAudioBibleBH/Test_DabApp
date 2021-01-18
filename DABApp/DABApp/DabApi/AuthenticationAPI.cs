@@ -84,12 +84,38 @@ namespace DABApp
             }
         }
 
-        public static List<dbUserCampaigns> GetDonations()//Gets all recurring user donations.  Not historical ones!
+        public static List<dbUserCampaigns> GetActiveDonations()//Gets all recurring user donations.  Not historical ones!
         {
             try
             {
                 List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted").ToListAsync().Result;
                 return donations;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<dbUserCampaigns> GetActiveDonationsByCamp(int campaignWpId)//Gets all recurring user donations.  Not historical ones!
+        {
+            try
+            {
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted" && x.CampaignWpId == campaignWpId).ToListAsync().Result;
+                return donations;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<dbCampaigns> GetCampaigns()//Gets all campaigns
+        {
+            try
+            {
+                List<dbCampaigns> campaigns = adb.Table<dbCampaigns>().Where(x => x.campaignStatus != "deleted").ToListAsync().Result;
+                return campaigns;
             }
             catch (Exception e)
             {
