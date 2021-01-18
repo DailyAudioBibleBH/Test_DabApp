@@ -72,31 +72,33 @@ namespace DABApp
 		{
 			if (Validation())
 			{
-				AmountWarning.IsVisible = false;
-				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-				var card = (dbCreditCards)Cards.SelectedItem;
-				dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == _campaign.Source).FirstOrDefaultAsync().Result;
+				var accept = await DisplayAlert($"Are you sure you want to update this donation?", "You can update this donation by selecting \"Yes\"", "Yes", "No");
+                if (accept)
+                {
+					AmountWarning.IsVisible = false;
+					var card = (dbCreditCards)Cards.SelectedItem;
+					dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == _campaign.Source).FirstOrDefaultAsync().Result;
 
-				if (source == null)
-				{
-					var createResult = await Service.DabService.CreateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
-					if (createResult.Success == false) 
+					if (source == null)
 					{
-						await DisplayAlert("Error", $"Error: {createResult.ErrorMessage}", "OK");
+						var createResult = await Service.DabService.CreateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, null);
+						if (createResult.Success == false)
+						{
+							await DisplayAlert("Error", $"Error: {createResult.ErrorMessage}", "OK");
+						}
+						else
+						{
+							await DisplayAlert("Success", "Successfully Added Donation", "OK");
+							await Navigation.PopAsync();
+						}
+
 					}
 					else
 					{
-						await DisplayAlert("Success", "Successfully Added Donation", "OK");
+						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, null);
 						await Navigation.PopAsync();
 					}
-
 				}
-				else
-				{
-					var updateResult = Service.DabService.UpdateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
-					await Navigation.PopAsync();
-				}
-				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 			}
 			else 
 			{

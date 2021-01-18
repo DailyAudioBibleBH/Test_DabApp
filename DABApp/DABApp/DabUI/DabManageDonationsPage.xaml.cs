@@ -35,7 +35,6 @@ namespace DABApp
 			{ 
 				ToolbarItems.RemoveAt(ToolbarItems.Count - 1);
 			}
-			var test = adb.Table<dbCampaigns>().ToListAsync().Result;
 			_campaigns = adb.Table<dbCampaigns>().Where(x => x.campaignStatus != "deleted").ToListAsync().Result;
 			_fromLogin = fromLogin;
 			if (GlobalResources.ShouldUseSplitScreen)
@@ -67,7 +66,6 @@ namespace DABApp
 					btnInterval.WidthRequest = 150;
 					btnInterval.HeightRequest = 40;
 					btnInterval.AutomationId = cam.campaignWpId.ToString();
-					var test2 = adb.Table<dbUserCampaigns>().ToListAsync().Result;
 					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
 					if (pro != null)
 					{
