@@ -753,9 +753,9 @@ namespace DABApp.Service
 
             //check for a connecting before proceeding
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
-
+            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
             //Send the update donation mutation
-            string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}) {{token}}}}";
+            string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}) }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 
@@ -789,26 +789,27 @@ namespace DABApp.Service
             return response;
         }
 
-        public static async Task<DabServiceWaitResponse> DeleteDonation(string id)
+        public static bool DeleteDonation(int id)
         {
             /*
              * This routine takes a specified wpId and attempts to delte a card via graphql
              */
 
             //check for a connecting before proceeding
-            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+            if (!IsConnected) return false;
 
             //Send the update donation mutation
-            string command = $"mutation {{deleteDonation(campaignWpId: {id}) {{token}}}}";
+            string command = $"mutation {{deleteDonation(campaignWpId: {id}) }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            return true;
 
             //Wait for the appropriate response
-            var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.DeleteCard);
+            //var service = new DabServiceWaitService();
+            //var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdateDonation);
 
             //return the response
-            return response;
+            //return response;
         }
 
         public static async Task<DabServiceWaitResponse> DeleteCard(int wpId)
@@ -820,7 +821,7 @@ namespace DABApp.Service
             //check for a connecting before proceeding
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
-            //Send the Login mutation
+            //Send the delete card mutation
             string command = $"mutation {{deleteCard(wpId: {wpId}) {{token}}}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));

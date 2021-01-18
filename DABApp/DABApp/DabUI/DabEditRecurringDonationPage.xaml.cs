@@ -32,16 +32,15 @@ namespace DABApp
 			}
 			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == _campaign.CampaignWpId).FirstOrDefaultAsync().Result;
 			var test = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result;
-
 			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignWpId == _campaign.CampaignWpId).ToListAsync().Result;
 			List<string> intervalOptions = new List<string>();
             foreach (var item in pricingPlans)
             {
 				string pricingPlanId = item.PricingPlanId.ToString();
-				string interval = adb.Table<dbPricingPlans>().Where(x => x.id == pricingPlanId).FirstOrDefaultAsync().Result.type;
+				dbPricingPlans interval = adb.Table<dbPricingPlans>().Where(x => x.id == pricingPlanId).FirstOrDefaultAsync().Result;
                 if (interval != null)
                 {
-					intervalOptions.Add(interval);
+					intervalOptions.Add(interval.type);
                 }
             }
 
@@ -115,18 +114,13 @@ namespace DABApp
 
 		async void OnCancel(object o, EventArgs e) 
 		{
-			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-			var deleteResult = await Service.DabService.DeleteDonation(_campaign.Id);
-			if (deleteResult.Success == false)
-			{
-				await DisplayAlert("Error", $"Error: {deleteResult.ErrorMessage}", "OK");
+			var accept = await DisplayAlert($"Are you sure you want to cancel this donation?", "You can cancel this donation by selecting \"Yes\"", "Yes", "No");
+
+            if (accept)
+            {
+				Service.DabService.DeleteDonation(_campaign.CampaignWpId);
+				await Navigation.PushAsync(new DabSettingsPage());
 			}
-			else
-			{
-				await DisplayAlert("Success", "Successfully Added Donation", "OK");
-				await Navigation.PopAsync();
-			}
-			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}
 
 		bool Validation() 

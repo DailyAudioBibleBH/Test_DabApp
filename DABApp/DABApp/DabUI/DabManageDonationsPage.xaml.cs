@@ -21,6 +21,8 @@ namespace DABApp
 		public DabManageDonationsPage(bool fromLogin = false)
 		{
 			InitializeComponent();
+			_donations = new List<dbUserCampaigns>();
+			_donations.Clear();
 			if (Device.RuntimePlatform == "Android")
 			{
                 if (Device.Idiom == TargetIdiom.Phone)
@@ -64,11 +66,12 @@ namespace DABApp
 					btnInterval.Clicked += OnRecurring;
 					btnInterval.WidthRequest = 150;
 					btnInterval.HeightRequest = 40;
-					btnInterval.AutomationId = cam.campaignId.ToString();
+					btnInterval.AutomationId = cam.campaignWpId.ToString();
 					var test2 = adb.Table<dbUserCampaigns>().ToListAsync().Result;
 					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
 					if (pro != null)
 					{
+						_donations.Add(pro);
 						int cardId = Convert.ToInt32(pro.Source);
 						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
 						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
@@ -134,8 +137,7 @@ namespace DABApp
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
 			List<dbCreditCards> cards = AuthenticationAPI.GetWallet();
-			var campaign = _donations.Single(x => x.Id.ToString() == chosen.AutomationId);
-			//ContentConfig.Instance.
+			var campaign = _donations.Single(x => x.CampaignWpId.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}

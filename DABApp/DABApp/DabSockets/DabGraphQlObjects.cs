@@ -97,8 +97,13 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
         public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
+        public DabGraphQlDeleteDonation deleteDonation { get; set; }
+    }
 
-
+    public class DabGraphQlDeleteDonation
+    {
+        public string code { get; set; }
+        public string message { get; set; }
     }
 
     public class DabGraphQlSingleDonationHistory

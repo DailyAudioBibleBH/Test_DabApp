@@ -635,8 +635,11 @@ namespace DABApp.Service
                 var adb = DabData.AsyncDatabase;
                 var test = adb.Table<dbCreditCards>().ToListAsync().Result;
                 dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == data.id).FirstOrDefaultAsync().Result;
+                string beforeStatsus = "";
                 if (donation != null)
                 {
+                    beforeStatsus = donation.Status;
+
                     donation.WpId = data.wpId;
                     donation.Amount = data.amount;
                     donation.RecurringInterval = data.recurringInterval;
@@ -664,6 +667,19 @@ namespace DABApp.Service
                     dbCreditSource newSource = new dbCreditSource(data.source);
                     await adb.InsertOrReplaceAsync(newSource);
                 }
+
+                //if (beforeStatsus != donation.Status)
+                //{
+                //    string campaignTitle = "";
+                //    dbCampaigns campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == donation.CampaignWpId).FirstOrDefaultAsync().Result;
+                //    if (campaign != null)
+                //    {
+                //        campaignTitle = campaign.campaignTitle;
+                //    }
+                //    Device.BeginInvokeOnMainThread(() => {
+                //        Application.Current.MainPage.DisplayAlert("Donation Updated", $"Donation to campaign {campaignTitle} is now {donation.Status}", "OK");
+                //    });
+                //}
 
                 return true;
             }
