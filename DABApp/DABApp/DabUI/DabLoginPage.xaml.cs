@@ -367,11 +367,22 @@ namespace DABApp
                 var accept = await DisplayAlert($"Do you want to switch to {testprod} mode?", "You will have to restart the app after selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+                    var test = adb.Table<dbSettings>().ToListAsync().Result;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
+                    await adb.ExecuteAsync("DELETE FROM UserData");
+                    await adb.ExecuteAsync("DELETE FROM dbUserCampaigns");
+                    await adb.ExecuteAsync("DELETE FROM dbPricingPlans");
+                    await adb.ExecuteAsync("DELETE FROM dbDonationHistory");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditSource");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditCards");
+                    await adb.ExecuteAsync("DELETE FROM dbCampaigns");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
                     Login.IsEnabled = false;
+                    BackButton.IsEnabled = false;
+                    var test3 = adb.Table<dbUserData>().ToListAsync().Result;
+                    var test2 = adb.Table<dbSettings>().ToListAsync().Result;
                     //GuestLogin.IsEnabled = false;
                     //SignUp.IsEnabled = false;
                 }

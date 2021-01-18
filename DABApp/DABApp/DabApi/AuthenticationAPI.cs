@@ -110,19 +110,6 @@ namespace DABApp
             }
         }
 
-        public static List<dbCampaigns> GetCampaigns()//Gets all campaigns
-        {
-            try
-            {
-                List<dbCampaigns> campaigns = adb.Table<dbCampaigns>().Where(x => x.campaignStatus != "deleted").ToListAsync().Result;
-                return campaigns;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
         public static async Task<string> UpdateDonation(putDonation donation)//Updates a preexisting donation
         {
             try

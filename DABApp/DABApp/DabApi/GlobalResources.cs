@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "20210120";
+                return "20210121";
             }
         }
 
@@ -422,10 +422,10 @@ namespace DABApp
             get
             {
                 string settingsKey = "CampaignUpdateDate";
-                string BadgeUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
-                if (BadgeUpdateSettingsValue == "")
+                string CampaignUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                if (CampaignUpdateSettingsValue == "")
                 {
-                    DateTime campaignDate = GlobalResources.DabMinDate.ToUniversalTime();
+                    DateTime campaignDate = DateTime.MinValue.ToUniversalTime();
                     dbSettings.StoreSetting(settingsKey, campaignDate.ToString());
                 }
                 return DateTime.Parse(dbSettings.GetSetting("CampaignUpdateDate", ""));

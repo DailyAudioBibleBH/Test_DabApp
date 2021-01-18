@@ -60,7 +60,7 @@ namespace DABApp.Service
                 }
 
                 //get campaigns
-                var qlll = await DabService.GetCampaigns(GlobalResources.DabMinDate);
+                var qlll = await DabService.GetCampaigns(GlobalResources.CampaignUpdatedDate);
                 if (qlll.Success)
                 {
                     foreach (var d in qlll.Data)
