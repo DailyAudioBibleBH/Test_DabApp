@@ -57,8 +57,8 @@ namespace DABApp
 	{ 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var card = (Card)value;
-			return $"{card.brand} ending in {card.last4}";
+			var card = (dbCreditCards)value;
+			return $"{card.cardType} ending in {card.cardLastFour}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

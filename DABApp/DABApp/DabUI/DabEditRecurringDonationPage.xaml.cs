@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabUI.BaseUI;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp
 {
 	public partial class DabEditRecurringDonationPage : DabBaseContentPage
 	{
-		Donation _campaign;
+		dbUserCampaigns _campaign;
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-		public DabEditRecurringDonationPage(Donation campaign, List<dbCreditCards> cards)
+
+		public DabEditRecurringDonationPage(dbUserCampaigns campaign, List<dbCreditCards> cards)
 		{
 			InitializeComponent();
 			if (Device.RuntimePlatform != "Android")
@@ -27,28 +30,41 @@ namespace DABApp
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == _campaign.CampaignWpId).FirstOrDefaultAsync().Result;
+			var test = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result;
 
-            var test = campaign.recurringIntervalOptions;
+			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignWpId == _campaign.CampaignWpId).ToListAsync().Result;
+			List<string> intervalOptions = new List<string>();
+            foreach (var item in pricingPlans)
+            {
+				string pricingPlanId = item.PricingPlanId.ToString();
+				string interval = adb.Table<dbPricingPlans>().Where(x => x.id == pricingPlanId).FirstOrDefaultAsync().Result.type;
+                if (interval != null)
+                {
+					intervalOptions.Add(interval);
+                }
+            }
 
-
-			Title.Text = campaign.name;
-			Intervals.ItemsSource = campaign.recurringIntervalOptions;
+			Title.Text = UniversalCampaign.campaignTitle;
+			Intervals.ItemsSource = intervalOptions;
 			//Intervals.SelectedItem = campaign.recurringIntervalOptions.Where(x => x.Equals(campaign.pro.interval));
-			Intervals.SelectedIndex = campaign.recurringIntervalOptions.FindIndex(x => x == campaign.pro.interval);
+			Intervals.SelectedIndex = intervalOptions.FindIndex(x => x == campaign.RecurringInterval);
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
-			if (campaign.pro != null)
+			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == campaign.Source).FirstOrDefaultAsync().Result;
+			if (source != null)
 			{
-				string currencyAmount = GlobalResources.ToCurrency(campaign.pro.amount);
+				string currencyAmount = GlobalResources.ToCurrency(campaign.Amount);
 				Amount.Text = currencyAmount;
-				Next.Date = Convert.ToDateTime(campaign.pro.next);
-				Cards.SelectedItem = cards.Single(x => x.cardWpId.ToString() == campaign.pro.card_id);
-				Status.Text = campaign.pro.status;
+				Next.Date = Convert.ToDateTime(source.next);
+				int cardId = Convert.ToInt32(campaign.Source);
+				Cards.SelectedItem = cards.Single(x => x.cardWpId == cardId);
+				Status.Text = campaign.Status;
 			}
 			else 
 			{
 				Update.Text = "Add";
-				Amount.Text = campaign.suggestedRecurringDonation;
+				Amount.Text = UniversalCampaign.campaignSuggestedRecurringDonation.ToString();
 				Cancel.IsVisible = false;
 			}
 		}
@@ -59,38 +75,35 @@ namespace DABApp
 			{
 				AmountWarning.IsVisible = false;
 				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-				var card = (Card)Cards.SelectedItem;
-				var stime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-				long unix = (long)(Next.Date - stime).TotalSeconds;
-				string result;
-				if (_campaign.pro == null)
+				var card = (dbCreditCards)Cards.SelectedItem;
+				dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == _campaign.Source).FirstOrDefaultAsync().Result;
+
+				if (source == null)
 				{
-					var address = await AuthenticationAPI.GetAddresses();
-					var billing = address.billing;
-					postDonation send;
-					if (billing.country == "USA")
+					var createResult = await Service.DabService.CreateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
+					if (createResult.Success == false) 
 					{
-						send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country, billing.address_1, billing.address_2, billing.city, billing.state);
+						await DisplayAlert("Error", $"Error: {createResult.ErrorMessage}", "OK");
 					}
 					else
 					{
-						send = new postDonation(_campaign.id, card.id, Amount.Text, unix, billing.country);
+						await DisplayAlert("Success", "Successfully Added Donation", "OK");
+						await Navigation.PopAsync();
 					}
-					result = await AuthenticationAPI.AddDonation(send);
+
 				}
 				else
 				{
-					putDonation send = new putDonation(_campaign.id, card.id, Amount.Text, Intervals.SelectedItem.ToString(), unix);
-					result = await AuthenticationAPI.UpdateDonation(send);
-				}
-				if (result == "Success")
-				{
-					await DisplayAlert("Successfully Updated Donation", null, "OK");
-					await Navigation.PopAsync();
-				}
-				else
-				{
-					await DisplayAlert("Error", result, "OK");
+					var updateResult = await Service.DabService.UpdateDonation(Amount.Text, card.cardType, card.cardWpId, _campaign.CampaignWpId, null);
+					if (updateResult.Success == false)
+					{
+						await DisplayAlert("Error", $"Error: {updateResult.ErrorMessage}", "OK");
+					}
+					else
+					{
+						await DisplayAlert("Success", "Successfully Updated Donation", "OK");
+						await Navigation.PopAsync();
+					}
 				}
 				DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 			}
@@ -103,18 +116,15 @@ namespace DABApp
 		async void OnCancel(object o, EventArgs e) 
 		{
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-			var decision = await DisplayAlert("Cancelling Donation", "Are you sure yout want to cancel your donation?", "Yes", "No");
-			if (decision) {
-				var result = await AuthenticationAPI.DeleteDonation(_campaign.id);
-				if (result == "true")
-				{
-					await DisplayAlert("Successfully Deleted Donation", null, "OK");
-					await Navigation.PopAsync();
-				}
-				else
-				{
-					await DisplayAlert("Error", result, "OK");
-				}
+			var deleteResult = await Service.DabService.DeleteDonation(_campaign.Id);
+			if (deleteResult.Success == false)
+			{
+				await DisplayAlert("Error", $"Error: {deleteResult.ErrorMessage}", "OK");
+			}
+			else
+			{
+				await DisplayAlert("Success", "Successfully Added Donation", "OK");
+				await Navigation.PopAsync();
 			}
 			DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
@@ -70,7 +71,28 @@ namespace DABApp.Service
                             foreach (var plan in b.pricingPlans)
                             {
                                 dbPricingPlans newPlan = new dbPricingPlans(plan);
+                                dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == c.campaignId && x.CampaignWpId == c.campaignWpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                                if (hasPricingPlan == null)
+                                {
+                                    hasPricingPlan = new dbCampaignHasPricingPlan();
+                                    List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                    if (userPricingPlans.Count() == 0)
+                                    {
+                                        hasPricingPlan.Id = 0;
+                                    }
+                                    else
+                                    {
+                                        int newId = userPricingPlans.Max() + 1;
+                                        hasPricingPlan.Id = newId;
+                                    }
+                                }
+                                hasPricingPlan.CampaignId = b.id;
+                                hasPricingPlan.CampaignWpId = b.wpId;
+                                hasPricingPlan.PricingPlanId = plan.id;
+
+                                await adb.InsertOrReplaceAsync(hasPricingPlan);
                                 await adb.InsertOrReplaceAsync(newPlan);
+
                             }
                             await adb.InsertOrReplaceAsync(c);
                         }
@@ -732,7 +754,7 @@ namespace DABApp.Service
         public static async Task GetUpdatedDonationStatus()
         {
             var adb = DabData.AsyncDatabase;
-            DateTime LastDate = GlobalResources.DabMinDate;//GlobalResources.UserDonationStatusUpdateDate;
+            DateTime LastDate = GlobalResources.UserDonationStatusUpdateDate;
 
             var qlll = await DabService.GetUserDonationStatusUpdate(LastDate);
             if (qlll.Success == true)
@@ -755,7 +777,7 @@ namespace DABApp.Service
                                 data.Amount = d.amount;
                                 data.CampaignWpId = d.campaignWpId;
                                 data.RecurringInterval = d.recurringInterval;
-                                //save cardid so we can tie it to source if we ever need it
+                                //save cardid so we can tie it to source when we need it
                                 data.Source = d.source.cardId;
                                 data.Status = d.status;
                                 //insert new card data

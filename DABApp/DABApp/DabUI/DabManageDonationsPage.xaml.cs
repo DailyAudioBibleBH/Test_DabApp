@@ -41,68 +41,80 @@ namespace DABApp
 			MessagingCenter.Subscribe<string>("Refresh", "Refresh", (sender) =>{
 				OnAppearing();
 			});
-			if (_donations != null)
+			if (_donations != null) //&& _donations.Count() > 0)
 			{
 				foreach (var don in _donations)
 				{
-					dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == don.CampaignWpId).FirstOrDefaultAsync().Result;
-					StackLayout layout = new StackLayout();
-					StackLayout buttons = new StackLayout();
-					buttons.Orientation = StackOrientation.Horizontal;
-					Button btnInterval = new Button();
-					Button once = new Button();
-					Label cTitle = new Label();
-					cTitle.Text = $"{donation.campaignTitle}-${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
-					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
-					cTitle.FontAttributes = FontAttributes.Bold;
-					Label card = new Label();
-					Label recurr = new Label();
-					Label interval = new Label();
-					btnInterval.Text = "Edit Donation";
-					btnInterval.Clicked += OnRecurring;
-					btnInterval.WidthRequest = 150;
-					btnInterval.HeightRequest = 40;
-					btnInterval.AutomationId = don.Id.ToString();
-					dbCreditSource pro = adb.Table<dbCreditSource>().Where(x => x.cardId == don.Source).FirstOrDefaultAsync().Result;
-					if (pro != null)
+					if (don.Status != "deleted")
 					{
-						int cardId = Convert.ToInt32(pro.cardId);
-						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-						string currencyAmount = GlobalResources.ToCurrency(don.Amount); 
-						btnInterval.Text = $"Edit Donation";
-						cTitle.Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(don.RecurringInterval)}";
-						card.Text = $"Card ending in {creditCard.cardLastFour}";
-						card.FontSize = 16;
-						card.VerticalOptions = LayoutOptions.End;
-						recurr.Text = $"Recurs: {pro.next}";
-						recurr.FontSize = 14;
-						recurr.VerticalOptions = LayoutOptions.Start;
-						btnInterval.IsVisible = true;
-						once.Text = "Make One Time Gift";
-						once.HeightRequest = 40;
+						dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == don.CampaignWpId).FirstOrDefaultAsync().Result;
+						StackLayout layout = new StackLayout();
+						StackLayout buttons = new StackLayout();
+						buttons.Orientation = StackOrientation.Horizontal;
+						Button btnInterval = new Button();
+						Button once = new Button();
+						Label cTitle = new Label();
+						cTitle.Text = $"{donation.campaignTitle}-${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
+						cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
+						cTitle.FontAttributes = FontAttributes.Bold;
+						Label card = new Label();
+						Label recurr = new Label();
+						Label interval = new Label();
+						btnInterval.Text = "Edit Donation";
+						btnInterval.Clicked += OnRecurring;
+						btnInterval.WidthRequest = 150;
+						btnInterval.HeightRequest = 40;
+						btnInterval.AutomationId = don.Id.ToString();
+						dbCreditSource pro = adb.Table<dbCreditSource>().Where(x => x.cardId == don.Source).FirstOrDefaultAsync().Result;
+						if (pro != null)
+						{
+							int cardId = Convert.ToInt32(pro.cardId);
+							dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
+							string currencyAmount = GlobalResources.ToCurrency(don.Amount);
+							btnInterval.Text = $"Edit Donation";
+							cTitle.Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(don.RecurringInterval)}";
+							if (creditCard == null)
+							{
+								card.Text = $"Card not found";
+							}
+							else
+							{
+								card.Text = $"Card ending in {creditCard.cardLastFour}";
+
+							}
+							card.FontSize = 16;
+							card.VerticalOptions = LayoutOptions.End;
+							recurr.Text = $"Recurs: {Convert.ToDateTime(pro.next).ToString("MM/dd/yyyy")}";
+							recurr.FontSize = 14;
+							recurr.VerticalOptions = LayoutOptions.Start;
+							btnInterval.IsVisible = true;
+							once.Text = "Make One Time Gift";
+							once.HeightRequest = 40;
+							buttons.Children.Add(btnInterval);
+						}
+						else
+						{
+							btnInterval.IsVisible = false;
+							once.Text = "Give";
+							once.HeightRequest = 40;
+							once.HorizontalOptions = LayoutOptions.StartAndExpand;
+						}
+						once.WidthRequest = 150;
+						once.AutomationId = don.Id;
+						once.Clicked += OnGive;
 						buttons.Children.Add(btnInterval);
+						buttons.Children.Add(once);
+						layout.Children.Add(cTitle);
+						layout.Children.Add(card);
+						layout.Children.Add(recurr);
+						layout.Children.Add(buttons);
+						layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
+						layout.Padding = 10;
+						layout.Spacing = 10;
+						layout.AutomationId = don.Id;
+						Container.Children.Insert(1, layout);
+					
 					}
-					else 
-					{
-						btnInterval.IsVisible = false;
-						once.Text = "Give";
-						once.HeightRequest = 40;
-						once.HorizontalOptions = LayoutOptions.StartAndExpand;
-					}
-					once.WidthRequest = 150;
-					once.AutomationId = don.Id;
-					once.Clicked += OnGive;
-					buttons.Children.Add(btnInterval);
-					buttons.Children.Add(once);
-					layout.Children.Add(cTitle);
-					layout.Children.Add(card);
-					layout.Children.Add(recurr);
-					layout.Children.Add(buttons);
-					layout.BackgroundColor = (Color)App.Current.Resources["InputBackgroundColor"];
-					layout.Padding = 10;
-					layout.Spacing = 10;
-					layout.AutomationId = don.Id;
-					Container.Children.Insert(1, layout);
 				}
 			}
 		}
@@ -122,7 +134,7 @@ namespace DABApp
 			List<dbCreditCards> cards = AuthenticationAPI.GetWallet();
 			var campaign = _donations.Single(x => x.Id.ToString() == chosen.AutomationId);
 			//ContentConfig.Instance.
-			//await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
+			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 

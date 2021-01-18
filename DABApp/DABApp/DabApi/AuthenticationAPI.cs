@@ -147,21 +147,14 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> DeleteDonation(int id)//Deletes recurring donations
+        public static async Task<string> DeleteDonation(string id)//Deletes recurring donations
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.DeleteAsync($"{GlobalResources.RestAPIUrl}donations/{id}");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                if (JsonOut != "true")
-                {
-                    APIError error = JsonConvert.DeserializeObject<APIError>(JsonOut);
-                    throw new Exception(error.message);
-                }
-                return JsonOut;
+                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == id).FirstOrDefaultAsync().Result;
+                donation.Status = "deleted";
+                await adb.InsertOrReplaceAsync(donation);
+                return null;
             }
             catch (Exception e)
             {

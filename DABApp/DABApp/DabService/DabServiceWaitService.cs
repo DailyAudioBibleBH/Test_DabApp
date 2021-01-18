@@ -36,7 +36,10 @@ namespace DABApp.Service
         UpdatedCard,
         GetUpdatedCampaigns,
         GetDonationStatuses,
-        GetDonationHistory
+        GetDonationHistory,
+        UpdateDonation,
+        DeleteCard,
+        CreateDonation
     }
 
     public class DabServiceWaitService
@@ -418,8 +421,31 @@ namespace DABApp.Service
                             _waiting = false;
                         }
                         break;
+                    case DabServiceWaitTypes.UpdateDonation:
+                        // get updated donation response
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.DeleteCard:
+                        // get delete card response
+                        if (response?.payload?.data?.updatedCard != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.CreateDonation:
+                        // get create donation response
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
                 }
-
             };
         }
     }
