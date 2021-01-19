@@ -11,20 +11,15 @@ namespace DABApp
         public string Key { get; set; }
         public string Value { get; set; }
 
-        public static async Task<bool> DeleteLoginSettings()
+        public static async Task<bool> ChangeLoginSettings()
         {
             try
             {
                 SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-                var a = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                a.Token = "";
-                a.TokenCreation = DateTime.MinValue;
-                a.FirstName = "";
-                a.LastName = "";
-                a.Email = "";
-                a.ActionDate = GlobalResources.DabMinDate;
-                a.ProgressDate = GlobalResources.DabMinDate;
-                await adb.InsertOrReplaceAsync(a);
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
+                user.Token = "";
+                user.IsLoggedIn = false;
+                await adb.InsertOrReplaceAsync(user);
             }
             catch (Exception ex)
             {

@@ -82,7 +82,6 @@ namespace DABApp
             int i = adb.ExecuteAsync("delete from dbPlayerActions").Result;
             i = adb.ExecuteAsync("delete from dbEpisodeUserData").Result;
 
-
             await DisplayAlert("Local User Data Reset", "We have reset your local user data. It will be reloaded when you return to the episodes page.", "OK");
         }
 
@@ -112,8 +111,9 @@ namespace DABApp
 
                 //Build the message content
                 var adb = DabData.AsyncDatabase;
-                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                if (user == null)
+                var user = GlobalResources.Instance.LoggedInUser;
+
+                if (user.Id == 0)
                 {
                     user = new dbUserData()
                     {

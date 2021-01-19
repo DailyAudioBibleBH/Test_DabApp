@@ -88,7 +88,7 @@ namespace DABApp.DabSockets
         {
             //Sends new content data to the journal socket 
             var room = date.ToString("yyyy-MM-dd");
-            var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+            var token = GlobalResources.Instance.LoggedInUser.Token;
             var data = new DabJournalObject(content, room, token);
             data.html = CommonMark.CommonMarkConverter.Convert(content);
             var json = JObject.FromObject(data);
@@ -104,7 +104,7 @@ namespace DABApp.DabSockets
         {
             //Joins a room for a specific date
             var room = date.ToString("yyyy-MM-dd");
-            var token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+            var token = GlobalResources.Instance.LoggedInUser.Token;
             var data = new DabJournalObject(room, token);
             var json = JObject.FromObject(data);
             //Send data to the socket

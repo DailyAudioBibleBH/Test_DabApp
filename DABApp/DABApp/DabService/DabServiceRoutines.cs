@@ -115,8 +115,6 @@ namespace DABApp.Service
                         //process user profile information
                         var profile = ql.Data.payload.data.user;
                         await UpdateUserProfile(profile);
-
-
                     }
 
                     //get recent actions
@@ -168,7 +166,7 @@ namespace DABApp.Service
                         try
                         {
                             //get the expiration date
-                            DateTime creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
+                            DateTime creation = GlobalResources.Instance.LoggedInUser.TokenCreation;
                             int days = ContentConfig.Instance.options.token_life;
                             if (DateTime.Now > creation.AddDays(days))
                             {
@@ -191,7 +189,7 @@ namespace DABApp.Service
                             if (ql.Success)
                             {
                                 //token was updated successfully
-                                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                                var newUserData = GlobalResources.Instance.LoggedInUser;
                                 newUserData.Token = ql.Data.payload.data.updateToken.token;
                                 newUserData.TokenCreation = DateTime.Now;
                                 await adb.InsertOrReplaceAsync(newUserData);
@@ -600,7 +598,7 @@ namespace DABApp.Service
             //save user profile settings
             var adb = DabData.AsyncDatabase;
 
-            dbUserData userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+            dbUserData userData = GlobalResources.Instance.LoggedInUser;
             userData.WpId = user.wpId;
             userData.FirstName = user.firstName;
             userData.LastName = user.lastName;
@@ -902,7 +900,7 @@ namespace DABApp.Service
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            userName = GlobalResources.Instance.LoggedInUser.Email;
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
@@ -971,7 +969,7 @@ namespace DABApp.Service
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
-            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            userName = GlobalResources.Instance.LoggedInUser.Email;
             //bool badgeFirstEarned = false;
 
             //Build out progress object
@@ -1021,7 +1019,7 @@ namespace DABApp.Service
             //log to firebase
             var adb = DabData.AsyncDatabase;
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
+            fbInfo.Add("user",GlobalResources.Instance.LoggedInUser.Email);
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 

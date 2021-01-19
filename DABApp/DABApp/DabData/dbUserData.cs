@@ -18,8 +18,9 @@ namespace DABApp
         public string Language { get; set; }
         public string Channel { get; set; }
         public string Channels { get; set; }
-        public DateTime UserRegistered { get; set; }
         public string Token { get; set; }
+        public bool IsLoggedIn { get; set; }
+        public DateTime UserRegistered { get; set; }
         public DateTime TokenCreation { get; set; }
         public DateTime ProgressDate { get; set; }
         public DateTime ActionDate { get; set; }

@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "20210121";
+                return "20210127";
             }
         }
 
@@ -94,7 +94,7 @@ namespace DABApp
             {
                 if (GlobalResources.Instance.IsLoggedIn)
                 {
-                    int registerYear = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered.Year;
+                    int registerYear = GlobalResources.Instance.LoggedInUser.UserRegistered.Year;
                     int episodeYear = ContentConfig.Instance.options.episode_year;
                     int minYear = Math.Max(registerYear, episodeYear);
                     //Go back one day to get January 1st episodes
@@ -231,6 +231,14 @@ namespace DABApp
             }
 
         }
+
+        public dbUserData LoggedInUser
+        {
+            get
+            {
+                return GetLoggedInUser();
+            }
+        }
         public static GlobalResources Instance { get; private set; }
 
         public bool OnRecord { get; set; }
@@ -335,33 +343,24 @@ namespace DABApp
             }
         }
 
-        public static int GetUserWpId()
+        public dbUserData GetLoggedInUser()
         {
-            try
+
+            dbUserData user = adb.Table<dbUserData>().Where(x => x.IsLoggedIn == true).FirstOrDefaultAsync().Result;
+            if (user != null)
             {
-
-                if (!GuestStatus.Current.IsGuestLogin)
-                {
-                    int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
-                    return wpID;
-
-                }
-                else
-                {
-                    return 0; //guest
-                }
+                return user;
             }
-            catch (Exception ex)
+            else
             {
-                return -2; //error
+                return adb.Table<dbUserData>().Where(x => x.Id == 0).FirstOrDefaultAsync().Result;
             }
-
         }
 
         public static string GetUserName()
         {
             //friendly user name
-            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
+            return (Instance.LoggedInUser.FirstName + " " + Instance.LoggedInUser.LastName);
         }
 
         //Used to convert to a currency amount without dollar sign
@@ -444,13 +443,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ProgressDate;
+                return GlobalResources.Instance.LoggedInUser.ProgressDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.ProgressDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -461,13 +460,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.DonationStatusUpdateDate;
+                return GlobalResources.Instance.LoggedInUser.DonationStatusUpdateDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.DonationStatusUpdateDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -478,13 +477,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.DonationHistoryUpdateDate;
+                return GlobalResources.Instance.LoggedInUser.DonationHistoryUpdateDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.DonationHistoryUpdateDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -495,13 +494,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.CreditCardUpdateDate;
+                return GlobalResources.Instance.LoggedInUser.CreditCardUpdateDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.CreditCardUpdateDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -513,13 +512,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ActionDate;
+                return GlobalResources.Instance.LoggedInUser.ActionDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.ActionDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -556,7 +555,7 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
-                string hash = CalculateMD5Hash(adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
+                string hash = CalculateMD5Hash(GlobalResources.Instance.LoggedInUser.Email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }
@@ -696,7 +695,7 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            await dbSettings.DeleteLoginSettings();
+            await dbSettings.ChangeLoginSettings();
 
             //Websocket
             await DabService.TerminateConnection();

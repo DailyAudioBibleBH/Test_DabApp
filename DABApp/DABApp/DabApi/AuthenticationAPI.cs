@@ -27,32 +27,11 @@ namespace DABApp
         static bool notGetting = true;
         static bool favorite;
 
-        public static void LoginGuest()
-        {
-            var guestUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-            guestUserData.Token = "";
-            guestUserData.Email = "";
-            guestUserData.FirstName = "Guest";
-            guestUserData.LastName = "Guest";
-            guestUserData.WpId = 0;
-            guestUserData.Channel = "";
-            guestUserData.Channels = "";
-            guestUserData.Id = 0;
-            guestUserData.NickName = "Guest";
-            guestUserData.UserRegistered = new DateTime(DateTime.Now.Year, 1, 1);
-            guestUserData.TokenCreation = DateTime.Now;
-            guestUserData.ActionDate = DateTime.MinValue;
-            guestUserData.ProgressDate = DateTime.MinValue;
-
-            adb.InsertOrReplaceAsync(guestUserData);
-        }
-
-
         public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                string TokenSettingsValue = GlobalResources.Instance.LoggedInUser.Token;
                 HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
                 var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
@@ -114,7 +93,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                string TokenSettingsValue = GlobalResources.Instance.LoggedInUser.Token;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -139,7 +118,7 @@ namespace DABApp
         {
             try
             {
-                string TokenSettingsValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+                string TokenSettingsValue = GlobalResources.Instance.LoggedInUser.Token;
                 HttpClient client = new HttpClient();
                 var JsonIn = JsonConvert.SerializeObject(donation);
                 var content = new StringContent(JsonIn);
@@ -195,7 +174,7 @@ namespace DABApp
             {
                 //build a basic action log
                 var actionLog = new DABApp.dbPlayerActions();
-                string email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+                string email = GlobalResources.Instance.LoggedInUser.Email;
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
                 actionLog.EpisodeId = episodeId;
                 actionLog.UserEmail = email;

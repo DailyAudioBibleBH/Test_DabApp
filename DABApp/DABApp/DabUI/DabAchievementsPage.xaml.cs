@@ -36,7 +36,7 @@ namespace DABApp
 			//Connection to db
 			SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
-			userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+			userName = GlobalResources.Instance.LoggedInUser.Email;
 
 			progressDuration = ContentConfig.Instance.options.new_progress_duration;
 

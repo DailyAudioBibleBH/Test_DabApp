@@ -282,13 +282,13 @@ namespace DABApp
 
                     if (answer == true)
                     {
-                        GlobalResources.LogoffAndResetApp();
+                        await GlobalResources.LogoffAndResetApp();
                     }
                 }
                 else
                 {
                     //find the user episode data (ued) in question
-                    var userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+                    var userName = GlobalResources.Instance.LoggedInUser.Email;
                     dbEpisodeUserData data = adb.Table<dbEpisodeUserData>().Where(x => x.EpisodeId == episodeId && x.UserName == userName).FirstOrDefaultAsync().Result;
 
                     //add new ued if needed 
@@ -531,11 +531,12 @@ namespace DABApp
         {
             try
             {
-                var tokenValue = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
-                var creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
-                var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
-                var firstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
-                var lastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
+                var tokenValue = user.Token;
+                var creation = user.TokenCreation;
+                var email = user.Email;
+                var firstName = user.FirstName;
+                var lastName = user.LastName;
                 var avatar = GlobalResources.UserAvatar;
 
                 var token = new APIToken

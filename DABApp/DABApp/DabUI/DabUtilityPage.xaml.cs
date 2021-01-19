@@ -47,7 +47,7 @@ namespace DABApp
                     //user profile changed
 
                     //update the logged in user's profile with a new name for tests
-                    var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                    var user = GlobalResources.Instance.LoggedInUser;
 
                     //build the message
                     data.type = "data";

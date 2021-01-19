@@ -37,7 +37,7 @@ namespace DABApp
 			if (GuestStatus.Current.IsGuestLogin)
 			{
 				//Take them back to log on so they can get back to this.
-				GlobalResources.LogoffAndResetApp();
+				await GlobalResources.LogoffAndResetApp();
 			}
 			else
 			{

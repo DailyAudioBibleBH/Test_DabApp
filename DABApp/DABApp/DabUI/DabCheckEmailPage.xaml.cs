@@ -31,7 +31,7 @@ namespace DABApp
             NavigationPage.SetHasNavigationBar(this, false);
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            Email.Text = GlobalResources.Instance.LoggedInUser.Email;
             lblTestMode.IsVisible = GlobalResources.TestMode;
             if (Device.Idiom == TargetIdiom.Phone)
             {
@@ -103,7 +103,8 @@ namespace DABApp
         async void OnGuestLogin(object o, EventArgs e)
         {
             //log the user in as a guest
-            AuthenticationAPI.LoginGuest();
+            //Shouldn't be a need for this with new user data organization
+            //AuthenticationAPI.LoginGuest();
 
             //perform post-login functions
             await DabServiceRoutines.RunConnectionEstablishedRoutines();
@@ -120,8 +121,6 @@ namespace DABApp
             {
                 Navigation.RemovePage(page);
             }
-
-
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)

@@ -579,7 +579,7 @@ namespace DABApp.Service
         {
             /* this routine inits a new connection without a token and determines which one to use based on login state
              */
-            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+            string token = GlobalResources.Instance.LoggedInUser.Token;
             if (token == "")
             {
                 //use the api token
@@ -753,7 +753,6 @@ namespace DABApp.Service
 
             //check for a connecting before proceeding
             if (!IsConnected) return false;
-            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
             //Send the update donation mutation
             string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}) }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
