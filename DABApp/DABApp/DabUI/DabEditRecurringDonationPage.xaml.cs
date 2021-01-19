@@ -14,7 +14,7 @@ namespace DABApp
 		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
 
 
-		public DabEditRecurringDonationPage(dbUserCampaigns campaign, List<dbCreditCards> cards)
+		public DabEditRecurringDonationPage(dbUserCampaigns campaign)
 		{
 			InitializeComponent();
 			if (Device.RuntimePlatform != "Android")
@@ -31,7 +31,6 @@ namespace DABApp
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == _campaign.CampaignWpId).FirstOrDefaultAsync().Result;
-			var test = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result;
 			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignWpId == _campaign.CampaignWpId).ToListAsync().Result;
 			List<string> intervalOptions = new List<string>();
             foreach (var item in pricingPlans)
@@ -46,8 +45,8 @@ namespace DABApp
 
 			Title.Text = UniversalCampaign.campaignTitle;
 			Intervals.ItemsSource = intervalOptions;
-			//Intervals.SelectedItem = campaign.recurringIntervalOptions.Where(x => x.Equals(campaign.pro.interval));
 			Intervals.SelectedIndex = intervalOptions.FindIndex(x => x == campaign.RecurringInterval);
+			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null).ToListAsync().Result;
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
 			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == campaign.Source).FirstOrDefaultAsync().Result;

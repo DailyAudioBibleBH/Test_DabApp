@@ -137,7 +137,7 @@ namespace DABApp
 			List<dbCreditCards> cards = AuthenticationAPI.GetWallet();
 			var a = _donations;
 			var campaign = _donations.Single(x => x.CampaignWpId.ToString() == chosen.AutomationId);
-			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign, cards));
+			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign));
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
 
