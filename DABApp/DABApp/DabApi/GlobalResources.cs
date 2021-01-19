@@ -652,7 +652,7 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "C2IT Test", Email = "appalerts@c2itconsulting.net;chet@chetcromer.com" },
             #endif
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
-                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com;prayer_chronological@dailyaudiobible.com"}
+                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "prayer_chronological@dailyaudiobible.com"}
         };
 
         public static async void GoToRecordingPage()
