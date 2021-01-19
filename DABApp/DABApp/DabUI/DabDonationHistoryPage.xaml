@@ -26,17 +26,17 @@
 					<ViewCell>
 						<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
 							<StackLayout>
-								<Label Text="{Binding Path=., Converter={StaticResource HistoryConverter}}" Style="{StaticResource playerLabelStyle}"/>
+								<Label Text="{Binding Path=., Converter={StaticResource HistoryConverter}}" TextColor="White" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
 							</StackLayout>
-							<Label Text="{Binding Path=., Converter={StaticResource CardLastFourConverter}}" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>
-							<Label Text="{Binding Path=., Converter={StaticResource DateConverter}}" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>
+							<!--<Label Text="{Binding Path=., Converter={StaticResource CardLastFourConverter}}" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>-->
+							<Label Text="{Binding Path=., Converter={StaticResource DateConverter}}" Style="{StaticResource playerLabelStyle}" TextColor="LightGray" FontSize="Small"/>
 						</StackLayout>
 					</ViewCell>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 				<ListView.Footer>
 					<StackLayout Padding="15, 30, 180, 10" Spacing="10">
-					<Button Text="Back to My Donations" Clicked="OnBack"/>
+					<Button HeightRequest="40" Text="Back to My Donations" Clicked="OnBack"/>
 					</StackLayout>
 				</ListView.Footer>
 			</ListView>

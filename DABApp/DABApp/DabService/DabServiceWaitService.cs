@@ -436,6 +436,19 @@ namespace DABApp.Service
                             _qlObject = response;
                             _waiting = false;
                         }
+
+                        //error during login
+                        if (response?.payload?.errors != null)
+                        {
+                            //Find the relevant error
+                            var cardError = response.payload.errors.Where(x => x.path.Contains("deleteCard")).FirstOrDefault();
+                            if (cardError != null)
+                            {
+                                _error = cardError.message;
+                                _waiting = false;
+                                break;
+                            }
+                        }
                         break;
                     case DabServiceWaitTypes.CreateDonation:
                         // get create donation response

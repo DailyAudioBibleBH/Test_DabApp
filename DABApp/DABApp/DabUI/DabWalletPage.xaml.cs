@@ -89,6 +89,8 @@ namespace DABApp
 			var button = new Button();
 			button.Text = "Add a Card";
 			button.Style = (Style)Application.Current.Resources["highlightedButtonStyle"];
+			button.HeightRequest = 40;
+            button.Clicked += OnAdd;
 
 
 			var stackLayout = new StackLayout();
@@ -98,5 +100,5 @@ namespace DABApp
 			viewCell.View = stackLayout;
 			Cards.Insert(0, viewCell);
 		}
-	}
+    }
 }

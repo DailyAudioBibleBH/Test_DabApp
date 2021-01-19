@@ -28,7 +28,7 @@
 			</Grid>
             <Button x:Name="Save" HeightRequest="40" Text="Add New Card" Clicked="OnSave" Style="{StaticResource highlightedButtonStyle}"/>
 			<Label x:Name="DeleteText" Text="For compliance purposes, you may not change your credit card information on this page. To update your card information, delete the card and add a new one." FontSize="Micro" IsVisible="false"/>
-			<Button x:Name="Delete" Text="Delete" Clicked="OnDelete" IsVisible="false" Style="{StaticResource highlightedButtonStyle}"/>
+			<Button x:Name="Delete" HeightRequest="40" Text="Delete" Clicked="OnDelete" IsVisible="false" Style="{StaticResource highlightedButtonStyle}"/>
 		</StackLayout>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

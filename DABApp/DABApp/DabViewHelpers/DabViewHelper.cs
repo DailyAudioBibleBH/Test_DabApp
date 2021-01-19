@@ -122,7 +122,7 @@ namespace DABApp
 			{
 				symbol = history.historyCurrency;
 			};
-			return $"{campaignName}-{symbol}{GlobalResources.ToCurrency(history.historyGrossDonation)}";
+			return $"{campaignName} - {symbol}{GlobalResources.ToCurrency(history.historyGrossDonation)}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

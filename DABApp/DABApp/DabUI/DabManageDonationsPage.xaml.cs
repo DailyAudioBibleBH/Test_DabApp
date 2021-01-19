@@ -55,7 +55,7 @@ namespace DABApp
 					Button btnInterval = new Button();
 					Button once = new Button();
 					Label cTitle = new Label();
-					cTitle.Text = $"{donation.campaignTitle}-${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
+					cTitle.Text = $"{donation.campaignTitle} - ${donation.campaignSuggestedRecurringDonation}/{donation.campaignDescription}Month";
 					cTitle.Style = (Style)App.Current.Resources["playerLabelStyle"];
 					cTitle.FontAttributes = FontAttributes.Bold;
 					Label card = new Label();
@@ -75,7 +75,7 @@ namespace DABApp
 						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
 						string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 						btnInterval.Text = $"Edit Donation";
-						cTitle.Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
+						cTitle.Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
 						if (creditCard == null)
 						{
 							card.Text = $"Card not found";
@@ -192,7 +192,7 @@ namespace DABApp
 							dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
 							string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 
-							Labels[0].Text = $"{donation.campaignTitle}-${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
+							Labels[0].Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
 							Labels[1].Text = $"Card ending in {creditCard.cardLastFour}";
 							Labels[2].Text = $"Recurs: {Convert.ToDateTime(source.next).ToString("MM/dd/yyyy")}";
 							Labels[1].IsVisible = true;

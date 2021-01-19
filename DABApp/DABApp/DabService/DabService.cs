@@ -809,13 +809,13 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send the delete card mutation
-            string command = $"mutation {{deleteCard(wpId: {wpId}) {{token}}}}";
+            string command = $"mutation {{deleteCard(wpId: {wpId}) }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdatedCard);
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.DeleteCard);
 
             //return the response
             return response;

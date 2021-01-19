@@ -51,6 +51,10 @@ namespace DABApp
 				CVV.IsVisible = false;
 				CVCLabel.IsVisible = false;
 				Delete.IsVisible = true;
+                if (card.cardStatus == "deleted")
+                {
+					Delete.IsEnabled = false;
+                }
 				Save.IsVisible = false;
 				DeleteText.IsVisible = true;
 				CardNumber.IsEnabled = false;
@@ -126,7 +130,7 @@ namespace DABApp
 				}
 				else
 				{
-					await DisplayAlert("Error", $"Card was not deleted. Error: {result.ErrorMessage}", "OK");
+					await DisplayAlert("Error", $"Card was not deleted. {result.ErrorMessage}", "OK");
 				}
 			}
 			Delete.IsEnabled = true;
