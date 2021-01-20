@@ -27,9 +27,11 @@ namespace DABApp
         IEnumerable<dbEpisodes> Episodes;
         List<EpisodeViewModel> _Episodes;
         object source;
+        bool Initializing;
 
         public DabEpisodesPage(Resource resource)
         {
+            Initializing = true;
             InitializeComponent();
             DabViewHelper.InitDabForm(this);
 
@@ -59,7 +61,7 @@ namespace DABApp
                 Task task = Refresh(EpisodeRefreshType.IncrementalRefresh); //refresh episode list
             });
 
-
+            Initializing = false;
         }
 
 
@@ -263,7 +265,11 @@ namespace DABApp
         public async void OnYearSelected(object o, EventArgs e)
         {
             //filter to a given month
-            await Refresh(EpisodeRefreshType.NoRefresh);
+            //dont run refresh first time round, already gets hit
+            if (!Initializing)
+            {
+                await Refresh(EpisodeRefreshType.NoRefresh);
+            }
         }
 
         public async void OnListened(object o, EventArgs e)
