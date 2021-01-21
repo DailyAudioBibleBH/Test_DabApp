@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using SQLite;
@@ -16,10 +17,13 @@ namespace DABApp
             try
             {
                 SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-                dbUserData user = GlobalResources.Instance.LoggedInUser;
-                user.Token = "";
-                user.IsLoggedIn = false;
-                await adb.InsertOrReplaceAsync(user);
+                List<dbUserData> users = adb.Table<dbUserData>().ToListAsync().Result;
+                foreach (var u in users)
+                {
+                    u.IsLoggedIn = false;
+                    u.Token = "";
+                    await adb.InsertOrReplaceAsync(u);
+                }
             }
             catch (Exception ex)
             {

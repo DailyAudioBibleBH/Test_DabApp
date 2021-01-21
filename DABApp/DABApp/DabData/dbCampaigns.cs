@@ -27,7 +27,10 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
-            this.pricingPlans = camp.pricingPlans.ToString();
+            if (camp.pricingPlans != null)
+            {
+                this.pricingPlans = camp.pricingPlans.ToString();
+            }
         }
 
         public dbCampaigns()

@@ -68,33 +68,36 @@ namespace DABApp.Service
                         foreach (var b in d.payload.data.updatedCampaigns.edges)
                         {
                             dbCampaigns c = new dbCampaigns(b);
-                            foreach (var plan in b.pricingPlans)
+                            if (c.pricingPlans != null)
                             {
-                                dbPricingPlans newPlan = new dbPricingPlans(plan);
-                                dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == c.campaignId && x.CampaignWpId == c.campaignWpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
-                                if (hasPricingPlan == null)
+                                foreach (var plan in b.pricingPlans)
                                 {
-                                    hasPricingPlan = new dbCampaignHasPricingPlan();
-                                    List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
-                                    if (userPricingPlans.Count() == 0)
+                                    dbPricingPlans newPlan = new dbPricingPlans(plan);
+                                    dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == c.campaignId && x.CampaignWpId == c.campaignWpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                                    if (hasPricingPlan == null)
                                     {
-                                        hasPricingPlan.Id = 0;
+                                        hasPricingPlan = new dbCampaignHasPricingPlan();
+                                        List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                        if (userPricingPlans.Count() == 0)
+                                        {
+                                            hasPricingPlan.Id = 0;
+                                        }
+                                        else
+                                        {
+                                            int newId = userPricingPlans.Max() + 1;
+                                            hasPricingPlan.Id = newId;
+                                        }
                                     }
-                                    else
-                                    {
-                                        int newId = userPricingPlans.Max() + 1;
-                                        hasPricingPlan.Id = newId;
-                                    }
+                                    hasPricingPlan.CampaignId = b.id;
+                                    hasPricingPlan.CampaignWpId = b.wpId;
+                                    hasPricingPlan.PricingPlanId = plan.id;
+
+                                    await adb.InsertOrReplaceAsync(hasPricingPlan);
+                                    await adb.InsertOrReplaceAsync(newPlan);
+
                                 }
-                                hasPricingPlan.CampaignId = b.id;
-                                hasPricingPlan.CampaignWpId = b.wpId;
-                                hasPricingPlan.PricingPlanId = plan.id;
-
-                                await adb.InsertOrReplaceAsync(hasPricingPlan);
-                                await adb.InsertOrReplaceAsync(newPlan);
-
+                                await adb.InsertOrReplaceAsync(c);
                             }
-                            await adb.InsertOrReplaceAsync(c);
                         }
                     }
                     //update date since last updated campaigns

@@ -113,7 +113,12 @@ namespace DABApp
 
                 //token was updated successfully
                 //Look for previous user data
-                var test = adb.Table<dbUserData>().ToListAsync().Result;
+                List<dbUserData> users = adb.Table<dbUserData>().ToListAsync().Result;
+                foreach (var u in users)
+                {
+                    u.IsLoggedIn = false;
+                    await adb.InsertOrReplaceAsync(u);
+                }
                 int potentialId = adb.Table<dbUserData>().CountAsync().Result;
                 dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Email == Email.Text).FirstOrDefaultAsync().Result;
                 if (dbUser != null)
