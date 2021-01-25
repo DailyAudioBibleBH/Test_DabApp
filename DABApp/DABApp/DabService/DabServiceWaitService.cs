@@ -39,7 +39,7 @@ namespace DABApp.Service
         GetDonationHistory,
         UpdateDonation,
         DeleteCard,
-        CreateDonation
+        CreateDonation,
     }
 
     public class DabServiceWaitService

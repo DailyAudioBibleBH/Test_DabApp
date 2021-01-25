@@ -93,7 +93,7 @@ namespace DABApp.DabSockets
         public List<DabGraphQlCreditCard> updatedCards { get; set; }
         public DabGraphQlUpdateCreditCard updatedCard { get; set; }
         public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
-        public DabGraphQlCampaign updatedCampaign { get; set; }
+        public DabGraphQlUpdateCampaign updateCampaign { get; set; }
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
         public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
@@ -165,6 +165,20 @@ namespace DABApp.DabSockets
         public DabGraphQlPageInfo pageInfo { get; set; }
     }
 
+    public class DabGraphQlUpdateCampaign
+    {
+        public int id { get; set; }
+        public int wpId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string status { get; set; }
+        public int suggestedSingleDonation { get; set; }
+        public int suggestedRecurringDonation { get; set; }
+        public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
+        //public string pricingPlans { get; set; }
+        public bool @default { get; set; }
+    }
+
     public class DabGraphQlCampaign
     {
         public int id { get; set; }
@@ -175,6 +189,7 @@ namespace DABApp.DabSockets
         public int suggestedSingleDonation { get; set; }
         public int suggestedRecurringDonation { get; set; }
         public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
+        //public string pricingPlans { get; set; }
     }
 
     public class DabGraphQlPricingPlan

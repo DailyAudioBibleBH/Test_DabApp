@@ -37,5 +37,20 @@ namespace DABApp
         {
 
         }
+
+        public dbCampaigns(DabGraphQlUpdateCampaign camp)
+        {
+            this.campaignId = Convert.ToInt32(camp.id);
+            this.campaignWpId = camp.wpId;
+            this.campaignTitle = camp.title;
+            this.campaignDescription = camp.description;
+            this.campaignStatus = camp.status;
+            this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
+            this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
+            if (camp.pricingPlans != null)
+            {
+                this.pricingPlans = camp.pricingPlans.ToString();
+            }
+        }
     }
 }

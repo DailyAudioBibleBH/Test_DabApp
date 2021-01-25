@@ -685,7 +685,7 @@ namespace DABApp.Service
             }
         }
 
-        public static async Task<bool> RecieveCampaignUpdate(DabGraphQlCampaign data)
+        public static async Task<bool> RecieveCampaignUpdate(DabGraphQlUpdateCampaign data)
         {
             /*
              * This routine handles incoming campaign updates. 
@@ -698,12 +698,76 @@ namespace DABApp.Service
                 dbCampaigns camp = adb.Table<dbCampaigns>().Where(x => x.campaignId == data.id).FirstOrDefaultAsync().Result;
                 if (camp != null)
                 {
+                    camp.campaignDescription = data.description;
+                    camp.campaignSuggestedRecurringDonation = data.suggestedRecurringDonation;
+                    camp.campaignSuggestedSingleDonation = data.suggestedSingleDonation;
+                    camp.campaignTitle = data.title;
                     camp.campaignStatus = data.status;
-                    await adb.InsertOrReplaceAsync(camp);
+
+                    if (data.pricingPlans != null)
+                    {
+                        foreach (var plan in data.pricingPlans)
+                        {
+                            dbPricingPlans newPlan = new dbPricingPlans(plan);
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == data.id && x.CampaignWpId == data.wpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                            if (hasPricingPlan == null)
+                            {
+                                hasPricingPlan = new dbCampaignHasPricingPlan();
+                                List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                if (userPricingPlans.Count() == 0)
+                                {
+                                    hasPricingPlan.Id = 0;
+                                }
+                                else
+                                {
+                                    int newId = userPricingPlans.Max() + 1;
+                                    hasPricingPlan.Id = newId;
+                                }
+                            }
+                            hasPricingPlan.CampaignId = data.id;
+                            hasPricingPlan.CampaignWpId = data.wpId;
+                            hasPricingPlan.PricingPlanId = plan.id;
+
+                            await adb.InsertOrReplaceAsync(hasPricingPlan);
+                            await adb.InsertOrReplaceAsync(newPlan);
+
+                        }
+                        await adb.InsertOrReplaceAsync(camp);
+                    }
                 }
                 else
                 {
                     dbCampaigns newCamp = new dbCampaigns(data);
+                    if (data.pricingPlans != null)
+                    {
+                        foreach (var plan in data.pricingPlans)
+                        {
+                            dbPricingPlans newPlan = new dbPricingPlans(plan);
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == data.id && x.CampaignWpId == data.wpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                            if (hasPricingPlan == null)
+                            {
+                                hasPricingPlan = new dbCampaignHasPricingPlan();
+                                List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                if (userPricingPlans.Count() == 0)
+                                {
+                                    hasPricingPlan.Id = 0;
+                                }
+                                else
+                                {
+                                    int newId = userPricingPlans.Max() + 1;
+                                    hasPricingPlan.Id = newId;
+                                }
+                            }
+                            hasPricingPlan.CampaignId = data.id;
+                            hasPricingPlan.CampaignWpId = data.wpId;
+                            hasPricingPlan.PricingPlanId = plan.id;
+
+                            await adb.InsertOrReplaceAsync(hasPricingPlan);
+                            await adb.InsertOrReplaceAsync(newPlan);
+
+                        }
+                        await adb.InsertOrReplaceAsync(camp);
+                    }
                     await adb.InsertOrReplaceAsync(newCamp);
                 }
 

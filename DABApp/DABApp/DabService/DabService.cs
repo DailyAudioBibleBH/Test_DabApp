@@ -745,6 +745,17 @@ namespace DABApp.Service
             return response;
         }
 
+        public static async void TestUpdateCampaign(int ProgressId)
+        {
+            var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
+            DabGraphQlVariables variables = new DabGraphQlVariables();
+            //“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
+            //, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
+            string command = "mutation { updateCampaign(wpId: 460159, title: \"Daily Audio Bible 2\") { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
+            var payload = new DabGraphQlPayload(command, variables);
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+        }
+
         public static bool UpdateDonation(string quantity, string type, int cardId, int campaignWpId, string next)
         {
             /*
@@ -1452,8 +1463,6 @@ namespace DABApp.Service
                 //don't do anything else
                 return;
             }
-
-
             //exit the method if nothing to process
             if (data == null)
             {
@@ -1467,11 +1476,6 @@ namespace DABApp.Service
                 //new action logged!
                 HandleActionLogged(data.actionLogged);
 
-            }
-            if (data.updatedCampaign != null)
-            {
-                //campaign updaed
-                HandleUpdatedCampaign(data.updatedCampaign);
             }
             else if (data.episodePublished != null)
             {
@@ -1507,6 +1511,11 @@ namespace DABApp.Service
                 //user donation updated
                 HandleUpdateDonation(data.donationStatusUpdated.donationStatus);
             }
+            else if (data.updateCampaign != null)
+            {
+                //campaign updated
+                HandleUpdatedCampaign(data.updateCampaign);
+            }
             else
             {
                 //nothing to see here... all other incoming messages should be handled by the appropriate wait service
@@ -1532,7 +1541,7 @@ namespace DABApp.Service
             await DabServiceRoutines.ReceiveActionLog(data.action);
         }
 
-        private static async void HandleUpdatedCampaign(DabGraphQlCampaign data)
+        private static async void HandleUpdatedCampaign(DabGraphQlUpdateCampaign data)
         {
             /* 
              * Handle an incoming campaign update

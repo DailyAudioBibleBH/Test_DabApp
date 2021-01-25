@@ -239,6 +239,7 @@ namespace DABApp
         //Go to next episode
         public void OnNext(object o, EventArgs e)
         {
+            DabService.TestUpdateCampaign(123);
             nextButton.IsEnabled = false;
             if (nextEpisode != null)
             {
