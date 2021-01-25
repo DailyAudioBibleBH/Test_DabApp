@@ -159,7 +159,15 @@ namespace DABApp.DabAudio
             {
                 try
                 {
-                    return nativePlayer.Duration - CurrentPosition;
+                    double remainingSeconds = nativePlayer.Duration - CurrentPosition;
+                    if (remainingSeconds < 0)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return remainingSeconds;
+                    }
                 }
                 catch (Exception ex)
                 {

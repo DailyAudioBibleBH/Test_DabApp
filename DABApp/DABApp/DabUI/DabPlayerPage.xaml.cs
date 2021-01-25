@@ -458,87 +458,100 @@ namespace DABApp
 
         void BindControls(bool BindToEpisode, bool BindToPlayer)
         {
-            if (BindToEpisode)
+            try
             {
-                //BINDINGS TO EPISODE
-
-                //get a fresh reference to the episode
-                dbEpisodes ep = PlayerFeedAPI.GetEpisode(Episode.Episode.id.Value);
-                Episode = new EpisodeViewModel(ep);
-
-
-                //Episode Title
-                lblTitle.BindingContext = Episode;
-                lblTitle.SetBinding(Label.TextProperty, "title");
-
-                //Channel TItle
-                lblChannelTitle.BindingContext = Episode;
-                lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
-
-                //Episode Description
-                lblDescription.BindingContext = Episode;
-                lblDescription.SetBinding(Label.TextProperty, "description");
-
-                //Episodes Notes
-                lblNotes.BindingContext = Episode;
-                lblNotes.SetBinding(Label.TextProperty, "notes");
-
-                //Favorite button
-                Favorite.BindingContext = Episode;
-                Favorite.SetBinding(Button.ImageSourceProperty, "favoriteSource");
-                Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
-                //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
-
-                //Completed button
-                Completed.BindingContext = Episode;
-                Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
-                Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
-                //TODO: Add Binding for AutomationProperties.Name for listenAccessible
-
-                //Journal
-                JournalTitle.BindingContext = Episode;
-                JournalTitle.SetBinding(Label.TextProperty, "title");
-                JournalContent.BindingContext = journal;
-                JournalContent.SetBinding(Editor.TextProperty, "Content");
-                JournalContent.SetBinding(Editor.IsEnabledProperty, "IsConnected");
-                JournalWarning.BindingContext = journal;
-                JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
-            }
-
-            if (BindToPlayer)
-            {
-                //BINDINGS TO PLAYER
-
-                //Current Time
-                lblCurrentTime.BindingContext = player;
-                lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
-
-                //Total Time
-                lblRemainingTime.BindingContext = player;
-                lblRemainingTime.SetBinding(Label.TextProperty, "RemainingSeconds", BindingMode.Default, new StringConverter());
-
-                //Seek bar setup
-                SeekBar.BindingContext = player;
-                SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
-                SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
-
-                SeekBar.UserInteraction += (object sender, EventArgs e) =>
+                if (BindToEpisode)
                 {
-                    player.Seek(SeekBar.Value);
-                };
+                    //BINDINGS TO EPISODE
 
-                if (Device.RuntimePlatform == "Android")
+                    //get a fresh reference to the episode
+                    dbEpisodes ep = PlayerFeedAPI.GetEpisode(Episode.Episode.id.Value);
+                    Episode = new EpisodeViewModel(ep);
+
+
+                    //Episode Title
+                    lblTitle.BindingContext = Episode;
+                    lblTitle.SetBinding(Label.TextProperty, "title");
+
+                    //Channel TItle
+                    lblChannelTitle.BindingContext = Episode;
+                    lblChannelTitle.SetBinding(Label.TextProperty, "channelTitle");
+
+                    //Episode Description
+                    lblDescription.BindingContext = Episode;
+                    lblDescription.SetBinding(Label.TextProperty, "description");
+
+                    //Episodes Notes
+                    lblNotes.BindingContext = Episode;
+                    lblNotes.SetBinding(Label.TextProperty, "notes");
+
+                    //Favorite button
+                    Favorite.BindingContext = Episode;
+                    Favorite.SetBinding(Button.ImageSourceProperty, "favoriteSource");
+                    Favorite.SetBinding(AutomationProperties.NameProperty, "favoriteAccessible");
+                    //TODO: Add Binding for AutomationProperties.Name for favoriteAccessible
+
+                    //Completed button
+                    Completed.BindingContext = Episode;
+                    Completed.SetBinding(Button.ImageSourceProperty, "listenedToSource");
+                    Completed.SetBinding(AutomationProperties.NameProperty, "listenAccessible");
+                    //TODO: Add Binding for AutomationProperties.Name for listenAccessible
+
+                    //Journal
+                    JournalTitle.BindingContext = Episode;
+                    JournalTitle.SetBinding(Label.TextProperty, "title");
+                    JournalContent.BindingContext = journal;
+                    JournalContent.SetBinding(Editor.TextProperty, "Content");
+                    JournalContent.SetBinding(Editor.IsEnabledProperty, "IsConnected");
+                    JournalWarning.BindingContext = journal;
+                    JournalWarning.SetBinding(IsVisibleProperty, "IsDisconnected");
+                }
+
+                if (BindToPlayer)
                 {
-                    SeekBar.TouchUp += (object sender, EventArgs e) =>
+                    //BINDINGS TO PLAYER
+
+                    //Current Time
+                    lblCurrentTime.BindingContext = player;
+                    lblCurrentTime.SetBinding(Label.TextProperty, "CurrentPosition", BindingMode.Default, new StringConverter());
+
+                    //Total Time
+                    lblRemainingTime.BindingContext = player;
+                    lblRemainingTime.SetBinding(Label.TextProperty, "RemainingSeconds", BindingMode.Default, new StringConverter());
+
+                    //Seek bar setup
+                    if (player.CurrentPosition < 0)
+                    {
+                        player.CurrentPosition = 0;
+                    }
+
+                    SeekBar.BindingContext = player;
+                    SeekBar.SetBinding(Slider.MaximumProperty, "Duration");
+                    SeekBar.SetBinding(Slider.ValueProperty, "CurrentPosition");
+
+                    SeekBar.UserInteraction += (object sender, EventArgs e) =>
                     {
                         player.Seek(SeekBar.Value);
                     };
-                    SeekBar.TouchDown += (object sender, EventArgs e) =>
+
+                    if (Device.RuntimePlatform == "Android")
                     {
-                        player.Seek(SeekBar.Value);
-                    };
+                        SeekBar.TouchUp += (object sender, EventArgs e) =>
+                        {
+                            player.Seek(SeekBar.Value);
+                        };
+                        SeekBar.TouchDown += (object sender, EventArgs e) =>
+                        {
+                            player.Seek(SeekBar.Value);
+                        };
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error cause while binding player controls: {ex.Message}");
+            }
+            
         }
 
         void OnInitialized(object o, EventArgs e)
