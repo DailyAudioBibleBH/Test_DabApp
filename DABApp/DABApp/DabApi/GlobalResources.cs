@@ -92,21 +92,28 @@ namespace DABApp
         {
             get
             {
-                if (GlobalResources.Instance.IsLoggedIn)
+                try
                 {
-                    int registerYear = GlobalResources.Instance.LoggedInUser.UserRegistered.Year;
-                    int episodeYear = ContentConfig.Instance.options.episode_year;
-                    int minYear = Math.Max(registerYear, episodeYear);
-                    //Go back one day to get January 1st episodes
-                    return new DateTime(minYear - 1, 12, 31);
+                    if (GlobalResources.Instance.IsLoggedIn)
+                    {
+                        int registerYear = GlobalResources.Instance.LoggedInUser.UserRegistered.Year;
+                        int episodeYear = ContentConfig.Instance.options.episode_year;
+                        int minYear = Math.Max(registerYear, episodeYear);
+                        //Go back one day to get January 1st episodes
+                        return new DateTime(minYear - 1, 12, 31);
+                    }
+                    else
+                    {
+                        int episodeYear = ContentConfig.Instance.options.episode_year;
+                        //Go back one day to get January 1st episodes
+                        return new DateTime(episodeYear - 1, 12, 31);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    int episodeYear = ContentConfig.Instance.options.episode_year;
-                    //Go back one day to get January 1st episodes
-                    return new DateTime(episodeYear - 1, 12, 31);
+                    System.Diagnostics.Debug.WriteLine($"Exception thrown while getting DabMinDate: {ex.Message}");
+                    return new DateTime(2020, 12, 31);
                 }
-
             }
         }
 
