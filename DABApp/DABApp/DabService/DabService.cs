@@ -749,9 +749,11 @@ namespace DABApp.Service
         {
             var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
             DabGraphQlVariables variables = new DabGraphQlVariables();
+            string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
+
             //“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
             //, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
-            string command = "mutation { updateCampaign(wpId: 460159, title: \"Daily Audio Bible 2\") { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
+            //string command = "mutation { updateCampaign(wpId: 460159, title: \"Daily Audio Bible 2\") { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
             var payload = new DabGraphQlPayload(command, variables);
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
         }
@@ -1515,6 +1517,11 @@ namespace DABApp.Service
             {
                 //campaign updated
                 HandleUpdatedCampaign(data.updateCampaign);
+            }
+            else if (data.deleteCampaign != null)
+            {
+                //campaign deleted
+                HandleUpdatedCampaign(data.deleteCampaign);
             }
             else
             {

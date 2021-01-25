@@ -94,6 +94,7 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateCreditCard updatedCard { get; set; }
         public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
         public DabGraphQlUpdateCampaign updateCampaign { get; set; }
+        public DabGraphQlUpdateCampaign deleteCampaign { get; set; }
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
         public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
