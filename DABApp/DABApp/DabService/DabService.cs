@@ -53,48 +53,57 @@ namespace DABApp.Service
 
         private static async Task<bool> ConnectWebsocket(int TimeoutMilliseconds = LongTimeout)
         {
-            //This routine will establish a connection to the websocket if not already established
-            if (socket == null)
+            try
             {
-                //create the socket
-                socket = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
-
-            }
-
-            if (socket.IsConnected == false)
-            {
-                //connect the socket
-
-                //Get the URL to use
-                var appSettings = ContentConfig.Instance.app_settings;
-                string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
-                //need to add wss:// since it just gives us the address here
-                uri = $"wss://{uri}";
-
-                //Register for socket events
-                socket.DabSocketEvent += Socket_DabSocketEvent;
-                socket.DabGraphQlMessage += Socket_DabGraphQlMessage;
-                //Init the socket
-                socket.Init(uri);
-
-                //Connect the socket
-                Debug.WriteLine($"Connecting websocket to {uri}...");
-                socket.Connect();
-
-                //Wait for the socket to connect
-                DateTime start = DateTime.Now;
-                DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
-                while (socket.IsConnected == false && DateTime.Now < timeout)
+                //This routine will establish a connection to the websocket if not already established
+                if (socket == null)
                 {
-                    TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                    Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection...");
-                    await Task.Delay(WaitDelayInterval); //check every 1/2 second
+                    //create the socket
+                    socket = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
+
                 }
 
-            }
+                if (socket.IsConnected == false)
+                {
+                    //connect the socket
 
-            //return final state of the socket
-            return socket.IsConnected;
+                    //Get the URL to use
+                    var appSettings = ContentConfig.Instance.app_settings;
+                    string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
+                    //need to add wss:// since it just gives us the address here
+                    uri = $"wss://{uri}";
+
+                    //Register for socket events
+                    socket.DabSocketEvent += Socket_DabSocketEvent;
+                    socket.DabGraphQlMessage += Socket_DabGraphQlMessage;
+                    //Init the socket
+                    socket.Init(uri);
+
+                    //Connect the socket
+                    Debug.WriteLine($"Connecting websocket to {uri}...");
+                    socket.Connect();
+
+                    //Wait for the socket to connect
+                    DateTime start = DateTime.Now;
+                    DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
+                    while (socket.IsConnected == false && DateTime.Now < timeout)
+                    {
+                        TimeSpan remaining = timeout.Subtract(DateTime.Now);
+                        Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection...");
+                        await Task.Delay(WaitDelayInterval); //check every 1/2 second
+                    }
+
+                }
+
+                //return final state of the socket
+                return socket.IsConnected;
+            }
+            catch (Exception)
+            {
+                //something went wrong while trying to connect, return not connected.
+                return false;
+            }
+            
         }
 
         internal static async Task<DabServiceWaitResponseList> GetCampaigns(DateTime LastDate)
