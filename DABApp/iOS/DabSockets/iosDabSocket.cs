@@ -97,8 +97,6 @@ namespace DABApp.iOS.DabSockets
             //Notify the listener
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
 
-            
-
             //Return
             return data;
         }

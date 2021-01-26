@@ -749,7 +749,9 @@ namespace DABApp.Service
         {
             var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
             DabGraphQlVariables variables = new DabGraphQlVariables();
-            string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
+            string command = "mutation { createCampaign(wpId: 124, title: \"TESTING\", description: \"You’re invited!\", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: null ) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default}}";
+
+            //string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
 
             //“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
             //, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
@@ -1523,6 +1525,17 @@ namespace DABApp.Service
                 //campaign deleted
                 HandleUpdatedCampaign(data.deleteCampaign);
             }
+            else if (data.campaignUpdated != null)
+            {
+                //campaign updated
+                DabGraphQlUpdateCampaign camp = new DabGraphQlUpdateCampaign(data.campaignUpdated);
+                HandleUpdatedCampaign(camp);
+            }
+            else if (data.createCampaign != null)
+            {
+                //new campaign created
+                HandleUpdatedCampaign(data.createCampaign);
+            }
             else
             {
                 //nothing to see here... all other incoming messages should be handled by the appropriate wait service
@@ -1564,8 +1577,6 @@ namespace DABApp.Service
              */
 
             await DabServiceRoutines.EpisodePublished(data.episode);
-
-
         }
 
         //Progress was made

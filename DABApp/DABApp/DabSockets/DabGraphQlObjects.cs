@@ -94,11 +94,15 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateCreditCard updatedCard { get; set; }
         public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
         public DabGraphQlUpdateCampaign updateCampaign { get; set; }
+        public DabGraphQlUpdateCampaign createCampaign { get; set; }
+
         public DabGraphQlUpdateCampaign deleteCampaign { get; set; }
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
         public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
         public DabGraphQlDeleteDonation deleteDonation { get; set; }
+        public DabGraphQlCampaign campaignUpdated { get; set; }
+
     }
 
     public class DabGraphQlDeleteDonation
@@ -168,6 +172,18 @@ namespace DABApp.DabSockets
 
     public class DabGraphQlUpdateCampaign
     {
+        public DabGraphQlUpdateCampaign(DabGraphQlCampaign campaignUpdated)
+        {
+            this.id = campaignUpdated.id;
+            this.wpId = campaignUpdated.wpId;
+            this.title = campaignUpdated.title;
+            this.description = campaignUpdated.description;
+            this.status = campaignUpdated.status;
+            this.suggestedSingleDonation = campaignUpdated.suggestedSingleDonation;
+            this.suggestedRecurringDonation = campaignUpdated.suggestedRecurringDonation;
+            this.pricingPlans = campaignUpdated.pricingPlans;
+        }
+
         public int id { get; set; }
         public int wpId { get; set; }
         public string title { get; set; }
