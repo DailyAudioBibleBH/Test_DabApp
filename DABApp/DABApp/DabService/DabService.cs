@@ -136,12 +136,12 @@ namespace DABApp.Service
                 if (cursor == null)
                 {
                     //First run
-                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } pageInfo { hasNextPage endCursor } } }";
                 }
                 else
                 {
                     //Subsequent runs, use the cursor
-                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans } pageInfo { hasNextPage endCursor } } }";
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
@@ -756,17 +756,17 @@ namespace DABApp.Service
 
         public static async void TestUpdateCampaign(int ProgressId)
         {
-            var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
-            DabGraphQlVariables variables = new DabGraphQlVariables();
-            string command = "mutation { createCampaign(wpId: 124, title: \"TESTING\", description: \"You’re invited!\", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: null ) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default}}";
+            //var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
+            //DabGraphQlVariables variables = new DabGraphQlVariables();
+            ////string command = "mutation { createCampaign(wpId: 124, title: \"TESTING\", description: \"You’re invited!\", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: null ) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default}}";
 
-            //string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
+            ////string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
 
-            //“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
-            //, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
-            //string command = "mutation { updateCampaign(wpId: 460159, title: \"Daily Audio Bible 2\") { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
-            var payload = new DabGraphQlPayload(command, variables);
-            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            ////“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
+            ////, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
+            //string command = "mutation { updateCampaign(wpId: 102899, title: \"Daily Audio Bible\", description: \" \", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: [{type:\"Weekly\", amount:1, id:\"price_1HIdmgDIA4tgn0DSqmq1bfZh\", recurring :true},{type:\"Single\", amount :100, id :\"price_1HHZp4DIA4tgn0DSbdwWTMkf\", recurring :false},{type:\"Monthly\", amount :100, id :\"Campaign_One\", recurring :true}]) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
+            //var payload = new DabGraphQlPayload(command, variables);
+            //socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
         }
 
         public static bool UpdateDonation(string quantity, string type, int cardId, int campaignWpId, string next)
