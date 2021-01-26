@@ -74,6 +74,8 @@ namespace DABApp
 				var accept = await DisplayAlert($"Are you sure you want to update this donation?", "You can update this donation by selecting \"Yes\"", "Yes", "No");
                 if (accept)
                 {
+					object obj = new object();
+					DabUserInteractionEvents.WaitStarted(obj, new DabAppEventArgs("Checking for new episodes...", true));
 					AmountWarning.IsVisible = false;
 					var card = (dbCreditCards)Cards.SelectedItem;
 					dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == _campaign.Source).FirstOrDefaultAsync().Result;
@@ -97,6 +99,7 @@ namespace DABApp
 						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, null);
 						await Navigation.PopAsync();
 					}
+					DabUserInteractionEvents.WaitStopped(obj, new EventArgs());
 				}
 			}
 			else 
