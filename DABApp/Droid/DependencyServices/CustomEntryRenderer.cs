@@ -53,7 +53,15 @@ namespace DABApp.Droid.DependencyServices
         private bool IsCurrentlyShown()
         {
             //Checking if keyboard is showing or not
-            return inputMethodManager.IsAcceptingText;
+            try
+            {
+                return inputMethodManager.IsAcceptingText;
+            }
+            catch (Exception)
+            {
+                //object is disposed
+                return false;
+            }
         }
 
         private void GetInputMethodManager()
