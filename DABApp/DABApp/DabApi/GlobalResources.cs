@@ -562,6 +562,11 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
+                string email = GlobalResources.Instance.LoggedInUser.Email;
+                if (email == null)
+                {
+                    email = "";
+                }
                 string hash = CalculateMD5Hash(GlobalResources.Instance.LoggedInUser.Email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
