@@ -591,7 +591,7 @@ namespace DABApp.DabAudio
             return shouldResumePlay;
         }
 
-        public void ResumePlay()
+        public void ResumePlayAfterCall()
         {
             shouldResumePlay = false;
             Play();
