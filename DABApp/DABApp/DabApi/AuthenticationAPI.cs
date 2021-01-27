@@ -53,7 +53,7 @@ namespace DABApp
         {
             try
             {
-                List<dbCreditCards> cards = adb.Table<dbCreditCards>().ToListAsync().Result;
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == GlobalResources.Instance.LoggedInUser.WpId).ToListAsync().Result;
 
                 return cards;
             }
@@ -67,7 +67,7 @@ namespace DABApp
         {
             try
             {
-                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted").ToListAsync().Result;
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.UserWpId == GlobalResources.Instance.LoggedInUser.WpId && x.Status != "deleted").ToListAsync().Result;
                 return donations;
             }
             catch (Exception e)
@@ -158,7 +158,7 @@ namespace DABApp
         {
             try
             {
-                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().ToListAsync().Result;
+                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == GlobalResources.Instance.LoggedInUser.WpId).ToListAsync().Result;
 
                 return donations;
             }
