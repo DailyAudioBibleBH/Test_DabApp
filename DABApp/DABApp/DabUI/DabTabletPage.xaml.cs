@@ -361,23 +361,26 @@ namespace DABApp
         //Set the reading
         async Task SetReading()
         {
-            Reading reading = await PlayerFeedAPI.GetReading(episode.Episode.read_link);
-            //Update the Reading UI on the main thread after getting data from the API
-            Device.BeginInvokeOnMainThread(() =>
+            if (episode != null)
             {
-                ReadTitle.Text = reading.title;
-                ReadText.Text = reading.text;
-                if (reading.IsAlt)
+                Reading reading = await PlayerFeedAPI.GetReading(episode.Episode.read_link);
+                //Update the Reading UI on the main thread after getting data from the API
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    AltWarning.IsVisible = true;
-                }
-                else AltWarning.IsVisible = false;
-                if (reading.excerpts != null)
-                {
-                    ReadExcerpts.Text = String.Join(", ", reading.excerpts);
-                }
-                else ReadExcerpts.Text = "";
-            });
+                    ReadTitle.Text = reading.title;
+                    ReadText.Text = reading.text;
+                    if (reading.IsAlt)
+                    {
+                        AltWarning.IsVisible = true;
+                    }
+                    else AltWarning.IsVisible = false;
+                    if (reading.excerpts != null)
+                    {
+                        ReadExcerpts.Text = String.Join(", ", reading.excerpts);
+                    }
+                    else ReadExcerpts.Text = "";
+                });
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)
