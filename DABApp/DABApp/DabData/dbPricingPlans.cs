@@ -22,7 +22,7 @@ namespace DABApp
         [PrimaryKey]
         public string id { get; set; }
         public string type { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public bool recurring { get; set; }
     }
 }

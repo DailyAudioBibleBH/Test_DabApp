@@ -87,10 +87,12 @@ namespace DABApp.Service
                                             int newId = userPricingPlans.Max() + 1;
                                             hasPricingPlan.Id = newId;
                                         }
+
+                                        hasPricingPlan.CampaignId = b.id;
+                                        hasPricingPlan.CampaignWpId = b.wpId;
+                                        hasPricingPlan.PricingPlanId = plan.id;
                                     }
-                                    hasPricingPlan.CampaignId = b.id;
-                                    hasPricingPlan.CampaignWpId = b.wpId;
-                                    hasPricingPlan.PricingPlanId = plan.id;
+                                    
 
                                     await adb.InsertOrReplaceAsync(hasPricingPlan);
                                     await adb.InsertOrReplaceAsync(newPlan);
@@ -623,6 +625,36 @@ namespace DABApp.Service
         #endregion
 
         #region Wallet & Donation Routines
+
+        internal static bool RecieveDonationSuccessMessage(DabGraphQlUpdateDonation data)
+        {
+            /*
+             * This routine handles incoming donation update success/failure messages. 
+             * It visually informs the user
+             */
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert("Donation Updated", $"{data.message}", "OK");
+            });
+
+            return true;
+        }
+
+        internal static bool RecieveDeleteDonationSuccessMessage(DabGraphQlDeleteDonation data)
+        {
+            /*
+             * This routine handles incoming donation update success/failure messages. 
+             * It visually informs the user
+             */
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert("Donation Updated", $"{data.message}", "OK");
+            });
+
+            return true;
+        }
 
         internal static async Task<bool> ReceiveDonationUpdate(DabGraphQlDonation data)
         {

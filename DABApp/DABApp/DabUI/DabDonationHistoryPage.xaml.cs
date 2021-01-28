@@ -24,7 +24,7 @@ namespace DABApp
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			List<dbDonationHistory> history = AuthenticationAPI.GetDonationHistory();
-			history.OrderBy(x => x.historyDate);
+			history = history.OrderByDescending(x => x.historyDate).ToList();
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())
 			//{

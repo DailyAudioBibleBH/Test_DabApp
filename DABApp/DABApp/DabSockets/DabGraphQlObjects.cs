@@ -95,11 +95,11 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
         public DabGraphQlUpdateCampaign updateCampaign { get; set; }
         public DabGraphQlUpdateCampaign createCampaign { get; set; }
-
         public DabGraphQlUpdateCampaign deleteCampaign { get; set; }
         public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
         public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
         public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
+        public DabGraphQlUpdateDonation updateDonation { get; set; }
         public DabGraphQlDeleteDonation deleteDonation { get; set; }
         public DabGraphQlCampaign campaignUpdated { get; set; }
 
@@ -121,11 +121,17 @@ namespace DABApp.DabSockets
         public DateTime date { get; set; }
         public string donationType { get; set; }
         public string currency { get; set; }
-        public int grossDonation { get; set; }
+        public double grossDonation { get; set; }
         public double fee { get; set; }
         public double netDonation { get; set; }
         public int campaignWpId { get; set; }
         public int userWpId { get; set; }
+    }
+
+    public class DabGraphQlUpdateDonation
+    {
+        public string code { get; set; }
+        public string message { get; set; }
     }
 
     public class DabGraphQlUpdatedDonationHistory
@@ -151,7 +157,7 @@ namespace DABApp.DabSockets
         public string id { get; set; }
         public int wpId { get; set; }
         public DabGraphQlDonationSource source { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public string recurringInterval { get; set; }
         public int campaignWpId { get; set; }
         public int userWpId { get; set; }
@@ -212,7 +218,7 @@ namespace DABApp.DabSockets
     public class DabGraphQlPricingPlan
     {
         public string type { get; set; }
-        public int amount { get; set; }
+        public double amount { get; set; }
         public string id { get; set; }
         public bool recurring { get; set; }
     }

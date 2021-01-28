@@ -1524,6 +1524,15 @@ namespace DABApp.Service
                 //user donation updated
                 HandleUpdateDonation(data.donationStatusUpdated.donationStatus);
             }
+            else if (data.updateDonation != null)
+            {
+                HandleDonationSuccessMessage(data.updateDonation);
+            }
+            else if (data.deleteDonation != null)
+            {
+                HandleDeleteDonationSuccessMessage(data.deleteDonation);
+
+            }
             else if (data.updateCampaign != null)
             {
                 //campaign updated
@@ -1559,6 +1568,24 @@ namespace DABApp.Service
              */
 
             await DabServiceRoutines.ReceiveDonationUpdate(data);
+        }
+
+        private static async void HandleDonationSuccessMessage(DabGraphQlUpdateDonation data)
+        {
+            /* 
+             * Handle an incoming donation success message
+             */
+
+            DabServiceRoutines.RecieveDonationSuccessMessage(data);
+        }
+
+        private static async void HandleDeleteDonationSuccessMessage(DabGraphQlDeleteDonation data)
+        {
+            /* 
+             * Handle an incoming delete donation success message
+             */
+
+            DabServiceRoutines.RecieveDeleteDonationSuccessMessage(data);
         }
 
         private static async void HandleActionLogged(DabGraphQlActionLogged data)

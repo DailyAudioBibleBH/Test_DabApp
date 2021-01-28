@@ -31,7 +31,7 @@ namespace DABApp
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
 			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == _campaign.CampaignWpId).FirstOrDefaultAsync().Result;
-			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignWpId == _campaign.CampaignWpId).ToListAsync().Result;
+			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == UniversalCampaign.campaignId).ToListAsync().Result;
 			List<string> intervalOptions = new List<string>();
             foreach (var item in pricingPlans)
             {

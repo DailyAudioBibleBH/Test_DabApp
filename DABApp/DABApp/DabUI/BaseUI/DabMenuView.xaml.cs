@@ -135,9 +135,6 @@ namespace DABApp
 			Nav item = (Nav)e.Item;
             View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
 
-			var test = ContentConfig.Instance.views;
-
-
             //Send info to Firebase analytics that user tapped a menu item
             var info = new Dictionary<string, string>();
             info.Add("title", item.title);
