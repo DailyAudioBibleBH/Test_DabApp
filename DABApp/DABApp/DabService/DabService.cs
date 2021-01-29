@@ -53,48 +53,367 @@ namespace DABApp.Service
 
         private static async Task<bool> ConnectWebsocket(int TimeoutMilliseconds = LongTimeout)
         {
-            //This routine will establish a connection to the websocket if not already established
-            if (socket == null)
+            try
             {
-                //create the socket
-                socket = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
+                //This routine will establish a connection to the websocket if not already established
+                if (socket == null)
+                {
+                    //create the socket
+                    socket = DependencyService.Get<IWebSocket>(DependencyFetchTarget.NewInstance);
 
+                }
+
+                if (socket.IsConnected == false)
+                {
+                    //connect the socket
+
+                    //Get the URL to use
+                    var appSettings = ContentConfig.Instance.app_settings;
+                    string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
+                    //need to add wss:// since it just gives us the address here
+                    uri = $"wss://{uri}";
+
+                    //Register for socket events
+                    socket.DabSocketEvent += Socket_DabSocketEvent;
+                    socket.DabGraphQlMessage += Socket_DabGraphQlMessage;
+                    //Init the socket
+                    socket.Init(uri);
+
+                    //Connect the socket
+                    Debug.WriteLine($"Connecting websocket to {uri}...");
+                    socket.Connect();
+
+                    //Wait for the socket to connect
+                    DateTime start = DateTime.Now;
+                    DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
+                    while (socket.IsConnected == false && DateTime.Now < timeout)
+                    {
+                        TimeSpan remaining = timeout.Subtract(DateTime.Now);
+                        Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection...");
+                        await Task.Delay(WaitDelayInterval); //check every 1/2 second
+                    }
+
+                }
+
+                //return final state of the socket
+                return socket.IsConnected;
+            }
+            catch (Exception)
+            {
+                //something went wrong while trying to connect, return not connected.
+                return false;
+            }
+            
+        }
+
+        internal static async Task<DabServiceWaitResponseList> GetCampaigns(DateTime LastDate)
+        {
+            /*
+            * this routine gets all the campaigns since a given date
+            * this routine uses pagination
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
             }
 
-            if (socket.IsConnected == false)
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
             {
-                //connect the socket
-
-                //Get the URL to use
-                var appSettings = ContentConfig.Instance.app_settings;
-                string uri = (GlobalResources.TestMode) ? appSettings.stage_service_link : appSettings.prod_service_link;
-                //need to add wss:// since it just gives us the address here
-                uri = $"wss://{uri}";
-
-                //Register for socket events
-                socket.DabSocketEvent += Socket_DabSocketEvent;
-                socket.DabGraphQlMessage += Socket_DabGraphQlMessage;
-                //Init the socket
-                socket.Init(uri);
-
-                //Connect the socket
-                Debug.WriteLine($"Connecting websocket to {uri}...");
-                socket.Connect();
-
-                //Wait for the socket to connect
-                DateTime start = DateTime.Now;
-                DateTime timeout = DateTime.Now.AddMilliseconds(TimeoutMilliseconds);
-                while (socket.IsConnected == false && DateTime.Now < timeout)
+                //Send the command
+                string command;
+                if (cursor == null)
                 {
-                    TimeSpan remaining = timeout.Subtract(DateTime.Now);
-                    Debug.WriteLine($"Waiting {remaining.ToString()} for socket connection...");
-                    await Task.Delay(WaitDelayInterval); //check every 1/2 second
+                    //First run
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } pageInfo { hasNextPage endCursor } } }";
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = "query { updatedCampaigns(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } pageInfo { hasNextPage endCursor } } }";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetUpdatedCampaigns);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedCampaigns;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
                 }
 
             }
 
-            //return final state of the socket
-            return socket.IsConnected;
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUserDonationHistoryUpdate(DateTime LastDate)
+        {
+            /*
+            * this routine checks for user specific donation updates
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = "query { updatedDonationHistory(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId platform paymentType chargeId date donationType currency grossDonation fee netDonation campaignWpId userWpId } pageInfo { hasNextPage endCursor } } }";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { id wpId platform paymentType chargeId date donationType currency grossDonation fee netDonation campaignWpId userWpId } pageInfo { hasNextPage endCursor } } }";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetDonationHistory);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedDonationHistory;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUserDonationStatusUpdate(DateTime LastDate)
+        {
+            /*
+            * this routine checks for user specific donation updates
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\") { edges { id wpId source amount recurringInterval campaignWpId userWpId status } pageInfo { hasNextPage endCursor } } }";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = "query { updatedDonationStatus(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { id wpId source amount recurringInterval campaignWpId userWpId status } pageInfo { hasNextPage endCursor } } }";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetDonationStatuses);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedDonationStatus;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUsersUpdatedCreditCards(DateTime LastDate)
+        {
+            /*
+            * this routine gets all the users updated credit card information
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+
+            //start a loop to get all actions
+            //Send the command
+            string command;
+
+            //First run
+            command = "query { updatedCards(date: \"" + LastDate.ToString("o") + "Z\") { wpId userId lastFour expMonth expYear type status } }";
+                
+          
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetCreditCardProgresses);
+
+            //Process the actions
+            if (response.Success == true)
+            {
+                //add what we receied to the list
+                result.Add(response.Data);
+            }
+            else
+            {
+                //something went wrong - return an error message (still in a list)
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = response.ErrorMessage
+                };
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
         }
 
         public static async Task<DabServiceWaitResponseList> GetUserProgress(DateTime LastDate)
@@ -132,7 +451,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedProgress(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\"){ edges { id badgeId percent seen year createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -270,7 +588,7 @@ namespace DABApp.Service
         {
             /* this routine inits a new connection without a token and determines which one to use based on login state
              */
-            string token = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token;
+            string token = GlobalResources.Instance.LoggedInUser.Token;
             if (token == "")
             {
                 //use the api token
@@ -324,16 +642,18 @@ namespace DABApp.Service
             //Generic subscriptions
             var ql = await Service.DabService.AddSubscription(1, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
             ql = await Service.DabService.AddSubscription(2, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
+            ql = await Service.DabService.AddSubscription(3, "subscription { campaignUpdated { campaign { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans}}}");
 
             //logged in steps
             if (GuestStatus.Current.IsGuestLogin == false)
             {
                 //subscriptions
-                ql = await Service.DabService.AddSubscription(3, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
-                ql = await Service.DabService.AddSubscription(4, "subscription { tokenRemoved { token } }");
-                ql = await Service.DabService.AddSubscription(5, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
-                ql = await Service.DabService.AddSubscription(6, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
-
+                ql = await Service.DabService.AddSubscription(4, "subscription { actionLogged { action { id userId episodeId listen position favorite entryDate updatedAt createdAt } } }");
+                ql = await Service.DabService.AddSubscription(5, "subscription { tokenRemoved { token } }");
+                ql = await Service.DabService.AddSubscription(6, "subscription { progressUpdated { progress { id badgeId percent year seen createdAt updatedAt } } }");
+                ql = await Service.DabService.AddSubscription(7, "subscription { updateUser { user { id wpId firstName lastName email language } } } ");
+                ql = await Service.DabService.AddSubscription(8, "subscription { updatedCard { card { wpId userId lastFour expMonth expYear type status } } }");
+                ql = await Service.DabService.AddSubscription(9, "subscription { donationStatusUpdated { donationStatus { id wpId source amount recurringInterval campaignWpId userWpId status }}}");
             }
 
             //return the received response
@@ -429,6 +749,120 @@ namespace DABApp.Service
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
             var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetAddresses);
+
+            //return the response
+            return response;
+        }
+
+        public static async void TestUpdateCampaign(int ProgressId)
+        {
+            //var camp = adb.Table<dbCampaigns>().ToListAsync().Result;
+            //DabGraphQlVariables variables = new DabGraphQlVariables();
+            ////string command = "mutation { createCampaign(wpId: 124, title: \"TESTING\", description: \"You’re invited!\", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: null ) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default}}";
+
+            ////string command = "mutation { deleteCampaign(wpId: 460159) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default } }";
+
+            ////“[{\"type\":\"Weekly\",\"amount\":1,\"id\":\"price_1HIdmgDIA4tgn0DSqmq1bfZh\",\"recurring\":true},{\"type\":\"Single\",\"amount\":100,\"id\":\"price_1HHZp4DIA4tgn0DSbdwWTMkf\",\"recurring\":false},{\"type\":\"Monthly\",\"amount\":100,\"id\":\"Campaign_One\",\"recurring\":true}]”
+            ////, description: “You’re invited!”, suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: “publish”, pricingPlans: null
+            //string command = "mutation { updateCampaign(wpId: 102899, title: \"Daily Audio Bible\", description: \" \", suggestedSingleDonation: 100.00, suggestedRecurringDonation: 25.00, status: \"publish\", pricingPlans: [{type:\"Weekly\", amount:1, id:\"price_1HIdmgDIA4tgn0DSqmq1bfZh\", recurring :true},{type:\"Single\", amount :100, id :\"price_1HHZp4DIA4tgn0DSbdwWTMkf\", recurring :false},{type:\"Monthly\", amount :100, id :\"Campaign_One\", recurring :true}]) { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default }}";
+            //var payload = new DabGraphQlPayload(command, variables);
+            //socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+        }
+
+        public static bool UpdateDonation(string quantity, string type, int cardId, int campaignWpId, string next)
+        {
+            /*
+             * This routine takes a specified wpId and attempts to update a donation via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return false;
+            //Send the update donation mutation
+            string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}) }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            return true;
+        }
+
+        public static async Task<DabServiceWaitResponse> CreateDonation(string quantity, string type, int cardId, int campaignWpId, string next)
+        {
+            /*
+             * This routine takes a specified wpId and attempts to create a donation via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the update donation mutation
+            string command = $"mutation {{createDonation(quantity: {quantity}, donationType: {type}, cardId: {cardId}, campaignWpId: {campaignWpId}, nextPaymentDate: {next}) {{token}}}}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.CreateDonation);
+
+            //return the response
+            return response;
+        }
+
+        public static bool DeleteDonation(int id)
+        {
+            /*
+             * This routine takes a specified wpId and attempts to delete a donation via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return false;
+
+            //Send the update donation mutation
+            string command = $"mutation {{deleteDonation(campaignWpId: {id}) }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+            return true;
+        }
+
+        public static async Task<DabServiceWaitResponse> DeleteCard(int wpId)
+        {
+            /*
+             * This routine takes a specified wpId and attempts to delete a card via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the delete card mutation
+            string command = $"mutation {{deleteCard(wpId: {wpId}) }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.DeleteCard);
+
+            //return the response
+            return response;
+        }
+
+        public static async Task<DabServiceWaitResponse> AddCard(StripeContainer result)
+        {
+            const string quote = "\"";
+
+            /*
+             * This routine takes a specified wpId and attempts to delte a card via graphql
+             */
+
+            //check for a connecting before proceeding
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the Login mutation
+            string command = $"mutation {{addCard(processor: " + quote + "stripe" + quote+ ", processorData: " + quote + $"{result.card_token}" + quote + ") {wpId userId lastFour expMonth expYear type status }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.UpdatedCard);
 
             //return the response
             return response;
@@ -688,7 +1122,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { " + queryName + "(date: \"" + StartDateUtc.ToString("o") + "Z\", channelId: " + ChannelId + ", cursor: \"" + cursor + "\") { edges { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -927,7 +1360,6 @@ namespace DABApp.Service
                 else
                 {
                     //Subsequent runs, use the cursor
-                    //TODO: Make sure this is formatted correctly
                     command = "query { updatedBadges(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\") { edges { badgeId id name description imageURL type method visible createdAt updatedAt } pageInfo { hasNextPage endCursor } } }";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
@@ -1044,8 +1476,6 @@ namespace DABApp.Service
                 //don't do anything else
                 return;
             }
-
-
             //exit the method if nothing to process
             if (data == null)
             {
@@ -1084,11 +1514,78 @@ namespace DABApp.Service
                 HandleUpdateUser(data.updateUser.user);
 
             }
+            else if (data.updatedCard != null)
+            {
+                //credit card updated
+                HandleUpdateCreditCard(data.updatedCard.card);
+            }
+            else if (data.donationStatusUpdated != null)
+            {
+                //user donation updated
+                HandleUpdateDonation(data.donationStatusUpdated.donationStatus);
+            }
+            else if (data.updateDonation != null)
+            {
+                HandleDonationSuccessMessage(data.updateDonation);
+            }
+            else if (data.deleteDonation != null)
+            {
+                HandleDeleteDonationSuccessMessage(data.deleteDonation);
+
+            }
+            else if (data.updateCampaign != null)
+            {
+                //campaign updated
+                HandleUpdatedCampaign(data.updateCampaign);
+            }
+            else if (data.deleteCampaign != null)
+            {
+                //campaign deleted
+                HandleUpdatedCampaign(data.deleteCampaign);
+            }
+            else if (data.campaignUpdated != null)
+            {
+                //campaign updated
+                DabGraphQlUpdateCampaign camp = new DabGraphQlUpdateCampaign(data.campaignUpdated);
+                HandleUpdatedCampaign(camp);
+            }
+            else if (data.createCampaign != null)
+            {
+                //new campaign created
+                HandleUpdatedCampaign(data.createCampaign);
+            }
             else
             {
                 //nothing to see here... all other incoming messages should be handled by the appropriate wait service
             }
 
+        }
+
+        private static async void HandleUpdateDonation(DabGraphQlDonation data)
+        {
+            /* 
+             * Handle an incoming donation update
+             */
+
+            await DabServiceRoutines.ReceiveDonationUpdate(data);
+        }
+
+        private static async void HandleDonationSuccessMessage(DabGraphQlUpdateDonation data)
+        {
+            /* 
+             * Handle an incoming donation success message
+             */
+
+            DabServiceRoutines.RecieveDonationSuccessMessage(data);
+        }
+
+        private static async void HandleDeleteDonationSuccessMessage(DabGraphQlDeleteDonation data)
+        {
+            /* 
+             * Handle an incoming delete donation success message
+             */
+
+            DabServiceRoutines.RecieveDeleteDonationSuccessMessage(data);
         }
 
         private static async void HandleActionLogged(DabGraphQlActionLogged data)
@@ -1098,7 +1595,15 @@ namespace DABApp.Service
              */
 
             await DabServiceRoutines.ReceiveActionLog(data.action);
+        }
 
+        private static async void HandleUpdatedCampaign(DabGraphQlUpdateCampaign data)
+        {
+            /* 
+             * Handle an incoming campaign update
+             */
+
+            await DabServiceRoutines.RecieveCampaignUpdate(data);
         }
 
         private static async void HandleEpisodePublished(DabGraphQlEpisodePublished data)
@@ -1108,8 +1613,6 @@ namespace DABApp.Service
              */
 
             await DabServiceRoutines.EpisodePublished(data.episode);
-
-
         }
 
         //Progress was made
@@ -1143,6 +1646,15 @@ namespace DABApp.Service
 
             await DabServiceRoutines.UpdateUserProfile(data);
 
+        }
+
+        private static async void HandleUpdateCreditCard(DabGraphQlCreditCard data)
+        {
+            /* 
+             * Handle an incoming update credit card notification by updating user credit card data and making any UI notifications
+             */
+
+            await DabServiceRoutines.UpdateCreditCard(data);
         }
 
         private static async void HandleInvalidToken(DabGraphQlRootObject ql)

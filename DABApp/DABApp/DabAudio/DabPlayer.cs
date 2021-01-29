@@ -159,7 +159,15 @@ namespace DABApp.DabAudio
             {
                 try
                 {
-                    return nativePlayer.Duration - CurrentPosition;
+                    double remainingSeconds = nativePlayer.Duration - CurrentPosition;
+                    if (remainingSeconds < 0)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return remainingSeconds;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -359,7 +367,11 @@ namespace DABApp.DabAudio
         {
             try
             {
+                LastPosition = nativePlayer.CurrentPosition;
                 nativePlayer.Seek(position);
+                OnPropertyChanged("CurrentPosition");
+                OnPropertyChanged("RemainingSeconds");
+                OnPropertyChanged("CurrentProgressPercentage");
             }
             catch (Exception ex)
             {
@@ -579,7 +591,7 @@ namespace DABApp.DabAudio
             return shouldResumePlay;
         }
 
-        public void ResumePlay()
+        public void ResumePlayAfterCall()
         {
             shouldResumePlay = false;
             Play();

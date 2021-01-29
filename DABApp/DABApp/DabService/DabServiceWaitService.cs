@@ -31,7 +31,15 @@ namespace DABApp.Service
         GetAddresses,
         UpdateUserAddress,
         SeeProgress,
-        GetBadgeProgresses
+        GetBadgeProgresses,
+        GetCreditCardProgresses,
+        UpdatedCard,
+        GetUpdatedCampaigns,
+        GetDonationStatuses,
+        GetDonationHistory,
+        UpdateDonation,
+        DeleteCard,
+        CreateDonation,
     }
 
     public class DabServiceWaitService
@@ -162,6 +170,14 @@ namespace DABApp.Service
 
                     case DabServiceWaitTypes.GetBadgeProgresses:
                         if (response?.payload?.data?.updatedProgress != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+
+                    case DabServiceWaitTypes.GetCreditCardProgresses:
+                        if (response?.payload?.data?.updatedCards != null)
                         {
                             _qlObject = response;
                             _waiting = false;
@@ -373,8 +389,76 @@ namespace DABApp.Service
                             _waiting = false;
                         }
                         break;
-                }
+                    case DabServiceWaitTypes.UpdatedCard:
+                        //delete card response received
+                        if (response?.payload?.data?.updatedCard != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetUpdatedCampaigns:
+                        //get updated campaigns
+                        if (response?.payload?.data?.updatedCampaigns != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetDonationStatuses:
+                        //get updated donation status
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetDonationHistory:
+                        //get updated user donation history
+                        if (response?.payload?.data?.updatedDonationHistory != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.UpdateDonation:
+                        // get updated donation response
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.DeleteCard:
+                        // get delete card response
+                        if (response?.payload?.data?.updatedCard != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
 
+                        //error during login
+                        if (response?.payload?.errors != null)
+                        {
+                            //Find the relevant error
+                            var cardError = response.payload.errors.Where(x => x.path.Contains("deleteCard")).FirstOrDefault();
+                            if (cardError != null)
+                            {
+                                _error = cardError.message;
+                                _waiting = false;
+                                break;
+                            }
+                        }
+                        break;
+                    case DabServiceWaitTypes.CreateDonation:
+                        // get create donation response
+                        if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                }
             };
         }
     }

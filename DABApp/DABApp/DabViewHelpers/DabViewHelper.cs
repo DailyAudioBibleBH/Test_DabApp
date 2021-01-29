@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using SlideOverKit;
+using SQLite;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
 
@@ -55,8 +58,47 @@ namespace DABApp
 	{ 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			var card = (Card)value;
-			return $"{card.brand} ending in {card.last4}";
+			var card = (dbCreditCards)value;
+			return $"{card.cardType} ending in {card.cardLastFour}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class CardLastFourConverter : IValueConverter
+	{
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null; }
+			//TODO: Figure how to tie history to credit card
+			dbDonationHistory history = (dbDonationHistory)value;
+			dbCreditCards card = adb.Table<dbCreditCards>().FirstOrDefaultAsync().Result;
+			string cardNumber = "Card: **** **** **** " + card.cardLastFour;
+			return $"{cardNumber}";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class DateConverter : IValueConverter
+    {
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) { return null; }
+
+			dbDonationHistory history = (dbDonationHistory)value;
+			string date = history.historyDate.ToString("M/dd/yyyy", CultureInfo.InvariantCulture);
+			return $"{date}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -67,17 +109,47 @@ namespace DABApp
 
 	public class HistoryConverter : IValueConverter
 	{
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) { return null;}
 
-			var history = (DonationRecord)value;
-			return $"{history.campaignName}-{history.currency}{history.grossAmount}";
+			var history = (dbDonationHistory)value;
+			int hisCampWpId = history.historyCampaignWpId;
+			string campaignName = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == hisCampWpId).FirstOrDefaultAsync().Result.campaignTitle;
+			string symbol;
+			if (!TryGetCurrencySymbol(history.historyCurrency, out symbol))
+			{
+				symbol = history.historyCurrency;
+			};
+			return $"{campaignName} - {symbol}{GlobalResources.ToCurrency(history.historyGrossDonation)}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
+		}
+
+		public bool TryGetCurrencySymbol(string ISOCurrencySymbol, out string symbol)
+		{
+			symbol = CultureInfo
+				.GetCultures(CultureTypes.AllCultures)
+				.Where(c => !c.IsNeutralCulture)
+				.Select(culture => {
+					try
+					{
+						return new RegionInfo(culture.Name);
+					}
+					catch
+					{
+						return null;
+					}
+				})
+				.Where(ri => ri != null && ri.ISOCurrencySymbol == ISOCurrencySymbol)
+				.Select(ri => ri.CurrencySymbol)
+				.FirstOrDefault();
+			return symbol != null;
 		}
 	}
 

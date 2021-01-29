@@ -26,30 +26,30 @@ namespace DABApp.Droid.DependencyServices
             try
             {
                     switch (state)
-                {
-                    case CallState.Ringing:
-                        {
-                            if (player.IsReady)
+                    {
+                        case CallState.Ringing:
                             {
-                                if (player.IsPlaying)
+                                if (player.IsReady)
                                 {
-                                    player.PauseForCall();
+                                    if (player.IsPlaying)
+                                    {
+                                        player.PauseForCall();
+                                    }
                                 }
+                                //PAUSE
+                                break;
                             }
-                            //PAUSE
-                            break;
-                        }
-                    case CallState.Idle:
-                        {
-                            if (player.IsReady && !player.IsPlaying && player.ShouldResumePlay() )
+                        case CallState.Offhook:
                             {
-                                player.ResumePlay();
+                                if (player.IsReady && !player.IsPlaying && player.ShouldResumePlay() )
+                                {
+                                    player.ResumePlayAfterCall();
+                                }
+                                break;
                             }
-                            break;
-                        }
                     default:
-                        break;
-                }
+                            break;
+                    }
             }
             catch (Exception ex)
             {

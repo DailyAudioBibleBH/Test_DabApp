@@ -52,25 +52,26 @@ namespace DABApp.DabUI
             {
                 SQLiteAsyncConnection adb = DabData.AsyncDatabase;
                 //Determine if the user was logged in at last use
-                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                var user = GlobalResources.Instance.LoggedInUser;
                 if (user == null)
                 {
-                    dbUserData guestUserData = new dbUserData();
-                    guestUserData.Token = "";
-                    guestUserData.Email = "";
-                    guestUserData.FirstName = "Guest";
-                    guestUserData.LastName = "Guest";
-                    guestUserData.WpId = 0;
-                    guestUserData.Channel = "";
-                    guestUserData.Channels = "";
-                    guestUserData.Id = 0;
-                    guestUserData.Language = "";
-                    guestUserData.NickName = "Guest";
-                    guestUserData.UserRegistered = DateTime.Now;
-                    guestUserData.TokenCreation = DateTime.Now;
-                    guestUserData.ActionDate = DateTime.MinValue;
-                    guestUserData.ProgressDate = DateTime.MinValue;
-                    await adb.InsertOrReplaceAsync(guestUserData);
+                    dbUserData firstGuestLogin = new dbUserData();
+                    firstGuestLogin.Token = "";
+                    firstGuestLogin.Email = "";
+                    firstGuestLogin.FirstName = "Guest";
+                    firstGuestLogin.LastName = "Guest";
+                    firstGuestLogin.WpId = 0;
+                    firstGuestLogin.Channel = "";
+                    firstGuestLogin.Channels = "";
+                    firstGuestLogin.Id = 0;
+                    firstGuestLogin.Language = "";
+                    firstGuestLogin.NickName = "Guest";
+                    firstGuestLogin.UserRegistered = DateTime.Now;
+                    firstGuestLogin.TokenCreation = DateTime.Now;
+                    firstGuestLogin.ActionDate = DateTime.MinValue;
+                    firstGuestLogin.ProgressDate = DateTime.MinValue;
+                    firstGuestLogin.IsLoggedIn = false;
+                    await adb.InsertOrReplaceAsync(firstGuestLogin);
                 }
 
                 //check for version list for required upgrade
@@ -125,7 +126,7 @@ namespace DABApp.DabUI
                 //#endif
 
                 NavigationPage navPage;
-                user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                user = GlobalResources.Instance.LoggedInUser;
 
                 if (versionList != null)
                 {

@@ -41,7 +41,7 @@ namespace DABApp.iOS.DabSockets
                 sock = IO.Socket(Uri);
 
                 //Set up standard events
-                sock.On("connect",data => OnConnect(data));
+                sock.On("connect", data => OnConnect(data));
                 sock.On("disconnect", data => OnDisconnect(data));
                 sock.On("reconnect", data => OnReconnect(data));
                 sock.On("reconnecting", data => OnEvent("reconnecting",data)); //Use basic OnEvent since nothing is "done" yet
@@ -95,9 +95,12 @@ namespace DABApp.iOS.DabSockets
             MessagingCenter.Send<string>("dabapp", "SocketConnected");
 
             //Notify the listener
+            if (data == null)
+            {
+                data = 1;
+            }
             DabSocketEvent?.Invoke(this, new DabSocketEventHandler("connected", data.ToString()));
-
-            
+ 
 
             //Return
             return data;

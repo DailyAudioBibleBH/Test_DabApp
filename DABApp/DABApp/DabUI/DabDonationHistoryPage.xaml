@@ -3,6 +3,8 @@
 	<ContentPage.Resources>
 		<ResourceDictionary>
 			<local:HistoryConverter x:Key="HistoryConverter"/>
+			<local:DateConverter x:Key="DateConverter"/>
+			<local:CardLastFourConverter x:Key="CardLastFourConverter"/>
 		</ResourceDictionary>
 	</ContentPage.Resources>
 	<ContentPage.Content>
@@ -16,22 +18,25 @@
 			<ListView x:Name="History" HasUnevenRows="true">
 				<ListView.Header>
 					<StackLayout Padding="10" Spacing="10">
-					<Label Text="My Donation History" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
+					<Label Text="My Donation History" FontSize="Large" FontAttributes="Bold"  Style="{StaticResource playerLabelStyle}"/>
 					</StackLayout>
 				</ListView.Header>
 				<ListView.ItemTemplate>
 					<DataTemplate>
 					<ViewCell>
 						<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
-							<Label Text="{Binding Path=., Converter={StaticResource HistoryConverter}}" Style="{StaticResource playerLabelStyle}"/>
-							<Label Text="{Binding date}" FontSize="Small"/>
+							<StackLayout>
+								<Label Text="{Binding Path=., Converter={StaticResource HistoryConverter}}" TextColor="White" FontSize="Medium" Style="{StaticResource playerLabelStyle}"/>
+							</StackLayout>
+							<!--<Label Text="{Binding Path=., Converter={StaticResource CardLastFourConverter}}" Style="{StaticResource playerLabelStyle}" FontSize="Small"/>-->
+							<Label Text="{Binding Path=., Converter={StaticResource DateConverter}}" Style="{StaticResource playerLabelStyle}" TextColor="LightGray" FontSize="Small"/>
 						</StackLayout>
 					</ViewCell>
 					</DataTemplate>
 				</ListView.ItemTemplate>
 				<ListView.Footer>
-					<StackLayout Padding="10" Spacing="10">
-					<Button Text="Back to My Donations" Clicked="OnBack"/>
+					<StackLayout Padding="15, 30, 180, 10" Spacing="10">
+					<Button HeightRequest="40" Text="Back to My Donations" Clicked="OnBack"/>
 					</StackLayout>
 				</ListView.Footer>
 			</ListView>

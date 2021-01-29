@@ -25,11 +25,7 @@ namespace DABApp
         int TapNumber = 0;
         private double _width;
         private double _height;
-        bool GraphQlLoginRequestInProgress = false;
-        bool GraphQlLoginComplete = false;
         SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
-        DabGraphQlVariables variables = new DabGraphQlVariables();
-        private string text;
 
         public DabLoginPage(bool fromPlayer = false, bool fromDonation = false)
         {
@@ -45,10 +41,10 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
-            if (email != "Guest" && !String.IsNullOrEmpty(email))
+            var user = GlobalResources.Instance.LoggedInUser;
+            if (user.Id != 0 && !String.IsNullOrEmpty(user.Email))
             {
-                Email.Text = email;
+                Email.Text = user.Email;
             }
             if (Device.Idiom == TargetIdiom.Phone)
             {
@@ -78,10 +74,10 @@ namespace DABApp
             _fromDonation = fromDonation;
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            var email = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
-            if (email != "Guest" && !String.IsNullOrEmpty(email))
+            var user = GlobalResources.Instance.LoggedInUser;
+            if (user.Id != 0 && !String.IsNullOrEmpty(user.Email))
             {
-                Email.Text = email;
+                Email.Text = user.Email;
             }
             if (Device.Idiom == TargetIdiom.Phone)
             {
@@ -116,15 +112,39 @@ namespace DABApp
 
 
                 //token was updated successfully
-                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                newUserData.Token = user.token;
-                newUserData.TokenCreation = DateTime.Now;
-
-                await adb.InsertOrReplaceAsync(newUserData);
+                //Look for previous user data
+                List<dbUserData> users = adb.Table<dbUserData>().ToListAsync().Result;
+                foreach (var u in users)
+                {
+                    u.IsLoggedIn = false;
+                    await adb.InsertOrReplaceAsync(u);
+                }
+                int potentialId = adb.Table<dbUserData>().CountAsync().Result;
+                string email = Email.Text;
+                dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Email == email).FirstOrDefaultAsync().Result;
+                if (dbUser != null)
+                {
+                    dbUser.Token = user.token;
+                    dbUser.TokenCreation = DateTime.Now;
+                    dbUser.IsLoggedIn = true;
+                    await adb.InsertOrReplaceAsync(dbUser);
+                    await DabService.TerminateConnection();
+                    result = await DabService.InitializeConnection(dbUser.Token);
+                }
+                else
+                {
+                    dbUserData newUserData = new dbUserData();
+                    newUserData.Id = potentialId;
+                    newUserData.Email = Email.Text;
+                    newUserData.Token = user.token;
+                    newUserData.TokenCreation = DateTime.Now;
+                    newUserData.IsLoggedIn = true;
+                    await adb.InsertOrReplaceAsync(newUserData);
+                    await DabService.TerminateConnection();
+                    result = await DabService.InitializeConnection(newUserData.Token);
+                }
 
                 //re-establish service connection as the user
-                await DabService.TerminateConnection();
-                result = await DabService.InitializeConnection(newUserData.Token);
                 if (result.Success == false) throw new Exception(result.ErrorMessage);
 
                 //perform post-login functions
@@ -133,7 +153,6 @@ namespace DABApp
                 //push up the channels page
                 DabChannelsPage _nav = new DabChannelsPage();
                 _nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
-                //Application.Current.MainPage = _nav;
                 await Navigation.PushAsync(_nav);
 
                 //Delete nav stack so user cant back into login screen
@@ -336,11 +355,9 @@ namespace DABApp
             {
                 Email.IsEnabled = false;
                 Password.IsEnabled = false;
-                //GuestLogin.IsEnabled = false;
                 Login.IsEnabled = false;
                 btnForgot.IsEnabled = false;
                 BackButton.IsEnabled = false;
-                //SignUp.IsEnabled = false;
                 Login.Text = MainButtonText;
             }
             );
@@ -350,7 +367,6 @@ namespace DABApp
         {
             base.OnDisappearing();
             Login.IsEnabled = true;
-            //GuestLogin.IsEnabled = true;
         }
 
         void OnCompleted(object sender, System.EventArgs e)
@@ -368,12 +384,18 @@ namespace DABApp
                 if (accept)
                 {
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
+                    await adb.ExecuteAsync("DELETE FROM UserData");
+                    await adb.ExecuteAsync("DELETE FROM dbUserCampaigns");
+                    await adb.ExecuteAsync("DELETE FROM dbPricingPlans");
+                    await adb.ExecuteAsync("DELETE FROM dbDonationHistory");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditSource");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditCards");
+                    await adb.ExecuteAsync("DELETE FROM dbCampaigns");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
                     Login.IsEnabled = false;
-                    //GuestLogin.IsEnabled = false;
-                    //SignUp.IsEnabled = false;
+                    BackButton.IsEnabled = false;
                 }
             }
         }

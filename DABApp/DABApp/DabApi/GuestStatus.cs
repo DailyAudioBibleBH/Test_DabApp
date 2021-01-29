@@ -33,7 +33,7 @@ namespace DABApp
 		{
 			get
 			{
-				if (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Token == "")
+				if (GlobalResources.Instance.LoggedInUser.Token == "")
 				{
 					return true;
 				}

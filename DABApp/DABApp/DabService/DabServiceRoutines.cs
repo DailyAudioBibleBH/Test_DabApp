@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
@@ -32,8 +33,6 @@ namespace DABApp.Service
             try
             {
                 //common routines (logged in or not)
-                //TODO: fill these in
-
                 var adb = DabData.AsyncDatabase;
 
                 // get channels
@@ -60,12 +59,52 @@ namespace DABApp.Service
                     }
                 }
 
-                if (GlobalResources.Instance.IsLoggedIn)
+                //get campaigns
+                var qlll = await DabService.GetCampaigns(GlobalResources.CampaignUpdatedDate);
+                if (qlll.Success)
                 {
+                    foreach (var d in qlll.Data)
+                    {
+                        foreach (var b in d.payload.data.updatedCampaigns.edges)
+                        {
+                            dbCampaigns c = new dbCampaigns(b);
+                            if (c.pricingPlans != null)
+                            {
+                                foreach (var plan in b.pricingPlans)
+                                {
+                                    dbPricingPlans newPlan = new dbPricingPlans(plan);
+                                    dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == c.campaignId && x.CampaignWpId == c.campaignWpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                                    if (hasPricingPlan == null)
+                                    {
+                                        hasPricingPlan = new dbCampaignHasPricingPlan();
+                                        List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                        if (userPricingPlans.Count() == 0)
+                                        {
+                                            hasPricingPlan.Id = 0;
+                                        }
+                                        else
+                                        {
+                                            int newId = userPricingPlans.Max() + 1;
+                                            hasPricingPlan.Id = newId;
+                                        }
 
+                                        hasPricingPlan.CampaignId = b.id;
+                                        hasPricingPlan.CampaignWpId = b.wpId;
+                                        hasPricingPlan.PricingPlanId = plan.id;
+                                    }
+                                    
+
+                                    await adb.InsertOrReplaceAsync(hasPricingPlan);
+                                    await adb.InsertOrReplaceAsync(newPlan);
+
+                                }
+                                await adb.InsertOrReplaceAsync(c);
+                            }
+                        }
+                    }
+                    //update date since last updated campaigns
+                    GlobalResources.CampaignUpdatedDate = DateTime.Now;
                 }
-
-
 
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
@@ -81,8 +120,6 @@ namespace DABApp.Service
                         //process user profile information
                         var profile = ql.Data.payload.data.user;
                         await UpdateUserProfile(profile);
-
-
                     }
 
                     //get recent actions
@@ -90,6 +127,12 @@ namespace DABApp.Service
 
                     //get badge progress tied to user
                     await GetUserBadgesProgress();
+
+                    await GetUpdatedCreditCards();
+
+                    await GetUpdatedDonationStatus();
+
+                    await GetUpdatedDonationHistory();
                 }
 
                 return true;
@@ -128,7 +171,7 @@ namespace DABApp.Service
                         try
                         {
                             //get the expiration date
-                            DateTime creation = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.TokenCreation;
+                            DateTime creation = GlobalResources.Instance.LoggedInUser.TokenCreation;
                             int days = ContentConfig.Instance.options.token_life;
                             if (DateTime.Now > creation.AddDays(days))
                             {
@@ -151,7 +194,7 @@ namespace DABApp.Service
                             if (ql.Success)
                             {
                                 //token was updated successfully
-                                var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                                var newUserData = GlobalResources.Instance.LoggedInUser;
                                 newUserData.Token = ql.Data.payload.data.updateToken.token;
                                 newUserData.TokenCreation = DateTime.Now;
                                 await adb.InsertOrReplaceAsync(newUserData);
@@ -273,7 +316,6 @@ namespace DABApp.Service
                         GlobalResources.SetLastEpisodeQueryDate(ChannelId, lastDate.AddSeconds(1));//add a second to keep it from looping
 
                         //notify the UI
-                        //TODO: Confirm all of these messages
                         Device.BeginInvokeOnMainThread(() =>
                         {
                             DabServiceEvents.EpisodesChanged();
@@ -303,8 +345,6 @@ namespace DABApp.Service
             /* this episode adds an episode to the system as it's published
              */
 
-            //TODO: This has not been tested.
-
             try
             {
 
@@ -312,7 +352,8 @@ namespace DABApp.Service
                 dbEpisodes dbe = new dbEpisodes(episode);
 
                 //find the channel
-                var channel = await adb.Table<Channel>().Where(x => x.channelId == episode.channelId).FirstAsync();
+                int chanId = episode.channelId;
+                var channel = await adb.Table<Channel>().Where(x => x.channelId == chanId).FirstAsync();
 
                 //set up additional properties
                 var code = channel.key;
@@ -445,9 +486,7 @@ namespace DABApp.Service
                                     response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.PositionChanged, actionDate, null, Convert.ToInt32(action.PlayerTime));
                                     break;
                                 case "entrydate":
-                                    //TODO: Implement this
                                     response = await DabService.LogAction(action.EpisodeId, ServiceActionsEnum.Journaled, actionDate, true, null);
-                                    //throw new NotSupportedException("Journals not working yet.");
                                     break;
                                 default:
                                     throw new NotSupportedException();
@@ -565,7 +604,7 @@ namespace DABApp.Service
             //save user profile settings
             var adb = DabData.AsyncDatabase;
 
-            dbUserData userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+            dbUserData userData = GlobalResources.Instance.LoggedInUser;
             userData.WpId = user.wpId;
             userData.FirstName = user.firstName;
             userData.LastName = user.lastName;
@@ -586,12 +625,396 @@ namespace DABApp.Service
 
         #endregion
 
+        #region Wallet & Donation Routines
+
+        internal static bool RecieveDonationSuccessMessage(DabGraphQlUpdateDonation data)
+        {
+            /*
+             * This routine handles incoming donation update success/failure messages. 
+             * It visually informs the user
+             */
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert("Donation Updated", $"{data.message}", "OK");
+            });
+
+            return true;
+        }
+
+        internal static bool RecieveDeleteDonationSuccessMessage(DabGraphQlDeleteDonation data)
+        {
+            /*
+             * This routine handles incoming donation update success/failure messages. 
+             * It visually informs the user
+             */
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Application.Current.MainPage.DisplayAlert("Donation Updated", $"{data.message}", "OK");
+            });
+
+            return true;
+        }
+
+        internal static async Task<bool> ReceiveDonationUpdate(DabGraphQlDonation data)
+        {
+            /*
+             * This routine handles incoming donation updates. 
+             * It updates the database
+             */
+
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                string id = data.id;
+                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == id).FirstOrDefaultAsync().Result;
+                if (donation != null)
+                {
+                    donation.WpId = data.wpId;
+                    donation.Amount = data.amount;
+                    donation.RecurringInterval = data.recurringInterval;
+                    donation.CampaignWpId = data.campaignWpId;
+                    donation.Status = data.status;
+                    //save cardid so we can tie it to source if we ever need it
+                    donation.Source = data.source.cardId;
+                    await adb.InsertOrReplaceAsync(donation);
+                }
+                else
+                {
+                    dbUserCampaigns newDon = new dbUserCampaigns(data);
+                    await adb.InsertOrReplaceAsync(newDon);
+                }
+                string cardId = data.source.cardId;
+                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
+                if (source != null)
+                {
+                    source.next = data.source.next;
+                    source.processor = data.source.processor;
+                    await adb.InsertOrReplaceAsync(source);
+                }
+                else
+                {
+                    dbCreditSource newSource = new dbCreditSource(data.source);
+                    await adb.InsertOrReplaceAsync(newSource);
+                }
+
+                //if (beforeStatsus != donation.Status)
+                //{
+                //    string campaignTitle = "";
+                //    dbCampaigns campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == donation.CampaignWpId).FirstOrDefaultAsync().Result;
+                //    if (campaign != null)
+                //    {
+                //        campaignTitle = campaign.campaignTitle;
+                //    }
+                //    Device.BeginInvokeOnMainThread(() => {
+                //        Application.Current.MainPage.DisplayAlert("Donation Updated", $"Donation to campaign {campaignTitle} is now {donation.Status}", "OK");
+                //    });
+                //}
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> RecieveCampaignUpdate(DabGraphQlUpdateCampaign data)
+        {
+            /*
+             * This routine handles incoming campaign updates. 
+             * It updates the database
+             */
+
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                int id = data.id;
+                dbCampaigns camp = adb.Table<dbCampaigns>().Where(x => x.campaignId == id).FirstOrDefaultAsync().Result;
+                if (camp != null)
+                {
+                    camp.campaignDescription = data.description;
+                    camp.campaignSuggestedRecurringDonation = data.suggestedRecurringDonation;
+                    camp.campaignSuggestedSingleDonation = data.suggestedSingleDonation;
+                    camp.campaignTitle = data.title;
+                    camp.campaignStatus = data.status;
+
+                    if (data.pricingPlans != null)
+                    {
+                        foreach (var plan in data.pricingPlans)
+                        {
+                            dbPricingPlans newPlan = new dbPricingPlans(plan);
+                            int campId = data.id;
+                            int campWpId = data.wpId;
+                            string pricingPlanId = newPlan.id;
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == campId && x.CampaignWpId == campWpId && x.PricingPlanId == pricingPlanId).FirstOrDefaultAsync().Result;
+                            if (hasPricingPlan == null)
+                            {
+                                hasPricingPlan = new dbCampaignHasPricingPlan();
+                                List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                if (userPricingPlans.Count() == 0)
+                                {
+                                    hasPricingPlan.Id = 0;
+                                }
+                                else
+                                {
+                                    int newId = userPricingPlans.Max() + 1;
+                                    hasPricingPlan.Id = newId;
+                                }
+                            }
+                            hasPricingPlan.CampaignId = data.id;
+                            hasPricingPlan.CampaignWpId = data.wpId;
+                            hasPricingPlan.PricingPlanId = plan.id;
+
+                            await adb.InsertOrReplaceAsync(hasPricingPlan);
+                            await adb.InsertOrReplaceAsync(newPlan);
+
+                        }
+                        await adb.InsertOrReplaceAsync(camp);
+                    }
+                }
+                else
+                {
+                    dbCampaigns newCamp = new dbCampaigns(data);
+                    if (data.pricingPlans != null)
+                    {
+                        foreach (var plan in data.pricingPlans)
+                        {
+                            dbPricingPlans newPlan = new dbPricingPlans(plan);
+                            int campId = data.id;
+                            int campWpId = data.wpId;
+                            string pricingPlanId = newPlan.id;
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == campId && x.CampaignWpId == campWpId && x.PricingPlanId == pricingPlanId).FirstOrDefaultAsync().Result;
+                            if (hasPricingPlan == null)
+                            {
+                                hasPricingPlan = new dbCampaignHasPricingPlan();
+                                List<int> userPricingPlans = adb.Table<dbCampaignHasPricingPlan>().ToListAsync().Result.Select(x => x.Id).ToList();
+                                if (userPricingPlans.Count() == 0)
+                                {
+                                    hasPricingPlan.Id = 0;
+                                }
+                                else
+                                {
+                                    int newId = userPricingPlans.Max() + 1;
+                                    hasPricingPlan.Id = newId;
+                                }
+                            }
+                            hasPricingPlan.CampaignId = data.id;
+                            hasPricingPlan.CampaignWpId = data.wpId;
+                            hasPricingPlan.PricingPlanId = plan.id;
+
+                            await adb.InsertOrReplaceAsync(hasPricingPlan);
+                            await adb.InsertOrReplaceAsync(newPlan);
+
+                        }
+                        await adb.InsertOrReplaceAsync(camp);
+                    }
+                    await adb.InsertOrReplaceAsync(newCamp);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static async Task GetUpdatedDonationHistory()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserDonationHistoryUpdateDate;
+
+            var qlll = await DabService.GetUserDonationHistoryUpdate(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //find donations by donationId and update status if changed
+                        foreach (var d in item.payload.data.updatedDonationHistory.edges)
+                        {
+                            string id = d.id;
+                            dbDonationHistory data = adb.Table<dbDonationHistory>().Where(x => x.historyId == id).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbDonationHistory newHist = new dbDonationHistory(d);
+                                await adb.InsertOrReplaceAsync(newHist);
+                            }
+                            else if (data != null)
+                            {
+                                data.historyCampaignWpId = d.campaignWpId;
+                                data.historyChargeId = d.chargeId;
+                                data.historyCurrency = d.currency;
+                                data.historyDate = d.date;
+                                data.historyDonationType = d.donationType;
+                                data.historyFee = d.fee;
+                                data.historyGrossDonation = d.grossDonation;
+                                data.historyNetDonation = d.netDonation;
+                                data.historyPaymentType = d.paymentType;
+                                data.historyPlatform = d.platform;
+                                data.historyWpId = d.wpId;
+                                //insert new donation history data
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                        }
+                    }
+                    GlobalResources.UserDonationHistoryUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user donation status: {ex.Message}");
+                }
+            }
+        }
+
+        public static async Task GetUpdatedDonationStatus()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserDonationStatusUpdateDate;
+
+            var qlll = await DabService.GetUserDonationStatusUpdate(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //find donations by donationId and update status if changed
+                        foreach (var d in item.payload.data.updatedDonationStatus.edges)
+                        {
+                            string id = d.id;
+                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.Id == id).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbUserCampaigns newCamp = new dbUserCampaigns(d);
+                                await adb.InsertOrReplaceAsync(newCamp);
+                            }
+                            else if (data != null)
+                            {
+                                data.Amount = d.amount;
+                                data.CampaignWpId = d.campaignWpId;
+                                data.RecurringInterval = d.recurringInterval;
+                                //save cardid so we can tie it to source when we need it
+                                data.Source = d.source.cardId;
+                                data.Status = d.status;
+                                //insert new card data
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                            //save card source tied to donation
+                            string cardId = d.source.cardId;
+                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
+                            if (source != null)
+                            {
+                                source.next = d.source.next;
+                                source.processor = d.source.processor;
+                                await adb.InsertOrReplaceAsync(source);
+                            }
+                            else
+                            {
+                                dbCreditSource newSource = new dbCreditSource(d.source);
+                                await adb.InsertOrReplaceAsync(newSource);
+                            }
+                        }
+                    }
+                    GlobalResources.UserDonationStatusUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user donation status: {ex.Message}");
+                }
+            }
+        }
+
+        public static async Task GetUpdatedCreditCards()
+        {
+            var adb = DabData.AsyncDatabase;
+            DateTime LastDate = GlobalResources.UserCreditCardUpdateDate;
+
+            var qlll = await DabService.GetUsersUpdatedCreditCards(LastDate);
+            if (qlll.Success == true)
+            {
+                try
+                {
+                    foreach (var item in qlll.Data)
+                    {
+                        //reverse order incase multiple changes to same card and most current instance will come through last 
+                        item.payload.data.updatedCards.Reverse();
+                        foreach (var d in item.payload.data.updatedCards)
+                        {
+                            int wpId = d.wpId;
+                            dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == wpId).FirstOrDefaultAsync().Result;
+                            if (data == null)
+                            {
+                                dbCreditCards newCard = new dbCreditCards();
+
+                                newCard.cardExpMonth = d.expMonth;
+                                newCard.cardExpYear = d.expYear;
+                                newCard.cardLastFour = d.lastFour;
+                                newCard.cardStatus = d.status;
+                                newCard.cardType = d.type;
+                                newCard.cardUserId = d.userId;
+                                newCard.cardWpId = d.wpId;
+                                //insert new card data
+                                await adb.InsertOrReplaceAsync(newCard);
+                            }
+                            else if (data != null)
+                            {
+                                data.cardStatus = d.status;
+                                //update card status
+                                await adb.InsertOrReplaceAsync(data);
+                            }
+                        }
+
+                    }
+
+                    //update last time checked for badge progress
+                    GlobalResources.UserCreditCardUpdateDate = DateTime.UtcNow;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error while updating user credit cards: {ex.Message}");
+                }
+            }
+        }
+
+        public static async Task UpdateCreditCard(DabGraphQlCreditCard data)
+        {
+            var adb = DabData.AsyncDatabase;
+            int wpId = data.wpId;
+            dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == wpId).FirstOrDefaultAsync().Result;
+            if (card == null)
+            {
+                dbCreditCards newCard = new dbCreditCards();
+
+                newCard.cardExpMonth = data.expMonth;
+                newCard.cardExpYear = data.expYear;
+                newCard.cardLastFour = data.lastFour;
+                newCard.cardStatus = data.status;
+                newCard.cardType = data.type;
+                newCard.cardUserId = data.userId;
+                newCard.cardWpId = data.wpId;
+                //insert new card data
+                await adb.InsertOrReplaceAsync(newCard);
+            }
+            else if (card != null)
+            {
+                card.cardStatus = data.status;
+                //update card status
+                await adb.InsertOrReplaceAsync(card);
+            }
+        }
+
+        #endregion
+
         #region Badge and Progress Routines
 
         public static async Task GetUserBadgesProgress()
         {
             var adb = DabData.AsyncDatabase;
-            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            userName = GlobalResources.Instance.LoggedInUser.Email;
 
             //get user badge progress
             DateTime LastDate = GlobalResources.BadgeProgressUpdatesDate;
@@ -604,7 +1027,8 @@ namespace DABApp.Service
                     {
                         foreach (var d in item.payload.data.updatedProgress.edges)
                         {
-                            dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == d.id && x.userName == userName).FirstOrDefaultAsync().Result;
+                            int id = d.id;
+                            dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == id && x.userName == userName).FirstOrDefaultAsync().Result;
 
                             //set percentage to 1 to make visible even if 0 (received as an int)
                             if (d.percent <= 0)
@@ -660,7 +1084,7 @@ namespace DABApp.Service
         public static async Task UpdateProgress(DabGraphQlProgressUpdated data)
         {
             var adb = DabData.AsyncDatabase;
-            userName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            userName = GlobalResources.Instance.LoggedInUser.Email;
             //bool badgeFirstEarned = false;
 
             //Build out progress object
@@ -678,7 +1102,8 @@ namespace DABApp.Service
             }
 
             //Save badge progress data
-            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            int progressId = progress.id;
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progressId && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
                 //set percentage to 1 to make visible even if 0 (received as an int)
@@ -686,7 +1111,6 @@ namespace DABApp.Service
                 {
                     progress.percent = 1;
                 }
-
 
                 if (badgeData == null)
                 {
@@ -711,14 +1135,15 @@ namespace DABApp.Service
             //log to firebase
             var adb = DabData.AsyncDatabase;
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user", adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
+            string email = GlobalResources.Instance.LoggedInUser.Email;
+            fbInfo.Add("user", email);
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 
 
             await GlobalResources.LogoffAndResetApp("You have been logged out of all your devices.");
         }
+    }
 
         #endregion
-    }
 }

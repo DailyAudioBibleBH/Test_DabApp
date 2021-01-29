@@ -69,8 +69,7 @@ namespace DABApp
 		{
 			if (GuestStatus.Current.IsGuestLogin)
 			{
-				GlobalResources.LogoffAndResetApp();
-
+				await GlobalResources.LogoffAndResetApp();
 			}
 			else
 			{

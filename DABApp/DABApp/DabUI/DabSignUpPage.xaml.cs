@@ -81,7 +81,7 @@ namespace DABApp
 					//switch to a connection with their token
 					string token = ql.Data.payload.data.registerUser.token;
 					//token was updated successfully
-					var newUserData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+					var newUserData = GlobalResources.Instance.LoggedInUser;
 					newUserData.Token = token;
 					newUserData.TokenCreation = DateTime.Now;
 					await adb.InsertOrReplaceAsync(newUserData);

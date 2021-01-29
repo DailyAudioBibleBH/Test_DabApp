@@ -264,7 +264,7 @@ namespace DABApp.iOS
                 case AVAudioSessionInterruptionType.Ended:
                     if (dabplayer.IsReady && !dabplayer.IsPlaying && dabplayer.ShouldResumePlay())
                     {
-                        dabplayer.ResumePlay();
+                        dabplayer.ResumePlayAfterCall();
                     }
                     break;
 

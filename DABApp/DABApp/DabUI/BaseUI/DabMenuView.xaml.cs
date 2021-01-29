@@ -128,59 +128,71 @@ namespace DABApp
 		}
 
 		async void OnItemTapped(object o, ItemTappedEventArgs e) {
-			if (Device.RuntimePlatform == "Android") 
-			{ 
-				MessagingCenter.Send("Show", "Show"); 
-			}
-			Nav item = (Nav)e.Item;
-            View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
-
-			var test = ContentConfig.Instance.views;
-
-
-            //Send info to Firebase analytics that user tapped a menu item
-            var info = new Dictionary<string, string>();
-            info.Add("title", item.title);
-            DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
-
-            switch (item.title)
+            try
             {
-                case "Channels":
-                    await Navigation.PopToRootAsync();
-                    if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-                    break;
-                case "Achievements":
-                    await Navigation.PushAsync(new DabAchievementsPage(view));
-                    if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
-                    break;
-                case "Prayer Wall":
-                    if (Device.Idiom == TargetIdiom.Tablet)
-                    {
-                        await Navigation.PushAsync(new DabForumTabletTopicPage(view));
-                    }
-                    else
-                    {
-                        await Navigation.PushAsync(new DabForumPhoneTopicList(view));
-                    }
-                    RemovePages();
-                    break;
-                case "Send Audio Recording":
-					GlobalResources.GoToRecordingPage();
-                    break;
-                default:
-                    if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
-                    {
-                        await Navigation.PushAsync(new DabParentChildGrid(view));
-                    }
-                    else
-                    {
-                        await Navigation.PushAsync(new DabContentView(view));
-                    }
-                    RemovePages();
-                    break;
+				if (Device.RuntimePlatform == "Android")
+				{
+					MessagingCenter.Send("Show", "Show");
+				}
+				Nav item = (Nav)e.Item;
+				View view = ContentConfig.Instance.views.Single(x => x.id == item.view);
+
+				//Send info to Firebase analytics that user tapped a menu item
+				var info = new Dictionary<string, string>();
+				info.Add("title", item.title);
+				DependencyService.Get<IAnalyticsService>().LogEvent("action_navigation", info);
+
+				switch (item.title)
+				{
+					case "Channels":
+                        if (Navigation.NavigationStack.Count() > 1)
+                        {
+							await Navigation.PopToRootAsync();
+                        }
+                        else
+                        {
+							HideWithoutAnimations();
+						}
+						//await Navigation.PopToRootAsync();
+						if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+						break;
+					case "Achievements":
+						await Navigation.PushAsync(new DabAchievementsPage(view));
+						if (Device.RuntimePlatform == "iOS") { ((DabBaseContentPage)Parent).HideMenu(); }
+						break;
+					case "Prayer Wall":
+						if (Device.Idiom == TargetIdiom.Tablet)
+						{
+							await Navigation.PushAsync(new DabForumTabletTopicPage(view));
+						}
+						else
+						{
+							await Navigation.PushAsync(new DabForumPhoneTopicList(view));
+						}
+						RemovePages();
+						break;
+					case "Send Audio Recording":
+						GlobalResources.GoToRecordingPage();
+						break;
+					default:
+						if (item.title == "About" && Device.Idiom == TargetIdiom.Tablet)
+						{
+							await Navigation.PushAsync(new DabParentChildGrid(view));
+						}
+						else
+						{
+							await Navigation.PushAsync(new DabContentView(view));
+						}
+						RemovePages();
+						break;
+				}
+
+				pageList.SelectedItem = null;
+			}
+            catch (Exception ex)
+            {
+				return; 
             }
-			
-			pageList.SelectedItem = null;
 		}
 
 		//async void OnAvatarChanged(object o, EventArgs e)

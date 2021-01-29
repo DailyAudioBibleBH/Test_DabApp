@@ -21,7 +21,14 @@ namespace DABApp.Droid
 			};
 			try
 			{
-				Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeApiKey;
+                if (!GlobalResources.TestMode)
+                {
+					Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeApiKey;
+				}
+				else
+                {
+					Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeTestApiKey;
+                }
 				//StripeConfiguration.ApiKey = GlobalResources.StripeApiKey;
 				var token = await StripeClient.CreateToken(sCard);
 				var container = new StripeContainer();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using SQLite;
@@ -11,20 +12,18 @@ namespace DABApp
         public string Key { get; set; }
         public string Value { get; set; }
 
-        public static async Task<bool> DeleteLoginSettings()
+        public static async Task<bool> ChangeLoginSettings()
         {
             try
             {
                 SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-                var a = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                a.Token = "";
-                a.TokenCreation = DateTime.MinValue;
-                a.FirstName = "";
-                a.LastName = "";
-                a.Email = "";
-                a.ActionDate = GlobalResources.DabMinDate;
-                a.ProgressDate = GlobalResources.DabMinDate;
-                await adb.InsertOrReplaceAsync(a);
+                List<dbUserData> users = adb.Table<dbUserData>().ToListAsync().Result;
+                foreach (var u in users)
+                {
+                    u.IsLoggedIn = false;
+                    u.Token = "";
+                    await adb.InsertOrReplaceAsync(u);
+                }
             }
             catch (Exception ex)
             {

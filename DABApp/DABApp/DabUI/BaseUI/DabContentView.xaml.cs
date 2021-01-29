@@ -83,9 +83,11 @@ namespace DABApp
 			var item = (Link)e.Item;
             if (item.linkText.Contains("Report an Issue"))
             {
+				string email = GlobalResources.Instance.LoggedInUser.Email;
+				int wpid = GlobalResources.Instance.LoggedInUser.WpId;
                 string url = $"{item.link}/?platform={Device.RuntimePlatform}&idiom={Device.Idiom.ToString()}&appVersion={CrossVersion.Current.Version}&osVersion={DeviceInfo.Hardware.OperatingSystem}" +
                     $"&screenWidth={DeviceInfo.Hardware.ScreenWidth}&screenHeight={DeviceInfo.Hardware.ScreenHeight}&manufacturer={DeviceInfo.Hardware.Manufacturer}&model={DeviceInfo.Hardware.Model}" +
-                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email}&userWpId={GlobalResources.GetUserWpId()}";
+                    $"&currentEpisodeId={GlobalResources.CurrentEpisodeId}&userEmail={email}&userWpId={wpid}";
                 Device.OpenUri(new Uri(url));
             }
             else

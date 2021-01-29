@@ -90,6 +90,153 @@ namespace DABApp.DabSockets
         public bool checkEmail { get; set; }
         public List<DabGraphQlAddress> addresses { get; set; }
         public DabGraphQlAddress updateUserAddress { get; set; }
+        public List<DabGraphQlCreditCard> updatedCards { get; set; }
+        public DabGraphQlUpdateCreditCard updatedCard { get; set; }
+        public DabGraphQlUpdatedCampaigns updatedCampaigns { get; set; }
+        public DabGraphQlUpdateCampaign updateCampaign { get; set; }
+        public DabGraphQlUpdateCampaign createCampaign { get; set; }
+        public DabGraphQlUpdateCampaign deleteCampaign { get; set; }
+        public DabGraphQlUpdatedDonationStatus updatedDonationStatus { get; set; }
+        public DabGraphQlDonationStatusUpdated donationStatusUpdated { get; set; }
+        public DabGraphQlUpdatedDonationHistory updatedDonationHistory { get; set; }
+        public DabGraphQlUpdateDonation updateDonation { get; set; }
+        public DabGraphQlDeleteDonation deleteDonation { get; set; }
+        public DabGraphQlCampaign campaignUpdated { get; set; }
+
+    }
+
+    public class DabGraphQlDeleteDonation
+    {
+        public string code { get; set; }
+        public string message { get; set; }
+    }
+
+    public class DabGraphQlSingleDonationHistory
+    {
+        public string id { get; set; }
+        public int wpId { get; set; }
+        public string platform { get; set; }
+        public string paymentType { get; set; }
+        public string chargeId { get; set; }
+        public DateTime date { get; set; }
+        public string donationType { get; set; }
+        public string currency { get; set; }
+        public double grossDonation { get; set; }
+        public double fee { get; set; }
+        public double netDonation { get; set; }
+        public int campaignWpId { get; set; }
+        public int userWpId { get; set; }
+    }
+
+    public class DabGraphQlUpdateDonation
+    {
+        public string code { get; set; }
+        public string message { get; set; }
+    }
+
+    public class DabGraphQlUpdatedDonationHistory
+    {
+        public List<DabGraphQlSingleDonationHistory> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
+    }
+
+    public class DabGraphQlDonationStatusUpdated
+    {
+        public DabGraphQlDonation donationStatus { get; set; }
+    }
+
+    public class DabGraphQlDonationSource
+    {
+        public string cardId { get; set; }
+        public string processor { get; set; }
+        public string next { get; set; }
+    }
+
+    public class DabGraphQlDonation
+    {
+        public string id { get; set; }
+        public int wpId { get; set; }
+        public DabGraphQlDonationSource source { get; set; }
+        public double amount { get; set; }
+        public string recurringInterval { get; set; }
+        public int campaignWpId { get; set; }
+        public int userWpId { get; set; }
+        public string status { get; set; }
+    }
+
+    public class DabGraphQlUpdatedDonationStatus
+    {
+        public List<DabGraphQlDonation> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
+    }
+
+    public class DabGraphQlUpdatedCampaigns
+    {
+        public List<DabGraphQlCampaign> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
+    }
+
+    public class DabGraphQlUpdateCampaign
+    {
+        public DabGraphQlUpdateCampaign(DabGraphQlCampaign campaignUpdated)
+        {
+            this.id = campaignUpdated.id;
+            this.wpId = campaignUpdated.wpId;
+            this.title = campaignUpdated.title;
+            this.description = campaignUpdated.description;
+            this.status = campaignUpdated.status;
+            this.suggestedSingleDonation = campaignUpdated.suggestedSingleDonation;
+            this.suggestedRecurringDonation = campaignUpdated.suggestedRecurringDonation;
+            this.pricingPlans = campaignUpdated.pricingPlans;
+        }
+
+        public int id { get; set; }
+        public int wpId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string status { get; set; }
+        public int suggestedSingleDonation { get; set; }
+        public int suggestedRecurringDonation { get; set; }
+        public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
+        //public string pricingPlans { get; set; }
+        public bool @default { get; set; }
+    }
+
+    public class DabGraphQlCampaign
+    {
+        public int id { get; set; }
+        public int wpId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string status { get; set; }
+        public int suggestedSingleDonation { get; set; }
+        public int suggestedRecurringDonation { get; set; }
+        public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
+        //public string pricingPlans { get; set; }
+    }
+
+    public class DabGraphQlPricingPlan
+    {
+        public string type { get; set; }
+        public double amount { get; set; }
+        public string id { get; set; }
+        public bool recurring { get; set; }
+    }
+
+    public class DabGraphQlCreditCard
+    {
+        public int wpId { get; set; }
+        public int userId { get; set; }
+        public int lastFour { get; set; }
+        public int expMonth { get; set; }
+        public int expYear { get; set; }
+        public string type { get; set; }
+        public string status { get; set; }
+    }
+
+    public class DabGraphQlUpdateCreditCard
+    {
+        public DabGraphQlCreditCard card { get; set; }
     }
 
     public class DabGraphQlAddress

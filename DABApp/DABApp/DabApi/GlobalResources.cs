@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "2021010801-dbDataTransfers";
+                return "20210127";
             }
         }
 
@@ -92,21 +92,28 @@ namespace DABApp
         {
             get
             {
-                if (GlobalResources.Instance.IsLoggedIn)
+                try
                 {
-                    int registerYear = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.UserRegistered.Year;
-                    int episodeYear = ContentConfig.Instance.options.episode_year;
-                    int minYear = Math.Max(registerYear, episodeYear);
-                    //Go back one day to get January 1st episodes
-                    return new DateTime(minYear - 1, 12, 31);
+                    if (GlobalResources.Instance.IsLoggedIn)
+                    {
+                        int registerYear = GlobalResources.Instance.LoggedInUser.UserRegistered.Year;
+                        int episodeYear = ContentConfig.Instance.options.episode_year;
+                        int minYear = Math.Max(registerYear, episodeYear);
+                        //Go back one day to get January 1st episodes
+                        return new DateTime(minYear - 1, 12, 31);
+                    }
+                    else
+                    {
+                        int episodeYear = ContentConfig.Instance.options.episode_year;
+                        //Go back one day to get January 1st episodes
+                        return new DateTime(episodeYear - 1, 12, 31);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    int episodeYear = ContentConfig.Instance.options.episode_year;
-                    //Go back one day to get January 1st episodes
-                    return new DateTime(episodeYear - 1, 12, 31);
+                    System.Diagnostics.Debug.WriteLine($"Exception thrown while getting DabMinDate: {ex.Message}");
+                    return new DateTime(2020, 12, 31);
                 }
-
             }
         }
 
@@ -128,6 +135,8 @@ namespace DABApp
         }
 
         public static readonly string StripeApiKey = "pk_live_O0E92mb0sHFrAD5JGBiU9fgK";
+
+        public static readonly string StripeTestApiKey = "pk_test_q27ch5XTiCE6Rx5qGhw5q9DW";
 
 
         //old api tokens
@@ -230,6 +239,14 @@ namespace DABApp
                 return !GuestStatus.Current.IsGuestLogin;
             }
 
+        }
+
+        public dbUserData LoggedInUser
+        {
+            get
+            {
+                return GetLoggedInUser();
+            }
         }
         public static GlobalResources Instance { get; private set; }
 
@@ -335,33 +352,24 @@ namespace DABApp
             }
         }
 
-        public static int GetUserWpId()
+        public dbUserData GetLoggedInUser()
         {
-            try
+
+            dbUserData user = adb.Table<dbUserData>().Where(x => x.IsLoggedIn == true).FirstOrDefaultAsync().Result;
+            if (user != null)
             {
-
-                if (!GuestStatus.Current.IsGuestLogin)
-                {
-                    int wpID = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.WpId;
-                    return wpID;
-
-                }
-                else
-                {
-                    return 0; //guest
-                }
+                return user;
             }
-            catch (Exception ex)
+            else
             {
-                return -2; //error
+                return adb.Table<dbUserData>().Where(x => x.Id == 0).FirstOrDefaultAsync().Result;
             }
-
         }
 
         public static string GetUserName()
         {
             //friendly user name
-            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
+            return (Instance.LoggedInUser.FirstName + " " + Instance.LoggedInUser.LastName);
         }
 
         //Used to convert to a currency amount without dollar sign
@@ -416,19 +424,93 @@ namespace DABApp
             }
         }
 
+        //Last badge check date in GMT (get/set universal time)
+        public static DateTime CampaignUpdatedDate
+        {
+            get
+            {
+                string settingsKey = "CampaignUpdateDate";
+                string CampaignUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                if (CampaignUpdateSettingsValue == "")
+                {
+                    DateTime campaignDate = DateTime.MinValue.ToUniversalTime();
+                    dbSettings.StoreSetting(settingsKey, campaignDate.ToString());
+                }
+                return DateTime.Parse(dbSettings.GetSetting("CampaignUpdateDate", ""));
+            }
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = "CampaignUpdateDate";
+                string campaignDate = value.ToString();
+                dbSettings.StoreSetting(settingsKey, campaignDate);
+            }
+        }
+
         public static DateTime BadgeProgressUpdatesDate
         //Last badge progress check date in GMT (get/set universal time)
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ProgressDate;
+                return GlobalResources.Instance.LoggedInUser.ProgressDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.ProgressDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
+        public static DateTime UserDonationStatusUpdateDate
+        {
+            get
+            {
+                return GlobalResources.Instance.LoggedInUser.DonationStatusUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
+                user.DonationStatusUpdateDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
+        public static DateTime UserDonationHistoryUpdateDate
+        {
+            get
+            {
+                return GlobalResources.Instance.LoggedInUser.DonationHistoryUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
+                user.DonationHistoryUpdateDate = value;
+                adb.InsertOrReplaceAsync(user);
+
+            }
+        }
+
+        public static DateTime UserCreditCardUpdateDate
+        {
+            get
+            {
+                return GlobalResources.Instance.LoggedInUser.CreditCardUpdateDate;
+            }
+
+            set
+            {
+                //Store the value sent in the database
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
+                user.CreditCardUpdateDate = value;
                 adb.InsertOrReplaceAsync(user);
 
             }
@@ -439,13 +521,13 @@ namespace DABApp
         {
             get
             {
-                return adb.Table<dbUserData>().FirstOrDefaultAsync().Result.ActionDate;
+                return GlobalResources.Instance.LoggedInUser.ActionDate;
             }
 
             set
             {
                 //Store the value sent in the database
-                dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+                dbUserData user = GlobalResources.Instance.LoggedInUser;
                 user.ActionDate = value;
                 adb.InsertOrReplaceAsync(user);
 
@@ -482,7 +564,12 @@ namespace DABApp
             get
             {
                 //request gravatar from gravatar.com if not custom gravatar set then use placeholder instead.
-                string hash = CalculateMD5Hash(adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email);
+                string email = GlobalResources.Instance.LoggedInUser.Email;
+                if (email == null)
+                {
+                    email = "";
+                }
+                string hash = CalculateMD5Hash(email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }
@@ -579,9 +666,8 @@ namespace DABApp
                     new PodcastEmail() { Podcast = "C2IT Test", Email = "appalerts@c2itconsulting.net;chet@chetcromer.com" },
             #endif
                     new PodcastEmail() { Podcast = "Daily Audio Bible", Email = "prayerapp@dailyaudiobible.com"},
-                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "china@dailyaudiobible.com;prayer_chronological@dailyaudiobible.com"}
+                    new PodcastEmail() { Podcast = "Daily Audio Bible Chronological", Email = "prayer_chronological@dailyaudiobible.com"}
         };
-
 
         public static async void GoToRecordingPage()
         {
@@ -623,7 +709,7 @@ namespace DABApp
             playerPodcast.Stop();
 
             //Database
-            await dbSettings.DeleteLoginSettings();
+            await dbSettings.ChangeLoginSettings();
 
             //Websocket
             await DabService.TerminateConnection();

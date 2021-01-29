@@ -23,9 +23,10 @@ namespace DABApp
 		{
 			InitializeComponent();
             if (GlobalResources.ShouldUseSplitScreen) { NavigationPage.SetHasNavigationBar(this, false); }
-			FirstName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
-			LastName.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
-			Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+			dbUserData user = GlobalResources.Instance.LoggedInUser;
+			FirstName.Text = user.FirstName;
+			LastName.Text = user.LastName;
+			Email.Text = user.Email;
 		}
 
 		async void OnSave(object o, EventArgs e) 
@@ -33,11 +34,11 @@ namespace DABApp
 			if (Validation()) 
 			{
 				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Saving your information...", true));
-
+				dbUserData user = GlobalResources.Instance.LoggedInUser;
 				bool okToClose = true;
-				string oldFirstName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName;
-				string oldLastName = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName;
-				string oldEmail = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+				string oldFirstName = user.FirstName;
+				string oldLastName = user.LastName;
+				string oldEmail = user.Email;
 
 
 				if (FirstName.Text != oldFirstName || LastName.Text != oldLastName || Email.Text != oldEmail)
@@ -47,7 +48,7 @@ namespace DABApp
 					{
 						var data = ql.Data.payload.data.updateUserFields;
 						//token was updated successfully
-						var userData = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+						var userData = GlobalResources.Instance.LoggedInUser;
 						userData.FirstName = data.firstName;
 						userData.LastName = data.lastName;
 						userData.Email = data.email;

@@ -31,7 +31,7 @@ namespace DABApp
             NavigationPage.SetHasNavigationBar(this, false);
             GlobalResources.LogInPageExists = true;
             ToolbarItems.Clear();
-            Email.Text = adb.Table<dbUserData>().FirstOrDefaultAsync().Result.Email;
+            Email.Text = GlobalResources.Instance.LoggedInUser.Email;
             lblTestMode.IsVisible = GlobalResources.TestMode;
             if (Device.Idiom == TargetIdiom.Phone)
             {
@@ -103,7 +103,8 @@ namespace DABApp
         async void OnGuestLogin(object o, EventArgs e)
         {
             //log the user in as a guest
-            AuthenticationAPI.LoginGuest();
+            //Shouldn't be a need for this with new user data organization
+            //AuthenticationAPI.LoginGuest();
 
             //perform post-login functions
             await DabServiceRoutines.RunConnectionEstablishedRoutines();
@@ -120,8 +121,6 @@ namespace DABApp
             {
                 Navigation.RemovePage(page);
             }
-
-
         }
 
         public modeData VersionCompare(List<Versions> versions, out modeData mode)
@@ -305,6 +304,13 @@ namespace DABApp
                 {
                     var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
+                    await adb.ExecuteAsync("DELETE FROM UserData");
+                    await adb.ExecuteAsync("DELETE FROM dbUserCampaigns");
+                    await adb.ExecuteAsync("DELETE FROM dbPricingPlans");
+                    await adb.ExecuteAsync("DELETE FROM dbDonationHistory");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditSource");
+                    await adb.ExecuteAsync("DELETE FROM dbCreditCards");
+                    await adb.ExecuteAsync("DELETE FROM dbCampaigns");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
                     AuthenticationAPI.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");

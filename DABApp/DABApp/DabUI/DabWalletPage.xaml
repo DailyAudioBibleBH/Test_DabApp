@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabWalletPage" xmlns:local="clr-namespace:DABApp">
 	<ContentPage.Content>
-		<StackLayout Padding="0, 10, 0, 10" Spacing="10">
+		<StackLayout Padding="0, 10, 0, 0" Spacing="10">
 			<ContentView Padding="10, 0, 10, 0">
 			<Label Text="My Wallet" Style="{StaticResource playerLabelStyle}" FontSize="Large" FontAttributes="Bold"/>
 			</ContentView>
 			<TableView Intent="Settings">
 				<TableView.Root>
 					<TableSection x:Name="Cards">
-						<ViewCell Tapped="OnAdd">
-							<StackLayout Orientation="Horizontal" Padding="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
-								<Label Text="+ Add a card" HorizontalOptions="StartAndExpand" VerticalOptions="Center"/>
-								<Image Source="ic_chevron_right_white_2x.png" HorizontalOptions="EndAndExpand" VerticalOptions="Center"/>
+						<!--<ViewCell Tapped="OnAdd">
+							<StackLayout>
+						         <Button x:Name="AddCard" HeightRequest="40" WidthRequest="120" Text="Add a Card" Clicked="OnAdd" Style="{StaticResource highlightedButtonStyle}"/>
 							</StackLayout>
-						</ViewCell>
+						</ViewCell>-->
 					</TableSection>
 				</TableView.Root>
 			</TableView>

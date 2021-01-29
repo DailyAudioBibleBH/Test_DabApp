@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Text;
 using Acr.DeviceInfo;
 using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Version.Plugin;
 using Xamarin.Forms;
@@ -78,10 +79,34 @@ namespace DABApp
                 int j = await adb.DeleteAsync(item);
             }
 
-            //delete actions
+            //delete user actions
             int i = adb.ExecuteAsync("delete from dbPlayerActions").Result;
+            //delete user episode data
             i = adb.ExecuteAsync("delete from dbEpisodeUserData").Result;
+            //delete user credit cards
+            i = adb.ExecuteAsync("DELETE FROM dbCreditCards").Result;
+            //delete user donation sources
+            i = adb.ExecuteAsync("DELETE FROM dbCreditSource").Result;
+            //delete user donation history
+            i = adb.ExecuteAsync("DELETE FROM dbDonationHistory").Result;
+            //delete user badge progress
+            i = adb.ExecuteAsync("DELETE FROM dbUserBadgeProgress").Result;
+            //delete user campaigns
+            i = adb.ExecuteAsync("DELETE FROM dbUserCampaigns").Result;
 
+            dbUserData user = GlobalResources.Instance.LoggedInUser;
+            user.ActionDate = DateTime.MinValue;
+            user.CreditCardUpdateDate = DateTime.MinValue;
+            user.DonationHistoryUpdateDate = DateTime.MinValue;
+            user.DonationStatusUpdateDate = DateTime.MinValue;
+            user.ProgressDate = DateTime.MinValue;
+            await adb.InsertOrReplaceAsync(user);
+
+            await DabServiceRoutines.GetRecentActions();
+            await DabServiceRoutines.GetUpdatedCreditCards();
+            await DabServiceRoutines.GetUpdatedDonationHistory();
+            await DabServiceRoutines.GetUpdatedDonationStatus();
+            await DabServiceRoutines.GetUserBadgesProgress();
 
             await DisplayAlert("Local User Data Reset", "We have reset your local user data. It will be reloaded when you return to the episodes page.", "OK");
         }
@@ -112,8 +137,9 @@ namespace DABApp
 
                 //Build the message content
                 var adb = DabData.AsyncDatabase;
-                var user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
-                if (user == null)
+                var user = GlobalResources.Instance.LoggedInUser;
+
+                if (user.Id == 0)
                 {
                     user = new dbUserData()
                     {
