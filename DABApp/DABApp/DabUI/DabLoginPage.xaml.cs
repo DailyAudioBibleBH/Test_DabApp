@@ -120,7 +120,8 @@ namespace DABApp
                     await adb.InsertOrReplaceAsync(u);
                 }
                 int potentialId = adb.Table<dbUserData>().CountAsync().Result;
-                dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Email == Email.Text).FirstOrDefaultAsync().Result;
+                string email = Email.Text;
+                dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Email == email).FirstOrDefaultAsync().Result;
                 if (dbUser != null)
                 {
                     dbUser.Token = user.token;

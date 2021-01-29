@@ -26,8 +26,10 @@ namespace DABApp
 
         public static IEnumerable<dbEpisodes> GetEpisodeList(Resource resource)
         {
-            dbChannels channel = adb.Table<dbChannels>().Where(x => x.channelId == resource.id).FirstOrDefaultAsync().Result;
-            List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).ToListAsync().Result;
+            string resTitle = resource.title;
+            int resId = resource.id;
+            dbChannels channel = adb.Table<dbChannels>().Where(x => x.channelId == resId).FirstOrDefaultAsync().Result;
+            List<dbEpisodes> episodesTable = adb.Table<dbEpisodes>().Where(x => x.channel_title == resTitle).OrderByDescending(x => x.PubDate).ToListAsync().Result;
             DateTime beginEpisodeDate = GlobalResources.DabMinDate;
 
             //Year end rollover process for guest
@@ -73,7 +75,8 @@ namespace DABApp
 
         public static async Task<dbEpisodes> GetMostRecentEpisode(Resource resource)
         {
-            var episode = await adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync();
+            string resTitle = resource.title;
+            var episode = await adb.Table<dbEpisodes>().Where(x => x.channel_title == resTitle).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync();
             return episode;
         }
 
@@ -236,7 +239,8 @@ namespace DABApp
                 FileManager fm = new FileManager();
                 fm.StopDownloading();
                 DownloadIsRunning = false;
-                var Episodes = adb.Table<dbEpisodes>().Where(x => x.channel_title == resource.title && (x.is_downloaded || x.progressVisible)).ToListAsync().Result;
+                string resTitle = resource.title;
+                var Episodes = adb.Table<dbEpisodes>().Where(x => x.channel_title == resTitle && (x.is_downloaded || x.progressVisible)).ToListAsync().Result;
                 foreach (var episode in Episodes)
                 {
                     var ext = episode.url.Split('.').Last();

@@ -352,7 +352,8 @@ namespace DABApp.Service
                 dbEpisodes dbe = new dbEpisodes(episode);
 
                 //find the channel
-                var channel = await adb.Table<Channel>().Where(x => x.channelId == episode.channelId).FirstAsync();
+                int chanId = episode.channelId;
+                var channel = await adb.Table<Channel>().Where(x => x.channelId == chanId).FirstAsync();
 
                 //set up additional properties
                 var code = channel.key;
@@ -666,7 +667,8 @@ namespace DABApp.Service
             try
             {
                 var adb = DabData.AsyncDatabase;
-                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == data.id).FirstOrDefaultAsync().Result;
+                string id = data.id;
+                dbUserCampaigns donation = adb.Table<dbUserCampaigns>().Where(x => x.Id == id).FirstOrDefaultAsync().Result;
                 if (donation != null)
                 {
                     donation.WpId = data.wpId;
@@ -683,7 +685,8 @@ namespace DABApp.Service
                     dbUserCampaigns newDon = new dbUserCampaigns(data);
                     await adb.InsertOrReplaceAsync(newDon);
                 }
-                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == data.source.cardId).FirstOrDefaultAsync().Result;
+                string cardId = data.source.cardId;
+                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
                 if (source != null)
                 {
                     source.next = data.source.next;
@@ -727,7 +730,8 @@ namespace DABApp.Service
             try
             {
                 var adb = DabData.AsyncDatabase;
-                dbCampaigns camp = adb.Table<dbCampaigns>().Where(x => x.campaignId == data.id).FirstOrDefaultAsync().Result;
+                int id = data.id;
+                dbCampaigns camp = adb.Table<dbCampaigns>().Where(x => x.campaignId == id).FirstOrDefaultAsync().Result;
                 if (camp != null)
                 {
                     camp.campaignDescription = data.description;
@@ -741,7 +745,10 @@ namespace DABApp.Service
                         foreach (var plan in data.pricingPlans)
                         {
                             dbPricingPlans newPlan = new dbPricingPlans(plan);
-                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == data.id && x.CampaignWpId == data.wpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                            int campId = data.id;
+                            int campWpId = data.wpId;
+                            string pricingPlanId = newPlan.id;
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == campId && x.CampaignWpId == campWpId && x.PricingPlanId == pricingPlanId).FirstOrDefaultAsync().Result;
                             if (hasPricingPlan == null)
                             {
                                 hasPricingPlan = new dbCampaignHasPricingPlan();
@@ -775,7 +782,10 @@ namespace DABApp.Service
                         foreach (var plan in data.pricingPlans)
                         {
                             dbPricingPlans newPlan = new dbPricingPlans(plan);
-                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == data.id && x.CampaignWpId == data.wpId && x.PricingPlanId == newPlan.id).FirstOrDefaultAsync().Result;
+                            int campId = data.id;
+                            int campWpId = data.wpId;
+                            string pricingPlanId = newPlan.id;
+                            dbCampaignHasPricingPlan hasPricingPlan = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == campId && x.CampaignWpId == campWpId && x.PricingPlanId == pricingPlanId).FirstOrDefaultAsync().Result;
                             if (hasPricingPlan == null)
                             {
                                 hasPricingPlan = new dbCampaignHasPricingPlan();
@@ -826,7 +836,8 @@ namespace DABApp.Service
                         //find donations by donationId and update status if changed
                         foreach (var d in item.payload.data.updatedDonationHistory.edges)
                         {
-                            dbDonationHistory data = adb.Table<dbDonationHistory>().Where(x => x.historyId == d.id).FirstOrDefaultAsync().Result;
+                            string id = d.id;
+                            dbDonationHistory data = adb.Table<dbDonationHistory>().Where(x => x.historyId == id).FirstOrDefaultAsync().Result;
                             if (data == null)
                             {
                                 dbDonationHistory newHist = new dbDonationHistory(d);
@@ -874,7 +885,8 @@ namespace DABApp.Service
                         //find donations by donationId and update status if changed
                         foreach (var d in item.payload.data.updatedDonationStatus.edges)
                         {
-                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.Id == d.id).FirstOrDefaultAsync().Result;
+                            string id = d.id;
+                            dbUserCampaigns data = adb.Table<dbUserCampaigns>().Where(x => x.Id == id).FirstOrDefaultAsync().Result;
                             if (data == null)
                             {
                                 dbUserCampaigns newCamp = new dbUserCampaigns(d);
@@ -892,7 +904,8 @@ namespace DABApp.Service
                                 await adb.InsertOrReplaceAsync(data);
                             }
                             //save card source tied to donation
-                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == d.source.cardId).FirstOrDefaultAsync().Result;
+                            string cardId = d.source.cardId;
+                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
                             if (source != null)
                             {
                                 source.next = d.source.next;
@@ -931,7 +944,8 @@ namespace DABApp.Service
                         item.payload.data.updatedCards.Reverse();
                         foreach (var d in item.payload.data.updatedCards)
                         {
-                            dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == d.wpId).FirstOrDefaultAsync().Result;
+                            int wpId = d.wpId;
+                            dbCreditCards data = adb.Table<dbCreditCards>().Where(x => x.cardWpId == wpId).FirstOrDefaultAsync().Result;
                             if (data == null)
                             {
                                 dbCreditCards newCard = new dbCreditCards();
@@ -969,7 +983,8 @@ namespace DABApp.Service
         public static async Task UpdateCreditCard(DabGraphQlCreditCard data)
         {
             var adb = DabData.AsyncDatabase;
-            dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == data.wpId).FirstOrDefaultAsync().Result;
+            int wpId = data.wpId;
+            dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == wpId).FirstOrDefaultAsync().Result;
             if (card == null)
             {
                 dbCreditCards newCard = new dbCreditCards();
@@ -1012,7 +1027,8 @@ namespace DABApp.Service
                     {
                         foreach (var d in item.payload.data.updatedProgress.edges)
                         {
-                            dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == d.id && x.userName == userName).FirstOrDefaultAsync().Result;
+                            int id = d.id;
+                            dbUserBadgeProgress data = adb.Table<dbUserBadgeProgress>().Where(x => x.id == id && x.userName == userName).FirstOrDefaultAsync().Result;
 
                             //set percentage to 1 to make visible even if 0 (received as an int)
                             if (d.percent <= 0)
@@ -1086,7 +1102,8 @@ namespace DABApp.Service
             }
 
             //Save badge progress data
-            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progress.id && x.userName == userName).FirstOrDefaultAsync().Result;
+            int progressId = progress.id;
+            dbUserBadgeProgress badgeData = adb.Table<dbUserBadgeProgress>().Where(x => x.id == progressId && x.userName == userName).FirstOrDefaultAsync().Result;
             try
             {
                 //set percentage to 1 to make visible even if 0 (received as an int)

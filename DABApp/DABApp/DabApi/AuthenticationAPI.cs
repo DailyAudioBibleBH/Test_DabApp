@@ -27,28 +27,6 @@ namespace DABApp
         static bool notGetting = true;
         static bool favorite;
 
-        public static async Task<APIAddresses> GetAddresses()//Gets billing and shipping addresses for donations
-        {
-            try
-            {
-                string TokenSettingsValue = GlobalResources.Instance.LoggedInUser.Token;
-                HttpClient client = new HttpClient();
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TokenSettingsValue);
-                var result = await client.GetAsync($"{GlobalResources.RestAPIUrl}addresses");
-                string JsonOut = await result.Content.ReadAsStringAsync();
-                APIAddresses addresses = JsonConvert.DeserializeObject<APIAddresses>(JsonOut);
-                if (addresses.billing == null)
-                {
-                    throw new Exception($"Error getting billing address");
-                }
-                return addresses;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
         public static List<dbCreditCards> GetWallet()//Gets user's saved credit cards.  Used for donations
         {
             try
@@ -142,7 +120,9 @@ namespace DABApp
                 }
 
                 //delete existing action logs with same episode and type
-                var oldActions = await adb.Table<dbPlayerActions>().Where(x => x.ActionType == actionLog.ActionType && x.EpisodeId == actionLog.EpisodeId && x.UserEmail == email).ToListAsync();
+                string actType = actionLog.ActionType;
+                int epId = actionLog.EpisodeId;
+                var oldActions = await adb.Table<dbPlayerActions>().Where(x => x.ActionType == actType && x.EpisodeId == epId && x.UserEmail == email).ToListAsync();
                 foreach (var oldAction in oldActions)
                 {
                     await adb.DeleteAsync(oldAction);

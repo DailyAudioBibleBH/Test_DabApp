@@ -73,7 +73,8 @@ namespace DABApp
 						_donations.Add(pro);
 						int cardId = Convert.ToInt32(pro.Source);
 						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
+						string cardSourceId = pro.Source;
+						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 						string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 						btnInterval.Text = $"Edit Donation";
 						cTitle.Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
@@ -178,19 +179,21 @@ namespace DABApp
 				{
 					foreach (var cam in _campaigns)
 					{
-						dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == cam.campaignWpId).FirstOrDefaultAsync().Result;
+						int camWpId = cam.campaignWpId;
+						dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == camWpId).FirstOrDefaultAsync().Result;
 
 						StackLayout donContainer = (StackLayout)Container.Children.SingleOrDefault(x => x.AutomationId == cam.campaignWpId.ToString());
 						var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
 						var ButtonContainer = donContainer.Children.SingleOrDefault(x => x.GetType() == typeof(StackLayout)) as StackLayout;
 						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
-						dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
+						dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == camWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
 						if (pro != null)
 						{
 							_donations.Add(pro);
 							int cardId = Convert.ToInt32(pro.Source);
+							string cardSourceId = pro.Source;
 							dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-							dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).FirstOrDefaultAsync().Result;
+							dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 							string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 
 							Labels[0].Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";

@@ -123,7 +123,8 @@ namespace DABApp
 				var result = await DabService.DeleteCard(_card.cardWpId);
 				if (result.Success)
 				{
-					dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == _card.cardWpId).FirstOrDefaultAsync().Result;
+					int wpId = _card.cardWpId;
+					dbCreditCards card = adb.Table<dbCreditCards>().Where(x => x.cardWpId == wpId).FirstOrDefaultAsync().Result;
 					card.cardStatus = "deleted";
 					await adb.UpdateAsync(card);
 					await Navigation.PopAsync();

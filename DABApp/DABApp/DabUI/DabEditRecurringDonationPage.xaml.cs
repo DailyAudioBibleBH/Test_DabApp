@@ -30,8 +30,10 @@ namespace DABApp
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == _campaign.CampaignWpId).FirstOrDefaultAsync().Result;
-			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == UniversalCampaign.campaignId).ToListAsync().Result;
+			int wpid = _campaign.CampaignWpId;
+			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == wpid).FirstOrDefaultAsync().Result;
+			int campId = UniversalCampaign.campaignId;
+			List<dbCampaignHasPricingPlan> pricingPlans = adb.Table<dbCampaignHasPricingPlan>().Where(x => x.CampaignId == campId).ToListAsync().Result;
 			List<string> intervalOptions = new List<string>();
             foreach (var item in pricingPlans)
             {
@@ -49,7 +51,8 @@ namespace DABApp
 			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null).ToListAsync().Result;
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
-			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == campaign.Source).FirstOrDefaultAsync().Result;
+			string cardSourceId = campaign.Source;
+			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 			if (source != null)
 			{
 				string currencyAmount = GlobalResources.ToCurrency(campaign.Amount);
@@ -78,7 +81,8 @@ namespace DABApp
 					DabUserInteractionEvents.WaitStarted(obj, new DabAppEventArgs("Checking for new episodes...", true));
 					AmountWarning.IsVisible = false;
 					var card = (dbCreditCards)Cards.SelectedItem;
-					dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == _campaign.Source).FirstOrDefaultAsync().Result;
+					string cardSourceId = _campaign.Source;
+					dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 
 					if (source == null)
 					{

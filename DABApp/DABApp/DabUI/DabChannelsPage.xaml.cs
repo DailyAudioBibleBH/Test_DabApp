@@ -238,7 +238,8 @@ namespace DABApp
                     //Shows today's reading section with the most recent episode from the designated channel
                     //Display Today's Reading when it's available
                     //Get channel and episode
-                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == favChannel.key).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
+                    string key = favChannel.key;
+                    var ep = adb.Table<dbEpisodes>().Where(e => e.channel_code == key).OrderByDescending(x => x.PubDate).FirstOrDefaultAsync().Result;
 
                     if (ep != null)
                     {

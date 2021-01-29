@@ -116,7 +116,8 @@ namespace DABApp
 			if (value == null) { return null;}
 
 			var history = (dbDonationHistory)value;
-			string campaignName = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == history.historyCampaignWpId).FirstOrDefaultAsync().Result.campaignTitle;
+			int hisCampWpId = history.historyCampaignWpId;
+			string campaignName = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == hisCampWpId).FirstOrDefaultAsync().Result.campaignTitle;
 			string symbol;
 			if (!TryGetCurrencySymbol(history.historyCurrency, out symbol))
 			{
