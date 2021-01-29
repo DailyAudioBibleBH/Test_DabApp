@@ -21,7 +21,14 @@ namespace DABApp.iOS
 			};
 			try
 			{
-				Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeApiKey;
+                if (!GlobalResources.TestMode)
+                {
+					Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeApiKey;
+				}
+				else
+                {
+					Stripe.StripeClient.DefaultPublishableKey = GlobalResources.StripeTestApiKey;
+				}
 				var token = await StripeClient.CreateToken(sCard);
 				var container = new StripeContainer();
 				container.card_token = token.Id;

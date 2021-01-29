@@ -1118,7 +1118,8 @@ namespace DABApp.Service
             //log to firebase
             var adb = DabData.AsyncDatabase;
             var fbInfo = new Dictionary<string, string>();
-            fbInfo.Add("user",GlobalResources.Instance.LoggedInUser.Email);
+            string email = GlobalResources.Instance.LoggedInUser.Email;
+            fbInfo.Add("user", email);
             fbInfo.Add("idiom", Device.Idiom.ToString());
             DependencyService.Get<IAnalyticsService>().LogEvent("websocket_graphql_forcefulLogoutViaSubscription", fbInfo);
 

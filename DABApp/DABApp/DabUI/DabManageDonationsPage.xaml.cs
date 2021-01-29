@@ -66,7 +66,8 @@ namespace DABApp
 					btnInterval.WidthRequest = 150;
 					btnInterval.HeightRequest = 40;
 					btnInterval.AutomationId = cam.campaignWpId.ToString();
-					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.UserWpId == GlobalResources.Instance.LoggedInUser.WpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
+					int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.UserWpId == wpid && x.Status != "deleted").FirstOrDefaultAsync().Result;
 					if (pro != null)
 					{
 						_donations.Add(pro);

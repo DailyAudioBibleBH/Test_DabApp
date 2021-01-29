@@ -136,6 +136,8 @@ namespace DABApp
 
         public static readonly string StripeApiKey = "pk_live_O0E92mb0sHFrAD5JGBiU9fgK";
 
+        public static readonly string StripeTestApiKey = "pk_test_q27ch5XTiCE6Rx5qGhw5q9DW";
+
 
         //old api tokens
         //public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTUwOTQ3NTI5MywibmJmIjoxNTA5NDc1MjkzLCJleHAiOjE2NjcxNTUyOTMsImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.SKRNqrh6xlhTgONluVePhNwwzmVvAvUoAs0p9CgFosc";
@@ -567,7 +569,7 @@ namespace DABApp
                 {
                     email = "";
                 }
-                string hash = CalculateMD5Hash(GlobalResources.Instance.LoggedInUser.Email);
+                string hash = CalculateMD5Hash(email);
                 return string.Format("https://www.gravatar.com/avatar/{0}?d=mp", hash);
             }
         }

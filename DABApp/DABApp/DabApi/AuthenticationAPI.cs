@@ -53,7 +53,8 @@ namespace DABApp
         {
             try
             {
-                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == GlobalResources.Instance.LoggedInUser.WpId).ToListAsync().Result;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid).ToListAsync().Result;
 
                 return cards;
             }
@@ -67,7 +68,9 @@ namespace DABApp
         {
             try
             {
-                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.UserWpId == GlobalResources.Instance.LoggedInUser.WpId && x.Status != "deleted").ToListAsync().Result;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+                string del = "deleted";
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.UserWpId == wpid && x.Status != del).ToListAsync().Result;
                 return donations;
             }
             catch (Exception e)
@@ -80,7 +83,8 @@ namespace DABApp
         {
             try
             {
-                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != "deleted" && x.CampaignWpId == campaignWpId).ToListAsync().Result;
+                string del = "deleted";
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != del && x.CampaignWpId == campaignWpId).ToListAsync().Result;
                 return donations;
             }
             catch (Exception e)
@@ -93,7 +97,9 @@ namespace DABApp
         {
             try
             {
-                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == GlobalResources.Instance.LoggedInUser.WpId).ToListAsync().Result;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+
+                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
 
                 return donations;
             }
