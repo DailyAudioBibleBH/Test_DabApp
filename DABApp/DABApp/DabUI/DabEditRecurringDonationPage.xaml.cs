@@ -101,6 +101,7 @@ namespace DABApp
 					else
 					{
 						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, null);
+						await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
 						await Navigation.PopAsync();
 					}
 					DabUserInteractionEvents.WaitStopped(obj, new EventArgs());
@@ -119,6 +120,7 @@ namespace DABApp
             if (accept)
             {
 				Service.DabService.DeleteDonation(_campaign.CampaignWpId);
+				await DisplayAlert("Your donation is in the process of being deleted.", "It may take a minute for the app to reflect your changes.", "OK");
 				await Navigation.PushAsync(new DabSettingsPage());
 			}
 		}
