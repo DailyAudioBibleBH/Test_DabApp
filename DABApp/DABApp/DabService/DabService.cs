@@ -778,7 +778,7 @@ namespace DABApp.Service
             //check for a connecting before proceeding
             if (!IsConnected) return false;
             //Send the update donation mutation
-            string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}) }}";
+            string command = $"mutation {{updateDonation(quantity: {quantity}, donationType: \"{type}\", cardId: {cardId}, campaignWpId: {campaignWpId}, nextPaymentDate: \"{next}\") }}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
             return true;
@@ -794,7 +794,7 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
             //Send the update donation mutation
-            string command = $"mutation {{createDonation(quantity: {quantity}, donationType: {type}, cardId: {cardId}, campaignWpId: {campaignWpId}, nextPaymentDate: {next}) {{token}}}}";
+            string command = $"mutation {{createDonation(quantity: {quantity}, donationType: {type}, cardId: {cardId}, campaignWpId: {campaignWpId}, nextPaymentDate: \"{next}\") {{token}}}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
 
