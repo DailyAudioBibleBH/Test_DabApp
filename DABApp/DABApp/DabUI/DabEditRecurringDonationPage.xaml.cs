@@ -101,8 +101,15 @@ namespace DABApp
 					else
 					{
 						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, Next.Date.ToString("yyyy-MM-dd"));
-						await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
-						await Navigation.PopAsync();
+                        if (updateResult)
+                        {
+							await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
+							await Navigation.PopAsync();
+						}
+                        else
+                        {
+							await DisplayAlert("Your donation update did not get sent.", "You are not connected to the Daily Audio Bible service. If problem persists try logging out and logging back in again. ", "OK");
+						}
 					}
 					DabUserInteractionEvents.WaitStopped(obj, new EventArgs());
 				}

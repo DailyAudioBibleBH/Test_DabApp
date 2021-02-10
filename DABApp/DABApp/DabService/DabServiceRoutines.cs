@@ -695,7 +695,7 @@ namespace DABApp.Service
                 }
                 else
                 {
-                    dbCreditSource newSource = new dbCreditSource(data.source);
+                    dbCreditSource newSource = new dbCreditSource(data.source, donation.Id);
                     await adb.InsertOrReplaceAsync(newSource);
                 }
 
@@ -904,17 +904,18 @@ namespace DABApp.Service
                                 await adb.InsertOrReplaceAsync(data);
                             }
                             //save card source tied to donation
-                            string cardId = d.source.cardId;
-                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
+                            //string cardId = d.id;
+                            dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == d.id).FirstOrDefaultAsync().Result;
                             if (source != null)
                             {
+                                source.donationId = d.id;
                                 source.next = d.source.next;
                                 source.processor = d.source.processor;
                                 await adb.InsertOrReplaceAsync(source);
                             }
                             else
                             {
-                                dbCreditSource newSource = new dbCreditSource(d.source);
+                                dbCreditSource newSource = new dbCreditSource(d.source, d.id);
                                 await adb.InsertOrReplaceAsync(newSource);
                             }
                         }
