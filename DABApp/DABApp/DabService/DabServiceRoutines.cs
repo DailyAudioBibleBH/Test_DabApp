@@ -682,13 +682,13 @@ namespace DABApp.Service
                 }
                 else
                 {
-                    dbUserCampaigns newDon = new dbUserCampaigns(data);
-                    await adb.InsertOrReplaceAsync(newDon);
+                    donation = new dbUserCampaigns(data);
+                    await adb.InsertOrReplaceAsync(donation);
                 }
-                string cardId = data.source.cardId;
-                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardId).FirstOrDefaultAsync().Result;
+                dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == data.id).FirstOrDefaultAsync().Result;
                 if (source != null)
                 {
+                    source.cardId = data.source.cardId;
                     source.next = data.source.next;
                     source.processor = data.source.processor;
                     await adb.InsertOrReplaceAsync(source);

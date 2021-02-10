@@ -67,14 +67,12 @@ namespace DABApp
 					btnInterval.HeightRequest = 40;
 					btnInterval.AutomationId = cam.campaignWpId.ToString();
 					int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-					var test = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.UserWpId == wpid).ToListAsync().Result;
 					dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == cam.campaignWpId && x.UserWpId == wpid && x.Status != "deleted").FirstOrDefaultAsync().Result;
 					if (pro != null)
 					{
 						_donations.Add(pro);
 						int cardId = Convert.ToInt32(pro.Source);
 						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-						var test2 = adb.Table<dbCreditSource>().Where(x => x.cardId == pro.Source).ToListAsync().Result;
 						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == pro.Id).FirstOrDefaultAsync().Result;
 						string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 						btnInterval.Text = $"Edit Donation";
