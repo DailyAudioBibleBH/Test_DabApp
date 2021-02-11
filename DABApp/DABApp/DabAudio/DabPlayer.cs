@@ -367,14 +367,7 @@ namespace DABApp.DabAudio
         {
             try
             {
-                LastPosition = nativePlayer.CurrentPosition;
                 nativePlayer.Seek(position);
-                if (!IsPlaying)
-                {
-                    OnPropertyChanged("CurrentPosition");
-                    OnPropertyChanged("RemainingSeconds");
-                    OnPropertyChanged("CurrentProgressPercentage");
-                }
             }
             catch (Exception ex)
             {
@@ -417,8 +410,12 @@ namespace DABApp.DabAudio
         }
 
         /* Timer for updating progress */
+        public void OnTimerFired(object sender, ElapsedEventArgs e)
+        {
+            CallPlayerBarEvents();
+        }
 
-        private void OnTimerFired(object sender, ElapsedEventArgs e)
+        public void CallPlayerBarEvents()
         {
             try
             {
