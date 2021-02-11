@@ -59,7 +59,7 @@ namespace DABApp
                         await DabServiceRoutines.RunConnectionEstablishedRoutines();
                     }
                 }
-            }
+            }       
             else
             {
                 Debug.WriteLine("Lost internet access");
@@ -76,7 +76,7 @@ namespace DABApp
         {
             get
             {
-                return "20210127";
+                return "20210211_01";
             }
         }
 
