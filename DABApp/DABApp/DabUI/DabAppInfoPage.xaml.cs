@@ -113,6 +113,8 @@ namespace DABApp
 
         private Attachment CreateAttachment(string FileName, string Content)
         {
+            FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), FileName);
+
             if (File.Exists(FileName))
             {
                 File.Delete(FileName);
@@ -139,7 +141,7 @@ namespace DABApp
                 var adb = DabData.AsyncDatabase;
                 var user = GlobalResources.Instance.LoggedInUser;
 
-                if (user.Id == 0)
+                if (user is null)
                 {
                     user = new dbUserData()
                     {
@@ -203,7 +205,7 @@ namespace DABApp
             catch (Exception ex)
             {
                 DabUserInteractionEvents.WaitStopped(sender, new EventArgs());
-                await DisplayAlert("Error", $"Logs coult not be sent: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Logs could not be sent: {ex.Message}", "OK");
 
             }
 
