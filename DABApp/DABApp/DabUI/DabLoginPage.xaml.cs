@@ -110,7 +110,6 @@ namespace DABApp
                 //process the data we got back.
                 GraphQlLoginUser user = result.Data.payload.data.loginUser;
 
-
                 //token was updated successfully
                 //Look for previous user data
                 List<dbUserData> users = adb.Table<dbUserData>().ToListAsync().Result;
@@ -119,29 +118,46 @@ namespace DABApp
                     u.IsLoggedIn = false;
                     await adb.InsertOrReplaceAsync(u);
                 }
-                int potentialId = adb.Table<dbUserData>().CountAsync().Result;
-                string email = Email.Text;
-                dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Email == email).FirstOrDefaultAsync().Result;
-                if (dbUser != null)
+
+                result = await DabService.InitializeConnection(user.token);
+
+                var userData = await Service.DabService.GetUserData();
+                if (userData.Success == true) //ignore failures here
                 {
-                    dbUser.Token = user.token;
-                    dbUser.TokenCreation = DateTime.Now;
-                    dbUser.IsLoggedIn = true;
-                    await adb.InsertOrReplaceAsync(dbUser);
-                    await DabService.TerminateConnection();
-                    result = await DabService.InitializeConnection(dbUser.Token);
-                }
-                else
-                {
-                    dbUserData newUserData = new dbUserData();
-                    newUserData.Id = potentialId;
-                    newUserData.Email = Email.Text;
-                    newUserData.Token = user.token;
-                    newUserData.TokenCreation = DateTime.Now;
-                    newUserData.IsLoggedIn = true;
-                    await adb.InsertOrReplaceAsync(newUserData);
-                    await DabService.TerminateConnection();
-                    result = await DabService.InitializeConnection(newUserData.Token);
+                    //process user profile information
+                    var profile = userData.Data.payload.data.user;
+
+                    dbUserData dbUser = adb.Table<dbUserData>().Where(x => x.Id == profile.id).FirstOrDefaultAsync().Result;
+                    if (dbUser != null)
+                    {
+                        dbUser.Token = user.token;
+                        dbUser.TokenCreation = DateTime.Now;
+                        dbUser.IsLoggedIn = true;
+                        await adb.InsertOrReplaceAsync(dbUser);
+                        await DabService.TerminateConnection();
+                        result = await DabService.InitializeConnection(dbUser.Token);
+                    }
+                    else
+                    {
+                        dbUserData newUserData = new dbUserData();
+                        newUserData.Id = profile.id;
+                        newUserData.Language = profile.language;
+                        newUserData.Channel = profile.channel;
+                        newUserData.Channels = profile.channels;
+                        newUserData.FirstName = profile.firstName;
+                        newUserData.LastName = profile.lastName;
+                        newUserData.NickName = profile.nickname;
+                        newUserData.Token = user.token;
+                        newUserData.UserRegistered = profile.userRegistered;
+                        newUserData.WpId = profile.wpId;
+                        newUserData.IsLoggedIn = true;
+                        newUserData.TokenCreation = DateTime.Now;
+                        newUserData.Email = profile.email;
+
+                        await adb.InsertOrReplaceAsync(newUserData);
+                        await DabService.TerminateConnection();
+                        result = await DabService.InitializeConnection(newUserData.Token);
+                    }
                 }
 
                 //re-establish service connection as the user
