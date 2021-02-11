@@ -88,7 +88,7 @@ namespace DABApp
                 Dictionary<string, object> labelDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(LabelSettings.Value);
                 Dictionary<string, object> stateDictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(StateSettings.Value);
 
-                if (ContentSettings == null || DataSettings == null)
+                if (ContentSettings == null || DataSettings == null || ContentSettings == "" || DataSettings == "")
                 {
                     dbSettings.StoreSetting("ContentJSON", jsonOut);
                     dbSettings.StoreSetting("data", updated);

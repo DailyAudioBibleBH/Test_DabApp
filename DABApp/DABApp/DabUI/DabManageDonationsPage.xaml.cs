@@ -73,8 +73,7 @@ namespace DABApp
 						_donations.Add(pro);
 						int cardId = Convert.ToInt32(pro.Source);
 						dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-						string cardSourceId = pro.Source;
-						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
+						dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == pro.Id).FirstOrDefaultAsync().Result;
 						string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 						btnInterval.Text = $"Edit Donation";
 						cTitle.Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";

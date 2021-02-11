@@ -7,6 +7,7 @@ namespace DABApp
     public class dbCreditSource
     {
         [PrimaryKey]
+        public string donationId { get; set; }
         public string cardId { get; set; }
         public string processor { get; set; }
         public string next { get; set; }
@@ -15,9 +16,10 @@ namespace DABApp
         {
         }
 
-        public dbCreditSource(DabGraphQlDonationSource source)
+        public dbCreditSource(DabGraphQlDonationSource source, string DonationId)
         {
             this.cardId = source.cardId;
+            this.donationId = DonationId;
             this.processor = source.processor;
             this.next = source.next;
         }

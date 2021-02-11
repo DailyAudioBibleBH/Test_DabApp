@@ -100,8 +100,16 @@ namespace DABApp
 					}
 					else
 					{
-						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, null);
-						await Navigation.PopAsync();
+						var updateResult = Service.DabService.UpdateDonation(Amount.Text, Intervals.SelectedItem.ToString(), card.cardWpId, _campaign.CampaignWpId, Next.Date.ToString("yyyy-MM-dd"));
+                        if (updateResult)
+                        {
+							await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
+							await Navigation.PopAsync();
+						}
+                        else
+                        {
+							await DisplayAlert("Your donation update did not get sent.", "You are not connected to the Daily Audio Bible service. If problem persists try logging out and logging back in again. ", "OK");
+						}
 					}
 					DabUserInteractionEvents.WaitStopped(obj, new EventArgs());
 				}
@@ -119,6 +127,7 @@ namespace DABApp
             if (accept)
             {
 				Service.DabService.DeleteDonation(_campaign.CampaignWpId);
+				await DisplayAlert("Your donation is in the process of being deleted.", "It may take a minute for the app to reflect your changes.", "OK");
 				await Navigation.PushAsync(new DabSettingsPage());
 			}
 		}
