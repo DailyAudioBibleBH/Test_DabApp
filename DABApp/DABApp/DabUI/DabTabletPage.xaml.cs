@@ -1166,12 +1166,20 @@ namespace DABApp
         void OnBack30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition - 30);
+            if (!player.IsPlaying)
+            {
+                player.CallPlayerBarEvents();
+            }
         }
 
         //Move forward 30 seconds
         void OnForward30(object o, EventArgs e)
         {
             player.Seek(player.CurrentPosition + 30);
+            if (!player.IsPlaying)
+            {
+                player.CallPlayerBarEvents();
+            }
         }
 
         //Play or pause the episode
