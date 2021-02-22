@@ -10,7 +10,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using DABApp.Droid;
-using Firebase.Analytics;
 using Plugin.CurrentActivity;
 using Xamarin.Forms;
 
