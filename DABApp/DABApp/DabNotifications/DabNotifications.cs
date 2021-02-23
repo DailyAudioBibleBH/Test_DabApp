@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Plugin.FirebasePushNotification.Abstractions;
+using Plugin.FirebasePushNotification;
 using Xamarin.Forms;
 
 namespace DABApp.DabNotifications
