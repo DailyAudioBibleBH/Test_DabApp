@@ -324,7 +324,7 @@ namespace DABApp
                                 }
                                 else
                                 {
-                                    await DisplayAlert("Error", url, "OK");
+                                    Device.OpenUri(new Uri(GlobalResources.GiveUrl)); //default give location
                                 }
                             }
                         }

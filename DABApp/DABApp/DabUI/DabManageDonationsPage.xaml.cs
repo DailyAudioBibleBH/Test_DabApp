@@ -151,7 +151,7 @@ namespace DABApp
 			//find the campaignid
 			int id = int.Parse(chosen.AutomationId);
 			var campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == id).FirstOrDefaultAsync().Result;
-			int campaignId = 1;
+			int campaignId = 1; //default campaign
 			if (campaign != null)
             {
 				campaignId = campaign.campaignId;
@@ -164,7 +164,7 @@ namespace DABApp
 			}
 			else 
 			{
-				await DisplayAlert("An Error has occured.", url, "OK");
+				Device.OpenUri(new Uri(GlobalResources.GiveUrl)); //default give location
 			}
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
