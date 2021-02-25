@@ -80,10 +80,12 @@ namespace DABApp
 						if (creditCard == null)
 						{
 							card.Text = $"Card not found";
+							btnInterval.IsEnabled = false; //hide ability to edit if card is broken.
 						}
 						else
 						{
 							card.Text = $"Card ending in {creditCard.cardLastFour}";
+							btnInterval.IsEnabled = true;
 
 						}
 						card.FontSize = 16;
@@ -210,15 +212,18 @@ namespace DABApp
 							if (creditCard != null)
 							{	
 								cardText = $"Card ending in {creditCard.cardLastFour}";
-
+								Buttons[0].IsEnabled = true;
 							}
+							else
+                            {
+								Buttons[0].IsEnabled = false;//hide the edit button if we have a broken card
+                            }
 							Labels[1].Text = $"{cardText}";
 							Labels[2].Text = $"Recurs: {Convert.ToDateTime(source.next).ToString("MM/dd/yyyy")}";
 							Labels[1].IsVisible = true;
 							Labels[2].IsVisible = true;
 							Labels[1].FontSize = 14;
 							Labels[2].FontSize = 14;
-							Buttons[0].IsVisible = true;
 							Buttons[1].Text = "One-time gift";
 							Buttons[0].Text = $"Edit Donation";
 						}
