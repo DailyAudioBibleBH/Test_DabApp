@@ -183,9 +183,14 @@ namespace DABApp
                 mailMessage.Attachments.Add(CreateAttachment("dbUserBadgeProgress.txt", JsonConvert.SerializeObject(adb.Table<dbUserBadgeProgress>().ToListAsync().Result, Formatting.Indented)));
                 mailMessage.Attachments.Add(CreateAttachment("dbBadges.txt", JsonConvert.SerializeObject(adb.Table<dbBadges>().ToListAsync().Result, Formatting.Indented)));
                 mailMessage.Attachments.Add(CreateAttachment("ContentConfig.txt", JsonConvert.SerializeObject(ContentConfig.Instance, Formatting.Indented)));
+                try
+                {
                 mailMessage.Attachments.Add(CreateAttachment("DeviceHardware.txt", JsonConvert.SerializeObject(DeviceInfo.Hardware, Formatting.Indented)));
-
-
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error with device hardware: {ex.Message}");
+                }
                 //Set up the SMTP client using Mandril API credentials
                 var smtp = new SmtpClient();
                 smtp.Port = 587;
