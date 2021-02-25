@@ -159,157 +159,31 @@ namespace DABApp
                 sb.AppendLine($"<h1>DAB Diagnostics</h1>");
                 sb.AppendLine("<table>");
                 sb.AppendLine($"<tr><td>timestamp</td></td><td>{DateTime.Now}</td></tr>");
-                try
-                {
-                    sb.AppendLine($"<tr><td>email</td></td><td>{user.Email}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>name</td></td><td>{user.FirstName} {user.LastName}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>platform</td></td><td>{Device.RuntimePlatform}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>idiom</td></td><td>{Device.Idiom}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>app version</td></td><td>{CrossVersion.Current.Version}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>os version</td></td><td>{DeviceInfo.Hardware.OperatingSystem}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>width</td></td><td>{DeviceInfo.Hardware.ScreenWidth}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>height</td></td><td>{DeviceInfo.Hardware.ScreenHeight}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>manufacturer</td></td><td>{DeviceInfo.Hardware.Manufacturer}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    sb.AppendLine($"<tr><td>model</td></td><td>{DeviceInfo.Hardware.Model}</td></tr>");
-                }
-                catch (Exception)
-                {
-                }
+                sb.AppendLine($"<tr><td>email</td></td><td>{user.Email}</td></tr>");
+                sb.AppendLine($"<tr><td>name</td></td><td>{user.FirstName} {user.LastName}</td></tr>");
+                sb.AppendLine($"<tr><td>platform</td></td><td>{Device.RuntimePlatform}</td></tr>");
+                sb.AppendLine($"<tr><td>idiom</td></td><td>{Device.Idiom}</td></tr>");
+                sb.AppendLine($"<tr><td>app version</td></td><td>{CrossVersion.Current.Version}</td></tr>");
+                sb.AppendLine($"<tr><td>os version</td></td><td>{DeviceInfo.Hardware.OperatingSystem}</td></tr>");
+                sb.AppendLine($"<tr><td>width</td></td><td>{DeviceInfo.Hardware.ScreenWidth}</td></tr>");
+                sb.AppendLine($"<tr><td>height</td></td><td>{DeviceInfo.Hardware.ScreenHeight}</td></tr>");
+                sb.AppendLine($"<tr><td>manufacturer</td></td><td>{DeviceInfo.Hardware.Manufacturer}</td></tr>");
+                sb.AppendLine($"<tr><td>model</td></td><td>{DeviceInfo.Hardware.Model}</td></tr>");
                 sb.AppendLine("</table>");
                 mailMessage.Body = sb.ToString();
 
                 //Attach data files
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("user.txt", JsonConvert.SerializeObject(user, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbDataTransfers.txt", JsonConvert.SerializeObject(adb.Table<dbDataTransfers>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbPlayerActions.txt", JsonConvert.SerializeObject(adb.Table<dbPlayerActions>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbEpisodeUserData.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodeUserData>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbEpisodes.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodes>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbChannels.txt", JsonConvert.SerializeObject(adb.Table<dbChannels>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("Channel.txt", JsonConvert.SerializeObject(adb.Table<DabSockets.Channel>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbUserBadgeProgress.txt", JsonConvert.SerializeObject(adb.Table<dbUserBadgeProgress>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("dbBadges.txt", JsonConvert.SerializeObject(adb.Table<dbBadges>().ToListAsync().Result, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("ContentConfig.txt", JsonConvert.SerializeObject(ContentConfig.Instance, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
-                try
-                {
-                    mailMessage.Attachments.Add(CreateAttachment("DeviceHardware.txt", JsonConvert.SerializeObject(DeviceInfo.Hardware, Formatting.Indented)));
-                }
-                catch (Exception)
-                {
-                }
+                mailMessage.Attachments.Add(CreateAttachment("user.txt", JsonConvert.SerializeObject(user, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbDataTransfers.txt", JsonConvert.SerializeObject(adb.Table<dbDataTransfers>().ToListAsync().Result,Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbPlayerActions.txt", JsonConvert.SerializeObject(adb.Table<dbPlayerActions>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbEpisodeUserData.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodeUserData>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbEpisodes.txt", JsonConvert.SerializeObject(adb.Table<dbEpisodes>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbChannels.txt", JsonConvert.SerializeObject(adb.Table<dbChannels>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("Channel.txt", JsonConvert.SerializeObject(adb.Table<DabSockets.Channel>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbUserBadgeProgress.txt", JsonConvert.SerializeObject(adb.Table<dbUserBadgeProgress>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("dbBadges.txt", JsonConvert.SerializeObject(adb.Table<dbBadges>().ToListAsync().Result, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("ContentConfig.txt", JsonConvert.SerializeObject(ContentConfig.Instance, Formatting.Indented)));
+                mailMessage.Attachments.Add(CreateAttachment("DeviceHardware.txt", JsonConvert.SerializeObject(DeviceInfo.Hardware, Formatting.Indented)));
 
 
                 //Set up the SMTP client using Mandril API credentials
