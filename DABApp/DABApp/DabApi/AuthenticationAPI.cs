@@ -32,7 +32,7 @@ namespace DABApp
             try
             {
                 int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid).ToListAsync().Result;
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid && x.cardStatus == null).ToListAsync().Result;
 
                 return cards;
             }
