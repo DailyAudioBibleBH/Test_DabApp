@@ -531,7 +531,7 @@ namespace DABApp
             }
         }
 
-        public static async Task<string> PostDonationAccessToken(int campaignId)
+        public static async Task<string> PostDonationAccessToken(int CampaignWpId)
         {
             try
             {
@@ -560,7 +560,7 @@ namespace DABApp
                 {
                     token = token,
                     csrf_dab_token = en.csrf.token_value,
-                    campaign_id = campaignId.ToString()
+                    campaign_id = CampaignWpId.ToString()
                 };
                 client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenValue);
                 string JsonIn = JsonConvert.SerializeObject(send);
@@ -574,7 +574,7 @@ namespace DABApp
                     throw new Exception(error.message);
                 }
                 var cont = JsonConvert.DeserializeObject<RequestedUrl>(JsonOut);
-                return $"{cont.url}&campaign_id={campaignId}";
+                return $"{cont.url}&campaign_id={CampaignWpId}";
             }
             catch (Exception e)
             {

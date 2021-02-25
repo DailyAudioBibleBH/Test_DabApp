@@ -153,13 +153,13 @@ namespace DABApp
 			//find the campaignid
 			int id = int.Parse(chosen.AutomationId);
 			var campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == id).FirstOrDefaultAsync().Result;
-			int campaignId = 1; //default campaign
+			int CampaignWpId = 1; //default campaign
 			if (campaign != null)
             {
-				campaignId = campaign.campaignId;
+				CampaignWpId = campaign.campaignWpId;
             } 
 
-			var url = await PlayerFeedAPI.PostDonationAccessToken(campaignId);
+			var url = await PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
 			if (!url.Contains("Error"))
 			{
 				Device.OpenUri(new Uri(url));

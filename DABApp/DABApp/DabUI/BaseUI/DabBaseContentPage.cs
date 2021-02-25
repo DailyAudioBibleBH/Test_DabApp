@@ -296,26 +296,26 @@ namespace DABApp
                                 var adb = DabData.AsyncDatabase;
 
                                 //find the campaign id to use
-                                int CampaignId = 1; //default if nothing else can be found
+                                int CampaignWpId = 1; //default if nothing else can be found
                                 var publishedCampaigns = adb.Table<dbCampaigns>().Where(x => x.campaignStatus == "publish").ToListAsync().Result;
                                 if (publishedCampaigns.Count > 0)
                                 {
                                     //use the first one to start with
-                                    CampaignId = publishedCampaigns.First().campaignId;
+                                    CampaignWpId = publishedCampaigns.First().campaignWpId;
 
                                     //search for default campaign
                                     var defaultCampaign = publishedCampaigns.SingleOrDefault(x => x.@default == true);
                                     if (defaultCampaign != null)
                                     {
-                                        CampaignId = defaultCampaign.campaignId;
+                                        CampaignWpId = defaultCampaign.campaignWpId;
                                     }    
                                 }
 
 
-                                var ask = PlayerFeedAPI.PostDonationAccessToken(CampaignId);
+                                var ask = PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
                                 if (ask == await Task.WhenAny(ask, Task.Delay(num)))
                                 {
-                                    url = await PlayerFeedAPI.PostDonationAccessToken(CampaignId);
+                                    url = await PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
                                 }
                                 else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
                                 if (url.StartsWith("http"))
