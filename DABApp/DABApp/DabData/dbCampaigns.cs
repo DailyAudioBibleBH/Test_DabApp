@@ -16,6 +16,7 @@ namespace DABApp
         public double campaignSuggestedSingleDonation { get; set; }
         public double campaignSuggestedRecurringDonation { get; set; }
         public string pricingPlans { get; set; }
+        public bool @default {get;set;}
         //TODO: what are pricing plans
 
         public dbCampaigns(DabGraphQlCampaign camp)
@@ -27,6 +28,7 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
+            this.@default = camp.@default;
             if (camp.pricingPlans != null)
             {
                 this.pricingPlans = camp.pricingPlans.ToString();
@@ -47,6 +49,7 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
+            this.@default = camp.@default;
             if (camp.pricingPlans != null)
             {
                 this.pricingPlans = camp.pricingPlans.ToString();

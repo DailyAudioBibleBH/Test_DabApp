@@ -642,7 +642,7 @@ namespace DABApp.Service
             //Generic subscriptions
             var ql = await Service.DabService.AddSubscription(1, "subscription { episodePublished { episode { id episodeId type title description notes author date audioURL audioSize audioDuration audioType readURL readTranslationShort readTranslation channelId unitId year shareURL createdAt updatedAt } } }");
             ql = await Service.DabService.AddSubscription(2, "subscription { badgeUpdated { badge { badgeId name description imageURL type method data visible createdAt updatedAt } } }");
-            ql = await Service.DabService.AddSubscription(3, "subscription { campaignUpdated { campaign { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans}}}");
+            ql = await Service.DabService.AddSubscription(3, "subscription { campaignUpdated { campaign { id wpId title description status suggestedSingleDonation suggestedRecurringDonation pricingPlans default}}}");
 
             //logged in steps
             if (GuestStatus.Current.IsGuestLogin == false)

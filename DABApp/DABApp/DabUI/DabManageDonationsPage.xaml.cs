@@ -146,11 +146,21 @@ namespace DABApp
 		{
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
-			//TODO: check this
-			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
+
+
+			//find the campaignid
+			int id = int.Parse(chosen.AutomationId);
+			var campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == id).FirstOrDefaultAsync().Result;
+			int campaignId = 1;
+			if (campaign != null)
+            {
+				campaignId = campaign.campaignId;
+            } 
+
+			var url = await PlayerFeedAPI.PostDonationAccessToken(campaignId);
 			if (!url.Contains("Error"))
 			{
-				DependencyService.Get<IRivets>().NavigateTo(url);
+				Device.OpenUri(new Uri(url));
 			}
 			else 
 			{
