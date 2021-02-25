@@ -28,7 +28,7 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
-            this.@default = camp.@default;
+            this.@default = (camp.@default == null) ? false : camp.@default.Value; //had to handle a null value
             if (camp.pricingPlans != null)
             {
                 this.pricingPlans = camp.pricingPlans.ToString();
@@ -49,7 +49,7 @@ namespace DABApp
             this.campaignStatus = camp.status;
             this.campaignSuggestedSingleDonation = camp.suggestedSingleDonation;
             this.campaignSuggestedRecurringDonation = camp.suggestedRecurringDonation;
-            this.@default = camp.@default;
+            this.@default = (camp.@default == null) ? false : camp.@default.Value; //had to handle a null value
             if (camp.pricingPlans != null)
             {
                 this.pricingPlans = camp.pricingPlans.ToString();

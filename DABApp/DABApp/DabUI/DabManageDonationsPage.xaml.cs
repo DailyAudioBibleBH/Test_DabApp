@@ -206,7 +206,13 @@ namespace DABApp
 							string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 
 							Labels[0].Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
-							Labels[1].Text = $"Card ending in {creditCard.cardLastFour}";
+							string cardText = "Card not found"; //have to handle unknown cards
+							if (creditCard != null)
+							{	
+								cardText = $"Card ending in {creditCard.cardLastFour}";
+
+							}
+							Labels[1].Text = $"{cardText}";
 							Labels[2].Text = $"Recurs: {Convert.ToDateTime(source.next).ToString("MM/dd/yyyy")}";
 							Labels[1].IsVisible = true;
 							Labels[2].IsVisible = true;
