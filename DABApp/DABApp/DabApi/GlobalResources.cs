@@ -123,6 +123,9 @@ namespace DABApp
 
         public static int ActiveForumId { get; set; } = 0;
 
+        public static DabGraphQlUpdatedForum ActiveForum { get; internal set; }
+
+
         public static string CleanupJson(string json)
         {
             //clean up json strings

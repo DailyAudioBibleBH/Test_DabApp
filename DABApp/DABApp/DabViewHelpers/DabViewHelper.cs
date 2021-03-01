@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DABApp.DabSockets;
 using SlideOverKit;
 using SQLite;
 using Xamarin.Forms;
@@ -159,7 +160,7 @@ namespace DABApp
 		{
 			if (value == null) { return null; }
 
-			var topic = (Topic)value;
+			var topic = (DabGraphQlTopic)value;
 			return $"Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 		}
 
@@ -176,8 +177,9 @@ namespace DABApp
 		{
 			if (value == null) { return null; }
 	
-			var topic = (Topic)value;
-			return $"Latest Reply {topic.lastActivity}";
+			var topic = (DabGraphQlTopic)value;
+			//return $"Latest Reply {topic.lastActivity}";
+			return "Latest Reply ------";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

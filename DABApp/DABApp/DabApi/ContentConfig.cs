@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -328,7 +330,6 @@ namespace DABApp
 		{
 			public int id { get; set; }
 			public string title { get; set; }
-			public View view { get; set; }
 			public string link { get; set; }
 			public int topicCount { get; set; }
 			private bool _IsBusy;
@@ -342,7 +343,7 @@ namespace DABApp
 				}
 			}
 			public ICommand LoadMore { get; set; }
-			public ObservableCollection<Topic> topics { get; set; }
+			public List<DabGraphQlTopic> topics { get; set; }
 
 			public event PropertyChangedEventHandler PropertyChanged;
 
@@ -351,8 +352,9 @@ namespace DABApp
 				int page = 2;
 				this.LoadMore = new Command(async () =>
 				{
+					var test = topics;
 					IsBusy = true;
-					var f = await ContentAPI.GetForum(view, page);
+					var f = await ContentAPI.GetForum();
 					page++;
 					foreach (var t in f.topics)
 					{

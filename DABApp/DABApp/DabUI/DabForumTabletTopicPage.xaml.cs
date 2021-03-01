@@ -16,20 +16,16 @@ namespace DABApp
 		bool loginTop = false;
 		bool fromPost = false;
 		bool unInitialized = true;
-		int pageNumber;
 		Forum _forum;
 		Topic topic;
-		View _view;
 		object source;
 
 		public DabForumTabletTopicPage(View view)
 		{
 			InitializeComponent();
-			pageNumber = 1;
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlTablet;
 			bannerTitle.Text = view.title;
-			_view = view;
 			BindingContext = view;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
@@ -135,7 +131,7 @@ namespace DABApp
 					}
 				}
 			}
-			_forum = await ContentAPI.GetForum(_view);
+			_forum = await ContentAPI.GetForum();
 			if (_forum == null)
 			{
 				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");

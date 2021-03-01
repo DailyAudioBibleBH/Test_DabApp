@@ -357,7 +357,7 @@ namespace DABApp.Service
 
         }
 
-        public static async Task<DabServiceWaitResponseList> GetUpdatedTopics(DateTime LastDate, int forumWpId, int forumLimit, object cursor)
+        public static async Task<DabServiceWaitResponseList> GetUpdatedTopics(int forumWpId, int forumLimit, object cursor = null)
         {
             /*
             * this routine checks for user specific donation updates
@@ -376,7 +376,8 @@ namespace DABApp.Service
 
             //prep for handling a loop of actions
             List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
-
+            DateTime LastDate = DateTime.Now;
+            LastDate = LastDate.AddYears(-1);
             //Send the command
             string command;
             if (cursor == null)
@@ -408,12 +409,12 @@ namespace DABApp.Service
                 //determine if we have more data to process or not
                 if (data.pageInfo.hasNextPage == true)
                 {
-                    newCursor = data.pageInfo.endCursor;
+                    ContentAPI.cursur = data.pageInfo.endCursor;
                 }
                 else
                 {
                     //nomore data - break the loop
-                    newCursor = null;
+                    ContentAPI.cursur = null;
                 }
             }
             else

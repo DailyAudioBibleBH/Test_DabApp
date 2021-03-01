@@ -13,12 +13,15 @@ using System.Runtime.Serialization.Json;
 using Xamarin.Forms.PlatformConfiguration;
 using System.Data.Common;
 using static DABApp.ContentConfig;
+using DABApp.Service;
+using DABApp.DabSockets;
 
 namespace DABApp
 {
     public class ContentAPI
     {
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+        public static object cursur { get; set; } = null;
 
         public static bool CheckContent()
         {
@@ -182,15 +185,24 @@ namespace DABApp
             }
         }
 
-        public static async Task<Forum> GetForum(View view, int pageNumber = 1)
+        public static async Task<Forum> GetForum()
         {
             try
             {
-                var client = new HttpClient();
-                var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
-                var JsonOut = await result.Content.ReadAsStringAsync();
-                var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
-                forum.view = view;
+                var forum = new Forum();
+                forum.title = GlobalResources.ActiveForum.title;
+                forum.topicCount = GlobalResources.ActiveForum.topicCount;
+                var result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
+                List<DabGraphQlTopic> topics = new List<DabGraphQlTopic>();
+                if (result.Success)
+                {
+                    foreach (var item in result.Data)
+                    {
+                        topics = item.payload.data.updatedTopics.edges;
+                    }
+                }
+                forum.topics = topics;
+                //forum.view = view;
                 return forum;
             }
             catch (Exception e)

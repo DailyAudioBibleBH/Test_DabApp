@@ -121,9 +121,16 @@ namespace DABApp.Service
                                 if (c.status == "publish")
                                 {
                                     GlobalResources.ActiveForumId = c.wpId;
+                                    GlobalResources.ActiveForum = c;
                                 }
+                                foundPublish = true;
                             }
                         }
+                    }
+                    if (!foundPublish)
+                    {
+                        GlobalResources.ActiveForumId = 0;
+                        GlobalResources.ActiveForum = new DabGraphQlUpdatedForum();
                     }
                     //update date since last updated campaigns
                     GlobalResources.ForumUpdatedDate = DateTime.Now;
