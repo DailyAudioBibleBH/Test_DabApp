@@ -40,6 +40,8 @@ namespace DABApp.Service
         UpdateDonation,
         DeleteCard,
         CreateDonation,
+        GetForums,
+        GetTopics
     }
 
     public class DabServiceWaitService
@@ -453,6 +455,22 @@ namespace DABApp.Service
                     case DabServiceWaitTypes.CreateDonation:
                         // get create donation response
                         if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetForums:
+                        // get create donation response
+                        if (response?.payload?.data?.updatedForums != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetTopics:
+                        // get create donation response
+                        if (response?.payload?.data?.updatedTopics != null)
                         {
                             _qlObject = response;
                             _waiting = false;

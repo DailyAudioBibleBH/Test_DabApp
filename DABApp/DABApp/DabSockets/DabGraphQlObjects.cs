@@ -102,7 +102,61 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdateDonation updateDonation { get; set; }
         public DabGraphQlDeleteDonation deleteDonation { get; set; }
         public DabGraphQlCampaign campaignUpdated { get; set; }
+        public List<DabGraphQlUpdatedForum> updatedForums { get; set; }
+        public DabGraphQlUpdatedTopics updatedTopics { get; set; }
 
+
+
+    }
+
+    public class DabGraphQlTopic
+    {
+        public int wpId { get; set; }
+        public int userWpId { get; set; }
+        public int forumWpId { get; set; }
+        public string title { get; set; }
+        public string content { get; set; }
+        public int voiceCount { get; set; }
+        public int replyCount { get; set; }
+        public string type { get; set; }
+        public string status { get; set; }
+        public string userNickname { get; set; }
+    }
+
+    public class DabGraphQlUpdatedTopics
+    {
+        public List<DabGraphQlTopic> edges { get; set; }
+        public DabGraphQlPageInfo pageInfo { get; set; }
+    }
+
+    public class DabGraphQlUpdatedForum
+    {
+        public DabGraphQlUpdatedForum()
+        {
+
+        }
+        public DabGraphQlUpdatedForum(DabGraphQlUpdatedForum b)
+        {
+            this.wpId = b.wpId;
+            this.title = b.title;
+            this.content = b.content;
+            this.excerpt = b.excerpt;
+            this.topicCount = b.topicCount;
+            this.replyCount = b.replyCount;
+            this.type = b.type;
+            this.status = b.status;
+            this.visibility = b.visibility;
+        }
+
+        public int wpId { get; set; }
+        public string title { get; set; }
+        public string content { get; set; }
+        public string excerpt { get; set; }
+        public int topicCount { get; set; }
+        public int replyCount { get; set; }
+        public string type { get; set; }
+        public string status { get; set; }
+        public string visibility { get; set; }
     }
 
     public class DabGraphQlDeleteDonation

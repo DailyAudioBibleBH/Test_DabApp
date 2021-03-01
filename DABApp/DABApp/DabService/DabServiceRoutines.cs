@@ -106,6 +106,29 @@ namespace DABApp.Service
                     GlobalResources.CampaignUpdatedDate = DateTime.Now;
                 }
 
+                //get forums
+                var qllll = await DabService.GetUpdatedForums(GlobalResources.ForumUpdatedDate);
+                if (qllll.Success)
+                {
+                    bool foundPublish = false;
+                    foreach (var d in qllll.Data)
+                    {
+                        foreach (var b in d.payload.data.updatedForums)
+                        {
+                            if (!foundPublish)
+                            {
+                                DabGraphQlUpdatedForum c = new DabGraphQlUpdatedForum(b);
+                                if (c.status == "publish")
+                                {
+                                    GlobalResources.ActiveForumId = c.wpId;
+                                }
+                            }
+                        }
+                    }
+                    //update date since last updated campaigns
+                    GlobalResources.ForumUpdatedDate = DateTime.Now;
+                }
+
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
