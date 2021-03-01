@@ -15,6 +15,7 @@ using System.Data.Common;
 using static DABApp.ContentConfig;
 using DABApp.Service;
 using DABApp.DabSockets;
+using System.Collections.ObjectModel;
 
 namespace DABApp
 {
@@ -201,8 +202,9 @@ namespace DABApp
                         topics = item.payload.data.updatedTopics.edges;
                     }
                 }
-                forum.topics = topics;
-                //forum.view = view;
+                ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
+                forum.topics = topicCollection;
+
                 return forum;
             }
             catch (Exception e)

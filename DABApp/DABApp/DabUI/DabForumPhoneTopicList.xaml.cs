@@ -64,6 +64,7 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
+			ContentAPI.cursur = null;
 			await Update();
 			if (login && !GuestStatus.Current.IsGuestLogin)
 			{

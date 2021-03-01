@@ -343,7 +343,7 @@ namespace DABApp
 				}
 			}
 			public ICommand LoadMore { get; set; }
-			public List<DabGraphQlTopic> topics { get; set; }
+			public ObservableCollection<DabGraphQlTopic> topics { get; set; }
 
 			public event PropertyChangedEventHandler PropertyChanged;
 
@@ -352,7 +352,6 @@ namespace DABApp
 				int page = 2;
 				this.LoadMore = new Command(async () =>
 				{
-					var test = topics;
 					IsBusy = true;
 					var f = await ContentAPI.GetForum();
 					page++;
