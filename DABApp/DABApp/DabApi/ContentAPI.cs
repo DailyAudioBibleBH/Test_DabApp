@@ -199,7 +199,7 @@ namespace DABApp
                 {
                     foreach (var item in result.Data)
                     {
-                        topics = item.payload.data.updatedTopics.edges;
+                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").ToList();
                     }
                 }
                 ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
