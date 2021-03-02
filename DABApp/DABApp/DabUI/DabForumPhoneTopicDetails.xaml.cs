@@ -65,7 +65,7 @@ namespace DABApp
             {
                 foreach (var item in result.Data)
                 {
-					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges);
+					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish"));
                 }
 				DetailsView.replies.ItemsSource = replies;
 				//OnPropertyChanged(nameof(DetailsView.replies));
@@ -102,7 +102,7 @@ namespace DABApp
 			{
 				foreach (var item in result.Data)
 				{
-					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges);
+					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish"));
 				}
 				
 				fromPost = false;
