@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
 using DABApp.DabUI.BaseUI;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -47,16 +48,8 @@ namespace DABApp
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
-			var topic = (Topic)e.Item;
-			var result = await ContentAPI.GetTopic(topic);
-			if (result == null)
-			{
-				await DisplayAlert("Error, could not recieve topic details", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
-			}
-			else
-			{
-				await Navigation.PushAsync(new DabForumPhoneTopicDetails(result));
-			}
+			var topic = (DabGraphQlTopic)e.Item;
+			await Navigation.PushAsync(new DabForumPhoneTopicDetails(topic));
 			ContentList.topicList.SelectedItem = null;
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}

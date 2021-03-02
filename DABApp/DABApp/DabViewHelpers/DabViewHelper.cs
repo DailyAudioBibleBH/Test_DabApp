@@ -161,7 +161,8 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (DabGraphQlTopic)value;
-			return $"Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			return $"By {topic.userNickname}  @ {DateTime.Now}"; //{topic.createdAt}";
+			//TODO: put created at back in
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -176,17 +177,18 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) { return null; }
-	
+
 			var topic = (DabGraphQlTopic)value;
 			//return $"Latest Reply {topic.lastActivity}";
-			return "Latest Reply ------";
+			//return "Latest Reply ------";
+			return $"Latest Reply ------ Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 
-		}	
+		}
 	}
 
 	public class ReplyConverter : IValueConverter
@@ -224,11 +226,12 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) return null;
-			var res = (Reply)value;
-			var dateTime = DateTimeOffset.Parse($"{res.gmtDate} +0:00").UtcDateTime.ToLocalTime();
-			string month = dateTime.ToString("MMMM");
-			string time = dateTime.ToString("t");
-			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			var res = (DabGraphQlReply)value;
+			//var dateTime = DateTimeOffset.Parse($"{res.gmtDate} +0:00").UtcDateTime.ToLocalTime();
+			//string month = dateTime.ToString("MMMM");
+			//string time = dateTime.ToString("t");
+			//return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			return DateTime.MinValue.ToString();
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

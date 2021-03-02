@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using DABApp.DabSockets;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
 
@@ -8,9 +8,9 @@ namespace DABApp
 {
 	public partial class DabForumCreateReply : DabBaseContentPage
 	{
-		Topic _topic;
+		DabGraphQlTopic _topic;
 
-		public DabForumCreateReply(Topic topic)
+		public DabForumCreateReply(DabGraphQlTopic topic)
 		{
 			InitializeComponent();
 			BindingContext = topic;
@@ -33,7 +33,7 @@ namespace DABApp
 			}
 			else
 			{
-				var rep = new PostReply(reply.Text, _topic.id);
+				var rep = new PostReply(reply.Text, _topic.wpId);
 				var result = await ContentAPI.PostReply(rep);
 				if (result.Contains("id"))
 				{

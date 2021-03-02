@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using DABApp.DabSockets;
 using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
@@ -17,7 +19,7 @@ namespace DABApp
 		bool fromPost = false;
 		bool unInitialized = true;
 		Forum _forum;
-		Topic topic;
+		DabGraphQlTopic topic;
 		object source;
 
 		public DabForumTabletTopicPage(View view)
@@ -38,11 +40,11 @@ namespace DABApp
 
 		async void OnTopic(object o, ItemTappedEventArgs e)
 		{
-			topic = (Topic)e.Item;
+			topic = (DabGraphQlTopic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
-			topic = await ContentAPI.GetTopic(topic);
-			DetailsView.replies.ItemsSource = topic.replies;
+			var replies = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
+			//DetailsView.replies.ItemsSource = replies.Data.;
 			DetailsView.last.Text = TimeConvert();
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
@@ -100,12 +102,12 @@ namespace DABApp
 
 		string TimeConvert()
 		{
-			if (topic.replies.Count > 0)
+			if (topic.replyCount > 0)
 			{
-				var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
-				var month = dateTime.ToString("MMMM");
-				var time = dateTime.ToString("t");
-				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+				//var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
+				//var month = dateTime.ToString("MMMM");
+				//var time = dateTime.ToString("t");
+				//return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 			}
 			return "";
 		}
@@ -116,16 +118,16 @@ namespace DABApp
 			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 			if (topic != null)
 			{
-				topic = await ContentAPI.GetTopic(topic);
+				//topic = await ContentAPI.GetReplies(topic);
 				if (topic == null)
 				{
 					await DisplayAlert("Error, could not recieve topic details", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
 				}
 				else
 				{
-					DetailsView.replies.ItemsSource = topic.replies;
+					//DetailsView.replies.ItemsSource = replies;
 					DetailsView.last.Text = TimeConvert();
-					if (topic.replies.Count > 0)
+					if (topic.replyCount > 0)
 					{
 						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
 					}

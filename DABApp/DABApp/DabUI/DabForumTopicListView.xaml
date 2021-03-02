@@ -14,9 +14,9 @@
 					<DataTemplate>
 						<ViewCell>
 							<StackLayout Padding="5" Spacing="5">
-								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
-								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
+								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Medium" FontAttributes="Bold"/>
 								<Label Text="{Binding Path=., Converter={StaticResource ParticipantConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
+								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
 							</StackLayout>
 						</ViewCell>
 					</DataTemplate>
