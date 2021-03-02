@@ -115,6 +115,7 @@ namespace DABApp.Service
                     {
                         foreach (var b in d.payload.data.updatedForums)
                         {
+                            //Should only have one published forum for now
                             if (!foundPublish)
                             {
                                 DabGraphQlUpdatedForum c = new DabGraphQlUpdatedForum(b);
@@ -122,8 +123,8 @@ namespace DABApp.Service
                                 {
                                     GlobalResources.ActiveForumId = c.wpId;
                                     GlobalResources.ActiveForum = c;
+                                    foundPublish = true;
                                 }
-                                foundPublish = true;
                             }
                         }
                     }

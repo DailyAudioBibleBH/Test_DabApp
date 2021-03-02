@@ -22,7 +22,6 @@ namespace DABApp
     public class ContentAPI
     {
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-        public static object cursur { get; set; } = null;
 
         public static bool CheckContent()
         {
@@ -183,33 +182,6 @@ namespace DABApp
             catch (Exception e)
             {
                 throw e;
-            }
-        }
-
-        public static async Task<Forum> GetForum()
-        {
-            try
-            {
-                var forum = new Forum();
-                forum.title = GlobalResources.ActiveForum.title;
-                forum.topicCount = GlobalResources.ActiveForum.topicCount;
-                var result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
-                List<DabGraphQlTopic> topics = new List<DabGraphQlTopic>();
-                if (result.Success)
-                {
-                    foreach (var item in result.Data)
-                    {
-                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").ToList();
-                    }
-                }
-                ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
-                forum.topics = topicCollection;
-
-                return forum;
-            }
-            catch (Exception e)
-            {
-                return null;
             }
         }
 

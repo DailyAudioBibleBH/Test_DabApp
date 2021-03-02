@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
@@ -8,6 +10,7 @@ using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using SQLite;
 using Xamarin.Forms;
+using static DABApp.ContentConfig;
 
 namespace DABApp.Service
 {
@@ -27,6 +30,7 @@ namespace DABApp.Service
         private static IWebSocket socket; //websocket used by service
 
         public const int WaitDelayInterval = 500; //milliseconds to pause for anything that waits on another thread to provide input
+
         public const int ExtraLongTimeout = 20000; //super long timeout for things that take a long time
         public const int LongTimeout = 10000; //timeout for calls we expect return values from
         public const int SocketTerminationWaitTime = 1000; //time to wait for socket terminate time to close the socket
@@ -34,6 +38,8 @@ namespace DABApp.Service
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
         private static List<int> SubscriptionIds = new List<int>();  //list of subscription id's managed by Service
         public static string userName;
+        public static object cursur { get; set; } = null;
+
 
         //DATABASE CONNECTION
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -356,6 +362,53 @@ namespace DABApp.Service
             };
         }
 
+        public static async Task<Forum> GetForum()
+        {
+            try
+            {
+                var forum = new Forum();
+                DabGraphQlUpdatedForum activeForum = GlobalResources.ActiveForum;
+                forum.id = activeForum.wpId;
+                forum.title = activeForum.title;
+                forum.topicCount = activeForum.topicCount;
+                var result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
+                List<DabGraphQlTopic> topics = new List<DabGraphQlTopic>();
+                if (result.Success)
+                {
+                    foreach (var item in result.Data)
+                    {
+                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").ToList();
+                    }
+                }
+                ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
+                forum.topics = topicCollection;
+
+                return forum;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<DabServiceWaitResponse> PostTopic(ContentConfig.PostTopic topic)
+        {
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the update donation mutation
+            string command = $"mutation {{ createTopic( forumWpId: {topic.forumId} title: \"{topic.title}\" content: \"{topic.content}\" ) {{ wpId userWpId forumWpId title content voiceCount replyCount type status userNickname }} }}";
+
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.CreateTopic);
+
+            //return the response
+            return response;
+        }
+
         public static async Task<DabServiceWaitResponseList> GetUpdatedReplies(DateTime LastDate, int wpId, int limit)
         {
             /*
@@ -492,12 +545,12 @@ namespace DABApp.Service
                 //determine if we have more data to process or not
                 if (data.pageInfo.hasNextPage == true)
                 {
-                    ContentAPI.cursur = data.pageInfo.endCursor;
+                    DabService.cursur = data.pageInfo.endCursor;
                 }
                 else
                 {
                     //nomore data - break the loop
-                    ContentAPI.cursur = null;
+                    DabService.cursur = null;
                 }
             }
             else

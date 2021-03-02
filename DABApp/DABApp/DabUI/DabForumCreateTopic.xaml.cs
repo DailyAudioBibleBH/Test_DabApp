@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.Service;
+using System;
 using System.Collections.Generic;
 
 using Xamarin.Forms;
@@ -34,15 +35,15 @@ namespace DABApp
 			else
 			{
 				var topic = new PostTopic(title.Text, Content.Text, _forum.id);
-				var result = await ContentAPI.PostTopic(topic);
-				if (result.Contains("id"))
+				var result = await DabService.PostTopic(topic);
+				if (result.Success)
 				{
 					await DisplayAlert("Success", "Successfully posted new topic.", "OK");
 					await Navigation.PopAsync();
 				}
 				else
 				{
-					await DisplayAlert("Error", result, "OK");
+					await DisplayAlert("Error", result.ErrorMessage, "OK");
 				}
 			}
 			Post.IsEnabled = true;

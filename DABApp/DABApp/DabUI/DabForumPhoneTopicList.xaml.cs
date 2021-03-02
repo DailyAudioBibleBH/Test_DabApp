@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using Plugin.Connectivity;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
@@ -57,7 +58,7 @@ namespace DABApp
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			ContentAPI.cursur = null;
+			DabService.cursur = null;
 			await Update();
 			if (login && !GuestStatus.Current.IsGuestLogin)
 			{
@@ -73,7 +74,7 @@ namespace DABApp
 			{
 				source = new object();
 				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-				_forum = await ContentAPI.GetForum();
+				_forum = await DabService.GetForum();
 				if (_forum == null)
 				{
 					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");

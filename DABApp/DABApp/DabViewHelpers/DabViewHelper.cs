@@ -196,7 +196,7 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) return null;
-			var reply = (Member)value;
+			var reply = (DabGraphQlTopic)value;
 			return $"Prayers:{reply.replyCount}";
 		}
 
@@ -211,8 +211,8 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) return null;
-			var topic = (Member)value;
-			return $"Topics:{topic.topicCount}";
+			var topic = (DabGraphQlTopic)value;
+			return $"Topics:{topic.voiceCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

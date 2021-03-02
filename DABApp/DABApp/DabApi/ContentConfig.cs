@@ -353,7 +353,7 @@ namespace DABApp
 				this.LoadMore = new Command(async () =>
 				{
 					IsBusy = true;
-					var f = await ContentAPI.GetForum();
+					var f = await DabService.GetForum();
 					page++;
 					foreach (var t in f.topics)
 					{

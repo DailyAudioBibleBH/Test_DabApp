@@ -133,7 +133,7 @@ namespace DABApp
 					}
 				}
 			}
-			_forum = await ContentAPI.GetForum();
+			_forum = await DabService.GetForum();
 			if (_forum == null)
 			{
 				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
