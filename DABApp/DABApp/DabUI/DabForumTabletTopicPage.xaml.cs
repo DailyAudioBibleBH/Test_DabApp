@@ -43,8 +43,13 @@ namespace DABApp
 			topic = (DabGraphQlTopic)e.Item;
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
-			var replies = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
-			//DetailsView.replies.ItemsSource = replies.Data.;
+			var replyData = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
+			List<DabGraphQlReply> replies = new List<DabGraphQlReply>();
+            foreach (var item in replyData.Data)
+            {
+				replies = item.payload.data.updatedReplies.edges;
+			}
+			DetailsView.replies.ItemsSource = replies;
 			DetailsView.last.Text = TimeConvert();
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
@@ -123,7 +128,6 @@ namespace DABApp
 			}
 			if (topic != null)
 			{
-				//topic = await ContentAPI.GetReplies(topic);
 				if (topic == null)
 				{
 					await DisplayAlert("Error, could not recieve topic details", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
@@ -133,8 +137,18 @@ namespace DABApp
 					DetailsView.BindingContext = topic;
 					DetailsView.IsVisible = true;
 
-					//DetailsView.replies.ItemsSource = replies;
+					//Attach replies to details view
+					var replyData = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
+					List<DabGraphQlReply> replies = new List<DabGraphQlReply>();
+
+					foreach (var item in replyData.Data)
+					{
+						replies = item.payload.data.updatedReplies.edges;
+					}
+
+					DetailsView.replies.ItemsSource = replies;
 					DetailsView.last.Text = TimeConvert();
+
 					if (topic.replyCount > 0)
 					{
 						DetailsView.replies.SeparatorVisibility = SeparatorVisibility.Default;
