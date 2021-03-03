@@ -116,6 +116,11 @@ namespace DABApp
 		{
 			source = new object();
 			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+			_forum = await DabService.GetForum();
+            if (_forum.topicCount > 0)
+            {
+				topic = _forum.topics.FirstOrDefault();
+			}
 			if (topic != null)
 			{
 				//topic = await ContentAPI.GetReplies(topic);
@@ -125,6 +130,9 @@ namespace DABApp
 				}
 				else
 				{
+					DetailsView.BindingContext = topic;
+					DetailsView.IsVisible = true;
+
 					//DetailsView.replies.ItemsSource = replies;
 					DetailsView.last.Text = TimeConvert();
 					if (topic.replyCount > 0)
@@ -133,7 +141,6 @@ namespace DABApp
 					}
 				}
 			}
-			_forum = await DabService.GetForum();
 			if (_forum == null)
 			{
 				await DisplayAlert("Error, could not recieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
