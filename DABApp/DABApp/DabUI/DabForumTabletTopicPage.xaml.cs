@@ -122,7 +122,7 @@ namespace DABApp
 			source = new object();
 			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
 			_forum = await DabService.GetForum();
-            if (_forum.topicCount > 0)
+            if (_forum.topicCount > 0 && topic == null)
             {
 				topic = _forum.topics.FirstOrDefault();
 			}
