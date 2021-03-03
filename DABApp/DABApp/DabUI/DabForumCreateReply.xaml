@@ -3,11 +3,28 @@
 	<ContentPage.Content>
 		<StackLayout x:Name="Container">
 			<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
-			<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}"/>
-			<Label Text="{Binding content}"/>
-			</StackLayout>
-			<StackLayout Padding="10" Spacing="10" VerticalOptions="FillAndExpand">
-			<local:DabEditor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" HeightRequest="250" VerticalOptions="StartAndExpand" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="{Binding userNickname}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+                    <Label Text="Participant" Grid.Column="1" Grid.Row="1" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
+                    <!--<local:ImageCircle Source="{Binding member.avatarUrl}" HeightRequest="35" WidthRequest="35" Grid.Column="0" Grid.RowSpan="2"/>-->
+                    <Label Text="{Binding Path=., Converter={StaticResource ReplyConverter}}" Grid.Column="2" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
+                    <Label Text="{Binding Path=., Converter={StaticResource TopicConverter}}" FontSize="Micro" Grid.Column="3" Grid.Row="1" Style="{StaticResource secondaryLabelStyle}"/>
+                </Grid>
+            </StackLayout>
+
+
+            <StackLayout Padding="10" Spacing="10" VerticalOptions="FillAndExpand">
+			<local:DabEditor x:Name="reply" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" VerticalOptions="FillAndExpand" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}"/>
 			<Grid VerticalOptions="End">
 				<Grid.ColumnDefinitions>
@@ -17,8 +34,8 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
-				<Button x:Name="Post" Text="Post reply" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" Grid.Row="0" Grid.Column="0"/>
-				<Button x:Name="Cancel" Text="Cancel" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
+				<Button x:Name="Post" Text="Post reply" HeightRequest="40" FontAttributes="Bold" Clicked="OnPost" Style="{StaticResource highlightedButtonStyle}" Grid.Row="0" Grid.Column="0"/>
+				<Button x:Name="Cancel" Text="Cancel" HeightRequest="40" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
 			</Grid>
 			</StackLayout>
 		</StackLayout>

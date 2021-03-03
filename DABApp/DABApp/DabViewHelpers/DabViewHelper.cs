@@ -197,7 +197,7 @@ namespace DABApp
 		{
 			if (value == null) return null;
 			var reply = (DabGraphQlTopic)value;
-			return $"Prayers:{reply.replyCount}";
+			return $"Prayers: {reply.replyCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -212,7 +212,7 @@ namespace DABApp
 		{
 			if (value == null) return null;
 			var topic = (DabGraphQlTopic)value;
-			return $"Topics:{topic.voiceCount}";
+			return $"Topics: {topic.voiceCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

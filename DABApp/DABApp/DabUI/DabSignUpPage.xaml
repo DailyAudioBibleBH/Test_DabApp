@@ -6,15 +6,15 @@
             <StackLayout x:Name="Container" Padding="10" Spacing="10">
                 <local:HtmlLabel Text="{Binding signUp}"/>
                 <Label Text="First Name" FontSize="Micro"/>
-                <Entry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
+                <controls:CustomEntry x:Name="FirstName" Completed="OnFirstNameCompleted"/>
                 <Label Text="Last Name" FontSize="Micro"/>
-                <Entry x:Name="LastName" Completed="OnLastNameCompleted"/>
+                <controls:CustomEntry x:Name="LastName" Completed="OnLastNameCompleted"/>
                 <Label Text="Email Address" FontSize="Micro"/>
                 <controls:CustomEntry x:Name="Email" IsEnabled="false" Keyboard="Email"/>
                 <Label Text="Password" FontSize="Micro"/>
-                <Entry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
+                <controls:CustomEntry x:Name="Password" IsPassword="true" Completed="OnPasswordCompleted"/>
                 <Label Text="Confirm Password" FontSize="Micro"/>
-                <Entry x:Name="PasswordAgain"  IsPassword="true" Completed="OnSignUp"/>
+                <controls:CustomEntry x:Name="PasswordAgain"  IsPassword="true" Completed="OnSignUp"/>
                 <StackLayout Orientation="Horizontal">
                     <Switch x:Name="Agreement" VerticalOptions="Start">
                         <Switch.AutomationProperties.Name>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DABApp.DabSockets;
+using DABApp.Service;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
 
@@ -34,15 +35,15 @@ namespace DABApp
 			else
 			{
 				var rep = new PostReply(reply.Text, _topic.wpId);
-				var result = await ContentAPI.PostReply(rep);
-				if (result.Contains("id"))
+				var result = await DabService.PostReply(rep);
+				if (result.Success)
 				{
 					await DisplayAlert("Success", "Successfully posted new reply.", "OK");
 					await Navigation.PopAsync();
 				}
 				else
 				{
-					await DisplayAlert("Error", result, "OK");
+					await DisplayAlert("Error", result.ErrorMessage, "OK");
 				}
 			}
 			Post.IsEnabled = true;

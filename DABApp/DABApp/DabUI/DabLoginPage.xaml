@@ -12,7 +12,7 @@
                 </Image>
                 <Frame HeightRequest="20"/>
                 <Entry x:Name="Email" Placeholder="Email" VerticalOptions="Center" Keyboard="Email" Completed="OnCompleted" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true" IsReadOnly="True"/>
-                <Entry x:Name="Password" Placeholder="Password" FontSize="Medium" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
+                <controls:CustomEntry x:Name="Password" Placeholder="Password" FontSize="Medium" Margin="0, 10, 0, 0"  VerticalOptions="Center" IsPassword="true" Completed="OnLogin" TextColor="{DynamicResource PlayerLabelColor}" AutomationProperties.IsInAccessibleTree="true"/>
                 <StackLayout Orientation="Horizontal" VerticalOptions="StartAndExpand">
                     <Button x:Name="btnForgot" Text="Forgot Password?" TextColor="{DynamicResource PlayerLabelColor}" FontSize="Small" Clicked="OnForgot" BorderColor="Transparent" HorizontalOptions="EndAndExpand"/>
                 </StackLayout>

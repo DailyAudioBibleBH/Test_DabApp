@@ -409,6 +409,23 @@ namespace DABApp.Service
             return response;
         }
 
+        public static async Task<DabServiceWaitResponse> PostReply(PostReply rep)
+        {
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the update donation mutation
+            string command = $"mutation {{ createReply(topicWpId: {rep.topicId} content: \"{rep.content}\") {{ wpId userWpId topicWpId content status userNickname }} }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.PostReply);
+
+            //return the response
+            return response;
+        }
+
         public static async Task<DabServiceWaitResponseList> GetUpdatedReplies(DateTime LastDate, int wpId, int limit)
         {
             /*
