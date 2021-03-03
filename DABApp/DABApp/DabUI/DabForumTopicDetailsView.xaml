@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumTopicDetailsView" xmlns:local="clr-namespace:DABApp">
 	<ContentView.Content>
-		<StackLayout Padding="10" Spacing="10">
+        <Grid>
+            <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+		<StackLayout Padding="10, 10, 10, 0" Spacing="10" Grid.Row="0">
 			<ListView x:Name="reps" HasUnevenRows="true" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" IsPullToRefreshEnabled="true">
 				<ListView.Header>
 					<StackLayout>
@@ -55,7 +60,10 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="rep" Text="Post a reply" HeightRequest="40" FontSize="Medium" Style="{StaticResource highlightedButtonStyle}" FontAttributes="Bold"/>
+            <StackLayout Grid.Row="1" VerticalOptions="EndAndExpand">
+                 <Button x:Name="rep" Text="Post a reply" HeightRequest="40" FontSize="Medium" Style="{StaticResource highlightedButtonStyle}" FontAttributes="Bold"/>
+            </StackLayout>
         </StackLayout>
+        </Grid>
 	</ContentView.Content>
 </ContentView>
