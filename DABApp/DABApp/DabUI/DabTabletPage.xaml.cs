@@ -1163,9 +1163,9 @@ namespace DABApp
 
         }
         //Go back 30 seconds
-        void OnBack30(object o, EventArgs e)
+        void OnBack15(object o, EventArgs e)
         {
-            player.Seek(player.CurrentPosition - 30);
+            player.Seek(player.CurrentPosition - 15);
             if (!player.IsPlaying)
             {
                 player.CallPlayerBarEvents();
