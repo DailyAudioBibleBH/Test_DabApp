@@ -190,7 +190,7 @@ namespace DABApp.Droid
                                   .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.AppIcon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
-                                  .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
+                                  .AddAction(Resource.Drawable.baseline_replay_15_white, "Backward 15", previousPendingIntent)
                                   .AddAction(Resource.Drawable.baseline_play_arrow_white_36, "Play or Pause", playPausePendingIntent)
                                   .AddAction(Resource.Drawable.baseline_forward_30_white_36, "Forward 30", skipPendingIntent)
                                   .SetShowWhen(false)
@@ -604,14 +604,14 @@ namespace DABApp.Droid
 
             if (player.IsReady)
             {
-                MessagingCenter.Send<string>("droid", "previous");
-
+                player.Seek(player.CurrentPosition - 15);
             }
             else
             {
                 if (player.Load(Episode.Episode))
                 {
-                    MessagingCenter.Send<string>("droid", "previous");
+                    player.Seek(player.CurrentPosition - 15);
+
                 }
                 else
                 {
@@ -652,7 +652,7 @@ namespace DABApp.Droid
 
         public override void OnRewind()
         {
-            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition - 30);
+            mediaPlayerService.GetMediaPlayerService().Seek(player.CurrentPosition - 15);
             base.OnRewind();
         }
 

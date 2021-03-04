@@ -233,7 +233,7 @@ namespace DABApp
         //method for android lock screen controls
         void OnPrevious()
         {
-            player.Seek(player.CurrentPosition - 30);
+            player.Seek(player.CurrentPosition - 15);
         }
 
         //Go to next episode
