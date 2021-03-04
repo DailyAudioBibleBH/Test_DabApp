@@ -96,13 +96,12 @@ namespace DABApp.iOS
 
                 });
 
-
                 //Handle skip forward command from lock screen
                 MPRemoteCommandCenter.Shared.SkipForwardCommand.AddTarget((arg) =>
                 {
                     try
                     {
-                        dabplayer.Skip(30); //icon says 15 seconds
+                        dabplayer.Skip(30);
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -111,13 +110,14 @@ namespace DABApp.iOS
                     }
 
                 });
+
 
                 //Handle skip backward command from lock screen
                 MPRemoteCommandCenter.Shared.SkipBackwardCommand.AddTarget((arg) =>
                 {
                     try
                     {
-                        dabplayer.Skip(-15); //icon says 15 seconds
+                        dabplayer.Skip(-15);
                         return MPRemoteCommandHandlerStatus.Success;
                     }
                     catch (Exception ex)
@@ -126,6 +126,16 @@ namespace DABApp.iOS
                     }
 
                 });
+
+                //change skip values for ios lock screen
+                double[] skipBackwardArray = new double[1];
+                skipBackwardArray[0] = 15;
+
+                double[] skipForwardArray = new double[1];
+                skipForwardArray[0] = 30;
+
+                MPRemoteCommandCenter.Shared.SkipBackwardCommand.PreferredIntervals = skipBackwardArray;
+                MPRemoteCommandCenter.Shared.SkipForwardCommand.PreferredIntervals = skipForwardArray;
 
             }
         }
