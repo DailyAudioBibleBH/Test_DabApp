@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateReply" xmlns:local="clr-namespace:DABApp">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateReply" xmlns:local="clr-namespace:DABApp" xmlns:views="clr-namespace:DABApp.DabUI.BaseUI">
 	<ContentPage.Content>
+        <views:KeyboardView Padding="0,0,0,0"
+                VerticalOptions="FillAndExpand">
+            <ScrollView x:Name="scrollView">
 		<StackLayout x:Name="Container">
 			<StackLayout Padding="10" Spacing="10" BackgroundColor="{DynamicResource InputBackgroundColor}">
                 <Grid>
@@ -39,5 +42,7 @@
 			</Grid>
 			</StackLayout>
 		</StackLayout>
+                </ScrollView>
+        </views:KeyboardView>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

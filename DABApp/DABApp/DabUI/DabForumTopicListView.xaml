@@ -3,7 +3,7 @@
              xmlns:b="clr-namespace:DABApp">
 	<ContentView.Content>
 		<StackLayout>
-			<StackLayout Padding="10" Spacing="10">
+			<StackLayout Padding="10, 10, 0, 10" Spacing="10">
 				<Button x:Name="Post" Text="  Post a prayer request  " FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" HorizontalOptions="Center"/>
 			</StackLayout>
 			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">

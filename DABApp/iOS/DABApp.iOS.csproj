@@ -90,6 +90,7 @@
     <CodesignResourceRules />
     <LangVersion>8.0</LangVersion>
     <CodesignProvision>VS: com.dailyaudiobible.dabapp Development</CodesignProvision>
+    <MtouchInterpreter>-all</MtouchInterpreter>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <AppExtensionDebugBundleId />

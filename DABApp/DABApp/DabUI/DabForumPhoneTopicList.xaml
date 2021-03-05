@@ -8,7 +8,7 @@
 					<Label x:Name="bannerTitle" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="CenterAndExpand" FontSize="30" Style="{StaticResource playerLabelStyle}"/>
 				</StackLayout>
 			</RelativeLayout>
-			<StackLayout Padding="10" Spacing="10">
+			<StackLayout Padding="0" Spacing="10">
 			<local:DabForumTopicListView x:Name="ContentList"/>
 			</StackLayout>
 		</StackLayout>

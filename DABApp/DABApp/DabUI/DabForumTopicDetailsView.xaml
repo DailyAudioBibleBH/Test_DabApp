@@ -4,9 +4,9 @@
         <Grid>
             <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-		<StackLayout Padding="10, 10, 10, 0" Spacing="10" Grid.Row="0">
+		<StackLayout Padding="0" Spacing="0" Grid.Row="0" VerticalOptions="FillAndExpand">
 			<ListView x:Name="reps" HasUnevenRows="true" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" IsPullToRefreshEnabled="true">
 				<ListView.Header>
 					<StackLayout>
@@ -60,7 +60,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackLayout Grid.Row="1" VerticalOptions="EndAndExpand">
+            <StackLayout Grid.Row="1" VerticalOptions="Start" Padding="10">
                  <Button x:Name="rep" Text="Post a reply" HeightRequest="40" FontSize="Medium" Style="{StaticResource highlightedButtonStyle}" FontAttributes="Bold"/>
             </StackLayout>
         </StackLayout>
