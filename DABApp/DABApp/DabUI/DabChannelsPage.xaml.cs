@@ -30,6 +30,7 @@ namespace DABApp
         private bool todaysEpisodeVisible = false;
         bool shouldShowTodaysEpisode = false;
         object source = new object();
+        AppLinkEntry applink;
 
         public DabChannelsPage()
         {
@@ -112,6 +113,8 @@ namespace DABApp
         {
             base.OnDisappearing();
             HideMenu();
+            applink.IsLinkActive = false;
+            Application.Current.AppLinks.RegisterLink(applink);
         }
 
         //Navigate to a specific channel
@@ -184,6 +187,16 @@ namespace DABApp
         {
             //Show toolbar items for android
             MessagingCenter.Send<string>("Setup", "Setup");
+
+            applink = new AppLinkEntry
+            {
+                AppLinkUri = new Uri(string.Format(App.AppLinkUri, "channels").Replace(" ", "_")),
+                Description = "DAB App Channels",
+                Title = "Channels",
+                IsLinkActive = true
+            };
+
+            Application.Current.AppLinks.RegisterLink(applink);
 
             foreach (var r in ChannelView.resources)
             {

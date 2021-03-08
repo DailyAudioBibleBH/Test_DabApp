@@ -16,6 +16,7 @@ namespace DABApp
 		bool _fromLogin;
 		object source;
 		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+		AppLinkEntry applink;
 
 
 		public DabManageDonationsPage(bool fromLogin = false)
@@ -169,6 +170,17 @@ namespace DABApp
 			{
 				MessagingCenter.Send<string>("Remove", "Remove");
 			}
+
+			applink = new AppLinkEntry
+			{
+				AppLinkUri = new Uri(string.Format(App.AppLinkUri, "donations").Replace(" ", "_")),
+				Description = "DAB App Donations",
+				Title = "Donations",
+				IsLinkActive = true
+			};
+
+			Application.Current.AppLinks.RegisterLink(applink);
+
 			if (isInitialized)
 			{
 				source = new object();
@@ -229,6 +241,8 @@ namespace DABApp
 		{
 			base.OnDisappearing();
 			MessagingCenter.Send<string>("Show", "Show");
+			applink.IsLinkActive = false;
+			Application.Current.AppLinks.RegisterLink(applink);
 		}
 	}
 }

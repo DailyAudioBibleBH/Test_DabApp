@@ -35,12 +35,30 @@ using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
 using Plugin.CurrentActivity;
+using Xamarin.Forms.Platform.Android.AppLinks;
 
 namespace DABApp.Droid
 {
+    //Deep Linking, allowing outside links to app
+    [IntentFilter(new[] { Intent.ActionView},
+        Categories = new[]
+        {
+            Intent.CategoryDefault,
+            Intent.CategoryBrowsable
+        },
+        DataScheme = "http", DataPathPrefix = "dabapp://", DataHost = "https://dailyaudiobible.com/", AutoVerify = true )]
+
+    [IntentFilter(new[] { Intent.ActionView },
+        Categories = new[]
+        {
+            Intent.CategoryDefault,
+            Intent.CategoryBrowsable
+        },
+        DataScheme = "https", DataPathPrefix = "dabapp://", DataHost = "https://dailyaudiobible.com/", AutoVerify = true)]
 
     [Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
     [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
+
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity //, AudioManager.IOnAudioFocusChangeListener
     {
         CallReceiver callReceiver;
@@ -79,6 +97,7 @@ namespace DABApp.Droid
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
+            AndroidAppLinks.Init(this);
             AndroidBug5497WorkaroundForXamarinAndroid.assistActivity(this);
 
             //TODO: Replace for journal?

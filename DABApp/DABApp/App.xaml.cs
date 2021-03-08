@@ -11,11 +11,15 @@ using Device = Xamarin.Forms.Device;
 using Xamarin.Forms.Internals;
 using DABApp.Service;
 using DABApp.DabUI;
+using System.Linq;
 
 namespace DABApp
 {
     public partial class App : Application
     {
+        public const string AppLinkUri = "dabapp://{0}";
+        internal static string[] Pages = new string[] { "channels/", "donations/" };
+
         public App()
         {
             if (AuthenticationAPI.GetTestMode())
@@ -29,6 +33,28 @@ namespace DABApp
 
             MainPage = new DabServiceConnect();
 
+        }
+
+        protected override void OnAppLinkRequestReceived(Uri uri)
+        {
+            base.OnAppLinkRequestReceived(uri);
+            var matchedpage = Pages.FirstOrDefault(x => uri.OriginalString.EndsWith(x, StringComparison.OrdinalIgnoreCase));
+            if (matchedpage!= null)
+            {
+                if (matchedpage == "donations/")
+                {
+                    NavigationPage navPage = new NavigationPage(new DabManageDonationsPage());
+                    navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                    Application.Current.MainPage = navPage;
+                }
+                if (matchedpage == "channels/")
+                {
+                    NavigationPage navPage = new NavigationPage(new DabChannelsPage());
+                    navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
+                    Application.Current.MainPage = navPage;
+                }
+                
+            }
         }
 
         protected override void OnStart()
