@@ -15,6 +15,7 @@ using Android.Graphics;
 using Android.Support.V4.Media;
 using Xamarin.Forms;
 using Android.Support.V4.Content;
+using AndroidX.Media.Session;
 
 [assembly: Dependency(typeof(DroidDabNativePlayer))]
 namespace DABApp.Droid
@@ -176,10 +177,9 @@ namespace DABApp.Droid
                         PendingIntent.GetActivity(Application.Context, previousPendingIntentId, previousIntent, 0);
 
                     int color = ContextCompat.GetColor(Application.Context, Resource.Color.dab_red);
-
                     // Build the notification:
                     var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
-                                  .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
+                                  .SetStyle(new Xamarin.Android.Support.Media.Compat.NotificationCompat.MediaStyle()
                                             .SetMediaSession(mSession.SessionToken)
                                             .SetShowCancelButton(true)
                                             .SetShowActionsInCompactView(0, 1, 2)
