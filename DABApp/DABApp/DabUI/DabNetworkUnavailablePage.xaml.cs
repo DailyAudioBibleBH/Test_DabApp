@@ -17,7 +17,7 @@ namespace DABApp
 			Message.IsVisible = false;
 			if (ContentAPI.CheckContent())
 			{
-				var nav = new NavigationPage(new DabLoginPage());
+				var nav = new NavigationPage(new DabCheckEmailPage());
 				nav.SetValue(NavigationPage.BarTextColorProperty, (Color)App.Current.Resources["TextColor"]);
 				Navigation.PushModalAsync(nav);
 			}

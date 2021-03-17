@@ -47,33 +47,33 @@ namespace DABApp.DabUI
                     lblTestMode.Opacity = 1;
                 }
             }
+            SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+            //Determine if the user was logged in at last use
+            //If first launch of app make guest account before running CheckContent
+            var user = GlobalResources.Instance.LoggedInUser;
+            if (user == null)
+            {
+                dbUserData firstGuestLogin = new dbUserData();
+                firstGuestLogin.Token = "";
+                firstGuestLogin.Email = "";
+                firstGuestLogin.FirstName = "Guest";
+                firstGuestLogin.LastName = "Guest";
+                firstGuestLogin.WpId = 0;
+                firstGuestLogin.Channel = "";
+                firstGuestLogin.Channels = "";
+                firstGuestLogin.Id = 0;
+                firstGuestLogin.Language = "";
+                firstGuestLogin.NickName = "Guest";
+                firstGuestLogin.UserRegistered = DateTime.Now;
+                firstGuestLogin.TokenCreation = DateTime.Now;
+                firstGuestLogin.ActionDate = DateTime.MinValue;
+                firstGuestLogin.ProgressDate = DateTime.MinValue;
+                firstGuestLogin.IsLoggedIn = false;
+                await adb.InsertOrReplaceAsync(firstGuestLogin);
+            }
 
             if (ContentAPI.CheckContent()) //Check for valid content API
             {
-                SQLiteAsyncConnection adb = DabData.AsyncDatabase;
-                //Determine if the user was logged in at last use
-                var user = GlobalResources.Instance.LoggedInUser;
-                if (user == null)
-                {
-                    dbUserData firstGuestLogin = new dbUserData();
-                    firstGuestLogin.Token = "";
-                    firstGuestLogin.Email = "";
-                    firstGuestLogin.FirstName = "Guest";
-                    firstGuestLogin.LastName = "Guest";
-                    firstGuestLogin.WpId = 0;
-                    firstGuestLogin.Channel = "";
-                    firstGuestLogin.Channels = "";
-                    firstGuestLogin.Id = 0;
-                    firstGuestLogin.Language = "";
-                    firstGuestLogin.NickName = "Guest";
-                    firstGuestLogin.UserRegistered = DateTime.Now;
-                    firstGuestLogin.TokenCreation = DateTime.Now;
-                    firstGuestLogin.ActionDate = DateTime.MinValue;
-                    firstGuestLogin.ProgressDate = DateTime.MinValue;
-                    firstGuestLogin.IsLoggedIn = false;
-                    await adb.InsertOrReplaceAsync(firstGuestLogin);
-                }
-
                 //check for version list for required upgrade
                 List<Versions> versionList = new List<Versions>();
                 versionList = contentConfig.versions;
