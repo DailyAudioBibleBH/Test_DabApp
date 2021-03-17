@@ -71,22 +71,6 @@ namespace DABApp
             }
         }
 
-        public static List<dbDonationHistory> GetDonationHistory()//Gets user donation history
-        {
-            try
-            {
-                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-
-                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
-
-                return donations;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
         public static async Task CreateNewActionLog(int episodeId, ServiceActionsEnum actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
         {
             try//Creates new action log which keeps track of user location on episodes.
