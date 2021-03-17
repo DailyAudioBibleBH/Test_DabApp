@@ -61,7 +61,8 @@ namespace DABApp
 			}
             catch (Exception ex)
             {
-				pageList.ItemsSource = null;//ContentConfig.Instance.nav.Where(n => ContentConfig.Instance.views.Where(v => v.visible == ViewVisibility.both).Select(v => v.id).Contains(n.view));
+				//Most likely a fresh app launch on bad or no internet connection. This allows user to be brought to Network Unavailable page
+				pageList.ItemsSource = null;
 			}
 
 
