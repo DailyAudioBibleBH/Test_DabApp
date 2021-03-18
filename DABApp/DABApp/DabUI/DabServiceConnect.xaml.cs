@@ -34,7 +34,6 @@ namespace DABApp.DabUI
             {
                 WaitContent.Opacity = 1;
             }
-            GlobalResources.TestMode = true;
             if (GlobalResources.TestMode)
             {
                 lblTestMode.IsVisible = true;
