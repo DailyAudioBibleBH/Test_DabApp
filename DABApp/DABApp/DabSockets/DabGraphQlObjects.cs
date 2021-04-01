@@ -130,6 +130,10 @@ namespace DABApp.DabSockets
         public string content { get; set; }
         public string status { get; set; }
         public string userNickname { get; set; }
+        public object userReplies { get; set; }
+        public object userTopics { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime updatedAt { get; set; }
     }
 
     public class DabGraphQlUpdatedReplies
@@ -149,7 +153,12 @@ namespace DABApp.DabSockets
         public int replyCount { get; set; }
         public string type { get; set; }
         public string status { get; set; }
+        public DateTime updatedAt { get; set; }
+        public DateTime createdAt { get; set; }
+        public DateTime lastActive { get; set; }
         public string userNickname { get; set; }
+        public int userReplies { get; set; }
+        public int userTopics { get; set; }
     }
 
     public class DabGraphQlUpdatedTopics

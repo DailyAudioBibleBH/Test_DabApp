@@ -36,7 +36,7 @@ namespace DABApp
 			else
 			{
 				DetailsView.replies.SeparatorVisibility = SeparatorVisibility.None;
-				DetailsView.last.Text = "last activity text";//topic.lastActivity;
+				DetailsView.last.Text = topic.lastActive.ToString();
 			}
 			DetailsView.reply.Clicked += OnReply;
 			DetailsView.replies.RefreshCommand = new Command(async () => { fromPost = true; await Update(); DetailsView.replies.IsRefreshing = false; });
@@ -68,8 +68,8 @@ namespace DABApp
 					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish"));
                 }
 				DetailsView.replies.ItemsSource = replies;
-				//OnPropertyChanged(nameof(DetailsView.replies));
-            }
+				DetailsView.last.Text = TimeConvert();
+			}
 
 			if (fromPost)
 			{
@@ -85,11 +85,20 @@ namespace DABApp
 
 		string TimeConvert()
 		{
-            //var dateTime = DateTimeOffset.Parse(_topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
-            //var month = dateTime.ToString("MMMM");
-            //var time = dateTime.ToString("t");
-            //return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
-            return DateTime.MinValue.ToString();
+            if (replies.Count() > 0)
+            {
+				var dateTime = DateTimeOffset.Parse(replies.OrderBy(x => x.createdAt).Last().createdAt + " +0:00").UtcDateTime.ToLocalTime();
+				var month = dateTime.ToString("MMMM");
+				var time = dateTime.ToString("t");
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			}
+            else
+            {
+				var dateTime = DateTimeOffset.Parse(_topic.lastActive + " +0:00").UtcDateTime.ToLocalTime();
+				var month = dateTime.ToString("MMMM");
+				var time = dateTime.ToString("t");
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+            }            
 		}
 
 		async Task Update()

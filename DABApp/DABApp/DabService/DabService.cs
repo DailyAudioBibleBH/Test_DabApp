@@ -457,13 +457,13 @@ namespace DABApp.Service
                 if (cursor == null)
                 {
                     //First run
-                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname } pageInfo { hasNextPage endCursor } } } ";
+                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname userReplies userTopics createdAt updatedAt } pageInfo { hasNextPage endCursor } } } ";
 
                 }
                 else
                 {
                     //Subsequent runs, use the cursor
-                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname } pageInfo { hasNextPage endCursor } } } ";
+                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname createdAt updatedAt } pageInfo { hasNextPage endCursor } } } ";
                 }
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
@@ -536,13 +536,13 @@ namespace DABApp.Service
             if (cursor == null)
             {
                 //First run
-                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", forumWpId: " + forumWpId +", limit: " + forumLimit +") { edges { wpId userWpId forumWpId title content voiceCount  replyCount type status userNickname } pageInfo { hasNextPage endCursor } } }";
+                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", forumWpId: " + forumWpId +", limit: " + forumLimit +") { edges { wpId userWpId forumWpId title content voiceCount replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
 
             }
             else
             {
                 //Subsequent runs, use the cursor
-                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", cursor: \"" + cursor + "\", forumWpId: " + forumWpId + ", limit: " + forumLimit + ") { edges { wpId userWpId forumWpId title content voiceCount  replyCount type status userNickname } pageInfo { hasNextPage endCursor } } }";
+                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", cursor: \"" + cursor + "\", forumWpId: " + forumWpId + ", limit: " + forumLimit + ") { edges { wpId userWpId forumWpId title content voiceCount  replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
             }
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));

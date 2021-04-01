@@ -161,15 +161,22 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (DabGraphQlTopic)value;
-			return $"By {topic.userNickname}  @ {DateTime.Now}"; //{topic.createdAt}";
-			//TODO: put created at back in
+			return $"By {topic.userNickname}  @ {TimeConvert(topic.createdAt)}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 	
-		}		
+		}
+
+		string TimeConvert(DateTime lastActive)
+		{
+			var dateTime = DateTimeOffset.Parse(lastActive + " +0:00").UtcDateTime.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+		}
 	}
 
 	public class ActivityConverter : IValueConverter
@@ -181,13 +188,21 @@ namespace DABApp
 			var topic = (DabGraphQlTopic)value;
 			//return $"Latest Reply {topic.lastActivity}";
 			//return "Latest Reply ------";
-			return $"Latest Reply ------ Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			return $"Latest Reply: {TimeConvert(topic.lastActive)} Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 
+		}
+
+		string TimeConvert(DateTime lastActive)
+		{
+			var dateTime = DateTimeOffset.Parse(lastActive + " +0:00").UtcDateTime.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 		}
 	}
 
@@ -243,12 +258,11 @@ namespace DABApp
 		{
 			if (value == null) return null;
 			var res = (DabGraphQlReply)value;
-			//var dateTime = DateTimeOffset.Parse($"{res.gmtDate} +0:00").UtcDateTime.ToLocalTime();
-			//string month = dateTime.ToString("MMMM");
-			//string time = dateTime.ToString("t");
-			//return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
-			return DateTime.MinValue.ToString();
-		}
+            var dateTime = DateTimeOffset.Parse($"{res.createdAt} +0:00").UtcDateTime.ToLocalTime();
+            string month = dateTime.ToString("MMMM");
+            string time = dateTime.ToString("t");
+            return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+        }
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
