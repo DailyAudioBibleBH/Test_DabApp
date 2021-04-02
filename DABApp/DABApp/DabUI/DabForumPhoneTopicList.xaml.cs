@@ -74,7 +74,7 @@ namespace DABApp
 			{
 				source = new object();
 				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-				_forum = await DabService.GetForum();
+				_forum = await DabService.GetForum(ContentList.topicList.IsRefreshing);
 				if (_forum == null)
 				{
 					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");

@@ -44,7 +44,7 @@ namespace DABApp.Service
         GetTopics,
         GetReplies,
         CreateTopic,
-        PostReply
+        CreateReply
     }
 
     public class DabServiceWaitService
@@ -495,9 +495,9 @@ namespace DABApp.Service
                             _waiting = false;
                         }
                         break;
-                    case DabServiceWaitTypes.PostReply:
+                    case DabServiceWaitTypes.CreateReply:
                         // get updated replies
-                        if (response?.payload?.data?.createTopic != null)
+                        if (response?.payload?.data?.createReply != null)
                         {
                             _qlObject = response;
                             _waiting = false;

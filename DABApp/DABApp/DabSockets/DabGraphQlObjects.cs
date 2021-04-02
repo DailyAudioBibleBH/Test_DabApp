@@ -106,6 +106,17 @@ namespace DABApp.DabSockets
         public DabGraphQlUpdatedTopics updatedTopics { get; set; }
         public DabGraphQlUpdatedReplies updatedReplies { get; set; }
         public DabGraphQlCreateTopic createTopic { get; set; }
+        public DabGraphQlCreateReply createReply { get; set; }
+    }
+
+    public class DabGraphQlCreateReply
+    {
+        public int wpId { get; set; }
+        public int userWpId { get; set; }
+        public int topicWpId { get; set; }
+        public string content { get; set; }
+        public string status { get; set; }
+        public string userNickname { get; set; }
     }
 
     public class DabGraphQlCreateTopic

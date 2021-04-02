@@ -362,7 +362,7 @@ namespace DABApp.Service
             };
         }
 
-        public static async Task<Forum> GetForum()
+        public static async Task<Forum> GetForum(bool fromPullToRefresh = false)
         {
             try
             {
@@ -371,13 +371,18 @@ namespace DABApp.Service
                 forum.id = activeForum.wpId;
                 forum.title = activeForum.title;
                 forum.topicCount = activeForum.topicCount;
-                var result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
+                DabServiceWaitResponseList result;
+                if (fromPullToRefresh)
+                    result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, null);
+                else
+                    result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
+
                 List<DabGraphQlTopic> topics = new List<DabGraphQlTopic>();
                 if (result.Success)
                 {
                     foreach (var item in result.Data)
                     {
-                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").ToList();
+                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").OrderByDescending(x => x.createdAt).ToList();
                     }
                 }
                 ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
@@ -420,7 +425,7 @@ namespace DABApp.Service
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.PostReply);
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.CreateReply);
 
             //return the response
             return response;
