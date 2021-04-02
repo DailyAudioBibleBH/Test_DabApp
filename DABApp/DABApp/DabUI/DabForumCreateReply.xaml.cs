@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
 using DABApp.Service;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
@@ -10,10 +11,12 @@ namespace DABApp
 	public partial class DabForumCreateReply : DabBaseContentPage
 	{
 		DabGraphQlTopic _topic;
+		object source;
 
 		public DabForumCreateReply(DabGraphQlTopic topic)
 		{
 			InitializeComponent();
+			source = new object();
 			BindingContext = topic;
 			_topic = topic;
 			NavigationPage.SetHasBackButton(this, false);
@@ -28,6 +31,8 @@ namespace DABApp
 		{
 			Post.IsEnabled = false;
 			Cancel.IsEnabled = false;
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Posting your reply...", true));
+
 			if (string.IsNullOrWhiteSpace(reply.Text))
 			{
 				await DisplayAlert("Cannot Post Blank Reply", "If you would like to discard your post hit cancel.", "OK");
@@ -46,6 +51,7 @@ namespace DABApp
 					await DisplayAlert("Error", result.ErrorMessage, "OK");
 				}
 			}
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			Post.IsEnabled = true;
 			Cancel.IsEnabled = true;
 		}

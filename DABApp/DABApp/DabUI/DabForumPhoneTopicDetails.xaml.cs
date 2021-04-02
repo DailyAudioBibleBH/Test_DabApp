@@ -31,12 +31,12 @@ namespace DABApp
 			if (topic.replyCount > 0)
 			{
 				DetailsView.replies.ItemsSource = replies;
-				DetailsView.last.Text = TimeConvert();
+				DetailsView.last.Text = topic.createdAt.ToLocalTime().ToString(); //TimeConvert();
 			}
 			else
 			{
 				DetailsView.replies.SeparatorVisibility = SeparatorVisibility.None;
-				DetailsView.last.Text = topic.lastActive.ToString();
+				DetailsView.last.Text = topic.createdAt.ToLocalTime().ToString();
 			}
 			DetailsView.reply.Clicked += OnReply;
 			DetailsView.replies.RefreshCommand = new Command(async () => { fromPost = true; await Update(); DetailsView.replies.IsRefreshing = false; });
@@ -65,7 +65,7 @@ namespace DABApp
             {
                 foreach (var item in result.Data)
                 {
-					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish"));
+					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish").OrderBy(x => x.createdAt));
                 }
 				DetailsView.replies.ItemsSource = replies;
 				DetailsView.last.Text = TimeConvert();
@@ -85,20 +85,10 @@ namespace DABApp
 
 		string TimeConvert()
 		{
-            if (replies.Count() > 0)
-            {
-				var dateTime = DateTimeOffset.Parse(replies.OrderBy(x => x.createdAt).Last().createdAt + " +0:00").UtcDateTime.ToLocalTime();
-				var month = dateTime.ToString("MMMM");
-				var time = dateTime.ToString("t");
-				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
-			}
-            else
-            {
-				var dateTime = DateTimeOffset.Parse(_topic.lastActive + " +0:00").UtcDateTime.ToLocalTime();
-				var month = dateTime.ToString("MMMM");
-				var time = dateTime.ToString("t");
-				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
-            }            
+			var dateTime = _topic.createdAt.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";           
 		}
 
 		async Task Update()

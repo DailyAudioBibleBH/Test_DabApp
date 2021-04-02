@@ -161,7 +161,9 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (DabGraphQlTopic)value;
-			return $"By {topic.userNickname}  @ {TimeConvert(topic.createdAt)}";
+			DateTime date = topic.createdAt.ToLocalTime();
+			string createdAt = TimeConvert(date);
+			return $"By {topic.userNickname}  @ {createdAt}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -170,9 +172,9 @@ namespace DABApp
 	
 		}
 
-		string TimeConvert(DateTime lastActive)
+		string TimeConvert(DateTime createdAt)
 		{
-			var dateTime = DateTimeOffset.Parse(lastActive + " +0:00").UtcDateTime.ToLocalTime();
+			var dateTime = createdAt;
 			var month = dateTime.ToString("MMMM");
 			var time = dateTime.ToString("t");
 			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
@@ -210,14 +212,6 @@ namespace DABApp
 		{
 			throw new NotImplementedException();
 
-		}
-
-		string TimeConvert(DateTime lastActive)
-		{
-			var dateTime = DateTimeOffset.Parse(lastActive + " +0:00").UtcDateTime.ToLocalTime();
-			var month = dateTime.ToString("MMMM");
-			var time = dateTime.ToString("t");
-			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 		}
 	}
 

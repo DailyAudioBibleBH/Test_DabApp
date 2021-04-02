@@ -1,4 +1,5 @@
-﻿using DABApp.Service;
+﻿using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using System;
 using System.Collections.Generic;
 
@@ -10,10 +11,12 @@ namespace DABApp
 	public partial class DabForumCreateTopic : DabBaseContentPage
 	{
 		Forum _forum;
+		object source;
 
 		public DabForumCreateTopic(Forum forum)
 		{
 			InitializeComponent();
+			source = new object();
 			NavigationPage.SetHasBackButton(this, false);
 			base.ToolbarItems.Clear();
 			Content.HeightRequest = 250;
@@ -28,6 +31,8 @@ namespace DABApp
 		{
 			Post.IsEnabled = false;
 			Cancel.IsEnabled = false;
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Posting your topic...", true));
+
 			if (string.IsNullOrWhiteSpace(title.Text))
 			{
 				await DisplayAlert("Prayer Request cannot be blank.", "If you would like to erase your prayer request please hit the cancel button.", "OK");
@@ -46,6 +51,8 @@ namespace DABApp
 					await DisplayAlert("Error", result.ErrorMessage, "OK");
 				}
 			}
+
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			Post.IsEnabled = true;
 			Cancel.IsEnabled = true;
 		}
