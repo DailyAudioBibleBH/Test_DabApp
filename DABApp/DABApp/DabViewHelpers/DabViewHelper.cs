@@ -186,9 +186,24 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (DabGraphQlTopic)value;
-			//return $"Latest Reply {topic.lastActivity}";
-			//return "Latest Reply ------";
-			return $"Latest Reply: {TimeConvert(topic.lastActive)} Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			DateTime lastActive = topic.lastActive.ToLocalTime();
+			TimeSpan ts = (DateTime.Now - lastActive);
+            if (ts.TotalDays >= 1)
+            {
+				return $"Latest Reply: {ts.Days} days {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (ts.TotalDays >= 1)
+            {
+				return $"Latest Reply: {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (ts.TotalMinutes >= 1)
+            {
+				return $"Latest Reply: {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else
+            {
+				return $"Latest Reply: Just now,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
