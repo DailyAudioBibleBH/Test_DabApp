@@ -20,11 +20,13 @@ namespace DABApp
 		bool unInitialized = true;
 		Forum _forum;
 		DabGraphQlTopic topic;
+		ObservableCollection<DabGraphQlReply> replies;
 		object source;
 
 		public DabForumTabletTopicPage(View view)
 		{
 			InitializeComponent();
+			replies = new ObservableCollection<DabGraphQlReply>();
 			ControlTemplate = (ControlTemplate)App.Current.Resources["OtherPlayerPageTemplateWithoutScrolling"];
 			banner.Source = view.banner.urlTablet;
 			bannerTitle.Text = view.title;
@@ -44,11 +46,11 @@ namespace DABApp
 			DetailsView.BindingContext = topic;
 			DetailsView.IsVisible = true;
 			var replyData = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
-			List<DabGraphQlReply> replies = new List<DabGraphQlReply>();
             foreach (var item in replyData.Data)
             {
-				replies = item.payload.data.updatedReplies.edges;
+				replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish").OrderBy(x => x.createdAt));
 			}
+			replies.OrderByDescending(x => x.createdAt);
 			DetailsView.replies.ItemsSource = replies;
 			DetailsView.last.Text = TimeConvert();
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
@@ -86,7 +88,9 @@ namespace DABApp
 			base.OnAppearing();
 			if (fromPost || unInitialized)
 			{
+				ContentList.topicList.IsRefreshing = true;
 				await Update();
+				ContentList.topicList.IsRefreshing = false;
 			}
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
@@ -107,21 +111,25 @@ namespace DABApp
 
 		string TimeConvert()
 		{
-			if (topic.replyCount > 0)
-			{
-				//var dateTime = DateTimeOffset.Parse(topic.replies.OrderBy(x => x.gmtDate).Last().gmtDate + " +0:00").UtcDateTime.ToLocalTime();
-				//var month = dateTime.ToString("MMMM");
-				//var time = dateTime.ToString("t");
-				//return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			if (replies.Count() > 0)
+			{;
+
+				var dateTime = topic.createdAt.ToLocalTime();
+				var month = dateTime.ToString("MMMM");
+				var time = dateTime.ToString("t");
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
 			}
-			return "";
+            else
+            {
+				return "";
+			}
 		}
 
 		async Task Update()
 		{
 			source = new object();
 			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-			_forum = await DabService.GetForum();
+			_forum = await DabService.GetForum(ContentList.topicList.IsRefreshing);
             if (_forum.topicCount > 0 && topic == null)
             {
 				topic = _forum.topics.FirstOrDefault();
@@ -139,11 +147,10 @@ namespace DABApp
 
 					//Attach replies to details view
 					var replyData = await DabService.GetUpdatedReplies(DateTime.MinValue, topic.wpId, 30);
-					List<DabGraphQlReply> replies = new List<DabGraphQlReply>();
 
 					foreach (var item in replyData.Data)
 					{
-						replies = item.payload.data.updatedReplies.edges;
+						replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish").OrderBy(x => x.createdAt));
 					}
 
 					DetailsView.replies.ItemsSource = replies;
