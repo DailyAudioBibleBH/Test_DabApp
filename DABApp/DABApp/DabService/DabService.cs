@@ -382,7 +382,7 @@ namespace DABApp.Service
                 {
                     foreach (var item in result.Data)
                     {
-                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").OrderByDescending(x => x.createdAt).ToList();
+                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").OrderByDescending(x => x.lastActive).ToList();
                     }
                 }
                 ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
