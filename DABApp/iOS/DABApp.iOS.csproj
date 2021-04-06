@@ -154,8 +154,8 @@
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK-1.0" />
     <Reference Include="Plugin.AudioRecorder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -343,6 +343,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\C2IT Projects\xamarin-branch-deep-linking\Branch-Xamarin-SDK.iOS\Branch-Xamarin-SDK.iOS.csproj">
+      <Project>{3f24a531-821d-4e9b-9776-31e19abaf087}</Project>
+      <Name>Branch-Xamarin-SDK.iOS</Name>
+      <IsAppExtension>false</IsAppExtension>
+      <IsWatchApp>false</IsWatchApp>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\C2IT Projects\xamarin-branch-deep-linking\Branch-Xamarin-SDK\Branch-Xamarin-SDK.csproj">
+      <Project>{b3e2de9d-c3f8-4c0d-a920-55286205fa92}</Project>
+      <Name>Branch-Xamarin-SDK</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
       <Project>{D9F361EF-793A-42D4-BFBB-495DB1ED3C2E}</Project>
       <Name>DABApp</Name>

@@ -36,6 +36,10 @@
     <AndroidSupportedAbis />
     <AndroidTlsProvider>btls</AndroidTlsProvider>
     <LangVersion>8.0</LangVersion>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,9 +96,8 @@
     <Reference Include="Microsoft.AppCenter.Android.Bindings, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AppCenter.4.1.0\lib\MonoAndroid50\Microsoft.AppCenter.Android.Bindings.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.AudioRecorder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Plugin.AudioRecorder.1.1.0\lib\monoandroid81\Plugin.AudioRecorder.dll</HintPath>
@@ -421,6 +424,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\C2IT Projects\xamarin-branch-deep-linking\Branch-Xamarin-SDK.Droid\Branch-Xamarin-SDK.Droid.csproj">
+      <Project>{84bbdd54-0216-47ef-a293-2a4726a682a8}</Project>
+      <Name>Branch-Xamarin-SDK.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\C2IT Projects\xamarin-branch-deep-linking\Branch-Xamarin-SDK\Branch-Xamarin-SDK.csproj">
+      <Project>{b3e2de9d-c3f8-4c0d-a920-55286205fa92}</Project>
+      <Name>Branch-Xamarin-SDK</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DABApp\DABApp.csproj">
       <Project>{D9F361EF-793A-42D4-BFBB-495DB1ED3C2E}</Project>
       <Name>DABApp</Name>
