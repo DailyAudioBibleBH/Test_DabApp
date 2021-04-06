@@ -174,10 +174,19 @@ namespace DABApp
 
 		string TimeConvert(DateTime createdAt)
 		{
-			var dateTime = createdAt;
+			var dateTime = createdAt.ToLocalTime();
 			var month = dateTime.ToString("MMMM");
 			var time = dateTime.ToString("t");
-			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			TimeSpan ts = (DateTime.Now - dateTime);
+
+			if (ts.TotalDays >1)
+            {
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			}
+            else
+            {
+				return time;
+            }
 		}
 	}
 

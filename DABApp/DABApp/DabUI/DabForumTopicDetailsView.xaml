@@ -28,7 +28,7 @@
                                     <Label Text="{Binding Path=., Converter={StaticResource ReplyConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
                                     <Label Text="{Binding Path=., Converter={StaticResource TopicConverter}}" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
                                 </StackLayout>
-                                <Label FontSize="Micro" x:Name="LastActivity" Style="{StaticResource secondaryLabelStyle}" Grid.Column="0" Grid.Row="1"/>
+                                <Label FontSize="Micro" x:Name="LastActivity" Style="{StaticResource secondaryLabelStyle}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
                                 <Label FontSize="Small" Text="{Binding content}" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2"/>
                         </Grid>
 
@@ -57,7 +57,7 @@
                                             <Label Text="{Binding ., Converter={StaticResource ReplyVoiceConverter}}" FontSize="Micro" Style="{StaticResource secondaryLabelStyle}"/>
                                         </StackLayout>
                                         
-                                        <Label FontSize="Micro" Text="{Binding Path=., Converter={StaticResource TimeConverter}}" Style="{StaticResource secondaryLabelStyle}" Grid.Column="0" Grid.Row="1"/>
+                                        <Label FontSize="Micro" Text="{Binding Path=., Converter={StaticResource TimeConverter}}" Style="{StaticResource secondaryLabelStyle}" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1"/>
                                         <Label FontSize="Small" Text="{Binding content}" Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="2"/>
                                     </Grid>
                                 </StackLayout>
