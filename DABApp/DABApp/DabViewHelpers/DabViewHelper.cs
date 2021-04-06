@@ -238,6 +238,52 @@ namespace DABApp
 		}
 	}
 
+	public class ReplyPrayerConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			try
+			{
+				if (value == null) return null;
+				var reply = (DabGraphQlReply)value;
+				return $"Prayers: {reply.userReplies}";
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
+
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class ReplyVoiceConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			try
+			{
+				if (value == null) return null;
+				var reply = (DabGraphQlReply)value;
+				return $"Requests: {reply.userTopics}";
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
+
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
 	public class TopicConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

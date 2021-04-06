@@ -262,6 +262,8 @@
             <local:ReplyConverter x:Key="ReplyConverter" />
             <local:TopicConverter x:Key="TopicConverter" />
             <local:TimeConverter x:Key="TimeConverter" />
+            <local:ReplyPrayerConverter x:Key="ReplyPrayerConverter" />
+            <local:ReplyVoiceConverter x:Key="ReplyVoiceConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
