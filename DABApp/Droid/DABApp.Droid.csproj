@@ -92,10 +92,6 @@
     <Reference Include="Microsoft.AppCenter.Android.Bindings, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AppCenter.4.1.0\lib\MonoAndroid50\Microsoft.AppCenter.Android.Bindings.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Plugin.AudioRecorder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Plugin.AudioRecorder.1.1.0\lib\monoandroid81\Plugin.AudioRecorder.dll</HintPath>
       <Private>True</Private>
@@ -418,6 +414,18 @@
     </Reference>
     <Reference Include="Microsoft.AppCenter.Crashes">
       <HintPath>..\packages\Microsoft.AppCenter.Crashes.4.1.0\lib\MonoAndroid50\Microsoft.AppCenter.Crashes.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-Lib.Droid">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\MonoAndroid\Branch-Xamarin-Lib.Droid.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-SDK">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\MonoAndroid\Branch-Xamarin-SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-SDK.Droid">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\MonoAndroid\Branch-Xamarin-SDK.Droid.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

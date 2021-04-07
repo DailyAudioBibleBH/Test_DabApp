@@ -154,9 +154,6 @@
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v8.1\Mono.Android.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK-1.0" />
     <Reference Include="Plugin.AudioRecorder, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Plugin.AudioRecorder.1.1.0\lib\xamarinios10\Plugin.AudioRecorder.dll</HintPath>
@@ -340,6 +337,18 @@
     </Reference>
     <Reference Include="Telerik.Zip">
       <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-Lib.iOS">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\Xamarin.iOS10\Branch-Xamarin-Lib.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-SDK">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\Xamarin.iOS10\Branch-Xamarin-SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Branch-Xamarin-SDK.iOS">
+      <HintPath>..\packages\Branch-Xamarin-Linking-SDK.7.0.7\lib\Xamarin.iOS10\Branch-Xamarin-SDK.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
