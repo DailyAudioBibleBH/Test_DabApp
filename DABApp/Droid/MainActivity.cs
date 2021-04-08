@@ -35,13 +35,31 @@ using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
 using Plugin.CurrentActivity;
+using BranchXamarinSDK;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace DABApp.Droid
 {
 
     [Activity(Label = "DABApp.Droid", Icon = "@drawable/app_icon", Theme = "@style/MyTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.FullUser)]
     [IntentFilter(new[] { Android.Content.Intent.ActionView }, DataScheme = "dab", Categories = new[] { Android.Content.Intent.CategoryDefault, Android.Content.Intent.CategoryBrowsable })]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity //, AudioManager.IOnAudioFocusChangeListener
+    
+    [IntentFilter(new[] { "android.intent.action.VIEW" },
+    Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" },
+    DataScheme = "dabapp",
+    DataHost = "open")]
+
+    [IntentFilter(new[] { "android.intent.action.VIEW" },
+    Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" },
+    DataScheme = "https",
+    DataHost = "testandroidapp.app.link")]
+
+    [IntentFilter(new[] { "android.intent.action.VIEW" },
+    Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" },
+    DataScheme = "https",
+    DataHost = "dabapp-alternate.app.link")]
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, IBranchSessionInterface //, AudioManager.IOnAudioFocusChangeListener
     {
         CallReceiver callReceiver;
 
@@ -70,6 +88,8 @@ namespace DABApp.Droid
 
             base.OnCreate(bundle);
 
+            BranchAndroid.Init(this, Resources.GetString(Resource.String.branch_key), this);
+
             //RequestAudioFocus();
 
             var am = (AudioManager)this.GetSystemService(AudioService);
@@ -78,6 +98,11 @@ namespace DABApp.Droid
 
             Rg.Plugins.Popup.Popup.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            DABAppBUO linkData = new DABAppBUO();
+            BranchAndroid.Init(this, GetString(Resource.String.branch_key), linkData);
+            LoadApplication(linkData);
+
 
             AndroidBug5497WorkaroundForXamarinAndroid.assistActivity(this);
 
@@ -112,6 +137,42 @@ namespace DABApp.Droid
             callReceiver = new CallReceiver();
             TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);
             telephonyManager.Listen(callReceiver, PhoneStateListenerFlags.CallState);
+        }
+
+        // Ensure we get the updated link identifier when the app becomes active
+        // due to a Branch link click after having been in the background
+        protected override void OnNewIntent(Intent intent)
+        {
+            this.Intent = intent;
+        }
+
+        public void InitSessionComplete(Dictionary<string, object> data)
+        {
+            Console.WriteLine("Branch Link Data: " + JsonConvert.SerializeObject(data));
+
+            //Handle custom logic based on deep link data in InitSessionComplete
+
+            //View all the link data in the console
+            //Console.WriteLine("My Link Data: " + JsonConvert.SerializeObject(data));
+
+            ////Preferred method: use BranchActivity created previously to handle the link data
+            ////Will need to update BranchActivity with desired custom logic, to open the correct page in the app
+            //var intent = new Intent(this, typeof(BranchActivity));
+            //intent.PutExtra("BranchData", JsonConvert.SerializeObject(data));
+
+            //StartActivity(intent); 
+        }
+
+        public void SessionRequestError(BranchError error)
+        {
+            Console.WriteLine("Branch session initialization error: " + error.ErrorCode);
+            Console.WriteLine(error.ErrorMessage);
+
+            //var intent = new Intent(this, typeof(BranchErrorActivity));
+            //intent.PutExtra("ErrorCode", error.ErrorCode);
+            //intent.PutExtra("ErrorMessage", error.ErrorMessage);
+
+            //StartActivity(intent);
         }
 
         public override bool DispatchPopulateAccessibilityEvent(AccessibilityEvent e)

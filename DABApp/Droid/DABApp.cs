@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.Media;
@@ -6,14 +7,18 @@ using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
+using BranchXamarinSDK;
 using DABApp.DabNotifications;
 using DABApp.Droid.DependencyServices;
 using Plugin.FirebasePushNotification;
 
 namespace DABApp.Droid
 {
-    [Application]
-    public class DABApp : Application
+    [Application(AllowBackup = true, Label = "@string/app_name")]
+    [MetaData("io.branch.sdk.auto_link_disable", Value = "false")]
+    [MetaData("io.branch.sdk.TestMode", Value = "true")]
+    [MetaData("io.branch.sdk.BranchKey", Value = "@string/branch_key")]
+    public class DABApp : Application, IBranchSessionInterface
     {
         public static Context AppContext;
 
@@ -25,6 +30,7 @@ namespace DABApp.Droid
         public override void OnCreate()
         {
             base.OnCreate();
+            BranchAndroid.GetAutoInstance(this.ApplicationContext);
             AppContext = this.ApplicationContext;
 
             SQLite_Droid.Assets = this.Assets;
@@ -60,6 +66,22 @@ namespace DABApp.Droid
             /* END FIREBASE CLOUD MESSAGING INIT */
 
         }
+
+        #region IBranchSessionInterface implementation
+
+        public void InitSessionComplete(Dictionary<string, object> data)
+        {
+        }
+
+        public void CloseSessionComplete()
+        {
+        }
+
+        public void SessionRequestError(BranchError error)
+        {
+        }
+
+        #endregion
 
 
         /* FIREBASE CLOUD MESSAGING EVENTS */

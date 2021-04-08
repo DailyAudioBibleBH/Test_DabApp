@@ -435,6 +435,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BranchActivity.cs" />
+    <Compile Include="BranchErrorActivity.cs" />
     <Compile Include="CustomRenderers\ConfirmationPickerRenderer.cs" />
     <Compile Include="CustomRenderers\DabAudioOutputRenderer.cs" />
     <Compile Include="CustomRenderers\DabBaseContentPageRenderer.cs" />
