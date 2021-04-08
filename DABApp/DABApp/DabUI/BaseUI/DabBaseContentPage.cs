@@ -46,6 +46,9 @@ namespace DABApp
             }
             keepaliveButton = new ToolbarItem();
             //Control template (adds the player bar)
+            var test = Xamarin.Forms.Application.Current;
+            var test2 = Xamarin.Forms.Application.Current.Resources;
+            var test3 = Xamarin.Forms.Application.Current.Resources["PageBackgroundColor"];
             ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
             RelativeLayout container = new RelativeLayout();
             ControlTemplate = playerBarTemplate;

@@ -92,7 +92,7 @@ namespace DABApp
             try//Creates new action log which keeps track of user location on episodes.
             {
                 //build a basic action log
-                var actionLog = new DABApp.dbPlayerActions();
+                var actionLog = new dbPlayerActions();
                 string email = GlobalResources.Instance.LoggedInUser.Email;
                 actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
                 actionLog.EpisodeId = episodeId;

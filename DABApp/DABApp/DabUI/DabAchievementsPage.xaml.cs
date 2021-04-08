@@ -24,7 +24,7 @@ namespace DABApp
 		int progressDuration;
 
 
-		public DabAchievementsPage(DABApp.View contentView)
+		public DabAchievementsPage(View contentView)
 		{
 			InitializeComponent();
 			ControlTemplate playerBarTemplate = (ControlTemplate)Application.Current.Resources["PlayerPageTemplateWithoutScrolling"];
