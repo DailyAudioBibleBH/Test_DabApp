@@ -53,7 +53,7 @@ namespace DABApp.Droid
     [IntentFilter(new[] { "android.intent.action.VIEW" },
     Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" },
     DataScheme = "https",
-    DataHost = "testandroidapp.app.link")]
+    DataHost = "dabapp.app.link")]
 
     [IntentFilter(new[] { "android.intent.action.VIEW" },
     Categories = new[] { "android.intent.category.DEFAULT", "android.intent.category.BROWSABLE" },
