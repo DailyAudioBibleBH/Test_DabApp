@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SQLite;
 using Xamarin.Forms;
 
 namespace DABApp
 {
 	public partial class DabDonationHistoryPage : DabBaseContentPage
 	{
+		static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
+
 		public DabDonationHistoryPage()
 		{
 			InitializeComponent();
@@ -23,7 +26,10 @@ namespace DABApp
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			List<dbDonationHistory> history = AuthenticationAPI.GetDonationHistory();
+
+			int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+			List<dbDonationHistory> history = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
+
 			history = history.OrderByDescending(x => x.historyDate).ToList();
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())

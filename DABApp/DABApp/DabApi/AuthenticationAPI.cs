@@ -32,7 +32,7 @@ namespace DABApp
             try
             {
                 int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid).ToListAsync().Result;
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid && (x.cardStatus == null || x.cardStatus != "deleted")).ToListAsync().Result;
 
                 return cards;
             }
@@ -63,22 +63,6 @@ namespace DABApp
             {
                 string del = "deleted";
                 List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != del && x.CampaignWpId == campaignWpId).ToListAsync().Result;
-                return donations;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static List<dbDonationHistory> GetDonationHistory()//Gets user donation history
-        {
-            try
-            {
-                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-
-                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
-
                 return donations;
             }
             catch (Exception e)

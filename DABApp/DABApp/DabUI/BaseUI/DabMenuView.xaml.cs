@@ -46,15 +46,25 @@ namespace DABApp
 
             lblVersion.Text = $"v {CrossVersion.Current.Version}";
 
-			// hide nav items where view is marked as logged in only
-			if (GuestStatus.Current.IsGuestLogin == true)
+            // hide nav items where view is marked as logged in only
+            try
             {
-				//only show "both" visibility items (hide achievements in guest mode)
-				pageList.ItemsSource = ContentConfig.Instance.nav.Where(n => ContentConfig.Instance.views.Where(v=> v.visible == ViewVisibility.both).Select(v => v.id).Contains(n.view));
-            } else
-            {
-				pageList.ItemsSource = ContentConfig.Instance.nav; //show all
+				if (GuestStatus.Current.IsGuestLogin == true)
+				{
+					//only show "both" visibility items (hide achievements in guest mode)
+					pageList.ItemsSource = ContentConfig.Instance.nav.Where(n => ContentConfig.Instance.views.Where(v => v.visible == ViewVisibility.both).Select(v => v.id).Contains(n.view));
+				}
+				else
+				{
+					pageList.ItemsSource = ContentConfig.Instance.nav; //show all
+				}
 			}
+            catch (Exception ex)
+            {
+				//Most likely a fresh app launch on bad or no internet connection. This allows user to be brought to Network Unavailable page
+				pageList.ItemsSource = null;
+			}
+
 
 
 			DabServiceEvents.UserProfileChangedEvent += DabServiceEvents_UserProfileChangedEvent;

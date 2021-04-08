@@ -48,11 +48,11 @@ namespace DABApp
 			Title.Text = UniversalCampaign.campaignTitle;
 			Intervals.ItemsSource = intervalOptions;
 			Intervals.SelectedIndex = intervalOptions.FindIndex(x => x == campaign.RecurringInterval);
-			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null).ToListAsync().Result;
+			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null ).ToListAsync().Result;
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
-			string cardSourceId = campaign.Source;
-			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
+			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == campaign.Id).FirstOrDefaultAsync().Result;
+
 			if (source != null)
 			{
 				string currencyAmount = GlobalResources.ToCurrency(campaign.Amount);

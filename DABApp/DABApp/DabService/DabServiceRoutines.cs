@@ -730,6 +730,8 @@ namespace DABApp.Service
                     await adb.InsertOrReplaceAsync(newSource);
                 }
 
+                await DabServiceRoutines.GetUpdatedDonationHistory();
+
                 //if (beforeStatsus != donation.Status)
                 //{
                 //    string campaignTitle = "";

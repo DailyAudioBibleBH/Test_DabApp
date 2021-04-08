@@ -259,6 +259,7 @@ namespace DABApp
                     giving = true;
                     if (GuestStatus.Current.IsGuestLogin)
                     {
+                        //guest giving - just take them to the give site
                         DependencyService.Get<IAnalyticsService>().LogEvent("give_guest");
                         if (CrossConnectivity.Current.IsConnected)
                         {
@@ -280,31 +281,64 @@ namespace DABApp
                         var num = 15000;
                         var t = AuthenticationAPI.GetActiveDonations();
                         List<dbUserCampaigns> dons = AuthenticationAPI.GetActiveDonations();
- 
+
                         if (dons != null)
                         {
-                            //if (dons.Count == 1)
-                            //{
-                            //    String url = "";
-                            //    var ask = PlayerFeedAPI.PostDonationAccessToken();
-                            //    if (ask == await Task.WhenAny(ask, Task.Delay(num)))
-                            //    {
-                            //        url = await PlayerFeedAPI.PostDonationAccessToken();
-                            //    }
-                            //    else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
-                            //    if (url.StartsWith("http"))
-                            //    {
-                            //        DependencyService.Get<IRivets>().NavigateTo(url);
-                            //    }
-                            //    else
-                            //    {
-                            //        await DisplayAlert("Error", url, "OK");
-                            //    }
-                            //}
-                            //else
-                            await Navigation.PushAsync(new DabManageDonationsPage());
+                            if (dons.Count > 0)
+                            {
+                                //manage existing donations
+                                await Navigation.PushAsync(new DabManageDonationsPage());
+                            }
+                            else
+                            {
+                                //no active donations - take them to give page
+                                String url = "";
+                                var adb = DabData.AsyncDatabase;
+
+                                //find the campaign id to use
+                                int CampaignWpId = 1; //default if nothing else can be found
+                                var publishedCampaigns = adb.Table<dbCampaigns>().Where(x => x.campaignStatus == "publish").ToListAsync().Result;
+                                if (publishedCampaigns.Count > 0)
+                                {
+                                    //use the first one to start with
+                                    CampaignWpId = publishedCampaigns.First().campaignWpId;
+
+                                    //search for default campaign
+                                    var defaultCampaign = publishedCampaigns.SingleOrDefault(x => x.@default == true);
+                                    if (defaultCampaign != null)
+                                    {
+                                        CampaignWpId = defaultCampaign.campaignWpId;
+                                    }    
+                                }
+
+
+                                var ask = PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
+                                if (ask == await Task.WhenAny(ask, Task.Delay(num)))
+                                {
+                                    url = await PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
+                                }
+                                else await DisplayAlert("Request Timeout exceeded for posting Donation Access Token.", "This may be a server or internet connectivity issue.", "OK");
+                                if (url.StartsWith("http"))
+                                {
+                                    Device.OpenUri(new Uri(url));
+                                }
+                                else
+                                {
+                                    Device.OpenUri(new Uri(GlobalResources.GiveUrl)); //default give location
+                                }
+                            }
                         }
-                        else await DisplayAlert("Unable to get Donation information.", "This may be due to a loss of internet connectivity.  Please log out and log back in.", "OK");
+                        else
+                        {
+                            try
+                            {
+                                Device.OpenUri(new Uri(GlobalResources.GiveUrl));
+                            }
+                            catch (Exception ex)
+                            {
+                                // An unexpected error occured. No browser may be installed on the device.
+                            }
+                        }
                     }
                     //GlobalResources.WaitStop();
                     DabUserInteractionEvents.WaitStopped(sender, new EventArgs());

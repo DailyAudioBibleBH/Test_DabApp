@@ -302,7 +302,7 @@ namespace DABApp.DabSockets
         public int suggestedRecurringDonation { get; set; }
         public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
         //public string pricingPlans { get; set; }
-        public bool @default { get; set; }
+        public bool? @default { get; set; }
     }
 
     public class DabGraphQlCampaign
@@ -316,6 +316,7 @@ namespace DABApp.DabSockets
         public int suggestedRecurringDonation { get; set; }
         public List<DabGraphQlPricingPlan> pricingPlans { get; set; }
         //public string pricingPlans { get; set; }
+        public bool? @default { get; set; }
     }
 
     public class DabGraphQlPricingPlan

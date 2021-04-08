@@ -80,10 +80,12 @@ namespace DABApp
 						if (creditCard == null)
 						{
 							card.Text = $"Card not found";
+							btnInterval.IsEnabled = false; //hide ability to edit if card is broken.
 						}
 						else
 						{
 							card.Text = $"Card ending in {creditCard.cardLastFour}";
+							btnInterval.IsEnabled = true;
 
 						}
 						card.FontSize = 16;
@@ -146,15 +148,25 @@ namespace DABApp
 		{
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
-			//TODO: check this
-			var url = await PlayerFeedAPI.PostDonationAccessToken(chosen.AutomationId);
+
+
+			//find the campaignid
+			int id = int.Parse(chosen.AutomationId);
+			var campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == id).FirstOrDefaultAsync().Result;
+			int CampaignWpId = 1; //default campaign
+			if (campaign != null)
+            {
+				CampaignWpId = campaign.campaignWpId;
+            } 
+
+			var url = await PlayerFeedAPI.PostDonationAccessToken(CampaignWpId);
 			if (!url.Contains("Error"))
 			{
-				DependencyService.Get<IRivets>().NavigateTo(url);
+				Device.OpenUri(new Uri(url));
 			}
 			else 
 			{
-				await DisplayAlert("An Error has occured.", url, "OK");
+				Device.OpenUri(new Uri(GlobalResources.GiveUrl)); //default give location
 			}
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 		}
@@ -179,30 +191,43 @@ namespace DABApp
 					foreach (var cam in _campaigns)
 					{
 						int camWpId = cam.campaignWpId;
+						int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+
 						dbCampaigns donation = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == camWpId).FirstOrDefaultAsync().Result;
 
 						StackLayout donContainer = (StackLayout)Container.Children.SingleOrDefault(x => x.AutomationId == cam.campaignWpId.ToString());
 						var Labels = donContainer.Children.Where(x => x.GetType() == typeof(Label)).Select(x => (Label)x).ToList();
 						var ButtonContainer = donContainer.Children.SingleOrDefault(x => x.GetType() == typeof(StackLayout)) as StackLayout;
 						var Buttons = ButtonContainer.Children.Where(x => x.GetType() == typeof(Button)).Select(x => (Button)x).ToList();
-						dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == camWpId && x.Status != "deleted").FirstOrDefaultAsync().Result;
+
+						dbUserCampaigns pro = adb.Table<dbUserCampaigns>().Where(x => x.CampaignWpId == camWpId && x.UserWpId == wpid && x.Status != "deleted").FirstOrDefaultAsync().Result;
 						if (pro != null)
 						{
 							_donations.Add(pro);
 							int cardId = Convert.ToInt32(pro.Source);
 							string cardSourceId = pro.Source;
+
 							dbCreditCards creditCard = adb.Table<dbCreditCards>().Where(x => x.cardWpId == cardId).FirstOrDefaultAsync().Result;
-							dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
+							dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == pro.Id).FirstOrDefaultAsync().Result;
 							string currencyAmount = GlobalResources.ToCurrency(pro.Amount);
 
 							Labels[0].Text = $"{donation.campaignTitle} - ${currencyAmount}/{StringExtensions.ToTitleCase(pro.RecurringInterval)}";
-							Labels[1].Text = $"Card ending in {creditCard.cardLastFour}";
+							string cardText = "Card not found"; //have to handle unknown cards
+							if (creditCard != null)
+							{	
+								cardText = $"Card ending in {creditCard.cardLastFour}";
+								Buttons[0].IsEnabled = true;
+							}
+							else
+                            {
+								Buttons[0].IsEnabled = false;//hide the edit button if we have a broken card
+                            }
+							Labels[1].Text = $"{cardText}";
 							Labels[2].Text = $"Recurs: {Convert.ToDateTime(source.next).ToString("MM/dd/yyyy")}";
 							Labels[1].IsVisible = true;
 							Labels[2].IsVisible = true;
 							Labels[1].FontSize = 14;
 							Labels[2].FontSize = 14;
-							Buttons[0].IsVisible = true;
 							Buttons[1].Text = "One-time gift";
 							Buttons[0].Text = $"Edit Donation";
 						}
