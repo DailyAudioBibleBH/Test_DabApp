@@ -18,7 +18,6 @@ namespace DABApp
         //public ActivityIndicator activity { get; set;}
         //public StackLayout activityHolder { get; set;}
         bool giving;
-        Resource _resource = new Resource();
         //TODO: Create a method or something that pages that inherit from this can receive and do what they need to do:
         //Episode list - reload list like pull down
         //player page - BindCOntrols to episode
@@ -384,7 +383,14 @@ namespace DABApp
                 {
                     if (Navigation.NavigationStack.Count() > 0 && Navigation.NavigationStack.Last() == this)
                     {
-                        this.ShowMenu();
+                        if (this.SlideMenu.IsShown)
+                        {
+                            this.HideMenu();
+                        }
+                        else
+                        {
+                            this.ShowMenu();
+                        }
                     }
                 });
                 MessagingCenter.Subscribe<string>("Give", "Give", (sender) => { OnGive(sender, new EventArgs()); });
