@@ -5,7 +5,7 @@
 			<Label x:Name="Title" Text="Add Credit Card" Style="{StaticResource playerLabelStyle}" FontSize="Large"/>
 			<Label x:Name="CardType" Style="{StaticResource playerLabelStyle}" FontSize="Medium" IsVisible="false"/>
 			<Label Text="Card Number" FontSize="Micro"/>
-			<Entry x:Name="CardNumber" Keyboard="Numeric"/>
+			<Entry x:Name="CardNumber" Keyboard="Numeric" MaxLength="16"/>
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto"/>
