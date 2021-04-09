@@ -204,26 +204,27 @@ namespace DABApp
                     keepaliveButton.Text = "🚫"; //"◦";
                     hideWhenDone = false;
                     break;
-#else
-                case GraphQlTrafficDirection.Inbound:
-                    //inbound traffic
-                    keepaliveButton.Text = "·";
-                    break;
+//Took this out in release mode to save space
+//#else
+//                case GraphQlTrafficDirection.Inbound:
+//                    //inbound traffic
+//                    keepaliveButton.Text = "·";
+//                    break;
 
-                case GraphQlTrafficDirection.Outbound:
-                    //outbound traffic
-                    keepaliveButton.Text = "·"; 
-                    break;
-                case GraphQlTrafficDirection.Connected:
-                    //internet connected
-                    keepaliveButton.Text = "⊙"; //"◦";
-                    hideWhenDone = false;
-                    break;
-                case GraphQlTrafficDirection.Disconnected:
-                    //internet disconnected
-                    keepaliveButton.Text = "◦"; //"◦";
-                    hideWhenDone = false;
-                    break;
+//                case GraphQlTrafficDirection.Outbound:
+//                    //outbound traffic
+//                    keepaliveButton.Text = "·"; 
+//                    break;
+//                case GraphQlTrafficDirection.Connected:
+//                    //internet connected
+//                    keepaliveButton.Text = "⊙"; //"◦";
+//                    hideWhenDone = false;
+//                    break;
+//                case GraphQlTrafficDirection.Disconnected:
+//                    //internet disconnected
+//                    keepaliveButton.Text = "◦"; //"◦";
+//                    hideWhenDone = false;
+//                    break;
 #endif
 
             }
