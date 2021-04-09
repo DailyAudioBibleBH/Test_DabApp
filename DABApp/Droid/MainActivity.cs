@@ -150,6 +150,8 @@ namespace DABApp.Droid
             var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
             if (toolbar != null)
             {
+                toolbar.SetPadding(0, 0, 0, 0);
+                toolbar.SetContentInsetsAbsolute(0, 0);
                 SetSupportActionBar(toolbar);
                 var newMenu = LayoutInflater?.Inflate(Resource.Layout.DabToolbar, null);
                 //newMenu.ImportantForAutofill = Android.Views.ImportantForAutofill.Yes;

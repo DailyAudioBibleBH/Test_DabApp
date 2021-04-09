@@ -36,6 +36,8 @@ namespace DABApp.Droid
             var toolbar = context.FindViewById<Android.Support.V7.Widget.Toolbar>(Droid.Resource.Id.toolbar);
             if (toolbar != null)
             {
+                toolbar.SetPadding(0, 0, 0, 0);
+                toolbar.SetContentInsetsAbsolute(0, 0);
                 if (toolbar.NavigationIcon != null)
                 {
                     toolbar.NavigationIcon.Bounds.Right = 0;

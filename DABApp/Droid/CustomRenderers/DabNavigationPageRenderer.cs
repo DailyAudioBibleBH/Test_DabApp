@@ -19,6 +19,8 @@ namespace DABApp.Droid
 		void ConfigureActionBar()
 		{
 			var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+			toolbar.SetPadding(0, 0, 0, 0);
+			toolbar.SetContentInsetsAbsolute(0, 0);
 			if (toolbar.ChildCount > 0)
 			{
 				var item = toolbar.GetChildAt(0);
