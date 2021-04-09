@@ -134,7 +134,7 @@ namespace DABApp
             {
 				Service.DabService.DeleteDonation(_campaign.CampaignWpId);
 				await DisplayAlert("Your donation is in the process of being deleted.", "It may take a minute for the app to reflect your changes.", "OK");
-				await Navigation.PushAsync(new DabSettingsPage());
+				await Navigation.PushAsync(new DabChannelsPage());
 			}
 		}
 
