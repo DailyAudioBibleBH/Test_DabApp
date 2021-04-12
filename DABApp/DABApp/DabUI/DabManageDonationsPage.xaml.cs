@@ -23,6 +23,14 @@ namespace DABApp
 			InitializeComponent();
 			_donations = new List<dbUserCampaigns>();
 			_donations.Clear();
+
+			//Subscribe to looking for new donation data when user returns to app
+			MessagingCenter.Subscribe<string>("DabApp", "OnResume", (obj) =>
+			{
+				//check if donation updates happened while away from app and update UI
+				OnAppearing();
+			});
+
 			if (Device.RuntimePlatform == "Android")
 			{
                 if (Device.Idiom == TargetIdiom.Phone)

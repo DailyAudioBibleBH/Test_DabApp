@@ -701,19 +701,6 @@ namespace DABApp.Service
 
                 await DabServiceRoutines.GetUpdatedDonationHistory();
 
-                //if (beforeStatsus != donation.Status)
-                //{
-                //    string campaignTitle = "";
-                //    dbCampaigns campaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == donation.CampaignWpId).FirstOrDefaultAsync().Result;
-                //    if (campaign != null)
-                //    {
-                //        campaignTitle = campaign.campaignTitle;
-                //    }
-                //    Device.BeginInvokeOnMainThread(() => {
-                //        Application.Current.MainPage.DisplayAlert("Donation Updated", $"Donation to campaign {campaignTitle} is now {donation.Status}", "OK");
-                //    });
-                //}
-
                 return true;
             }
             catch (Exception ex)
