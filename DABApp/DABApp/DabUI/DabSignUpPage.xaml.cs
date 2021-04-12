@@ -70,42 +70,41 @@ namespace DABApp
 
 		async void OnSignUp(object o, EventArgs e)
 		{
-			if (SignUpValidation())
-			{
-				DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Registering your account...", true));
-				var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
-				if (ql.Success)
+            if (SignUpValidation())
+            {
+                DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Registering your account...", true));
+                var ql = await DabService.RegisterUser(FirstName.Text, LastName.Text, Email.Text, Password.Text);
+                if (ql.Success)
                 {
-					SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
+                    SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
-					//switch to a connection with their token
-					string token = ql.Data.payload.data.registerUser.token;
-					//token was updated successfully
-					var newUserData = GlobalResources.Instance.LoggedInUser;
-					newUserData.Token = token;
-					newUserData.TokenCreation = DateTime.Now;
-					await adb.InsertOrReplaceAsync(newUserData);
-					await DabService.TerminateConnection();
-					await DabService.InitializeConnection(token);
-					//get user profile information and update it.
-					ql = await Service.DabService.GetUserData();
-					if (ql.Success == true)
-					{
-						//process user profile information
-						var profile = ql.Data.payload.data.user;
-						await DabServiceRoutines.UpdateUserProfile(profile);
-					}
-					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
-
-					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
-				}
-				else
-                {
-					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
-					await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}","OK");
+                    //switch to a connection with their token
+                    string token = ql.Data.payload.data.registerUser.token;
+                    //token was updated successfully
+                    var newUserData = GlobalResources.Instance.LoggedInUser;
+                    newUserData.Token = token;
+                    newUserData.TokenCreation = DateTime.Now;
+                    await adb.InsertOrReplaceAsync(newUserData);
+                    await DabService.TerminateConnection();
+                    await DabService.InitializeConnection(token);
+                    //get user profile information and update it.
+                    ql = await Service.DabService.GetUserData();
+                    if (ql.Success == true)
+                    {
+                        //process user profile information
+                        var profile = ql.Data.payload.data.user;
+                        await DabServiceRoutines.UpdateUserProfile(profile);
+                    }
+                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+					await Navigation.PushAsync(new DabChannelsPage());
                 }
-			}
-		}
+                else
+                {
+                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+                    await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}", "OK");
+                }
+            }
+        }
 
 		bool SignUpValidation()
 		{

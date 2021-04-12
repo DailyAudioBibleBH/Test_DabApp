@@ -34,6 +34,13 @@ namespace DABApp
         public DabChannelsPage()
         {
             InitializeComponent();
+
+            var existingPages = Navigation.NavigationStack.ToList();
+            foreach (var item in existingPages)
+            {
+                Navigation.RemovePage(item);
+            }
+
             //Take away back button on navbar
             NavigationPage.SetHasBackButton(this, false);
             MessagingCenter.Subscribe<string>("dabapp", "ShowTodaysEpisode", (obj) =>
@@ -86,10 +93,11 @@ namespace DABApp
                 TimedActions();
                 return true;
             });
+        }
 
-
-
-
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
 
