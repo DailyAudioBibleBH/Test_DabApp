@@ -53,13 +53,25 @@ namespace DABApp
 			image.HorizontalOptions = LayoutOptions.EndAndExpand;
 			image.VerticalOptions = LayoutOptions.Center;
 			var label = new Label();
-            try
+
+			string cardNumber;
+			switch (card.cardType)
+			{
+				case "American Express":
+					cardNumber = $"**** ****** *{card.cardLastFour}";
+					break;
+				default:
+					cardNumber = $"**** **** **** {card.cardLastFour}";
+					break;
+			}
+
+			try
             {
-				label.Text = $"{card.cardType} **** **** **** {card.cardLastFour} Expires {card.cardExpMonth}/{card.cardExpYear.ToString().Substring(2)}";
+				label.Text = $"{card.cardType} {cardNumber} Expires {card.cardExpMonth}/{card.cardExpYear.ToString().Substring(2)}";
 			}
 			catch (Exception ex)
             {
-				label.Text = $"{card.cardType} **** **** **** {card.cardLastFour} Expires {card.cardExpMonth}/{card.cardExpYear}";
+				label.Text = $"{card.cardType} {cardNumber} Expires {card.cardExpMonth}/{card.cardExpYear}";
 			}
 			label.HorizontalOptions = LayoutOptions.StartAndExpand;
 			label.VerticalOptions = LayoutOptions.Center;

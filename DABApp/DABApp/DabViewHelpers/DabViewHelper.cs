@@ -78,7 +78,16 @@ namespace DABApp
 			//TODO: Figure how to tie history to credit card
 			dbDonationHistory history = (dbDonationHistory)value;
 			dbCreditCards card = adb.Table<dbCreditCards>().FirstOrDefaultAsync().Result;
-			string cardNumber = "Card: **** **** **** " + card.cardLastFour;
+			string cardNumber;
+			switch (card.cardType)
+			{
+				case "American Express":
+					cardNumber = $"**** ****** *{card.cardLastFour}";
+					break;
+				default:
+					cardNumber = $"**** **** **** {card.cardLastFour}";
+					break;
+			}
 			return $"{cardNumber}";
 		}
 
