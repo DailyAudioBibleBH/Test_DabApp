@@ -238,6 +238,7 @@ namespace DABApp
 							Labels[2].FontSize = 14;
 							Buttons[1].Text = "One-time gift";
 							Buttons[0].Text = $"Edit Donation";
+							Buttons[0].IsVisible = true;
 						}
 						else
 						{
