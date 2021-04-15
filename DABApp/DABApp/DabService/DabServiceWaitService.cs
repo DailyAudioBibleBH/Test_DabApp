@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using Newtonsoft.Json;
+using Xamarin.Forms;
 
 namespace DABApp.Service
 {
@@ -105,6 +107,12 @@ namespace DABApp.Service
             if (_error != "") //error received
             {
                 result = new DabServiceWaitResponse(DabServiceErrorResponses.CustomError, _error);
+
+                //Log the error to firebase to track graph ql errors
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("error", _error);
+                DependencyService.Get<IAnalyticsService>().LogEvent($"graphql_error_{WaitType}", infoJ);
+
             }
 
             else if (_qlObject != null) //result found
@@ -115,11 +123,22 @@ namespace DABApp.Service
             else if (_qlObject == null && _error == "") //timeout expired (no specific error)
             {
                 result = new DabServiceWaitResponse(DabServiceErrorResponses.TimeoutOccured);
+
+                //Log the timeout to firebase to track timeouts
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("timeout", TimeoutMilliseconds.ToString());
+                DependencyService.Get<IAnalyticsService>().LogEvent($"graphql_timeout_{WaitType}", infoJ);
+
             }
 
             else //other unexpected result
             {
                 result = new DabServiceWaitResponse(DabServiceErrorResponses.UnknownErrorOccurred);
+
+                //Log the error to firebase to track graph ql errors
+                var infoJ = new Dictionary<string, string>();
+                infoJ.Add("error", "unknown error");
+                DependencyService.Get<IAnalyticsService>().LogEvent($"graphql_unknownerror_{WaitType}", infoJ);
             }
 
             return result;
