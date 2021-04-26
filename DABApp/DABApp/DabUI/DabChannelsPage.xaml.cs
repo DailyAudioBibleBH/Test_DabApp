@@ -34,6 +34,7 @@ namespace DABApp
         public DabChannelsPage()
         {
             InitializeComponent();
+
             //Take away back button on navbar
             NavigationPage.SetHasBackButton(this, false);
             MessagingCenter.Subscribe<string>("dabapp", "ShowTodaysEpisode", (obj) =>
@@ -184,6 +185,16 @@ namespace DABApp
         {
             //Show toolbar items for android
             MessagingCenter.Send<string>("Setup", "Setup");
+
+            //Make this page the root
+            var existingPages = Navigation.NavigationStack.ToList();
+            foreach (var item in existingPages)
+            {
+                if (item.GetType().Name != "DabChannelsPage")
+                {
+                    Navigation.RemovePage(item);
+                }
+            }
 
             foreach (var r in ChannelView.resources)
             {

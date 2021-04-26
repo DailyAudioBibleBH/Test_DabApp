@@ -97,7 +97,7 @@ namespace DABApp
 					}
 					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
 
-					Application.Current.MainPage = new NavigationPage(new DabChannelsPage());
+					await Navigation.PushAsync(new DabChannelsPage());
 				}
 				else
                 {
