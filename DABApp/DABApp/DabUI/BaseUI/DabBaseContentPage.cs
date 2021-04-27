@@ -281,8 +281,8 @@ namespace DABApp
                     {
                         DependencyService.Get<IAnalyticsService>().LogEvent("give_user");
                         var num = 15000;
-                        var t = AuthenticationAPI.GetActiveDonations();
-                        List<dbUserCampaigns> dons = AuthenticationAPI.GetActiveDonations();
+                        var t = DabServiceRoutines.GetActiveDonations();
+                        List<dbUserCampaigns> dons = DabServiceRoutines.GetActiveDonations();
  
                         if (dons != null)
                         {

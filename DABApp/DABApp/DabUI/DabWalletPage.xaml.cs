@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using Xamarin.Forms;
 
 namespace DABApp
@@ -37,7 +38,7 @@ namespace DABApp
 			Cards.Clear();
 			InsertAddCardButton();
 			cards.Clear();
-			cards = AuthenticationAPI.GetWallet();
+			cards = DabServiceRoutines.GetWallet();
 			foreach (var card in cards)
 			{
 				InsertCard(card);

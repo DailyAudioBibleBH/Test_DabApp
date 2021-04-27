@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DABApp.DabUI.BaseUI;
 using DABApp.Helpers;
+using DABApp.Service;
 using SQLite;
 using Xamarin.Forms;
 
@@ -135,7 +136,7 @@ namespace DABApp
 		{
 			DabUserInteractionEvents.WaitStarted(o, new DabAppEventArgs("Please Wait...", true));
 			Button chosen = (Button)o;
-			List<dbCreditCards> cards = AuthenticationAPI.GetWallet();
+			List<dbCreditCards> cards = DabServiceRoutines.GetWallet();
 			var a = _donations;
 			var campaign = _donations.Single(x => x.CampaignWpId.ToString() == chosen.AutomationId);
 			await Navigation.PushAsync(new DabEditRecurringDonationPage(campaign));

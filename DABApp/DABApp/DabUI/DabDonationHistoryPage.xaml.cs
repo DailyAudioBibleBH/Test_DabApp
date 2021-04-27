@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
@@ -23,7 +24,7 @@ namespace DABApp
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-			List<dbDonationHistory> history = AuthenticationAPI.GetDonationHistory();
+			List<dbDonationHistory> history = DabServiceRoutines.GetDonationHistory();
 			history = history.OrderByDescending(x => x.historyDate).ToList();
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())

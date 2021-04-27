@@ -373,7 +373,7 @@ namespace DABApp
                     Episode.HasJournal = false;
 
                     await PlayerFeedAPI.UpdateEpisodeUserData((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, false, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, true);
+                    await DabServiceRoutines.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, true);
                 }
                 else if (Episode.Episode.UserData.HasJournal == false && JournalContent.Text.Length > 0)
                 {
@@ -381,7 +381,7 @@ namespace DABApp
                     Episode.HasJournal = true;
 
                     await PlayerFeedAPI.UpdateEpisodeUserData((int)Episode.Episode.id, Episode.IsListenedTo, Episode.IsFavorite, true, null);
-                    await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, null);
+                    await DabServiceRoutines.CreateNewActionLog((int)Episode.Episode.id,  Service.DabService.ServiceActionsEnum.Journaled, null, null, null, null);
                 }
             }
         }
@@ -728,7 +728,7 @@ namespace DABApp
 
                 Episode.IsFavorite = !Episode.IsFavorite;
                 AutomationProperties.SetName(Favorite, Episode.favoriteAccessible);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Favorite, null, null, Episode.Episode.UserData.IsFavorite, null);
+                await DabServiceRoutines.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Favorite, null, null, Episode.Episode.UserData.IsFavorite, null);
             } else
             {
                 //guest mode - do nothing
@@ -747,7 +747,7 @@ namespace DABApp
                 //check this
                 Episode.IsListenedTo = !Episode.IsListenedTo;
                 AutomationProperties.SetName(Completed, Episode.listenAccessible);
-                await AuthenticationAPI.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Listened, null, Episode.Episode.UserData.IsListenedTo, null, null);
+                await DabServiceRoutines.CreateNewActionLog((int)Episode.Episode.id, Service.DabService.ServiceActionsEnum.Listened, null, Episode.Episode.UserData.IsListenedTo, null, null);
             }
             else
             {

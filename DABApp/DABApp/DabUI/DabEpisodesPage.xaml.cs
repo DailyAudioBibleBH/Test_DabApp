@@ -284,7 +284,7 @@ namespace DABApp
                 var ep = model.Episode;
                 var newValue = !ep.UserData.IsListenedTo;
                 model.IsListenedTo = newValue;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, newValue);
+                await DabServiceRoutines.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Listened, null, newValue);
             }
             else
             {
@@ -305,7 +305,7 @@ namespace DABApp
                 var ep = model.Episode;
                 var newValue = !ep.UserData.IsFavorite;
                 model.IsFavorite = newValue;
-                await AuthenticationAPI.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, newValue);
+                await DabServiceRoutines.CreateNewActionLog((int)ep.id, DabService.ServiceActionsEnum.Favorite, null, null, newValue);
             }
             else
             {

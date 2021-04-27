@@ -60,6 +60,10 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var card = (dbCreditCards)value;
+            if (card.cardStatus == "NewCardFunction")
+            {
+				return $"{card.cardType}";
+			}
 			return $"{card.cardType} ending in {card.cardLastFour}";
 		}
 

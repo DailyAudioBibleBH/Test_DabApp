@@ -312,7 +312,7 @@ namespace DABApp
                     await adb.ExecuteAsync("DELETE FROM dbCreditCards");
                     await adb.ExecuteAsync("DELETE FROM dbCampaigns");
                     GlobalResources.TestMode = !GlobalResources.TestMode;
-                    AuthenticationAPI.SetExternalMode(true);
+                    DabServiceRoutines.SetExternalMode(true);
                     await DisplayAlert($"Switching to {testprod} mode.", $"Please restart the app after receiving this message to fully go into {testprod} mode.", "OK");
                     DisableAllInputs("Shutdown and restart app");
                 }
@@ -331,7 +331,7 @@ namespace DABApp
                     var adb = DabData.AsyncDatabase;
                     await adb.ExecuteAsync("DELETE FROM dbSettings");
                     GlobalResources.ExperimentMode = !GlobalResources.ExperimentMode;
-                    AuthenticationAPI.SetExternalMode(false);
+                    DabServiceRoutines.SetExternalMode(false);
                     await DisplayAlert($"Switching to {experimentMode} mode.", $"Please restart the app after receiving this message to fully go into {experimentMode} mode.", "OK");
                     DisableAllInputs("Shutdown and restart app");
                 }
