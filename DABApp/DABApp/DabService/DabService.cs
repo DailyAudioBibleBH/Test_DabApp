@@ -547,7 +547,7 @@ namespace DABApp.Service
             else
             {
                 //Subsequent runs, use the cursor
-                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", cursor: \"" + cursor + "\", forumWpId: " + forumWpId + ", limit: " + forumLimit + ") { edges { wpId userWpId forumWpId title content voiceCount  replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
+                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", cursor: \"" + cursor + "\", forumWpId: " + forumWpId + ", limit: " + forumLimit + ") { edges { wpId userWpId forumWpId title content voiceCount replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
             }
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
