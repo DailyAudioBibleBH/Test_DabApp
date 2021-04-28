@@ -305,7 +305,7 @@ namespace DABApp
             {
 				if (value == null) return null;
 				var topic = (DabGraphQlTopic)value;
-				return $"Topics: {topic.voiceCount}";
+				return $"Topics: {topic.userTopics}";
 			}
             catch (Exception ex)
             {
