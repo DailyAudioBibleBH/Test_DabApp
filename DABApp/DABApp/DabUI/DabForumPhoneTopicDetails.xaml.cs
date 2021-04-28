@@ -16,7 +16,7 @@ namespace DABApp
 	public partial class DabForumPhoneTopicDetails : DabBaseContentPage
 	{
 		bool login = false;
-		bool fromPost = false;
+		//bool fromPost = false;
 		DabGraphQlTopic _topic;
 		object source;
 		ObservableCollection<DabGraphQlReply> replies;
@@ -31,7 +31,7 @@ namespace DABApp
 			if (topic.replyCount > 0)
 			{
 				DetailsView.replies.ItemsSource = replies;
-				DetailsView.last.Text = topic.createdAt.ToLocalTime().ToString(); //TimeConvert();
+				DetailsView.last.Text = topic.createdAt.ToLocalTime().ToString();
 			}
 			else
 			{
@@ -39,7 +39,7 @@ namespace DABApp
 				DetailsView.last.Text = topic.createdAt.ToLocalTime().ToString();
 			}
 			DetailsView.reply.Clicked += OnReply;
-			DetailsView.replies.RefreshCommand = new Command(async () => { fromPost = true; await Update(); DetailsView.replies.IsRefreshing = false; });
+			DetailsView.replies.RefreshCommand = new Command(async () => { await Update(); DetailsView.replies.IsRefreshing = false; });
 			MessagingCenter.Subscribe<string>("repUpdate", "repUpdate", (obj) => { OnAppearing(); });
 		}
 
@@ -52,7 +52,6 @@ namespace DABApp
 			else
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(_topic));
-				fromPost = true;
 			}
 		}
 
@@ -70,16 +69,11 @@ namespace DABApp
 				DetailsView.replies.ItemsSource = replies;
 				DetailsView.last.Text = TimeConvert();
 			}
-
-			if (fromPost)
-			{
-				await Update();
-			}
+			await Update();
 			if (login && !GuestStatus.Current.IsGuestLogin)
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(_topic));
 				login = false;
-				fromPost = true;
 			}
 		}
 
@@ -102,9 +96,7 @@ namespace DABApp
 				foreach (var item in result.Data)
 				{
 					replies = new ObservableCollection<DabGraphQlReply>(item.payload.data.updatedReplies.edges.Where(x => x.status == "publish"));
-				}
-				
-				fromPost = false;
+				}				
 			}
 			else
             {

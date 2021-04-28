@@ -13,8 +13,6 @@ namespace DABApp
 	public partial class DabForumPhoneTopicList : DabBaseContentPage
 	{
 		bool login = false;
-		bool fromPost = false;
-		bool unInitialized = true;
 		Forum _forum;
 		View _view;
 		object source;
@@ -28,7 +26,7 @@ namespace DABApp
 			_view = view;
 			ContentList.topicList.ItemTapped += OnTopic;
 			ContentList.postButton.Clicked += OnPost;
-			ContentList.topicList.RefreshCommand = new Command(async () => { fromPost = true; await Update(); ContentList.topicList.IsRefreshing = false; });
+			ContentList.topicList.RefreshCommand = new Command(async () => { /*fromPost = true;*/ await Update(); ContentList.topicList.IsRefreshing = false; });
 			MessagingCenter.Subscribe<string>("topUpdate", "topUpdate", async (obj) => { await Update(); });
 		}
 
@@ -42,7 +40,6 @@ namespace DABApp
 			else
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				fromPost = true;
 			}
 		}
 
@@ -63,31 +60,27 @@ namespace DABApp
 			if (login && !GuestStatus.Current.IsGuestLogin)
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				fromPost = true;
 				login = false;
 			}
 		}
 
 		async Task Update()
 		{
-			if (fromPost || unInitialized)
+
+			source = new object();
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
+			_forum = await DabService.GetForum(ContentList.topicList.IsRefreshing);
+			if (_forum == null)
 			{
-				source = new object();
-				DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Please Wait...", true));
-				_forum = await DabService.GetForum(ContentList.topicList.IsRefreshing);
-				if (_forum == null)
-				{
-					await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
-				}
-				else
-				{
-					ContentList.topicList.BindingContext = _forum;
-					ContentList.topicList.ItemsSource = _forum.topics;
-					fromPost = false;
-					unInitialized = false;
-				}
-				DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+				await DisplayAlert("Error, could not retrieve topic list", "This may be due to loss of connectivity.  Please check your internet settings and try again.", "OK");
 			}
+			else
+			{
+				ContentList.topicList.BindingContext = _forum;
+				ContentList.topicList.ItemsSource = _forum.topics;
+			}
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
+			
 		}
 	}
 }

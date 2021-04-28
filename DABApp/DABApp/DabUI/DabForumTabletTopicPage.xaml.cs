@@ -16,7 +16,6 @@ namespace DABApp
 	{
 		bool loginRep = false;
 		bool loginTop = false;
-		bool fromPost = false;
 		bool unInitialized = true;
 		Forum _forum;
 		DabGraphQlTopic topic;
@@ -66,7 +65,6 @@ namespace DABApp
 			else
 			{
 				await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-				fromPost = true;
 			}
 		}
 
@@ -79,31 +77,27 @@ namespace DABApp
 			else
 			{
 				await Navigation.PushAsync(new DabForumCreateReply(topic));
-				fromPost = true;
 			}
 		}
 
 		protected override async void OnAppearing()
 		{
 			base.OnAppearing();
-			if (fromPost || unInitialized)
-			{
-				ContentList.topicList.IsRefreshing = true;
-				await Update();
-				ContentList.topicList.IsRefreshing = false;
-			}
+
+			ContentList.topicList.IsRefreshing = true;
+			await Update();
+			ContentList.topicList.IsRefreshing = false;
+			
 			if (!GuestStatus.Current.IsGuestLogin)
 			{
 				if (loginRep)
 				{
 					await Navigation.PushAsync(new DabForumCreateReply(topic));
-					fromPost = true;
 					loginRep = false;
 				}
 				if (loginTop)
 				{
 					await Navigation.PushAsync(new DabForumCreateTopic(_forum));
-					fromPost = true;
 					loginTop = false;
 				}
 			}
@@ -172,7 +166,6 @@ namespace DABApp
 				ContentList.topicList.ItemsSource = _forum.topics;
 			}
 			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
-			fromPost = false;
 			unInitialized = false;
 		}
 

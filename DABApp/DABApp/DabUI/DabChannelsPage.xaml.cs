@@ -188,14 +188,11 @@ namespace DABApp
 
             //Make this page the root
             var existingPages = Navigation.NavigationStack.ToList();
-            //see if more than one channels page in the stack
             if (existingPages.Count() > 1)
             {
-                int index = Application.Current.MainPage.Navigation.NavigationStack.Count - 1;
-                var currPage = Application.Current.MainPage.Navigation.NavigationStack[index];
                 foreach (var item in existingPages)
                 {
-                    if (item != currPage)
+                    if (item != this)
                     {
                         Navigation.RemovePage(item);
                     }
