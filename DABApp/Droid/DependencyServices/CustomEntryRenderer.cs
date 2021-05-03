@@ -85,6 +85,14 @@ namespace DABApp.Droid.DependencyServices
 
             // Subscribe event handler for focus change
             Control.FocusChange += Control_FocusChange;
+
+            var element = (CustomEntry)Element;
+
+            if (Control != null)
+            {
+                Control.Hint = element.Placeholder;
+                Control.SetHintTextColor(element.PlaceholderColor.ToAndroid());
+            }
         }
 
         void Control_FocusChange(object sender, FocusChangeEventArgs e)

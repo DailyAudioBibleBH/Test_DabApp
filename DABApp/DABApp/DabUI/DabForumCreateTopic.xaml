@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateTopic" xmlns:local="clr-namespace:DABApp">
+<local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabForumCreateTopic" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls" xmlns:local="clr-namespace:DABApp" xmlns:views="clr-namespace:DABApp.DabUI.BaseUI">
 	<ContentPage.Content>
-		<StackLayout Padding="10" Spacing="10" x:Name="Container">
-			<Entry Placeholder="Title" x:Name="title" BackgroundColor="Transparent" Completed="OnTitle"/>
+		<views:KeyboardView Padding="0,0,0,0"
+            VerticalOptions="FillAndExpand">
+		<StackLayout Padding="10" Spacing="10" x:Name="Container" VerticalOptions="FillAndExpand">
+			<Entry Placeholder="Title" x:Name="title" FontAttributes="Bold" FontSize="Large" BackgroundColor="Transparent" Completed="OnTitle" MaxLength="80"/>
 			<BoxView Color="{DynamicResource SecondaryTextColor}" VerticalOptions="Start"/>
-			<local:DabEditor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="FillAndExpand" Placeholder="Your prayer request" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
+			<local:DabEditor BackgroundColor="Transparent" x:Name="Content" TextColor="{DynamicResource TextColor}" VerticalOptions="StartAndExpand" HeightRequest="100" Placeholder="Your prayer request" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			<Grid VerticalOptions="End">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*"/>
@@ -13,9 +15,10 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto"/>
 				</Grid.RowDefinitions>
-				<Button x:Name="Post" Text="Post prayer request" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost" Grid.Row="0" Grid.Column="0"/>
-				<Button x:Name="Cancel" Text="Cancel" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
+				<Button x:Name="Post" Text="Post prayer request" HeightRequest="40" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" Clicked="OnPost" Grid.Row="0" Grid.Column="0"/>
+				<Button x:Name="Cancel" Text="Cancel" HeightRequest="40" FontAttributes="Bold" Clicked="OnCancel" Style="{StaticResource deleteButtonStyle}" Grid.Row="0" Grid.Column="1"/>
 			</Grid>
 		</StackLayout>
+		</views:KeyboardView>
 	</ContentPage.Content>
 </local:DabBaseContentPage>

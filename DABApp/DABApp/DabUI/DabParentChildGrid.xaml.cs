@@ -7,9 +7,9 @@ namespace DABApp
 {
 	public partial class DabParentChildGrid : DabBaseContentPage
 	{
-		DABApp.View ContentView;
+		View ContentView;
 
-		public DabParentChildGrid(DABApp.View contentView)
+		public DabParentChildGrid(View contentView)
 		{
 			InitializeComponent();
 			BindingContext = contentView;

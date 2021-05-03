@@ -10,7 +10,7 @@ namespace DABApp
 {
 	public partial class DabContentView : DabBaseContentPage
 	{
-		public DabContentView(DABApp.View contentView)
+		public DabContentView(View contentView)
 		{
 			InitializeComponent();
 			this.BindingContext = contentView;

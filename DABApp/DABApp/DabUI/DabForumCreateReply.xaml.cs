@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using DABApp.DabSockets;
+using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using Xamarin.Forms;
 using static DABApp.ContentConfig;
 
@@ -8,11 +10,13 @@ namespace DABApp
 {
 	public partial class DabForumCreateReply : DabBaseContentPage
 	{
-		Topic _topic;
+		DabGraphQlTopic _topic;
+		object source;
 
-		public DabForumCreateReply(Topic topic)
+		public DabForumCreateReply(DabGraphQlTopic topic)
 		{
 			InitializeComponent();
+			source = new object();
 			BindingContext = topic;
 			_topic = topic;
 			NavigationPage.SetHasBackButton(this, false);
@@ -27,24 +31,27 @@ namespace DABApp
 		{
 			Post.IsEnabled = false;
 			Cancel.IsEnabled = false;
+			DabUserInteractionEvents.WaitStarted(source, new DabAppEventArgs("Posting your reply...", true));
+
 			if (string.IsNullOrWhiteSpace(reply.Text))
 			{
 				await DisplayAlert("Cannot Post Blank Reply", "If you would like to discard your post hit cancel.", "OK");
 			}
 			else
 			{
-				var rep = new PostReply(reply.Text, _topic.id);
-				var result = await ContentAPI.PostReply(rep);
-				if (result.Contains("id"))
+				var rep = new PostReply(reply.Text, _topic.wpId);
+				var result = await DabService.PostReply(rep);
+				if (result.Success)
 				{
 					await DisplayAlert("Success", "Successfully posted new reply.", "OK");
 					await Navigation.PopAsync();
 				}
 				else
 				{
-					await DisplayAlert("Error", result, "OK");
+					await DisplayAlert("Error", result.ErrorMessage, "OK");
 				}
 			}
+			DabUserInteractionEvents.WaitStopped(source, new EventArgs());
 			Post.IsEnabled = true;
 			Cancel.IsEnabled = true;
 		}

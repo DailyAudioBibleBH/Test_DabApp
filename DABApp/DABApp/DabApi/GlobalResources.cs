@@ -121,6 +121,11 @@ namespace DABApp
 
         public static readonly string APIKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvZGFpbHlhdWRpb2JpYmxlLmNvbSIsImlhdCI6MTU4OTk5NDcxOSwibmJmIjoxNTg5OTk0NzE5LCJleHAiOjE3NDc2NzQ3MTksImRhdGEiOnsidXNlciI6eyJpZCI6IjEyOTE4In19fQ.JCt2vuC2tSkyY2Y5YUFZK6DpQ9I_EoVt3KAUqrzQQ0A";
 
+        public static int ActiveForumId { get; set; } = 0;
+
+        public static DabGraphQlUpdatedForum ActiveForum { get; set; }
+
+
         public static string CleanupJson(string json)
         {
             //clean up json strings
@@ -399,6 +404,29 @@ namespace DABApp
             string k = "EpisodeQueryDate" + ChannelId;
             Debug.WriteLine($"Setting last episode query date for Channel {ChannelId}: { LastDate.ToString()}");
             dbSettings.StoreSetting(k, $"{LastDate.ToString()}");
+        }
+
+        //Last badge check date in GMT (get/set universal time)
+        public static DateTime ForumUpdatedDate
+        {
+            get
+            {
+                string settingsKey = "ForumUpdateDate";
+                string ForumUpdateSettingsValue = dbSettings.GetSetting(settingsKey, "");
+                if (ForumUpdateSettingsValue == "")
+                {
+                    DateTime forumDate = DateTime.MinValue.ToUniversalTime();
+                    dbSettings.StoreSetting(settingsKey, forumDate.ToString());
+                }
+                return DateTime.Parse(dbSettings.GetSetting("ForumUpdateDate", ""));
+            }
+            set
+            {
+                //Store the value sent in the database
+                string settingsKey = "ForumUpdateDate";
+                string forumDate = value.ToString();
+                dbSettings.StoreSetting(settingsKey, forumDate);
+            }
         }
 
         //Last badge check date in GMT (get/set universal time)

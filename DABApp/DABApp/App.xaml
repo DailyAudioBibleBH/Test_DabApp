@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.App" xmlns:local="clr-namespace:DABApp;assembly=DABApp">
+<Application xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="DABApp.App" 
+             xmlns:local="clr-namespace:DABApp;assembly=DABApp"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             android:Application.WindowSoftInputModeAdjust="Resize">
     <Application.Resources>
         <ResourceDictionary>
             <!-- Font Awesome -->
@@ -257,6 +262,8 @@
             <local:ReplyConverter x:Key="ReplyConverter" />
             <local:TopicConverter x:Key="TopicConverter" />
             <local:TimeConverter x:Key="TimeConverter" />
+            <local:ReplyPrayerConverter x:Key="ReplyPrayerConverter" />
+            <local:ReplyVoiceConverter x:Key="ReplyVoiceConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

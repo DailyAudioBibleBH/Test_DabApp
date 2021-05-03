@@ -3,7 +3,7 @@
              xmlns:b="clr-namespace:DABApp">
 	<ContentView.Content>
 		<StackLayout>
-			<StackLayout Padding="10" Spacing="10">
+			<StackLayout Padding="10, 10, 0, 10" Spacing="10">
 				<Button x:Name="Post" Text="  Post a prayer request  " FontSize="Large" FontAttributes="Bold" Style="{StaticResource highlightedButtonStyle}" HorizontalOptions="Center"/>
 			</StackLayout>
 			<ListView x:Name="TopicList" SeparatorVisibility="Default" SeparatorColor="{DynamicResource InputBackgroundColor}" HasUnevenRows="true" IsPullToRefreshEnabled="true">
@@ -14,9 +14,9 @@
 					<DataTemplate>
 						<ViewCell>
 							<StackLayout Padding="5" Spacing="5">
-								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
-								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Small" FontAttributes="Bold"/>
+								<Label Text="{Binding title}" Style="{StaticResource playerLabelStyle}" FontSize="Medium" FontAttributes="Bold"/>
 								<Label Text="{Binding Path=., Converter={StaticResource ParticipantConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
+								<Label Text="{Binding Path=., Converter={StaticResource ActivityConverter}}" Style="{StaticResource secondaryLabelStyle}" FontSize="Micro"/>
 							</StackLayout>
 						</ViewCell>
 					</DataTemplate>

@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <local:DabBaseContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="DABApp.DabCheckEmailPage"
-	xmlns:local="clr-namespace:DABApp" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls">
+	xmlns:local="clr-namespace:DABApp" xmlns:controls="clr-namespace:DABApp.DabViewHelpers.Controls" xmlns:views="clr-namespace:DABApp.DabUI.BaseUI">
     <ContentPage.Content>
+    <views:KeyboardView Padding="0,0,0,0"
+                VerticalOptions="FillAndExpand">
         <StackLayout x:Name="Container" Padding="30" Spacing="5">
             <Image x:Name="Logo" VerticalOptions="EndAndExpand" HorizontalOptions="CenterAndExpand" Source="LoginLogo10x.png">
                 <Image.GestureRecognizers>
@@ -24,5 +26,6 @@
                 </Label.GestureRecognizers>
             </Label>
         </StackLayout>
+        </views:KeyboardView>
     </ContentPage.Content>
 </local:DabBaseContentPage>

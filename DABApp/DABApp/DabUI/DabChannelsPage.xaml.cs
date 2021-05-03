@@ -35,12 +35,6 @@ namespace DABApp
         {
             InitializeComponent();
 
-            var existingPages = Navigation.NavigationStack.ToList();
-            foreach (var item in existingPages)
-            {
-                Navigation.RemovePage(item);
-            }
-
             //Take away back button on navbar
             NavigationPage.SetHasBackButton(this, false);
             MessagingCenter.Subscribe<string>("dabapp", "ShowTodaysEpisode", (obj) =>
@@ -94,12 +88,6 @@ namespace DABApp
                 return true;
             });
         }
-
-        protected override bool OnBackButtonPressed()
-        {
-            return true;
-        }
-
 
         async void OnPlayer(object o, EventArgs e)
         {
@@ -192,6 +180,19 @@ namespace DABApp
         {
             //Show toolbar items for android
             MessagingCenter.Send<string>("Setup", "Setup");
+
+            //Make this page the root
+            var existingPages = Navigation.NavigationStack.ToList();
+            if (existingPages.Count() > 1)
+            {
+                foreach (var item in existingPages)
+                {
+                    if (item != this)
+                    {
+                        Navigation.RemovePage(item);
+                    }
+                }
+            }
 
             foreach (var r in ChannelView.resources)
             {

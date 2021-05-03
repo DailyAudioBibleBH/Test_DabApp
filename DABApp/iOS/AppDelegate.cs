@@ -20,11 +20,13 @@ using DABApp.DabNotifications;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using BranchXamarinSDK;
+using System.Collections;
 
 namespace DABApp.iOS
 {
     [Register("AppDelegate")]
-    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate
+    public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate, IBranchBUOSessionInterface
     {
 
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
@@ -49,6 +51,15 @@ namespace DABApp.iOS
             UINavigationBar.Appearance.SetTitleTextAttributes(att);
 
             global::Xamarin.Forms.Forms.Init();
+
+            /* Branch.IO DeepLinking */
+            // Debug mode - set to 'false' before releasing to production
+            BranchIOS.Debug = true;
+
+            DABAppBUO appBUO = new DABAppBUO();
+            BranchIOS.Init("key_live_liAnF8k7gZUEZv76Rt9a4bffAzlC5zVW", options, appBUO);
+            LoadApplication(appBUO);
+
             //TODO: Replace for journal?
             //DependencyService.Register<SocketService>();
             DependencyService.Register<KeyboardHelper>();
@@ -106,8 +117,61 @@ namespace DABApp.iOS
             {
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
+
             return m;
         }
+
+        /* Branch.IO DeepLinking */
+
+        public override UIWindow Window
+        {
+            get;
+            set;
+        }
+
+        // Called when the app is opened via URI scheme
+        public override bool OpenUrl(UIApplication application, NSUrl url, string sourceApplication, NSObject annotation)
+        {
+            return BranchIOS.getInstance().OpenUrl(url);
+        }
+
+        // Called when the app is opened from a Universal Link
+        public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler)
+        {
+            return BranchIOS.getInstance().ContinueUserActivity(userActivity);
+        }
+
+        // Called when the app receives a push notification
+        public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+        {
+            BranchIOS.getInstance().HandlePushNotification(userInfo);
+        }
+
+        // Called when the Branch initialization is completed
+        // Put deep-linking logic in this method
+        public void InitSessionComplete(BranchUniversalObject buo, BranchLinkProperties blp)
+        {
+            NSObject[] keys = {
+                NSObject.FromObject("+is_first_session")
+            };
+
+            NSObject[] values = { NSObject.FromObject(0) };
+            //if (buo.metadata.ContainsKey("+is_first_session"))
+            //{
+            //    values[0] = NSObject.FromObject(buo.metadata["+is_first_session"]);
+            //}
+
+            NSDictionary nsData = NSDictionary.FromObjectsAndKeys(values, keys);
+        }
+
+        // Called when there is an error initializing Branch
+        public void SessionRequestError(BranchError error)
+        {
+            Console.WriteLine("Branch error: " + error.ErrorCode);
+            Console.WriteLine(error.ErrorMessage);
+        }
+
+        /* End Branch.IO DeepLinking */
 
 
         /* GENERAL UI EVENTS */

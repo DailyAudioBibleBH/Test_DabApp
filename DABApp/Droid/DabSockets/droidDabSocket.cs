@@ -43,7 +43,7 @@ namespace DABApp.Droid.DabSockets
             //Initialize the socket
             try
             {
-                sock = IO.Socket(Uri);
+                sock = Quobject.SocketIoClientDotNet.Client.IO.Socket(Uri);
 
                 //Set up standard events
                 sock.On("connect", data => OnConnect(data));

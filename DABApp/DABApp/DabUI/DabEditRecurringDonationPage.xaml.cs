@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using DABApp.DabUI.BaseUI;
+using DABApp.Service;
 using SQLite;
 using Xamarin.Forms;
 
@@ -30,6 +32,8 @@ namespace DABApp
             {
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
+
+			//Find campaign info and options tied to it
 			int wpid = _campaign.CampaignWpId;
 			dbCampaigns UniversalCampaign = adb.Table<dbCampaigns>().Where(x => x.campaignWpId == wpid).FirstOrDefaultAsync().Result;
 			int campId = UniversalCampaign.campaignId;
@@ -45,14 +49,41 @@ namespace DABApp
                 }
             }
 
+			//UI setup
 			Title.Text = UniversalCampaign.campaignTitle;
 			Intervals.ItemsSource = intervalOptions;
 			Intervals.SelectedIndex = intervalOptions.FindIndex(x => x == campaign.RecurringInterval);
-			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null ).ToListAsync().Result;
+			List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardStatus != "deleted" || x.cardStatus == null).ToListAsync().Result;
+			dbCreditCards addNewCard = new dbCreditCards { cardType = "Add New Card", cardStatus = "NewCardFunction" };
+			cards.Add(addNewCard);
 			Cards.ItemsSource = cards;
 			Cards.ItemDisplayBinding = new Binding() { Converter = new CardConverter()};
-			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.donationId == campaign.Id).FirstOrDefaultAsync().Result;
 
+			//Add credit card section
+			AddCreditCardStack.IsVisible = false;
+
+			var months = new List<string>() { "1 - " + new DateTime(2020, 1, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "2 - " + new DateTime(2020, 2, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "3 - " + new DateTime(2020, 3, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "4 - " + new DateTime(2020, 4, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "5 - " + new DateTime(2020, 5, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "6 - " + new DateTime(2020, 6, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "7 - " + new DateTime(2020, 7, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "8 - " + new DateTime(2020, 8, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "9 - " + new DateTime(2020, 9, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "10 - " + new DateTime(2020, 10, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "11 - " + new DateTime(2020, 11, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture), "12 - " + new DateTime(2020, 12, 1)
+				.ToString("MMM", CultureInfo.CurrentUICulture)};
+			Month.ItemsSource = months;
+			int start = DateTime.Now.Year;
+			int end = (DateTime.Now.Year - start) + 50;
+			List<string> years = Enumerable.Range(start, end).Select(x => x.ToString()).ToList();
+			Year.ItemsSource = years;
+
+			//Finding card tied to donation
+			string cardSourceId = campaign.Source;
+			dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 			if (source != null)
 			{
 				string currencyAmount = GlobalResources.ToCurrency(campaign.Amount);
@@ -78,9 +109,50 @@ namespace DABApp
                 if (accept)
                 {
 					object obj = new object();
-					DabUserInteractionEvents.WaitStarted(obj, new DabAppEventArgs("Checking for new episodes...", true));
+					DabUserInteractionEvents.WaitStarted(obj, new DabAppEventArgs("Updating your donation...", true));
 					AmountWarning.IsVisible = false;
-					var card = (dbCreditCards)Cards.SelectedItem;
+					dbCreditCards card = (dbCreditCards)Cards.SelectedItem;
+                    if (card.cardStatus == "NewCardFunction")
+                    {
+						string[] selectedMonthArray = Month.SelectedItem.ToString().Split(' ');
+						string selectedMonth = selectedMonthArray[0];
+						var sCard = new Card
+						{
+							fullNumber = CardNumber.Text,
+							exp_month = Convert.ToInt32(selectedMonth),
+							exp_year = Convert.ToInt32(Year.SelectedItem),
+							cvc = CVV.Text
+						};
+						var result = await DependencyService.Get<IStripe>().AddCard(sCard);
+						if (result.card_token.Contains("Error"))
+						{
+							await DisplayAlert("Error", result.card_token, "OK");
+							return;
+						}
+						else
+						{
+							var Result = await DabService.AddCard(result);
+							if (Result.Success)
+							{
+								try
+								{
+									dbCreditCards newCard = new dbCreditCards(Result.Data.payload.data.updatedCard.card);
+									await adb.InsertOrReplaceAsync(newCard);
+									card = newCard;
+								}
+								catch (Exception ex)
+								{
+									await DisplayAlert("Error", "Your card and donation were not updated. Error: " + ex.Message, "OK");
+									return;
+								}
+							}
+							else
+							{
+								await DisplayAlert("Error", "Your card and donation were not updated. Error: " + Result.ErrorMessage, "OK");
+								return;
+							}
+						}
+					}
 					string cardSourceId = _campaign.Source;
 					dbCreditSource source = adb.Table<dbCreditSource>().Where(x => x.cardId == cardSourceId).FirstOrDefaultAsync().Result;
 
@@ -95,9 +167,7 @@ namespace DABApp
 						{
 							await DisplayAlert("Success", "Successfully Added Donation", "OK");
 
-							NavigationPage navPage = new NavigationPage(new DabChannelsPage());
-							navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-							Application.Current.MainPage = navPage;
+							await Navigation.PushAsync(new DabChannelsPage());
 						}
 
 					}
@@ -108,9 +178,7 @@ namespace DABApp
                         {
 							await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
 
-							NavigationPage navPage = new NavigationPage(new DabChannelsPage());
-							navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-							Application.Current.MainPage = navPage;
+							await Navigation.PushAsync(new DabChannelsPage());
 						}
                         else
                         {
@@ -152,5 +220,25 @@ namespace DABApp
 				return false;
 			}
 		}
-	}
+
+        private void OnCardChanged(object sender, EventArgs e)
+        {
+			Picker picker = sender as Picker;
+			dbCreditCards selectedItem = (dbCreditCards)picker.SelectedItem;
+			if (selectedItem.cardStatus == "NewCardFunction")
+            {
+				AddCreditCardStack.IsVisible = true;
+			}
+            else
+            {
+				AddCreditCardStack.IsVisible = false;
+				CardNumber.Text = "";
+				Month.SelectedIndex = -1;
+				Year.SelectedIndex = -1;
+				entMonth.Text = "";
+				entYear.Text = "";
+				CVV.Text = "";
+			}
+		}
+    }
 }

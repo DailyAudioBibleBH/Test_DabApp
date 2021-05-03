@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DABApp.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SQLite;
@@ -26,10 +27,7 @@ namespace DABApp
 				ToolbarItems.Clear();
 				NavigationPage.SetHasNavigationBar(this, false);
 			}
-
-			int wpid = GlobalResources.Instance.LoggedInUser.WpId;
-			List<dbDonationHistory> history = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
-
+			List<dbDonationHistory> history = DabServiceRoutines.GetDonationHistory();
 			history = history.OrderByDescending(x => x.historyDate).ToList();
 			History.ItemsSource = history;
 			//foreach (var don in history.Reverse())

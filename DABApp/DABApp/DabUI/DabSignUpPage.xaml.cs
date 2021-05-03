@@ -78,27 +78,28 @@ namespace DABApp
                 {
                     SQLite.SQLiteAsyncConnection adb = DabData.AsyncDatabase;
 
-                    //switch to a connection with their token
-                    string token = ql.Data.payload.data.registerUser.token;
-                    //token was updated successfully
-                    var newUserData = GlobalResources.Instance.LoggedInUser;
-                    newUserData.Token = token;
-                    newUserData.TokenCreation = DateTime.Now;
-                    await adb.InsertOrReplaceAsync(newUserData);
-                    await DabService.TerminateConnection();
-                    await DabService.InitializeConnection(token);
-                    //get user profile information and update it.
-                    ql = await Service.DabService.GetUserData();
-                    if (ql.Success == true)
-                    {
-                        //process user profile information
-                        var profile = ql.Data.payload.data.user;
-                        await DabServiceRoutines.UpdateUserProfile(profile);
-                    }
-                    DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+					//switch to a connection with their token
+					string token = ql.Data.payload.data.registerUser.token;
+					//token was updated successfully
+					var newUserData = GlobalResources.Instance.LoggedInUser;
+					newUserData.Token = token;
+					newUserData.TokenCreation = DateTime.Now;
+					await adb.InsertOrReplaceAsync(newUserData);
+					await DabService.TerminateConnection();
+					await DabService.InitializeConnection(token);
+					//get user profile information and update it.
+					ql = await Service.DabService.GetUserData();
+					if (ql.Success == true)
+					{
+						//process user profile information
+						var profile = ql.Data.payload.data.user;
+						await DabServiceRoutines.UpdateUserProfile(profile);
+					}
+					DabUserInteractionEvents.WaitStopped(o, new EventArgs());
+
 					await Navigation.PushAsync(new DabChannelsPage());
-                }
-                else
+				}
+				else
                 {
                     DabUserInteractionEvents.WaitStopped(o, new EventArgs());
                     await DisplayAlert("Registration Failed", $"Registration Failed: {ql.ErrorMessage}", "OK");

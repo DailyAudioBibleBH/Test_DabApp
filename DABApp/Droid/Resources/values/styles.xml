@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <resources>
+  <string name="app_name">DABApp</string>
+  <string name="branch_key">key_live_liAnF8k7gZUEZv76Rt9a4bffAzlC5zVW</string>
 	<color name="ListViewSelected">#26333333</color>
   <color name="ActionModeColor">#4FB8BD</color>
 	<color name="dab_red">#D5272E</color>

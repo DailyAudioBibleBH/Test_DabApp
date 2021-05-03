@@ -18,7 +18,7 @@ namespace DABApp
     {
         public App()
         {
-            if (AuthenticationAPI.GetTestMode())
+            if (DabServiceRoutines.GetTestMode())
             {
                 GlobalResources.TestMode = true;
             }

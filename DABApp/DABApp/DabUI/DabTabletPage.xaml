@@ -107,16 +107,16 @@
                             </Image.GestureRecognizers>
                         </Image>
                         <Image x:Name="backwardButton"
-                               Source="ic_replay_30_white_3x.png"
+                               Source="ic_replay_15_white_3x.png"
                                Grid.Row="0"
                                Grid.Column="2"
                                HeightRequest="25"
                                WidthRequest="25"
                                Margin="5"
-                               AutomationProperties.HelpText="Back 30 seconds"
+                               AutomationProperties.HelpText="Back 15 seconds"
                                AutomationProperties.IsInAccessibleTree="true">
                             <Image.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnBack30" />
+                                <TapGestureRecognizer Tapped="OnBack15" />
                             </Image.GestureRecognizers>
                         </Image>
                         <Image x:Name="PlayPause"

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DABApp.DabSockets;
+using DABApp.Service;
 using Newtonsoft.Json;
 using Plugin.Connectivity;
 using Xamarin.Forms;
@@ -298,20 +300,20 @@ namespace DABApp
 			public Member member { get; set; }
 		}
 
-		public class Topic
-		{
-			public int id { get; set; }
-			public string title { get; set; }
-			public string content { get; set; }
-			public string lastActivity { get; set; }
-			public string replyCount { get; set; }
-			public string voiceCount { get; set; }
-			public string link { get; set; }
-			public Member member { get; set; }
-			public List<Reply> replies { get; set; }
-		}
+        public class Topic
+        {
+            public int id { get; set; }
+            public string title { get; set; }
+            public string content { get; set; }
+            public string lastActivity { get; set; }
+            public string replyCount { get; set; }
+            public string voiceCount { get; set; }
+            public string link { get; set; }
+            public Member member { get; set; }
+            public List<Reply> replies { get; set; }
+        }
 
-		public class PostTopic
+        public class PostTopic
 		{
 			public string title { get; set; }
 			public string content { get; set; }
@@ -328,7 +330,6 @@ namespace DABApp
 		{
 			public int id { get; set; }
 			public string title { get; set; }
-			public View view { get; set; }
 			public string link { get; set; }
 			public int topicCount { get; set; }
 			private bool _IsBusy;
@@ -342,7 +343,7 @@ namespace DABApp
 				}
 			}
 			public ICommand LoadMore { get; set; }
-			public ObservableCollection<Topic> topics { get; set; }
+			public ObservableCollection<DabGraphQlTopic> topics { get; set; }
 
 			public event PropertyChangedEventHandler PropertyChanged;
 
@@ -352,7 +353,7 @@ namespace DABApp
 				this.LoadMore = new Command(async () =>
 				{
 					IsBusy = true;
-					var f = await ContentAPI.GetForum(view, page);
+					var f = await DabService.GetForum();
 					page++;
 					foreach (var t in f.topics)
 					{

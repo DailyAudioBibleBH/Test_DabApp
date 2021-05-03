@@ -45,6 +45,9 @@ namespace DABApp
             }
             keepaliveButton = new ToolbarItem();
             //Control template (adds the player bar)
+            var test = Xamarin.Forms.Application.Current;
+            var test2 = Xamarin.Forms.Application.Current.Resources;
+            var test3 = Xamarin.Forms.Application.Current.Resources["PageBackgroundColor"];
             ControlTemplate playerBarTemplate = (ControlTemplate)Xamarin.Forms.Application.Current.Resources["PlayerPageTemplate"];
             RelativeLayout container = new RelativeLayout();
             ControlTemplate = playerBarTemplate;
@@ -279,9 +282,9 @@ namespace DABApp
                     {
                         DependencyService.Get<IAnalyticsService>().LogEvent("give_user");
                         var num = 15000;
-                        var t = AuthenticationAPI.GetActiveDonations();
-                        List<dbUserCampaigns> dons = AuthenticationAPI.GetActiveDonations();
-
+                        var t = DabServiceRoutines.GetActiveDonations();
+                        List<dbUserCampaigns> dons = DabServiceRoutines.GetActiveDonations();
+ 
                         if (dons != null)
                         {
                             if (dons.Count > 0)

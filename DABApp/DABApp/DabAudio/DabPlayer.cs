@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
+using DABApp.Service;
 using SQLite;
 using Xamarin.Forms;
 using static DABApp.Service.DabService;
@@ -435,7 +436,7 @@ namespace DABApp.DabAudio
                     if (lastLogPlayerPosition != CurrentPosition && difference >= ContentConfig.Instance.options.log_position_interval)
                     {
                         Debug.WriteLine($"Logging progress...{DateTime.Now}");
-                        _ = AuthenticationAPI.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
+                        _ = DabServiceRoutines.CreateNewActionLog(GlobalResources.CurrentEpisodeId, Service.DabService.ServiceActionsEnum.PositionChanged, CurrentPosition, null, null, null);
                         lastLogPlayerPosition = CurrentPosition;
                     }
 
@@ -462,7 +463,7 @@ namespace DABApp.DabAudio
                 if (e > 0)
                 {
                     PlayerFeedAPI.UpdateStopTime(e, CurrentPosition, RemainingSeconds);
-                    AuthenticationAPI.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
+                    DabServiceRoutines.CreateNewActionLog(e, ServiceActionsEnum.PositionChanged, CurrentPosition, null, null);
                     lastLogPlayerPosition = CurrentPosition;
                 }
             }

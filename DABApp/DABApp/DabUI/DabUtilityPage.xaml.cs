@@ -21,6 +21,7 @@ namespace DABApp
             //tests
             pickTest.Items.Add("Shuffle episodes to random channels");
             pickTest.Items.Add("Remove every other episode");
+            pickTest.Items.Add("Thrown an exception to crash the app");
 
             //episodes
             pickTable.Items.Add("Channels");
@@ -240,6 +241,9 @@ namespace DABApp
                     await DisplayAlert("Episodes removed", $"Every other episode has been removed.", "OK");
                     break;
 
+                case "Thrown an exception to crash the app":
+                    //throw an exception to crash the app
+                    throw new Exception("App Intentionally Crashed - The app has been intentionally crashed using the utility page.");
                 default:
                     await DisplayAlert("Nothing to do.", $"This action has not been defined: {pickAction.SelectedItem}.", "OK");
                     break;

@@ -42,6 +42,11 @@ namespace DABApp.Service
         UpdateDonation,
         DeleteCard,
         CreateDonation,
+        GetForums,
+        GetTopics,
+        GetReplies,
+        CreateTopic,
+        CreateReply
     }
 
     public class DabServiceWaitService
@@ -472,6 +477,46 @@ namespace DABApp.Service
                     case DabServiceWaitTypes.CreateDonation:
                         // get create donation response
                         if (response?.payload?.data?.updatedDonationStatus != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetForums:
+                        // get create donation response
+                        if (response?.payload?.data?.updatedForums != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetTopics:
+                        // get updated topics
+                        if (response?.payload?.data?.updatedTopics != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.GetReplies:
+                        // get updated replies
+                        if (response?.payload?.data?.updatedReplies != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.CreateTopic:
+                        // get updated replies
+                        if (response?.payload?.data?.createTopic != null)
+                        {
+                            _qlObject = response;
+                            _waiting = false;
+                        }
+                        break;
+                    case DabServiceWaitTypes.CreateReply:
+                        // get updated replies
+                        if (response?.payload?.data?.createReply != null)
                         {
                             _qlObject = response;
                             _waiting = false;

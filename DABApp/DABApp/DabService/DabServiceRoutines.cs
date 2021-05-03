@@ -106,6 +106,37 @@ namespace DABApp.Service
                     GlobalResources.CampaignUpdatedDate = DateTime.Now;
                 }
 
+                //get forums
+                var qllll = await DabService.GetUpdatedForums(GlobalResources.ForumUpdatedDate);
+                if (qllll.Success)
+                {
+                    bool foundPublish = false;
+                    foreach (var d in qllll.Data)
+                    {
+                        foreach (var b in d.payload.data.updatedForums)
+                        {
+                            //Should only have one published forum for now
+                            if (!foundPublish)
+                            {
+                                DabGraphQlUpdatedForum c = new DabGraphQlUpdatedForum(b);
+                                if (c.status == "publish")
+                                {
+                                    GlobalResources.ActiveForumId = c.wpId;
+                                    GlobalResources.ActiveForum = c;
+                                    foundPublish = true;
+                                }
+                            }
+                        }
+                    }
+                    if (!foundPublish)
+                    {
+                        GlobalResources.ActiveForumId = 0;
+                        GlobalResources.ActiveForum = new DabGraphQlUpdatedForum();
+                    }
+                    //update date since last updated campaigns
+                    GlobalResources.ForumUpdatedDate = DateTime.Now;
+                }
+
                 //logged in user routines
                 if (!GuestStatus.Current.IsGuestLogin)
                 {
@@ -217,6 +248,46 @@ namespace DABApp.Service
                 return false;
             }
 
+        }
+
+        public static bool GetTestMode()
+        {
+            string testmode = dbSettings.GetSetting("TestMode", "");
+            if (testmode != "")
+            {
+                return Convert.ToBoolean(testmode);
+            }
+            else return false;
+        }
+
+        public static bool GetExperimentMode()
+        {
+            var adb = DabData.AsyncDatabase;
+            var experimentmode = adb.Table<dbSettings>().Where(x => x.Key == "ExperimentMode").FirstOrDefaultAsync().Result;
+            if (experimentmode != null)
+            {
+                return Convert.ToBoolean(experimentmode.Value);
+            }
+            else return false;
+        }
+
+        public static void SetExternalMode(bool isTest)
+        {
+            var adb = DabData.AsyncDatabase;
+            adb.QueryAsync<dbEpisodes>("delete from dbEpisodes");
+            adb.ExecuteAsync("delete from dbPlayerActions");
+            adb.ExecuteAsync("delete from Badge");
+            adb.ExecuteAsync("delete from dbUserBadgeProgress");
+            adb.ExecuteAsync("delete from Channel");
+            adb.ExecuteAsync("delete from dbEpisodeUserData");
+            if (isTest)
+            {
+                dbSettings.StoreSetting("TestMode", GlobalResources.TestMode.ToString());
+            }
+            else
+            {
+                dbSettings.StoreSetting("ExperimentMode", GlobalResources.ExperimentMode.ToString());
+            }
         }
         #endregion
 
@@ -441,6 +512,61 @@ namespace DABApp.Service
             }
 
 
+        }
+
+        public static async Task CreateNewActionLog(int episodeId, ServiceActionsEnum actionType, double? playTime, bool? listened, bool? favorite = null, bool? hasEmptyJournal = false)
+        {
+            try//Creates new action log which keeps track of user location on episodes.
+            {
+                var adb = DabData.AsyncDatabase;
+                //build a basic action log
+                var actionLog = new dbPlayerActions();
+                string email = GlobalResources.Instance.LoggedInUser.Email;
+                actionLog.ActionDateTime = DateTimeOffset.Now.LocalDateTime;
+                actionLog.EpisodeId = episodeId;
+                actionLog.UserEmail = email;
+
+
+                switch (actionType)
+                {
+                    case ServiceActionsEnum.Listened:
+                        actionLog.ActionType = "listened_status";
+                        actionLog.Listened = listened.Value;
+                        break;
+                    case ServiceActionsEnum.Favorite:
+                        actionLog.ActionType = "favorite";
+                        actionLog.Favorite = favorite.Value;
+                        break;
+                    case ServiceActionsEnum.Journaled:
+                        actionLog.ActionType = "entryDate";
+                        actionLog.HasJournal = true;
+                        break;
+                    case ServiceActionsEnum.PositionChanged:
+                        actionLog.ActionType = "pause";
+                        actionLog.PlayerTime = playTime.Value;
+                        break;
+                }
+
+                //delete existing action logs with same episode and type
+                string actType = actionLog.ActionType;
+                int epId = actionLog.EpisodeId;
+                var oldActions = await adb.Table<dbPlayerActions>().Where(x => x.ActionType == actType && x.EpisodeId == epId && x.UserEmail == email).ToListAsync();
+                foreach (var oldAction in oldActions)
+                {
+                    await adb.DeleteAsync(oldAction);
+                }
+
+                //insert new action log
+                await adb.InsertAsync(actionLog);
+
+                //send actions logs if we can
+                await DabServiceRoutines.PostActionLogs();
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Exception caught in AuthenticationAPI.CreateNewActionLog(): {e.Message}");
+            }
         }
 
         public static async Task<bool> PostActionLogs()
@@ -994,6 +1120,68 @@ namespace DABApp.Service
                 card.cardStatus = data.status;
                 //update card status
                 await adb.InsertOrReplaceAsync(card);
+            }
+        }
+
+        public static List<dbCreditCards> GetWallet()//Gets user's saved credit cards.  Used for donations
+        {
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+                List<dbCreditCards> cards = adb.Table<dbCreditCards>().Where(x => x.cardUserId == wpid && x.cardStatus == null).ToListAsync().Result;
+
+                return cards;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<dbUserCampaigns> GetActiveDonations()//Gets all recurring user donations.  Not historical ones!
+        {
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+                string del = "deleted";
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.UserWpId == wpid && x.Status != del).ToListAsync().Result;
+                return donations;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<dbUserCampaigns> GetActiveDonationsByCamp(int campaignWpId)//Gets all recurring user donations.  Not historical ones!
+        {
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                string del = "deleted";
+                List<dbUserCampaigns> donations = adb.Table<dbUserCampaigns>().Where(x => x.Status != del && x.CampaignWpId == campaignWpId).ToListAsync().Result;
+                return donations;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static List<dbDonationHistory> GetDonationHistory()//Gets user donation history
+        {
+            try
+            {
+                var adb = DabData.AsyncDatabase;
+                int wpid = GlobalResources.Instance.LoggedInUser.WpId;
+                List<dbDonationHistory> donations = adb.Table<dbDonationHistory>().Where(x => x.historyUserWpId == wpid).ToListAsync().Result;
+                return donations;
+            }
+            catch (Exception e)
+            {
+                return null;
             }
         }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using DABApp.DabSockets;
 using DABApp.DabUI;
@@ -8,6 +10,7 @@ using Newtonsoft.Json;
 using Rg.Plugins.Popup.Services;
 using SQLite;
 using Xamarin.Forms;
+using static DABApp.ContentConfig;
 
 namespace DABApp.Service
 {
@@ -27,14 +30,16 @@ namespace DABApp.Service
         private static IWebSocket socket; //websocket used by service
 
         public const int WaitDelayInterval = 500; //milliseconds to pause for anything that waits on another thread to provide input
+
         public const int ExtraLongTimeout = 20000; //super long timeout for things that take a long time
         public const int LongTimeout = 10000; //timeout for calls we expect return values from
         public const int SocketTerminationWaitTime = 1000; //time to wait for socket terminate time to close the socket
         public const int ShortTimeout = 250; //timeout for quick calls or items we don't expect values from
         public const int QuickPause = 50; //timeout to allow calls to settle that don't need waited on.
-
         private static List<int> SubscriptionIds = new List<int>();  //list of subscription id's managed by Service
         public static string userName;
+        public static object cursur { get; set; } = null;
+
 
         //DATABASE CONNECTION
         static SQLiteAsyncConnection adb = DabData.AsyncDatabase;//Async database to prevent SQLite constraint errors
@@ -355,7 +360,299 @@ namespace DABApp.Service
                 Success = true,
                 Data = result
             };
+        }
 
+        public static async Task<Forum> GetForum(bool fromPullToRefresh = false)
+        {
+            try
+            {
+                var forum = new Forum();
+                DabGraphQlUpdatedForum activeForum = GlobalResources.ActiveForum;
+                forum.id = activeForum.wpId;
+                forum.title = activeForum.title;
+                forum.topicCount = activeForum.topicCount;
+                DabServiceWaitResponseList result;
+                if (fromPullToRefresh)
+                    result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, null);
+                else
+                    result = await DabService.GetUpdatedTopics(GlobalResources.ActiveForumId, 100, cursur);
+
+                List<DabGraphQlTopic> topics = new List<DabGraphQlTopic>();
+                if (result.Success)
+                {
+                    foreach (var item in result.Data)
+                    {
+                        topics = item.payload.data.updatedTopics.edges.Where(x => x.status == "publish").OrderByDescending(x => x.lastActive).ToList();
+                    }
+                }
+                ObservableCollection<DabGraphQlTopic> topicCollection = new ObservableCollection<DabGraphQlTopic>(topics);
+                forum.topics = topicCollection;
+
+                return forum;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<DabServiceWaitResponse> PostTopic(ContentConfig.PostTopic topic)
+        {
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the update donation mutation
+            string command = $"mutation {{ createTopic( forumWpId: {topic.forumId} title: \"{topic.title}\" content: \"{topic.content}\" ) {{ wpId userWpId forumWpId title content voiceCount replyCount type status userNickname }} }}";
+
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.CreateTopic);
+
+            //return the response
+            return response;
+        }
+
+        public static async Task<DabServiceWaitResponse> PostReply(PostReply rep)
+        {
+            if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
+
+            //Send the update donation mutation
+            string command = $"mutation {{ createReply(topicWpId: {rep.topicId} content: \"{rep.content}\") {{ wpId userWpId topicWpId content status userNickname }} }}";
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.CreateReply);
+
+            //return the response
+            return response;
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUpdatedReplies(DateTime LastDate, int wpId, int limit)
+        {
+            /*
+            * this routine checks for replies related to a topic
+            */
+
+            DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_read");
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            bool getMore = true;
+            object cursor = null;
+
+            //start a loop to get all actions
+            while (getMore == true)
+            {
+                //Send the command
+                string command;
+                if (cursor == null)
+                {
+                    //First run
+                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname userReplies userTopics createdAt updatedAt } pageInfo { hasNextPage endCursor } } } ";
+
+                }
+                else
+                {
+                    //Subsequent runs, use the cursor
+                    command = "query { updatedReplies(date: \"" + LastDate.ToString("o") + "Z\", cursor: \"" + cursor + "\", topicWpId: " + wpId + ", limit: " + limit + ") { edges { wpId userWpId topicWpId content status userNickname createdAt updatedAt } pageInfo { hasNextPage endCursor } } } ";
+                }
+                var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+                socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+                //Wait for the appropriate response
+                var service = new DabServiceWaitService();
+                var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetReplies);
+
+                //Process the actions
+                if (response.Success == true)
+                {
+                    var data = response.Data.payload.data.updatedReplies;
+
+                    //add what we receied to the list
+                    result.Add(response.Data);
+
+                    //determine if we have more data to process or not
+                    if (data.pageInfo.hasNextPage == true)
+                    {
+                        cursor = data.pageInfo.endCursor;
+                    }
+                    else
+                    {
+                        //nomore data - break the loop
+                        getMore = false;
+                    }
+                }
+                else
+                {
+                    //something went wrong - return an error message (still in a list)
+                    return new DabServiceWaitResponseList()
+                    {
+                        Success = false,
+                        ErrorMessage = response.ErrorMessage
+                    };
+
+                }
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUpdatedTopics(int forumWpId, int forumLimit, object cursor = null)
+        {
+            /*
+            * this routine checks for updated topics for forum
+            */
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+            DateTime LastDate = DateTime.Now;
+            LastDate = LastDate.AddYears(-1);
+            //Send the command
+            string command;
+            if (cursor == null)
+            {
+                //First run
+                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", forumWpId: " + forumWpId +", limit: " + forumLimit +") { edges { wpId userWpId forumWpId title content voiceCount replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
+
+            }
+            else
+            {
+                //Subsequent runs, use the cursor
+                command = "query { updatedTopics(date: \"" + LastDate.ToString("o") + "\", cursor: \"" + cursor + "\", forumWpId: " + forumWpId + ", limit: " + forumLimit + ") { edges { wpId userWpId forumWpId title content voiceCount replyCount type status updatedAt createdAt lastActive userNickname userReplies userTopics } pageInfo { hasNextPage endCursor } } }";
+            }
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetTopics);
+
+            //Process the actions
+            if (response.Success == true)
+            {
+                var data = response.Data.payload.data.updatedTopics;
+
+                //add what we receied to the list
+                result.Add(response.Data);
+
+                //determine if we have more data to process or not
+                if (data.pageInfo.hasNextPage == true)
+                {
+                    DabService.cursur = data.pageInfo.endCursor;
+                }
+                else
+                {
+                    //nomore data - break the loop
+                    DabService.cursur = null;
+                }
+            }
+            else
+            {
+                //something went wrong - return an error message (still in a list)
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = response.ErrorMessage,
+                };
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result,
+                //Cursor = newCursor
+            };
+
+        }
+
+        public static async Task<DabServiceWaitResponseList> GetUpdatedForums(DateTime LastDate)
+        {
+            /*
+            * this routine gets all the users updated credit card information
+            */
+            LastDate = DateTime.MinValue;
+
+
+            //check for a connecting before proceeding
+            if (!IsConnected)
+            {
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = "Not Connected"
+                };
+            }
+
+            //prep for handling a loop of actions
+            List<DabGraphQlRootObject> result = new List<DabGraphQlRootObject>();
+
+            //start a loop to get all actions
+            //Send the command
+            string command;
+
+            //First run
+            command = "query { updatedForums(date: \"" + LastDate.ToString("o") + "Z\") { wpId title content excerpt topicCount replyCount type status visibility } } ";
+
+
+            var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
+            socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
+
+            //Wait for the appropriate response
+            var service = new DabServiceWaitService();
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.GetForums);
+
+            //Process the actions
+            if (response.Success == true)
+            {
+                //add what we receied to the list
+                result.Add(response.Data);
+            }
+            else
+            {
+                //something went wrong - return an error message (still in a list)
+                return new DabServiceWaitResponseList()
+                {
+                    Success = false,
+                    ErrorMessage = response.ErrorMessage
+                };
+
+            }
+
+            return new DabServiceWaitResponseList()
+            {
+                Success = true,
+                Data = result
+            };
         }
 
         public static async Task<DabServiceWaitResponseList> GetUsersUpdatedCreditCards(DateTime LastDate)

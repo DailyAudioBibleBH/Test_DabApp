@@ -67,6 +67,16 @@
 				<string>dab</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Branch Scheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>dabapp://</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
 	</array>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We use your photo library to access photos to share with the DAB Community</string>

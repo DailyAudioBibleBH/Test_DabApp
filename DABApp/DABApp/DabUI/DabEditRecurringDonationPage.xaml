@@ -4,8 +4,33 @@
 		<StackLayout Padding="10" Spacing="10">
 			<Label x:Name="Title" FontSize="Large" Style="{StaticResource playerLabelStyle}"/>
 			<Label Text="Select Card" FontSize="Micro"/>
-			<Picker x:Name="Cards"/>
-			<Label Text="Amount" FontSize="Micro"/>
+			<Picker x:Name="Cards" SelectedIndexChanged="OnCardChanged"/>
+            <StackLayout x:Name="AddCreditCardStack" Padding="10" Spacing="10">
+                <Label x:Name="CardType" Style="{StaticResource playerLabelStyle}" FontSize="Medium" IsVisible="false"/>
+                <Label Text="Card Number" FontSize="Micro"/>
+                <Entry x:Name="CardNumber" Keyboard="Numeric"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="1.2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Exp. Date (MM/YY)" FontSize="Micro" Grid.ColumnSpan="2" Grid.Row="0"/>
+                    <Picker x:Name="Month" Grid.Column="0" Grid.Row="1"/>
+                    <Picker x:Name="Year" Grid.Column="1" Grid.Row="1"/>
+                    <Entry x:Name="entMonth" IsVisible="False" IsEnabled="False" Grid.Column="0" Grid.Row="1"/>
+                    <Entry x:Name="entYear" IsVisible="False" IsEnabled="False" Grid.Column="1" Grid.Row="1"/>
+                    <Label x:Name="CVCLabel" Text="CVV" FontSize="Micro" Grid.Column="0" Grid.Row="2"/>
+                    <Entry x:Name="CVV" Grid.Column="0" Grid.Row="3" Keyboard="Numeric"/>
+                </Grid>
+            </StackLayout>
+            <Label Text="Amount" FontSize="Micro"/>
 			<Entry x:Name="Amount" Keyboard="Numeric"/>
 			<Label x:Name="AmountWarning" Text="Payment amount must be a valid currency format" Style="{StaticResource warningLabelStyle}" IsVisible="false"/>
             <Label Text="Select Interval" FontSize="Micro"/>

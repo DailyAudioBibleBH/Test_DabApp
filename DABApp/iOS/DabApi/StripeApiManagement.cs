@@ -10,7 +10,7 @@ namespace DABApp.iOS
 {
 	public class StripeApiManagement : IStripe
 	{
-		public async Task<StripeContainer> AddCard(DABApp.Card newCard)
+		public async Task<StripeContainer> AddCard(Card newCard)
 		{
 			var sCard = new Stripe.Card
 			{

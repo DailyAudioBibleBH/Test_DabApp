@@ -13,6 +13,9 @@ using System.Runtime.Serialization.Json;
 using Xamarin.Forms.PlatformConfiguration;
 using System.Data.Common;
 using static DABApp.ContentConfig;
+using DABApp.Service;
+using DABApp.DabSockets;
+using System.Collections.ObjectModel;
 
 namespace DABApp
 {
@@ -179,41 +182,6 @@ namespace DABApp
             catch (Exception e)
             {
                 throw e;
-            }
-        }
-
-        public static async Task<Forum> GetForum(View view, int pageNumber = 1)
-        {
-            try
-            {
-                var client = new HttpClient();
-                var result = await client.GetAsync($"{view.resources.First().feedUrl}?page={pageNumber}&perpage=50");
-                var JsonOut = await result.Content.ReadAsStringAsync();
-                var forum = JsonConvert.DeserializeObject<Forum>(JsonOut);
-                forum.view = view;
-                return forum;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public static async Task<Topic> GetTopic(Topic topic)
-        {
-            DependencyService.Get<IAnalyticsService>().LogEvent("prayerwall_post_read");
-            try
-            {
-                var client = new HttpClient();
-                var result = await client.GetAsync(topic.link);
-                var JsonOut = await result.Content.ReadAsStringAsync();
-                var top = JsonConvert.DeserializeObject<Topic>(JsonOut);
-                return top;
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine($"Exception caught in GetTopic: {e.Message}");
-                return null;
             }
         }
 

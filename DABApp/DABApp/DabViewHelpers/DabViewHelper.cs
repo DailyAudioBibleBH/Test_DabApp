@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using DABApp.DabSockets;
 using SlideOverKit;
 using SQLite;
 using Xamarin.Forms;
@@ -59,6 +60,10 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			var card = (dbCreditCards)value;
+            if (card.cardStatus == "NewCardFunction")
+            {
+				return $"{card.cardType}";
+			}
 			return $"{card.cardType} ending in {card.cardLastFour}";
 		}
 
@@ -168,15 +173,34 @@ namespace DABApp
 		{
 			if (value == null) { return null; }
 
-			var topic = (Topic)value;
-			return $"Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			var topic = (DabGraphQlTopic)value;
+			DateTime date = topic.createdAt.ToLocalTime();
+			string createdAt = TimeConvert(date);
+			return $"By {topic.userNickname}  @ {createdAt}";
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 	
-		}		
+		}
+
+		string TimeConvert(DateTime createdAt)
+		{
+			var dateTime = createdAt.ToLocalTime();
+			var month = dateTime.ToString("MMMM");
+			var time = dateTime.ToString("t");
+			TimeSpan ts = (DateTime.Now - dateTime);
+
+			if (ts.TotalDays >1)
+            {
+				return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+			}
+            else
+            {
+				return time;
+            }
+		}
 	}
 
 	public class ActivityConverter : IValueConverter
@@ -184,25 +208,96 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) { return null; }
-	
-			var topic = (Topic)value;
-			return $"Latest Reply {topic.lastActivity}";
+
+			var topic = (DabGraphQlTopic)value;
+			DateTime lastActive = topic.lastActive.ToLocalTime();
+			TimeSpan ts = (DateTime.Now - lastActive);
+            if (ts.TotalDays >= 1)
+            {
+				return $"Latest Reply: {ts.Days} days {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (ts.TotalDays >= 1)
+            {
+				return $"Latest Reply: {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (ts.TotalMinutes >= 1)
+            {
+				return $"Latest Reply: {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else
+            {
+				return $"Latest Reply: Just now,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			throw new NotImplementedException();
 
-		}	
+		}
 	}
 
 	public class ReplyConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) return null;
-			var reply = (Member)value;
-			return $"Prayers:{reply.replyCount}";
+            try
+            {
+                if (value == null) return null;
+                var reply = (DabGraphQlTopic)value;
+                return $"Prayers: {reply.replyCount}";
+            }
+            catch (Exception ex)
+            {
+				return null;
+            }
+			
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class ReplyPrayerConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			try
+			{
+				if (value == null) return null;
+				var reply = (DabGraphQlReply)value;
+				return $"Prayers: {reply.userReplies}";
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
+
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class ReplyVoiceConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			try
+			{
+				if (value == null) return null;
+				var reply = (DabGraphQlReply)value;
+				return $"Requests: {reply.userTopics}";
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
+
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -215,9 +310,17 @@ namespace DABApp
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
-			if (value == null) return null;
-			var topic = (Member)value;
-			return $"Topics:{topic.topicCount}";
+            try
+            {
+				if (value == null) return null;
+				var topic = (DabGraphQlTopic)value;
+				return $"Topics: {topic.userTopics}";
+			}
+            catch (Exception ex)
+            {
+				return null;
+            }
+			
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -231,12 +334,12 @@ namespace DABApp
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			if (value == null) return null;
-			var res = (Reply)value;
-			var dateTime = DateTimeOffset.Parse($"{res.gmtDate} +0:00").UtcDateTime.ToLocalTime();
-			string month = dateTime.ToString("MMMM");
-			string time = dateTime.ToString("t");
-			return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
-		}
+			var res = (DabGraphQlReply)value;
+            var dateTime = DateTimeOffset.Parse($"{res.createdAt} +0:00").UtcDateTime.ToLocalTime();
+            string month = dateTime.ToString("MMMM");
+            string time = dateTime.ToString("t");
+            return $"{month} {dateTime.Day}, {dateTime.Year} at {time}";
+        }
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
 		{
