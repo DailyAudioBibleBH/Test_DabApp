@@ -11,6 +11,7 @@ using Device = Xamarin.Forms.Device;
 using Xamarin.Forms.Internals;
 using DABApp.Service;
 using DABApp.DabUI;
+using Version.Plugin;
 
 namespace DABApp
 {
@@ -26,6 +27,13 @@ namespace DABApp
             InitializeComponent();
 
             FlowListView.Init();
+
+            //if fresh install update version number to dbSettings
+            string savedVersion = dbSettings.GetSetting("AppVersion", "");
+            if (savedVersion == "")
+            {
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+            }
 
             MainPage = new DabServiceConnect();
 

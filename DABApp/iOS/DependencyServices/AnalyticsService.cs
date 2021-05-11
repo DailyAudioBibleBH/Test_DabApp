@@ -8,6 +8,7 @@ using DABApp.iOS;
 using Firebase.Analytics;
 using Foundation;
 using UIKit;
+using Version.Plugin;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(AnalyticsService))]
@@ -15,6 +16,31 @@ namespace DABApp.iOS
 {
     public class AnalyticsService: IAnalyticsService
     {
+        public AnalyticsService()
+        {
+            //Check if user recently updated app and ask permissions if necessary
+            string savedVersion = dbSettings.GetSetting("AppVersion", "");
+            var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
+
+            //check if version numbers do not match -- user just updated app & if app tracking permission is denied
+            if (savedVersion != CrossVersion.Current.Version && status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
+            {
+                RequestPermission();
+            }
+        }
+
+        public async void RequestPermission()
+        {
+            bool answer = await App.Current.MainPage.DisplayAlert("Update", "DAB would like to access analytics for more accurate error recording.", "Accept", "Decline");
+            if (answer)
+            {
+                Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+            }
+
+            //Store version number so not to ask again until next update
+            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+        }
         public void LogEvent(string eventId)
         {
             LogEvent(eventId, (IDictionary<string, string>)null);

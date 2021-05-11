@@ -22,6 +22,8 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using BranchXamarinSDK;
 using System.Collections;
+using Version.Plugin;
+using System.Diagnostics;
 
 namespace DABApp.iOS
 {
@@ -72,7 +74,37 @@ namespace DABApp.iOS
             SegmentedControlRenderer.Init();
 
             app.StatusBarStyle = UIStatusBarStyle.LightContent;
-
+            //if version 14 or higher
+            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+            {
+                //Request Permission to follow AppTrackingTransparency guidelines
+                AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
+                {
+                    switch (result)
+                    {
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
+                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
+            //if version 10 or higher
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
                 // For iOS 10 display notification (sent via APNS)
@@ -83,9 +115,9 @@ namespace DABApp.iOS
                     Console.WriteLine(granted);
                 });
             }
+            //iOS version 9 or before
             else
             {
-                // iOS 9 or before
                 var allNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound;
                 var settings = UIUserNotificationSettings.GetSettingsForTypes(allNotificationTypes, null);
                 UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
