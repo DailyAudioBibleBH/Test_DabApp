@@ -210,23 +210,178 @@ namespace DABApp
 			if (value == null) { return null; }
 
 			var topic = (DabGraphQlTopic)value;
-			DateTime lastActive = topic.lastActive.ToLocalTime();
-			TimeSpan ts = (DateTime.Now - lastActive);
-            if (ts.TotalDays >= 1)
-            {
-				return $"Latest Reply: {ts.Days} days {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			DateTime beforeDate = topic.lastActive.ToLocalTime();
+			DateTime futureDate = DateTime.Now.ToLocalTime();
+
+			int minutes = 0;
+			int hours = 0;
+			int days = 0;
+			int weeks = 0;
+			int months = 0;
+			int years = 0;
+
+			Dictionary<int, int> dictMonths = new Dictionary<int, int> { };
+			dictMonths.Add(1, 31);
+			if (DateTime.IsLeapYear(futureDate.Year))
+				dictMonths.Add(2, 29);
+			else
+				dictMonths.Add(2, 28);
+			dictMonths.Add(3, 31);
+			dictMonths.Add(4, 30);
+			dictMonths.Add(5, 31);
+			dictMonths.Add(6, 30);
+			dictMonths.Add(7, 31);
+			dictMonths.Add(8, 31);
+			dictMonths.Add(9, 30);
+			dictMonths.Add(10, 31);
+			dictMonths.Add(11, 30);
+			dictMonths.Add(12, 31);
+
+			//Time difference between dates
+			TimeSpan span = futureDate - beforeDate;
+			hours = span.Hours;
+			minutes = span.Minutes;
+
+			//Days total
+			days = span.Days;
+			//Find how many years
+			DateTime zeroTime = new DateTime(1, 1, 1);
+
+			// Because we start at year 1 for the Gregorian
+			// calendar, we must subtract a year here.
+			years = (zeroTime + span).Year - 1;
+			//find difference of days of years already found
+			int startYear = futureDate.Year - years;
+			for (int i = 0; i < years; i++)
+			{
+				if (DateTime.IsLeapYear(startYear))
+					days -= 366;
+				else
+					days -= 365;
+
+				startYear++;
 			}
-            else if (ts.TotalDays >= 1)
-            {
-				return $"Latest Reply: {ts.Hours} hours {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			//Find months by multiplying months in year by difference of datetime years then add difference of current year months
+			months = 12 * (futureDate.Year - beforeDate.Year) + (futureDate.Month - beforeDate.Month);
+			//month may need to be decremented because the above calculates the ceiling of the months, not the floor.
+			//to do so we increase before by the same number of months and compare.
+			//(500ms fudge factor because datetimes are not precise enough to compare exactly)
+			if (futureDate.CompareTo(beforeDate.AddMonths(months).AddMilliseconds(-500)) <= 0)
+			{
+				--months;
 			}
-            else if (ts.TotalMinutes >= 1)
+			//subtract months from how many years we have already accumulated
+			months -= (12 * years);
+			//find how many days by compared to our month dictionary
+			int startMonth = beforeDate.Month;
+			for (int i = 0; i < months; i++)
+			{
+				//check if faulty leap year
+				if (startMonth == 2 && (months - 1 > 10))
+					days -= 28;
+				else
+					days -= dictMonths[startMonth];
+				startMonth++;
+				if (startMonth > 12)
+				{
+					startMonth = 1;
+				}
+			}
+			//Find if any weeks are within our now total days
+			weeks = days / 7;
+			if (weeks > 0)
+			{
+				//remainder is days left
+				days = days % 7;
+			}
+
+			Console.WriteLine(years + " " + months + " " + weeks + " " + days + " " + span.Hours + " " + span.Minutes);
+
+            if (years > 0)
             {
-				return $"Latest Reply: {ts.Minutes} minutes ago,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				if (years > 1 && months > 1)
+					return $"Latest Reply: {years} years, {months} months ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (years > 1 && months == 0)
+					return $"Latest Reply: {years} years ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (years == 1 && months == 0)
+					return $"Latest Reply: {years} year ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (years > 1)
+					return $"Latest Reply: {years} years, {months} month ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (months > 1)
+					return $"Latest Reply: {years} year, {months} months ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {years} year, {months} month ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (months > 0)
+            {
+				if (months > 1 && weeks > 1)
+					return $"Latest Reply: {months} months, {weeks} weeks ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (months > 1 && weeks == 0)
+					return $"Latest Reply: {months} months ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+                else if (months == 1 && weeks == 0)
+					return $"Latest Reply: {months} month ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (months > 1)
+					return $"Latest Reply: {months} months, {weeks} week ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (weeks > 1)
+					return $"Latest Reply: {months} month, {weeks} weeks ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {months} month, {weeks} week ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (weeks > 0)
+            {
+                if (weeks > 1 && days > 1)
+					return $"Latest Reply: {weeks} weeks, {days} days ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (weeks > 1 && days == 0)
+					return $"Latest Reply: {weeks} weeks ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (weeks == 1 && days == 0)
+					return $"Latest Reply: {weeks} week ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (weeks > 1)
+					return $"Latest Reply: {weeks} weeks, {days} day ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+                else if (days > 1)
+					return $"Latest Reply: {weeks} week, {days} days ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {weeks} week, {days} day ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+			else if (days > 0)
+            {
+				if (days > 1 && hours > 1)
+					return $"Latest Reply: {days} days, {hours} hours ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (days > 1 && hours == 0)
+					return $"Latest Reply: {days} days ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (days == 1 && hours == 0)
+					return $"Latest Reply: {days} day ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (days > 1)
+					return $"Latest Reply: {days} days, {hours} hour ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (hours > 1)
+					return $"Latest Reply: {days} day, {hours} hours ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {days} day, {hours} hour ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (hours > 0)
+            {
+				if (hours > 1 && minutes > 1)
+					return $"Latest Reply: {hours} hours, {minutes} minutes ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (hours > 1 && minutes == 0)
+					return $"Latest Reply: {hours} hours ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (hours == 1 && minutes == 0)
+					return $"Latest Reply: {hours} hour ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (hours > 1)
+					return $"Latest Reply: {hours} hours, {minutes} minute ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else if (minutes > 1)
+					return $"Latest Reply: {hours} hour, {minutes} minutes ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {hours} hour, {minutes} minute ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+			}
+            else if (minutes > 0)
+            {
+				if (minutes > 1)
+					return $"Latest Reply: {minutes} minutes ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				else
+					return $"Latest Reply: {minutes} minute ago.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 			}
             else
             {
-				return $"Latest Reply: Just now,  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
+				return $"Latest Reply: Just now.  Voices: {topic.voiceCount}  Prayers: {topic.replyCount}";
 			}
 		}
 

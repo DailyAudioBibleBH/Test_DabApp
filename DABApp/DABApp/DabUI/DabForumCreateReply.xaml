@@ -26,7 +26,7 @@
 
 
                 <StackLayout Padding="10" Spacing="10" VerticalOptions="FillAndExpand">
-			        <local:DabEditor x:Name="reply" VerticalOptions="StartAndExpand" HeightRequest="150" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
+			        <local:DabEditor x:Name="reply" VerticalOptions="FillAndExpand" TextColor="{DynamicResource TextColor}" BackgroundColor="Transparent" Placeholder="Your Reply" PlaceholderColor="{DynamicResource SecondaryTextColor}"/>
 			        <BoxView Color="{DynamicResource SecondaryTextColor}"/>
 			        <Grid VerticalOptions="End">
 				        <Grid.ColumnDefinitions>
