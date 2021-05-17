@@ -74,36 +74,6 @@ namespace DABApp.iOS
             SegmentedControlRenderer.Init();
 
             app.StatusBarStyle = UIStatusBarStyle.LightContent;
-            //if version 14 or higher
-            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-            {
-                //Request Permission to follow AppTrackingTransparency guidelines
-                AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
-                {
-                    switch (result)
-                    {
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
-                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
-                            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            }
             //if version 10 or higher
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
@@ -150,7 +120,50 @@ namespace DABApp.iOS
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
 
+            //first launch of app, need to ask permissions
+            if (dbSettings.GetSetting("AppVersion", "") == "")
+            {
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                PromptUserForPermissions();
+            }
+
             return m;
+        }
+
+        private async void PromptUserForPermissions()
+        {
+            //if version 14 or higher
+            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+            {
+                await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB. We ask that you say yes to help us get more accurate error reporting and finding solutions. We value our users & would never sell your information or deliver targeted Ads towards you.", "Okay");
+
+                //Request Permission to follow AppTrackingTransparency guidelines
+                AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
+                {
+                    switch (result)
+                    {
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
+                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
         }
 
         /* Branch.IO DeepLinking */

@@ -38,6 +38,7 @@ using Plugin.CurrentActivity;
 using BranchXamarinSDK;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Version.Plugin;
 
 namespace DABApp.Droid
 {
@@ -132,6 +133,12 @@ namespace DABApp.Droid
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
 
+            //if fresh install update version number to dbSettings
+            string savedVersion = dbSettings.GetSetting("AppVersion", "");
+            if (savedVersion == "")
+            {
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+            }
 
             //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();

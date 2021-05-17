@@ -28,15 +28,7 @@ namespace DABApp
 
             FlowListView.Init();
 
-            //if fresh install update version number to dbSettings
-            string savedVersion = dbSettings.GetSetting("AppVersion", "");
-            if (savedVersion == "")
-            {
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-            }
-
             MainPage = new DabServiceConnect();
-
         }
 
         protected override void OnStart()

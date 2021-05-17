@@ -23,7 +23,8 @@ namespace DABApp.iOS
             var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
 
             //check if version numbers do not match -- user just updated app & if app tracking permission is denied
-            if (savedVersion != CrossVersion.Current.Version && status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
+            //check to make sure this is not first launch so same request does not appear twice
+            if (savedVersion != CrossVersion.Current.Version && savedVersion != "" && status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
             {
                 RequestPermission();
             }
