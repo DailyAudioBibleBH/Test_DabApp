@@ -90,5 +90,7 @@
 	<string>DAB would like to access your calendar for scheduling purposes.</string>
 	<key>CFBundleVersion</key>
 	<string>2021042301</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>DAB shares information with Google Firebase Analytics for more accurate error reporting.</string>
 </dict>
 </plist>
