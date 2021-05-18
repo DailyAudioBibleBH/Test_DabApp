@@ -144,7 +144,6 @@ namespace DABApp.iOS
                         case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
                             Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
                             Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
-                            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
                             break;
                         default:
                             break;
