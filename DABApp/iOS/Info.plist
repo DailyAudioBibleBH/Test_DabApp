@@ -101,6 +101,6 @@
 	<key>CFBundleVersion</key>
 	<string>2021041502</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>DAB would like to access user analytics for more accurate error recording.</string>
+	<string>DAB shares information with Google Firebase Analytics for more accurate error reporting.</string>
 </dict>
 </plist>
