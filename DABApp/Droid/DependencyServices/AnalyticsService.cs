@@ -37,9 +37,6 @@ namespace DABApp.Droid
         {
             try
             {
-
-
-
                 var fireBaseAnalytics = FirebaseAnalytics.GetInstance(CrossCurrentActivity.Current.AppContext);
 
                 if (parameters == null)
