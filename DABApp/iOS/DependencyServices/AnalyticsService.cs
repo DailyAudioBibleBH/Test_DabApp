@@ -22,10 +22,56 @@ namespace DABApp.iOS
             string savedVersion = dbSettings.GetSetting("AppVersion", "");
             var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
 
-            //check to make sure this is not first launch so same request does not appear twice
-            if (savedVersion != CrossVersion.Current.Version && savedVersion != "" && status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
+            //first launch of app, need to ask app tracking permission
+            if (savedVersion == "")
             {
-                RequestPermission();
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                FirstLaunchPromptUserForPermissions();
+            }
+            //check to make sure this is not first launch so same request does not appear twice
+            else if (savedVersion != CrossVersion.Current.Version)
+            {
+                //Store version number so not to ask again until next update
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                if (status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
+                {
+                    RequestPermission();
+                }
+            }
+        }
+
+        private async void FirstLaunchPromptUserForPermissions()
+        {
+            //if version 14 or higher
+            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+            {
+                await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+
+                //Request Permission to follow AppTrackingTransparency guidelines
+                AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
+                {
+                    switch (result)
+                    {
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
+                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                            break;
+                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
+                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                            break;
+                        default:
+                            break;
+                    }
+                });
             }
         }
 
