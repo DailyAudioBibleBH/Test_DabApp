@@ -20,7 +20,7 @@ namespace DABApp.iOS
         public async void FirstLaunchPromptUserForPermissions()
         {
             //if version 14 or higher
-            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
+            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 5))
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
