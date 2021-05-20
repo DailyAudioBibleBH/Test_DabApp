@@ -25,8 +25,8 @@ namespace DABApp.Droid
             //Check version number and update if needed
             string savedVersion = dbSettings.GetSetting("AppVersion", "");
 
-            //First launch is updated in main activity, other android updates update version number here to match ios structure
-            if (savedVersion != CrossVersion.Current.Version && savedVersion != "")
+            //Update version number setting if needed
+            if (savedVersion != CrossVersion.Current.Version)
             {
                 dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
             }
