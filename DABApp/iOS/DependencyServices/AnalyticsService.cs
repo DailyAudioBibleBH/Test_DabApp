@@ -24,7 +24,7 @@ namespace DABApp.iOS
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+                    await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say Allow Tracking.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
 
                     //Request Permission to follow AppTrackingTransparency guidelines
                     AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
@@ -62,9 +62,9 @@ namespace DABApp.iOS
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+                    await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say Allow Tracking.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
 
-                    bool answer = await App.Current.MainPage.DisplayAlert("Update", "DAB would like to access Firebase Google Analytics for more accurate error recording.", "Accept", "Decline");
+                    bool answer = await App.Current.MainPage.DisplayAlert("App Tracking Settings", "DAB would like to access Firebase Google Analytics for more accurate error recording.", "Allow Tracking", "Ask App Not To Track");
                     if (answer)
                     {
                         Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
