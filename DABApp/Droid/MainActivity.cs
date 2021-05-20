@@ -108,13 +108,6 @@ namespace DABApp.Droid
                 RequestedOrientation = ScreenOrientation.Portrait;
             }
 
-            //if fresh install update version number to dbSettings
-            string savedVersion = dbSettings.GetSetting("AppVersion", "");
-            if (savedVersion == "")
-            {
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-            }
-
             //Reciever for detecting android phone states, incoming/outgoing calls
             callReceiver = new CallReceiver();
             TelephonyManager telephonyManager = (TelephonyManager)GetSystemService(Context.TelephonyService);

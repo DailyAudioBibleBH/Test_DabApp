@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using DABApp.Service;
 using SQLite;
+using Version.Plugin;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -29,22 +30,33 @@ namespace DABApp.DabUI
             {
                 RotateIconContinuously(); //start rotation
                 WaitContent.FadeTo(1, 250); //fade it in
+
+                //Check if user recently updated app and ask permissions if necessary
+                string savedVersion = dbSettings.GetSetting("AppVersion", "");
+
+                //first launch of app, need to ask app tracking permission
+                if (savedVersion == "")
+                {
+                    dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                    DependencyService.Get<IAnalyticsService>().FirstLaunchPromptUserForPermissions();
+                }
+                //check to make sure this is not first launch so same request does not appear twice
+                else if (savedVersion != CrossVersion.Current.Version)
+                {
+                    //Store version number so not to ask again until next update
+                    dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                    DependencyService.Get<IAnalyticsService>().RequestPermission();
+                }
             }
             else
             {
+                string savedVersion = dbSettings.GetSetting("AppVersion", "");
+                if (savedVersion != CrossVersion.Current.Version)
+                {
+                    dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                }
+
                 WaitContent.Opacity = 1;
-            }
-            if (GlobalResources.TestMode)
-            {
-                lblTestMode.IsVisible = true;
-                if (Device.RuntimePlatform == Device.iOS)
-                {
-                    lblTestMode.FadeTo(1, 500, Easing.BounceIn);
-                }
-                else
-                {
-                    lblTestMode.Opacity = 1;
-                }
             }
             SQLiteAsyncConnection adb = DabData.AsyncDatabase;
             //Determine if the user was logged in at last use

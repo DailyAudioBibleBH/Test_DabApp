@@ -27,7 +27,6 @@ namespace DABApp.iOS
     [Register("AppDelegate")]
     public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate, IMessagingDelegate, IUNUserNotificationCenterDelegate
     {
-
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             //SQL Lite Init
@@ -98,7 +97,6 @@ namespace DABApp.iOS
             CrossFirebasePushNotification.Current.OnNotificationAction += FCM_OnNotificationAction;
             CrossFirebasePushNotification.Current.OnNotificationDeleted += FCM_OnNotificationDeleted;             //Push message deleted event usage sample: (Android Only)
 
-
             /* END FIREBASE CLOUD MESSAGING */
 
             var m = base.FinishedLaunching(app, options);
@@ -108,51 +106,8 @@ namespace DABApp.iOS
                 GlobalResources.Instance.IsiPhoneX = UIApplication.SharedApplication.KeyWindow.SafeAreaInsets.Bottom != 0;
             }
 
-            //first launch of app, need to ask app tracking permission
-            if (dbSettings.GetSetting("AppVersion", "") == "")
-            {
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-                PromptUserForPermissions();
-            }
             return m;
         }
-
-        private async void PromptUserForPermissions()
-        {
-            //if version 14 or higher
-            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
-            {
-                await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
-
-                //Request Permission to follow AppTrackingTransparency guidelines
-                AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
-                {
-                    switch (result)
-                    {
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
-                            Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
-                            break;
-                        case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
-                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            }
-        }
-
-
 
         /* GENERAL UI EVENTS */
 
