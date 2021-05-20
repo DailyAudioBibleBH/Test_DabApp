@@ -16,31 +16,7 @@ namespace DABApp.iOS
 {
     public class AnalyticsService: IAnalyticsService
     {
-        public AnalyticsService()
-        {
-            //Check if user recently updated app and ask permissions if necessary
-            string savedVersion = dbSettings.GetSetting("AppVersion", "");
-            var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
-
-            //first launch of app, need to ask app tracking permission
-            if (savedVersion == "")
-            {
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-                FirstLaunchPromptUserForPermissions();
-            }
-            //check to make sure this is not first launch so same request does not appear twice
-            else if (savedVersion != CrossVersion.Current.Version)
-            {
-                //Store version number so not to ask again until next update
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-                if (status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
-                {
-                    RequestPermission();
-                }
-            }
-        }
-
-        private async void FirstLaunchPromptUserForPermissions()
+        public async void FirstLaunchPromptUserForPermissions()
         {
             //if version 14 or higher
             if (UIDevice.CurrentDevice.CheckSystemVersion(14, 0))
@@ -77,19 +53,19 @@ namespace DABApp.iOS
 
         public async void RequestPermission()
         {
-            await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
-
-            bool answer = await App.Current.MainPage.DisplayAlert("Update", "DAB would like to access Firebase Google Analytics for more accurate error recording.", "Accept", "Decline");
-            if (answer)
+            var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
+            if (status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized)
             {
-                Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
-                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say yes.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+
+                bool answer = await App.Current.MainPage.DisplayAlert("Update", "DAB would like to access Firebase Google Analytics for more accurate error recording.", "Accept", "Decline");
+                if (answer)
+                {
+                    Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                    Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                }
             }
-
-            //Store version number so not to ask again until next update
-            dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
         }
-
 
         public void LogEvent(string eventId)
         {

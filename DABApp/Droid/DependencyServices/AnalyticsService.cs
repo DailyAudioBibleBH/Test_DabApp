@@ -20,18 +20,6 @@ namespace DABApp.Droid
 {
     public class AnalyticsService : IAnalyticsService
     {
-        public AnalyticsService()
-        {
-            //Check version number and update if needed
-            string savedVersion = dbSettings.GetSetting("AppVersion", "");
-
-            //Update version number setting if needed
-            if (savedVersion != CrossVersion.Current.Version)
-            {
-                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
-            }
-        }
-
         public void LogEvent(string eventId)
         {
             LogEvent(eventId, null);
@@ -74,6 +62,18 @@ namespace DABApp.Droid
             {
                 System.Diagnostics.Debug.WriteLine("Error logging event to firebase");
             }
+        }
+
+        public void FirstLaunchPromptUserForPermissions()
+        {
+            //iOS only method
+            return;
+        }
+
+        public void RequestPermission()
+        {
+            //iOS only method
+            return;
         }
     }
 }
