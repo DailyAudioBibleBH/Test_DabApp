@@ -89,7 +89,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>DAB would like to access your calendar for scheduling purposes.</string>
 	<key>CFBundleVersion</key>
-	<string>2021052102</string>
+	<string>2021052103</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>DAB shares information with Google Firebase Analytics for more accurate error reporting.</string>
 </dict>
