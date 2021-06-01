@@ -95,9 +95,7 @@ namespace DABApp
 						{
 							await DisplayAlert("Success", "Successfully Added Donation", "OK");
 
-							NavigationPage navPage = new NavigationPage(new DabChannelsPage());
-							navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-							Application.Current.MainPage = navPage;
+							await Navigation.PushAsync(new DabChannelsPage());
 						}
 
 					}
@@ -108,9 +106,7 @@ namespace DABApp
                         {
 							await DisplayAlert("Your donation is in the process of updating.", "It may take a minute for the app to reflect your changes.", "OK");
 
-							NavigationPage navPage = new NavigationPage(new DabChannelsPage());
-							navPage.SetValue(NavigationPage.BarTextColorProperty, Color.FromHex("CBCBCB"));
-							Application.Current.MainPage = navPage;
+							await Navigation.PushAsync(new DabChannelsPage());
 						}
                         else
                         {
