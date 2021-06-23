@@ -49,6 +49,7 @@ namespace DABApp.Service
         bool _waiting = true; //start off true, will set to false once ready
         bool _firstWait = true; //indicator first time through the loop to show detail...
         bool _multipleWaits = false; // indicator of multiple waits for the debugger
+        bool shownCredentialMessage = false; //if we've shown them a logoff message already.
 
         public DabServiceWaitService()
         {
@@ -132,6 +133,23 @@ namespace DABApp.Service
                 {
                     //nothing to do...
                     return;
+                }
+
+                if (response?.payload?.errors != null)
+                {
+                    //an error happened, do we care?
+                    if (response.payload.errors.First().message== "Not authenticated as user.")
+                    {
+                        //not authenticated; force the user to log back in. This could take some time and have duplication, so ignore future messages.
+                        if (shownCredentialMessage == false)
+                        {
+                            var logoff = GlobalResources.LogoffAndResetApp("We're sorry, but your login credentials have expired unexpectedly. Please log back in to continue.").Result;
+                        } else
+                        {
+                            var logoff = GlobalResources.LogoffAndResetApp().Result;
+                        }
+                        return;
+                    }
                 }
 
                 switch (_waitType) //one of the enum values
