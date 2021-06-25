@@ -85,7 +85,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>DAB</string>
 	<key>CFBundleVersion</key>
-	<string>2021062401</string>
+	<string>2021062501</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.2.81</string>
 	<key>NSCalendarsUsageDescription</key>
