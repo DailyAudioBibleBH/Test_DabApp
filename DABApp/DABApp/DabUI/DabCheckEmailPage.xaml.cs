@@ -26,6 +26,8 @@ namespace DABApp
         {
             InitializeComponent();
 
+            throw new System.Exception("Testing");
+
             /* UI Prep
              */
             NavigationPage.SetHasNavigationBar(this, false);
