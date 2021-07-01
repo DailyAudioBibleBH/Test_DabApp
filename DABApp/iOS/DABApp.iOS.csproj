@@ -220,11 +220,8 @@
     <Reference Include="SegmentedControl.FormsPlugin.iOS">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.iOS.dll</HintPath>
     </Reference>
-    <Reference Include="Plugin.FirebasePushNotification.Abstractions">
-      <HintPath>..\packages\Plugin.FirebasePushNotification.2.3.5\lib\Xamarin.iOS10\Plugin.FirebasePushNotification.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="Plugin.FirebasePushNotification">
-      <HintPath>..\packages\Plugin.FirebasePushNotification.2.3.5\lib\Xamarin.iOS10\Plugin.FirebasePushNotification.dll</HintPath>
+      <HintPath>..\packages\Plugin.FirebasePushNotification.3.3.9\lib\xamarinios10\Plugin.FirebasePushNotification.dll</HintPath>
     </Reference>
     <Reference Include="SlideOverKit">
       <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\Xamarin.iOS10\SlideOverKit.dll</HintPath>
@@ -343,6 +340,7 @@
     <Reference Include="Firebase.CloudMessaging">
       <HintPath>..\packages\Xamarin.Firebase.iOS.CloudMessaging.4.7.1\lib\xamarinios10\Firebase.CloudMessaging.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DABApp\DABApp.csproj">

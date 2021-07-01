@@ -197,24 +197,24 @@ namespace DABApp.iOS
 
         /* FIREBASE CLOUD MESSAGING EVENTS */
 
-        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationTokenEventArgs e)
+        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.FirebasePushNotificationTokenEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"TOKEN : {e.Token}");
         }
 
-        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
+        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
         {
             DabPushNotification push = new DabPushNotification(e);
             push.DisplayAlert();
         }
 
-        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
+        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
         {
             DabPushNotification push = new DabPushNotification(e);
             push.DisplayAlert();
         }
 
-        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
+        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
         {
             //TODO: Handle action
             System.Diagnostics.Debug.WriteLine("Action");
@@ -225,7 +225,7 @@ namespace DABApp.iOS
             }
         }
 
-        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
+        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
         {
             //TODO: Handle push notification deleted (ANDROID ONLY)
             System.Diagnostics.Debug.WriteLine("Deleted");
