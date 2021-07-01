@@ -1028,10 +1028,15 @@ namespace DABApp.Service
             DabGraphQlRootObject ql = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
             DabGraphQlData data = ql?.payload?.data;
 
-            //capture service-wide issues
+          //capture service-wide issues
             if (ql.type == "connection_error")
             {
                 if (ql.payload?.message == "Your token is not valid.")
+                {
+                    HandleInvalidToken(ql);
+                }
+
+                if (ql.payload?.message == "Your user token is not valid.")
                 {
                     HandleInvalidToken(ql);
                 }
