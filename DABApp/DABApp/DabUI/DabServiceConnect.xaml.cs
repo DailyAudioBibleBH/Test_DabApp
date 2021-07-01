@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DABApp.Service;
 using SQLite;
+using Version.Plugin;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -24,16 +25,36 @@ namespace DABApp.DabUI
         {
             base.OnAppearing();
 
+            string savedVersion = dbSettings.GetSetting("AppVersion", "");
             if (Device.RuntimePlatform == Device.iOS)
             {
                 RotateIconContinuously(); //start rotation
                 WaitContent.FadeTo(1, 250); //fade it in
+
+                //Check if user recently updated app and ask permissions if necessary
+                //first launch of app, need to ask app tracking permission
+                if (savedVersion == "")
+                {
+                    DependencyService.Get<IAnalyticsService>().FirstLaunchPromptUserForPermissions();
+                }
+                //check to make sure this is not first launch so same request does not appear twice
+                else
+                {
+                    DependencyService.Get<IAnalyticsService>().RequestPermission();
+                }
+                //Store version number so not to ask again until next update
+                dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
             }
             else
             {
+                if (savedVersion != CrossVersion.Current.Version)
+                {
+                    dbSettings.StoreSetting("AppVersion", CrossVersion.Current.Version);
+                }
+
                 WaitContent.Opacity = 1;
             }
-            
+
             if (GlobalResources.TestMode)
             {
                 lblTestMode.IsVisible = true;

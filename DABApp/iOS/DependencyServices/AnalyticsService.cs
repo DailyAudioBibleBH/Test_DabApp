@@ -8,6 +8,8 @@ using DABApp.iOS;
 using Firebase.Analytics;
 using Foundation;
 using UIKit;
+using Version.Plugin;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(AnalyticsService))]
@@ -15,6 +17,103 @@ namespace DABApp.iOS
 {
     public class AnalyticsService: IAnalyticsService
     {
+        public async void FirstLaunchPromptUserForPermissions()
+        {
+            //save current iOS System Version
+            dbSettings.StoreSetting("iOSSystemVersion", UIDevice.CurrentDevice.SystemVersion);
+
+            //if version 14 or higher
+            if (UIDevice.CurrentDevice.CheckSystemVersion(14, 5))
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say Allow Tracking.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+
+                    //Request Permission to follow AppTrackingTransparency guidelines
+                    AppTrackingTransparency.ATTrackingManager.RequestTrackingAuthorization((result) =>
+                    {
+                        switch (result)
+                        {
+                            case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.NotDetermined:
+                                Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                                break;
+                            case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Restricted:
+                                Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                                break;
+                            case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Denied:
+                                Firebase.Analytics.Analytics.SetUserProperty("false", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(false);
+                                break;
+                            case AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized:
+                                Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                                Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                });
+            }
+        }
+
+        public async void RequestPermission()
+        {
+            string appVersion = dbSettings.GetSetting("AppVersion", "");
+            bool did14Update = CheckIfRecentIos14Update();
+            //if recent DAB update or iOS update passing 14.5 
+            if (appVersion != CrossVersion.Current.Version || did14Update)
+            {
+                var status = AppTrackingTransparency.ATTrackingManager.TrackingAuthorizationStatus;
+                if (status != AppTrackingTransparency.ATTrackingManagerAuthorizationStatus.Authorized || did14Update)
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await App.Current.MainPage.DisplayAlert("App Tracking Settings", "The next prompt you will receive will ask permission to share analytical information with DAB.  We ask that you say Allow Tracking.  This isn’t about targeting you. We don’t do that sort of thing. There are a ton of different devices out there.  When an app crashes we’d like to understand why so that we can keep it from happening.", "Okay");
+
+                        bool answer = await App.Current.MainPage.DisplayAlert("App Tracking Settings", "DAB would like to access Firebase Google Analytics for more accurate error recording.", "Allow Tracking", "Ask App Not To Track");
+                        if (answer)
+                        {
+                            Firebase.Analytics.Analytics.SetUserProperty("true", Firebase.Analytics.UserPropertyNamesConstants.AllowAdPersonalizationSignals);
+                            Firebase.Analytics.Analytics.SetAnalyticsCollectionEnabled(true);
+                        }
+                    });
+                }
+            }
+        }
+
+        public bool CheckIfRecentIos14Update()
+        {
+            bool wasBelow14Half;
+            bool isOver14Half;
+            string SavedIosVersion = dbSettings.GetSetting("iOSSystemVersion", "0");
+
+            //save current iOS System Version
+            dbSettings.StoreSetting("iOSSystemVersion", UIDevice.CurrentDevice.SystemVersion);
+
+            var compareVersion = new System.Version("14.5");
+            var lastVersion = new System.Version(SavedIosVersion);
+            var currentVersion = new System.Version(UIDevice.CurrentDevice.SystemVersion);
+            var findBelow14Half = lastVersion.CompareTo(compareVersion);
+            var findOver14Half = currentVersion.CompareTo(compareVersion);
+
+            if (findBelow14Half == -1)
+                wasBelow14Half = true;
+            else
+                wasBelow14Half = false;
+
+            if (findOver14Half == 1 || findOver14Half == 0)
+                isOver14Half = true;
+            else
+                isOver14Half = false;
+
+            if (wasBelow14Half == true && isOver14Half == true)
+                return true;
+            else
+                return false;
+        }
+
         public void LogEvent(string eventId)
         {
             LogEvent(eventId, (IDictionary<string, string>)null);

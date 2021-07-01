@@ -62,5 +62,17 @@ namespace DABApp.Droid
                 System.Diagnostics.Debug.WriteLine("Error logging event to firebase");
             }
         }
+
+        public void FirstLaunchPromptUserForPermissions()
+        {
+            //iOS only method
+            return;
+        }
+
+        public void RequestPermission()
+        {
+            //iOS only method
+            return;
+        }
     }
 }
