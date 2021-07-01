@@ -26,9 +26,7 @@ namespace DABApp
         {
             InitializeComponent();
 
-            throw new System.Exception("Testing");
-
-            /* UI Prep
+           /* UI Prep
              */
             NavigationPage.SetHasNavigationBar(this, false);
             GlobalResources.LogInPageExists = true;
