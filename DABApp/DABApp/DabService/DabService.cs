@@ -418,7 +418,7 @@ namespace DABApp.Service
             return response;
         }
 
-        public static async Task<DabServiceWaitResponse> GetAddresses ()
+        public static async Task<DabServiceWaitResponse> GetAddresses()
         {
             /*
              * This routine requests a list of addresses assigned to the user, billing and shipping.
@@ -485,7 +485,7 @@ namespace DABApp.Service
                 var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
                 socket.Send(JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload)));
             }
-            
+
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
@@ -507,7 +507,7 @@ namespace DABApp.Service
 
             //Wait for the appropriate response
             var service = new DabServiceWaitService();
-            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser,ExtraLongTimeout); //Added longer wait time to register user since it was not recieving a response fast enough
+            var response = await service.WaitForServiceResponse(DabServiceWaitTypes.RegisterUser, ExtraLongTimeout); //Added longer wait time to register user since it was not recieving a response fast enough
 
             //return the response
             return response;
@@ -629,7 +629,7 @@ namespace DABApp.Service
             if (!IsConnected) return new DabServiceWaitResponse(DabServiceErrorResponses.Disconnected);
 
 
-            var command  = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
+            var command = "query { channels { id channelId key title imageURL rolloverMonth rolloverDay bufferPeriod bufferLength public createdAt updatedAt}}";
             var payload = new DabGraphQlPayload(command, new DabGraphQlVariables());
             var json = JsonConvert.SerializeObject(new DabGraphQlCommunication("start", payload));
             socket.Send(json);
@@ -660,7 +660,7 @@ namespace DABApp.Service
                 queryName = "updatedEpisodes"; //not first time through, use updatedepisodes
                 isFirstTime = false;
             }
-                
+
 
             //this routine gets episodes for a channel
             //it returns a list of ql objects
@@ -774,7 +774,7 @@ namespace DABApp.Service
             switch (Action)
             {
                 case ServiceActionsEnum.Favorite:
-                    if (! BoolValue.HasValue) throw new NotSupportedException("No favorite value provided.");
+                    if (!BoolValue.HasValue) throw new NotSupportedException("No favorite value provided.");
                     command = $"mutation {{logAction(episodeId: {EpisodeId}, favorite: {BoolValue.Value.ToString().ToLower()}, updatedAt: \"{updatedAt}\") {{episodeId userId favorite updatedAt favoriteUpdatedAt}}}}";
                     break;
                 case ServiceActionsEnum.Listened:
@@ -817,8 +817,8 @@ namespace DABApp.Service
              * note that this routine is different as it returns a LIST of responses as it builds all actions together
              */
 
-                    //check for a connecting before proceeding
-                    if (!IsConnected)
+            //check for a connecting before proceeding
+            if (!IsConnected)
             {
                 return new DabServiceWaitResponseList()
                 {
@@ -981,7 +981,7 @@ namespace DABApp.Service
                 Data = result
             };
 
-          
+
         }
 
         public static async Task<DabServiceWaitResponse> SeeProgress(int ProgressId)
@@ -1034,7 +1034,7 @@ namespace DABApp.Service
             DabGraphQlRootObject ql = JsonConvert.DeserializeObject<DabGraphQlRootObject>(e.Message);
             DabGraphQlData data = ql?.payload?.data;
 
-          //capture service-wide issues
+            //capture service-wide issues
             if (ql.type == "connection_error")
             {
                 if (ql.payload?.message == "Your token is not valid.")
@@ -1048,7 +1048,7 @@ namespace DABApp.Service
                 }
             }
 
-            if (ql.type=="ka")
+            if (ql.type == "ka")
             {
                 //keepalive message
                 HandleKeepAlive();
@@ -1132,7 +1132,7 @@ namespace DABApp.Service
 
             await DabServiceRoutines.UpdateProgress(data);
 
-            
+
         }
 
         private static async void HandleTokenRemoved(TokenRemoved data)
