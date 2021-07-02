@@ -111,6 +111,18 @@
     <Reference Include="EngineIoClientDotNet, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\EngineIoClientDotNet.1.0.5\lib\netstandard1.3\EngineIoClientDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="Firebase.CloudMessaging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.Firebase.iOS.CloudMessaging.4.7.1\lib\xamarinios10\Firebase.CloudMessaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Firebase.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.Firebase.iOS.Core.6.10.4\lib\xamarinios10\Firebase.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Firebase.Installations, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.Firebase.iOS.Installations.1.7.0\lib\xamarinios10\Firebase.Installations.dll</HintPath>
+    </Reference>
+    <Reference Include="Firebase.InstanceID, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.Firebase.iOS.InstanceID.4.8.0\lib\xamarinios10\Firebase.InstanceID.dll</HintPath>
+    </Reference>
     <Reference Include="Html2Markdown, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Html2Markdown.3.0.0.223\lib\netstandard1.4\Html2Markdown.dll</HintPath>
     </Reference>
@@ -135,6 +147,9 @@
     </Reference>
     <Reference Include="Plugin.Connectivity.Abstractions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.Connectivity.3.0.2\lib\Xamarin.iOS10\Plugin.Connectivity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.FirebasePushNotification, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Plugin.FirebasePushNotification.3.3.10\lib\xamarinios10\Plugin.FirebasePushNotification.dll</HintPath>
     </Reference>
     <Reference Include="Plugin.Iconize, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.Iconize.1.0.10\lib\Xamarin.iOS10\Plugin.Iconize.dll</HintPath>
@@ -201,9 +216,6 @@
     </Reference>
     <Reference Include="SegmentedControl.FormsPlugin.iOS">
       <HintPath>..\packages\SegmentedControl.FormsPlugin.2.0.1\lib\Xamarin.iOS10\SegmentedControl.FormsPlugin.iOS.dll</HintPath>
-    </Reference>
-    <Reference Include="Plugin.FirebasePushNotification">
-      <HintPath>..\packages\Plugin.FirebasePushNotification.3.3.9\lib\xamarinios10\Plugin.FirebasePushNotification.dll</HintPath>
     </Reference>
     <Reference Include="SlideOverKit">
       <HintPath>..\packages\SlideOverKit.2.1.6.2\lib\Xamarin.iOS10\SlideOverKit.dll</HintPath>
@@ -307,20 +319,8 @@
     <Reference Include="Telerik.Zip">
       <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="Firebase.Core">
-      <HintPath>..\packages\Xamarin.Firebase.iOS.Core.6.10.4\lib\xamarinios10\Firebase.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Firebase.Installations">
-      <HintPath>..\packages\Xamarin.Firebase.iOS.Installations.1.7.0\lib\xamarinios10\Firebase.Installations.dll</HintPath>
-    </Reference>
     <Reference Include="Firebase.Analytics">
       <HintPath>..\packages\Xamarin.Firebase.iOS.Analytics.6.9.0\lib\xamarinios10\Firebase.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="Firebase.InstanceID">
-      <HintPath>..\packages\Xamarin.Firebase.iOS.InstanceID.4.8.0\lib\xamarinios10\Firebase.InstanceID.dll</HintPath>
-    </Reference>
-    <Reference Include="Firebase.CloudMessaging">
-      <HintPath>..\packages\Xamarin.Firebase.iOS.CloudMessaging.4.7.1\lib\xamarinios10\Firebase.CloudMessaging.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing.Common.dll" />
     <Reference Include="Microsoft.AppCenter">
@@ -634,7 +634,15 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.4.4.0.991864\build\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.4.4.0.991864\build\Xamarin.Forms.targets')" />
+  <Import Project="..\packages\Xamarin.Firebase.iOS.Analytics.6.9.0\build\Xamarin.Firebase.iOS.Analytics.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Analytics.6.9.0\build\Xamarin.Firebase.iOS.Analytics.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.props'))" />
+    <Error Condition="!Exists('..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.targets'))" />
+    <Error Condition="!Exists('..\packages\Xamarin.Firebase.iOS.Core.6.10.4\build\Xamarin.Firebase.iOS.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xamarin.Firebase.iOS.Core.6.10.4\build\Xamarin.Firebase.iOS.Core.targets'))" />
+  </Target>
   <Import Project="..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.10.0\build\Xamarin.Build.Download.targets')" />
   <Import Project="..\packages\Xamarin.Firebase.iOS.Core.6.10.4\build\Xamarin.Firebase.iOS.Core.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Core.6.10.4\build\Xamarin.Firebase.iOS.Core.targets')" />
-  <Import Project="..\packages\Xamarin.Firebase.iOS.Analytics.6.9.0\build\Xamarin.Firebase.iOS.Analytics.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Analytics.6.9.0\build\Xamarin.Firebase.iOS.Analytics.targets')" />
 </Project>

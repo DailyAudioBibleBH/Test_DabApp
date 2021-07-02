@@ -38,7 +38,7 @@ namespace DABApp.Droid
             if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
             {
                 //Change for your default notification channel id here
-                FirebasePushNotificationManager.DefaultNotificationChannelId = "FirebasePushNotificationChannel";
+                Plugin.FirebasePushNotification.FirebasePushNotificationManager.DefaultNotificationChannelId = "FirebasePushNotificationChannel";
                 //Change for your default notification channel name here
                 FirebasePushNotificationManager.DefaultNotificationChannelName = "General";
             }
@@ -64,25 +64,25 @@ namespace DABApp.Droid
 
         /* FIREBASE CLOUD MESSAGING EVENTS */
 
-        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
+        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
         {
             DabPushNotification push = new DabPushNotification(e);
             push.DisplayAlert();
         }
 
-        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
+        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
         {
             //TODO: Don't think these are displaying popup on Android yet.
             DabPushNotification push = new DabPushNotification(e);
             push.DisplayAlert();
         }
 
-        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationTokenEventArgs e)
+        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.FirebasePushNotificationTokenEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine($"TOKEN : {e.Token}");
         }
 
-        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationResponseEventArgs e)
+        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
         {
             //TODO: Handle action
             System.Diagnostics.Debug.WriteLine("Action");
@@ -93,7 +93,7 @@ namespace DABApp.Droid
             }
         }
 
-        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.Abstractions.FirebasePushNotificationDataEventArgs e)
+        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
         {
             //TODO: Handle push notification deleted (ANDROID ONLY)
             System.Diagnostics.Debug.WriteLine("Deleted");
