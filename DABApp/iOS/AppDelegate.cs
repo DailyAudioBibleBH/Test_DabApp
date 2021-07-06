@@ -15,8 +15,6 @@ using Plugin.AudioRecorder;
 using Firebase.CloudMessaging;
 using AVFoundation;
 using MediaPlayer;
-using Plugin.FirebasePushNotification;
-using DABApp.DabNotifications;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
@@ -86,19 +84,7 @@ namespace DABApp.iOS
             AppCenter.Start("71f3b832-d6bc-47f3-a1f9-6bbda4669815", typeof(Analytics), typeof(Crashes));
 
 
-            /* END AUDIO PLAYER DEFAULTS
-
-            /* FIREBASE CLOUD MESSAGING */
-            // See https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/GettingStarted.md
-            FirebasePushNotificationManager.Initialize(options, true);
-            CrossFirebasePushNotification.Current.OnTokenRefresh += FCM_OnTokenRefresh;
-            CrossFirebasePushNotification.Current.OnNotificationReceived += FCM_OnNotificationReceived;
-            CrossFirebasePushNotification.Current.OnNotificationOpened += FCM_OnNotificationOpened;
-            CrossFirebasePushNotification.Current.OnNotificationAction += FCM_OnNotificationAction;
-            CrossFirebasePushNotification.Current.OnNotificationDeleted += FCM_OnNotificationDeleted;             //Push message deleted event usage sample: (Android Only)
-
-
-            /* END FIREBASE CLOUD MESSAGING */
+            /* END AUDIO PLAYER DEFAULTS */
 
             var m = base.FinishedLaunching(app, options);
             int SystemVersion = Convert.ToInt16(UIDevice.CurrentDevice.SystemVersion.Split('.')[0]);
@@ -193,75 +179,5 @@ namespace DABApp.iOS
         }
 
         /* END JOURNALING EVENTS */
-
-
-        /* FIREBASE CLOUD MESSAGING EVENTS */
-
-        void FCM_OnTokenRefresh(object source, Plugin.FirebasePushNotification.FirebasePushNotificationTokenEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine($"TOKEN : {e.Token}");
-        }
-
-        void FCM_OnNotificationReceived(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
-        {
-            DabPushNotification push = new DabPushNotification(e);
-            push.DisplayAlert();
-        }
-
-        void FCM_OnNotificationOpened(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
-        {
-            DabPushNotification push = new DabPushNotification(e);
-            push.DisplayAlert();
-        }
-
-        void FCM_OnNotificationAction(object source, Plugin.FirebasePushNotification.FirebasePushNotificationResponseEventArgs e)
-        {
-            //TODO: Handle action
-            System.Diagnostics.Debug.WriteLine("Action");
-
-            if (!string.IsNullOrEmpty(e.Identifier))
-            {
-                System.Diagnostics.Debug.WriteLine($"ActionId: {e.Identifier}");
-            }
-        }
-
-        void FCM_OnNotificationDeleted(object source, Plugin.FirebasePushNotification.FirebasePushNotificationDataEventArgs e)
-        {
-            //TODO: Handle push notification deleted (ANDROID ONLY)
-            System.Diagnostics.Debug.WriteLine("Deleted");
-
-        }
-
-        public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
-        {
-            FirebasePushNotificationManager.DidRegisterRemoteNotifications(deviceToken);
-        }
-
-        public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
-        {
-            FirebasePushNotificationManager.RemoteNotificationRegistrationFailed(error);
-
-        }
-        // To receive notifications in foregroung on iOS 9 and below.
-        // To receive notifications in background in any iOS version
-        public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
-        {
-            // If you are receiving a notification message while your app is in the background,
-            // this callback will not be fired 'till the user taps on the notification launching the application.
-
-            // If you disable method swizling, you'll need to call this method. 
-            // This lets FCM track message delivery and analytics, which is performed
-            // automatically with method swizzling enabled.
-            FirebasePushNotificationManager.DidReceiveMessage(userInfo);
-            // Do your magic to handle the notification data
-            System.Console.WriteLine(userInfo);
-
-            completionHandler(UIBackgroundFetchResult.NewData);
-        }
-
-        /* END FIREBASE CLOUD MESSAGING EVENTS */
-
-
-
     }
 }
