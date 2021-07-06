@@ -361,7 +361,15 @@ namespace DABApp
         public static string GetUserName()
         {
             //friendly user name
-            return (adb.Table<dbUserData>().FirstOrDefaultAsync().Result.FirstName + " " + adb.Table<dbUserData>().FirstOrDefaultAsync().Result.LastName);
+            dbUserData user = adb.Table<dbUserData>().FirstOrDefaultAsync().Result;
+            if (user != null)
+            {
+                return user.FirstName + " " + user.LastName;
+            }
+            else
+            {
+                return "Guest";
+            }
         }
 
         //Used to convert to a currency amount without dollar sign
