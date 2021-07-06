@@ -53,7 +53,16 @@ namespace DABApp.Droid.DependencyServices
         private bool IsCurrentlyShown()
         {
             //Checking if keyboard is showing or not
-            return inputMethodManager.IsAcceptingText;
+            //This can error saying object is disposed if user is switching between pages quickly and view is already gone
+            try
+            {
+                return inputMethodManager.IsAcceptingText;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private void GetInputMethodManager()
