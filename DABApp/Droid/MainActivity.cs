@@ -10,7 +10,6 @@ using Android.Widget;
 using Android.OS;
 using SegmentedControl.FormsPlugin.Android;
 using Android.Util;
-using Android.Support.V7;
 using Xamarin.Forms;
 using SQLite;
 using Xamarin.Forms.Platform.Android;
@@ -19,12 +18,9 @@ using Android.Support.V4.Media.Session;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using Android.Support.Design.Widget;
 using Android.Content.Res;
 using Android.Views.Accessibility;
-using Android.Support.V4.Content;
 using Android;
-using Android.Support.V4.App;
 using Android.Telephony;
 using DABApp.Droid.DependencyServices;
 using Android.Media;
@@ -35,6 +31,8 @@ using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
 using Plugin.CurrentActivity;
+using AndroidX.Core.Content;
+using AndroidX.Core.App;
 
 namespace DABApp.Droid
 {
@@ -147,7 +145,7 @@ namespace DABApp.Droid
 
         void LoadCustomToolBar()
         {
-            var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             if (toolbar != null)
             {
                 SetSupportActionBar(toolbar);
@@ -323,7 +321,7 @@ namespace DABApp.Droid
 
         private int computeUsableHeight()
         {
-            Rect r = new Rect();
+            Android.Graphics.Rect r = new Android.Graphics.Rect();
             mChildOfContent.GetWindowVisibleDisplayFrame(r);
             if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop)
             {

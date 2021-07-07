@@ -4,8 +4,8 @@ using Android.App;
 using Android.Content;
 using Android.Util;
 using Android.OS;
-using Android.Support.V7.App;
 using Android.Content.PM;
+using AndroidX.AppCompat.App;
 
 namespace DABApp.Droid
 {

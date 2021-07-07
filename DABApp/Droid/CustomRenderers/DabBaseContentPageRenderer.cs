@@ -5,10 +5,6 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using SlideOverKit.Droid;
 using Android.App;
-using System.Linq;
-using Android.Support.V7.Widget;
-using Android.Widget;
-using System.Collections.Generic;
 using Android.Content;
 
 [assembly: ExportRenderer(typeof(DabBaseContentPage), typeof(DabBaseContentPageRenderer))]
@@ -33,7 +29,7 @@ namespace DABApp.Droid
             OnElementChangedEvent?.Invoke(e);
 
             var context = (Activity)Context;
-            var toolbar = context.FindViewById<Android.Support.V7.Widget.Toolbar>(Droid.Resource.Id.toolbar);
+            var toolbar = context.FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Droid.Resource.Id.toolbar);
             if (toolbar != null)
             {
                 if (toolbar.NavigationIcon != null)

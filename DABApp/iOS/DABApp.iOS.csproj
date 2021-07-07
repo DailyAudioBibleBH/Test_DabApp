@@ -170,13 +170,89 @@
     <Reference Include="System.Collections.Immutable, Version=1.2.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.4.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="TEditor, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.dll</HintPath>
+    <Reference Include="Telerik.Documents.CMapUtils, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.CMapUtils.2021.2.614\lib\netstandard2.0\Telerik.Documents.CMapUtils.dll</HintPath>
     </Reference>
-    <Reference Include="TEditor.Abstractions, Version=1.0.6394.28695, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.Abstractions.dll</HintPath>
+    <Reference Include="Telerik.Documents.Core, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Core.2021.2.614\lib\netstandard2.0\Telerik.Documents.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Fixed, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Fixed.2021.2.614\lib\netstandard2.0\Telerik.Documents.Fixed.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Flow, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Flow.2021.2.614\lib\netstandard2.0\Telerik.Documents.Flow.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Flow.FormatProviders.Doc, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Flow.FormatProviders.Doc.2021.2.614\lib\netstandard2.0\Telerik.Documents.Flow.FormatProviders.Doc.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Flow.FormatProviders.Pdf, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Flow.FormatProviders.Pdf.2021.2.614\lib\netstandard2.0\Telerik.Documents.Flow.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Spreadsheet.2021.2.614\lib\netstandard2.0\Telerik.Documents.Spreadsheet.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.OpenXml, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Spreadsheet.FormatProviders.OpenXml.2021.2.614\lib\netstandard2.0\Telerik.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.Pdf, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Spreadsheet.FormatProviders.Pdf.2021.2.614\lib\netstandard2.0\Telerik.Documents.Spreadsheet.FormatProviders.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.Xls, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.Spreadsheet.FormatProviders.Xls.2021.2.614\lib\netstandard2.0\Telerik.Documents.Spreadsheet.FormatProviders.Xls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Documents.SpreadsheetStreaming, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.SpreadsheetStreaming.2021.2.614\lib\netstandard2.0\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Xamarin.iOS, Version=2021.2.615.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Barcode, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Barcode.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Chart, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Chart.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Common, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.ConversationalUI, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.ConversationalUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataControls, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.DataControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataGrid, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataVisualization, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.ImageEditor, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.ImageEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Input, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Map, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Map.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.PdfViewer, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.PdfViewer.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Primitives, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.RichTextEditor, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.RichTextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.SkiaSharp, Version=2021.2.615.480, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.2021.2.615.1\lib\xamarinios10\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Zip, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.UI.for.Xamarin.Zip.2021.2.614\lib\netstandard2.0\Telerik.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Version.Plugin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xam.Plugin.Version.1.0.0.0\lib\Xamarin.iOS10\Version.Plugin.dll</HintPath>
@@ -191,7 +267,7 @@
       <HintPath>..\packages\WebSocket4Net.0.15.2\lib\netstandard1.3\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Essentials, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Xamarin.Essentials.1.5.1\lib\xamarinios10\Xamarin.Essentials.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Essentials.1.6.1\lib\xamarinios10\Xamarin.Essentials.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.Forms.5.0.0.1931\lib\Xamarin.iOS10\Xamarin.Forms.Core.dll</HintPath>
@@ -234,75 +310,6 @@
     </Reference>
     <Reference Include="SkiaSharp.Views.Forms">
       <HintPath>..\packages\SkiaSharp.Views.Forms.1.68.0\lib\Xamarin.iOS\SkiaSharp.Views.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Core">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Fixed">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Fixed.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Flow">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Flow.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Flow.FormatProviders.Pdf">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Flow.FormatProviders.Pdf.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.OpenXml">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.Spreadsheet.FormatProviders.Pdf">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.Spreadsheet.FormatProviders.Pdf.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Documents.SpreadsheetStreaming">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Documents.SpreadsheetStreaming.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Xamarin.iOS">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Xamarin.iOS.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Barcode">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Barcode.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Chart">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Chart.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Common">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.ConversationalUI">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.ConversationalUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataControls">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataControls.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataGrid">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.DataVisualization">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.DataVisualization.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.ImageEditor">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.ImageEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Input">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Input.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Map">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Map.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.PdfViewer">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.PdfViewer.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.Primitives">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.XamarinForms.SkiaSharp">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Zip">
-      <HintPath>..\packages\Telerik.UI.for.Xamarin.2020.2.624.1\lib\xamarinios10\Telerik.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Firebase.Core">
       <HintPath>..\packages\Xamarin.Firebase.iOS.Core.6.10.4\lib\xamarinios10\Firebase.Core.dll</HintPath>

@@ -11,8 +11,6 @@ using Android.Content.PM;
 using Android.Media;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
 using Xamarin.Forms;
