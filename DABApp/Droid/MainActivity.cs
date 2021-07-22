@@ -76,7 +76,7 @@ namespace DABApp.Droid
             var componentName = new ComponentName(PackageName, new MediaButtonBroadcastReceiver().ComponentName);
             am.RegisterMediaButtonEventReceiver(componentName);
 
-            Rg.Plugins.Popup.Popup.Init(this, bundle);
+            Rg.Plugins.Popup.Popup.Init(this);
             global::Xamarin.Forms.Forms.Init(this, bundle);
 
             AndroidBug5497WorkaroundForXamarinAndroid.assistActivity(this);
