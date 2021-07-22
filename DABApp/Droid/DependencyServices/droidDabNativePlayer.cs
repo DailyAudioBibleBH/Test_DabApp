@@ -30,7 +30,7 @@ namespace DABApp.Droid
         static readonly string CHANNEL_ID = "location_notification";
         DabPlayer dabplayer;
         bool wasPlaying = false;
-        MediaSessionCompat mSession = new MediaSessionCompat(Application.Context, "MusicService");
+        MediaSession mSession = new MediaSession(Application.Context, "MusicService");
 
         public PlaybackStateCode State { get; set; }
 
@@ -138,10 +138,10 @@ namespace DABApp.Droid
         {
             dabplayer = Player;
             mSession.SetMetadata(
-                new MediaMetadataCompat.Builder()
+                new MediaMetadata.Builder()
                     .Build()
                 );
-            mSession.SetFlags(MediaSessionCompat.FlagHandlesMediaButtons | MediaSessionCompat.FlagHandlesTransportControls);
+            mSession.SetFlags(Android.Media.Session.MediaSessionFlags.HandlesMediaButtons | Android.Media.Session.MediaSessionFlags.HandlesTransportControls);
 
             var controller = mSession.Controller;
             var description = GlobalResources.playerPodcast;
@@ -178,16 +178,16 @@ namespace DABApp.Droid
                     int color = ContextCompat.GetColor(Application.Context, Resource.Color.dab_red);
 
                     // Build the notification:
-                    var builder = new NotificationCompat.Builder(Application.Context, CHANNEL_ID)
-                                  .SetStyle(new Android.Support.V4.Media.App.NotificationCompat.MediaStyle()
+                    var builder = new Notification.Builder(Application.Context, CHANNEL_ID)
+                                  .SetStyle(new Notification.MediaStyle()
                                             .SetMediaSession(mSession.SessionToken)
-                                            .SetShowCancelButton(true)
-                                            .SetShowActionsInCompactView(0, 1, 2)
-                                            .SetCancelButtonIntent(backToAppPendingIntent))
+                                            //.SetShowCancelButton(true)
+                                            .SetShowActionsInCompactView(0, 1, 2))
+                                            //.SetCancelButtonIntent(backToAppPendingIntent))
                                   .SetProgress(player.Duration, player.CurrentPosition, true)
-                                  .SetVisibility(NotificationCompat.VisibilityPublic)
+                                  .SetVisibility(NotificationVisibility.Public)
                                   .SetContentIntent(backToAppPendingIntent) // Start up this activity when the user clicks the intent.
-                                  .SetDeleteIntent(MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
+                                  .SetDeleteIntent(AndroidX.Media.Session.MediaButtonReceiver.BuildMediaButtonPendingIntent(Application.Context, PlaybackState.ActionStop))
                                   .SetSmallIcon(Resource.Drawable.AppIcon) // This is the icon to display
                                   .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.app_icon))
                                   .AddAction(Resource.Drawable.baseline_replay_30_white_36, "Backward 30", previousPendingIntent)
@@ -198,24 +198,24 @@ namespace DABApp.Droid
                                   .SetContentText(GlobalResources.playerPodcast.EpisodeTitle)
                                   .SetContentTitle(GlobalResources.playerPodcast.ChannelTitle)
                                   .SetColor(color)
-                                  .SetBadgeIconType(1);
+                                  .SetBadgeIconType(NotificationBadgeIconType.Large);
 
                     // Finally, publish the notification:
-                    var notificationManager = NotificationManagerCompat.From(Application.Context);
+                    var notificationManager = NotificationManager.FromContext(Application.Context);
                     notificationManager.Notify(NOTIFICATION_ID, builder.Build());
 
                     mSession.Active = true;
                     mSession.SetCallback(new MediaSessionCallback());
 
                     //Building the lock screen
-                    MediaMetadataCompat.Builder lockBuilder = new MediaMetadataCompat.Builder()
+                    MediaMetadata.Builder lockBuilder = new MediaMetadata.Builder()
                             .PutString(MediaMetadata.MetadataKeyAlbum, GlobalResources.playerPodcast.ChannelTitle)
                             .PutString(MediaMetadata.MetadataKeyArtist, GlobalResources.playerPodcast.EpisodeDescription)
                             .PutString(MediaMetadata.MetadataKeyAlbumArtist, GlobalResources.playerPodcast.EpisodeDescription)
                             .PutString(MediaMetadata.MetadataKeyTitle, GlobalResources.playerPodcast.EpisodeTitle);
                             
 
-                    PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+                    PlaybackState.Builder stateBuilder = new PlaybackState.Builder()
                     .SetActions(
                         PlaybackStateCompat.ActionPause |
                         PlaybackStateCompat.ActionPlay |
@@ -224,7 +224,7 @@ namespace DABApp.Droid
                         PlaybackStateCompat.ActionRewind |
                         PlaybackStateCompat.ActionStop
                     )
-                    .SetState(PlaybackStateCompat.StatePlaying, player.CurrentPosition, 1.0f, SystemClock.ElapsedRealtime());
+                    .SetState(PlaybackStateCode.Playing, player.CurrentPosition, 1.0f, SystemClock.ElapsedRealtime());
 
                     mSession.SetPlaybackState(stateBuilder.Build());
 
@@ -485,7 +485,7 @@ namespace DABApp.Droid
                 position = player.CurrentPosition;
             }
 
-            PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder()
+            PlaybackState.Builder stateBuilder = new PlaybackState.Builder()
                     .SetActions(
                         PlaybackStateCompat.ActionPause |
                         PlaybackStateCompat.ActionPlay |
@@ -506,7 +506,7 @@ namespace DABApp.Droid
                 state = PlaybackStateCode.Error;
             }
 
-            stateBuilder.SetState(Convert.ToInt32(state), position, 1.0f, SystemClock.ElapsedRealtime());
+            stateBuilder.SetState(state, position, 1.0f, SystemClock.ElapsedRealtime());
             
             mSession.SetPlaybackState(stateBuilder.Build());
         }
@@ -624,7 +624,7 @@ namespace DABApp.Droid
         }
     }
 
-    public class MediaSessionCallback : MediaSessionCompat.Callback
+    public class MediaSessionCallback : MediaSession.Callback
     {
         DabPlayer player = GlobalResources.playerPodcast;
         private MediaPlayerServiceBinder mediaPlayerService = new MediaPlayerServiceBinder();

@@ -33,7 +33,7 @@ namespace DABApp.Droid
             OnElementChangedEvent?.Invoke(e);
 
             var context = (Activity)Context;
-            var toolbar = context.FindViewById<Android.Support.V7.Widget.Toolbar>(Droid.Resource.Id.toolbar);
+            var toolbar = context.FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Droid.Resource.Id.toolbar);
             if (toolbar != null)
             {
                 if (toolbar.NavigationIcon != null)

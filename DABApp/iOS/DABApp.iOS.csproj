@@ -172,12 +172,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="TEditor, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="TEditor.Abstractions, Version=1.0.6394.28695, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TEditor.1.0.1\lib\Xamarin.iOS10\TEditor.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="Telerik.Documents.CMapUtils, Version=2021.2.614.20, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Telerik.UI.for.Xamarin.Documents.CMapUtils.2021.2.614\lib\netstandard2.0\Telerik.Documents.CMapUtils.dll</HintPath>
     </Reference>

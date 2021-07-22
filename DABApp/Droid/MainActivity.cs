@@ -19,7 +19,6 @@ using Android.Support.V4.Media.Session;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
-using Android.Support.Design.Widget;
 using Android.Content.Res;
 using Android.Views.Accessibility;
 using Android.Support.V4.Content;
@@ -35,6 +34,7 @@ using Device = Xamarin.Forms.Device;
 using ImageButton = Android.Widget.ImageButton;
 using DABApp.DabAudio;
 using Plugin.CurrentActivity;
+using Rect = Android.Graphics.Rect;
 
 namespace DABApp.Droid
 {
@@ -147,7 +147,7 @@ namespace DABApp.Droid
 
         void LoadCustomToolBar()
         {
-            var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             if (toolbar != null)
             {
                 SetSupportActionBar(toolbar);
