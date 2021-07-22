@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Acr.DeviceInfo;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace DABApp.DabSockets
@@ -21,11 +21,11 @@ namespace DABApp.DabSockets
             Current = new DabJournalViewHelper();
             if (Device.RuntimePlatform == Device.iOS)
             {
-                Current.EntryHeight = DeviceInfo.Hardware.ScreenHeight * .8;
+                Current.EntryHeight = DeviceDisplay.MainDisplayInfo.Height * .8;
             }
             else
             {
-                var modified = DeviceInfo.Hardware.ScreenHeight / GlobalResources.Instance.AndroidDensity;
+                var modified = DeviceDisplay.MainDisplayInfo.Height / GlobalResources.Instance.AndroidDensity;
                 Current.EntryHeight = modified * .6;
             }
         }
